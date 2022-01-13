@@ -63,7 +63,7 @@ public class OrganisasjonController {
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
         organisasjonClient.opprett(request, bestilling.getId());
 
-        return getStatus(bestilling, "Ikke bestemt ...");
+        return getStatus(bestilling, "Ubestemt");
     }
 
     @PutMapping("/gjenopprett/{bestillingId}")
