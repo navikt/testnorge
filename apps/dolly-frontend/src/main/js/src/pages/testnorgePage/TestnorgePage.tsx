@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Title from '~/components/Title'
 import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
-import SearchOptions from './SearchOptions'
+import SearchOptions from './search/SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
-import SearchView from '~/pages/testnorgePage/SearchView'
+import SearchView from '~/pages/testnorgePage/search/SearchView'
 import { Person } from '~/service/services/personsearch/types'
+import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
@@ -65,14 +66,12 @@ export default () => {
 					<SearchContainer
 						left={<SearchOptions />}
 						right={
-							<SearchView
+							<SearchViewConnector
 								items={items}
-								pageing={{
-									pageSize: pageSize,
-									page: page,
-								}}
+								pageSize={pageSize}
+								page={page}
 								numberOfItems={numberOfItems}
-								onChange={(page) => search(page, values)}
+								onChange={(page: number) => search(page, values)}
 							/>
 						}
 						onSubmit={handleSubmit}
