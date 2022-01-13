@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
 import { AdressePanel } from './paneler/Adresse'
@@ -13,8 +13,10 @@ import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const Steg1Person = ({ stateModifier }: any) => {
+	const opts = useContext(BestillingsveilederContext)
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
@@ -38,11 +40,11 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} />
-			<AdressePanel stateModifier={stateModifier} />
-			<FamilierelasjonPanel stateModifier={stateModifier} />
-			<ArbeidInntektPanel stateModifier={stateModifier} />
-			<ArenaPanel stateModifier={stateModifier} />
+			{!opts.is.importTestnorge && <PersoninformasjonPanel stateModifier={stateModifier} />}
+			{!opts.is.importTestnorge && <AdressePanel stateModifier={stateModifier} />}
+			{!opts.is.importTestnorge && <FamilierelasjonPanel stateModifier={stateModifier} />}
+			<ArbeidInntektPanel stateModifier={stateModifier} startOpen={opts.is.importTestnorge} />
+			{!opts.is.importTestnorge && <ArenaPanel stateModifier={stateModifier} />}
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
