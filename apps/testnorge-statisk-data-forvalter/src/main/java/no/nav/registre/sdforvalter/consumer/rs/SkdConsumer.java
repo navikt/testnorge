@@ -38,7 +38,7 @@ public class SkdConsumer {
         Set<SkdRequest> requests = liste.stream().map(SkdRequest::new).collect(Collectors.toSet());
 
         UriTemplate uriTemplate = new UriTemplate(skdUrl + "/leggTilNyeMeldinger/{playgroup}");
-        RequestEntity<Set<SkdRequest>> requestEntity = new RequestEntity<>(requests, HttpMethod.PUT, uriTemplate.expand(playgroup));
+        RequestEntity<Set<SkdRequest>> requestEntity = new RequestEntity<>(requests, HttpMethod.POST, uriTemplate.expand(playgroup));
         ResponseEntity<List> responseEntity = restTemplate.exchange(requestEntity, List.class);
         log.info("ResponseKode: {}", responseEntity.getStatusCode());
         if (responseEntity.getStatusCode() != HttpStatus.OK) {
