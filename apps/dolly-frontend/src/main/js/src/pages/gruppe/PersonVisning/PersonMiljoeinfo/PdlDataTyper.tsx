@@ -18,6 +18,9 @@ export type Ident = {
 
 export type HentPerson = {
 	bostedsadresse: Array<BostedData>
+	oppholdsadresse: Array<{}>
+	kontaktadresse: Array<{}>
+	adressebeskyttelse: Array<{}>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>

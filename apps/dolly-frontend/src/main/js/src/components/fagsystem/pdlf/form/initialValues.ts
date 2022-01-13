@@ -12,6 +12,61 @@ export const initialPdlPerson = {
 	gradering: null as string,
 }
 
+export const initialBostedsadresse = {
+	adressetype: null as string,
+	angittFlyttedato: null as string,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialOppholdsadresse = {
+	adressetype: null as string,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialKontaktadresse = {
+	adressetype: null as string,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialAdressebeskyttelse = {
+	gradering: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialVegadresse = {
+	adressekode: null as string,
+	adressenavn: null as string,
+	tilleggsnavn: null as string,
+	bruksenhetsnummer: null as string,
+	husbokstav: null as string,
+	husnummer: null as string,
+	kommunenummer: null as string,
+	postnummer: null as string,
+}
+
+export const initialMatrikkeladresse = {
+	kommunenummer: null as string,
+	gaardsnummer: null as number,
+	bruksnummer: null as number,
+	postnummer: null as string,
+	bruksenhetsnummer: null as string,
+	tilleggsnavn: null as string,
+}
+
 export const initialUtenlandskAdresse = {
 	adressenavnNummer: null as string,
 	postboksNummerNavn: null as string,
@@ -21,6 +76,18 @@ export const initialUtenlandskAdresse = {
 	bygningEtasjeLeilighet: null as string,
 	regionDistriktOmraade: null as string,
 }
+
+export const initialPostboksadresse = {
+	postboks: null as string,
+	postbokseier: null as string,
+	postnummer: null as string,
+}
+
+export const initialUkjentBosted = {
+	bostedskommune: null as string,
+}
+
+export const initialOppholdAnnetSted = null as string
 
 export const initialKontaktinfoForDoedebo = {
 	skifteform: null as string,
