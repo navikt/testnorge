@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +50,12 @@ public class OrganisasjonController {
                         .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
                         .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
                                 .melding("Bestilling startet ...")
-                                .orgnummer(orgnummer)
+                                .detaljert(Arrays.stream(bestilling.getMiljoer().split(","))
+                                        .map(miljoe -> RsOrganisasjonStatusRapport.Detaljert.builder()
+                                                .orgnummer(orgnummer)
+                                                .miljo(miljoe)
+                                                .build())
+                                        .toList())
                                 .build()))
                         .build()))
                 .build();
@@ -61,14 +67,15 @@ public class OrganisasjonController {
     public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
-        organisasjonClient.opprett(request, bestilling.getId());
+        organisasjonClient.opprett(request, bestilling);
 
         return getStatus(bestilling, "Ikke bestemt ...");
     }
 
     @PutMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett organisasjon")
-    public RsOrganisasjonBestillingStatus gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
+    public RsOrganisasjonBestillingStatus gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId,
+                                                                  @RequestParam(value = "miljoer", required = false) String miljoer) {
 
         RsOrganisasjonBestillingStatus bestillingStatus = bestillingService.fetchBestillingStatusById(bestillingId);
 
@@ -84,7 +91,7 @@ public class OrganisasjonController {
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(status);
 
-        organisasjonClient.gjenopprett(request, bestilling.getId());
+        organisasjonClient.gjenopprett(request, bestilling);
 
         return getStatus(bestilling, bestillingStatus.getOrganisasjonNummer());
     }
@@ -100,7 +107,8 @@ public class OrganisasjonController {
     @GetMapping("/bestillingsstatus")
     @Operation(description = "Hent status på bestilling basert på brukerId")
     public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
-            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)", example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
+            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)",
+                    example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
 
         return bestillingService.fetchBestillingStatusByBrukerId(brukerId);
     }
