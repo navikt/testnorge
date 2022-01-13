@@ -12,23 +12,29 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 		return null
 	}
 
-	const personNavn = data.navn?.length > 0 ? data.navn[0] : null
-	const personKjoenn = data.kjoenn?.length > 0 ? data.kjoenn[0] : null
-	const personSivilstand = data.sivilstand?.length > 0 ? data.sivilstand[0] : null
-	const personFoedsel = data.foedsel?.length > 0 ? data.foedsel[0] : null
-	const sikkerhetstiltak = data.sikkerhetstiltak?.length > 0 ? data.sikkerhetstiltak[0] : null
+	const personNavn = data?.navn?.[0]
+	const personKjoenn = data?.kjoenn?.[0]
+	const personSivilstand = data?.sivilstand?.[0]
+	const personFoedsel = data?.foedsel?.[0]
+	const sikkerhetstiltak = data?.sikkerhetstiltak?.[0]
+	const personstatus = data?.folkeregisterPersonstatus?.[0]
 
 	return (
 		<ErrorBoundary>
 			<div>
 				{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 				<div className="person-visning_content">
+					<TitleValue title="Fnr" value={data?.ident} />
 					<TitleValue title="Fornavn" value={personNavn?.fornavn} />
 					<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 					<TitleValue title="Etternavn" value={personNavn?.etternavn} />
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 					<TitleValue title="Sivilstand" value={personSivilstand?.type} />
-					<TitleValue title="Fødselsdato" value={personFoedsel?.foedselsdato} />
+					<TitleValue
+						title="Fødselsdato"
+						value={Formatters.formatDate(personFoedsel?.foedselsdato)}
+					/>
+					<TitleValue title="Personstatus" value={personstatus?.status} />
 					{sikkerhetstiltak && (
 						<div className="person-visning_content">
 							<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>

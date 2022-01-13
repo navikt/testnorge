@@ -116,7 +116,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
         for (var i = 0; i < adresse.size(); i++) {
             if (i + 1 < adresse.size()) {
-                if (isOverlapGyldigTom(adresse, i) || isOverlapGyldigFom(adresse, i)) {
+                if (isOverlapUgyldigTom(adresse, i) || isOverlapUgyldigFom(adresse, i)) {
                     throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
@@ -126,12 +126,12 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
     }
 
-    private boolean isOverlapGyldigFom(List<T> adresse, int i) {
-        return nonNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed()) &&
-                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed());
+    private boolean isOverlapUgyldigFom(List<T> adresse, int i) {
+        return nonNull(adresse.get(i + 1).getGyldigFraOgMed()) && nonNull(adresse.get(i).getGyldigTilOgMed()) &&
+                adresse.get(i).getGyldigTilOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed());
     }
 
-    private boolean isOverlapGyldigTom(List<T> adresse, int i) {
+    private boolean isOverlapUgyldigTom(List<T> adresse, int i) {
         return isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
                 nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i + 1).getGyldigFraOgMed()) &&
                 !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1));

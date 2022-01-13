@@ -52,18 +52,20 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
+            if (!bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
                 var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
 
-                appendResponseStatus(sikkerhetstiltakStatus.stream()
-                                .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
-                                .toList(),
-                        status,
-                        "Sikkerhetstiltak_slett"
-                );
-
+                if (sikkerhetstiltakStatus.stream()
+                        .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))) {
+                    appendResponseStatus(sikkerhetstiltakStatus.stream()
+                                    .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
+                                    .toList(),
+                            status,
+                            "Sikkerhetstiltak_slett"
+                    );
+                }
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSikkerhetstiltakRequest(
                                 dollyPerson.getHovedperson(),
@@ -95,17 +97,21 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer()) && !bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
+            if (!bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
 
-                appendResponseStatus(tlfStatus.stream()
-                                .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
-                                .toList(),
-                        status,
-                        "Telefonnummer_slett"
-                );
+                if (tlfStatus.stream()
+                        .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))) {
+
+                    appendResponseStatus(tlfStatus.stream()
+                                    .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
+                                    .toList(),
+                            status,
+                            "Telefonnummer_slett"
+                    );
+                }
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),

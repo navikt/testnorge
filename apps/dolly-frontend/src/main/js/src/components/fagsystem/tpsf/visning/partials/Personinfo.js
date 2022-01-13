@@ -82,8 +82,8 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 }
 
 export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }) => {
-	const harPdlAdressebeskyttelse = pdlData && _has(pdlData[0], 'person.adressebeskyttelse')
-	const harPdlUfb = pdlData && _has(pdlData[0], 'person.bostedsadresse[0].ukjentBosted')
+	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
+	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
 
 	return (
 		<div>

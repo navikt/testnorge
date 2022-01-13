@@ -16,6 +16,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -167,6 +168,15 @@ public class DollyPersonCache {
                         .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
                         .collect(Collectors.toList()))
                 .master(Master.PDL)
+                .build();
+    }
+
+    public DollyPerson preparePdlfPerson(FullPersonDTO pdlfPerson) {
+
+        return DollyPerson.builder()
+                .hovedperson(pdlfPerson.getPerson().getIdent())
+                .pdlfPerson(pdlfPerson)
+                .master(Master.PDLF)
                 .build();
     }
 }

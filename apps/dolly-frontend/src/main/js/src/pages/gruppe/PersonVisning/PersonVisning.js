@@ -37,22 +37,32 @@ export const PersonVisning = ({
 	slettPerson,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
+
+	const personInfo = data.tpsf
+		? data.tpsf
+		: {
+				kjonn: data.pdlforvalter?.kjoenn?.[0]?.kjoenn,
+				ident: data.pdlforvalter?.ident,
+				fornavn: data.pdlforvalter?.navn?.[0]?.fornavn,
+				etternavn: data.pdlforvalter?.navn?.[0]?.etternavn,
+		  }
 
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && (
+				{!iLaastGruppe && !kildePdl && (
 					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && (
-					<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
+				{!iLaastGruppe && !kildePdl && (
+					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
-				{!iLaastGruppe && (
+				{!iLaastGruppe && !kildePdl && (
 					<SlettButton action={slettPerson} loading={loading.slettPerson}>
 						Er du sikker på at du vil slette denne personen?
 					</SlettButton>
@@ -61,7 +71,7 @@ export const PersonVisning = ({
 			<TpsfVisning
 				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 				pdlData={data.pdlforvalter}
-				environments={bestilling.environments}
+				environments={bestilling?.environments}
 			/>
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
@@ -82,11 +92,11 @@ export const PersonVisning = ({
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning
-				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
+				data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
-			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
+			{data.tpsf && <PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />}
 			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />

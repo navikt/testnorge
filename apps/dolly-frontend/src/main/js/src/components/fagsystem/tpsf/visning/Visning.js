@@ -15,33 +15,54 @@ import {
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
+import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
+import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
-			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) => {
+			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) =>
 				setTpsMessagingData(response?.data[0]?.person)
-			})
+			)
 		}
 	}, [])
 	if (!data) return null
-	const harPdlBoadresse = pdlData && _has(pdlData[0], 'person.bostedsadresse')
-	const harPdlOppholdsadresse = pdlData && _has(pdlData[0], 'person.oppholdsadresse')
-	const harPdlKontaktadresse = pdlData && _has(pdlData[0], 'person.kontaktadresse')
+	const harPdlBoadresse = pdlData && _has(pdlData, 'bostedsadresse')
+	const harPdlOppholdsadresse = pdlData && _has(pdlData, 'oppholdsadresse')
+	const harPdlKontaktadresse = pdlData && _has(pdlData, 'kontaktadresse')
+
+	const hasTpsfData = data.ident
 
 	return (
 		<div>
-			<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
-			<Nasjonalitet data={data} pdlData={pdlData} tpsMessagingData={tpsMessagingData} />
-			<Vergemaal data={data.vergemaal} />
-			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
-			{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
-			{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
-			{!harPdlKontaktadresse && <MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />}
-			{pdlData?.[0]?.person?.sikkerhetstiltak && (
-				<PdlSikkerhetstiltak data={pdlData[0].person.sikkerhetstiltak} />
-			)}
+			<>
+				{hasTpsfData ? (
+					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
+				) : (
+					<PdlPersonInfo data={pdlData} />
+				)}
+				{hasTpsfData ? (
+					<Nasjonalitet data={data} tpsMessagingData={tpsMessagingData} />
+				) : (
+					<PdlNasjonalitet data={pdlData} />
+				)}
+				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
+				{hasTpsfData ? (
+					<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
+				) : (
+					<PdlFullmakt data={pdlData.fullmakt} />
+				)}
+				{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
+				{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
+				{!harPdlKontaktadresse && (
+					<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+				)}
+				{!hasTpsfData && <Telefonnummer data={pdlData.telefonnummer} />}
+				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData.sikkerhetstiltak} />}
+			</>
 			<UtenlandskBankkonto
 				data={
 					tpsMessagingData?.bankkontonrUtland
@@ -75,8 +96,9 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 	if (harFoedselsinnvandring)
 		data = {
 			...data,
-			innvandretUtvandret: data.innvandretUtvandret.filter(
-				(i, idx) => idx !== data.innvandretUtvandret.length - 1 || i.innutvandret === 'UTVANDRET'
+			innvandretUtvandret: data?.innvandretUtvandret?.filter(
+				(element, idx) =>
+					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET'
 			),
 		}
 	return data

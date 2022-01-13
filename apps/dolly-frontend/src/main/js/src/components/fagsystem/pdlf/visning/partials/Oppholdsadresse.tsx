@@ -6,6 +6,7 @@ import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadre
 import { Matrikkeladresse } from '~/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import Formatters from '~/utils/DataFormatter'
 
 type Data = {
 	data: Array<any>
@@ -28,7 +29,10 @@ export const Oppholdsadresse = ({ data }: Data) => {
 									{adresse.utenlandskAdresse && <UtenlandskAdresse adresse={adresse} idx={idx} />}
 									{adresse.oppholdAnnetSted && (
 										<div className="person-visning_content" key={idx}>
-											<TitleValue title="Opphold annet sted" value={adresse.oppholdAnnetSted} />
+											<TitleValue
+												title="Opphold annet sted"
+												value={Formatters.showLabel('oppholdAnnetSted', adresse.oppholdAnnetSted)}
+											/>
 										</div>
 									)}
 								</>

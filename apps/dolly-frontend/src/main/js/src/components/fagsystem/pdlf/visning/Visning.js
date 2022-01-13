@@ -14,7 +14,7 @@ import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
-	if (!data || data.length < 1 || !data[0]?.person) return null
+	if (!data) return null
 
 	const {
 		telefonnummer,
@@ -28,7 +28,7 @@ export const PdlfVisning = ({ data, loading }) => {
 		utenlandskIdentifikasjonsnummer,
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
-	} = data[0].person
+	} = data
 
 	return (
 		<ErrorBoundary>
