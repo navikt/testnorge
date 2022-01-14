@@ -598,7 +598,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Person relatert til', item.relatertVedSivilstand),
 						//TODO lag gjenbrukbar komponent
-						expandable('PERSON RELATERT TIL', item.relatertVedSivilstand === null, [
+						expandable('PERSON RELATERT TIL', !item.relatertVedSivilstand, [
 							obj('Identtype', item.nyRelatertPerson?.identtype),
 							obj('Kjønn', item.nyRelatertPerson?.kjoenn),
 							obj('Født etter', Formatters.formatDate(item.nyRelatertPerson?.foedtEtter)),
@@ -980,7 +980,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 					obj('År/måned', inntektsinfo.sisteAarMaaned),
-					obj('Rapporteringsdato', inntektsinfo.rapporteringsdato),
+					obj('Rapporteringstidspunkt', inntektsinfo.rapporteringsdato),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),

@@ -60,7 +60,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 				<FormikDateTimepicker
 					formikBag={formikBag}
 					name={`${path}.rapporteringsdato`}
-					label="Rapporteringsdato"
+					label="Rapporteringstidspunkt"
 					date={rapporteringsdate}
 					onChange={handleRapporteringDateChange}
 				/>
