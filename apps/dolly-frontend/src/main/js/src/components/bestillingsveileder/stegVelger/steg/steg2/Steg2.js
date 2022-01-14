@@ -24,7 +24,7 @@ const getEmptyMessage = (leggTil, importTestnorge) => {
 		return 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
 	} else if (importTestnorge) {
 		return (
-			'Du har ikke lagt til egenskaper. Dolly vil opprette valgt Testnorge person(er) i miljø og ' +
+			'Du har ikke lagt til egenskaper. Dolly vil importere valgt Testnorge person(er) til ' +
 			'gruppe du velger i neste steg.'
 		)
 	}
