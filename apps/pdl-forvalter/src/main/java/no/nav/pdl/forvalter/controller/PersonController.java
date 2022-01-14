@@ -28,7 +28,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/personer")
+@RequestMapping(value = "/api/v1/personer", produces = "application/json; charset=utf-8")
 @RequiredArgsConstructor
 public class PersonController {
 
@@ -37,7 +37,7 @@ public class PersonController {
     private final ArtifactDeleteService artifactDeleteService;
 
     @ResponseBody
-    @GetMapping(produces = "application/json; charset=utf-8")
+    @GetMapping
     @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
     public List<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
                                          @RequestParam(required = false) List<String> identer,
@@ -53,7 +53,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(produces = "application/json; charset=utf-8")
+    @PostMapping
     @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
     public String createPerson(@RequestBody BestillingRequestDTO request) {
 
@@ -61,7 +61,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PutMapping(value = "/{ident}", produces = "application/json; charset=utf-8")
+    @PutMapping(value = "/{ident}")
     @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
     public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
                                @PathVariable String ident,
@@ -75,7 +75,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre", produces = "application/json; charset=utf-8")
+    @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,

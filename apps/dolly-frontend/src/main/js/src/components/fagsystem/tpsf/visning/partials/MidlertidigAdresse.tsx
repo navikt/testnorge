@@ -5,6 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { isArray, isEmpty } from 'lodash'
 
 type AlleMidlertidigeAdresser = {
 	midlertidigAdresse: Array<MidlertidigAdresse>
@@ -17,6 +18,7 @@ type Enkeltadresse = {
 type MidlertidigAdresse = {
 	adressetype: string
 	gyldigTom: string
+	gatekode?: string
 	gatenavn?: string
 	husnr?: string
 	postnr?: string
@@ -44,6 +46,7 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 	const {
 		adressetype,
 		gyldigTom,
+		gatekode,
 		gatenavn,
 		husnr,
 		postnr,
@@ -75,19 +78,31 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 	return (
 		<ErrorBoundary>
 			<>
-				<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-					{adressetype === 'GATE' && gate}
-					{adressetype === 'STED' && sted}
-					{adressetype === 'PBOX' && postboks}
-					{adressetype === 'UTAD' && utland}
-					{postnr && (
-						<KodeverkConnector navn="Postnummer" value={postnr}>
-							{(v: PostnummerKodeverk, verdi: Postnummer) => (
-								<span>{verdi ? verdi.label : postnr}</span>
-							)}
-						</KodeverkConnector>
-					)}
-				</TitleValue>
+				{adressetype && (
+					<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+						{adressetype === 'GATE' && gate}
+						{adressetype === 'STED' && sted}
+						{adressetype === 'PBOX' && postboks}
+						{adressetype === 'UTAD' && utland}
+						{postnr && (
+							<KodeverkConnector navn="Postnummer" value={postnr}>
+								{(v: PostnummerKodeverk, verdi: Postnummer) => (
+									<span>{verdi ? verdi.label : postnr}</span>
+								)}
+							</KodeverkConnector>
+						)}
+					</TitleValue>
+				)}
+				{!adressetype && (
+					<div className="person-visning_content">
+						<TitleValue title="Gatekode" value={gatekode} />
+						<TitleValue title="Gatenavn" value={gatenavn} />
+						<TitleValue title="Husnr" value={husnr} />
+						<TitleValue title="Postboksanlegg" value={postboksAnlegg} />
+						<TitleValue title="Postboksnummer" value={postboksnr} />
+						<TitleValue title="Postnr" value={postnr} />
+					</div>
+				)}
 				<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(gyldigTom)} />
 				<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
 			</>
@@ -96,20 +111,23 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 }
 
 export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdresser) => {
-	if (!midlertidigAdresse || midlertidigAdresse.length < 1) return null
+	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || isEmpty(midlertidigAdresse))
+		return null
 
 	return (
 		<ErrorBoundary>
 			<>
 				<SubOverskrift label="Midlertidig adresse" iconKind="midlertidigAdresse" />
 				<div className="person-visning_content">
-					{/* 
-            	// @ts-ignore */}
-					<Historikk
-						component={Adressevisning}
-						propName="midlertidigAdresse"
-						data={midlertidigAdresse}
-					/>
+					{isArray(midlertidigAdresse) ? (
+						<Historikk
+							component={Adressevisning}
+							propName="midlertidigAdresse"
+							data={midlertidigAdresse}
+						/>
+					) : (
+						<Adressevisning midlertidigAdresse={midlertidigAdresse} />
+					)}
 				</div>
 			</>
 		</ErrorBoundary>

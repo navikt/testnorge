@@ -40,6 +40,7 @@ export type Adresse = {
 	tilleggsnavn?: string
 	fylkesnummer: string
 	fylkesnavn: string
+	bruksenhetsnummer?: string
 }
 
 export type MatrikkelAdresse = {
@@ -49,6 +50,7 @@ export type MatrikkelAdresse = {
 	bruksnummer: string
 	postnummer: string
 	poststed: string
+	bruksenhetsnummer?: string
 	tilleggsnavn: string
 }
 

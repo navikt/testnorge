@@ -92,18 +92,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	if (bestillingData.tpsf) {
-		const {
-			boadresse,
-			postadresse,
-			midlertidigAdresse,
-			adresseNrInfo,
-			identHistorikk,
-			relasjoner,
-			vergemaal,
-			fullmakt,
-			harIngenAdresse,
-			...persondetaljer
-		} = bestillingData.tpsf
+		const { identHistorikk, relasjoner, vergemaal, fullmakt, harIngenAdresse, ...persondetaljer } =
+			bestillingData.tpsf
 
 		if (!_isEmpty(persondetaljer)) {
 			const personinfo = {
@@ -112,167 +102,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 
 			data.push(personinfo)
-		}
-		if (boadresse) {
-			if (adresseNrInfo) {
-				const adresseNrInfoObj = {
-					header: `Boadresse basert på ${Formatters.showLabel(
-						'adresseNrType',
-						adresseNrInfo.nummertype
-					)}`,
-					items: [
-						obj(
-							`${Formatters.showLabel('adresseNrType', adresseNrInfo.nummertype)}`,
-							adresseNrInfo.nummer ? adresseNrInfo.nummer : 'Tilfeldig'
-						),
-						obj('Bruksenhetsnummer', boadresse.bolignr),
-						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato)),
-					],
-				}
-				data.push(adresseNrInfoObj)
-			} else {
-				const adresse = {
-					header: 'Bostedadresse',
-					items: [
-						{
-							header: 'Bosted',
-						},
-						obj('Adressetype', Formatters.adressetypeToString(boadresse.adressetype)),
-						obj('Gatenavn', boadresse.gateadresse),
-						obj('Husnummer', boadresse.husnummer),
-						obj('Stedsnavn', boadresse.mellomnavn),
-						obj('Gårdsnummer', boadresse.gardsnr),
-						obj('Bruksnummer', boadresse.bruksnr),
-						obj('Festenummer', boadresse.festenr),
-						obj('Undernummer', boadresse.undernr),
-						obj('Postnummer', boadresse.postnr),
-						obj('Kommunenummer', boadresse.kommunenr),
-						obj('Bruksenhetsnummer', boadresse.bolignr),
-						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato)),
-					],
-				}
-				data.push(adresse)
-			}
-			if (boadresse.tilleggsadresse) {
-				const tilleggsadresse = {
-					header: 'Tilleggsadresse',
-					items: [
-						obj('Tilfeldig adresse', boadresse.tilleggsadresse === {} && 'Ja'),
-						obj(
-							'Tilleggstype',
-							Formatters.showLabel('tilleggstype', boadresse.tilleggsadresse.tilleggType)
-						),
-						obj('Nummer', boadresse.tilleggsadresse.nummer),
-					],
-				}
-				data.push(tilleggsadresse)
-			}
-		}
-
-		if (postadresse) {
-			const postadr = bestillingData.tpsf.postadresse[0]
-			const postadresse = {
-				header: 'Postadresse',
-				items: [
-					obj('Land', postadr.postLand),
-					obj('Adresselinje 1', postadr.postLinje1),
-					obj('Adresselinje 2', postadr.postLinje2),
-					obj('Adresselinje 3', postadr.postLinje3),
-				],
-			}
-			data.push(postadresse)
-		}
-
-		if (midlertidigAdresse) {
-			let typeGateadresse = null
-			if (midlertidigAdresse.adressetype === 'GATE') {
-				if (midlertidigAdresse.gateadresseNrInfo) {
-					typeGateadresse = `Tilfeldig, basert på ${Formatters.showLabel(
-						'adresseNrType',
-						midlertidigAdresse.gateadresseNrInfo.nummertype
-					)}`
-				} else if (midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.gatenavn) {
-					typeGateadresse = 'Detaljert'
-				} else {
-					typeGateadresse = 'Tilfeldig'
-				}
-			}
-
-			const midlertidigAdresseObj = {
-				header: 'Midlertidig adresse',
-				items: [
-					obj('Adressetype', Formatters.showLabel('adresseType', midlertidigAdresse.adressetype)),
-					obj('Gyldig t.o.m.', Formatters.formatDate(midlertidigAdresse.gyldigTom)),
-					obj('Type gateadresse', typeGateadresse),
-					obj(
-						midlertidigAdresse.gateadresseNrInfo &&
-							Formatters.showLabel(
-								'adresseNrType',
-								midlertidigAdresse.gateadresseNrInfo.nummertype
-							),
-						midlertidigAdresse.gateadresseNrInfo && midlertidigAdresse.gateadresseNrInfo.nummer
-					),
-					obj(
-						'Gatenavn',
-						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.gatenavn
-					),
-					obj(
-						'Husnummer',
-						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.husnr
-					),
-					obj(
-						'Eiendomsnavn',
-						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.eiendomsnavn
-					),
-					obj(
-						'Postboksnummer',
-						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.postboksnr
-					),
-					obj(
-						'Postboksanlegg',
-						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.postboksAnlegg
-					),
-					obj(
-						'Postnummer',
-						midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.postnr
-					),
-					obj(
-						'Postlinje 1',
-						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLinje1
-					),
-					obj(
-						'Postlinje 2',
-						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLinje2
-					),
-					obj(
-						'Postlinje 3',
-						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLinje3
-					),
-					obj(
-						'Land',
-						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLand,
-						AdresseKodeverk.PostadresseLand
-					),
-				],
-			}
-			data.push(midlertidigAdresseObj)
-
-			if (midlertidigAdresse.norskAdresse && midlertidigAdresse.norskAdresse.tilleggsadresse) {
-				const midlertidigTilleggsadresseObj = {
-					header: 'Midlertidig tilleggsadresse',
-					items: [
-						obj(
-							'Tilleggstype',
-							Formatters.showLabel(
-								'tilleggstypeMidlertidig',
-								midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType
-							)
-						),
-						obj('Nummer', midlertidigAdresse.norskAdresse.tilleggsadresse.nummer),
-					],
-				}
-				data.push(midlertidigTilleggsadresseObj)
-			}
 		}
 
 		if (identHistorikk) {
@@ -407,9 +236,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const {
 			telefonnummer,
 			fullmakt,
+			bostedsadresse,
+			oppholdsadresse,
+			kontaktadresse,
+			adressebeskyttelse,
 			falskIdentitet,
 			utenlandskIdentifikasjonsnummer,
-			bostedsadresse,
 			innflytting,
 			utflytting,
 			kontaktinformasjonForDoedsbo,
@@ -479,22 +311,52 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(fullmaktData)
 		}
 
-		if (sikkerhetstiltak) {
-			const sikkerhetstiltakData = {
-				header: 'Sikkerhetstiltak',
-				itemRows: sikkerhetstiltak.map((item, idx) => {
-					return [
-						{ numberHeader: `Sikkerhetstiltak ${idx + 1}` },
-						obj('Type sikkerhetstiltak', item.tiltakstype),
-						obj('Beskrivelse', item.beskrivelse),
-						obj('Kontaktperson', item.kontaktperson.personident),
-						obj('Navkontor kode', item.kontaktperson.enhet),
-						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
-						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-					]
-				}),
-			}
-			data.push(sikkerhetstiltakData)
+		const isEmpty = (adresseData) => {
+			return adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
+		}
+
+		const vegadresse = (adresseData) => {
+			return [
+				obj('Adressekode', adresseData.adressekode),
+				obj('Adressenavn', adresseData.adressenavn),
+				obj('Tilleggsnavn', adresseData.tilleggsnavn),
+				obj('Bruksenhetsnummer', adresseData.bruksenhetsnummer),
+				obj('Husnummer', adresseData.husnummer),
+				obj('Husbokstav', adresseData.husbokstav),
+				obj('Postnummer', adresseData.postnummer),
+				obj('Kommunenummer', adresseData.kommunenummer),
+			]
+		}
+
+		const matrikkeladresse = (adresseData) => {
+			return [
+				obj('Gårdsnummer', adresseData.gaardsnummer),
+				obj('Bruksnummer', adresseData.bruksnummer),
+				obj('Bruksenhetsnummer', adresseData.bruksenhetsnummer),
+				obj('Tilleggsnavn', adresseData.tilleggsnavn),
+				obj('Postnummer', adresseData.postnummer),
+				obj('Kommunenummer', adresseData.kommunenummer),
+			]
+		}
+
+		const utenlandskAdresse = (adresseData) => {
+			return [
+				obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
+				obj('Postnummer og -navn', adresseData.postboksNummerNavn),
+				obj('Postkode', adresseData.postkode),
+				obj('By eller sted', adresseData.bySted),
+				obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
+				obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
+				obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
+			]
+		}
+
+		const datoer = (datoData) => {
+			return [
+				obj('Flyttedato', Formatters.formatDate(datoData.angittFlyttedato)),
+				obj('Gyldig f.o.m.', Formatters.formatDate(datoData.gyldigFraOgMed)),
+				obj('Gyldig t.o.m.', Formatters.formatDate(datoData.gyldigTilOgMed)),
+			]
 		}
 
 		if (tilrettelagtKommunikasjon) {
@@ -546,11 +408,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: bostedsadresse.map((item, idx) => {
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
-						const isEmpty =
-							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
 						return [
 							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
-							obj('', isEmpty && 'Ingen verdier satt'),
+							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
 							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
 							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
 							obj('Postkode', adresseData.postkode),
@@ -560,9 +420,163 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
 						]
 					}
+					if (item.vegadresse) {
+						const adresseData = item.vegadresse
+						return [
+							{ numberHeader: `Bostedsadresse ${idx + 1}: Vegadresse` },
+							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...vegadresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.matrikkeladresse) {
+						const adresseData = item.matrikkeladresse
+						return [
+							{ numberHeader: `Bostedsadresse ${idx + 1}: Matrikkeladresse` },
+							obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...matrikkeladresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						return [
+							{ numberHeader: `Bostedsadresse ${idx + 1}: Utenlandsk adresse` },
+							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...utenlandskAdresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.ukjentBosted) {
+						const adresseData = item.ukjentBosted
+						return [
+							{ numberHeader: `Bostedsadresse ${idx + 1}: Ukjent bosted` },
+							obj('Ukjent bosted', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Bostedskommune', adresseData.bostedskommune),
+							...datoer(item),
+						]
+					}
+					return [obj('Bostedsadresse', 'Ingen verdier satt'), ...datoer(item)]
 				}),
 			}
 			data.push(bostedsadresseData)
+		}
+
+		if (oppholdsadresse) {
+			const oppholdsadresseData = {
+				header: 'Oppholdsadresse',
+				itemRows: oppholdsadresse.map((item, idx) => {
+					if (item.vegadresse) {
+						const adresseData = item.vegadresse
+						return [
+							{ numberHeader: `Oppholdsadresse ${idx + 1}: Vegadresse` },
+							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...vegadresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.matrikkeladresse) {
+						const adresseData = item.matrikkeladresse
+						return [
+							{ numberHeader: `Oppholdsadresse ${idx + 1}: Matrikkeladresse` },
+							obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...matrikkeladresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						return [
+							{ numberHeader: `Oppholdsadresse ${idx + 1}: Utenlandsk adresse` },
+							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...utenlandskAdresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.oppholdAnnetSted) {
+						return [
+							{ numberHeader: `Oppholdsadresse ${idx + 1}: Opphold annet sted` },
+							obj(
+								'Opphold annet sted',
+								Formatters.showLabel('oppholdAnnetSted', item.oppholdAnnetSted)
+							),
+							...datoer(item),
+						]
+					}
+					return [obj('Oppholdsadresse', 'Ingen verdier satt'), ...datoer(item)]
+				}),
+			}
+			data.push(oppholdsadresseData)
+		}
+
+		if (kontaktadresse) {
+			const kontaktadresseData = {
+				header: 'Kontaktadresse',
+				itemRows: kontaktadresse.map((item, idx) => {
+					if (item.vegadresse) {
+						const adresseData = item.vegadresse
+						return [
+							{ numberHeader: `Kontaktadresse ${idx + 1}: Vegadresse` },
+							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...vegadresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						return [
+							{ numberHeader: `Kontaktadresse ${idx + 1}: Utenlandsk adresse` },
+							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							...utenlandskAdresse(adresseData),
+							...datoer(item),
+						]
+					}
+					if (item.postboksadresse) {
+						const adresseData = item.postboksadresse
+						return [
+							{ numberHeader: `Kontaktadresse ${idx + 1}: Postboksadresse` },
+							obj('Postboksadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Postbokseier', adresseData.postbokseier),
+							obj('Postboks', adresseData.postboks),
+							obj('Postnummer', adresseData.postnummer),
+							...datoer(item),
+						]
+					}
+					return [obj('Kontaktadresse', 'Ingen verdier satt'), ...datoer(item)]
+				}),
+			}
+			data.push(kontaktadresseData)
+		}
+
+		if (adressebeskyttelse) {
+			const adressebeskyttelseData = {
+				header: 'Adressebeskyttelse',
+				itemRows: adressebeskyttelse.map((item, idx) => {
+					return [
+						{ numberHeader: `Adressebeskyttelse ${idx + 1}` },
+						obj('Gradering', Formatters.showLabel('gradering', item.gradering)),
+					]
+				}),
+			}
+			data.push(adressebeskyttelseData)
+		}
+
+		if (sikkerhetstiltak) {
+			const sikkerhetstiltakData = {
+				header: 'Sikkerhetstiltak',
+				itemRows: sikkerhetstiltak.map((item, idx) => {
+					return [
+						{ numberHeader: `Sikkerhetstiltak ${idx + 1}` },
+						obj('Type sikkerhetstiltak', item.tiltakstype),
+						obj('Beskrivelse', item.beskrivelse),
+						obj('Kontaktperson', item.kontaktperson.personident),
+						obj('Navkontor kode', item.kontaktperson.enhet),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+					]
+				}),
+			}
+			data.push(sikkerhetstiltakData)
 		}
 
 		const sjekkRettIdent = (item) => {

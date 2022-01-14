@@ -35,9 +35,9 @@ public class PdlDataClient implements ClientRegister {
                                     .person(bestilling.getPdldata().getPerson())
                                     .build());
             }
-
-            progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
-
+            if (!progress.isPdl()) {
+                progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
+            }
         } catch (WebClientResponseException e) {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));

@@ -8,6 +8,9 @@ import LeggTilRelasjonConnector from './LeggTilRelasjonConnector'
 import './LeggTilRelasjon.less'
 
 export const LeggTilRelasjonModal = ({ environments, personInfo }) => {
+	if (!personInfo) {
+		return null
+	}
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (
