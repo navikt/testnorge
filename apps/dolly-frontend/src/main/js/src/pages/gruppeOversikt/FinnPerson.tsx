@@ -1,4 +1,5 @@
 import './FinnPerson.less'
+// @ts-ignore
 import { AsyncFn } from 'react-use/lib/useAsync'
 import { useAsyncFn } from 'react-use'
 // @ts-ignore
