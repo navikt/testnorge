@@ -50,9 +50,9 @@ const _renderBestillingsDetaljer = (data) => {
 								return (
 									<div className="dfa-blokk" key={idx}>
 										{/*className endres under styling. Kun eksempel*/}
-										{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
+										{row?.[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
 										<div className={'flexbox--align-start flexbox--wrap'} key={idx}>
-											{row.map((attributt, idy) => {
+											{row?.map((attributt, idy) => {
 												return attributt.expandableHeader
 													? renderExpandablePanel(attributt, idy)
 													: _renderStaticValue(attributt, idy)

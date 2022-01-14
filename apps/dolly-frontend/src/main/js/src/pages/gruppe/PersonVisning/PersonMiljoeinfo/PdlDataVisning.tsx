@@ -5,41 +5,48 @@ import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinf
 import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
 import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
 import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
-import { PdlBoadresse } from '~/components/fagsystem/pdlf/visning/partials/PdlBoadresse'
 import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
-import {
-	BostedData,
-	PdlData,
-	PdlDataWrapper,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
+import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
+import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
+import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
 		return null
 	}
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
+	const {
+		telefonnummer,
+		tilrettelagtKommunikasjon,
+		bostedsadresse,
+		oppholdsadresse,
+		kontaktadresse,
+		adressebeskyttelse,
+		fullmakt,
+		sikkerhetstiltak,
+	} = hentPerson
 
-	const gjeldendeAdresse = (adresseListe: Array<BostedData>) => {
-		if (!adresseListe || adresseListe.length === 0) return null
-		const filteredArray = adresseListe.filter((adresse: BostedData) => !adresse.metadata.historisk)
-		return filteredArray.length > 0 ? filteredArray : adresseListe
-	}
-
-	const getPersonInfo = (identInfo: PdlData) => {
+	const getPersonInfo = () => {
 		return (
 			<div className="boks">
-				<PdlPersonInfo data={identInfo.hentPerson} />
-				<IdentInfo pdlResponse={identInfo.hentIdenter} />
-				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={identInfo.hentPerson} />
-				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson?.bostedsadresse)} />
-				<Telefonnummer data={identInfo.hentPerson?.telefonnummer} />
-				<TilrettelagtKommunikasjon data={identInfo.hentPerson?.tilrettelagtKommunikasjon} />
-				<PdlFullmakt data={identInfo.hentPerson?.fullmakt} />
-				<PdlSikkerhetstiltak data={identInfo.hentPerson?.sikkerhetstiltak} />
+				<PdlPersonInfo data={hentPerson} />
+				<IdentInfo pdlResponse={hentIdenter} />
+				<GeografiskTilknytning data={hentGeografiskTilknytning} />
+				<PdlNasjonalitet data={hentPerson} />
+				<Telefonnummer data={telefonnummer} />
+				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
+				<Boadresse data={bostedsadresse} />
+				<Oppholdsadresse data={oppholdsadresse} />
+				<Kontaktadresse data={kontaktadresse} />
+				<Adressebeskyttelse data={adressebeskyttelse} />
+				<PdlFullmakt data={fullmakt} />
+				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 			</div>
 		)
 	}
@@ -47,7 +54,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<Tooltip
-				overlay={getPersonInfo(data)}
+				overlay={getPersonInfo()}
 				placement="top"
 				align={{
 					offset: [0, -10],

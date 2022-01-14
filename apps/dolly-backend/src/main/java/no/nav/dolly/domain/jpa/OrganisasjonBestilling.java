@@ -69,7 +69,7 @@ public class OrganisasjonBestilling {
     @JoinColumn(name = "bruker_id", nullable = false)
     private Bruker bruker;
 
-    @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
     private List<OrganisasjonBestillingProgress> progresser;
 
     public List<OrganisasjonBestillingProgress> getProgresser() {

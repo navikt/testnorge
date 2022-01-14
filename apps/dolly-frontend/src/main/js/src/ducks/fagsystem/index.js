@@ -214,7 +214,9 @@ export default handleActions(
 			state.pdl[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
-			state.pdlforvalter[action.meta.identer] = action.payload.data
+			action.payload?.data?.forEach((ident) => {
+				state.pdlforvalter[ident.person.ident] = ident.person
+			})
 		},
 		[onSuccess(actions.getInst)](state, action) {
 			state.instdata[action.meta.ident] = action.payload.data
@@ -240,11 +242,22 @@ export default handleActions(
 // Thunk
 export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
+	let identListe = []
+	Object.values(state.gruppe?.ident)?.forEach((person) => {
+		if (!person.master || person.master !== 'PDLF') {
+			identListe.push(person.ident)
+		}
+	})
 
+	if (identListe && identListe.length >= 1) dispatch(actions.getTpsf(identListe))
+}
+
+export const fetchPdlPersoner = () => (dispatch, getState) => {
+	const state = getState()
 	let identListe = []
 	Object.values(state.gruppe?.ident)?.forEach((person) => identListe.push(person.ident))
 
-	if (identListe && identListe.length >= 1) dispatch(actions.getTpsf(identListe))
+	if (identListe && identListe.length >= 1) dispatch(actions.getPdlForvalter(identListe))
 }
 
 /**
@@ -287,8 +300,6 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
-			case 'PDL_FORVALTER':
-				return dispatch(actions.getPdlForvalter(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'AAREG':
@@ -312,8 +323,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'SIGRUNSTUB',
 		'INNTK',
 		'ARENA',
-		'PDL',
 		'PDL_FORVALTER',
+		'PDL',
 		'INST2,',
 		'PEN_INNTEKT',
 		'AAREG',
@@ -358,8 +369,9 @@ export const sokSelector = (items, searchStr) => {
 }
 
 const hentPersonStatus = (ident, bestillingStatus) => {
-	if (!bestillingStatus) return null
 	let totalStatus = 'Ferdig'
+
+	if (!bestillingStatus) return totalStatus
 
 	bestillingStatus.status.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {
@@ -378,38 +390,62 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 export const selectPersonListe = (state) => {
 	const { gruppe, fagsystem } = state
 
-	if (_isEmpty(fagsystem.tpsf)) return null
+	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter)) return null
 
 	// Sortert etter bestillingsId
 	const identer = Object.values(gruppe.ident)
-		.filter(
-			(gruppeIdent) => gruppeIdent.bestillingId != null && gruppeIdent.bestillingId.length > 0
+		.sort((a, b) =>
+			a.bestillingId && b.bestillingId
+				? _last(b?.bestillingId) - _last(a?.bestillingId)
+				: _last(b?.ident) - _last(a?.ident)
 		)
-		.sort((a, b) => _last(b.bestillingId) - _last(a.bestillingId))
-		.filter((gruppeIdent) => Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident))
-
-	return identer
 		.filter(
-			(ident) =>
-				ident.bestillingId.length > 0 &&
-				state.bestillingStatuser.byId[ident.bestillingId[0]] != null
+			(gruppeIdent) =>
+				Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident) ||
+				Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident)
 		)
-		.map((ident) => {
-			const tpsfIdent = fagsystem.tpsf[ident.ident]
-			const mellomnavn = tpsfIdent.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
-			return {
-				ident,
-				identNr: tpsfIdent.ident,
-				bestillingId: ident.bestillingId,
-				importFra: tpsfIdent.importFra,
-				identtype: tpsfIdent.identtype,
-				navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
-				kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
-				alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-				status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
-			}
-		})
+	return identer.map((ident) => {
+		const tpsfIdent = fagsystem.tpsf[ident.ident]
+		const pdlIdent = fagsystem.pdlforvalter[ident.ident]
+		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
+
+		if (ident.master !== 'PDLF' && !tpsfIdent) return null
+
+		return ident.master === 'PDLF'
+			? {
+					ident,
+					identNr: pdlIdent.ident,
+					bestillingId: ident.bestillingId,
+					identtype: 'FNR',
+					kilde: 'PDL',
+					navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlIdent.navn?.[0]?.etternavn}`,
+					kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
+					alder: Formatters.formatAlder(
+						new Date().getFullYear() - pdlIdent.foedsel?.[0]?.foedselsaar,
+						pdlIdent?.doedsfall?.[0]?.doedsdato
+					),
+					status: hentPersonStatus(
+						ident.ident,
+						state.bestillingStatuser.byId[ident.bestillingId[0]]
+					),
+			  }
+			: {
+					ident,
+					identNr: tpsfIdent.ident,
+					bestillingId: ident.bestillingId,
+					importFra: tpsfIdent.importFra,
+					identtype: tpsfIdent.identtype,
+					kilde: 'TPS',
+					navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
+					kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
+					alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+					status: hentPersonStatus(
+						ident.ident,
+						state.bestillingStatuser.byId[ident.bestillingId[0]]
+					),
+			  }
+	})
 }
 
 export const selectDataForIdent = (state, ident) => {
