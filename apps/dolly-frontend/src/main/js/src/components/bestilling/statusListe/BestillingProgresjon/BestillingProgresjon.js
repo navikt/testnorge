@@ -59,8 +59,6 @@ export default class BestillingProgresjon extends PureComponent {
 		try {
 			const { data } = await DollyApi.getOrganisasjonBestillingStatus(bestillingId)
 
-			console.log('data: ', data) //TODO - SLETT MEG
-
 			if (!data?.message?.includes('Status ikke funnet')) {
 				sessionStorage.clear()
 			}
