@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -30,7 +31,7 @@ public class NavigasjonService {
 
     public RsWhereAmI navigerTilIdent(String ident) {
 
-        var miljoIdent = Stream.of(
+        var miljoIdenter = Stream.of(List.of(ident),
                         tpsfService.hentTestpersoner(List.of(ident)).stream().findFirst().orElse(new Person())
                                 .getRelasjoner().stream()
                                 .map(Relasjon::getPersonRelasjonMed)
@@ -42,10 +43,9 @@ public class NavigasjonService {
                                 .map(PersonDTO::getIdent)
                                 .toList())
                 .flatMap(Collection::stream)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i miljø"));
+                .collect(Collectors.toSet());
 
-        var testident =  identRepository.findByIdent(miljoIdent).stream().findFirst()
+        var testident =  identRepository.findByIdentIn(miljoIdenter).stream().findFirst()
                 .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i database"));
 
         return RsWhereAmI.builder()
