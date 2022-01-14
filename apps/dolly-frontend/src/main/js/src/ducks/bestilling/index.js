@@ -14,6 +14,7 @@ export const actions = createActions(
 		postBestillingFraEksisterendeIdenter: DollyApi.createBestillingFraEksisterendeIdenter,
 		postBestilling: DollyApi.createBestilling,
 		postOrganisasjonBestilling: DollyApi.createOrganisasjonBestilling,
+		postTestnorgeBestilling: DollyApi.importerPersonerFraPdl,
 		bestillingFeilet: (error) => ({ error }),
 	},
 	{ prefix: 'bestveil' }
@@ -61,6 +62,9 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
+	} else if (opts.is.importTestnorge) {
+		values = _set('identer', opts.importPersoner, values)
+		bestillingAction = actions.postTestnorgeBestilling(gruppeId, values)
 	} else if (values.organisasjon) {
 		trackBestilling(values)
 		bestillingAction = actions.postOrganisasjonBestilling(values)
