@@ -41,7 +41,7 @@ export const TagsButton = ({ action, loading, gruppeId }: Props) => {
 							size="grow"
 							isMulti={true}
 							value={tags}
-							onChange={(event) => {
+							onChange={(event: []) => {
 								setTags(event?.map((ev: { value: string }) => ev.value))
 							}}
 						/>
