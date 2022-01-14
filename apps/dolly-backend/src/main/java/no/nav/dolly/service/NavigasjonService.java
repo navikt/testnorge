@@ -54,7 +54,7 @@ public class NavigasjonService {
                 .identNavigerTil(ident)
                 .sidetall(Math.floorDiv(
                         identService.getPaginertIdentIndex(testident.getIdent(), testident.getTestgruppe().getId())
-                                .orElseThrow(() -> new NotFoundException(ident + "ble ikke funnet i database")), 10))
+                                .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i database")), 10))
                 .build();
     }
 }
