@@ -28,6 +28,7 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 	return (
 		<>
 			<Kategori
+				flexRow={true}
 				title="Forretningsadresse"
 				vis="organisasjon.forretningsadresse"
 				hjelpetekst={hjelpetekstAdresser}
@@ -57,7 +58,10 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 						/>
 					</>
 				) : (
-					<FormikTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
+					<>
+						<FormikTextInput name={`${path}.forretningsadresse.postnr`} label="Postnummer" />
+						<FormikTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
+					</>
 				)}
 
 				<FormikTextInput
@@ -78,6 +82,7 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 				title="Postadresse"
 				vis="organisasjon.postadresse"
 				hjelpetekst={hjelpetekstAdresser}
+				flexRow={true}
 			>
 				<FormikSelect
 					name={`${path}.postadresse.landkode`}
@@ -103,7 +108,10 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 						/>
 					</>
 				) : (
-					<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
+					<>
+						<FormikTextInput name={`${path}.postadresse.postnr`} label="Postnummer" />
+						<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
+					</>
 				)}
 				<FormikTextInput name={`${path}.postadresse.adresselinjer[0]`} label="Adresselinje 1" />
 				<FormikTextInput name={`${path}.postadresse.adresselinjer[1]`} label="Adresselinje 2" />

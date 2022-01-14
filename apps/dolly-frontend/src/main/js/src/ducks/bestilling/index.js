@@ -80,6 +80,7 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	if (res.error) {
 		dispatch(actions.bestillingFeilet(res))
 	} else if (type.includes('OrganisasjonBestilling')) {
+		sessionStorage.setItem('organisasjon_bestilling', JSON.stringify({ bestilling: {}, ...res }))
 		dispatch(push(`/organisasjoner`))
 	} else {
 		dispatch(push(`/gruppe/${gruppeId}`))

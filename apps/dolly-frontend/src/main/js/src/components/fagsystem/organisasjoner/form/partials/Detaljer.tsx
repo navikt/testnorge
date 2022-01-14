@@ -69,7 +69,7 @@ export const Detaljer = ({
 
 	return (
 		<>
-			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths}>
+			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
 						<ToggleGruppe onChange={handleToggleChange} name={path}>

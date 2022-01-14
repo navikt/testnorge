@@ -53,7 +53,6 @@ public class BestillingOrganisasjonStatusMapper {
                 .statuser(statusMap.entrySet().stream()
                         .map(entry -> RsOrganisasjonStatusRapport.Status.builder()
                                 .melding(entry.getKey())
-                                .orgnummer(progress.getOrganisasjonsnummer())
                                 .detaljert(entry.getValue().stream().map(value -> RsOrganisasjonStatusRapport.Detaljert.builder()
                                         .miljo(value)
                                         .orgnummer(progress.getOrganisasjonsnummer())
