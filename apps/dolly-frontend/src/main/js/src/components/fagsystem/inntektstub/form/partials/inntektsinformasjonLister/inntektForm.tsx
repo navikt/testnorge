@@ -51,7 +51,7 @@ const simpleValues = {
 }
 
 export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
-	const [formSimple, setFormSimple] = useBoolean(true)
+	const [formSimple, setFormSimple] = useBoolean(false)
 
 	const changeFormType = (event: SyntheticEvent<EventTarget, Event>) => {
 		// @ts-ignore
@@ -77,11 +77,11 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 		<>
 			<div className="toggle--wrapper">
 				<ToggleGruppe onChange={changeFormType} name="toggler">
+					<ToggleKnapp value="standard" checked={!formSimple}>
+						Standard
+					</ToggleKnapp>
 					<ToggleKnapp value="forenklet" checked={formSimple}>
 						Forenklet
-					</ToggleKnapp>
-					<ToggleKnapp value="detaljert" checked={!formSimple}>
-						Detaljert
 					</ToggleKnapp>
 				</ToggleGruppe>
 			</div>

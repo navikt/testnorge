@@ -13,12 +13,15 @@ import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
@@ -100,8 +103,55 @@ public class IdentService {
 
     public Page<Testident> getBestillingerFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
-        return identRepository
+        var identerMedBestilling = identRepository
                 .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
+        var identerUtenBestilling =
+                identRepository.getTestidentByTestgruppeIdOrderByIdentAsc(gruppeId, PageRequest.of(pageNo, pageSize));
+
+        if (identerUtenBestilling.getTotalElements() == 0) {
+            return identerMedBestilling;
+
+        } else if (identerMedBestilling.getTotalElements() == 0) {
+            return identerUtenBestilling;
+
+        } else if (identerMedBestilling.getContent().size() == pageSize) {
+            return new PageImpl<>(identerMedBestilling.getContent(), PageRequest.of(pageNo, pageSize),
+                    identerMedBestilling.getTotalElements() + identerUtenBestilling.getTotalElements());
+
+        } else if (!identerMedBestilling.getContent().isEmpty()) {
+            var identerUtenBestilling2 =
+                    identRepository.getTestidentByTestgruppeIdOrderByIdentAsc(gruppeId, PageRequest.of(0, pageSize - identerMedBestilling.getContent().size()));
+
+            return new PageImpl<>(Stream.of(identerMedBestilling.getContent(), identerUtenBestilling2.getContent())
+                    .flatMap(Collection::stream).toList(), PageRequest.of(pageNo, pageSize),
+                    identerMedBestilling.getTotalElements() + identerUtenBestilling.getTotalElements());
+
+        } else if (identerMedBestilling.getTotalElements() % pageSize == 0) {
+
+            var identerUtenBestilling2 =
+                    identRepository.getTestidentByTestgruppeIdOrderByIdentAsc(gruppeId,
+                            PageRequest.of(pageNo - identerMedBestilling.getTotalPages(), pageSize));
+
+            return new PageImpl<>(identerUtenBestilling2.getContent(), PageRequest.of(pageNo, pageSize),
+                    identerMedBestilling.getTotalElements() + identerUtenBestilling.getTotalElements());
+        } else {
+
+            var identerUtenBestilling2 =
+                    identRepository.getTestidentByTestgruppeIdOrderByIdentAsc(gruppeId,
+                            PageRequest.of(pageNo - identerMedBestilling.getTotalPages(), pageSize));
+
+            var identerUtenBestilling3 =
+                    identRepository.getTestidentByTestgruppeIdOrderByIdentAsc(gruppeId,
+                            PageRequest.of(pageNo - identerMedBestilling.getTotalPages() + 1, pageSize));
+
+            return new PageImpl<>(Stream.of(identerUtenBestilling2.getContent()
+                                    .subList(pageSize - (int) identerMedBestilling.getTotalElements() % pageSize, pageSize),
+                            identerUtenBestilling3.getContent()
+                                    .subList(0, Math.min(identerUtenBestilling3.getContent().size(),
+                                            pageSize - (int) identerMedBestilling.getTotalElements() % pageSize)))
+                    .flatMap(Collection::stream).toList(), PageRequest.of(pageNo, pageSize),
+                    identerMedBestilling.getTotalElements() + identerUtenBestilling.getTotalElements());
+        }
     }
 
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
