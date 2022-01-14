@@ -48,6 +48,10 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/importFraTps`
 	}
 
+	static gruppeBestillingImportFraPdl(gruppeId) {
+		return `${groupBase}/${gruppeId}/bestilling/importfrapdl`
+	}
+
 	static laasGruppe(gruppeId) {
 		return `${groupBase}/${gruppeId}/laas`
 	}
