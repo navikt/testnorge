@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.Tags;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,11 +23,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -86,7 +83,7 @@ public class Testgruppe {
     private String laastBeskrivelse;
 
     @Column(name = "TAGS")
-    private String tags;
+    private Set<String> tags;
 
     public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
@@ -102,13 +99,11 @@ public class Testgruppe {
         return favorisertAv;
     }
 
-    public Set<Tags> getTags() {
+    public Set<String> getTags() {
         if (isNull(tags)) {
-            return new HashSet<>();
+            tags = new HashSet<>();
         }
-        return tags.contains(",")
-                ? Arrays.stream(tags.split(",")).map(Tags::valueOf).collect(Collectors.toSet())
-                : Set.of(Tags.valueOf(tags));
+        return tags;
     }
 
     @Override

@@ -1,6 +1,7 @@
 const uri = `/dolly-backend/api/v1`
 
 const groupBase = `${uri}/gruppe`
+const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
@@ -50,6 +51,14 @@ export default class DollyEndpoints {
 
 	static laasGruppe(gruppeId) {
 		return `${groupBase}/${gruppeId}/laas`
+	}
+
+	static sendTags(gruppeId) {
+		return `${tagsBase}/gruppe/${gruppeId}`
+	}
+
+	static getTags() {
+		return `${tagsBase}`
 	}
 
 	static gruppeBestillingStatus(gruppeId) {

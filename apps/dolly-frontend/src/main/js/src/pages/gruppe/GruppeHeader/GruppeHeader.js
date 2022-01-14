@@ -12,6 +12,7 @@ import Formatters from '~/utils/DataFormatter'
 import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/GjenopprettGruppeConnector'
 
 import './GruppeHeader.less'
+import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 
 export default function GruppeHeader({
 	gruppe,
@@ -19,6 +20,8 @@ export default function GruppeHeader({
 	isDeletingGruppe,
 	deleteGruppe,
 	laasGruppe,
+	sendTags,
+	isSendingTags,
 	isLockingGruppe,
 	bestillingStatuser,
 }) {
@@ -89,6 +92,7 @@ export default function GruppeHeader({
 						</SlettButton>
 					)}
 					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
+					<TagsButton loading={isSendingTags} action={sendTags} gruppeId={gruppe.id} />
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>

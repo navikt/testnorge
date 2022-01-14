@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public enum Tags {
-
-    TEST("Testing");
+    SALESFORCE("Salesforce");
 
     private String beskrivelse;
 
