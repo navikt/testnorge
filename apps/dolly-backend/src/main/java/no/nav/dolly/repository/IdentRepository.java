@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface IdentRepository extends PagingAndSortingRepository<Testident, String> {
+public interface IdentRepository extends PagingAndSortingRepository<Testident, Long> {
 
     Optional<Testident> findByIdent(String ident);
 
@@ -41,26 +41,32 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, S
     List<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe);
 
     @Query("select ti from Testident ti " +
-            "join BestillingProgress bp on bp.ident = ti.ident " +
+            "where ti.testgruppe.id = :gruppeId " +
+            "and exists " +
+            "(select bp from BestillingProgress bp " +
+            "where bp.ident = ti.ident " +
             "and ti.testgruppe.id = :gruppeId " +
-            "and bp.id = (select max(bps.id) from BestillingProgress bps where bps.ident = ti.ident) " +
-            "order by bp.id desc, bp.bestilling.id desc")
+            "and bp.id = (select max(bps.id) from BestillingProgress bps where bps.ident = ti.ident)) " +
+            "or not exists " +
+            "(select bp from BestillingProgress bp where bp.ident = ti.ident) " +
+            "order by ti.id desc")
     Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
-    @Query("select ti from Testident ti " +
-            "where ti.testgruppe.id = :gruppeId " +
-            "and not exists " +
-            "(select bp from BestillingProgress bp where bp.ident = ti.ident) " +
-            "order by ti.ident asc")
-    Page<Testident> getTestidentByTestgruppeIdOrderByIdentAsc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
-
-    @Query(value = "select idx-1 from ( " +
-            "         select ti.*, count(*) over (order by bp.id desc, bp.bestilling_id desc ) as idx " +
-            "         from test_ident ti, bestilling_progress bp " +
-            "         where ti.ident = bp.ident " +
-            "         and ti.tilhoerer_gruppe = :gruppeId " +
-            "         and bp.id = (select max(bps.id) from bestilling_progress bps where bps.ident = ti.ident) " +
-            "     ) x where ident = :ident",
+    @Query(value = "select position-1 " +
+            "from ( " +
+            "select ti.ident, row_number() over (order by ti.id desc) as position " +
+            "from test_ident ti " +
+            "where ti.tilhoerer_gruppe = :gruppeId " +
+            "and exists " +
+            "(select bp " +
+            "from bestilling_progress bp " +
+            "where bp.ident = ti.ident " +
+            "and ti.tilhoerer_gruppe = :gruppeId " +
+            "and bp.id = (select max(bps.id) from bestilling_progress bps where bps.ident = ti.ident)) " +
+            "or not exists " +
+            "(select bp from bestilling_progress bp where bp.ident = ti.ident) " +
+            ") result " +
+            "where ident = :ident",
             nativeQuery = true)
     Optional<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
 
