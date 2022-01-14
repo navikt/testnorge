@@ -124,7 +124,7 @@ export default ({ items, pageing, numberOfItems, onChange, importerPersoner }: P
 					disabled={!personerValgt}
 					title={!personerValgt ? 'Velg personer' : null}
 				>
-					Importer person(er) til gruppe
+					Importer
 				</NavButton>
 			</div>
 		</SearchView>
