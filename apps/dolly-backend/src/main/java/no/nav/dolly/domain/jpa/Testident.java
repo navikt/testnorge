@@ -6,25 +6,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
 @Getter
@@ -33,21 +27,11 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "TEST_IDENT")
-public class Testident implements Serializable {
+public class Testident {
 
     public enum Master {PDL, PDLF, TPSF}
 
     @Id
-    @GeneratedValue(generator = "gruppeIdGenerator")
-    @GenericGenerator(name = "gruppeIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "TEST_IDENT_SEQ"),
-            @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "1")
-    })
-    @Column(name = "ID")
-    private Long id;
-
-    @Column (name = "IDENT")
     private String ident;
 
     @Column (name = "IBRUK")
