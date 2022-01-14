@@ -113,11 +113,13 @@ public class DollyPersonCache {
         if (!manglendeIdenter.isEmpty()) {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
-            } else {
+            } else if (dollyPerson.isPdlMaster()) {
                 PdlPersonBolk pdlPersonBolk = objectMapper.readValue(
                         pdlPersonConsumer.getPdlPersoner(manglendeIdenter).toString(),
                         PdlPersonBolk.class);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
+            } else if (dollyPerson.isPdlfMaster()) {
+
             }
         }
 

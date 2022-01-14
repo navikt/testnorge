@@ -97,4 +97,8 @@ public class DollyPerson {
     public boolean isPdlMaster() {
         return getMaster() == Testident.Master.PDL;
     }
+
+    public boolean isPdlfMaster() {
+        return getMaster() == Testident.Master.PDLF;
+    }
 }
