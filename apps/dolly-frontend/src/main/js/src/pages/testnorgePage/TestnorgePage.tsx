@@ -4,7 +4,6 @@ import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
 import SearchOptions from './search/SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
-import SearchView from '~/pages/testnorgePage/search/SearchView'
 import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 
@@ -71,7 +70,7 @@ export default () => {
 								pageSize={pageSize}
 								page={page}
 								numberOfItems={numberOfItems}
-								onChange={(page: number) => search(page, values)}
+								onChange={(pageNumber: number) => search(pageNumber, values)}
 							/>
 						}
 						onSubmit={handleSubmit}
