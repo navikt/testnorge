@@ -17,6 +17,7 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 
 export const Steg1Person = ({ stateModifier }: any) => {
 	const opts = useContext(BestillingsveilederContext)
+	const importTestnorge = opts.is.importTestnorge
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
@@ -40,11 +41,11 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!opts.is.importTestnorge && <PersoninformasjonPanel stateModifier={stateModifier} />}
-			{!opts.is.importTestnorge && <AdressePanel stateModifier={stateModifier} />}
-			{!opts.is.importTestnorge && <FamilierelasjonPanel stateModifier={stateModifier} />}
-			<ArbeidInntektPanel stateModifier={stateModifier} startOpen={opts.is.importTestnorge} />
-			{!opts.is.importTestnorge && <ArenaPanel stateModifier={stateModifier} />}
+			{!importTestnorge && <PersoninformasjonPanel stateModifier={stateModifier} />}
+			{!importTestnorge && <AdressePanel stateModifier={stateModifier} />}
+			{!importTestnorge && <FamilierelasjonPanel stateModifier={stateModifier} />}
+			<ArbeidInntektPanel stateModifier={stateModifier} startOpen={importTestnorge} />
+			{!importTestnorge && <ArenaPanel stateModifier={stateModifier} />}
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
 			<IdentifikasjonPanel stateModifier={stateModifier} />
