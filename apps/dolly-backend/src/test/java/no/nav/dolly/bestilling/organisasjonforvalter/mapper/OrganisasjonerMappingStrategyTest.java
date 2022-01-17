@@ -61,6 +61,21 @@ class OrganisasjonerMappingStrategyTest {
                 .build();
     }
 
+    private SyntetiskOrganisasjon prepUtenlandskRsOrganisasjonBestilling() {
+
+        return SyntetiskOrganisasjon.builder()
+                .enhetstype("Enhet")
+                .formaal("Testing")
+                .epost("Test@nav.no")
+                .forretningsadresse(SyntetiskOrganisasjon.Adresse.builder()
+                        .adresselinjer(Collections.singletonList("Gate 1"))
+                        .landkode("MP")
+                        .postnr("1234")
+                        .poststed("sted")
+                        .build())
+                .build();
+    }
+
     @Test
     void should_return_nonnull_element_after_mapping() {
 
@@ -79,6 +94,21 @@ class OrganisasjonerMappingStrategyTest {
         assertThat(result.getEnhetstype()).isEqualTo(syntetiskOrganisasjon.getEnhetstype());
         assertThat(result.getEpost()).isEqualTo(syntetiskOrganisasjon.getEpost());
         assertThat(result.getFormaal()).isEqualTo(syntetiskOrganisasjon.getFormaal());
+    }
+
+    @Test
+    void should_return_utenlandsk_org_same_values_after_mapping() {
+
+        SyntetiskOrganisasjon syntetiskOrganisasjon = prepUtenlandskRsOrganisasjonBestilling();
+
+        BestillingRequest.SyntetiskOrganisasjon result = mapperFacade.map(syntetiskOrganisasjon, BestillingRequest.SyntetiskOrganisasjon.class);
+
+        assertThat(result.getEnhetstype()).isEqualTo(syntetiskOrganisasjon.getEnhetstype());
+        assertThat(result.getEpost()).isEqualTo(syntetiskOrganisasjon.getEpost());
+        assertThat(result.getFormaal()).isEqualTo(syntetiskOrganisasjon.getFormaal());
+        assertThat(result.getAdresser().get(0).getLandkode()).isEqualTo(syntetiskOrganisasjon.getForretningsadresse().getLandkode());
+        assertThat(result.getAdresser().get(0).getPostnr()).isEqualTo(syntetiskOrganisasjon.getForretningsadresse().getPostnr());
+        assertThat(result.getAdresser().get(0).getPoststed()).isEqualTo(syntetiskOrganisasjon.getForretningsadresse().getPoststed());
     }
 
     @Test

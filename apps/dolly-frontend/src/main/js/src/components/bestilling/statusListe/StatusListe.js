@@ -34,6 +34,10 @@ export default function StatusListe(props) {
 		)
 	}
 
+	if (sessionStorage.getItem('organisasjon_bestilling')) {
+		nyeBestillinger.push(JSON.parse(sessionStorage.getItem('organisasjon_bestilling')))
+	}
+
 	return nyeBestillinger.map((bestilling) => {
 		return (
 			<div className="bestilling-status" key={bestilling.id}>

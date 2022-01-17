@@ -37,12 +37,12 @@ spec:
   liveness:
     path: /internal/isAlive
     initialDelay: 20
-    periodSeconds: 2
+    periodSeconds: 20
     failureThreshold: 900
   readiness:
     path: /internal/isReady
     initialDelay: 20
-    periodSeconds: 2
+    periodSeconds: 20
     failureThreshold: 900
   prometheus:
     enabled: true

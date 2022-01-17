@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -39,8 +38,6 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.info("Bestilling fra Dolly: {}", Json.pretty(bestilling));
-
             if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSpraakkodeRequest(
