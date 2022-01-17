@@ -23,7 +23,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -95,13 +94,13 @@ public class SkjermingsRegisterClient implements ClientRegister {
             skjerminger = Stream.of(List.of(prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil)),
                             dollyPerson.getPartnere().stream()
                                     .map(partner -> prepRequest(dollyPerson.getPerson(partner), null, skjermetFra, skjermetTil))
-                                    .collect(Collectors.toList()),
+                                    .toList(),
                             dollyPerson.getBarn().stream()
                                     .map(barn -> prepRequest(dollyPerson.getPerson(barn), null, skjermetFra, skjermetTil))
-                                    .collect(Collectors.toList()),
+                                    .toList(),
                             dollyPerson.getForeldre().stream()
                                     .map(foreldre -> prepRequest(dollyPerson.getPerson(foreldre), null, skjermetFra, skjermetTil))
-                                    .collect(Collectors.toList()))
+                                    .toList())
                     .flatMap(Collection::stream)
                     .toList();
         }
