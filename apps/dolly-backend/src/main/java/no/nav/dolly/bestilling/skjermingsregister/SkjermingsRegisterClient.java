@@ -13,16 +13,23 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,10 +45,11 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        dollyPersonCache.fetchIfEmpty(dollyPerson);
 
         if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
                 ((nonNull(bestilling.getSkjerming())) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom()))) {
+
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
 
             var skjermetFra = nonNull(bestilling.getSkjerming())
                     ? bestilling.getSkjerming().getEgenAnsattDatoFom()
@@ -68,31 +76,53 @@ public class SkjermingsRegisterClient implements ClientRegister {
     }
 
     private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime skjermetTil, StringBuilder status) {
-        for (Person person : dollyPerson.getPersondetaljer()) {
-            try {
-                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                                .skjermetFra(skjermetFra)
-                                .skjermetTil(skjermetTil)
-                                .person(person)
-                                .build(),
-                        SkjermingsDataRequest.class);
-                if (isAlleredeSkjermet(person) && nonNull(skjermetTil)) {
-                    skjermingsRegisterConsumer.putSkjerming(person.getIdent());
-                } else if (!isAlleredeSkjermet(person) && isNull(skjermetTil)) {
-                    skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
+
+        List<SkjermingsDataRequest> skjerminger;
+
+        if (dollyPerson.isPdlfMaster()) {
+
+            skjerminger = Stream.of(List.of(prepRequest(null, dollyPerson.getPdlfPerson().getPerson(), skjermetFra, skjermetTil)),
+                            dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                    .filter(relasjon -> Stream.of(EKTEFELLE_PARTNER, FAMILIERELASJON_BARN, FAMILIERELASJON_FORELDER)
+                                            .anyMatch(relasjon2 -> relasjon2 == relasjon.getRelasjonType()))
+                                    .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                    .map(person -> prepRequest(null, person, skjermetFra, skjermetTil))
+                                    .toList())
+                    .flatMap(Collection::stream)
+                    .toList();
+        } else {
+            skjerminger = Stream.of(List.of(prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil)),
+                            dollyPerson.getPartnere().stream()
+                                    .map(partner -> prepRequest(dollyPerson.getPerson(partner), null, skjermetFra, skjermetTil))
+                                    .toList(),
+                            dollyPerson.getBarn().stream()
+                                    .map(barn -> prepRequest(dollyPerson.getPerson(barn), null, skjermetFra, skjermetTil))
+                                    .toList(),
+                            dollyPerson.getForeldre().stream()
+                                    .map(foreldre -> prepRequest(dollyPerson.getPerson(foreldre), null, skjermetFra, skjermetTil))
+                                    .toList())
+                    .flatMap(Collection::stream)
+                    .toList();
+        }
+
+        try {
+            skjerminger.forEach(skjerming -> {
+                if (isAlleredeSkjermet(skjerming.getPersonident()) && nonNull(skjermetTil)) {
+                    skjermingsRegisterConsumer.putSkjerming(skjerming.getPersonident());
+                } else if (!isAlleredeSkjermet(skjerming.getPersonident()) && isNull(skjermetTil)) {
+                    skjermingsRegisterConsumer.postSkjerming(List.of(skjerming));
                 }
-            } catch (RuntimeException e) {
-                status.append(errorStatusDecoder.decodeRuntimeException(e));
-                log.error("Feilet å skjerme person: {}", person.getIdent(), e);
-                break;
-            }
+            });
+        } catch (RuntimeException e) {
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            log.error("Feilet å skjerme person: {}", dollyPerson.getHovedperson(), e);
         }
     }
 
-    private boolean isAlleredeSkjermet(Person person) {
+    private boolean isAlleredeSkjermet(String ident) {
 
         try {
-            ResponseEntity<SkjermingsDataResponse> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(person.getIdent());
+            ResponseEntity<SkjermingsDataResponse> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(ident);
             log.info("Respons fra skjermingsregister: {}", skjermingResponseEntity.getBody());
             if (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
                 return true;
@@ -104,5 +134,17 @@ public class SkjermingsRegisterClient implements ClientRegister {
             throw e;
         }
         return false;
+    }
+
+    private SkjermingsDataRequest prepRequest(Person person, PersonDTO pdlfPerson,
+                                              LocalDateTime skjermingFra, LocalDateTime skjermingTil) {
+
+        return mapperFacade.map(BestillingPersonWrapper.builder()
+                        .skjermetFra(skjermingFra)
+                        .skjermetTil(skjermingTil)
+                        .person(person)
+                        .pdlfPerson(pdlfPerson)
+                        .build(),
+                SkjermingsDataRequest.class);
     }
 }
