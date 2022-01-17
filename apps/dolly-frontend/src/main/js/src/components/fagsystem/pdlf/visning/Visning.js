@@ -31,6 +31,7 @@ export const PdlfVisning = ({ data, loading }) => {
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
 	} = data.person
+	console.log('data', data)
 
 	// TODO må tilpasse til ny datastruktur? Sjekk alle attributter
 	return (
