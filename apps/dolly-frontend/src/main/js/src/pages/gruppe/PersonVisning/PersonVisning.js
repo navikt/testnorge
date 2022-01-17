@@ -99,7 +99,7 @@ export const PersonVisning = ({
 			{data.tpsf && <PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />}
 			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
-			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
+			<BeskrivelseConnector ident={ident} />
 		</div>
 	)
 }
