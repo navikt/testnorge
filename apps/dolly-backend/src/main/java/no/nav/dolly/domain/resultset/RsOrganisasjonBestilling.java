@@ -79,6 +79,7 @@ public class RsOrganisasjonBestilling {
 
             private List<String> adresselinjer;
             private String postnr;
+            private String poststed;
             private String kommunenr;
             private String landkode;
         }

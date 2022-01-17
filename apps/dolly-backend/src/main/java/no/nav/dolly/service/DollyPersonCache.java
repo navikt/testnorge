@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -36,6 +37,7 @@ public class DollyPersonCache {
 
     private final TpsfService tpsfService;
     private final PdlPersonConsumer pdlPersonConsumer;
+    private final PdlDataConsumer pdlDataConsumer;
     private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
 
@@ -113,11 +115,14 @@ public class DollyPersonCache {
         if (!manglendeIdenter.isEmpty()) {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
-            } else {
+            } else if (dollyPerson.isPdlMaster()) {
                 PdlPersonBolk pdlPersonBolk = objectMapper.readValue(
                         pdlPersonConsumer.getPdlPersoner(manglendeIdenter).toString(),
                         PdlPersonBolk.class);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
+            } else if (dollyPerson.isPdlfMaster() && isNull(dollyPerson.getPdlfPerson())) {
+                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                        .stream().findFirst().orElse(new FullPersonDTO()));
             }
         }
 
