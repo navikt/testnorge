@@ -7,6 +7,8 @@ import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
+import { ifPresent } from '~/utils/YupValidations'
+import * as Yup from 'yup'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -109,4 +111,11 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 			<ErrorMessage name="environments" className="error-message" component="div" />
 		</div>
 	)
+}
+
+MiljoVelger.validation = {
+	environments: ifPresent(
+		'$environments',
+		Yup.array().of(Yup.string().required('Velg et miljø')).min(1, 'Må minst velge et miljø')
+	),
 }

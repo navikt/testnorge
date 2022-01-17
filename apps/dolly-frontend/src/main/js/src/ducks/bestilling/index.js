@@ -64,7 +64,10 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (opts.is.importTestnorge) {
 		values = _set('identer', opts.importPersoner, values)
-		bestillingAction = actions.postTestnorgeBestilling(gruppeId, values)
+		if (!values.environments) {
+			values = _set('environments', [], values)
+		}
+		bestillingAction = actions.postTestnorgeBestilling(values.gruppeId, values)
 	} else if (values.organisasjon) {
 		trackBestilling(values)
 		bestillingAction = actions.postOrganisasjonBestilling(values)
