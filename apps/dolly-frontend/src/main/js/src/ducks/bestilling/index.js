@@ -89,6 +89,8 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	} else if (type.includes('OrganisasjonBestilling')) {
 		sessionStorage.setItem('organisasjon_bestilling', JSON.stringify({ bestilling: {}, ...res }))
 		dispatch(push(`/organisasjoner`))
+	} else if (opts.is.importTestnorge) {
+		dispatch(push(`/gruppe/${values.gruppeId}`))
 	} else {
 		dispatch(push(`/gruppe/${gruppeId}`))
 	}
