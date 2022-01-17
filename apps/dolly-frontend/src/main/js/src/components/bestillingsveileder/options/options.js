@@ -22,20 +22,17 @@ export const BVOptions = ({
 } = {}) => {
 	let initialValues = {
 		antall,
-		environments: [],
 		navSyntetiskIdent: false,
 		beskrivelse: null,
 	}
 
 	let initialValuesOrganisasjon = {
-		environments: [],
 		organisasjon: {
 			enhetstype: '',
 		},
 	}
 
 	let initialValuesStandardOrganisasjon = {
-		environments: [],
 		organisasjon: {
 			enhetstype: 'AS',
 			naeringskode: '01.451',

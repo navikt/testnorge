@@ -18,7 +18,6 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
-
 	const { personFoerLeggTil, tidligereBestillinger } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
@@ -69,11 +68,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 						<BestillingsveilederHeader />
 
-						<CurrentStepComponent
-							formikBag={formikBag}
-							stateModifier={stateModifier}
-							erNyIdent={!personFoerLeggTil}
-						/>
+						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
 						{devEnabled && <DisplayFormikState {...formikBag} />}
 
