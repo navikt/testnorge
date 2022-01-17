@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '~/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { FormikProps } from 'formik'
@@ -8,23 +8,18 @@ type VelgGruppeProps = {
 }
 
 export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
-	const getInitialValue = () => {
-		formikBag.setFieldValue('gruppeId', undefined)
-		return undefined
-	}
-	const [valgtGruppe, setValgtGruppe] = useState(getInitialValue)
+	const [valgtGruppe, setValgtGruppe] = useState(undefined)
 
-	const setGruppe = (gruppe: string) => {
-		setValgtGruppe(gruppe)
-		formikBag.setFieldValue('gruppeId', gruppe)
-	}
+	useEffect(() => {
+		formikBag.setFieldValue('gruppeId', valgtGruppe)
+	}, [valgtGruppe])
 
 	return (
 		<div className="input-oppsummering">
 			<div className="flexbox--align-center">
 				<div>
 					<h2>Hvilken gruppe vil du importere til?</h2>
-					<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setGruppe} />
+					<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setValgtGruppe} />
 				</div>
 			</div>
 		</div>
