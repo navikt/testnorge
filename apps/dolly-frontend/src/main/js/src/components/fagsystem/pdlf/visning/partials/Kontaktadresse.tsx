@@ -10,6 +10,7 @@ import {
 	Kodeverk,
 	KodeverkValues,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { AdresseKodeverk } from '~/config/kodeverk'
 
 type Data = {
 	data: Array<any>
@@ -52,6 +53,73 @@ export const Kontaktadresse = ({ data }: Data) => {
 														</KodeverkConnector>
 													)}
 												</TitleValue>
+											</div>
+										</>
+									)}
+									{adresse.postadresseIFrittFormat && (
+										<>
+											<h4 style={{ marginTop: '0px' }}>Postadresse i fritt format</h4>
+											<div className="person-visning_content" key={idx}>
+												{adresse.postadresseIFrittFormat.adresselinjer ? (
+													<TitleValue title="Adresselinjer">
+														<div>{adresse.postadresseIFrittFormat.adresselinjer[0]}</div>
+														<div>{adresse.postadresseIFrittFormat.adresselinjer[1]}</div>
+														<div>{adresse.postadresseIFrittFormat.adresselinjer[2]}</div>
+													</TitleValue>
+												) : (
+													<TitleValue title="Adresselinjer">
+														<div>{adresse.postadresseIFrittFormat.adresselinje1}</div>
+														<div>{adresse.postadresseIFrittFormat.adresselinje2}</div>
+														<div>{adresse.postadresseIFrittFormat.adresselinje3}</div>
+													</TitleValue>
+												)}
+												<TitleValue title="Postnummer">
+													{adresse.postadresseIFrittFormat.postnummer && (
+														<KodeverkConnector
+															navn="Postnummer"
+															value={adresse.postadresseIFrittFormat.postnummer}
+														>
+															{(v: Kodeverk, verdi: KodeverkValues) => (
+																<span>
+																	{verdi ? verdi.label : adresse.postadresseIFrittFormat.postnummer}
+																</span>
+															)}
+														</KodeverkConnector>
+													)}
+												</TitleValue>
+											</div>
+										</>
+									)}
+									{adresse.utenlandskAdresseIFrittFormat && (
+										<>
+											<h4 style={{ marginTop: '0px' }}>Utenlandsk adresse i fritt format</h4>
+											<div className="person-visning_content" key={idx}>
+												{adresse.utenlandskAdresseIFrittFormat.adresselinjer ? (
+													<TitleValue title="Adresselinjer">
+														<div>{adresse.utenlandskAdresseIFrittFormat.adresselinjer[0]}</div>
+														<div>{adresse.utenlandskAdresseIFrittFormat.adresselinjer[1]}</div>
+														<div>{adresse.utenlandskAdresseIFrittFormat.adresselinjer[2]}</div>
+													</TitleValue>
+												) : (
+													<TitleValue title="Adresselinjer">
+														<div>{adresse.utenlandskAdresseIFrittFormat.adresselinje1}</div>
+														<div>{adresse.utenlandskAdresseIFrittFormat.adresselinje2}</div>
+														<div>{adresse.utenlandskAdresseIFrittFormat.adresselinje3}</div>
+													</TitleValue>
+												)}
+												<TitleValue
+													title="Postkode"
+													value={adresse.utenlandskAdresseIFrittFormat.postkode}
+												/>
+												<TitleValue
+													title="By eller sted"
+													value={adresse.utenlandskAdresseIFrittFormat.byEllerStedsnavn}
+												/>
+												<TitleValue
+													title="Land"
+													value={adresse.utenlandskAdresseIFrittFormat.landkode}
+													kodeverk={AdresseKodeverk.StatsborgerskapLand}
+												/>
 											</div>
 										</>
 									)}
