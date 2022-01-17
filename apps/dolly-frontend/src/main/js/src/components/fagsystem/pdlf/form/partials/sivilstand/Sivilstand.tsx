@@ -8,6 +8,7 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import _get from 'lodash/get'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
@@ -30,8 +31,18 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							options={Options('sivilstandType')}
 							isClearable={false}
 						/>
-						<FormikDatepicker name={`${path}.sivilstandsdato`} label="Gyldig fra og med" />
-						<FormikDatepicker name={`${path}.bekreftelsesdato`} label="Bekreftelsesdato" />
+						<FormikDatepicker
+							name={`${path}.sivilstandsdato`}
+							label="Gyldig fra og med"
+							disabled={_get(formikBag.values, `${path}.bekreftelsesdato`) != null}
+							fastfield={false}
+						/>
+						<FormikDatepicker
+							name={`${path}.bekreftelsesdato`}
+							label="Bekreftelsesdato"
+							disabled={_get(formikBag.values, `${path}.sivilstandsdato`) != null}
+							fastfield={false}
+						/>
 						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
 						<FormikSelect
 							name={`${path}.relatertVedSivilstand`}

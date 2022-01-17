@@ -311,6 +311,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						...personRelatertTil(item),
 					]
 				}),
 			}
@@ -362,6 +363,37 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Flyttedato', Formatters.formatDate(datoData.angittFlyttedato)),
 				obj('Gyldig f.o.m.', Formatters.formatDate(datoData.gyldigFraOgMed)),
 				obj('Gyldig t.o.m.', Formatters.formatDate(datoData.gyldigTilOgMed)),
+			]
+		}
+
+		const personRelatertTil = (personData) => {
+			console.log('persondata', personData)
+			if (!personData) return null
+			const {
+				identtype,
+				kjoenn,
+				foedtEtter,
+				foedtFoer,
+				alder,
+				statsborgerskapLandkode,
+				gradering,
+				syntetisk,
+				nyttNavn,
+			} = personData.nyRelatertPerson
+			//TODO: Må bruke riktig path - er forskjellig på ulike attributter
+
+			return [
+				expandable('PERSON RELATERT TIL', !personData.relatertVedSivilstand, [
+					obj('Identtype', identtype),
+					obj('Kjønn', kjoenn),
+					obj('Født etter', Formatters.formatDate(foedtEtter)),
+					obj('Født før', Formatters.formatDate(foedtFoer)),
+					obj('Alder', alder),
+					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
+					obj('Gradering', Formatters.showLabel(gradering)),
+					obj('Syntetisk', syntetisk && 'JA'),
+					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
+				]),
 			]
 		}
 
@@ -597,22 +629,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Person relatert til', item.relatertVedSivilstand),
-						//TODO lag gjenbrukbar komponent
-						expandable('PERSON RELATERT TIL', !item.relatertVedSivilstand, [
-							obj('Identtype', item.nyRelatertPerson?.identtype),
-							obj('Kjønn', item.nyRelatertPerson?.kjoenn),
-							obj('Født etter', Formatters.formatDate(item.nyRelatertPerson?.foedtEtter)),
-							obj('Født før', Formatters.formatDate(item.nyRelatertPerson?.foedtFoer)),
-							obj('Alder', item.nyRelatertPerson?.alder),
-							obj(
-								'Statsborgerskap',
-								item.nyRelatertPerson?.statsborgerskapLandkode,
-								AdresseKodeverk.StatsborgerskapLand
-							),
-							obj('Gradering', Formatters.showLabel(item.nyRelatertPerson?.gradering)),
-							obj('Syntetisk', item.nyRelatertPerson?.syntetisk && 'JA'),
-							obj('Har mellomnavn', item.nyRelatertPerson?.nyttNavn?.hasMellomnavn && 'JA'),
-						]),
+						...personRelatertTil(item),
 					]
 				}),
 			}
@@ -738,6 +755,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							(adresse?.postnummer || adresse?.poststedsnavn) &&
 								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 						),
+						...personRelatertTil(item),
 					]
 				}),
 			}

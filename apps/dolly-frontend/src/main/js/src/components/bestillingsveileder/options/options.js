@@ -18,11 +18,27 @@ export const BVOptions = ({
 	tidligereBestillinger,
 	opprettOrganisasjon = null,
 } = {}) => {
+	// let initialValues = {
+	// 	antall,
+	// 	environments: [],
+	// 	navSyntetiskIdent: false,
+	// 	beskrivelse: null,
+	// }
+
 	let initialValues = {
 		antall,
 		environments: [],
 		navSyntetiskIdent: false,
 		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: {
+				identtype,
+				foedtEtter: null,
+				foedtFoer: null,
+				alder: null,
+				syntetisk: false,
+			},
+		},
 	}
 
 	let initialValuesOrganisasjon = {
