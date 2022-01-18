@@ -400,7 +400,6 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 
 export const selectPersonListe = (state) => {
 	const { gruppe, fagsystem } = state
-	console.log(state)
 
 	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter)) return null
 
