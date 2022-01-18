@@ -196,7 +196,7 @@ public class DollyBestillingService {
 
                 dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPSF: " + testident.getIdent())));
+                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())));
 
                 if (!bestilling.getIdent().equals(dollyPerson.getHovedperson())) {
                     progress.setIdent(dollyPerson.getHovedperson());
