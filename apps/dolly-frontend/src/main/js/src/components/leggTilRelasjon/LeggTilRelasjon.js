@@ -23,7 +23,7 @@ export const LeggTilRelasjon = ({
 		await DollyApi.createRelasjon(hovedIdent, values)
 		getBestillinger(gruppeId)
 	}
-
+	console.log('identInfo', identInfo)
 	const initialValues = {
 		environments,
 		tpsf: {

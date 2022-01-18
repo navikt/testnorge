@@ -9,10 +9,9 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 export const Visning = ({ data, relasjoner }) => {
 	//TODO Lag relatert person som egen komponent som kan brukes av alle
 	const retatertPersonIdent = data.relatertVedSivilstand
-	const retatertPerson = relasjoner.find(
+	const retatertPerson = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === retatertPersonIdent
 	)
-	const { fornavn, mellomnavn, etternavn } = retatertPerson?.relatertPerson?.navn?.[0]
 
 	return (
 		<>
@@ -24,21 +23,29 @@ export const Visning = ({ data, relasjoner }) => {
 						value={Formatters.formatDate(data.sivilstandsdato)}
 					/>
 				</div>
-				<div className="person-visning_content">
-					{/*TODO vise label ikke value på relasjontype*/}
-					<h4 style={{ width: '100%', marginTop: '0' }}>{retatertPerson.relasjonType}</h4>
-					<TitleValue title="Ident" value={retatertPerson?.relatertPerson?.ident} />
-					<TitleValue title="Fornavn" value={fornavn} />
-					<TitleValue title="Mellomnavn" value={mellomnavn} />
-					<TitleValue title="Etternavn" value={etternavn} />
-					<TitleValue title="Kjønn" value={retatertPerson?.relatertPerson?.kjoenn?.[0].kjoenn} />
-					{/*	TODO Alder/fødselsdato*/}
-					<TitleValue
-						title="Statsborgerskap"
-						value={retatertPerson?.relatertPerson?.statsborgerskap?.[0].landkode}
-						kodeverk={AdresseKodeverk.StatsborgerskapLand}
-					/>
-				</div>
+				{retatertPerson && (
+					<div className="person-visning_content">
+						{/*TODO vise label ikke value på relasjontype*/}
+						<h4 style={{ width: '100%', marginTop: '0' }}>{retatertPerson?.relasjonType}</h4>
+						<TitleValue title="Ident" value={retatertPerson?.relatertPerson?.ident} />
+						<TitleValue title="Fornavn" value={retatertPerson?.relatertPerson?.navn?.[0].fornavn} />
+						<TitleValue
+							title="Mellomnavn"
+							value={retatertPerson?.relatertPerson?.navn?.[0].mellomnavn}
+						/>
+						<TitleValue
+							title="Etternavn"
+							value={retatertPerson?.relatertPerson?.navn?.[0].etternavn}
+						/>
+						<TitleValue title="Kjønn" value={retatertPerson?.relatertPerson?.kjoenn?.[0].kjoenn} />
+						{/*	TODO Alder/fødselsdato*/}
+						<TitleValue
+							title="Statsborgerskap"
+							value={retatertPerson?.relatertPerson?.statsborgerskap?.[0].landkode}
+							kodeverk={AdresseKodeverk.StatsborgerskapLand}
+						/>
+					</div>
+				)}
 			</ErrorBoundary>
 		</>
 	)

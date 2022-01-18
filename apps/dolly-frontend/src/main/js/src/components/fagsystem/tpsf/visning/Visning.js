@@ -40,28 +40,28 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 		<div>
 			<>
 				{hasTpsfData ? (
-					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
+					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData.person} />
 				) : (
-					<PdlPersonInfo data={pdlData} />
+					<PdlPersonInfo data={pdlData.person} />
 				)}
 				{hasTpsfData ? (
 					<Nasjonalitet data={data} tpsMessagingData={tpsMessagingData} />
 				) : (
-					<PdlNasjonalitet data={pdlData} />
+					<PdlNasjonalitet data={pdlData.person} />
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{hasTpsfData ? (
 					<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
 				) : (
-					<PdlFullmakt data={pdlData.fullmakt} />
+					<PdlFullmakt data={pdlData.person.fullmakt} />
 				)}
 				{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
 				{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
 				{!harPdlKontaktadresse && (
 					<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 				)}
-				{!hasTpsfData && <Telefonnummer data={pdlData.telefonnummer} />}
-				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData.sikkerhetstiltak} />}
+				{!hasTpsfData && <Telefonnummer data={pdlData.person.telefonnummer} />}
+				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData.person.sikkerhetstiltak} />}
 			</>
 			<UtenlandskBankkonto
 				data={
