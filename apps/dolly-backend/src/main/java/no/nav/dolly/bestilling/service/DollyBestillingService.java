@@ -26,6 +26,7 @@ import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -195,7 +196,7 @@ public class DollyBestillingService {
 
                 dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                        .findFirst().get());
+                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPSF: " + testident.getIdent())));
 
                 if (!bestilling.getIdent().equals(dollyPerson.getHovedperson())) {
                     progress.setIdent(dollyPerson.getHovedperson());
@@ -204,7 +205,7 @@ public class DollyBestillingService {
                     bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
                 }
 
-            } else if (originator.isPdlf()){
+            } else if (originator.isPdlf()) {
                 var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
                 dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
