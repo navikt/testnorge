@@ -215,7 +215,7 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
 			action.payload?.data?.forEach((ident) => {
-				state.pdlforvalter[ident.person.ident] = ident.person
+				state.pdlforvalter[ident.person.ident] = ident
 			})
 		},
 		[onSuccess(actions.getInst)](state, action) {
@@ -407,7 +407,7 @@ export const selectPersonListe = (state) => {
 
 	return identer.map((ident) => {
 		const tpsfIdent = fagsystem.tpsf[ident.ident]
-		const pdlIdent = fagsystem.pdlforvalter[ident.ident]
+		const pdlIdent = fagsystem.pdlforvalter[ident.ident]?.person
 		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
 		if (ident.master !== 'PDLF' && !tpsfIdent) return null
