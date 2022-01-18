@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Testident.Master;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 
@@ -20,7 +20,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class OriginatorCommand implements Callable<OriginatorCommand.Originator> {
 
-    private final RsDollyBestillingRequest bestillingRequest;
+    private final RsDollyUtvidetBestilling bestillingRequest;
     private final MapperFacade mapperFacade;
 
     @Override
@@ -33,7 +33,7 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
 
             return Originator.builder()
                     .pdlBestilling(mapperFacade.map(bestillingRequest.getPdldata(), BestillingRequestDTO.class, context))
-                    .master(Master.PDL)
+                    .master(Master.PDLF)
                     .build();
 
         } else if (nonNull(bestillingRequest.getTpsf())) {
@@ -74,6 +74,11 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
         @JsonIgnore
         public boolean isTpsf() {
             return getMaster() == Master.TPSF;
+        }
+
+        @JsonIgnore
+        public boolean isPdlf() {
+            return getMaster() == Master.PDLF;
         }
 
         @JsonIgnore

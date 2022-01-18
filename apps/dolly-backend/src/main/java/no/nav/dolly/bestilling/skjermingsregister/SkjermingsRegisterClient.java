@@ -90,6 +90,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                                     .toList())
                     .flatMap(Collection::stream)
                     .toList();
+
         } else {
             skjerminger = Stream.of(List.of(prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil)),
                             dollyPerson.getPartnere().stream()
