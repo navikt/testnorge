@@ -186,7 +186,7 @@ public class DollyBestillingService {
             var originator = new OriginatorCommand(request, mapperFacade).call();
 
             DollyPerson dollyPerson;
-            if (testident.isTpsf()) {
+            if (originator.isTpsf()) {
                 var oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), originator.getTpsfBestilling());
                 sendIdenterTilTPS(request.getEnvironments(),
                         oppdaterPersonResponse.getIdentTupler().stream()
@@ -204,7 +204,7 @@ public class DollyBestillingService {
                     bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
                 }
 
-            } else if (testident.isPdlf()){
+            } else if (originator.isPdlf()){
                 var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
                 dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
