@@ -48,11 +48,11 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			{!importTestnorge && <ArenaPanel stateModifier={stateModifier} />}
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
-			<IdentifikasjonPanel stateModifier={stateModifier} />
-			<KontaktDoedsboPanel stateModifier={stateModifier} />
+			{!importTestnorge && <IdentifikasjonPanel stateModifier={stateModifier} />}
+			{!importTestnorge && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
-			<UdiPanel stateModifier={stateModifier} />
+			<UdiPanel stateModifier={stateModifier} importTestnorge={importTestnorge} />
 			<DokarkivPanel stateModifier={stateModifier} />
 		</AttributtVelger>
 	)
