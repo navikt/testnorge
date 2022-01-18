@@ -131,7 +131,7 @@ public class TpsMessagingClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        throw new UnsupportedOperationException("Release ikke implementert");
+        // TpsMessaging har ikke sletting
     }
 
     private void sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
