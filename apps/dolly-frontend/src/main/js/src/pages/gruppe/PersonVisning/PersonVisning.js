@@ -40,14 +40,14 @@ export const PersonVisning = ({
 	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
-
+	console.log('data', data)
 	const personInfo = data.tpsf
 		? data.tpsf
 		: {
-				kjonn: data.pdlforvalter?.kjoenn?.[0]?.kjoenn,
-				ident: data.pdlforvalter?.ident,
-				fornavn: data.pdlforvalter?.navn?.[0]?.fornavn,
-				etternavn: data.pdlforvalter?.navn?.[0]?.etternavn,
+				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
+				ident: data.pdlforvalter?.person?.ident,
+				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
+				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
 		  }
 
 	return (
@@ -70,7 +70,7 @@ export const PersonVisning = ({
 			</div>
 			<TpsfVisning
 				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-				pdlData={data.pdlforvalter}
+				pdlData={data.pdlforvalter?.person}
 				environments={bestilling?.environments}
 			/>
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
