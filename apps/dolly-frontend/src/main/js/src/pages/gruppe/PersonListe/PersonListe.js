@@ -170,9 +170,7 @@ export default function PersonListe({
 			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => (
-				<PersonIBrukButtonConnector ident={row.ident} iLaastGruppe={iLaastGruppe} />
-			),
+			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
 			text: '',
@@ -235,11 +233,7 @@ export default function PersonListe({
 				)}
 			/>
 			{isKommentarModalOpen && selectedIdent && (
-				<KommentarModal
-					closeModal={closeKommentarModal}
-					ident={selectedIdent}
-					iLaastGruppe={iLaastGruppe}
-				/>
+				<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
 			)}
 		</ErrorBoundary>
 	)
