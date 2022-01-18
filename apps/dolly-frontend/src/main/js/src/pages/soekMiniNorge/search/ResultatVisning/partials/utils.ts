@@ -38,7 +38,7 @@ export const getNasjonalitet = (data: Innhold) => {
 	}
 }
 
-const getAlder = (datoFoedt: Date) => {
+export const getAlder = (datoFoedt: Date) => {
 	const foedselsdato = new Date(datoFoedt)
 	const diff_ms = Date.now() - foedselsdato.getTime()
 	const age_dt = new Date(diff_ms)
