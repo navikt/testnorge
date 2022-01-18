@@ -84,4 +84,9 @@ public class Testident implements Serializable {
     public boolean isPdl() {
         return getMaster() == Master.PDL;
     }
+
+    @JsonIgnore
+    public boolean isPdlf() {
+        return getMaster() == Master.PDLF;
+    }
 }
