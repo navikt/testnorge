@@ -40,7 +40,7 @@ export const PersonVisning = ({
 	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
-	console.log('data', data)
+
 	const personInfo = data.tpsf
 		? data.tpsf
 		: {
