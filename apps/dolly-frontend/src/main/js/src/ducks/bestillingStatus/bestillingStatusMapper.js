@@ -26,6 +26,7 @@ const antallIdenterOpprettetPaaBestilling = (status) => {
 	if (status.length) {
 		const tpsf = status.find((f) => f.id === 'TPSF')
 		const importFraTps = status.find((f) => f.id === 'TPSIMPORT')
+		const importFraPdl = status.find((f) => f.id === 'PDLIMPORT')
 
 		const addOpprettedeIdenter = (system) => {
 			system.statuser.forEach((stat) => {
@@ -37,6 +38,7 @@ const antallIdenterOpprettetPaaBestilling = (status) => {
 
 		if (tpsf) addOpprettedeIdenter(tpsf)
 		if (importFraTps) addOpprettedeIdenter(importFraTps)
+		if (importFraPdl) addOpprettedeIdenter(importFraPdl)
 	}
 
 	// Kun unike identer
