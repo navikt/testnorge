@@ -6,16 +6,12 @@ import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPe
 import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinfo'
 import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
 import { PdlNasjonalitet } from '~/components/fagsystem/pdl/visning/partials/PdlNasjonalitet'
-import { PdlBoadresse } from '~/components/fagsystem/pdl/visning/partials/PdlBoadresse'
 import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
-import {
-	gjeldendeAdresse,
-	PdlData,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type PdlVisningProps = {
-	pdlData: PdlData
+	pdlData: PdlDataWrapper
 	loading?: boolean
 }
 
@@ -34,7 +30,6 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<IdentInfo pdlResponse={data.hentIdenter} />
 				<GeografiskTilknytning data={data.hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={data.hentPerson} />
-				<PdlBoadresse data={gjeldendeAdresse(data.hentPerson.bostedsadresse)} />
 				<Telefonnummer data={data.hentPerson.telefonnummer} />
 				<PdlFullmakt data={data.hentPerson.fullmakt} />
 				<PdlSikkerhetstiltak data={data.hentPerson.sikkerhetstiltak} />
