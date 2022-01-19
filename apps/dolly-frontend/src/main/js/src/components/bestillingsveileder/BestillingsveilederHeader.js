@@ -10,7 +10,7 @@ const getImportFra = (opts) => {
 	if (opts.is.leggTil) {
 		const ident = getLeggTilIdent(opts.personFoerLeggTil)
 		if (erTestnorgeIdent(ident)) {
-			return 'PDL'
+			return 'Testnorge'
 		} else if (opts.personFoerLeggTil.tpsf.importFra) {
 			return opts.personFoerLeggTil.tpsf.importFra
 		}

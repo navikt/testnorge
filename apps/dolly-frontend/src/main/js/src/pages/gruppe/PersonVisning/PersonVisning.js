@@ -41,7 +41,6 @@ export const PersonVisning = ({
 	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
-	const pdlMaster = ident.master === 'PDL'
 
 	const personInfo = data.tpsf
 		? data.tpsf
@@ -60,7 +59,7 @@ export const PersonVisning = ({
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && !kildePdl &&(
+				{!iLaastGruppe && !kildePdl && (
 					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
@@ -70,14 +69,15 @@ export const PersonVisning = ({
 					</SlettButton>
 				)}
 			</div>
-			{!pdlMaster && (
+			{!kildePdl && (
 				<TpsfVisning
 					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-					pdlData={data.pdlforvalter?.person}environments={bestilling?.environments}
+					pdlData={data.pdlforvalter?.person}
+					environments={bestilling?.environments}
 				/>
 			)}
-			{!pdlMaster && <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />}
-			{pdlMaster && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
+			{!kildePdl && <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />}
+			{kildePdl && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
