@@ -24,7 +24,7 @@ public class TagsOpprettingCommand implements Callable<Mono<String>> {
 
     private final WebClient webClient;
     private final List<String> identer;
-    private final List<String> tags;
+    private final List<String> tagVerdier;
     private final String token;
 
     public Mono<String> call() {
@@ -34,7 +34,7 @@ public class TagsOpprettingCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
-                        .queryParam(TAGS, tags)
+                        .queryParam(TAGS, tagVerdier)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())

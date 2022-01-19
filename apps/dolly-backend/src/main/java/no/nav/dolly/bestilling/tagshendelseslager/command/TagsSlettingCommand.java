@@ -21,9 +21,10 @@ public class TagsSlettingCommand implements Callable<Mono<String>> {
     private static final String TAGS = "tags";
 
     private final WebClient webClient;
-    private final List<String> tags;
+    private final List<String> tagVerdier;
     private final String token;
 
+    //TODO denne trenger oppdatering når nytt endepunkt er klart
     public Mono<String> call() {
 
         return webClient
@@ -31,7 +32,7 @@ public class TagsSlettingCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
-                        .queryParam(TAGS, tags)
+                        .queryParam(TAGS, tagVerdier)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
