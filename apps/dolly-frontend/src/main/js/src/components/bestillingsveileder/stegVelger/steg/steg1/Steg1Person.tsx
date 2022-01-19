@@ -14,10 +14,17 @@ import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { erTestnorgeIdent } from '~/ducks/fagsystem'
+import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
+
+const identFraTestnorge = (opts: any) => {
+	if (opts.is.importTestnorge) return true
+	return opts.is.leggTil && erTestnorgeIdent(getLeggTilIdent(opts.personFoerLeggTil))
+}
 
 export const Steg1Person = ({ stateModifier }: any) => {
 	const opts = useContext(BestillingsveilederContext)
-	const importTestnorge = opts.is.importTestnorge
+	const testnorgeIdent = identFraTestnorge(opts)
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
@@ -41,18 +48,18 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!importTestnorge && <PersoninformasjonPanel stateModifier={stateModifier} />}
-			{!importTestnorge && <AdressePanel stateModifier={stateModifier} />}
-			{!importTestnorge && <FamilierelasjonPanel stateModifier={stateModifier} />}
-			<ArbeidInntektPanel stateModifier={stateModifier} startOpen={importTestnorge} />
-			{!importTestnorge && <ArenaPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <PersoninformasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <AdressePanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <FamilierelasjonPanel stateModifier={stateModifier} />}
+			<ArbeidInntektPanel stateModifier={stateModifier} startOpen={testnorgeIdent} />
+			{!testnorgeIdent && <ArenaPanel stateModifier={stateModifier} />}
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
-			{!importTestnorge && <IdentifikasjonPanel stateModifier={stateModifier} />}
-			{!importTestnorge && <KontaktDoedsboPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
-			<UdiPanel stateModifier={stateModifier} importTestnorge={importTestnorge} />
+			<UdiPanel stateModifier={stateModifier} importTestnorge={testnorgeIdent} />
 			<DokarkivPanel stateModifier={stateModifier} />
 		</AttributtVelger>
 	)
