@@ -54,7 +54,7 @@ export const PersonVisning = ({
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && !kildePdl && (
+				{!iLaastGruppe && ident.master !== 'PDLF' && (
 					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
 						LEGG TIL/ENDRE
 					</Button>
@@ -76,8 +76,10 @@ export const PersonVisning = ({
 					environments={bestilling?.environments}
 				/>
 			)}
-			{!kildePdl && <PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />}
-			{kildePdl && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
+			{ident.master === 'PDLF' && (
+				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			)}
+			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />

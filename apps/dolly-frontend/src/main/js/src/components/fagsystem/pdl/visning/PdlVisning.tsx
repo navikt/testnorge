@@ -9,6 +9,11 @@ import { PdlNasjonalitet } from '~/components/fagsystem/pdl/visning/partials/Pdl
 import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
+import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
+import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
+import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 
 type PdlVisningProps = {
 	pdlData: PdlDataWrapper
@@ -22,17 +27,33 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 	if (!data || !data.hentPerson) {
 		return null
 	}
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
+	const {
+		telefonnummer,
+		tilrettelagtKommunikasjon,
+		bostedsadresse,
+		oppholdsadresse,
+		kontaktadresse,
+		adressebeskyttelse,
+		fullmakt,
+		sikkerhetstiltak,
+	} = hentPerson
 
 	return (
 		<ErrorBoundary>
-			<div>
-				<PdlPersonInfo data={data.hentPerson} />
-				<IdentInfo pdlResponse={data.hentIdenter} />
-				<GeografiskTilknytning data={data.hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={data.hentPerson} />
-				<Telefonnummer data={data.hentPerson.telefonnummer} />
-				<PdlFullmakt data={data.hentPerson.fullmakt} />
-				<PdlSikkerhetstiltak data={data.hentPerson.sikkerhetstiltak} />
+			<div className="boks">
+				<PdlPersonInfo data={hentPerson} />
+				<IdentInfo pdlResponse={hentIdenter} />
+				<GeografiskTilknytning data={hentGeografiskTilknytning} />
+				<PdlNasjonalitet data={hentPerson} />
+				<Telefonnummer data={telefonnummer} />
+				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
+				<Boadresse data={bostedsadresse} />
+				<Oppholdsadresse data={oppholdsadresse} />
+				<Kontaktadresse data={kontaktadresse} />
+				<Adressebeskyttelse data={adressebeskyttelse} />
+				<PdlFullmakt data={fullmakt} />
+				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 			</div>
 		</ErrorBoundary>
 	)
