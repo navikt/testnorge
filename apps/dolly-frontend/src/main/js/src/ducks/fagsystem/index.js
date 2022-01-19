@@ -478,7 +478,7 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 		ident,
 		identNr: pdlData.hentIdenter.identer[0].ident,
 		bestillingId: ident.bestillingId,
-		kilde: 'PDL',
+		kilde: 'TESTNORGE',
 		importFra: 'Testnorge',
 		identtype: person.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
