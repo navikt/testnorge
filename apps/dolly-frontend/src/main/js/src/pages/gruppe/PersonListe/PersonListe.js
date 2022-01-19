@@ -222,7 +222,7 @@ export default function PersonListe({
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
-						kildePdl={bruker?.kilde === 'PDL'}
+						kildePdl={bruker?.kilde === 'PDL' || bruker?.kilde === 'TESTNORGE'}
 					/>
 				)}
 			/>
