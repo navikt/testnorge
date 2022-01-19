@@ -9,12 +9,35 @@ import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValue
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
+import { DollyApi, PdlforvalterApi } from '~/service/Api'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
 }
 
 export const Sivilstand = ({ formikBag }: SivilstandForm) => {
+	const getOptions = async () => {
+		const gruppe = await DollyApi.getGruppeById('142').then((response) => {
+			const identListe = response.data?.identer?.map((person) => {
+				if (person.master === 'PDL') return person.ident
+			})
+			return identListe
+		})
+		const options = await PdlforvalterApi.getPersoner(gruppe).then((response) => {
+			const personListe = []
+			response.data.forEach((id) => {
+				personListe.push({
+					value: id.person.ident,
+					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
+				})
+			})
+			return personListe
+		})
+		return options ? options : Promise.resolve()
+	}
+
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.sivilstand"
@@ -44,12 +67,19 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							fastfield={false}
 						/>
 						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
-						<FormikSelect
-							name={`${path}.relatertVedSivilstand`}
-							label="Person relatert til"
-							options={[{ value: 'TEST', label: 'Test' }]}
-							size={'large'}
-						/>
+						<ErrorBoundary>
+							<LoadableComponent
+								onFetch={() => getOptions()}
+								render={(data) => (
+									<FormikSelect
+										name={`${path}.relatertVedSivilstand`}
+										label="Person relatert til"
+										options={data}
+										size={'xlarge'}
+									/>
+								)}
+							/>
+						</ErrorBoundary>
 						<PdlPersonExpander
 							path={`${path}.nyRelatertPerson`}
 							label={'PERSON RELATERT TIL'}
