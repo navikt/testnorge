@@ -3,9 +3,24 @@ import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
 import { ImportFraEtikett } from '~/components/ui/etikett'
+import { erTestnorgeIdent } from '~/ducks/fagsystem'
+import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
+
+const getImportFra = (opts) => {
+	if (opts.is.leggTil) {
+		const ident = getLeggTilIdent(opts.personFoerLeggTil)
+		if (erTestnorgeIdent(ident)) {
+			return 'PDL'
+		} else if (opts.personFoerLeggTil.tpsf.importFra) {
+			return opts.personFoerLeggTil.tpsf.importFra
+		}
+	}
+	return undefined
+}
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
+	const importFra = getImportFra(opts)
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
@@ -41,15 +56,13 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.leggTil && (
 					<Header.TitleValue
 						title="Legg til/endre på person"
-						value={opts.personFoerLeggTil.tpsf.ident}
+						value={getLeggTilIdent(opts.personFoerLeggTil)}
 					/>
 				)}
-				{opts.is.leggTil && opts.personFoerLeggTil.tpsf.importFra && (
+				{importFra !== undefined && (
 					<Header.TitleValue
 						title="Importert fra"
-						value={
-							<ImportFraEtikett type="fokus" importFra={opts.personFoerLeggTil.tpsf.importFra} />
-						}
+						value={<ImportFraEtikett type="fokus" importFra={importFra} />}
 					/>
 				)}
 			</div>

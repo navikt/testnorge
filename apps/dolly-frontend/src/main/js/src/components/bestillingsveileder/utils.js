@@ -23,3 +23,12 @@ export const rootPaths = [
 export const harAvhukedeAttributter = (values) => {
 	return rootPaths.some((path) => _has(values, path))
 }
+
+export const getLeggTilIdent = (personFoerLeggTil) => {
+	if (personFoerLeggTil.tpsf !== undefined) {
+		return personFoerLeggTil.tpsf.ident
+	} else if (personFoerLeggTil.pdl !== undefined) {
+		return personFoerLeggTil.pdl.data.hentIdenter.identer[0].ident
+	}
+	return ''
+}
