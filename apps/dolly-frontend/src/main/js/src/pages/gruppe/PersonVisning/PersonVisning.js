@@ -63,7 +63,7 @@ export const PersonVisning = ({
 					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
-				{!iLaastGruppe && !kildePdl && (
+				{!iLaastGruppe && (
 					<SlettButton action={slettPerson} loading={loading.slettPerson}>
 						Er du sikker på at du vil slette denne personen?
 					</SlettButton>
