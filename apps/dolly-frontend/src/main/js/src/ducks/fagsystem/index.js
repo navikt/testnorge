@@ -266,7 +266,7 @@ export const fetchPdlPersoner = () => (dispatch, getState) => {
 	}
 }
 
-const erTestnorgeIdent = (ident) => {
+export const erTestnorgeIdent = (ident) => {
 	const month = parseInt(ident.substring(2, 4))
 	return month > 80
 }
