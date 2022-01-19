@@ -15,10 +15,10 @@ import {
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
-import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
-import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
+import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPersonInfo'
+import { PdlNasjonalitet } from '~/components/fagsystem/pdl/visning/partials/PdlNasjonalitet'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
+import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
