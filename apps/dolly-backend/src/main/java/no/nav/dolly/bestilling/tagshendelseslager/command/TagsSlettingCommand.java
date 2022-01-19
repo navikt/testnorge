@@ -18,10 +18,10 @@ public class TagsSlettingCommand implements Callable<Mono<String>> {
 
     private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
     private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String IDENTER = "tags";
+    private static final String TAGS = "tags";
 
     private final WebClient webClient;
-    private final List<String> identer;
+    private final List<String> tags;
     private final String token;
 
     public Mono<String> call() {
@@ -31,10 +31,11 @@ public class TagsSlettingCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
-                        .queryParam(IDENTER, identer)
+                        .queryParam(TAGS, tags)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+//                .body(BodyInserters.fromValue(identer))
                 .retrieve()
                 .bodyToMono(String.class);
     }
