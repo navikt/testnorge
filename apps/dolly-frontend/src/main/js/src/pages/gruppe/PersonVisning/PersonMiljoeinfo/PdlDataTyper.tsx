@@ -25,6 +25,8 @@ export type HentPerson = {
 	telefonnummer: Array<TelefonData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
+	forelderBarnRelasjon: [ForelderBarnRelasjon]
+	sivilstand: [Sivilstand]
 }
 
 export type BostedData = {
@@ -94,4 +96,25 @@ export type Relasjon = {
 			kjoenn: string
 		}>
 	}
+}
+
+export type ForelderBarnRelasjon = {
+	relatertPersonsIdent: string
+	relatertPersonsRolle: Rolle
+	minRolleForPerson: Rolle
+}
+
+export enum Rolle {
+	BARN = 'BARN',
+	MOR = 'MOR',
+	FAR = 'FAR',
+	FORELDER = 'FORELDER',
+	MEDMOR = 'MEDMOR',
+}
+
+export type Sivilstand = {
+	type: string
+	gyldigFraOgMed: Date
+	relatertVedSivilstand: string
+	bekreftelsesdato: Date
 }
