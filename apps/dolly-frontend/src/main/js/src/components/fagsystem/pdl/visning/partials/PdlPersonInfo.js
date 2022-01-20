@@ -6,6 +6,7 @@ import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/Utenla
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import Formatters from '~/utils/DataFormatter'
+import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
 
 export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	if (!data) {
@@ -14,7 +15,7 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
-	const personSivilstand = data?.sivilstand?.[0]
+	const personSivilstand = getSortedSivilstand(data?.sivilstand)?.[0]
 	const personFoedsel = data?.foedsel?.[0]
 	const sikkerhetstiltak = data?.sikkerhetstiltak?.[0]
 	const personstatus = data?.folkeregisterPersonstatus?.[0]
