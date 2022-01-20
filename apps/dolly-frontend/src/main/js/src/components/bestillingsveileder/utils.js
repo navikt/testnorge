@@ -30,5 +30,5 @@ export const getLeggTilIdent = (personFoerLeggTil) => {
 	} else if (personFoerLeggTil.pdl !== undefined) {
 		return personFoerLeggTil.pdl.data.hentIdenter.identer[0].ident
 	}
-	return ''
+	return undefined
 }
