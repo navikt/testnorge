@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/syntrest/synt-meldekort-gcp'}}
     with:
       resource: 'apps/syntrest/nais.yaml'
       app-name: 'syntrest'
