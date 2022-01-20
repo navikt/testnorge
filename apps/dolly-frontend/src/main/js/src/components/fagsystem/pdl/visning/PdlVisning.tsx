@@ -14,6 +14,7 @@ import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadress
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
+import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/PdlRelasjoner'
 
 type PdlVisningProps = {
 	pdlData: PdlDataWrapper
@@ -54,6 +55,7 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
+				<PdlRelasjoner data={hentPerson} />
 			</div>
 		</ErrorBoundary>
 	)
