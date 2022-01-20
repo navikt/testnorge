@@ -7,6 +7,7 @@ import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { rootPaths } from '@/components/bestillingsveileder/utils'
 import Logger from '@/logger'
 import { v4 as uuid } from 'uuid'
+import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
 export const actions = createActions(
 	{
@@ -55,10 +56,8 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	let bestillingAction = null
 
 	if (opts.is.leggTil) {
-		bestillingAction = actions.postBestillingLeggTilPaaPerson(
-			opts.personFoerLeggTil.tpsf.ident,
-			values
-		)
+		const ident = getLeggTilIdent(opts.personFoerLeggTil)
+		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
