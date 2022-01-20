@@ -15,14 +15,12 @@ import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
