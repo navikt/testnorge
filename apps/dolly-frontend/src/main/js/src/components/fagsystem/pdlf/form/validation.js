@@ -340,9 +340,12 @@ const utflytting = Yup.array().of(
 const sivilstand = Yup.array().of(
 	Yup.object({
 		type: requiredString.nullable(),
-		// sivilstandsdato: requiredString.nullable(), // TODO: bare hvis ikke bekreftelsesdato?
+		sivilstandsdato: Yup.mixed().when('bekreftelsesdato', {
+			is: null,
+			then: requiredString.nullable(),
+		}),
 		relatertVedSivilstand: Yup.string().nullable(),
-		bekreftelsesdato: Yup.string().nullable(), // TODO: Required hvis ikke sivilstanddato?
+		bekreftelsesdato: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
 		nyRelatertPerson: nyPerson,
 	})

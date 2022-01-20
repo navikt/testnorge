@@ -213,6 +213,6 @@ export const initialSivilstand = {
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
-	master: 'FREG',
+	master: 'PDL',
 	gjeldende: true,
 }

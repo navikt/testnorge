@@ -26,6 +26,10 @@ export const Visning = ({ data, relasjoner }) => {
 							Formatters.formatDate(data.gyldigFraOgMed)
 						}
 					/>
+					<TitleValue
+						title="Bekreftelsesdato"
+						value={Formatters.formatDate(data.bekreftelsesdato)}
+					/>
 					{!relasjoner && <TitleValue title="Relatert person" value={data.relatertVedSivilstand} />}
 				</div>
 				{retatertPerson && (

@@ -258,6 +258,28 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sivilstand,
 		} = pdldataKriterier
 
+		const isEmpty = (data) => {
+			const flattenData = (obj) => {
+				let result = {}
+				for (const i in obj) {
+					if (typeof obj[i] === 'object' && !Array.isArray(obj[i])) {
+						const temp = flattenData(obj[i])
+						for (const j in temp) {
+							result[i + '.' + j] = temp[j]
+						}
+					} else {
+						result[i] = obj[i]
+					}
+				}
+				return result
+			}
+
+			return (
+				data.empty ||
+				Object.values(flattenData(data)).every((x) => x === null || x === '' || x === false)
+			)
+		}
+
 		if (innflytting) {
 			const innflyttingData = {
 				header: 'Innvandring',
@@ -318,10 +340,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(fullmaktData)
 		}
 
-		const isEmpty = (adresseData) => {
-			return adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
-		}
-
 		const vegadresse = (adresseData) => {
 			return [
 				obj('Adressekode', adresseData.adressekode),
@@ -367,7 +385,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		const personRelatertTil = (personData) => {
-			console.log('persondata', personData)
 			if (!personData) return null
 			const {
 				identtype,
@@ -380,10 +397,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				syntetisk,
 				nyttNavn,
 			} = personData.nyRelatertPerson
-			//TODO: Må bruke riktig path - er forskjellig på ulike attributter
+			//TODO: Må bruke riktig path - er forskjellig på ulike attributter f.eks. fullmakt.
 
 			return [
 				expandable('PERSON RELATERT TIL', !personData.relatertVedSivilstand, [
+					obj('', isEmpty(personData.nyRelatertPerson) && 'Ingen verdier satt'),
 					obj('Identtype', identtype),
 					obj('Kjønn', kjoenn),
 					obj('Født etter', Formatters.formatDate(foedtEtter)),
@@ -618,7 +636,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (sivilstand) {
-			console.log('sivilstand', sivilstand)
 			const sivilstandData = {
 				header: 'Sivilstand',
 				itemRows: sivilstand.map((item, idx) => {

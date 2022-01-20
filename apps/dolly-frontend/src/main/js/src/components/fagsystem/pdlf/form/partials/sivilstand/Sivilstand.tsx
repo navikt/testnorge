@@ -63,7 +63,10 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 						<FormikDatepicker
 							name={`${path}.bekreftelsesdato`}
 							label="Bekreftelsesdato"
-							disabled={_get(formikBag.values, `${path}.sivilstandsdato`) != null}
+							disabled={
+								_get(formikBag.values, `${path}.sivilstandsdato`) != null ||
+								_get(formikBag.values, `${path}.master`) !== 'PDL'
+							}
 							fastfield={false}
 						/>
 						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
@@ -84,8 +87,12 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							path={`${path}.nyRelatertPerson`}
 							label={'PERSON RELATERT TIL'}
 							formikBag={formikBag}
+							kanSettePersondata={_get(formikBag.values, `${path}.relatertVedSivilstand`) === null}
 						/>
-						<AvansertForm path={path} kanVelgeMaster={true} />
+						<AvansertForm
+							path={path}
+							kanVelgeMaster={_get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+						/>
 					</div>
 				)
 			}}
