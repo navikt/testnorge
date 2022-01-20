@@ -96,7 +96,7 @@ export default function GruppeHeader({
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
 				<GjenopprettGruppeConnector
-					onCancel={skjulGjenopprettModal}
+					onClose={skjulGjenopprettModal}
 					gruppe={gruppe}
 					bestillingStatuser={bestillingStatuser}
 				/>

@@ -5,7 +5,7 @@ import { GjenopprettModal } from '~/components/bestilling/gjenopprett/Gjenoppret
 import { DollyApi } from '~/service/Api'
 
 type GjenopprettGruppeProps = {
-	onCancel: any
+	onClose: any
 	gruppe: Gruppe
 	gruppeId: string
 	gruppenavn: string
@@ -24,7 +24,7 @@ type BestillingStatus = {
 }
 
 export const GjenopprettGruppe = ({
-	onCancel,
+	onClose,
 	gruppe,
 	bestillingStatuser,
 	getBestillinger,
@@ -66,13 +66,14 @@ export const GjenopprettGruppe = ({
 
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
 		await getBestillinger()
+		onClose()
 	}
 
 	return (
 		<GjenopprettModal
 			gjenopprettHeader={gjenopprettHeader}
 			submitFormik={submitFormik}
-			closeModal={onCancel}
+			closeModal={onClose}
 			environments={bestilteMiljoer()}
 		/>
 	)
