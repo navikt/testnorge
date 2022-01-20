@@ -390,7 +390,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Født før', Formatters.formatDate(foedtFoer)),
 					obj('Alder', alder),
 					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
-					obj('Gradering', Formatters.showLabel(gradering)),
+					obj('Gradering', Formatters.showLabel('gradering', gradering)),
 					obj('Syntetisk', syntetisk && 'JA'),
 					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
 				]),

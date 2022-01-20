@@ -15,6 +15,7 @@ import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kon
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
+import { Sivilstand } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
@@ -30,6 +31,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 		adressebeskyttelse,
 		fullmakt,
 		sikkerhetstiltak,
+		sivilstand,
 	} = hentPerson
 
 	const getPersonInfo = () => {
@@ -47,6 +49,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
+				<Sivilstand data={sivilstand} relasjoner={null} />
 			</div>
 		)
 	}

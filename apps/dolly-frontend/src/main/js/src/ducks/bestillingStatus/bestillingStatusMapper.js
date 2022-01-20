@@ -26,17 +26,23 @@ const antallIdenterOpprettetPaaBestilling = (status) => {
 	if (status.length) {
 		const tpsf = status.find((f) => f.id === 'TPSF')
 		const importFraTps = status.find((f) => f.id === 'TPSIMPORT')
+		const pdlf = status.find((f) => f.id === 'PDL_FORVALTER')
 
 		const addOpprettedeIdenter = (system) => {
 			system.statuser.forEach((stat) => {
-				stat.detaljert.forEach((miljo) => {
-					identerOpprettet = identerOpprettet.concat(miljo.identer)
-				})
+				if (system.id === 'PDL_FORVALTER') {
+					identerOpprettet = identerOpprettet.concat(stat.identer)
+				} else {
+					stat.detaljert?.forEach((miljo) => {
+						identerOpprettet = identerOpprettet.concat(miljo.identer)
+					})
+				}
 			})
 		}
 
 		if (tpsf) addOpprettedeIdenter(tpsf)
 		if (importFraTps) addOpprettedeIdenter(importFraTps)
+		if (pdlf) addOpprettedeIdenter(pdlf)
 	}
 
 	// Kun unike identer

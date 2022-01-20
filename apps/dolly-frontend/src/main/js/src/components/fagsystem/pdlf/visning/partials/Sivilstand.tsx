@@ -5,6 +5,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 
 export const Visning = ({ data, relasjoner }) => {
 	//TODO Lag relatert person som egen komponent som kan brukes av alle
@@ -17,16 +18,19 @@ export const Visning = ({ data, relasjoner }) => {
 		<>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					<TitleValue title="Type" value={data.type} />
+					<TitleValue title="Type" value={Formatters.showLabel('sivilstandType', data.type)} />
 					<TitleValue
 						title="Gyldig fra og med"
-						value={Formatters.formatDate(data.sivilstandsdato)}
+						value={
+							Formatters.formatDate(data.sivilstandsdato) ||
+							Formatters.formatDate(data.gyldigFraOgMed)
+						}
 					/>
+					{!relasjoner && <TitleValue title="Relatert person" value={data.relatertVedSivilstand} />}
 				</div>
 				{retatertPerson && (
 					<div className="person-visning_content">
-						{/*TODO vise label ikke value på relasjontype*/}
-						<h4 style={{ width: '100%', marginTop: '0' }}>{retatertPerson?.relasjonType}</h4>
+						<h4 style={{ width: '100%', marginTop: '0' }}>{'Ektefelle/partner'}</h4>
 						<TitleValue title="Ident" value={retatertPerson?.relatertPerson?.ident} />
 						<TitleValue title="Fornavn" value={retatertPerson?.relatertPerson?.navn?.[0].fornavn} />
 						<TitleValue
@@ -38,11 +42,23 @@ export const Visning = ({ data, relasjoner }) => {
 							value={retatertPerson?.relatertPerson?.navn?.[0].etternavn}
 						/>
 						<TitleValue title="Kjønn" value={retatertPerson?.relatertPerson?.kjoenn?.[0].kjoenn} />
-						{/*	TODO Alder/fødselsdato*/}
+						<TitleValue
+							title="Fødselsdato"
+							value={Formatters.formatDate(
+								retatertPerson?.relatertPerson?.foedsel?.[0].foedselsdato
+							)}
+						/>
 						<TitleValue
 							title="Statsborgerskap"
 							value={retatertPerson?.relatertPerson?.statsborgerskap?.[0].landkode}
 							kodeverk={AdresseKodeverk.StatsborgerskapLand}
+						/>
+						<TitleValue
+							title="Gradering"
+							value={Formatters.showLabel(
+								'gradering',
+								retatertPerson?.relatertPerson?.adressebeskyttelse?.[0].gradering
+							)}
 						/>
 					</div>
 				)}
