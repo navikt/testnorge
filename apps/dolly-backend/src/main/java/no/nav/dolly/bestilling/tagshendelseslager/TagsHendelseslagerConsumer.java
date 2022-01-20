@@ -1,8 +1,10 @@
 package no.nav.dolly.bestilling.tagshendelseslager;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.command.HendelseslagerPublishCommand;
+import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHenteCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
@@ -42,6 +44,12 @@ public class TagsHendelseslagerConsumer {
     public void deleteTags(List<String> identer) {
 
         new TagsSlettingCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "tags_get"})
+    public JsonNode getTag(String ident) {
+
+        return new TagsHenteCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
