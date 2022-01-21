@@ -184,7 +184,7 @@ public class DollyBestillingService {
             Testident testident = identService.getTestIdent(bestilling.getIdent());
             BestillingProgress progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
 
-            var originator = new OriginatorCommand(request, mapperFacade).call();
+            var originator = new OriginatorCommand(request, testident, mapperFacade).call();
 
             DollyPerson dollyPerson;
             if (originator.isTpsf()) {

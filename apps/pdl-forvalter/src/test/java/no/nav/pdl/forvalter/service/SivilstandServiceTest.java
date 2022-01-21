@@ -45,20 +45,6 @@ class SivilstandServiceTest {
     }
 
     @Test
-    void whenSivilstandDatoIsMissing_thenThrowExecption() {
-
-        var request = SivilstandDTO.builder()
-                        .type(SKILT)
-                        .isNew(true)
-                        .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sivilstand: dato for sivilstand må oppgis"));
-    }
-
-    @Test
     void whenRelatertPersonDontExist_thenThrowExecption() {
 
         var request = SivilstandDTO.builder()

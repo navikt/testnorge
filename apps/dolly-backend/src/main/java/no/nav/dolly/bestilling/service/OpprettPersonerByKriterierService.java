@@ -80,7 +80,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            var originator = new OriginatorCommand(bestKriterier, mapperFacade).call();
+            var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
             dollyForkJoinPool.submit(() -> {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
