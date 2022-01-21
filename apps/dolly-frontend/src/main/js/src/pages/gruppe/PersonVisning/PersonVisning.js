@@ -71,14 +71,14 @@ export const PersonVisning = ({
 					</SlettButton>
 				)}
 			</div>
-			{ident.master === 'TPSF' && (
+			{ident.master !== 'PDL' && (
 				<TpsfVisning
 					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 					pdlData={data.pdlforvalter?.person}
 					environments={bestilling?.environments}
 				/>
 			)}
-			{ident.master === 'PDLF' && (
+			{ident.master !== 'PDL' && (
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
