@@ -25,8 +25,9 @@ public class ExcelController {
         var resource = excelService.getExcelWorkbook(gruppeId);
 
         return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + resource.getFilename())
                 .contentLength(resource.contentLength())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(resource);
     }
 }
