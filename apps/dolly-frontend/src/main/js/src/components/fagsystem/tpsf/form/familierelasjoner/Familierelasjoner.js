@@ -16,6 +16,7 @@ const relasjonerAttributter = ['tpsf.relasjoner', 'pdldata.person.sivilstand']
 
 export const Familierelasjoner = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
+	const { gruppeId } = opts
 
 	return (
 		<Vis attributt={relasjonerAttributter}>
@@ -26,12 +27,12 @@ export const Familierelasjoner = ({ formikBag }) => {
 				iconType={'relasjoner'}
 				startOpen={() => erForste(formikBag.values, [relasjonerAttributter])}
 			>
-				<Kategori title="Sivilstand" vis="pdldata.person.sivilstand">
-					<Sivilstand formikBag={formikBag} />
+				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
+					<Sivilstand formikBag={formikBag} gruppeId={gruppeId} />
 				</Kategori>
-				<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">
-					<Partnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
-				</Kategori>
+				{/*<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">*/}
+				{/*	<Partnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />*/}
+				{/*</Kategori>*/}
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
 					<Barn formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
 				</Kategori>

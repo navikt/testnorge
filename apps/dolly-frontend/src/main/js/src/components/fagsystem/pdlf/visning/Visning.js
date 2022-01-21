@@ -44,7 +44,10 @@ export const PdlfVisning = ({ data, loading }) => {
 				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} />
+				<KontaktinformasjonForDoedsbo
+					data={kontaktinformasjonForDoedsbo}
+					relasjoner={data.relasjoner}
+				/>
 			</div>
 		</ErrorBoundary>
 	)

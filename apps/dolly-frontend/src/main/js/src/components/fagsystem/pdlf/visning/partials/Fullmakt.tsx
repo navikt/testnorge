@@ -7,6 +7,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { FullmaktKodeverk } from '~/config/kodeverk'
 import styled from 'styled-components'
 import { FullmaktData, Relasjon } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
 type Data = {
 	data: FullmaktData
@@ -19,6 +20,7 @@ type DataListe = {
 }
 
 const Tema = styled.div`
+	margin-bottom: 20px;
 	h4 {
 		width: 100%;
 		margin-bottom: 10px;
@@ -35,7 +37,6 @@ export const Visning = ({ data, relasjoner }: Data) => {
 	const fullmektig = relasjoner.find(
 		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
 	)
-	const { fornavn, mellomnavn, etternavn } = fullmektig?.relatertPerson?.navn?.[0]
 
 	return (
 		<>
@@ -65,14 +66,7 @@ export const Visning = ({ data, relasjoner }: Data) => {
 						)
 					)}
 				</Tema>
-				<div className="person-visning_content">
-					<h4 style={{ width: '100%' }}>Fullmektig</h4>
-					<TitleValue title="Ident" value={fullmektig?.relatertPerson?.ident} />
-					<TitleValue title="Fornavn" value={fornavn} />
-					<TitleValue title="Mellomnavn" value={mellomnavn} />
-					<TitleValue title="Etternavn" value={etternavn} />
-					<TitleValue title="Kjønn" value={fullmektig?.relatertPerson?.kjoenn?.[0].kjoenn} />
-				</div>
+				{fullmektig && <RelatertPerson data={fullmektig.relatertPerson} tittel="Fullmektig" />}
 			</ErrorBoundary>
 		</>
 	)

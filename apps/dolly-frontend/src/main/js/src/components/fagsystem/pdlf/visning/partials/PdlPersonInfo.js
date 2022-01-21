@@ -55,7 +55,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 				</div>
 				<UtenlandsId data={data.utenlandskIdentifikasjonsnummer} loading={false} />
 				<FalskIdentitet data={data.falskIdentitet} loading={false} />
-				<KontaktinformasjonForDoedsbo data={data.kontaktinformasjonForDoedsbo} loading={false} />
 			</div>
 		</ErrorBoundary>
 	)

@@ -280,6 +280,35 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			)
 		}
 
+		const personRelatertTil = (personData, path) => {
+			if (!personData || !_get(personData, path)) return null
+			const {
+				identtype,
+				kjoenn,
+				foedtEtter,
+				foedtFoer,
+				alder,
+				statsborgerskapLandkode,
+				gradering,
+				syntetisk,
+				nyttNavn,
+			} = _get(personData, path)
+
+			return [
+				expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path)), [
+					obj('Identtype', identtype),
+					obj('Kjønn', kjoenn),
+					obj('Født etter', Formatters.formatDate(foedtEtter)),
+					obj('Født før', Formatters.formatDate(foedtFoer)),
+					obj('Alder', alder),
+					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
+					obj('Gradering', Formatters.showLabel('gradering', gradering)),
+					obj('Syntetisk', syntetisk && 'JA'),
+					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
+				]),
+			]
+		}
+
 		if (innflytting) {
 			const innflyttingData = {
 				header: 'Innvandring',
@@ -333,7 +362,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-						...personRelatertTil(item),
+						...personRelatertTil(item, 'nyFullmektig'),
 					]
 				}),
 			}
@@ -381,37 +410,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Flyttedato', Formatters.formatDate(datoData.angittFlyttedato)),
 				obj('Gyldig f.o.m.', Formatters.formatDate(datoData.gyldigFraOgMed)),
 				obj('Gyldig t.o.m.', Formatters.formatDate(datoData.gyldigTilOgMed)),
-			]
-		}
-
-		const personRelatertTil = (personData) => {
-			if (!personData) return null
-			const {
-				identtype,
-				kjoenn,
-				foedtEtter,
-				foedtFoer,
-				alder,
-				statsborgerskapLandkode,
-				gradering,
-				syntetisk,
-				nyttNavn,
-			} = personData.nyRelatertPerson
-			//TODO: Må bruke riktig path - er forskjellig på ulike attributter f.eks. fullmakt.
-
-			return [
-				expandable('PERSON RELATERT TIL', !personData.relatertVedSivilstand, [
-					obj('', isEmpty(personData.nyRelatertPerson) && 'Ingen verdier satt'),
-					obj('Identtype', identtype),
-					obj('Kjønn', kjoenn),
-					obj('Født etter', Formatters.formatDate(foedtEtter)),
-					obj('Født før', Formatters.formatDate(foedtFoer)),
-					obj('Alder', alder),
-					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
-					obj('Gradering', Formatters.showLabel('gradering', gradering)),
-					obj('Syntetisk', syntetisk && 'JA'),
-					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
-				]),
 			]
 		}
 
@@ -637,7 +635,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		if (sivilstand) {
 			const sivilstandData = {
-				header: 'Sivilstand',
+				header: 'Sivilstand (partner)',
 				itemRows: sivilstand.map((item, idx) => {
 					return [
 						{ numberHeader: `Sivilstand ${idx + 1}` },
@@ -646,7 +644,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Person relatert til', item.relatertVedSivilstand),
-						...personRelatertTil(item),
+						...personRelatertTil(item, 'nyRelatertPerson'),
 					]
 				}),
 			}
@@ -772,7 +770,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							(adresse?.postnummer || adresse?.poststedsnavn) &&
 								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 						),
-						...personRelatertTil(item),
+						{ ...personRelatertTil(item, 'personSomKontakt.nyKontaktperson') },
 					]
 				}),
 			}

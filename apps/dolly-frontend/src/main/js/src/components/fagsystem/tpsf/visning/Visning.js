@@ -18,7 +18,6 @@ import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partial
 import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
 import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
@@ -30,9 +29,10 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 		}
 	}, [])
 	if (!data) return null
-	const harPdlBoadresse = pdlData && _has(pdlData, 'bostedsadresse')
-	const harPdlOppholdsadresse = pdlData && _has(pdlData, 'oppholdsadresse')
-	const harPdlKontaktadresse = pdlData && _has(pdlData, 'kontaktadresse')
+	const harPdlBoadresse = pdlData && _has(pdlData, 'person.bostedsadresse')
+	const harPdlOppholdsadresse = pdlData && _has(pdlData, 'person.oppholdsadresse')
+	const harPdlKontaktadresse = pdlData && _has(pdlData, 'person.kontaktadresse')
+	const harPdlFullmakt = pdlData && _has(pdlData, 'person.fullmakt')
 
 	const hasTpsfData = data.ident
 
@@ -50,11 +50,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 					<PdlNasjonalitet data={pdlData?.person} />
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
-				{hasTpsfData ? (
-					<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
-				) : (
-					<PdlFullmakt data={pdlData?.person?.fullmakt} />
-				)}
+				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}
 				{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
 				{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
 				{!harPdlKontaktadresse && (

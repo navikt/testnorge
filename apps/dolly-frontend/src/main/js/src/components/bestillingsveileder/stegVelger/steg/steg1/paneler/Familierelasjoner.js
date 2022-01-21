@@ -18,9 +18,9 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Sivilstand">
 				<Attributt attr={sm.attrs.sivilstand} />
 			</AttributtKategori>
-			<AttributtKategori title="Partner">
-				<Attributt attr={sm.attrs.partner} />
-			</AttributtKategori>
+			{/*<AttributtKategori title="Partner">*/}
+			{/*	<Attributt attr={sm.attrs.partner} />*/}
+			{/*</AttributtKategori>*/}
 			<AttributtKategori title="Barn">
 				<Attributt attr={sm.attrs.barn} />
 			</AttributtKategori>
@@ -35,7 +35,7 @@ FamilierelasjonPanel.heading = 'Familierelasjoner'
 
 FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 	sivilstand: {
-		label: 'Sivilstand',
+		label: 'Sivilstand (har partner)',
 		checked: has('pdldata.person.sivilstand'),
 		add() {
 			set('pdldata.person.sivilstand', [initialSivilstand])
@@ -44,17 +44,17 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 			del('pdldata.person.sivilstand')
 		},
 	},
-	partner: {
-		label: 'Har partner',
-		checked: has('tpsf.relasjoner.partnere'),
-		add() {
-			set('tpsf.relasjoner.partnere', defaultPartner(opts))
-		},
-		remove() {
-			del('tpsf.relasjoner.partnere')
-			!has('tpsf.relasjoner.barn') && !has('tpsf.relasjoner.foreldre') && del('tpsf.relasjoner')
-		},
-	},
+	// partner: {
+	// 	label: 'Har partner',
+	// 	checked: has('tpsf.relasjoner.partnere'),
+	// 	add() {
+	// 		set('tpsf.relasjoner.partnere', defaultPartner(opts))
+	// 	},
+	// 	remove() {
+	// 		del('tpsf.relasjoner.partnere')
+	// 		!has('tpsf.relasjoner.barn') && !has('tpsf.relasjoner.foreldre') && del('tpsf.relasjoner')
+	// 	},
+	// },
 	barn: {
 		label: 'Har barn',
 		checked: has('tpsf.relasjoner.barn'),
@@ -79,38 +79,38 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 	},
 })
 
-const defaultPartner = (opts) => {
-	const fullPartner = [
-		{
-			identtype: 'FNR',
-			kjonn: '',
-			sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
-			harFellesAdresse: true,
-			alder: Formatters.randomIntInRange(30, 60),
-			doedsdato: null,
-			spesreg: '',
-			utenFastBopel: false,
-			statsborgerskap: '',
-			statsborgerskapRegdato: '',
-			statsborgerskapTildato: '',
-		},
-	]
-
-	const eksisterendePartner = [
-		{
-			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
-			doedsdato:
-				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null,
-			sivilstander: [],
-		},
-	]
-
-	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
-		(relasjon) => relasjon.relasjonTypeNavn === 'PARTNER'
-	)
-
-	return harEksisterendePartner ? eksisterendePartner : fullPartner
-}
+// const defaultPartner = (opts) => {
+// 	const fullPartner = [
+// 		{
+// 			identtype: 'FNR',
+// 			kjonn: '',
+// 			sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
+// 			harFellesAdresse: true,
+// 			alder: Formatters.randomIntInRange(30, 60),
+// 			doedsdato: null,
+// 			spesreg: '',
+// 			utenFastBopel: false,
+// 			statsborgerskap: '',
+// 			statsborgerskapRegdato: '',
+// 			statsborgerskapTildato: '',
+// 		},
+// 	]
+//
+// 	const eksisterendePartner = [
+// 		{
+// 			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
+// 			doedsdato:
+// 				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null,
+// 			sivilstander: [],
+// 		},
+// 	]
+//
+// 	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
+// 		(relasjon) => relasjon.relasjonTypeNavn === 'PARTNER'
+// 	)
+//
+// 	return harEksisterendePartner ? eksisterendePartner : fullPartner
+// }
 
 const defaultForeldre = (opts) => {
 	const fullForelder = [

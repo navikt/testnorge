@@ -4,13 +4,11 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
 export const Visning = ({ data, relasjoner }) => {
-	//TODO Lag relatert person som egen komponent som kan brukes av alle
 	const retatertPersonIdent = data.relatertVedSivilstand
-	const retatertPerson = relasjoner?.find(
+	const relasjon = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === retatertPersonIdent
 	)
 
@@ -32,40 +30,7 @@ export const Visning = ({ data, relasjoner }) => {
 					/>
 					{!relasjoner && <TitleValue title="Relatert person" value={data.relatertVedSivilstand} />}
 				</div>
-				{retatertPerson && (
-					<div className="person-visning_content">
-						<h4 style={{ width: '100%', marginTop: '0' }}>{'Ektefelle/partner'}</h4>
-						<TitleValue title="Ident" value={retatertPerson?.relatertPerson?.ident} />
-						<TitleValue title="Fornavn" value={retatertPerson?.relatertPerson?.navn?.[0].fornavn} />
-						<TitleValue
-							title="Mellomnavn"
-							value={retatertPerson?.relatertPerson?.navn?.[0].mellomnavn}
-						/>
-						<TitleValue
-							title="Etternavn"
-							value={retatertPerson?.relatertPerson?.navn?.[0].etternavn}
-						/>
-						<TitleValue title="Kjønn" value={retatertPerson?.relatertPerson?.kjoenn?.[0].kjoenn} />
-						<TitleValue
-							title="Fødselsdato"
-							value={Formatters.formatDate(
-								retatertPerson?.relatertPerson?.foedsel?.[0].foedselsdato
-							)}
-						/>
-						<TitleValue
-							title="Statsborgerskap"
-							value={retatertPerson?.relatertPerson?.statsborgerskap?.[0].landkode}
-							kodeverk={AdresseKodeverk.StatsborgerskapLand}
-						/>
-						<TitleValue
-							title="Gradering"
-							value={Formatters.showLabel(
-								'gradering',
-								retatertPerson?.relatertPerson?.adressebeskyttelse?.[0].gradering
-							)}
-						/>
-					</div>
-				)}
+				{relasjon && <RelatertPerson data={relasjon.relatertPerson} tittel="Ektefelle/partner" />}
 			</ErrorBoundary>
 		</>
 	)
@@ -76,7 +41,7 @@ export const Sivilstand = ({ data, relasjoner }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Sivilstand" iconKind="partner" />
+			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
 
 			<DollyFieldArray data={data} nested>
 				{(sivilstand) => <Visning key={sivilstand.id} data={sivilstand} relasjoner={relasjoner} />}

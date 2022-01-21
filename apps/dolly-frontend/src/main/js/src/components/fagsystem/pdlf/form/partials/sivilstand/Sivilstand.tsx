@@ -15,13 +15,14 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
+	gruppeId: string
 }
 
-export const Sivilstand = ({ formikBag }: SivilstandForm) => {
+export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => {
 	const getOptions = async () => {
-		const gruppe = await DollyApi.getGruppeById('142').then((response) => {
+		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response) => {
 			const identListe = response.data?.identer?.map((person) => {
-				if (person.master === 'PDL') return person.ident
+				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
 			})
 			return identListe
 		})
