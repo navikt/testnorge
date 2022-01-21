@@ -6,9 +6,8 @@ import { ImportFraEtikett } from '~/components/ui/etikett'
 import { erTestnorgeIdent } from '~/ducks/fagsystem'
 import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
-const getImportFra = (opts) => {
+const getImportFra = (opts, ident) => {
 	if (opts.is.leggTil) {
-		const ident = getLeggTilIdent(opts.personFoerLeggTil)
 		if (erTestnorgeIdent(ident)) {
 			return 'Testnorge'
 		} else if (opts.personFoerLeggTil.tpsf.importFra) {
@@ -20,7 +19,8 @@ const getImportFra = (opts) => {
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
-	const importFra = getImportFra(opts)
+	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
+	const importFra = getImportFra(opts, ident)
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
@@ -53,12 +53,7 @@ export const BestillingsveilederHeader = () => {
 					<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
 				)}
 				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Testnorge" />}
-				{opts.is.leggTil && (
-					<Header.TitleValue
-						title="Legg til/endre på person"
-						value={getLeggTilIdent(opts.personFoerLeggTil)}
-					/>
-				)}
+				{opts.is.leggTil && <Header.TitleValue title="Legg til/endre på person" value={ident} />}
 				{importFra !== undefined && (
 					<Header.TitleValue
 						title="Importert fra"

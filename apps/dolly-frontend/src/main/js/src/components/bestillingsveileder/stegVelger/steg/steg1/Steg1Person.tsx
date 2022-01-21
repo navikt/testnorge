@@ -19,7 +19,9 @@ import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
 const identFraTestnorge = (opts: any) => {
 	if (opts.is.importTestnorge) return true
-	return opts.is.leggTil && erTestnorgeIdent(getLeggTilIdent(opts.personFoerLeggTil))
+	return (
+		opts.is.leggTil && erTestnorgeIdent(getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster))
+	)
 }
 
 export const Steg1Person = ({ stateModifier }: any) => {
