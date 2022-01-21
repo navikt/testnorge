@@ -56,7 +56,7 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	let bestillingAction = null
 
 	if (opts.is.leggTil) {
-		const ident = getLeggTilIdent(opts.personFoerLeggTil)
+		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)

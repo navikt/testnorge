@@ -38,7 +38,6 @@ export const PersonVisning = ({
 	slettPerson,
 	leggTilPaaPerson,
 	iLaastGruppe,
-	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -55,11 +54,14 @@ export const PersonVisning = ({
 		<div className="person-visning">
 			<div className="person-visning_actions">
 				{!iLaastGruppe && ident.master !== 'PDLF' && (
-					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
+					<Button
+						onClick={() => leggTilPaaPerson(data, bestillingsListe, ident.master)}
+						kind="add-circle"
+					>
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && !kildePdl && (
+				{!iLaastGruppe && ident.master === 'TPSF' && (
 					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
@@ -69,7 +71,7 @@ export const PersonVisning = ({
 					</SlettButton>
 				)}
 			</div>
-			{!kildePdl && (
+			{ident.master === 'TPSF' && (
 				<TpsfVisning
 					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 					pdlData={data.pdlforvalter?.person}
