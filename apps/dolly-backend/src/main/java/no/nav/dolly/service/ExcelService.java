@@ -30,9 +30,12 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -165,7 +168,9 @@ public class ExcelService {
                 .map(Testident::getIdent)
                 .toList());
 
-//        appendRows(HSSFSheet sheet, Stream.generate()etHeader().)
+        appendRows(sheet, Stream.of(Collections.singletonList(getHeader()), pdlfPersoner)
+                .flatMap(Collection::stream)
+                .toList());
 
         try {
             var excelFile = File.createTempFile("Excel-", ".xls");
@@ -179,7 +184,7 @@ public class ExcelService {
         }
     }
 
-    private String[] getHeader() {
+    private Object[] getHeader() {
 
         return new String[]{"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Dødsdato", "Personstatus",
                 "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse", "Oppholdsadresse",
@@ -199,22 +204,41 @@ public class ExcelService {
         return personer.stream()
                 .map(person -> new Object[]{
                         person.getPerson().getIdent(),
-                        IdentTypeUtil.getIdentType(person.getPerson().getIdent()),
+                        IdentTypeUtil.getIdentType(person.getPerson().getIdent()).name(),
                         getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO())),
                         person.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn(),
                         getAlder(person.getPerson().getIdent(), person.getPerson().getDoedsfall().isEmpty() ? null :
                                 person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato().toLocalDate()),
                         person.getPerson().getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn().name(),
-                        person.getPerson().getDoedsfall().stream().findFirst().orElse(new DoedsfallDTO()).getDoedsdato(),
-                        person.getPerson().getFolkeregisterPersonstatus().stream().findFirst()
-                                .orElse(new FolkeregisterPersonstatusDTO()).getStatus(),
+                        getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
+                        getPersonstatus(person.getPerson().getFolkeregisterPersonstatus().stream().findFirst().orElse(null)),
                         person.getPerson().getStatsborgerskap().stream().findFirst().orElse(new StatsborgerskapDTO()).getLandkode(),
-                        person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(new AdressebeskyttelseDTO()).getGradering(),
+                        getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
                         getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO())),
                         getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new KontaktadresseDTO())),
                         getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO())),
-                        person.getPerson().getSivilstand().stream().findFirst().orElse(new SivilstandDTO()).getType()
+                        getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null))
                 })
                 .toList();
+    }
+
+    private String getDoedsdato(DoedsfallDTO doedsfall) {
+
+        return nonNull(doedsfall) ? doedsfall.getDoedsdato().toLocalDate().toString() : "";
+    }
+
+    private static String getPersonstatus(FolkeregisterPersonstatusDTO personstatus) {
+
+        return nonNull(personstatus) ? personstatus.getStatus().name() : "";
+    }
+
+    private static String getAdressebeskyttelse(AdressebeskyttelseDTO adressebeskyttelse) {
+
+        return nonNull(adressebeskyttelse) ? adressebeskyttelse.getGradering().name() : "";
+    }
+
+    private static String getSivilstand(SivilstandDTO sivilstand) {
+
+        return nonNull(sivilstand) ? sivilstand.getType().name() : "";
     }
 }

@@ -1,8 +1,11 @@
 package no.nav.dolly.provider.api;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import no.nav.dolly.service.ExcelService;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +18,15 @@ public class ExcelController {
 
     private final ExcelService excelService;
 
-    @GetMapping(value = "/gruppe/{gruppeId}", produces = "application/vnd.ms-excel; charset=utf-8")
-    public Resource getExcelsheet(@PathVariable Long gruppeId){
+    @SneakyThrows
+    @GetMapping(value = "/gruppe/{gruppeId}")
+    public ResponseEntity<Resource> getExcelsheet(@PathVariable Long gruppeId){
 
-        return excelService.getExcelWorkbook(gruppeId);
+        var resource = excelService.getExcelWorkbook(gruppeId);
+
+        return ResponseEntity.ok()
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
     }
 }
