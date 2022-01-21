@@ -18,6 +18,7 @@ export const BVOptions = ({
 	personFoerLeggTil,
 	tidligereBestillinger,
 	importPersoner,
+	identMaster,
 	opprettOrganisasjon = null,
 } = {}) => {
 	let initialValues = {
@@ -97,6 +98,7 @@ export const BVOptions = ({
 		opprettFraIdenter,
 		personFoerLeggTil,
 		importPersoner,
+		identMaster,
 		tidligereBestillinger,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
