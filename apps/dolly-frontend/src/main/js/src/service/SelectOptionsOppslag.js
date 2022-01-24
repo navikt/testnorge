@@ -145,6 +145,14 @@ export const SelectOptionsOppslag = {
 				options.push({ value: parseInt(data.id), label: data.navn })
 			})
 			return options
+		} else if (type === 'tags') {
+			const tags = data.value ? Object.entries(data.value.data) : []
+			const options = []
+			tags.forEach((leverandoer) => {
+				data = leverandoer[1]
+				options.push({ value: data.tag, label: data.beskrivelse })
+			})
+			return options
 		} else if (type === 'fullmaktOmraader') {
 			const omraader = data.value ? Object.entries(data.value.data.koder) : []
 			const ugyldigeKoder = ['BII', 'KLA', 'KNA', 'KOM', 'LGA', 'MOT', 'OVR']

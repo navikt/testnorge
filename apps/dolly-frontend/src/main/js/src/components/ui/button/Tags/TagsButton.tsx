@@ -16,7 +16,7 @@ type Props = {
 	gruppeId: number
 }
 
-export const TagsButton = ({ action, loading, gruppeId }: Props) => {
+export const TagsButton = ({ action, loading }: Props) => {
 	if (loading) return <Loading label="Sender tags..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [tags, setTags] = useState([])
@@ -52,9 +52,9 @@ export const TagsButton = ({ action, loading, gruppeId }: Props) => {
 						</NavButton>
 						<NavButton
 							onClick={() => {
-								if (!tags) {
+								if (tags) {
 									closeModal()
-									return action(gruppeId, tags)
+									return action(tags)
 								}
 							}}
 							type="hoved"

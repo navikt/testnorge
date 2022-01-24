@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		getGruppe: (pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
 		navigerTilPerson: (ident) => dispatch(navigerTilPerson(ident)),
 		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
-		sendTags: (tags) => dispatch(actions.sendTags(gruppeId, tags)),
+		sendTags: (tags) => dispatch(actions.sendGruppeTags(gruppeId, tags)),
 		laasGruppe: () =>
 			dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
 		getBestillinger: () => dispatch(getBestillinger(gruppeId)),

@@ -52,7 +52,7 @@ export default {
 	},
 
 	updateGruppeSendTags(gruppeId, data) {
-		return Request.put(Endpoints.sendTags(gruppeId), data)
+		return Request.post(Endpoints.sendGruppeTags(gruppeId), data)
 	},
 
 	gjenopprettGruppe(gruppeId, envs) {

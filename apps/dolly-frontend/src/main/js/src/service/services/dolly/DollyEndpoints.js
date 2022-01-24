@@ -53,7 +53,7 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/laas`
 	}
 
-	static sendTags(gruppeId) {
+	static sendGruppeTags(gruppeId) {
 		return `${tagsBase}/gruppe/${gruppeId}`
 	}
 
