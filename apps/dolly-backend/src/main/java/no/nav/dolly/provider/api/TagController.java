@@ -1,7 +1,9 @@
 package no.nav.dolly.provider.api;
 
+import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
+@Slf4j
 @Transactional
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +54,7 @@ public class TagController {
         Optional<Testgruppe> byId = testgruppeRepository.findById(gruppeId);
         Testgruppe testgruppe = byId
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
+        log.info("gruppe: ", Json.pretty(byId.get()));
         byId.get().setTags(tags.stream().map(Tags::name).collect(Collectors.toSet()));
         return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
                         .stream()
