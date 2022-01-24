@@ -261,14 +261,9 @@ export const fetchPdlPersoner = () => (dispatch, getState) => {
 	if (identListe && identListe.length >= 1) {
 		dispatch(actions.getPdlForvalter(identListe))
 		for (const ident of identListe) {
-			if (erTestnorgeIdent(ident)) dispatch(actions.getPDL(ident))
+			dispatch(actions.getPDL(ident))
 		}
 	}
-}
-
-export const erTestnorgeIdent = (ident) => {
-	const month = parseInt(ident.substring(2, 4))
-	return month > 80
 }
 
 /**
@@ -418,7 +413,7 @@ export const selectPersonListe = (state) => {
 		)
 
 	return identer.map((ident) => {
-		if (Object.keys(fagsystem.tpsf).includes(ident.ident)) {
+		if (ident.master === 'TPSF') {
 			const tpsfIdent = fagsystem.tpsf[ident.ident]
 			return getTpsfIdentInfo(ident, state, tpsfIdent)
 		} else if (ident.master === 'PDLF') {
