@@ -9,7 +9,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -84,8 +83,7 @@ public class Testgruppe {
 
     @Column(name = "TAGS")
     @ElementCollection
-    @CollectionTable(name = "TESTGRUPPE_TAGS", joinColumns = @JoinColumn(name = "id"))
-    private Set<String> tags;
+    private Set<String> tags = new HashSet<>();
 
     public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
