@@ -4,6 +4,16 @@ import React from 'react'
 import styled from 'styled-components'
 import { Person } from '~/service/services/personsearch/types'
 import Formatters from '~/utils/DataFormatter'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { DollyApi } from '~/service/Api'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+
+type PdlResponse = {
+	data: PdlDataWrapper
+}
 
 type Props = {
 	person: Person
@@ -43,5 +53,11 @@ export default ({ person }: Props) => (
 				<Title title="Statsborgerskap" value={person.statsborgerskap?.land} />
 			</Group>
 		</section>
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={() => DollyApi.getPersonFraPdl(person.ident)}
+				render={({ data }: PdlResponse) => <PdlPersonMiljoeInfo data={data} loading={false} />}
+			/>
+		</ErrorBoundary>
 	</>
 )
