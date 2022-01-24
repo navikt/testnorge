@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
 @Transactional
@@ -38,7 +38,7 @@ public class TagController {
     @Operation(description = "Hent alle gyldige Tags")
     public Set<Tags.TagBeskrivelse> hentAlleTags() {
 
-        return asList(Tags.values()).stream()
+        return Arrays.stream(Tags.values())
                 .map(tag -> Tags.TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
                 .collect(Collectors.toSet());
     }
