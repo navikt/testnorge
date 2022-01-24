@@ -54,7 +54,7 @@ public class TagController {
         Optional<Testgruppe> byId = testgruppeRepository.findById(gruppeId);
         Testgruppe testgruppe = byId
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-        log.info("gruppe: ", Json.pretty(byId.get()));
+        log.info("gruppe: {}", Json.pretty(byId.get()));
         byId.get().setTags(tags.stream().map(Tags::name).collect(Collectors.toSet()));
         return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
                         .stream()
