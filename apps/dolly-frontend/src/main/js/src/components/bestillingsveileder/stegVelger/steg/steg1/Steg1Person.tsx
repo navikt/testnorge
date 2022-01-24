@@ -14,14 +14,10 @@ import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { erTestnorgeIdent } from '~/ducks/fagsystem'
-import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
 const identFraTestnorge = (opts: any) => {
 	if (opts.is.importTestnorge) return true
-	return (
-		opts.is.leggTil && erTestnorgeIdent(getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster))
-	)
+	return opts.is.leggTil && opts.identMaster === 'PDL'
 }
 
 export const Steg1Person = ({ stateModifier }: any) => {

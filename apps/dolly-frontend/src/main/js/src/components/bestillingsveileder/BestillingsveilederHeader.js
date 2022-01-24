@@ -3,12 +3,11 @@ import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
 import { ImportFraEtikett } from '~/components/ui/etikett'
-import { erTestnorgeIdent } from '~/ducks/fagsystem'
 import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
-const getImportFra = (opts, ident) => {
+const getImportFra = (opts) => {
 	if (opts.is.leggTil) {
-		if (erTestnorgeIdent(ident)) {
+		if (opts.identMaster === 'PDL') {
 			return 'Testnorge'
 		} else if (opts.personFoerLeggTil.tpsf.importFra) {
 			return opts.personFoerLeggTil.tpsf.importFra
@@ -20,7 +19,7 @@ const getImportFra = (opts, ident) => {
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
-	const importFra = getImportFra(opts, ident)
+	const importFra = getImportFra(opts)
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
