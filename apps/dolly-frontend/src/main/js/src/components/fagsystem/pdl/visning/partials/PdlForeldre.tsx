@@ -27,17 +27,13 @@ export const PdlForeldre = ({ data }: PdlForeldreProps) => {
 
 	return (
 		<div>
-			{data.length > 1 ? (
-				<ErrorBoundary>
-					<DollyFieldArray header="Foreldre" data={data} nested>
-						{(forelder: ForelderBarnRelasjon, idx: number) => (
-							<Visning forelder={forelder} idx={idx} />
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			) : (
-				<Visning forelder={data[0]} />
-			)}
+			<ErrorBoundary>
+				<DollyFieldArray header="Foreldre" data={data} nested>
+					{(forelder: ForelderBarnRelasjon, idx: number) => (
+						<Visning forelder={forelder} idx={idx} />
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
 		</div>
 	)
 }

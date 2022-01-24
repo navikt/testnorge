@@ -40,15 +40,11 @@ export const PdlPartner = ({ data }: PdlPartnerProps) => {
 
 	return (
 		<div>
-			{partnere.length > 1 ? (
-				<ErrorBoundary>
-					<DollyFieldArray header="Forhold" data={partnere} nested>
-						{(forhold: Sivilstand, idx: number) => <Visning forhold={forhold} idx={idx} />}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			) : (
-				<Visning forhold={partnere[0]} />
-			)}
+			<ErrorBoundary>
+				<DollyFieldArray header="Forhold" data={partnere} nested>
+					{(forhold: Sivilstand, idx: number) => <Visning forhold={forhold} idx={idx} />}
+				</DollyFieldArray>
+			</ErrorBoundary>
 		</div>
 	)
 }
