@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 public class BestillingPersonWrapper {
 
     private Person person;
+    private PersonDTO pdlfPerson;
     private LocalDateTime skjermetFra;
     private LocalDateTime skjermetTil;
 }

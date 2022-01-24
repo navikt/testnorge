@@ -22,6 +22,12 @@ public class AddAuthenticationRequestGatewayFilterFactory extends AbstractGatewa
         });
     }
 
+    public static GatewayFilter apiKeyAuthenticationHeaderFilter(String apiKey) {
+        return new AddAuthenticationRequestGatewayFilterFactory().apply((builder) -> {
+            return Mono.just(builder.headers(headers -> builder.header(HttpHeaders.AUTHORIZATION, apiKey)));
+        });
+    }
+
     public static GatewayFilter bearerAuthenticationAndNavConsumerTokenHeaderFilter(Supplier<Mono<String>> getToken) {
         return new AddAuthenticationRequestGatewayFilterFactory().apply((builder) -> {
             return getToken.get().map(token -> builder
