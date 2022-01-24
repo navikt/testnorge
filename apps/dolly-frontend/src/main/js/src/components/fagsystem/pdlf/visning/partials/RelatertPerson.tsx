@@ -2,8 +2,14 @@ import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 
-export const RelatertPerson = ({ data, tittel }) => {
+type RelatertPersonData = {
+	data: PersonData
+	tittel: string
+}
+
+export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 	if (!data) return null
 	return (
 		<div className="person-visning_content">

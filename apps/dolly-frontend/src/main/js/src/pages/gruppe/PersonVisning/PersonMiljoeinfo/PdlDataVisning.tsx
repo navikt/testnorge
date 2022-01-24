@@ -15,7 +15,7 @@ import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kon
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
-import { Sivilstand } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
+import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
@@ -52,7 +52,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
-				<Sivilstand data={sivilstand} relasjoner={null} />
+				<SivilstandVisning data={sivilstand} relasjoner={null} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 			</div>
 		)

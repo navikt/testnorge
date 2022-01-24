@@ -12,23 +12,29 @@ import _get from 'lodash/get'
 import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
 	gruppeId: string
 }
 
+type Option = {
+	value: string
+	label: string
+}
+
 export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => {
 	const getOptions = async () => {
-		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response) => {
-			const identListe = response.data?.identer?.map((person) => {
+		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
+			const identListe = response.data?.identer?.map((person: PersonData) => {
 				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
 			})
 			return identListe
 		})
-		const options = await PdlforvalterApi.getPersoner(gruppe).then((response) => {
-			const personListe = []
-			response.data.forEach((id) => {
+		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
+			const personListe: Array<Option> = []
+			response.data.forEach((id: Person) => {
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,

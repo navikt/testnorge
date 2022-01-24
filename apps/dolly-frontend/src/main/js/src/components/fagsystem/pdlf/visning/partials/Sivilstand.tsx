@@ -5,8 +5,19 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import { Sivilstand, Relasjon } from '~/components/fagsystem/pdlf/PdlTypes'
 
-export const Visning = ({ data, relasjoner }) => {
+type SivilstandData = {
+	data: Array<Sivilstand>
+	relasjoner: Array<Relasjon>
+}
+
+type VisningData = {
+	data: Sivilstand
+	relasjoner: Array<Relasjon>
+}
+
+export const Visning = ({ data, relasjoner }: VisningData) => {
 	const retatertPersonIdent = data.relatertVedSivilstand
 	const relasjon = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === retatertPersonIdent
@@ -36,7 +47,7 @@ export const Visning = ({ data, relasjoner }) => {
 	)
 }
 
-export const Sivilstand = ({ data, relasjoner }) => {
+export const SivilstandVisning = ({ data, relasjoner }: SivilstandData) => {
 	if (!data || data.length < 1) return null
 
 	return (
@@ -44,7 +55,9 @@ export const Sivilstand = ({ data, relasjoner }) => {
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
 
 			<DollyFieldArray data={data} nested>
-				{(sivilstand) => <Visning key={sivilstand.id} data={sivilstand} relasjoner={relasjoner} />}
+				{(sivilstand: Sivilstand) => (
+					<Visning key={sivilstand.id} data={sivilstand} relasjoner={relasjoner} />
+				)}
 			</DollyFieldArray>
 		</div>
 	)
