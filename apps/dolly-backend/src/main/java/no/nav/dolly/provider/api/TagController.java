@@ -1,6 +1,5 @@
 package no.nav.dolly.provider.api;
 
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,11 +50,11 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public Object sendTagsPaaGruppe(@RequestBody Set<Tags> tags, Long gruppeId) {
+    public Object sendTagsPaaGruppe(@RequestBody Set<Tags> tags,
+                                    @PathVariable("gruppeId") Long gruppeId) {
         Optional<Testgruppe> byId = testgruppeRepository.findById(gruppeId);
         Testgruppe testgruppe = byId
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-        log.info("gruppe: {}", Json.pretty(byId.get()));
         byId.get().setTags(tags.stream().map(Tags::name).collect(Collectors.toSet()));
         return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
                         .stream()
