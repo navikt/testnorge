@@ -9,7 +9,6 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -40,7 +39,7 @@ public class HelsepersonellConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "leger-hent" })
-    public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
 
         log.info("Henter helsepersonell...");
         return webClient
@@ -50,7 +49,7 @@ public class HelsepersonellConsumer {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .toEntity(HelsepersonellListeDTO.class)
+                .bodyToMono(HelsepersonellListeDTO.class)
                 .block();
     }
 
