@@ -1,19 +1,30 @@
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ForelderBarnRelasjon } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import {
+	DoedfoedtBarn,
+	ForelderBarnRelasjon,
+} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import React from 'react'
+import { hasNoValues } from '~/components/fagsystem/pdl/visning/partials/PdlRelasjoner'
+import Formatters from '~/utils/DataFormatter'
 
-type VisningProps = {
+type BarnProps = {
 	barn: ForelderBarnRelasjon
 	idx?: number
 }
 
-type PdlBarnProps = {
-	data: ForelderBarnRelasjon[]
+type DoedfoedtBarnProps = {
+	doedfoedtBarn: DoedfoedtBarn
+	idx?: number
 }
 
-const Visning = ({ barn, idx }: VisningProps) => {
+type PdlBarnProps = {
+	barn: ForelderBarnRelasjon[]
+	doedfoedtBarn: DoedfoedtBarn[]
+}
+
+const BarnVisning = ({ barn, idx }: BarnProps) => {
 	return (
 		<div key={idx} className="person-visning_content">
 			<TitleValue title="Ident" value={barn.relatertPersonsIdent} />
@@ -22,20 +33,33 @@ const Visning = ({ barn, idx }: VisningProps) => {
 	)
 }
 
-export const PdlBarn = ({ data }: PdlBarnProps) => {
-	if (!data || data.length === 0) return null
+const DoedfoedtBarnVisning = ({ doedfoedtBarn, idx }: DoedfoedtBarnProps) => {
+	return (
+		<div key={idx} className="person-visning_content">
+			<TitleValue title="Dato" value={Formatters.formatDate(doedfoedtBarn.dato)} />
+		</div>
+	)
+}
+
+export const PdlBarn = ({ barn, doedfoedtBarn }: PdlBarnProps) => {
+	if (hasNoValues(barn) && hasNoValues(doedfoedtBarn)) return null
 
 	return (
 		<div>
-			{data.length > 1 ? (
-				<ErrorBoundary>
-					<DollyFieldArray header="Barn" data={data} nested>
-						{(barn: ForelderBarnRelasjon, idx: number) => <Visning barn={barn} idx={idx} />}
+			<ErrorBoundary>
+				{!hasNoValues(barn) && (
+					<DollyFieldArray header="Barn" data={barn} nested>
+						{(data: ForelderBarnRelasjon, idx: number) => <BarnVisning barn={data} idx={idx} />}
 					</DollyFieldArray>
-				</ErrorBoundary>
-			) : (
-				<Visning barn={data[0]} />
-			)}
+				)}
+				{!hasNoValues(doedfoedtBarn) && (
+					<DollyFieldArray header="Dødfødt barn" data={barn} nested>
+						{(data: DoedfoedtBarn, idx: number) => (
+							<DoedfoedtBarnVisning doedfoedtBarn={data} idx={idx} />
+						)}
+					</DollyFieldArray>
+				)}
+			</ErrorBoundary>
 		</div>
 	)
 }

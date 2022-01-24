@@ -25,6 +25,7 @@ export const PdlRelasjoner = ({ data, visTittel = true }: PdlRelasjonerProps) =>
 	const barn = data.forelderBarnRelasjon?.filter(
 		(relasjon: ForelderBarnRelasjon) => relasjon.relatertPersonsRolle == Rolle.BARN
 	)
+	const doedfoedtBarn = data.doedfoedtBarn
 	const foreldre = data.forelderBarnRelasjon?.filter(
 		(relasjon: ForelderBarnRelasjon) =>
 			relasjon.relatertPersonsRolle == Rolle.MOR ||
@@ -32,20 +33,26 @@ export const PdlRelasjoner = ({ data, visTittel = true }: PdlRelasjonerProps) =>
 			relasjon.relatertPersonsRolle == Rolle.MEDMOR
 	)
 
-	if (hasNoValues(partnere) && hasNoValues(barn) && hasNoValues(foreldre)) return null
+	if (
+		hasNoValues(partnere) &&
+		hasNoValues(barn) &&
+		hasNoValues(foreldre) &&
+		hasNoValues(doedfoedtBarn)
+	)
+		return null
 
 	return (
 		<ErrorBoundary>
 			<div>
 				{visTittel && <SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />}
 				<PdlPartner data={partnere} />
-				<PdlBarn data={barn} />
+				<PdlBarn barn={barn} doedfoedtBarn={doedfoedtBarn} />
 				<PdlForeldre data={foreldre} />
 			</div>
 		</ErrorBoundary>
 	)
 }
 
-const hasNoValues = (liste: any[]) => {
+export const hasNoValues = (liste: any[]) => {
 	return !liste || liste.length === 0
 }

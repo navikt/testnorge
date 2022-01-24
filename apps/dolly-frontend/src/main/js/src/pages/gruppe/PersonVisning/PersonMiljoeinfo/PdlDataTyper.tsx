@@ -27,6 +27,7 @@ export type HentPerson = {
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	forelderBarnRelasjon: [ForelderBarnRelasjon]
 	sivilstand: [Sivilstand]
+	doedfoedtBarn: [DoedfoedtBarn]
 }
 
 export type BostedData = {
@@ -117,6 +118,10 @@ export type Sivilstand = {
 	gyldigFraOgMed: Date
 	relatertVedSivilstand: string
 	bekreftelsesdato: Date
+}
+
+export type DoedfoedtBarn = {
+	dato: Date
 }
 
 export type Kodeverk = {
