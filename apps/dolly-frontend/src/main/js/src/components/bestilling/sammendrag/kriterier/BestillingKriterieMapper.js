@@ -130,44 +130,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (relasjoner) {
-			const partnere = relasjoner.partner || relasjoner.partnere
 			const barn = relasjoner.barn
 			const foreldre = relasjoner.foreldre
-
-			if (partnere) {
-				const partner = {
-					header: 'Partner',
-					itemRows: [],
-				}
-
-				partnere.forEach((item, j) => {
-					const sivilstander = _get(item, 'sivilstander', [])
-					const sisteSivilstand = _takeRight(sivilstander)
-
-					const tidligereSivilstander = _dropRight(sivilstander)
-						.reverse()
-						.map((s) => s.sivilstand)
-
-					partner.itemRows.push([
-						{
-							label: '',
-							value: `#${j + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj(
-							'Sivilstand',
-							sisteSivilstand.length > 0 && sisteSivilstand[0].sivilstand,
-							PersoninformasjonKodeverk.Sivilstander
-						),
-						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander)),
-					])
-				})
-
-				data.push(partner)
-			}
 
 			if (barn && barn.length > 0) {
 				const barn = {

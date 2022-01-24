@@ -3,7 +3,6 @@ import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { Partnere } from './partials/partnere/Partnere'
 import { Barn } from './partials/Barn'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Foreldre } from './partials/Foreldre'
@@ -30,9 +29,6 @@ export const Familierelasjoner = ({ formikBag }) => {
 				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
 					<Sivilstand formikBag={formikBag} gruppeId={gruppeId} />
 				</Kategori>
-				{/*<Kategori title="Partnere" vis="tpsf.relasjoner.partnere">*/}
-				{/*	<Partnere formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />*/}
-				{/*</Kategori>*/}
 				<Kategori title="Barn" vis="tpsf.relasjoner.barn">
 					<Barn formikBag={formikBag} personFoerLeggTil={opts.personFoerLeggTil} />
 				</Kategori>

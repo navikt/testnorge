@@ -87,11 +87,6 @@ const getUpdatedTpsfData = (tpsfData: any) => {
 		newTpsfData = updateData(newTpsfData, initialValues.utvandretTil)
 	}
 	if (tpsfData.relasjoner) {
-		if (tpsfData.relasjoner.partnere) {
-			newTpsfData.relasjoner.partnere = newTpsfData.relasjoner.partnere.map((partner: any) =>
-				updateData(partner, initialValues.partnere)
-			)
-		}
 		if (tpsfData.relasjoner.barn) {
 			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map((barn: any) => {
 				if (barn.identtype === 'FDAT') {

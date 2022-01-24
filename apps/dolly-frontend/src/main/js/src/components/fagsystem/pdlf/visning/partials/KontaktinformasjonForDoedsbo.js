@@ -8,7 +8,7 @@ import { Personnavn } from './Personnavn'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
-export const Visning = ({ key, data, relasjoner }) => {
+export const Visning = ({ data, relasjoner }) => {
 	const kontaktpersonIdent = data.personSomKontakt?.identifikasjonsnummer
 	const kontaktperson = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === kontaktpersonIdent
@@ -33,7 +33,7 @@ export const Visning = ({ key, data, relasjoner }) => {
 	}
 
 	return (
-		<div className="person-visning_content" id={key}>
+		<div className="person-visning_content">
 			<TitleValue title="Skifteform" value={skifteform} />
 			<TitleValue
 				title="Utstedelsesdato skifteattest"

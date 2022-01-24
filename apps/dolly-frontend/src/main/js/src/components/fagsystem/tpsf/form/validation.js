@@ -161,37 +161,6 @@ const foedtFoerOgEtterTest = (mainValidation, validerFoedtFoer) => {
 	)
 }
 
-const partnere = Yup.array()
-	.of(
-		Yup.object({
-			identtype: Yup.string(),
-			kjonn: Yup.string().nullable(),
-			alder: Yup.number()
-				.transform((num) => (isNaN(num) ? undefined : num))
-				.min(0, 'Alder må være et positivt tall')
-				.max(119, 'Alder må være under 120'),
-			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
-			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
-			spesreg: Yup.string()
-				.when('utenFastBopel', {
-					is: true,
-					then: Yup.string().test(
-						'is-not-kode6',
-						'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
-						(value) => value !== 'SPSF'
-					),
-				})
-				.nullable(),
-			utenFastBopel: Yup.boolean(),
-			boadresse: Yup.object({
-				kommunenr: Yup.string().nullable(),
-			}),
-			sivilstander: ifPresent('$tpsf.relasjoner.partnere[0].sivilstander', sivilstander),
-			harFellesAdresse: Yup.boolean(),
-		})
-	)
-	.nullable()
-
 const requiredHvisIkkeDoed = (path) =>
 	ifPresent(
 		path,
@@ -359,7 +328,6 @@ export const validation = {
 					.nullable()
 			),
 			relasjoner: Yup.object({
-				partnere: ifPresent('$tpsf.relasjoner.partnere', partnere),
 				barn: ifPresent('$tpsf.relasjoner.barn', barn),
 				foreldre: ifPresent('$tpsf.relasjoner.foreldre', foreldre),
 			}),
