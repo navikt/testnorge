@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '~/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { FormikProps } from 'formik'
+import { ErrorMessage, FormikProps } from 'formik'
+import _get from 'lodash/get'
 
 type VelgGruppeProps = {
 	formikBag: FormikProps<{}>
 }
 
 export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
-	const [valgtGruppe, setValgtGruppe] = useState(undefined)
+	const [valgtGruppe, setValgtGruppe] = useState(_get(formikBag.values, `gruppeId`))
 
 	useEffect(() => {
 		formikBag.setFieldValue('gruppeId', valgtGruppe)
@@ -22,6 +23,7 @@ export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
 					<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setValgtGruppe} />
 				</div>
 			</div>
+			<ErrorMessage name="gruppeId" className="error-message" component="div" />
 		</div>
 	)
 }

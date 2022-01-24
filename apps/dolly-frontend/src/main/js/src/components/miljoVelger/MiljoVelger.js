@@ -116,6 +116,6 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 MiljoVelger.validation = {
 	environments: ifPresent(
 		'$environments',
-		Yup.array().of(Yup.string().required('Velg et miljø')).min(1, 'Må minst velge et miljø')
+		Yup.array().of(Yup.string().required('Velg et miljø')).min(1, 'Må velge minst et miljø')
 	),
 }

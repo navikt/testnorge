@@ -21,6 +21,7 @@ export const Steg3 = ({ formikBag }) => {
 			if (harAvhukedeAttributter(formikBag.values)) {
 				formikBag.setFieldValue('environments', [])
 			}
+			formikBag.setFieldValue('gruppeId', '')
 		} else {
 			formikBag.setFieldValue('environments', [])
 		}
