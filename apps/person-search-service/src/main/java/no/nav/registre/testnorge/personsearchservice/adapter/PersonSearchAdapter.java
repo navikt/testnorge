@@ -91,6 +91,14 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getAlder())
                 .ifPresent(value -> queryAlder(value.getFra(), value.getTil(), queryBuilder));
 
+        Optional.ofNullable(search.getIdent())
+                .flatMap(value -> Optional.ofNullable(value.getIdent()))
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentIdenter.identer",
+                        QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
+                        ScoreMode.Avg
+                )));
+
         Optional.ofNullable(search.getSivilstand())
                 .flatMap(value -> Optional.ofNullable(value.getType()))
                 .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(

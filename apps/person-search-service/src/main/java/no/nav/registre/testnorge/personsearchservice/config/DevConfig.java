@@ -17,9 +17,9 @@ import no.nav.registre.testnorge.personsearchservice.config.credentials.ElasticS
 
 @Configuration
 @Profile("dev")
-@VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 @RequiredArgsConstructor
-public class DevConfig  extends AbstractVaultConfiguration {
+@VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
+public class DevConfig extends AbstractVaultConfiguration {
 
     private final ElasticSearchCredentials elasticSearchCredentials;
 

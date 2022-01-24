@@ -13,6 +13,7 @@ public class PersonSearch {
     Pageing pageing;
     String tag;
     String kjoenn;
+    IdentSearch ident;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;
