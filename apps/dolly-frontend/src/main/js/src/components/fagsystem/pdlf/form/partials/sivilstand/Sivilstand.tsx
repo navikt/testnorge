@@ -27,10 +27,9 @@ type Option = {
 export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => {
 	const getOptions = async () => {
 		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
-			const identListe = response.data?.identer?.map((person: PersonData) => {
+			return response.data?.identer?.map((person: PersonData) => {
 				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
 			})
-			return identListe
 		})
 		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
 			const personListe: Array<Option> = []

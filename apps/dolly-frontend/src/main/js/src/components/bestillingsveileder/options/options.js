@@ -21,13 +21,6 @@ export const BVOptions = (
 	} = {},
 	gruppeId
 ) => {
-	// let initialValues = {
-	// 	antall,
-	// 	environments: [],
-	// 	navSyntetiskIdent: false,
-	// 	beskrivelse: null,
-	// }
-
 	let initialValues = {
 		antall,
 		environments: [],

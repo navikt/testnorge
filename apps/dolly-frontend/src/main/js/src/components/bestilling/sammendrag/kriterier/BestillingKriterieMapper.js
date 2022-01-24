@@ -1,7 +1,5 @@
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import _dropRight from 'lodash/dropRight'
-import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
 import {

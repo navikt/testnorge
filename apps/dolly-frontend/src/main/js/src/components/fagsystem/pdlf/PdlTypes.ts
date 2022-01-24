@@ -11,14 +11,14 @@ export type Relasjon = {
 }
 
 export type PersonData = {
-	master: string
-	ident: string
-	navn: Array<Navn>
-	kjoenn: Array<Kjoenn>
-	foedsel: Array<Foedsel>
-	statsborgerskap: Array<Statsborgerskap>
-	adressebeskyttelse: Array<Adressebeskyttelse>
-	sivilstand: Array<Sivilstand>
+	master?: string
+	ident?: string
+	navn?: Array<Navn>
+	kjoenn?: Array<Kjoenn>
+	foedsel?: Array<Foedsel>
+	statsborgerskap?: Array<Statsborgerskap>
+	adressebeskyttelse?: Array<Adressebeskyttelse>
+	sivilstand?: Array<Sivilstand>
 }
 
 type Navn = {
