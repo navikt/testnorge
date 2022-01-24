@@ -2,15 +2,13 @@ package no.nav.dolly.domain.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,8 +29,7 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -83,6 +80,7 @@ public class Testgruppe {
     private String laastBeskrivelse;
 
     @Column(name = "TAGS")
+    @ElementCollection
     private Set<String> tags;
 
     public List<Testident> getTestidenter() {
@@ -104,51 +102,6 @@ public class Testgruppe {
             tags = new HashSet<>();
         }
         return tags;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-
-        if (!(o instanceof Testgruppe that))
-            return false;
-
-        return new EqualsBuilder()
-                .append(getId(), that.getId())
-                .append(getNavn(), that.getNavn())
-                .append(getHensikt(), that.getHensikt())
-                .append(getOpprettetAv(), that.getOpprettetAv())
-                .append(getSistEndretAv(), that.getSistEndretAv())
-                .append(getDatoEndret(), that.getDatoEndret())
-                .append(getErLaast(), that.getErLaast())
-                .append(getLaastBeskrivelse(), that.getLaastBeskrivelse())
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getNavn())
-                .append(getHensikt())
-                .append(getOpprettetAv())
-                .append(getSistEndretAv())
-                .append(getDatoEndret())
-                .append(getErLaast())
-                .append(getLaastBeskrivelse())
-                .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Testgruppe{" +
-                "navn='" + navn + '\'' +
-                ", hensikt='" + hensikt + '\'' +
-                ", datoEndret=" + datoEndret +
-                ", erLaast=" + erLaast +
-                ", laastBeskrivelse='" + laastBeskrivelse + '\'' +
-                '}';
     }
 }
 

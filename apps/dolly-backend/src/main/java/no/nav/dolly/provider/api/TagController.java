@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +28,6 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 @RequestMapping(value = "/api/v1/tags", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TagController {
 
-    private final Testgruppe gruppe;
     private final TestgruppeRepository testgruppeRepository;
     private final PdlDataConsumer pdlDataConsumer;
 
@@ -35,7 +35,7 @@ public class TagController {
     @Transactional
     @Operation(description = "Hent alle gyldige Tags")
     public Set<Tags> hentAlleTags() {
-        return gruppe.getTags().stream().map(Tags::valueOf).collect(Collectors.toSet());
+        return Arrays.stream(Tags.values()).collect(Collectors.toSet());
     }
 
     @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
