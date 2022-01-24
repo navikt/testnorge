@@ -8,6 +8,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,10 @@ import java.util.stream.Stream;
 public class ExcelService {
 
     private final TestgruppeRepository testgruppeRepository;
-    private final PdlfExcelService pdlfExcelService;
+    private final PdlForvalterExcelService pdlForvalterExcelService;
+    private final PdlExcelService pdlExcelService;
 
-    private static void appendRows(HSSFSheet sheet, List<Object[]> rows) {
+    private static void appendRows(HSSFSheet sheet, CellStyle wrapStyle, List<Object[]> rows) {
 
         var rowCount = new AtomicInteger(0);
         rows.stream()
@@ -39,8 +41,11 @@ public class ExcelService {
                     Arrays.stream(rowValue)
                             .forEach(cellValue -> {
                                 var cell = row.createCell(cellCount.getAndIncrement());
-                                if (cellValue instanceof String) {
-                                    cell.setCellValue((String) cellValue);
+                                if (cellValue instanceof String text) {
+                                    cell.setCellValue(text);
+                                    if (text.length() > 25) {
+                                        cell.setCellStyle(wrapStyle);
+                                    }
                                 } else {
                                     cell.setCellValue((Integer) cellValue);
                                 }
@@ -55,13 +60,19 @@ public class ExcelService {
 
         var workbook = new HSSFWorkbook();
         var sheet = workbook.createSheet("Personer");
+        var wrapStyle = workbook.createCellStyle();
+        wrapStyle.setWrapText(true);
 
-        var pdlfPersoner = pdlfExcelService.getPdlfCells(gruppe.getTestidenter().stream()
-                .filter(Testident::isPdlf)
-                .map(Testident::getIdent)
-                .toList());
-
-        appendRows(sheet, Stream.of(Collections.singletonList(getHeader()), pdlfPersoner)
+        appendRows(sheet, wrapStyle, Stream.of(Collections.singletonList(getHeader()),
+                        pdlForvalterExcelService.getFormattetCellsFromPdlForvalter(gruppe.getTestidenter().stream()
+                                .filter(Testident::isPdlf)
+                                .map(Testident::getIdent)
+                                .toList()),
+                        pdlExcelService.getFormattedCellsFromPdl(gruppe.getTestidenter().stream()
+                                .filter(Testident::isPdl)
+                                .map(Testident::getIdent)
+                                .toList())
+                )
                 .flatMap(Collection::stream)
                 .toList());
 
@@ -81,12 +92,6 @@ public class ExcelService {
 
         return new String[]{"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Dødsdato", "Personstatus",
                 "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse", "Oppholdsadresse",
-                "Sivilstand", "Barn1", "Barn2", "Barn3"};
-
-//                ,"Gateadresse","Husnummer","Gatekode","Postnr","Kommunenr","Flyttedato",""
-//                "Postlinje1","Postlinje2","Postlinje3","Postland","InnvandretFraLand","GtVerdi","GtType","GtRegel",""
-//                "Språkkode","Statsborgerskap","TypeSikkerhetTiltak","BeskrivelseSikkerhetTiltak",""
-//                "Relasjon1-Type","Relasjon1-Ident","Relasjon2-Type","Relasjon2-Ident","Relasjon3-Type","Relasjon3-Ident%n"};
-
+                "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig" };
     }
 }

@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
@@ -8,7 +7,6 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -38,7 +36,6 @@ public class DollyPersonCache {
     private final TpsfService tpsfService;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
-    private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
 
     @SneakyThrows
@@ -116,9 +113,8 @@ public class DollyPersonCache {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
             } else if (dollyPerson.isPdlMaster()) {
-                PdlPersonBolk pdlPersonBolk = objectMapper.readValue(
-                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter).toString(),
-                        PdlPersonBolk.class);
+                var pdlPersonBolk =
+                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
             } else if (dollyPerson.isPdlfMaster() && isNull(dollyPerson.getPdlfPerson())) {
                 dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
