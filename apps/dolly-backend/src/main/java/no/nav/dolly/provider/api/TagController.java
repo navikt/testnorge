@@ -2,8 +2,9 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +31,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 public class TagController {
 
     private final TestgruppeRepository testgruppeRepository;
-    private final PdlDataConsumer pdlDataConsumer;
+    private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
 
     @GetMapping()
     @Transactional
@@ -42,10 +44,15 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public Object sendTagsPaaGruppe(Set<Tags> tags, Long gruppeId) {
+    public Object sendTagsPaaGruppe(List<Tags> tags, Long gruppeId) {
         Optional<Testgruppe> byId = testgruppeRepository.findById(gruppeId);
         Testgruppe testgruppe = byId
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-        return pdlDataConsumer.sendTags(tags, testgruppe.getTestidenter());
+        return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
+                        .stream()
+                        .map(Testident::getIdent)
+                        .collect(Collectors.toList()),
+                tags.stream().map(Tags::name)
+                        .collect(Collectors.toList()));
     }
 }

@@ -20,6 +20,10 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (!bestilling.getTags().isEmpty()) {
+            tagsHendelseslagerConsumer.createTags(List.of(dollyPerson.getHovedperson()), bestilling.getTags());
+        }
+
         if (progress.isPdl()) {
             tagsHendelseslagerConsumer.createTags(List.of(dollyPerson.getHovedperson()), List.of("Dolly"));
             var status = tagsHendelseslagerConsumer.publish(List.of(dollyPerson.getHovedperson()));

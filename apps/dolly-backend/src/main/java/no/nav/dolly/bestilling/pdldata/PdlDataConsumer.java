@@ -7,11 +7,8 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataSendTagsCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
@@ -26,8 +23,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,16 +45,6 @@ public class PdlDataConsumer {
     public String sendOrdre(String ident, boolean isTpsfMaster) {
 
         return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
-    }
-
-    @Timed(name = "providers", tags = { "operation", "pdl_sendTags" })
-    public String sendTags(Set<Tags> tags, List<Testident> identer) {
-
-        return new PdlDataSendTagsCommand(webClient,
-                tags,
-                identer.stream().map(Testident::getIdent).collect(Collectors.toList()),
-                serviceProperties.getAccessToken(tokenService))
-                .call().block();
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_delete" })
