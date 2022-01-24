@@ -2,7 +2,7 @@ package no.nav.dolly.provider.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import no.nav.dolly.service.ExcelService;
+import no.nav.dolly.service.excel.ExcelService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
