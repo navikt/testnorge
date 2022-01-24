@@ -19,9 +19,7 @@ type VisningData = {
 
 export const Visning = ({ data, relasjoner }: VisningData) => {
 	const retatertPersonIdent = data.relatertVedSivilstand
-	const relasjon = relasjoner?.find(
-		(relasjon) => relasjon.relatertPerson?.ident === retatertPersonIdent
-	)
+	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
 
 	return (
 		<>

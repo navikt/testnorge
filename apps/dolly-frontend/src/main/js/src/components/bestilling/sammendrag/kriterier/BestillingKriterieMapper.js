@@ -220,25 +220,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sivilstand,
 		} = pdldataKriterier
 
-		const isEmpty = (data) => {
-			const flattenData = (obj) => {
+		const isEmpty = (attributt) => {
+			const flattenData = (objekt) => {
 				let result = {}
-				for (const i in obj) {
-					if (typeof obj[i] === 'object' && !Array.isArray(obj[i])) {
-						const temp = flattenData(obj[i])
+				for (const i in objekt) {
+					if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
+						const temp = flattenData(objekt[i])
 						for (const j in temp) {
 							result[i + '.' + j] = temp[j]
 						}
 					} else {
-						result[i] = obj[i]
+						result[i] = objekt[i]
 					}
 				}
 				return result
 			}
 
 			return (
-				data.empty ||
-				Object.values(flattenData(data)).every((x) => x === null || x === '' || x === false)
+				attributt.empty ||
+				Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
 			)
 		}
 

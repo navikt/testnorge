@@ -2,7 +2,6 @@ import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
-import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),

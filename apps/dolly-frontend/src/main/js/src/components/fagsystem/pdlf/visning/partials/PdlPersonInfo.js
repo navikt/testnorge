@@ -4,7 +4,6 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/UtenlandsId'
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
-import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import Formatters from '~/utils/DataFormatter'
 
 export const PdlPersonInfo = ({ data, visTittel = true }) => {

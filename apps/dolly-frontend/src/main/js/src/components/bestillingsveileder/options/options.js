@@ -11,12 +11,12 @@ const TYPE = Object.freeze({
 
 export const BVOptions = (
 	{
-		antall = 1,
-		identtype = 'FNR',
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
 		tidligereBestillinger,
+		antall = 1,
+		identtype = 'FNR',
 		opprettOrganisasjon = null,
 	} = {},
 	gruppeId
