@@ -83,6 +83,13 @@ public class DollyPerson {
         return persondetaljer;
     }
 
+    public List<Tags> getTags() {
+        if (isNull(tags)) {
+            tags = new ArrayList<>();
+        }
+        return tags;
+    }
+
     public Person getPerson(String ident) {
         for (Person person : getPersondetaljer()) {
             if (person.getIdent().equals(ident)) {
