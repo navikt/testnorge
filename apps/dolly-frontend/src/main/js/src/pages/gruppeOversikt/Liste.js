@@ -7,6 +7,7 @@ import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import ImporterGrupperConnector from './ImporterGrupperConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import Formatters from '~/utils/DataFormatter'
 
 export default function Liste({
 	items,
@@ -87,6 +88,12 @@ export default function Liste({
 			width: '10',
 			dataField: 'erLaast',
 			formatter: (cell, row) => row.erLaast && <Icon kind={'lock'} />,
+		},
+		{
+			text: 'Tags',
+			width: '25',
+			dataField: 'tags',
+			formatter: (cell, row) => Formatters.arrayToString(row.tags),
 		},
 	]
 	return (

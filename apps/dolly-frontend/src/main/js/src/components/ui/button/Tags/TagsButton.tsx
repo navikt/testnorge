@@ -27,13 +27,13 @@ export const TagsButton = ({ action, loading }: Props) => {
 	return (
 		<React.Fragment>
 			<Button onClick={openModal} kind="link">
-				SEND TAGS
+				TILKNYTT TAGS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="tagsModal">
 					<div className="tagsModal tagsModal-content">
 						<Icon size={50} kind="report-problem-circle" />
-						<h1>SEND TAGS</h1>
+						<h1>TILKNYTT TAGS</h1>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
 						<DollySelect
 							options={tagOptions}
@@ -59,7 +59,7 @@ export const TagsButton = ({ action, loading }: Props) => {
 							}}
 							type="hoved"
 						>
-							SEND TAGS
+							TILKNYTT TAGS
 						</NavButton>
 					</div>
 				</div>
