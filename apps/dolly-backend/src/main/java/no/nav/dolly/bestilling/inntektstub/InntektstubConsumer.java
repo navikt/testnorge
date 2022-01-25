@@ -64,7 +64,7 @@ public class InntektstubConsumer {
                 .uri(uriBuilder -> uriBuilder
                         .path(DELETE_INNTEKTER_URL)
                         .queryParam(NORSKE_IDENTER_QUERY, ident)
-                        .pathSegment(ident).build())
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(Inntektsinformasjon.class)
