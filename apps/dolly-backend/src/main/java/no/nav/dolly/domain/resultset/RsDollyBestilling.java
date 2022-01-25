@@ -43,9 +43,6 @@ public class RsDollyBestilling {
     @Schema(description = "Navn på malbestillling")
     private String malBestillingNavn;
 
-    @Schema(description = "Tags på gruppe")
-    private List<String> tags;
-
     private RsPdldata pdlforvalter;
 
     private PdlPersondata pdldata;

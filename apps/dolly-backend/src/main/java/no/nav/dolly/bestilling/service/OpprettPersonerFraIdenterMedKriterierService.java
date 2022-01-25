@@ -93,6 +93,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                     DollyPerson dollyPerson = DollyPerson.builder()
                                             .hovedperson(leverteIdenter.get(0))
                                             .master(identStatus.getMaster())
+                                            .tags(bestKriterier.getTags())
                                             .build();
 
                                     gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);

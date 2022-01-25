@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,12 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!bestilling.getTags().isEmpty()) {
-            tagsHendelseslagerConsumer.createTags(List.of(dollyPerson.getHovedperson()), bestilling.getTags());
+        if (!dollyPerson.getTags().isEmpty()) {
+            tagsHendelseslagerConsumer.createTags(List.of(dollyPerson.getHovedperson()), dollyPerson.getTags());
         }
 
         if (progress.isPdl()) {
-            tagsHendelseslagerConsumer.createTags(List.of(dollyPerson.getHovedperson()), List.of("Dolly"));
+            tagsHendelseslagerConsumer.createTags(List.of(dollyPerson.getHovedperson()), List.of(Tags.DOLLY));
             var status = tagsHendelseslagerConsumer.publish(List.of(dollyPerson.getHovedperson()));
             log.info("Person med ident {} sendt fra hendelselager med status {}", dollyPerson.getHovedperson(), status);
         }

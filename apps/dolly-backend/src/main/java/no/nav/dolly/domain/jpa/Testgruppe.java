@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.resultset.Tags;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -81,9 +82,9 @@ public class Testgruppe {
     @Column(name = "LAAST_BESKRIVELSE")
     private String laastBeskrivelse;
 
-    @Column(name = "TAGS")
+    //    @Column(name = "TAGS")
     @ElementCollection
-    private Set<String> tags = new HashSet<>();
+    private List<Tags> tags;
 
     public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
@@ -99,9 +100,9 @@ public class Testgruppe {
         return favorisertAv;
     }
 
-    public Set<String> getTags() {
+    public List<Tags> getTags() {
         if (isNull(tags)) {
-            tags = new HashSet<>();
+            tags = new ArrayList<>();
         }
         return tags;
     }

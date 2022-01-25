@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class DollyPerson {
     private List<String> verger;
     private List<String> fullmektige;
     private List<String> identhistorikk;
+    private List<Tags> tags;
     private Testident.Master master;
 
     public List<String> getPartnere() {

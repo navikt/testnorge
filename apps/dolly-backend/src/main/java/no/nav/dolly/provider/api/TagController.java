@@ -4,12 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
-import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
 @Slf4j
 @Transactional
@@ -46,21 +42,19 @@ public class TagController {
                 .collect(Collectors.toSet());
     }
 
-    @CacheEvict(value = CACHE_BESTILLING, allEntries = true)
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public Object sendTagsPaaGruppe(@RequestBody Set<Tags> tags,
+    public Object sendTagsPaaGruppe(@RequestBody List<Tags> tags,
                                     @PathVariable("gruppeId") Long gruppeId) {
-        Optional<Testgruppe> byId = testgruppeRepository.findById(gruppeId);
-        Testgruppe testgruppe = byId
+
+        var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-        byId.get().setTags(tags.stream().map(Tags::name).collect(Collectors.toSet()));
+        testgruppe.setTags(tags);
         return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
                         .stream()
                         .map(Testident::getIdent)
                         .collect(Collectors.toList()),
-                tags.stream().map(Tags::name)
-                        .collect(Collectors.toList()));
+                tags);
     }
 }
