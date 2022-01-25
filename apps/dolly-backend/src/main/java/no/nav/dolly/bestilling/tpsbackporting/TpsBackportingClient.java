@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.IdentTypeUtil;
@@ -17,7 +18,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.getNonPdlTpsCreateEnv;
@@ -61,9 +65,21 @@ public class TpsBackportingClient implements ClientRegister {
                 mapAtrifacter(pdlPerson, tpsfBestilling);
 
                 try {
-                    tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
-                    tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()),
-                            getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+                    var response = tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
+                    tpsfBestilling.setDoedsdato(null);
+                    var familieResponse = Stream.of(dollyPerson.getPartnere(), dollyPerson.getBarn())
+                            .flatMap(Collection::stream)
+                            .map(ident -> tpsfService.endreLeggTilPaaPerson(ident, tpsfBestilling))
+                            .toList();
+
+                    tpsfService.sendIdenterTilTpsFraTPSF(Stream.of(List.of(response), familieResponse)
+                            .flatMap(Collection::stream)
+                            .map(RsOppdaterPersonResponse::getIdentTupler)
+                            .flatMap(Collection::stream)
+                            .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                            .collect(Collectors.toSet())
+                            .stream().toList(),
+                    getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
 
                 } catch (RuntimeException e) {
                     progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
@@ -94,7 +110,7 @@ public class TpsBackportingClient implements ClientRegister {
         }
         if (!pdlPerson.getStatsborgerskap().isEmpty() &&
                 (!"NOR".equals(getStatborgerskap(pdlPerson).getLandkode()) ||
-                IdentType.FNR != IdentTypeUtil.getIdentType(pdlPerson.getIdent()))) {
+                        IdentType.FNR != IdentTypeUtil.getIdentType(pdlPerson.getIdent()))) {
             mapperFacade.map(getStatborgerskap(pdlPerson), tpsfBestilling);
         }
         if (!pdlPerson.getDoedsfall().isEmpty()) {
