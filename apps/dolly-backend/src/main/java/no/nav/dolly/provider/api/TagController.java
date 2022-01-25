@@ -45,7 +45,7 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public Object sendTagsPaaGruppe(@RequestBody List<Tags> tags,
+    public String sendTagsPaaGruppe(@RequestBody List<Tags> tags,
                                     @PathVariable("gruppeId") Long gruppeId) {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
