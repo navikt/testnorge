@@ -396,7 +396,8 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 export const selectPersonListe = (state) => {
 	const { gruppe, fagsystem } = state
 
-	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter)) return null
+	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+		return null
 
 	// Sortert etter bestillingsId
 	const identer = Object.values(gruppe.ident)
