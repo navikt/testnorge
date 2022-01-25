@@ -245,7 +245,7 @@ export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
 	let identListe = []
 	Object.values(state.gruppe?.ident)?.forEach((person) => {
-		if (!person.master || person.master !== 'PDLF' || person.master !== 'PDL') {
+		if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
 			identListe.push(person.ident)
 		}
 	})
