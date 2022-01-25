@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -89,7 +90,7 @@ public class Testgruppe {
             name = "TAGS",
             joinColumns = @JoinColumn(name = "GRUPPE_ID")
     )
-    private List<Tags> tags;
+    private List<String> tags;
 
     public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
@@ -109,7 +110,7 @@ public class Testgruppe {
         if (isNull(tags)) {
             tags = new ArrayList<>();
         }
-        return tags;
+        return tags.stream().map(Tags::valueOf).collect(Collectors.toList());
     }
 
     @Override
