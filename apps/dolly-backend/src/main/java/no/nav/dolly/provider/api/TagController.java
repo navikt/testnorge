@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,14 @@ public class TagController {
         return Arrays.stream(Tags.values())
                 .map(tag -> Tags.TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
                 .collect(Collectors.toSet());
+    }
+
+    @GetMapping("/ident/{ident}")
+    @Transactional
+    @Operation(description = "Hent tags på ident")
+    public JsonNode hentTagsPaaIdent(@PathVariable("ident") String ident) {
+
+        return tagsHendelseslagerConsumer.getTag(ident);
     }
 
     @PostMapping("/gruppe/{gruppeId}")

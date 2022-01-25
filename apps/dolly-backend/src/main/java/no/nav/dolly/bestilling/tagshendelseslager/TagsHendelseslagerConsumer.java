@@ -41,19 +41,19 @@ public class TagsHendelseslagerConsumer {
         return new TagsOpprettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tags_delete"})
+    @Timed(name = "providers", tags = { "operation", "tags_delete" })
     public void deleteTags(List<String> identer) {
 
         new TagsSlettingCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tags_get"})
+    @Timed(name = "providers", tags = { "operation", "tags_get" })
     public JsonNode getTag(String ident) {
 
         return new TagsHenteCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
+    @Timed(name = "providers", tags = { "operation", "hendelselager_publish" })
     public String publish(List<String> identer) {
 
         return new HendelseslagerPublishCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
