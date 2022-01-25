@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @Builder
 @AllArgsConstructor
@@ -17,6 +19,7 @@ public class PersonDTO {
     String ident;
     String aktorId;
     String tag;
+    List<String> tags;
     FoedselDTO foedsel;
     SivilstandDTO sivilstand;
     StatsborgerskapDTO statsborgerskap;

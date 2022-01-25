@@ -108,6 +108,7 @@ public class Person {
                 .ident(getIdent())
                 .kjoenn(getKjoenn())
                 .tag(getTags().stream().findFirst().orElse(null))
+                .tags(getTags())
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
                 .statsborgerskap(toDTO(statsborgerskap))
