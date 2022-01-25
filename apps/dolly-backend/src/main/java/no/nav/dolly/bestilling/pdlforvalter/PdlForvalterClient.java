@@ -44,6 +44,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.IdentTypeUtil;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -142,12 +143,17 @@ public class PdlForvalterClient implements ClientRegister {
             dollyPerson.getPersondetaljer().stream()
                     .filter(person -> dollyPerson.getIdenthistorikk().stream().anyMatch(historisk -> historisk.equals(person.getIdent())))
                     .forEach(person ->
-                            sendArtifacter(bestilling, dollyPerson, person));
+                            sendArtifacter(bestilling, dollyPerson, person,false));
+
+            // Send hovedperson
+            sendArtifacter(bestilling, dollyPerson, dollyPerson.getPerson(dollyPerson.getHovedperson()), true);
+
             // Send øvrige personer
             dollyPerson.getPersondetaljer().stream()
+                    .filter(person -> !person.getIdent().equals(dollyPerson.getHovedperson()))
                     .filter(person -> dollyPerson.getIdenthistorikk().stream().noneMatch(historisk -> historisk.equals(person.getIdent())))
                     .forEach(person ->
-                            sendArtifacter(bestilling, dollyPerson, person));
+                            sendArtifacter(bestilling, dollyPerson, person, false));
 
             status.append("&OK");
 
@@ -167,26 +173,31 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person) {
+    private static PersonDTO getPdldataHovedIdent(PdlPersondata pdlPersondata, boolean erHovedperson){
+
+        return erHovedperson && nonNull(pdlPersondata) && nonNull(pdlPersondata.getPerson()) ? pdlPersondata.getPerson() : null;
+    }
+
+    private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person, boolean erHovedperson) {
 
         if (IdentType.FDAT != IdentTypeUtil.getIdentType(person.getIdent())) {
             sendOpprettPerson(person, dollyPerson);
             sendFoedselsmelding(person);
             sendNavn(person);
             sendKjoenn(person);
-            sendOppholdsadresse(person, bestilling.getPdldata());
-            sendKontaktadresse(person, bestilling.getPdldata());
-            sendBostedadresse(person, bestilling.getPdldata());
+            sendOppholdsadresse(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
+            sendKontaktadresse(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
+            sendBostedadresse(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
             sendDeltBosted(person);
-            sendInnflytting(person, bestilling.getPdldata());
-            sendUtflytting(person, bestilling.getPdldata());
-            sendFolkeregisterpersonstatus(person, bestilling.getPdldata());
-            sendStatsborgerskap(person, bestilling.getPdldata());
+            sendInnflytting(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
+            sendUtflytting(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
+            sendFolkeregisterpersonstatus(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
+            sendStatsborgerskap(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
             sendForeldreBarnRelasjon(person);
             sendForeldreansvar(person);
             sendSivilstand(person);
-            sendTelefonnummer(person, bestilling.getPdldata());
-            sendDoedsfall(person, bestilling.getPdldata());
+            sendTelefonnummer(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
+            sendDoedsfall(person, getPdldataHovedIdent(bestilling.getPdldata(), erHovedperson));
             sendOpphold(bestilling, person);
             sendVergemaal(person);
             sendFullmakt(person);
@@ -270,10 +281,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendDoedsfall(Person person, PdlPersondata persondata) {
+    private void sendDoedsfall(Person person, PersonDTO persondata) {
 
-        if ((isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getDoedsfall().isEmpty()) &&
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty() &&
                 nonNull(person.getDoedsdato())) {
 
             pdlForvalterConsumer.postDoedsfall(mapperFacade.map(person, PdlDoedsfall.class),
@@ -281,10 +291,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendStatsborgerskap(Person person, PdlPersondata persondata) {
+    private void sendStatsborgerskap(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getStatsborgerskap().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             person.getStatsborgerskap().forEach(statsborgerskap -> pdlForvalterConsumer.postStatsborgerskap(mapperFacade.map(statsborgerskap, PdlStatsborgerskap.class),
                     person.getIdent()));
@@ -296,10 +305,9 @@ public class PdlForvalterClient implements ClientRegister {
         pdlForvalterConsumer.postFoedsel(mapperFacade.map(person, PdlFoedsel.class), person.getIdent());
     }
 
-    private void sendTelefonnummer(Person person, PdlPersondata persondata) {
+    private void sendTelefonnummer(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getTelefonnummer().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             PdlTelefonnummer telefonnumre = mapperFacade.map(person, PdlTelefonnummer.class);
             if (nonNull(telefonnumre)) {
@@ -308,10 +316,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendOppholdsadresse(Person person, PdlPersondata persondata) {
+    private void sendOppholdsadresse(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getOppholdsadresse().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty(PERSON, person);
@@ -320,10 +327,9 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendBostedadresse(Person person, PdlPersondata persondata) {
+    private void sendBostedadresse(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getBostedsadresse().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty(PERSON, person);
@@ -332,20 +338,18 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendFolkeregisterpersonstatus(Person person, PdlPersondata persondata) {
+    private void sendFolkeregisterpersonstatus(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getFolkeregisterPersonstatus().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             pdlForvalterConsumer.postFolkeregisterpersonstatus(
                     mapperFacade.map(person, PdlFolkeregisterpersonstatus.class), person.getIdent());
         }
     }
 
-    private void sendKontaktadresse(Person person, PdlPersondata persondata) {
+    private void sendKontaktadresse(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getKontaktadresse().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty(PERSON, person);
@@ -360,20 +364,18 @@ public class PdlForvalterClient implements ClientRegister {
                 .forEach(adresse -> pdlForvalterConsumer.postDeltBosted(adresse, person.getIdent()));
     }
 
-    private void sendInnflytting(Person person, PdlPersondata persondata) {
+    private void sendInnflytting(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getInnflytting().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             mapperFacade.map(person, PdlInnflyttingHistorikk.class).getInnflyttinger().forEach(innflytting ->
                     pdlForvalterConsumer.postInnflytting(innflytting, person.getIdent()));
         }
     }
 
-    private void sendUtflytting(Person person, PdlPersondata persondata) {
+    private void sendUtflytting(Person person, PersonDTO persondata) {
 
-        if (isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getUtflytting().isEmpty()) {
+        if (isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
 
             mapperFacade.map(person, PdlUtflyttingHistorikk.class).getUtflyttinger().forEach(utflytting ->
                     pdlForvalterConsumer.postUtflytting(utflytting, person.getIdent()));
