@@ -50,7 +50,9 @@ public class TagController {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-        testgruppe.setTags(tags.stream().map(Tags::name).collect(Collectors.toList()));
+        testgruppe.setTags(tags.stream()
+                .map(Tags::name)
+                .collect(Collectors.joining(",")));
         return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
                         .stream()
                         .map(Testident::getIdent)
