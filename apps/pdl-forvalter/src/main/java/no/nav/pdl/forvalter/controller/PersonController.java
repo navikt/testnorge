@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @RestController
@@ -49,7 +50,7 @@ public class PersonController {
                                          @RequestParam(required = false) Integer sidestorrelse) {
 
         if (isNull(sidestorrelse)) {
-            if (!identer.isEmpty()) {
+            if (nonNull(identer)) {
                 sidestorrelse = 200;
             } else {
                 sidestorrelse = 10;
