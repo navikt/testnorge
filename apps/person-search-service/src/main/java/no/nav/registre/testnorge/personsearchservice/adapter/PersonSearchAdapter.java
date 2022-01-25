@@ -78,6 +78,9 @@ public class PersonSearchAdapter {
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
 
+        Optional.ofNullable(search.getExludeTag())
+                .ifPresent(value -> queryBuilder.mustNot(QueryBuilders.matchQuery("tags", value)));
+
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
                         "hentPerson.kjoenn",
