@@ -38,7 +38,10 @@ public class TagsHendelseslagerConsumer {
     @Timed(name = "providers", tags = { "operation", "tags_create" })
     public String createTags(List<String> identer, List<Tags> tags) {
 
-        return new TagsOpprettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
+        String response = new TagsOpprettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
+        log.info("Response for createTags: {}", response);
+
+        return response;
     }
 
     @Timed(name = "providers", tags = { "operation", "tags_delete" })
