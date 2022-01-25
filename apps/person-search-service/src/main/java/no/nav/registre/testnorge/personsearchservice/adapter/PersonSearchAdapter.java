@@ -78,7 +78,7 @@ public class PersonSearchAdapter {
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
 
-        Optional.ofNullable(search.getExludeTag())
+        Optional.ofNullable(search.getExcludeTag())
                 .ifPresent(value -> queryBuilder.mustNot(QueryBuilders.matchQuery("tags", value)));
 
         Optional.ofNullable(search.getKjoenn())

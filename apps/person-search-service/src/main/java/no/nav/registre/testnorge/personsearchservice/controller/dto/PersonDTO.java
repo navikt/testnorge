@@ -18,7 +18,6 @@ public class PersonDTO {
     String kjoenn;
     String ident;
     String aktorId;
-    String tag;
     List<String> tags;
     FoedselDTO foedsel;
     SivilstandDTO sivilstand;
