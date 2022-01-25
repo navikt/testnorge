@@ -53,8 +53,8 @@ export const TagsButton = ({ action, loading }: Props) => {
 						<NavButton
 							onClick={() => {
 								if (tags) {
-									closeModal()
-									return action(tags)
+									action(tags)
+									location.reload()
 								}
 							}}
 							type="hoved"

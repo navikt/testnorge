@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Hjelpetekst from '~/components/hjelpetekst'
@@ -13,6 +13,7 @@ import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/Gjen
 
 import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
+import { DollyApi } from '~/service/Api'
 
 export default function GruppeHeader({
 	gruppe,
@@ -27,6 +28,13 @@ export default function GruppeHeader({
 }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
+
+	const [tags, setTags] = useState(null)
+	useEffect(() => {
+		DollyApi.getTagsPaaIdent(identArray?.[0]?.ident).then((response) => {
+			setTags(response?.data)
+		})
+	}, [])
 
 	const erLaast = gruppe.erLaast
 
@@ -62,6 +70,7 @@ export default function GruppeHeader({
 						value={identArray.map((p) => p.ibruk).filter(Boolean).length}
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
+					{tags && <Header.TitleValue title="Tags" value={Formatters.arrayToString(tags)} />}
 				</div>
 				<div className="gruppe-header__actions">
 					{gruppe.erEierAvGruppe && !erLaast && (

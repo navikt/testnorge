@@ -201,4 +201,11 @@ export default {
 	getTags() {
 		return Request.get(Endpoints.getTags())
 	},
+
+	getTagsPaaIdent(ident) {
+		if (!ident) {
+			return null
+		}
+		return Request.get(Endpoints.getTagsPaaIdent(ident))
+	},
 }

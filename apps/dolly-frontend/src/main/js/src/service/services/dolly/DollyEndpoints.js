@@ -61,6 +61,10 @@ export default class DollyEndpoints {
 		return `${tagsBase}`
 	}
 
+	static getTagsPaaIdent(ident) {
+		return `${tagsBase}/ident/${ident}`
+	}
+
 	static gruppeBestillingStatus(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestillingStatus`
 	}

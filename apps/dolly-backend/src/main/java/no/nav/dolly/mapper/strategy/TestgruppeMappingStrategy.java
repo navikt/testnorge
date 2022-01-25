@@ -33,6 +33,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                         rsTestgruppe.setErEierAvGruppe(getUserId(getUserInfo).equals(getBrukerId(testgruppe.getOpprettetAv())));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
+                        rsTestgruppe.setTags(testgruppe.getTags());
                     }
                 })
                 .byDefault()
