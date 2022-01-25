@@ -21,10 +21,8 @@ import no.nav.registre.testnorge.personsearchservice.config.credentials.ElasticS
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class DevConfig extends AbstractVaultConfiguration {
 
-    private final ElasticSearchCredentials elasticSearchCredentials;
-
     @Bean
-    public RestHighLevelClient client() {
+    public RestHighLevelClient client(ElasticSearchCredentials elasticSearchCredentials) {
         ClientConfiguration clientConfiguration
                 = ClientConfiguration.builder()
                 .connectedTo(elasticSearchCredentials.getHost() + ":" + elasticSearchCredentials.getPort())
