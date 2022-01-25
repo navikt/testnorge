@@ -162,6 +162,20 @@ const selectOptions: SelectOptions = {
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' },
 	],
 
+	// PDL - sivilstand
+	sivilstandType: [
+		{ value: 'UOPPGITT', label: 'Uoppgitt' },
+		{ value: 'UGIFT', label: 'Ugift' },
+		{ value: 'GIFT', label: 'Gift' },
+		{ value: 'ENKE_ELLER_ENKEMANN', label: 'Enke eller enkemann' },
+		{ value: 'SKILT', label: 'Skilt' },
+		{ value: 'SEPARERT', label: 'Separert' },
+		{ value: 'REGISTRERT_PARTNER', label: 'Registrert partner' },
+		{ value: 'SEPARERT_PARTNER', label: 'Separtert partner' },
+		{ value: 'SKILT_PARTNER', label: 'Skilt partner' },
+		{ value: 'GJENLEVENDE_PARTNER', label: 'Gjenlevende partner' },
+	],
+
 	// Arena
 	arenaBrukertype: [
 		{ value: 'UTEN_SERVICEBEHOV', label: 'Uten servicebehov' },

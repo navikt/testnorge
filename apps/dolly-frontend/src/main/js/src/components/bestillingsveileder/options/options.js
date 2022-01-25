@@ -9,20 +9,32 @@ const TYPE = Object.freeze({
 	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
 })
 
-export const BVOptions = ({
-	antall = 1,
-	identtype = 'FNR',
-	mal,
-	opprettFraIdenter,
-	personFoerLeggTil,
-	tidligereBestillinger,
-	opprettOrganisasjon = null,
-} = {}) => {
+export const BVOptions = (
+	{
+		mal,
+		opprettFraIdenter,
+		personFoerLeggTil,
+		tidligereBestillinger,
+		antall = 1,
+		identtype = 'FNR',
+		opprettOrganisasjon = null,
+	} = {},
+	gruppeId
+) => {
 	let initialValues = {
 		antall,
 		environments: [],
 		navSyntetiskIdent: false,
 		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: {
+				identtype,
+				foedtEtter: null,
+				foedtFoer: null,
+				alder: null,
+				syntetisk: false,
+			},
+		},
 	}
 
 	let initialValuesOrganisasjon = {
@@ -86,6 +98,7 @@ export const BVOptions = ({
 
 	return {
 		initialValues,
+		gruppeId,
 		antall,
 		identtype,
 		mal,

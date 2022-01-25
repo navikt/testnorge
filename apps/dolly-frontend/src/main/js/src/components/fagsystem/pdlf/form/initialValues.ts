@@ -113,7 +113,7 @@ export const initialSikkerhetstiltak = {
 		enhet: '',
 	},
 	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 	gjeldende: true,
@@ -123,13 +123,13 @@ export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
 	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
+	gyldigTilOgMed: null as string,
 }
 
 export const initialStatsborgerskap = {
-	landkode: null,
+	landkode: null as string,
 	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 	gjeldende: true,
@@ -203,4 +203,16 @@ export const initialUtvandring = {
 	utflyttingsdato: new Date(),
 	master: 'FREG',
 	kilde: 'Dolly',
+}
+
+export const initialSivilstand = {
+	type: null as string,
+	sivilstandsdato: null as string,
+	relatertVedSivilstand: null as string,
+	bekreftelsesdato: null as string,
+	borIkkeSammen: false,
+	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
 }

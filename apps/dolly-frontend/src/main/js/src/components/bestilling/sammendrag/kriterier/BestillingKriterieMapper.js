@@ -1,7 +1,5 @@
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import _dropRight from 'lodash/dropRight'
-import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
 import {
@@ -21,6 +19,12 @@ const obj = (label, value, apiKodeverkId) => ({
 	label,
 	value,
 	...(apiKodeverkId && { apiKodeverkId }),
+})
+
+const expandable = (expandableHeader, vis, objects) => ({
+	expandableHeader,
+	vis,
+	objects,
 })
 
 const _getTpsfBestillingData = (data) => {
@@ -124,44 +128,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (relasjoner) {
-			const partnere = relasjoner.partner || relasjoner.partnere
 			const barn = relasjoner.barn
 			const foreldre = relasjoner.foreldre
-
-			if (partnere) {
-				const partner = {
-					header: 'Partner',
-					itemRows: [],
-				}
-
-				partnere.forEach((item, j) => {
-					const sivilstander = _get(item, 'sivilstander', [])
-					const sisteSivilstand = _takeRight(sivilstander)
-
-					const tidligereSivilstander = _dropRight(sivilstander)
-						.reverse()
-						.map((s) => s.sivilstand)
-
-					partner.itemRows.push([
-						{
-							label: '',
-							value: `#${j + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj(
-							'Sivilstand',
-							sisteSivilstand.length > 0 && sisteSivilstand[0].sivilstand,
-							PersoninformasjonKodeverk.Sivilstander
-						),
-						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander)),
-					])
-				})
-
-				data.push(partner)
-			}
 
 			if (barn && barn.length > 0) {
 				const barn = {
@@ -252,6 +220,57 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sivilstand,
 		} = pdldataKriterier
 
+		const isEmpty = (attributt) => {
+			const flattenData = (objekt) => {
+				let result = {}
+				for (const i in objekt) {
+					if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
+						const temp = flattenData(objekt[i])
+						for (const j in temp) {
+							result[i + '.' + j] = temp[j]
+						}
+					} else {
+						result[i] = objekt[i]
+					}
+				}
+				return result
+			}
+
+			return (
+				attributt.empty ||
+				Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
+			)
+		}
+
+		const personRelatertTil = (personData, path) => {
+			if (!personData || !_get(personData, path)) return null
+			const {
+				identtype,
+				kjoenn,
+				foedtEtter,
+				foedtFoer,
+				alder,
+				statsborgerskapLandkode,
+				gradering,
+				syntetisk,
+				nyttNavn,
+			} = _get(personData, path)
+
+			return [
+				expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path)), [
+					obj('Identtype', identtype),
+					obj('Kjønn', kjoenn),
+					obj('Født etter', Formatters.formatDate(foedtEtter)),
+					obj('Født før', Formatters.formatDate(foedtFoer)),
+					obj('Alder', alder),
+					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
+					obj('Gradering', Formatters.showLabel('gradering', gradering)),
+					obj('Syntetisk', syntetisk && 'JA'),
+					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
+				]),
+			]
+		}
+
 		if (innflytting) {
 			const innflyttingData = {
 				header: 'Innvandring',
@@ -305,14 +324,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						...personRelatertTil(item, 'nyFullmektig'),
 					]
 				}),
 			}
 			data.push(fullmaktData)
-		}
-
-		const isEmpty = (adresseData) => {
-			return adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
 		}
 
 		const vegadresse = (adresseData) => {
@@ -579,6 +595,24 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(sikkerhetstiltakData)
 		}
 
+		if (sivilstand) {
+			const sivilstandData = {
+				header: 'Sivilstand (partner)',
+				itemRows: sivilstand.map((item, idx) => {
+					return [
+						{ numberHeader: `Sivilstand ${idx + 1}` },
+						obj('Type sivilstand', Formatters.showLabel('sivilstandType', item.type)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.sivilstandsdato)),
+						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),
+						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+						obj('Person relatert til', item.relatertVedSivilstand),
+						...personRelatertTil(item, 'nyRelatertPerson'),
+					]
+				}),
+			}
+			data.push(sivilstandData)
+		}
+
 		const sjekkRettIdent = (item) => {
 			if (_has(item, 'rettIdentitetErUkjent')) {
 				return 'Ukjent'
@@ -698,6 +732,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							(adresse?.postnummer || adresse?.poststedsnavn) &&
 								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 						),
+						{ ...personRelatertTil(item, 'personSomKontakt.nyKontaktperson') },
 					]
 				}),
 			}
@@ -940,7 +975,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 					obj('År/måned', inntektsinfo.sisteAarMaaned),
-					obj('Rapporteringsdato', inntektsinfo.rapporteringsdato),
+					obj('Rapporteringstidspunkt', inntektsinfo.rapporteringsdato),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),

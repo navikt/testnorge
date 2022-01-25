@@ -98,23 +98,6 @@ export const initialValues = {
 			},
 		},
 	],
-	partnere: {
-		identtype: 'FNR',
-		kjonn: '',
-		sivilstander: [
-			{
-				sivilstand: '',
-				// @ts-ignore
-				sivilstandRegdato: null,
-			},
-		],
-		harFellesAdresse: false,
-		spesreg: '',
-		utenFastBopel: false,
-		statsborgerskap: '',
-		statsborgerskapRegdato: '',
-		statsborgerskapTildato: '',
-	},
 	barn: {
 		identtype: 'FNR',
 		kjonn: '',

@@ -8,9 +8,15 @@ interface PdlPersonValues {
 	path: string
 	label: string
 	formikBag: FormikProps<{}>
+	kanSettePersondata?: boolean
 }
 
-export const PdlPersonExpander = ({ path, label, formikBag }: PdlPersonValues) => {
+export const PdlPersonExpander = ({
+	path,
+	label,
+	formikBag,
+	kanSettePersondata = true,
+}: PdlPersonValues) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
 	return (
@@ -20,7 +26,7 @@ export const PdlPersonExpander = ({ path, label, formikBag }: PdlPersonValues) =
 					SKJUL VALG FOR {label}
 				</Button>
 			) : (
-				<Button onClick={setVisPersonValg} kind={'expand'}>
+				<Button onClick={setVisPersonValg} kind={'expand'} disabled={!kanSettePersondata}>
 					VIS VALG FOR {label}
 				</Button>
 			)}

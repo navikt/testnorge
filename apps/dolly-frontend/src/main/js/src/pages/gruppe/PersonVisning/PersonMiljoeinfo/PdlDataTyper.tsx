@@ -20,11 +20,13 @@ export type HentPerson = {
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<{}>
 	kontaktadresse: Array<{}>
-	adressebeskyttelse: Array<{}>
+	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
+	sivilstand: Array<{}>
+	kontaktinformasjonForDoedsbo: Array<{}>
 }
 
 export type BostedData = {
@@ -94,4 +96,7 @@ export type Relasjon = {
 			kjoenn: string
 		}>
 	}
+}
+type AdressebeskyttelseData = {
+	gradering: string
 }

@@ -11,6 +11,7 @@ import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadress
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
+import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
@@ -23,12 +24,12 @@ export const PdlfVisning = ({ data, loading }) => {
 		oppholdsadresse,
 		kontaktadresse,
 		adressebeskyttelse,
+		sivilstand,
 		fullmakt,
-		relasjoner,
 		utenlandskIdentifikasjonsnummer,
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
-	} = data
+	} = data.person
 
 	return (
 		<ErrorBoundary>
@@ -39,10 +40,14 @@ export const PdlfVisning = ({ data, loading }) => {
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
-				<Fullmakt data={fullmakt} relasjoner={relasjoner} />
+				<SivilstandVisning data={sivilstand} relasjoner={data.relasjoner} />
+				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} />
+				<KontaktinformasjonForDoedsbo
+					data={kontaktinformasjonForDoedsbo}
+					relasjoner={data.relasjoner}
+				/>
 			</div>
 		</ErrorBoundary>
 	)

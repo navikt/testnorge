@@ -215,7 +215,7 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
 			action.payload?.data?.forEach((ident) => {
-				state.pdlforvalter[ident.person.ident] = ident.person
+				state.pdlforvalter[ident.person.ident] = ident
 			})
 		},
 		[onSuccess(actions.getInst)](state, action) {
@@ -410,20 +410,20 @@ export const selectPersonListe = (state) => {
 		const pdlIdent = fagsystem.pdlforvalter[ident.ident]
 		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
-		if (ident.master !== 'PDLF' && !tpsfIdent) return null
+		if (ident.master !== 'PDLF' && ident.master !== 'PDL' && !tpsfIdent) return null
 
-		return ident.master === 'PDLF'
+		return ident.master === 'PDLF' || ident.master === 'PDL'
 			? {
 					ident,
-					identNr: pdlIdent.ident,
+					identNr: pdlIdent.person?.ident,
 					bestillingId: ident.bestillingId,
 					identtype: 'FNR',
 					kilde: 'PDL',
-					navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlIdent.navn?.[0]?.etternavn}`,
-					kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
+					navn: `${pdlIdent.person?.navn?.[0]?.fornavn} ${pdlIdent.person?.navn?.[0]?.etternavn}`,
+					kjonn: pdlIdent.person?.kjoenn?.[0]?.kjoenn,
 					alder: Formatters.formatAlder(
-						new Date().getFullYear() - pdlIdent.foedsel?.[0]?.foedselsaar,
-						pdlIdent?.doedsfall?.[0]?.doedsdato
+						new Date().getFullYear() - pdlIdent.person?.foedsel?.[0]?.foedselsaar,
+						pdlIdent.person?.doedsfall?.[0]?.doedsdato
 					),
 					status: hentPersonStatus(
 						ident.ident,
@@ -432,17 +432,17 @@ export const selectPersonListe = (state) => {
 			  }
 			: {
 					ident,
-					identNr: tpsfIdent.ident,
-					bestillingId: ident.bestillingId,
-					importFra: tpsfIdent.importFra,
-					identtype: tpsfIdent.identtype,
+					identNr: tpsfIdent?.ident,
+					bestillingId: ident?.bestillingId,
+					importFra: tpsfIdent?.importFra,
+					identtype: tpsfIdent?.identtype,
 					kilde: 'TPS',
-					navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
-					kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
-					alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+					navn: `${tpsfIdent?.fornavn} ${mellomnavn} ${tpsfIdent?.etternavn}`,
+					kjonn: Formatters.kjonn(tpsfIdent?.kjonn, tpsfIdent?.alder),
+					alder: Formatters.formatAlder(tpsfIdent?.alder, tpsfIdent?.doedsdato),
 					status: hentPersonStatus(
-						ident.ident,
-						state.bestillingStatuser.byId[ident.bestillingId[0]]
+						ident?.ident,
+						state.bestillingStatuser.byId[ident?.bestillingId[0]]
 					),
 			  }
 	})

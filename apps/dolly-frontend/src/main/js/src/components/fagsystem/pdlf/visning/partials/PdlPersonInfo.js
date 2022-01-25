@@ -4,7 +4,6 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/UtenlandsId'
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
-import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import Formatters from '~/utils/DataFormatter'
 
 export const PdlPersonInfo = ({ data, visTittel = true }) => {
@@ -14,7 +13,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
-	const personSivilstand = data?.sivilstand?.[0]
 	const personFoedsel = data?.foedsel?.[0]
 	const sikkerhetstiltak = data?.sikkerhetstiltak?.[0]
 	const personstatus = data?.folkeregisterPersonstatus?.[0]
@@ -29,7 +27,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 					<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 					<TitleValue title="Etternavn" value={personNavn?.etternavn} />
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-					<TitleValue title="Sivilstand" value={personSivilstand?.type} />
 					<TitleValue
 						title="Fødselsdato"
 						value={Formatters.formatDate(personFoedsel?.foedselsdato)}
@@ -57,7 +54,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 				</div>
 				<UtenlandsId data={data.utenlandskIdentifikasjonsnummer} loading={false} />
 				<FalskIdentitet data={data.falskIdentitet} loading={false} />
-				<KontaktinformasjonForDoedsbo data={data.kontaktinformasjonForDoedsbo} loading={false} />
 			</div>
 		</ErrorBoundary>
 	)

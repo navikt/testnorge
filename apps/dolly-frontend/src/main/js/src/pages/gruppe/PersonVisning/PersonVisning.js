@@ -53,7 +53,7 @@ export const PersonVisning = ({
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && !kildePdl && (
+				{!iLaastGruppe && (
 					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
 						LEGG TIL/ENDRE
 					</Button>
@@ -62,7 +62,7 @@ export const PersonVisning = ({
 					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
-				{!iLaastGruppe && !kildePdl && (
+				{!iLaastGruppe && (
 					<SlettButton action={slettPerson} loading={loading.slettPerson}>
 						Er du sikker på at du vil slette denne personen?
 					</SlettButton>
