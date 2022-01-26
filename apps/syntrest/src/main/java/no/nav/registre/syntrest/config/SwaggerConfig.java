@@ -44,17 +44,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("SyntRest")
-                .description("API for å generere syntetisk data fra synth-pakkene\n\nMange av maskinlærings-modellene for " +
-                        "syntetisering av ulike miljøer tar opptil flere Gb med lagringsplass. Dette har vist seg vanskelig " +
-                        "å senke, siden det i BeAn brukes tredjeparts-biblioteker (scikit-learn) med ferdige moduler som tar " +
-                        "opp plass. \n\nNår en applikasjon deployes på kubernetes-clusteret til NAIS spesifiserer man minimum " +
-                        "påkrevd minne, slik at applikasjonen alltid vil kreve minst så mye ressurser av clusteret så lenge " +
-                        "den kjører. Siden generering av syntetiske testdata kun skjer når det blir gjort et kall til en " +
-                        "synt-applikasjon, er det klart at disse synt-appliakasjonene ikke trenger å være oppe og kjøre på " +
-                        "clusteret hele tiden (og ta opp unødvendige ressurser). \n\nLøsningen på dette problemet er en egen " +
-                        "SyntRest-applikasjon som dynamisk deployer og fjerner synt-applikasjoner \"on the fly\" etter behov, " +
-                        "i tillegg til å være applikasjonen man gjør alle api-kall til, siden de blir routet videre til " +
-                        "endepunkter i synt-applikasjonene.")
+                .description("Proxy for synt-pakkene")
                 .version("" + appVersion)
                 .termsOfServiceUrl("https://nav.no")
                 .contact(new Contact("Fellesregistrene på NAV", "http://stash.devillo.no/projects/TREGPOCS/repos/syntrest/browse", null))

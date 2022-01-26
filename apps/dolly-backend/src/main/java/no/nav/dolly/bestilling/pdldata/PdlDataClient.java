@@ -13,6 +13,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @Slf4j
 @Order(3)
 @Service
@@ -32,7 +34,7 @@ public class PdlDataClient implements ClientRegister {
 //                                    .person(bestilling.getPdldata().getPerson())
 //                                    .build());
 //            }
-            if (!progress.isPdl()) {
+            if (!progress.isPdl()  && isBlank(progress.getPdlDataStatus())) {
                 progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
             }
         } catch (WebClientResponseException e) {

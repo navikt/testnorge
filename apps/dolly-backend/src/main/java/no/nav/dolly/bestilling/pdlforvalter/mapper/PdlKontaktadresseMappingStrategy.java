@@ -109,7 +109,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                 postadresser.stream()
                                                         .filter(RsPostadresse::isUtenlandsk)
                                                         .filter(adr -> !person.isKode6())
-                                                        .filter(RsPostadresse::isValid)
                                                         .map(postadresse -> {
                                                             PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
                                                             kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
