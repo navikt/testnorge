@@ -70,7 +70,13 @@ public class PdlDataConsumer {
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {
 
-        return List.of(new PdlDataHentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
+        return getPersoner(identer, 0, 10);
+    }
+
+    public List<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
+
+        return List.of(new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
+                serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {

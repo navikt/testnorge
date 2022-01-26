@@ -82,8 +82,8 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.codehaus.jettison:jettison:1.4.1'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
+    implementation 'org.apache.poi:poi:5.2.0'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation 'org.springframework.security:spring-security-test'

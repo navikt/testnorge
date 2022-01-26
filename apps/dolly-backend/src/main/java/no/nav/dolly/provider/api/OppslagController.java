@@ -21,6 +21,7 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -92,7 +93,7 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL")
-    public JsonNode pdlPerson(@RequestParam("identer") List<String> identer) {
+    public PdlBolkResponse pdlPerson(@RequestParam("identer") List<String> identer) {
         return pdlPersonConsumer.getPdlPersoner(identer);
     }
 
