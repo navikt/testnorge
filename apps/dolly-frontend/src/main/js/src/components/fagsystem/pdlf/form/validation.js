@@ -375,6 +375,12 @@ const sivilstand = Yup.array().of(
 	})
 )
 
+const kjoenn = Yup.array().of(
+	Yup.object({
+		kjoenn: requiredString.nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		opprettNyPerson: Yup.object({
@@ -410,6 +416,7 @@ export const validation = {
 				kontaktDoedsbo
 			),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
+			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
 		}),
 	}),
 }

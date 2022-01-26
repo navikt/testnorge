@@ -216,3 +216,10 @@ export const initialSivilstand = {
 	master: 'PDL',
 	gjeldende: true,
 }
+
+export const initialKjoenn = {
+	kjoenn: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}

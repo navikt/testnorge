@@ -6,6 +6,7 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import {
+	initialKjoenn,
 	initialPdlPerson,
 	initialTilrettelagtKommunikasjon,
 } from '~/components/fagsystem/pdlf/form/initialValues'
@@ -216,12 +217,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		kjonn: {
 			label: 'Kjønn',
-			checked: has('tpsf.kjonn'),
-			add: () =>
-				personFoerLeggTil
-					? setMulti(['tpsf.kjonn', ''], ['tpsf.identtype', 'FNR'])
-					: set('tpsf.kjonn', ''),
-			remove: () => del(['tpsf.kjonn', 'tpsf.identtype']),
+			checked: has('pdldata.person.kjoenn'),
+			add: () => set('pdldata.person.kjoenn', [initialKjoenn]),
+			remove: () => del('pdldata.person.kjoenn'),
 		},
 		harMellomnavn: {
 			label: 'Har mellomnavn',

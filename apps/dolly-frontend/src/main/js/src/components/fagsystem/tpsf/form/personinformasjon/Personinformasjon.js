@@ -16,6 +16,7 @@ import { Innvandring } from '~/components/fagsystem/pdlf/form/partials/innvandri
 import { Utvandring } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
 import { Alder } from '~/components/fagsystem/pdlf/form/partials/alder/Alder'
+import { Kjoenn } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -24,7 +25,6 @@ const nasjonalitetPaths = [
 ]
 
 const diversePaths = [
-	'tpsf.kjonn',
 	'tpsf.identtype',
 	'tpsf.harMellomnavn',
 	'tpsf.harNyttNavn',
@@ -49,6 +49,7 @@ const alderPaths = [
 	'pdldata.opprettNyPerson.foedtFoer',
 ]
 
+const kjoennPath = ['pdldata.person.kjoenn']
 const telefonnummerPath = ['pdldata.person.telefonnummer']
 const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon']
 const innvandringPath = ['pdldata.person.innflytting']
@@ -72,6 +73,7 @@ const panelPaths = [
 	diversePaths,
 	innvandringPath,
 	utvandringPath,
+	kjoennPath,
 	telefonnummerPath,
 	tilrettelagtKommunikasjonPath,
 	doedsfallPath,
@@ -83,6 +85,7 @@ const panelPaths = [
 
 export const Personinformasjon = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	console.log('formikBag', formikBag)
 	return (
 		<Vis attributt={panelPaths}>
 			<Panel
@@ -98,7 +101,8 @@ export const Personinformasjon = ({ formikBag }) => {
 							vergemaalPath,
 							fullmaktPath,
 							doedsfallPath,
-							statsborgerskapPath
+							statsborgerskapPath,
+							kjoennPath
 						)
 					)
 				}
@@ -126,22 +130,32 @@ export const Personinformasjon = ({ formikBag }) => {
 						<Utvandring />
 					</Kategori>
 				</Kategori>
+
+				<Kategori title="Kjønn" vis={kjoennPath}>
+					<Kjoenn />
+				</Kategori>
+
 				<Kategori title="Diverse" vis={diversePaths}>
 					<Diverse formikBag={formikBag} />
 					<TpsMessagingDiverse formikBag={formikBag} />
 				</Kategori>
+
 				<Kategori title="Telefonnummer" vis={telefonnummerPath}>
 					<Telefonnummer formikBag={formikBag} />
 				</Kategori>
+
 				<Kategori title="Vergemål" vis={vergemaalPath}>
 					<Vergemaal />
 				</Kategori>
+
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
 					<Fullmakt formikBag={formikBag} />
 				</Kategori>
+
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
 					<Sikkerhetstiltak formikBag={formikBag} />
 				</Kategori>
+
 				<Kategori title="Tilrettelagt kommunikasjon" vis={tilrettelagtKommunikasjonPath}>
 					<TilrettelagtKommunikasjon />
 				</Kategori>
