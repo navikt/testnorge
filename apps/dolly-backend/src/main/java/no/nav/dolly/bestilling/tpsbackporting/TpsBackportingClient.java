@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,11 +54,17 @@ public class TpsBackportingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
-            pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
-                    PersonUpdateRequestDTO.builder()
-                            .person(bestilling.getPdldata().getPerson())
-                            .build());
+        try {
+            if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
+                pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
+                        PersonUpdateRequestDTO.builder()
+                                .person(bestilling.getPdldata().getPerson())
+                                .build());
+            }
+        } catch (
+                WebClientResponseException e) {
+
+            progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
         }
 
         if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
