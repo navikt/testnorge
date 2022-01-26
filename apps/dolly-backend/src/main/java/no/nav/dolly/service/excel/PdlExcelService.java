@@ -47,7 +47,7 @@ public class PdlExcelService extends PdlPersonExcelService {
                         getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO())),
                         getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
                         getPartnere(person.getPerson().getSivilstand()),
-                        getBarna(person.getPerson().getForelderBarnRelasjon()),
+                        getBarn(person.getPerson().getForelderBarnRelasjon()),
                         getForeldre(person.getPerson().getForelderBarnRelasjon()),
                         getVerge(person.getPerson().getVergemaal()),
                         getFullmektig(person.getPerson().getFullmakt())
@@ -77,10 +77,10 @@ public class PdlExcelService extends PdlPersonExcelService {
                 .collect(Collectors.joining(",\n"));
     }
 
-    private static String getBarna(List<ForelderBarnRelasjonDTO> barna) {
+    private static String getBarn(List<ForelderBarnRelasjonDTO> barn) {
 
-        return barna.stream()
-                .filter(barn -> ForelderBarnRelasjonDTO.Rolle.BARN == barn.getRelatertPersonsRolle())
+        return barn.stream()
+                .filter(barnet -> ForelderBarnRelasjonDTO.Rolle.BARN == barnet.getRelatertPersonsRolle())
                 .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                 .collect(Collectors.joining(",\n"));
     }
