@@ -5,10 +5,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +26,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -35,6 +43,7 @@ public class TagController {
 
     private final TestgruppeRepository testgruppeRepository;
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     @GetMapping()
     @Transactional
@@ -69,6 +78,18 @@ public class TagController {
                 .map(Testident::getIdent)
                 .collect(Collectors.toList());
 
+        var bolkHovedperson = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk().stream();
+        var bolkPersoner = bolkHovedperson.map(PdlBolkResponse.BolkPerson::getPerson);
+        var bolkIdenter = Stream.of(
+                        List.of(bolkHovedperson.map(PdlBolkResponse.BolkPerson::getIdent)),
+                        bolkPersoner.map(personDTO -> personDTO.getSivilstand().stream().map(SivilstandDTO::getRelatertVedSivilstand)).toList(),
+                        bolkPersoner.map(personDTO -> personDTO.getSikkerhetstiltak().stream().map(SikkerhetstiltakDTO::getKontaktperson).map(SikkerhetstiltakDTO.Kontaktperson::getPersonident)).toList(),
+                        bolkPersoner.map(personDTO -> personDTO.getFullmakt().stream().map(FullmaktDTO::getMotpartsPersonident)).toList(),
+                        bolkPersoner.map(personDTO -> personDTO.getVergemaal().stream().map(VergemaalDTO::getVergeIdent)).toList()
+                ).flatMap(Collection::stream)
+                .flatMap(Stream::distinct)
+                .toList();
+
         var tagsTilSletting = testgruppe.getTags().stream()
                 .filter(eksisterendeTag -> tags.stream()
                         .noneMatch(nyTag -> eksisterendeTag.name().equals(nyTag.name())))
@@ -78,9 +99,9 @@ public class TagController {
                 .collect(Collectors.joining(",")));
 
         if (!tagsTilSletting.isEmpty()) {
-            tagsHendelseslagerConsumer.deleteTags(gruppeIdenter, tagsTilSletting);
+            tagsHendelseslagerConsumer.deleteTags(bolkIdenter, tagsTilSletting);
         }
 
-        return tagsHendelseslagerConsumer.createTags(gruppeIdenter, tags);
+        return tagsHendelseslagerConsumer.createTags(bolkIdenter, tags);
     }
 }
