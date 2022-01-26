@@ -7,17 +7,14 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
-@Order(2)
+@Order(3)
 @Service
 @RequiredArgsConstructor
 public class PdlDataClient implements ClientRegister {
@@ -29,12 +26,12 @@ public class PdlDataClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         try {
-            if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
-                    pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
-                            PersonUpdateRequestDTO.builder()
-                                    .person(bestilling.getPdldata().getPerson())
-                                    .build());
-            }
+//            if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
+//                    pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
+//                            PersonUpdateRequestDTO.builder()
+//                                    .person(bestilling.getPdldata().getPerson())
+//                                    .build());
+//            }
             if (!progress.isPdl()) {
                 progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
             }

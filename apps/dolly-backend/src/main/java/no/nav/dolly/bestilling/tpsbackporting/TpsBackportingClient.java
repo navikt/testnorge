@@ -12,8 +12,10 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.getNonPdlTpsCreateEnv;
 
 @Service
-@Order(8)
+@Order(1)
 @RequiredArgsConstructor
 public class TpsBackportingClient implements ClientRegister {
 
@@ -35,6 +37,7 @@ public class TpsBackportingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final TpsfService tpsfService;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final DollyPersonCache dollyPersonCache;
 
     private static StatsborgerskapDTO getStatborgerskap(PersonDTO pdlPerson) {
 
@@ -50,6 +53,13 @@ public class TpsBackportingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
+            pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
+                    PersonUpdateRequestDTO.builder()
+                            .person(bestilling.getPdldata().getPerson())
+                            .build());
+        }
+
         if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
                 !getNonPdlTpsCreateEnv(bestilling.getEnvironments()).isEmpty() &&
                 nonNull(bestilling.getPdldata()) && bestilling.getPdldata().isTpsdataPresent()) {
@@ -63,6 +73,7 @@ public class TpsBackportingClient implements ClientRegister {
                         .build();
 
                 mapAtrifacter(pdlPerson, tpsfBestilling);
+                dollyPersonCache.fetchIfEmpty(dollyPerson);
 
                 try {
                     var response = tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
@@ -73,13 +84,16 @@ public class TpsBackportingClient implements ClientRegister {
                             .toList();
 
                     tpsfService.sendIdenterTilTpsFraTPSF(Stream.of(List.of(response), familieResponse)
-                            .flatMap(Collection::stream)
-                            .map(RsOppdaterPersonResponse::getIdentTupler)
-                            .flatMap(Collection::stream)
-                            .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                            .collect(Collectors.toSet())
-                            .stream().toList(),
-                    getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+                                    .flatMap(Collection::stream)
+                                    .map(RsOppdaterPersonResponse::getIdentTupler)
+                                    .flatMap(Collection::stream)
+                                    .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                                    .collect(Collectors.toSet())
+                                    .stream().toList(),
+                            getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+
+                    // Force reload
+                    dollyPerson.setPersondetaljer(null);
 
                 } catch (RuntimeException e) {
                     progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
