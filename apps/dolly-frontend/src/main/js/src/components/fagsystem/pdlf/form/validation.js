@@ -381,6 +381,12 @@ const kjoenn = Yup.array().of(
 	})
 )
 
+const navn = Yup.array().of(
+	Yup.object({
+		hasMellomnavn: Yup.boolean(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		opprettNyPerson: Yup.object({
@@ -417,6 +423,7 @@ export const validation = {
 			),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
+			navn: ifPresent('$pdldata.person.navn', navn),
 		}),
 	}),
 }

@@ -216,6 +216,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (pdldataKriterier) {
 		const {
 			kjoenn,
+			navn,
 			telefonnummer,
 			fullmakt,
 			bostedsadresse,
@@ -326,6 +327,19 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(kjoennData)
+		}
+
+		if (navn) {
+			const navnData = {
+				header: 'Navn',
+				itemRows: navn.map((item, idx) => {
+					return [
+						{ numberHeader: `Navn ${idx + 1}` },
+						obj('Har mellomnavn', Formatters.oversettBoolean(item.hasMellomnavn)),
+					]
+				}),
+			}
+			data.push(navnData)
 		}
 
 		if (telefonnummer) {

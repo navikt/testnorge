@@ -17,6 +17,7 @@ import { Utvandring } from '~/components/fagsystem/pdlf/form/partials/utvandring
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
 import { Alder } from '~/components/fagsystem/pdlf/form/partials/alder/Alder'
 import { Kjoenn } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
+import { Navn } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -50,6 +51,7 @@ const alderPaths = [
 ]
 
 const kjoennPath = ['pdldata.person.kjoenn']
+const navnPath = ['pdldata.person.navn']
 const telefonnummerPath = ['pdldata.person.telefonnummer']
 const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon']
 const innvandringPath = ['pdldata.person.innflytting']
@@ -74,6 +76,7 @@ const panelPaths = [
 	innvandringPath,
 	utvandringPath,
 	kjoennPath,
+	navnPath,
 	telefonnummerPath,
 	tilrettelagtKommunikasjonPath,
 	doedsfallPath,
@@ -85,7 +88,7 @@ const panelPaths = [
 
 export const Personinformasjon = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
-	console.log('formikBag', formikBag)
+
 	return (
 		<Vis attributt={panelPaths}>
 			<Panel
@@ -102,7 +105,8 @@ export const Personinformasjon = ({ formikBag }) => {
 							fullmaktPath,
 							doedsfallPath,
 							statsborgerskapPath,
-							kjoennPath
+							kjoennPath,
+							navnPath
 						)
 					)
 				}
@@ -133,6 +137,10 @@ export const Personinformasjon = ({ formikBag }) => {
 
 				<Kategori title="Kjønn" vis={kjoennPath}>
 					<Kjoenn />
+				</Kategori>
+
+				<Kategori title="Navn" vis={navnPath}>
+					<Navn />
 				</Kategori>
 
 				<Kategori title="Diverse" vis={diversePaths}>

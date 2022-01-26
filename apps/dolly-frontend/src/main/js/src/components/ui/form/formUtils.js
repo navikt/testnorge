@@ -28,7 +28,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.innvandretFraLand',
 		'tpsf.utvandretTilLand',
 		'pdldata.person.kjoenn',
-		'tpsf.harMellomnavn',
+		'pdldata.person.navn',
 		'tpsf.harNyttNavn',
 		'tpsf.sivilstand',
 		'tpsf.sprakKode',

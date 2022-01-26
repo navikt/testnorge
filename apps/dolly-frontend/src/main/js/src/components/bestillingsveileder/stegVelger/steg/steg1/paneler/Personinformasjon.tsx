@@ -7,6 +7,7 @@ import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import {
 	initialKjoenn,
+	initialNavn,
 	initialPdlPerson,
 	initialTilrettelagtKommunikasjon,
 } from '~/components/fagsystem/pdlf/form/initialValues'
@@ -223,9 +224,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		harMellomnavn: {
 			label: 'Har mellomnavn',
-			checked: has('tpsf.harMellomnavn'),
-			add: () => set('tpsf.harMellomnavn', true),
-			remove: () => del('tpsf.harMellomnavn'),
+			checked: has('pdldata.person.navn'),
+			add: () => set('pdldata.person.navn', [initialNavn]),
+			remove: () => del('pdldata.person.navn'),
 		},
 		harNyttNavn: {
 			label: 'Nytt navn',

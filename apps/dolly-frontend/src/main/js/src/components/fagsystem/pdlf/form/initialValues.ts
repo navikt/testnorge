@@ -223,3 +223,10 @@ export const initialKjoenn = {
 	master: 'FREG',
 	gjeldende: true,
 }
+
+export const initialNavn = {
+	hasMellomnavn: true,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
