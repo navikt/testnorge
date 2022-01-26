@@ -6,10 +6,13 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
@@ -25,7 +28,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Testgruppe.class, RsTestgruppe.class)
-                .customize(new CustomMapper<Testgruppe, RsTestgruppe>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
@@ -33,7 +36,10 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                         rsTestgruppe.setErEierAvGruppe(getUserId(getUserInfo).equals(getBrukerId(testgruppe.getOpprettetAv())));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
-                        rsTestgruppe.setTags(testgruppe.getTags());
+                        rsTestgruppe.setTags(testgruppe.getTags().stream()
+                                .filter(tags -> tags.name().equals(Tags.DOLLY.name()))
+                                .collect(Collectors.toList())
+                        );
                     }
                 })
                 .byDefault()

@@ -100,7 +100,12 @@ export default function GruppeHeader({
 						</SlettButton>
 					)}
 					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
-					<TagsButton loading={isSendingTags} action={sendTags} gruppeId={gruppe.id} />
+					<TagsButton
+						loading={isSendingTags}
+						action={sendTags}
+						gruppeId={gruppe.id}
+						eksisterendeTags={gruppe.tags}
+					/>
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>

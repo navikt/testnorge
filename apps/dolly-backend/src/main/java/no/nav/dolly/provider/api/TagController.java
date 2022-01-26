@@ -51,6 +51,7 @@ public class TagController {
     public Set<Tags.TagBeskrivelse> hentAlleTags() {
 
         return Arrays.stream(Tags.values())
+                .filter(tags -> tags.name().equals(Tags.DOLLY.name()))
                 .map(tag -> Tags.TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
                 .collect(Collectors.toSet());
     }

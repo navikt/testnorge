@@ -14,12 +14,13 @@ type Props = {
 	action: Function
 	loading: boolean
 	gruppeId: number
+	eksisterendeTags: [String]
 }
 
-export const TagsButton = ({ action, loading }: Props) => {
+export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 	if (loading) return <Loading label="Sender tags..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [tags, setTags] = useState([])
+	const [tags, setTags] = useState(eksisterendeTags)
 
 	const tagsFraDolly = SelectOptionsOppslag.hentTagsFraDolly()
 	const tagOptions = SelectOptionsOppslag.formatOptions('tags', tagsFraDolly)
