@@ -15,9 +15,3 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:person-search-service
-elasticsearch:
-  client:
-    username: ${ELASTIC_USERNAME}
-    password: ${ELASTIC_PASSWORD}
-    host: ${ELASTIC_HOST}
-    port: ${ELASTIC_PORT}
