@@ -7,11 +7,11 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -24,8 +24,9 @@ public class TagsHendelseslagerClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!dollyPerson.getTags().isEmpty()) {
-            tagsHendelseslagerConsumer.createTags(dollyPerson.getPersondetaljer()
-                            .stream().map(Person::getIdent)
+
+            tagsHendelseslagerConsumer.createTags(Stream.concat(dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner()
+                                    .stream().map(relasjon -> relasjon.getPerson().getIdent()), Stream.of(dollyPerson.getHovedperson()))
                             .collect(Collectors.toList()),
                     dollyPerson.getTags());
         }

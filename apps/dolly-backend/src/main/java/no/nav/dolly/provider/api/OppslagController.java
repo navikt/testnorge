@@ -122,12 +122,6 @@ public class OppslagController {
         return skjermingsRegisterConsumer.getSkjerming(ident);
     }
 
-    @GetMapping("/tags/{ident}")
-    @Operation(description = "Hent skjerming på ident")
-    public JsonNode getTags(@PathVariable String ident) {
-        return tagsHendelseslagerConsumer.getTag(ident);
-    }
-
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
     public HelsepersonellListeDTO getHelsepersonell() {

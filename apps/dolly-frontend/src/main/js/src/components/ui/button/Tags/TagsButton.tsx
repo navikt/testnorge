@@ -52,12 +52,11 @@ export const TagsButton = ({ action, loading }: Props) => {
 						</NavButton>
 						<NavButton
 							onClick={() => {
-								if (tags) {
-									action(tags)
-									location.reload()
-								}
+								action(tags)
+								location.reload()
 							}}
 							type="hoved"
+							disabled={!tags || tags.length === 0}
 						>
 							TILKNYTT TAGS
 						</NavButton>
