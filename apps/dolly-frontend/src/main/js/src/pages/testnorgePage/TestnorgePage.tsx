@@ -7,6 +7,44 @@ import PersonSearch from '~/service/services/personsearch'
 import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 
+const initialValues = {
+	personinformasjon: {
+		alder: {
+			fra: '18',
+			til: '70',
+		},
+	},
+}
+
+const getSearchValues = (page: number, pageSize: number, values: any) => {
+	return {
+		pageing: {
+			page: page,
+			pageSize: pageSize,
+		},
+		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
+		foedsel: {
+			fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
+			tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
+		},
+		statsborgerskap: {
+			land: values?.personinformasjon?.statsborgerskap?.land,
+		},
+		sivilstand: {
+			type: values?.personinformasjon?.sivilstand?.type,
+		},
+		alder: {
+			fra: values?.personinformasjon?.alder?.fra,
+			til: values?.personinformasjon?.alder?.til,
+		},
+		ident: {
+			ident: values?.personinformasjon?.ident?.ident,
+		},
+		tag: 'TESTNORGE',
+		excludeTag: 'DOLLY',
+	}
+}
+
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
 	const [page, setPage] = useState(1)
@@ -14,39 +52,14 @@ export default () => {
 	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
 
 	const search = (page: number, values: any) =>
-		PersonSearch.search({
-			pageing: {
-				page: page,
-				pageSize: pageSize,
-			},
-			kjoenn: values?.personinformasjon?.diverse?.kjoenn,
-			foedsel: {
-				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
-				tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
-			},
-			statsborgerskap: {
-				land: values?.personinformasjon?.statsborgerskap?.land,
-			},
-			sivilstand: {
-				type: values?.personinformasjon?.sivilstand?.type,
-			},
-			alder: {
-				fra: values?.personinformasjon?.alder?.fra,
-				til: values?.personinformasjon?.alder?.til,
-			},
-			ident: {
-				ident: values?.personinformasjon?.ident?.ident,
-			},
-			tag: 'TESTNORGE',
-			excludeTag: 'DOLLY',
-		}).then((response) => {
+		PersonSearch.search(getSearchValues(page, pageSize, values)).then((response) => {
 			setPage(page)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
 		})
 
 	useEffect(() => {
-		search(1, null)
+		search(1, initialValues)
 	}, [])
 
 	const onSubmit = (values: any) => search(1, values)
@@ -62,9 +75,12 @@ export default () => {
 				<br />
 				<br />
 				Testnorge er tilgjengelig i PDL.
+				<br />
+				<br />
+				Søket viser kun Testnorge-identer som ikke allerede er importert til en gruppe i Dolly.
 			</p>
 
-			<Formik initialValues={{}} onSubmit={onSubmit}>
+			<Formik initialValues={initialValues} onSubmit={onSubmit}>
 				{({ handleSubmit, values }) => (
 					<SearchContainer
 						left={<SearchOptions />}
