@@ -50,7 +50,7 @@ public class PersonSearchAdapter {
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("Feil med konvertering fra json: " + json, e);
             }
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
@@ -205,7 +205,7 @@ public class PersonSearchAdapter {
 
         return new PersonList(
                 searchResponse.getHits().getTotalHits().value,
-                responses.stream().map(Person::new).collect(Collectors.toList())
+                responses.stream().map(Person::new).toList()
         );
     }
 
