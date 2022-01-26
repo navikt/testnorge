@@ -63,13 +63,24 @@ public class TagController {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
-        testgruppe.setTags(tags.stream()
+
+        var gruppeIdenter = testgruppe.getTestidenter()
+                .stream()
+                .map(Testident::getIdent)
+                .collect(Collectors.toList());
+
+        var tagsTilSletting = testgruppe.getTags().stream()
+                .filter(eksisterendeTag -> tags.stream()
+                        .noneMatch(nyTag -> eksisterendeTag.name().equals(nyTag.name())))
+                .collect(Collectors.toList());
+        testgruppe.setTags(tags.isEmpty() ? null : tags.stream()
                 .map(Tags::name)
                 .collect(Collectors.joining(",")));
-        return tagsHendelseslagerConsumer.createTags(testgruppe.getTestidenter()
-                        .stream()
-                        .map(Testident::getIdent)
-                        .collect(Collectors.toList()),
-                tags);
+
+        if (!tagsTilSletting.isEmpty()) {
+            tagsHendelseslagerConsumer.deleteTags(gruppeIdenter, tagsTilSletting);
+        }
+
+        return tagsHendelseslagerConsumer.createTags(gruppeIdenter, tags);
     }
 }
