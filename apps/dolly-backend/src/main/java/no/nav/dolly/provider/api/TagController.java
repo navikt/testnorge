@@ -11,6 +11,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
@@ -84,6 +85,7 @@ public class TagController {
         var bolkIdenter = Stream.of(
                         List.of(bolkHovedperson.map(PdlBolkResponse.BolkPerson::getIdent)),
                         bolkPersoner.map(personDTO -> personDTO.getSivilstand().stream().map(SivilstandDTO::getRelatertVedSivilstand)).toList(),
+                        bolkPersoner.map(personDTO -> personDTO.getForelderBarnRelasjon().stream().map(ForelderBarnRelasjonDTO::getRelatertPerson)).toList(),
                         bolkPersoner.map(personDTO -> personDTO.getSikkerhetstiltak().stream().map(SikkerhetstiltakDTO::getKontaktperson).map(SikkerhetstiltakDTO.Kontaktperson::getPersonident)).toList(),
                         bolkPersoner.map(personDTO -> personDTO.getFullmakt().stream().map(FullmaktDTO::getMotpartsPersonident)).toList(),
                         bolkPersoner.map(personDTO -> personDTO.getVergemaal().stream().map(VergemaalDTO::getVergeIdent)).toList()
