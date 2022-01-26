@@ -140,7 +140,7 @@ public class PersonSearchAdapter {
                     }
                 });
 
-        Optional.ofNullable(search.getIdentitetSearch())
+        Optional.ofNullable(search.getIdentitet())
                 .ifPresent(value -> {
                     if (value.getFalskIdentitet() != null && value.getFalskIdentitet()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
@@ -158,7 +158,7 @@ public class PersonSearchAdapter {
                     }
                 });
 
-        Optional.ofNullable(search.getBarnSearch())
+        Optional.ofNullable(search.getBarn())
                 .ifPresent(value -> {
                     if (value.getBarn() != null && value.getBarn()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
