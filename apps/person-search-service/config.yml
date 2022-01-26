@@ -47,6 +47,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /kv/preprod/fss/person-search-service/dolly
+        mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:
       cpu: 200m

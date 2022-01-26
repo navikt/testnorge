@@ -94,6 +94,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 Stream.of(
                                                 postadresser.stream()
                                                         .filter(RsPostadresse::isNorsk)
+                                                        .filter(RsPostadresse::isValid)
                                                         .map(postadresse -> {
                                                             PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
                                                             kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(

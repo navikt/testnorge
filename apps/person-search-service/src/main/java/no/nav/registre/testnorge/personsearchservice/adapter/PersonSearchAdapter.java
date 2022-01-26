@@ -78,6 +78,9 @@ public class PersonSearchAdapter {
                 .boolQuery()
                 .must(QueryBuilders.matchQuery("tags", search.getTag()));
 
+        Optional.ofNullable(search.getExcludeTag())
+                .ifPresent(value -> queryBuilder.mustNot(QueryBuilders.matchQuery("tags", value)));
+
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
                         "hentPerson.kjoenn",
@@ -90,6 +93,14 @@ public class PersonSearchAdapter {
 
         Optional.ofNullable(search.getAlder())
                 .ifPresent(value -> queryAlder(value.getFra(), value.getTil(), queryBuilder));
+
+        Optional.ofNullable(search.getIdent())
+                .flatMap(value -> Optional.ofNullable(value.getIdent()))
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentIdenter.identer",
+                        QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
+                        ScoreMode.Avg
+                )));
 
         Optional.ofNullable(search.getSivilstand())
                 .flatMap(value -> Optional.ofNullable(value.getType()))

@@ -12,7 +12,9 @@ import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 public class PersonSearch {
     Pageing pageing;
     String tag;
+    String excludeTag;
     String kjoenn;
+    IdentSearch ident;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;
