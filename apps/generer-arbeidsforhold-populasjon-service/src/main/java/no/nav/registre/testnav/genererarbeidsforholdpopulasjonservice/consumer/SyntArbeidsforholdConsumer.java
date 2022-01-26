@@ -1,6 +1,7 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntAmeldingProperties;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -13,7 +14,6 @@ import java.util.List;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GenererArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GenererStartArbeidsforholdCommand;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntrestServiceProperties;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -28,7 +28,7 @@ public class SyntArbeidsforholdConsumer {
 
     public SyntArbeidsforholdConsumer(
             TokenExchange tokenExchange,
-            SyntrestServiceProperties properties,
+            SyntAmeldingProperties properties,
             ObjectMapper objectMapper
     ) {
         this.tokenExchange = tokenExchange;
