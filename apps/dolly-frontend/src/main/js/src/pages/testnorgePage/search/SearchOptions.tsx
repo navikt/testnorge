@@ -8,6 +8,10 @@ export default () => (
 	<>
 		<h2>Personinformasjon</h2>
 		<section>
+			<h3>Fødsels- eller d-nummer</h3>
+			<FormikTextInput name="personinformasjon.ident.ident" visHvisAvhuket={false} maxlength="11" />
+		</section>
+		<section>
 			<h3>Alder</h3>
 			<FormikDatepicker
 				name="personinformasjon.alder.foedselsdato.fom"
