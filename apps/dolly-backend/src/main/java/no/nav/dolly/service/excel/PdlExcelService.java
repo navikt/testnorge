@@ -2,6 +2,7 @@ package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.dto.PdlPersonDTO;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
@@ -69,19 +70,19 @@ public class PdlExcelService extends PdlPersonExcelService {
                 .collect(Collectors.joining(",\n"));
     }
 
-    private static String getForeldre(List<ForelderBarnRelasjonDTO> foreldre) {
+    private static String getForeldre(List<PdlPersonDTO.ForelderBarnRelasjon> foreldre) {
 
         return foreldre.stream()
                 .filter(forelder -> ForelderBarnRelasjonDTO.Rolle.BARN == forelder.getMinRolleForPerson())
-                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                .map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent)
                 .collect(Collectors.joining(",\n"));
     }
 
-    private static String getBarn(List<ForelderBarnRelasjonDTO> barn) {
+    private static String getBarn(List<PdlPersonDTO.ForelderBarnRelasjon> barn) {
 
         return barn.stream()
                 .filter(barnet -> ForelderBarnRelasjonDTO.Rolle.BARN == barnet.getRelatertPersonsRolle())
-                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                .map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent)
                 .collect(Collectors.joining(",\n"));
     }
 
