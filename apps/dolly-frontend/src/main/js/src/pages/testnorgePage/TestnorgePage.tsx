@@ -34,7 +34,11 @@ export default () => {
 				fra: values?.personinformasjon?.alder?.fra,
 				til: values?.personinformasjon?.alder?.til,
 			},
+			ident: {
+				ident: values?.personinformasjon?.ident?.ident,
+			},
 			tag: 'TESTNORGE',
+			excludeTag: 'DOLLY',
 		}).then((response) => {
 			setPage(page)
 			setItems(response.items)

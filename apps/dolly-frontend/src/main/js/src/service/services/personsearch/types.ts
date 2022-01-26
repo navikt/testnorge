@@ -6,6 +6,7 @@ export type Pageing = {
 export type Search = {
 	pageing: Pageing
 	tag: string
+	excludeTag: string
 	kjoenn?: string
 	foedsel?: {
 		fom?: string
@@ -21,6 +22,9 @@ export type Search = {
 		fra?: number
 		til?: number
 	}
+	ident?: {
+		ident?: string
+	}
 }
 
 export type Person = {
@@ -30,7 +34,7 @@ export type Person = {
 	etternavn?: string
 	kjoenn?: string
 	aktorId: string
-	tag: string
+	tags: string[]
 	foedsel?: {
 		foedselsdato?: string
 	}
