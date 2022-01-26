@@ -32,7 +32,6 @@ export const TagsButton = ({ action, loading }: Props) => {
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="tagsModal">
 					<div className="tagsModal tagsModal-content">
-						<Icon size={50} kind="report-problem-circle" />
 						<h1>TILKNYTT TAGS</h1>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
 						<DollySelect

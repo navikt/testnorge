@@ -63,7 +63,12 @@ export default function GruppeHeader({
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 					{gruppe.tags && (
-						<Header.TitleValue title="Tags" value={Formatters.arrayToString(gruppe.tags)} />
+						<Header.TitleValue
+							title="Tags"
+							value={Formatters.arrayToString(
+								gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags
+							)}
+						/>
 					)}
 				</div>
 				<div className="gruppe-header__actions">

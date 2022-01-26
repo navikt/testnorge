@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.tagshendelseslager;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -9,6 +10,7 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,8 +27,11 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
-            tagsHendelseslagerConsumer.createTags(Stream.concat(dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner()
-                                    .stream().map(relasjon -> relasjon.getPerson().getIdent()), Stream.of(dollyPerson.getHovedperson()))
+            log.info("Dollyperson: {}", Json.pretty(dollyPerson));
+            tagsHendelseslagerConsumer.createTags(Stream.concat(
+                                    dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner()
+                                            .stream().map(relasjon -> relasjon.getPerson().getIdent()),
+                                    Stream.of(dollyPerson.getHovedperson()))
                             .collect(Collectors.toList()),
                     dollyPerson.getTags());
         }
@@ -41,6 +46,6 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        tagsHendelseslagerConsumer.deleteTags(identer);
+        tagsHendelseslagerConsumer.deleteTags(identer, Arrays.stream(Tags.values()).toList());
     }
 }

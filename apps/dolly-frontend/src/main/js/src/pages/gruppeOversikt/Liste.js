@@ -93,7 +93,8 @@ export default function Liste({
 			text: 'Tags',
 			width: '25',
 			dataField: 'tags',
-			formatter: (cell, row) => Formatters.arrayToString(row.tags),
+			formatter: (cell, row) =>
+				Formatters.arrayToString(row.tags?.length > 1 ? [...row.tags].sort() : row.tags),
 		},
 	]
 	return (

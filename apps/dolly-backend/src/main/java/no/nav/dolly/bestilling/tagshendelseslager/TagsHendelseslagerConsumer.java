@@ -45,9 +45,9 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "tags_delete" })
-    public void deleteTags(List<String> identer) {
+    public void deleteTags(List<String> identer, List<Tags> tags) {
 
-        new TagsSlettingCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
+        new TagsSlettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
     @Timed(name = "providers", tags = { "operation", "tags_get" })
