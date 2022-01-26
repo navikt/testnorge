@@ -56,9 +56,9 @@ public class PersonSearchAdapter {
     private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
         getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
                 .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentPerson.foedsel",
-                        rangeQueryBuilder,
-                        ScoreMode.Avg
+                                "hentPerson.foedsel",
+                                rangeQueryBuilder,
+                                ScoreMode.Avg
                         ))
                 );
     }
@@ -120,7 +120,7 @@ public class PersonSearchAdapter {
 
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
-                    if(value.getUtfyttet() != null && value.getUtfyttet()) {
+                    if (value.getUtfyttet() != null && value.getUtfyttet()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.utflyttingFraNorge",
                                 QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge.metadata"),
@@ -131,10 +131,28 @@ public class PersonSearchAdapter {
 
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
-                    if(value.getInnflytting() != null && value.getInnflytting()) {
+                    if (value.getInnflytting() != null && value.getInnflytting()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.innflyttingTilNorge",
                                 QueryBuilders.existsQuery("hentPerson.innflyttingTilNorge.metadata"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
+
+        Optional.ofNullable(search.getIdentitetSearch())
+                .ifPresent(value -> {
+                    if (value.getFalskIdentitet() != null && value.getFalskIdentitet()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentIdenter.falskIdentitet",
+                                QueryBuilders.existsQuery("hentIdenter.falskIdentitet.metadata"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                    if (value.getUtenlandskIdentitet() != null && value.getUtenlandskIdentitet()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentIdenter.utenlandskIdentifikasjonsnummer",
+                                QueryBuilders.existsQuery("hentIdenter.utenlandskIdentifikasjonsnummer.metadata"),
                                 ScoreMode.Avg
                         )).must();
                     }
