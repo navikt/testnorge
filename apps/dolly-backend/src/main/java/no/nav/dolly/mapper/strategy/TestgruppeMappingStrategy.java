@@ -37,7 +37,7 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                         rsTestgruppe.setErEierAvGruppe(getUserId(getUserInfo).equals(getBrukerId(testgruppe.getOpprettetAv())));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
                         rsTestgruppe.setTags(testgruppe.getTags().stream()
-                                .filter(tags -> tags.name().equals(Tags.DOLLY.name()))
+                                .filter(tags -> !tags.name().equals(Tags.DOLLY.name()))
                                 .collect(Collectors.toList())
                         );
                     }

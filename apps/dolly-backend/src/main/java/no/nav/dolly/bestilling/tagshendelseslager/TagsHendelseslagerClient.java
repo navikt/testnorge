@@ -29,8 +29,8 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
             log.info("Dollyperson: {}", Json.pretty(dollyPerson));
             tagsHendelseslagerConsumer.createTags(Stream.concat(
-                                    dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner()
-                                            .stream().map(relasjon -> relasjon.getPerson().getIdent()),
+                                    dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner().stream()
+                                            .map(relasjon -> relasjon.getPerson().getIdent()),
                                     Stream.of(dollyPerson.getHovedperson()))
                             .collect(Collectors.toList()),
                     dollyPerson.getTags());
