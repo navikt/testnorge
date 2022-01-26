@@ -8,8 +8,6 @@ import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
 import { Sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import _get from 'lodash/get'
-import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { TpsMessagingDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/TpsMessagingDiverse'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { Doedsfall } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
@@ -17,8 +15,7 @@ import { Statsborgerskap } from '~/components/fagsystem/pdlf/form/partials/stats
 import { Innvandring } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
 import { Utvandring } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
-
-const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
+import { Alder } from '~/components/fagsystem/pdlf/form/partials/alder/Alder'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -44,6 +41,12 @@ const diversePaths = [
 	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
+]
+
+const alderPaths = [
+	'pdldata.opprettNyPerson.alder',
+	'pdldata.opprettNyPerson.foedtEtter',
+	'pdldata.opprettNyPerson.foedtFoer',
 ]
 
 const telefonnummerPath = ['pdldata.person.telefonnummer']
@@ -100,9 +103,9 @@ export const Personinformasjon = ({ formikBag }) => {
 					)
 				}
 			>
-				{(!personFoerLeggTil || _get(formikBag.touched, 'pdldata.person.doedsfall.doedsdato')) && (
+				{!personFoerLeggTil && (
 					<Kategori title="Alder" vis={alderPaths}>
-						<Alder basePath="tpsf" formikBag={formikBag} />
+						<Alder formikBag={formikBag} />
 					</Kategori>
 				)}
 

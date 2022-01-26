@@ -199,6 +199,19 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	const pdldataKriterier = bestillingData.pdldata?.person
+	const pdlNyPersonKriterier = bestillingData.pdldata?.opprettNyPerson
+
+	if (pdlNyPersonKriterier) {
+		const nyPersonData = {
+			header: 'Persondetaljer',
+			items: [
+				obj('Alder', pdlNyPersonKriterier.alder),
+				obj('Født etter', Formatters.formatDate(pdlNyPersonKriterier.foedtEtter)),
+				obj('Født før', Formatters.formatDate(pdlNyPersonKriterier.foedtFoer)),
+			],
+		}
+		data.push(nyPersonData)
+	}
 
 	if (pdldataKriterier) {
 		const {

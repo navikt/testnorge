@@ -107,9 +107,22 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	return {
 		alder: {
 			label: 'Alder',
-			checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
-			add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
-			remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
+			checked:
+				has('pdldata.opprettNyPerson.alder') ||
+				has('pdldata.opprettNyPerson.foedtEtter') ||
+				has('pdldata.opprettNyPerson.foedtFoer'),
+			add: () =>
+				setMulti(
+					['pdldata.opprettNyPerson.alder', Formatters.randomIntInRange(30, 60)],
+					['pdldata.opprettNyPerson.foedtEtter', null],
+					['pdldata.opprettNyPerson.foedtFoer', null]
+				),
+			remove: () =>
+				del([
+					'pdldata.opprettNyPerson.alder',
+					'pdldata.opprettNyPerson.foedtEtter',
+					'pdldata.opprettNyPerson.foedtFoer',
+				]),
 		},
 		doedsdato: {
 			label: 'Dødsdato',

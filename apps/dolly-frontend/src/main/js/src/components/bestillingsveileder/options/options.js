@@ -29,9 +29,6 @@ export const BVOptions = (
 		pdldata: {
 			opprettNyPerson: {
 				identtype,
-				foedtEtter: null,
-				foedtFoer: null,
-				alder: null,
 				syntetisk: false,
 			},
 		},
