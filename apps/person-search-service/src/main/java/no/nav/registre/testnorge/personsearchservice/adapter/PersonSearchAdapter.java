@@ -148,8 +148,9 @@ public class PersonSearchAdapter {
 
     private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getIdent())
+                .flatMap(value -> Optional.ofNullable(value.getIdent()))
                 .ifPresent(value -> {
-                    if (value.getIdent() != null && !value.getIdent().isEmpty()) {
+                    if (!value.isEmpty()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentIdenter.identer",
                                 QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
