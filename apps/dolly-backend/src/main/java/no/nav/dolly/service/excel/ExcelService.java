@@ -69,7 +69,7 @@ public class ExcelService {
                                 .map(Testident::getIdent)
                                 .toList()),
                         pdlExcelService.getFormattedCellsFromPdl(gruppe.getTestidenter().stream()
-                                .filter(Testident::isPdl)
+                                .filter(ident -> ident.isPdl() || ident.isTpsf())
                                 .map(Testident::getIdent)
                                 .toList())
                 )
@@ -92,6 +92,6 @@ public class ExcelService {
 
         return new String[]{"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Dødsdato", "Personstatus",
                 "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse", "Oppholdsadresse",
-                "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig" };
+                "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig"};
     }
 }

@@ -5,14 +5,15 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
+import wiremock.com.google.common.collect.Lists;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,17 +25,17 @@ public class PdlForvalterExcelService extends PdlPersonExcelService {
 
     public List<Object[]> getFormattetCellsFromPdlForvalter(List<String> identer) {
 
-        var personer = pdlDataConsumer.getPersoner(identer, 0, identer.size());
-
-        return personer.stream()
+        return Lists.partition(identer, 10).stream()
+                .map(personer -> pdlDataConsumer.getPersoner(personer))
+                .flatMap(Collection::stream)
                 .map(person -> new Object[]{
                         person.getPerson().getIdent(),
                         IdentTypeUtil.getIdentType(person.getPerson().getIdent()).name(),
-                        getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO())),
-                        person.getPerson().getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn(),
+                        getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
+                        getEtternavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
                         getAlder(person.getPerson().getIdent(), person.getPerson().getDoedsfall().isEmpty() ? null :
-                                person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato().toLocalDate()),
-                        person.getPerson().getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn().name(),
+                                toLocalDate(person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato())),
+                        getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
                         getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
                         getPersonstatus(person.getPerson().getFolkeregisterPersonstatus().stream().findFirst().orElse(null)),
                         getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null)),
