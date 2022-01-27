@@ -4,13 +4,7 @@ import Loading from '~/components/ui/loading/Loading'
 
 import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
 
-export const Beskrivelse = ({
-	ident,
-	updateBeskrivelse,
-	isUpdatingBeskrivelse,
-	iLaastGruppe,
-	closeModal,
-}) => {
+export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse, closeModal }) => {
 	if (isUpdatingBeskrivelse) {
 		closeModal && closeModal()
 		return <Loading label="oppdaterer beskrivelse" />
@@ -20,19 +14,12 @@ export const Beskrivelse = ({
 
 	return (
 		<React.Fragment>
-			{(!iLaastGruppe || ident.beskrivelse) && (
-				<SubOverskrift label="Kommentarer" iconKind="kommentar" />
-			)}
-
-			{iLaastGruppe ? (
-				<p>{ident.beskrivelse}</p>
-			) : (
-				<TextEditor
-					text={ident.beskrivelse}
-					handleSubmit={handleSubmit}
-					placeholder="Skriv inn kommentar"
-				/>
-			)}
+			{ident.beskrivelse && <SubOverskrift label="Kommentarer" iconKind="kommentar" />}
+			<TextEditor
+				text={ident.beskrivelse}
+				handleSubmit={handleSubmit}
+				placeholder="Skriv inn kommentar"
+			/>
 		</React.Fragment>
 	)
 }

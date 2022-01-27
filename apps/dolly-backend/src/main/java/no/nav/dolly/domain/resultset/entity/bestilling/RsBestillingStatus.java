@@ -54,7 +54,6 @@ public class RsBestillingStatus {
     private Long opprettetFraId;
     private Long opprettetFraGruppeId;
     private RsBestilling bestilling;
-    private String openamSent;
     private String opprettFraIdenter;
 
     private String malBestillingNavn;

@@ -1,9 +1,11 @@
 package no.nav.dolly.consumer.pdlperson;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -26,6 +28,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -42,12 +45,13 @@ public class PdlPersonConsumer {
     private final NaisServerProperties serviceProperties;
     private final WebClient webClient;
 
-    public PdlPersonConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties) {
+    public PdlPersonConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ObjectMapper objectMapper) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
@@ -73,7 +77,7 @@ public class PdlPersonConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
-    public JsonNode getPdlPersoner(List<String> identer) {
+    public PdlBolkResponse getPdlPersoner(List<String> identer) {
 
         return webClient
                 .post()
@@ -89,7 +93,7 @@ public class PdlPersonConsumer {
                         .fromValue(new GraphQLRequest(getQueryFromFile(MULTI_PERSON_QUERY),
                                 Map.of("identer", identer))))
                 .retrieve()
-                .bodyToMono(JsonNode.class)
+                .bodyToMono(PdlBolkResponse.class)
                 .block();
     }
 

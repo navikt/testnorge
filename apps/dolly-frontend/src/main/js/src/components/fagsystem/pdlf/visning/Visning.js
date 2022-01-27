@@ -24,11 +24,10 @@ export const PdlfVisning = ({ data, loading }) => {
 		kontaktadresse,
 		adressebeskyttelse,
 		fullmakt,
-		relasjoner,
 		utenlandskIdentifikasjonsnummer,
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
-	} = data
+	} = data.person
 
 	return (
 		<ErrorBoundary>
@@ -39,7 +38,7 @@ export const PdlfVisning = ({ data, loading }) => {
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
-				<Fullmakt data={fullmakt} relasjoner={relasjoner} />
+				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} />

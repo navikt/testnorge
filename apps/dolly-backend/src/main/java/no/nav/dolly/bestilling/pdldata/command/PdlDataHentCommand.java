@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,9 +20,13 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
 
     private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer";
     private static final String IDENTER = "identer";
+    private static final String PAGE_NO = "sidenummer";
+    private static final String PAGE_SIZE = "pagesize";
 
     private final WebClient webClient;
     private final List<String> identer;
+    private final Integer sidenummer;
+    private final Integer sidestorrelse;
     private final String token;
 
     public Mono<FullPersonDTO[]> call() {
@@ -33,6 +35,8 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_PERSONER_URL)
                         .queryParam(IDENTER, identer)
+                        .queryParam(PAGE_NO, sidenummer)
+                        .queryParam(PAGE_SIZE, sidestorrelse)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())

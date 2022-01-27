@@ -8,9 +8,17 @@ import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class StatsborgerskapMappingStrategy implements MappingStrategy {
+
+    private static LocalDateTime getDate(String dato) {
+
+        return isNotBlank(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
+    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -21,7 +29,7 @@ public class StatsborgerskapMappingStrategy implements MappingStrategy {
                     public void mapAtoB(S610PersonType.StatsborgerskapDetalj source, StatsborgerskapDTO target, MappingContext context) {
 
                         target.setStatsborgerskap(source.getKodeStatsborgerskap());
-                        target.setStatsborgerskapRegdato(LocalDate.parse(source.getDatoStatsborgerskap()).atStartOfDay());
+                        target.setStatsborgerskapRegdato(getDate(source.getDatoStatsborgerskap()));
                     }
                 })
                 .register();

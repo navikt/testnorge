@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skjermingsregister.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
-import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -16,7 +15,6 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -90,6 +88,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                                     .toList())
                     .flatMap(Collection::stream)
                     .toList();
+
         } else {
             skjerminger = Stream.of(List.of(prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil)),
                             dollyPerson.getPartnere().stream()
@@ -122,18 +121,16 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private boolean isAlleredeSkjermet(String ident) {
 
         try {
-            ResponseEntity<SkjermingsDataResponse> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(ident);
-            log.info("Respons fra skjermingsregister: {}", skjermingResponseEntity.getBody());
-            if (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
-                return true;
-            }
+            var skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(ident);
+            log.info("Respons fra skjermingsregister: {}", skjermingResponseEntity);
+            return true;
+
         } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return false;
             }
             throw e;
         }
-        return false;
     }
 
     private SkjermingsDataRequest prepRequest(Person person, PersonDTO pdlfPerson,

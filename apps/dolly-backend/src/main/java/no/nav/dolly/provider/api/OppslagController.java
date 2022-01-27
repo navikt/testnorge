@@ -13,6 +13,7 @@ import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
+import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
@@ -20,6 +21,7 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -66,6 +68,7 @@ public class OppslagController {
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
+    private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -90,7 +93,7 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL")
-    public JsonNode pdlPerson(@RequestParam("identer") List<String> identer) {
+    public PdlBolkResponse pdlPerson(@RequestParam("identer") List<String> identer) {
         return pdlPersonConsumer.getPdlPersoner(identer);
     }
 
@@ -116,13 +119,19 @@ public class OppslagController {
 
     @GetMapping("/skjerming/{ident}")
     @Operation(description = "Hent skjerming på ident")
-    public ResponseEntity<SkjermingsDataResponse> getSkjerming(@PathVariable String ident) {
+    public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
         return skjermingsRegisterConsumer.getSkjerming(ident);
+    }
+
+    @GetMapping("/tags/{ident}")
+    @Operation(description = "Hent skjerming på ident")
+    public JsonNode getTags(@PathVariable String ident) {
+        return tagsHendelseslagerConsumer.getTag(ident);
     }
 
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
-    public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
 

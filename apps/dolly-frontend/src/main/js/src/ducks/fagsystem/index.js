@@ -216,7 +216,7 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
 			action.payload?.data?.forEach((ident) => {
-				state.pdlforvalter[ident.person.ident] = ident.person
+				state.pdlforvalter[ident.person.ident] = ident
 			})
 		},
 		[onSuccess(actions.getInst)](state, action) {
