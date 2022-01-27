@@ -39,7 +39,7 @@ export const DollyTextInput = (props: {
 	onSubmit?: Function
 	onChange?: Function
 	onPaste?: Function
-	maxlength?: string
+	maxLength?: string
 }) => (
 	<InputWrapper {...props}>
 		{/*@ts-ignore*/}
@@ -58,7 +58,7 @@ export const FormikTextInput = ({
 	label?: string
 	size?: string
 	type?: string
-	maxlength?: string
+	maxLength?: string
 }) => {
 	const component = <UncontrolledFormikTextInput {...props} />
 	// @ts-ignore

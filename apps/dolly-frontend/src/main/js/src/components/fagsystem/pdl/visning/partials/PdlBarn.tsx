@@ -53,7 +53,7 @@ export const PdlBarn = ({ barn, doedfoedtBarn }: PdlBarnProps) => {
 					</DollyFieldArray>
 				)}
 				{!hasNoValues(doedfoedtBarn) && (
-					<DollyFieldArray header="Dødfødt barn" data={barn} nested>
+					<DollyFieldArray header="Dødfødt barn" data={doedfoedtBarn} nested>
 						{(data: DoedfoedtBarn, idx: number) => (
 							<DoedfoedtBarnVisning doedfoedtBarn={data} idx={idx} />
 						)}
