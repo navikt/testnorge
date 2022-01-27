@@ -80,10 +80,10 @@ public class TagController {
                 .map(Testident::getIdent)
                 .collect(Collectors.toList());
 
-        var bolkHovedperson = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk().stream();
-        var bolkPersoner = bolkHovedperson.map(PdlBolkResponse.BolkPerson::getPerson);
+        var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk();
+        var bolkPersoner = pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getPerson);
         var bolkIdenter = Stream.of(
-                bolkHovedperson.map(PdlBolkResponse.BolkPerson::getIdent).toList(),
+                pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getIdent).toList(),
                 bolkPersoner.flatMap(personDTO -> personDTO.getSivilstand().stream().map(SivilstandDTO::getRelatertVedSivilstand)).toList(),
                 bolkPersoner.flatMap(personDTO -> personDTO.getForelderBarnRelasjon().stream().map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent)).toList(),
                 bolkPersoner.flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream().map(SikkerhetstiltakDTO::getKontaktperson).map(SikkerhetstiltakDTO.Kontaktperson::getPersonident)).toList(),
