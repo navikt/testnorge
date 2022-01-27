@@ -3,13 +3,19 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 export default () => (
 	<>
 		<h2>Personinformasjon</h2>
 		<section>
 			<h3>Fødsels- eller d-nummer</h3>
-			<FormikTextInput name="personinformasjon.ident.ident" visHvisAvhuket={false} maxlength="11" />
+			<FormikTextInput
+				name="personinformasjon.ident.ident"
+				label="Fødsels- eller d-nummer"
+				visHvisAvhuket={false}
+				maxlength="11"
+			/>
 		</section>
 		<section>
 			<h3>Alder</h3>
@@ -52,6 +58,28 @@ export default () => (
 					{ value: 'GIFT', label: 'Gift' },
 					{ value: 'UGIFT', label: 'Ugift' },
 				]}
+			/>
+		</section>
+		<section>
+			<h3>Barn</h3>
+			<FormikCheckbox name="personinformasjon.barn.barn" label="Har barn" checkboxMargin />
+			<FormikCheckbox
+				name="personinformasjon.barn.doedfoedtBarn"
+				label="Har dødfødt barn"
+				checkboxMargin
+			/>
+		</section>
+		<section>
+			<h3>Identitet</h3>
+			<FormikCheckbox
+				name="personinformasjon.identitet.falskIdentitet"
+				label="Har falsk identitet"
+				checkboxMargin
+			/>
+			<FormikCheckbox
+				name="personinformasjon.identitet.utenlandskIdentitet"
+				label="Har utenlandsk identitet"
+				checkboxMargin
 			/>
 		</section>
 		<section>
