@@ -26,7 +26,7 @@ public class PdlForvalterExcelService extends PdlPersonExcelService {
     public List<Object[]> getFormattetCellsFromPdlForvalter(List<String> identer) {
 
         return Lists.partition(identer, 10).stream()
-                .map(personer -> pdlDataConsumer.getPersoner(personer))
+                .map(pdlDataConsumer::getPersoner)
                 .flatMap(Collection::stream)
                 .map(person -> new Object[]{
                         person.getPerson().getIdent(),

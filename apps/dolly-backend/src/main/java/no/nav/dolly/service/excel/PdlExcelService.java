@@ -68,7 +68,7 @@ public class PdlExcelService extends PdlPersonExcelService {
     public List<Object[]> getFormattedCellsFromPdl(List<String> identer) {
 
         return Lists.partition(identer, 10).stream()
-                .map(personer -> pdlPersonConsumer.getPdlPersoner(personer))
+                .map(pdlPersonConsumer::getPdlPersoner)
                 .map(PdlBolkResponse::getData)
                 .map(PdlBolkResponse.Contents::getHentPersonBolk)
                 .flatMap(Collection::stream)
