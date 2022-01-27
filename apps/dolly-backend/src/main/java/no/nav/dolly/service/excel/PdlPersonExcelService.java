@@ -81,7 +81,7 @@ public abstract class PdlPersonExcelService {
                     bostedadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-            return String.format("Gaardsnummer: %d, Bruksnummer: %d, Kommunenr: %s", bostedadresse.getMatrikkeladresse().getGaardsnummer(),
+            return String.format("Gaardsnummer: %d, Bruksnummer: %s, Kommunenr: %s", bostedadresse.getMatrikkeladresse().getGaardsnummer(),
                     bostedadresse.getMatrikkeladresse().getBruksenhetsnummer(), bostedadresse.getMatrikkeladresse().getKommunenummer());
 
         } else if (nonNull(bostedadresse.getUkjentBosted())) {
