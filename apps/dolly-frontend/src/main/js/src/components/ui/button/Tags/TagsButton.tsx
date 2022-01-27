@@ -6,14 +6,14 @@ import Button from '~/components/ui/button/Button'
 import Loading from '~/components/ui/loading/Loading'
 
 import './TagsButton.less'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 type Props = {
 	action: Function
 	loading: boolean
 	gruppeId: number
-	eksisterendeTags: [String]
+	eksisterendeTags: [string]
 }
 
 export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
@@ -34,10 +34,10 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 					<div className="tagsModal tagsModal-content">
 						<h1>TILKNYTT TAGS</h1>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
-						<DollySelect
+						<FormikSelect
 							options={tagOptions}
 							isLoading={tagsFraDolly.loading}
-							size="grow"
+							size="large"
 							isMulti={true}
 							value={tags}
 							// @ts-ignore

@@ -98,8 +98,7 @@ public class TagController {
                         bolkPersoner.stream()
                                 .flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream()
                                         .map(SikkerhetstiltakDTO::getKontaktperson)
-                                        .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident)
-                                        .filter(StringUtils::isNotBlank))
+                                        .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident))
                                 .toList(),
                         bolkPersoner.stream()
                                 .flatMap(personDTO -> personDTO.getFullmakt().stream()
@@ -110,6 +109,7 @@ public class TagController {
                                         .map(VergemaalDTO::getVergeIdent))
                                 .toList()
                 ).flatMap(Collection::stream)
+                .filter(StringUtils::isNotBlank)
                 .distinct()
                 .toList();
 
