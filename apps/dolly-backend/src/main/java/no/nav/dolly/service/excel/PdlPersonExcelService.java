@@ -6,6 +6,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
@@ -15,13 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -34,6 +35,11 @@ public abstract class PdlPersonExcelService {
                 statsborgerskap.getLandkode() : "";
     }
 
+    protected static LocalDate toLocalDate(LocalDateTime timestamp) {
+
+        return nonNull(timestamp) ? timestamp.toLocalDate() : null;
+    }
+
     protected static Integer getAlder(String ident, LocalDate doedsdato) {
 
         return (int) ChronoUnit.YEARS.between(
@@ -43,7 +49,13 @@ public abstract class PdlPersonExcelService {
 
     protected static String getDoedsdato(DoedsfallDTO doedsfall) {
 
-        return nonNull(doedsfall) ? doedsfall.getDoedsdato().toLocalDate().toString() : "";
+        return nonNull(doedsfall) && nonNull(doedsfall.getDoedsdato()) ?
+                doedsfall.getDoedsdato().toLocalDate().toString() : "";
+    }
+
+    protected static String getKjoenn(KjoennDTO kjoenn) {
+
+        return nonNull(kjoenn) && nonNull(kjoenn.getKjoenn()) ? kjoenn.getKjoenn().name() : "";
     }
 
     protected static String getPersonstatus(FolkeregisterPersonstatusDTO personstatus) {
@@ -150,7 +162,12 @@ public abstract class PdlPersonExcelService {
 
     protected static String getFornavn(NavnDTO navn) {
 
-        return isBlank(navn.getMellomnavn()) ? navn.getFornavn() : String.format("%s %s", navn.getFornavn(), navn.getMellomnavn());
+        var mellomnavn = nonNull(navn) && isNotBlank(navn.getMellomnavn()) ? navn.getMellomnavn() : "";
+        return nonNull(navn) && isNotBlank(navn.getFornavn()) ? String.format("%s %s", navn.getFornavn(), mellomnavn) : "";
     }
 
+    protected static String getEtternavn(NavnDTO navn) {
+
+        return nonNull(navn) && isNotBlank(navn.getEtternavn()) ? navn.getEtternavn() : "";
+    }
 }
