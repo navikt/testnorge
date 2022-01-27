@@ -14,7 +14,7 @@ export default () => (
 				name="personinformasjon.ident.ident"
 				label="Fødsels- eller d-nummer"
 				visHvisAvhuket={false}
-				maxlength="11"
+				maxLength="11"
 			/>
 		</section>
 		<section>
