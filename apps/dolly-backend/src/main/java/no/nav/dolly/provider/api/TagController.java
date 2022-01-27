@@ -81,15 +81,35 @@ public class TagController {
                 .collect(Collectors.toList());
 
         var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk();
-        var bolkPersoner = pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getPerson);
+        var bolkPersoner = pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getPerson).toList();
         var bolkIdenter = Stream.of(
-                pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getIdent).toList(),
-                bolkPersoner.flatMap(personDTO -> personDTO.getSivilstand().stream().map(SivilstandDTO::getRelatertVedSivilstand)).toList(),
-                bolkPersoner.flatMap(personDTO -> personDTO.getForelderBarnRelasjon().stream().map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent)).toList(),
-                bolkPersoner.flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream().map(SikkerhetstiltakDTO::getKontaktperson).map(SikkerhetstiltakDTO.Kontaktperson::getPersonident)).toList(),
-                bolkPersoner.flatMap(personDTO -> personDTO.getFullmakt().stream().map(FullmaktDTO::getMotpartsPersonident)).toList(),
-                bolkPersoner.flatMap(personDTO -> personDTO.getVergemaal().stream().map(VergemaalDTO::getVergeIdent)).toList()
-        ).flatMap(Collection::stream).distinct().toList();
+                        pdlpersonBolk.stream()
+                                .map(PdlBolkResponse.BolkPerson::getIdent)
+                                .toList(),
+                        bolkPersoner.stream()
+                                .flatMap(personDTO -> personDTO.getSivilstand().stream()
+                                        .map(SivilstandDTO::getRelatertVedSivilstand))
+                                .toList(),
+                        bolkPersoner.stream()
+                                .flatMap(personDTO -> personDTO.getForelderBarnRelasjon().stream()
+                                        .map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent))
+                                .toList(),
+                        bolkPersoner.stream()
+                                .flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream()
+                                        .map(SikkerhetstiltakDTO::getKontaktperson)
+                                        .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident))
+                                .toList(),
+                        bolkPersoner.stream()
+                                .flatMap(personDTO -> personDTO.getFullmakt().stream()
+                                        .map(FullmaktDTO::getMotpartsPersonident))
+                                .toList(),
+                        bolkPersoner.stream()
+                                .flatMap(personDTO -> personDTO.getVergemaal().stream()
+                                        .map(VergemaalDTO::getVergeIdent))
+                                .toList()
+                ).flatMap(Collection::stream)
+                .distinct()
+                .toList();
 
         var tagsTilSletting = testgruppe.getTags().stream()
                 .filter(eksisterendeTag -> tags.stream()
