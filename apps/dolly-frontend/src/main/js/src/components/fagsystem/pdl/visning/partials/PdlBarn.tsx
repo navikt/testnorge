@@ -34,6 +34,7 @@ const BarnVisning = ({ barn, idx }: BarnProps) => {
 }
 
 const DoedfoedtBarnVisning = ({ doedfoedtBarn, idx }: DoedfoedtBarnProps) => {
+	console.log(doedfoedtBarn)
 	return (
 		<div key={idx} className="person-visning_content">
 			<TitleValue title="Dato" value={Formatters.formatDate(doedfoedtBarn.dato)} />
@@ -53,7 +54,7 @@ export const PdlBarn = ({ barn, doedfoedtBarn }: PdlBarnProps) => {
 					</DollyFieldArray>
 				)}
 				{!hasNoValues(doedfoedtBarn) && (
-					<DollyFieldArray header="Dødfødt barn" data={barn} nested>
+					<DollyFieldArray header="Dødfødt barn" data={doedfoedtBarn} nested>
 						{(data: DoedfoedtBarn, idx: number) => (
 							<DoedfoedtBarnVisning doedfoedtBarn={data} idx={idx} />
 						)}
