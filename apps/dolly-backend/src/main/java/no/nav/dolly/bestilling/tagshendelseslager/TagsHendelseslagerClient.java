@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -32,7 +31,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                     dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner().stream()
                                             .map(relasjon -> relasjon.getPerson().getIdent()),
                                     Stream.of(dollyPerson.getHovedperson()))
-                            .collect(Collectors.toList()),
+                            .toList(),
                     dollyPerson.getTags());
         }
 

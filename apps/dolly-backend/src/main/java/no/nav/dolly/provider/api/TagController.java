@@ -79,7 +79,7 @@ public class TagController {
         var gruppeIdenter = testgruppe.getTestidenter()
                 .stream()
                 .map(Testident::getIdent)
-                .collect(Collectors.toList());
+                .toList();
 
         var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk();
         var bolkPersoner = pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getPerson).toList();
@@ -116,7 +116,7 @@ public class TagController {
         var tagsTilSletting = testgruppe.getTags().stream()
                 .filter(eksisterendeTag -> tags.stream()
                         .noneMatch(nyTag -> eksisterendeTag.name().equals(nyTag.name())))
-                .collect(Collectors.toList());
+                .toList();
 
         testgruppe.setTags(tags.isEmpty() ? null
                 : tags.stream()

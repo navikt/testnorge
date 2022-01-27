@@ -19,8 +19,8 @@ public class TagsSlettingCommand implements Callable<Mono<String>> {
 
     private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
     private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String IDENTS = "personidenter";
-    private static final String TAGS = "tags";
+    private static final String IDENTS_QUERY = "personidenter";
+    private static final String TAGS_QUERY = "tags";
 
     private final WebClient webClient;
     private final List<String> identer;
@@ -34,8 +34,8 @@ public class TagsSlettingCommand implements Callable<Mono<String>> {
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
-                        .queryParam(IDENTS, identer)
-                        .queryParam(TAGS, tags)
+                        .queryParam(IDENTS_QUERY, identer)
+                        .queryParam(TAGS_QUERY, tags)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
