@@ -85,98 +85,6 @@ public class DollyBestillingService {
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
 
-    private static String getHovedpersonAvBestillingsidenter(List<String> identer) {
-        return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
-    }
-
-    private static List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Set<String> successMiljoer = new TreeSet<>();
-
-        // Add successful messages
-        addSuccessfulMessages(hovedperson, response, successMiljoer);
-
-        // Remove unsuccessful messages
-        removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
-
-        return new ArrayList<>(successMiljoer);
-    }
-
-    private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
-        for (ServiceRoutineResponseStatus sendSkdMldResponse : response.getServiceRoutineStatusResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
-                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (!entry.getValue().contains(SUCCESS)) {
-                        successMiljoer.remove(entry.getKey());
-                    }
-                }
-            }
-        }
-    }
-
-    private static void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
-        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
-            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
-                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
-                    if (entry.getValue().contains(SUCCESS)) {
-                        successMiljoer.add(entry.getKey());
-                    }
-                }
-            }
-        }
-    }
-
-    private static List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
-        Map<String, List<String>> failures = new TreeMap<>();
-
-        addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
-
-        addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
-
-        List<String> errors = new ArrayList<>();
-        failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
-
-        return errors;
-    }
-
-    private static void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
-        for (SendSkdMeldingTilTpsResponse response : responseStatus) {
-            if (hovedperson.equals(response.getPersonId())) {
-                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
-                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), encodeStatus(entry.getValue())));
-                    } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getSkdmeldingstype(),
-                                encodeStatus(entry.getValue())))));
-                    }
-                }
-            }
-        }
-    }
-
-    private static void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
-        for (ServiceRoutineResponseStatus response : responseStatus) {
-            if (hovedperson.equals(response.getPersonId())) {
-                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
-                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
-                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), encodeStatus(entry.getValue())));
-                    } else if (isFaulty(entry.getValue())) {
-                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getServiceRutinenavn(),
-                                encodeStatus(entry.getValue())))));
-                    }
-                }
-            }
-        }
-    }
-
-    private static boolean isFaulty(String value) {
-        return isNotBlank(value) && !SUCCESS.equals(value);
-    }
-
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
-
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
@@ -277,6 +185,98 @@ public class DollyBestillingService {
         }
     }
 
+    private static String getHovedpersonAvBestillingsidenter(List<String> identer) {
+        return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
+    }
+
+    private static List<String> extraxtSuccessMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+        Set<String> successMiljoer = new TreeSet<>();
+
+        // Add successful messages
+        addSuccessfulMessages(hovedperson, response, successMiljoer);
+
+        // Remove unsuccessful messages
+        removeUnsuccessfulMessages(hovedperson, response, successMiljoer);
+
+        return new ArrayList<>(successMiljoer);
+    }
+
+    private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+        for (ServiceRoutineResponseStatus sendSkdMldResponse : response.getServiceRoutineStatusResponsene()) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (!entry.getValue().contains(SUCCESS)) {
+                        successMiljoer.remove(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addSuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
+            if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
+                for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
+                    if (entry.getValue().contains(SUCCESS)) {
+                        successMiljoer.add(entry.getKey());
+                    }
+                }
+            }
+        }
+    }
+
+    private static List<String> extraxtFailureMiljoForHovedperson(String hovedperson, RsSkdMeldingResponse response) {
+        Map<String, List<String>> failures = new TreeMap<>();
+
+        addFeilmeldingSkdMeldinger(hovedperson, response.getSendSkdMeldingTilTpsResponsene(), failures);
+
+        addFeilmeldingServicerutiner(hovedperson, response.getServiceRoutineStatusResponsene(), failures);
+
+        List<String> errors = new ArrayList<>();
+        failures.keySet().forEach(miljoe -> errors.add(format(OUT_FMT, miljoe, join(" + ", failures.get(miljoe)))));
+
+        return errors;
+    }
+
+    private static void addFeilmeldingSkdMeldinger(String hovedperson, List<SendSkdMeldingTilTpsResponse> responseStatus, Map<String, List<String>> failures) {
+        for (SendSkdMeldingTilTpsResponse response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getSkdmeldingstype(), encodeStatus(entry.getValue())));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getSkdmeldingstype(),
+                                encodeStatus(entry.getValue())))));
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addFeilmeldingServicerutiner(String hovedperson, List<ServiceRoutineResponseStatus> responseStatus, Map<String, List<String>> failures) {
+        for (ServiceRoutineResponseStatus response : responseStatus) {
+            if (hovedperson.equals(response.getPersonId())) {
+                for (Map.Entry<String, String> entry : response.getStatus().entrySet()) {
+                    if (isFaulty(entry.getValue()) && failures.containsKey(entry.getKey())) {
+                        failures.get(entry.getKey()).add(format(OUT_FMT, response.getServiceRutinenavn(), encodeStatus(entry.getValue())));
+                    } else if (isFaulty(entry.getValue())) {
+                        failures.put(entry.getKey(), new ArrayList<>(List.of(format(OUT_FMT, response.getServiceRutinenavn(),
+                                encodeStatus(entry.getValue())))));
+                    }
+                }
+            }
+        }
+    }
+
+    private static boolean isFaulty(String value) {
+        return isNotBlank(value) && !SUCCESS.equals(value);
+    }
+
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
+    }
+
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
 
         try {
@@ -287,6 +287,7 @@ public class DollyBestillingService {
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
+            bestKriterier.setTags(bestilling.getTags());
             return bestKriterier;
 
         } catch (JsonProcessingException e) {

@@ -51,6 +51,10 @@ export default {
 		return Request.put(Endpoints.laasGruppe(gruppeId), data)
 	},
 
+	updateGruppeSendTags(gruppeId, data) {
+		return Request.post(Endpoints.sendGruppeTags(gruppeId), data)
+	},
+
 	gjenopprettGruppe(gruppeId, envs) {
 		return Request.put(Endpoints.gjenopprettGruppe(gruppeId, envs))
 	},
@@ -191,5 +195,17 @@ export default {
 
 	deleteOrganisasjonOrgnummer(orgnummer) {
 		return Request.delete(Endpoints.deleteOrganisasjonOrgnummer(orgnummer))
+	},
+
+	//* Tags
+	getTags() {
+		return Request.get(Endpoints.getTags())
+	},
+
+	getTagsPaaIdent(ident) {
+		if (!ident) {
+			return null
+		}
+		return Request.get(Endpoints.getTagsPaaIdent(ident))
 	},
 }

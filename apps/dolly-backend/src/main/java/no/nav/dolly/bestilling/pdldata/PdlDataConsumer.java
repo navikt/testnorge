@@ -41,13 +41,13 @@ public class PdlDataConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
+    @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
     public String sendOrdre(String ident, boolean isTpsfMaster) {
 
         return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_delete"})
+    @Timed(name = "providers", tags = { "operation", "pdl_delete" })
     public void slettPdl(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
@@ -84,7 +84,7 @@ public class PdlDataConsumer {
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})
+    @Timed(name = "providers", tags = { "operation", "pdl_dataforvalter_alive" })
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }

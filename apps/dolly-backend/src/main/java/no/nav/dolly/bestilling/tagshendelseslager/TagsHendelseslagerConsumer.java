@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHenteCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
@@ -34,25 +35,25 @@ public class TagsHendelseslagerConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tags_create"})
-    public String createTags(List<String> identer, List<String> tags) {
+    @Timed(name = "providers", tags = { "operation", "tags_create" })
+    public String createTags(List<String> identer, List<Tags> tags) {
 
         return new TagsOpprettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tags_delete"})
-    public void deleteTags(List<String> identer) {
+    @Timed(name = "providers", tags = { "operation", "tags_delete" })
+    public void deleteTags(List<String> identer, List<Tags> tags) {
 
-        new TagsSlettingCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
+        new TagsSlettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tags_get"})
+    @Timed(name = "providers", tags = { "operation", "tags_get" })
     public JsonNode getTag(String ident) {
 
         return new TagsHenteCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
+    @Timed(name = "providers", tags = { "operation", "hendelselager_publish" })
     public String publish(List<String> identer) {
 
         return new HendelseslagerPublishCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
