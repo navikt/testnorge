@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -94,11 +93,6 @@ public class TagController {
                         bolkPersoner.stream()
                                 .flatMap(personDTO -> personDTO.getForelderBarnRelasjon().stream()
                                         .map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream()
-                                        .map(SikkerhetstiltakDTO::getKontaktperson)
-                                        .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident))
                                 .toList(),
                         bolkPersoner.stream()
                                 .flatMap(personDTO -> personDTO.getFullmakt().stream()
