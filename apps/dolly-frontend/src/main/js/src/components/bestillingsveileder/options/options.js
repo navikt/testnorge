@@ -24,7 +24,6 @@ export const BVOptions = (
 	let initialValues = {
 		antall,
 		environments: [],
-		navSyntetiskIdent: false,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
