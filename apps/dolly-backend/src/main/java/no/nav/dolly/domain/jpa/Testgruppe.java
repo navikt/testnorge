@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -105,7 +104,7 @@ public class Testgruppe {
         if (isNull(tags)) {
             return Collections.emptyList();
         }
-        return Arrays.stream(tags.split(",")).map(Tags::valueOf).collect(Collectors.toList());
+        return Arrays.stream(tags.split(",")).map(Tags::valueOf).toList();
     }
 
     @Override

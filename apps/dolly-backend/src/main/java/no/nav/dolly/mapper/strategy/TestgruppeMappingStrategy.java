@@ -12,8 +12,6 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
-
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -32,13 +30,15 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
                         rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
-                        rsTestgruppe.setAntallIBruk(((Long) testgruppe.getTestidenter().stream().filter(ident -> isTrue(ident.getIBruk())).count()).intValue()); //NOSONAR
+                        rsTestgruppe.setAntallIBruk(((Long) testgruppe.getTestidenter().stream()
+                                .filter(ident -> isTrue(ident.getIBruk()))
+                                .count()).intValue()); //NOSONAR
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());
                         rsTestgruppe.setErEierAvGruppe(getUserId(getUserInfo).equals(getBrukerId(testgruppe.getOpprettetAv())));
                         rsTestgruppe.setErLaast(isTrue(rsTestgruppe.getErLaast()));
                         rsTestgruppe.setTags(testgruppe.getTags().stream()
-                                .filter(tags -> !tags.name().equals(Tags.DOLLY.name()))
-                                .collect(Collectors.toList())
+                                .filter(tag -> Tags.DOLLY != tag)
+                                .toList()
                         );
                     }
                 })
