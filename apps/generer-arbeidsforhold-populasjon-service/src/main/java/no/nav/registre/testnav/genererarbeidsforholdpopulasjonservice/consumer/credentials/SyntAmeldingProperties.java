@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.syntrest-proxy")
-public class SyntrestServiceProperties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.synt-amelding")
+public class SyntAmeldingProperties extends ServerProperties {
 }

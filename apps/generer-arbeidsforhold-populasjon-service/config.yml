@@ -28,8 +28,8 @@ spec:
         - application: oppsummeringsdokument-service
         - application: testnav-generer-organisasjon-populasjon-service
         - application: testnav-organisasjon-service
+        - application: synthdata-amelding
       external:
-        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
         - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive

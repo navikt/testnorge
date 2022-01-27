@@ -30,7 +30,6 @@ public class GenererStartArbeidsforholdCommand implements Callable<Mono<List<Arb
     @Value
     private class Request {
         LocalDate startdato;
-        LocalDate sluttdata;
     }
 
     @Override
@@ -38,8 +37,8 @@ public class GenererStartArbeidsforholdCommand implements Callable<Mono<List<Arb
         log.info("Generer nytt arbeidsforhold den {}.", startdate);
         return webClient
                 .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold/initial")
-                .body(BodyInserters.fromPublisher(Mono.just(new Request(startdate, null)), Request.class))
+                .uri("/api/v1/arbeidsforhold/new")
+                .body(BodyInserters.fromPublisher(Mono.just(new Request(startdate)), Request.class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
