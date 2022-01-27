@@ -25,6 +25,20 @@ export type Search = {
 	ident?: {
 		ident?: string
 	}
+	utflyttingFraNorge?: {
+		utflyttet?: boolean
+	}
+	innflyttingTilNorge?: {
+		innflyttet?: boolean
+	}
+	identitet?: {
+		falskIdentitet?: boolean
+		utenlandskIdentitet?: boolean
+	}
+	barn?: {
+		barn?: boolean
+		doedfoedtBarn?: boolean
+	}
 }
 
 export type Person = {
