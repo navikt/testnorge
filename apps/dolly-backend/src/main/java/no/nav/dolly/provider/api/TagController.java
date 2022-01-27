@@ -16,6 +16,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,7 +98,8 @@ public class TagController {
                         bolkPersoner.stream()
                                 .flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream()
                                         .map(SikkerhetstiltakDTO::getKontaktperson)
-                                        .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident))
+                                        .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident)
+                                        .filter(StringUtils::isNotBlank))
                                 .toList(),
                         bolkPersoner.stream()
                                 .flatMap(personDTO -> personDTO.getFullmakt().stream()
