@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
