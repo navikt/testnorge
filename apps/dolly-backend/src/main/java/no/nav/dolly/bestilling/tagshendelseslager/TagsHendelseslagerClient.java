@@ -4,13 +4,16 @@ import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -20,17 +23,24 @@ import java.util.stream.Stream;
 public class TagsHendelseslagerClient implements ClientRegister {
 
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
+            var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(List.of(dollyPerson.getHovedperson())).getData().getHentPersonBolk();
             log.info("Dollyperson: {}", Json.pretty(dollyPerson));
-            tagsHendelseslagerConsumer.createTags(Stream.concat(
+            log.info("PdlpersonBolk: {}", Json.pretty(pdlpersonBolk));
+
+            tagsHendelseslagerConsumer.createTags(Stream.of(
                                     dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner().stream()
-                                            .map(relasjon -> relasjon.getPerson().getIdent()),
-                                    Stream.of(dollyPerson.getHovedperson()))
+                                            .map(relasjon -> relasjon.getPerson().getIdent()).toList(),
+                                    List.of(dollyPerson.getHovedperson()))
+                            .flatMap(Collection::stream)
+                            .filter(StringUtils::isNotBlank)
+                            .distinct()
                             .toList(),
                     dollyPerson.getTags());
         }

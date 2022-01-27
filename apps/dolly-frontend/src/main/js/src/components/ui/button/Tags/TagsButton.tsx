@@ -34,7 +34,7 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 					<div className="tagsModal tagsModal-content">
 						<h1>TILKNYTT TAGS</h1>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
-						<FormikSelect
+						<DollySelect
 							options={tagOptions}
 							isLoading={tagsFraDolly.loading}
 							size="large"
