@@ -15,8 +15,6 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 import no.nav.registre.testnorge.personsearchservice.config.credentials.ElasticSearchCredentials;
 
-import java.io.IOException;
-
 @Configuration
 @Profile("dev")
 @RequiredArgsConstructor
@@ -24,15 +22,13 @@ import java.io.IOException;
 public class DevConfig extends AbstractVaultConfiguration {
 
     @Bean
-    public RestHighLevelClient client(ElasticSearchCredentials elasticSearchCredentials) throws IOException {
+    public RestHighLevelClient client(ElasticSearchCredentials elasticSearchCredentials) {
         ClientConfiguration clientConfiguration
                 = ClientConfiguration.builder()
                 .connectedTo(elasticSearchCredentials.getHost() + ":" + elasticSearchCredentials.getPort())
                 .build();
 
-        try (RestClients.ElasticsearchRestClient client = RestClients.create(clientConfiguration)) {
-            return client.rest();
-        }
+        return RestClients.create(clientConfiguration).rest();
     }
 
     @Override
