@@ -5,10 +5,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
+import no.nav.dolly.consumer.pdlperson.dto.PdlPersonDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -30,14 +36,34 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
-            var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(List.of(dollyPerson.getHovedperson())).getData().getHentPersonBolk();
+            var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(List.of(dollyPerson.getHovedperson())).getData().getHentPersonBolk()
+                    .stream().map(PdlBolkResponse.BolkPerson::getPerson).toList();
             log.info("Dollyperson: {}", Json.pretty(dollyPerson));
             log.info("PdlpersonBolk: {}", Json.pretty(pdlpersonBolk));
 
             tagsHendelseslagerConsumer.createTags(Stream.of(
-                                    dollyPerson.getPerson(dollyPerson.getHovedperson()).getRelasjoner().stream()
-                                            .map(relasjon -> relasjon.getPerson().getIdent()).toList(),
-                                    List.of(dollyPerson.getHovedperson()))
+                                    List.of(dollyPerson.getHovedperson()),
+                                    pdlpersonBolk.stream()
+                                            .flatMap(personDTO -> personDTO.getSivilstand().stream()
+                                                    .map(SivilstandDTO::getRelatertVedSivilstand))
+                                            .toList(),
+                                    pdlpersonBolk.stream()
+                                            .flatMap(personDTO -> personDTO.getForelderBarnRelasjon().stream()
+                                                    .map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent))
+                                            .toList(),
+                                    pdlpersonBolk.stream()
+                                            .flatMap(personDTO -> personDTO.getSikkerhetstiltak().stream()
+                                                    .map(SikkerhetstiltakDTO::getKontaktperson)
+                                                    .map(SikkerhetstiltakDTO.Kontaktperson::getPersonident))
+                                            .toList(),
+                                    pdlpersonBolk.stream()
+                                            .flatMap(personDTO -> personDTO.getFullmakt().stream()
+                                                    .map(FullmaktDTO::getMotpartsPersonident))
+                                            .toList(),
+                                    pdlpersonBolk.stream()
+                                            .flatMap(personDTO -> personDTO.getVergemaal().stream()
+                                                    .map(VergemaalDTO::getVergeIdent))
+                                            .toList())
                             .flatMap(Collection::stream)
                             .filter(StringUtils::isNotBlank)
                             .distinct()
