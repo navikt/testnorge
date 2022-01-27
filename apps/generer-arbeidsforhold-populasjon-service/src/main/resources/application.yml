@@ -17,11 +17,11 @@ spring:
           accepted-audience: dev-gcp:dolly:testnav-generer-arbeidsforhold-populasjon-service
 
 consumers:
-  syntrest-proxy:
-    cluster: dev-fss
+  synt-amelding:
+    url: https://synthdata-amelding.dev.intern.nav.no
+    cluster: dev-gcp
     namespace: dolly
-    name: testnav-syntrest-proxy
-    url: https://testnav-syntrest-proxy.dev-fss-pub.nais.io
+    name: synthdata-amelding
   testnav-hodejegeren-proxy:
     cluster: dev-fss
     namespace: dolly
