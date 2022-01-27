@@ -26,7 +26,7 @@ public class PersonSearchController {
     @PostMapping
     public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
         PersonList personList = service.search(search);
-        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).collect(Collectors.toList());
+        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).toList();
         return ResponseEntity
                 .ok()
                 .header(NUMBER_OF_ITEMS_HEADER, String.valueOf(personList.getNumberOfItems()))
