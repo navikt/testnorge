@@ -34,6 +34,7 @@ public class JsonMapperConfig {
         objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
         objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
 
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer());

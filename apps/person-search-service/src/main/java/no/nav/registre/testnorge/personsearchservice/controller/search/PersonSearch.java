@@ -21,4 +21,6 @@ public class PersonSearch {
     AlderSearch alder;
     UtflyttingFraNorgeSearch utflyttingFraNorge;
     InnflyttingTilNorgeSearch innflyttingTilNorge;
+    IdentitetSearch identitet;
+    BarnSearch barn;
 }
