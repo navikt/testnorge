@@ -6,7 +6,7 @@ import Button from '~/components/ui/button/Button'
 import Loading from '~/components/ui/loading/Loading'
 
 import './TagsButton.less'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 type Props = {

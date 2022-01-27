@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.tagshendelseslager;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -35,11 +36,14 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
-            log.info("Bestilling: {}", bestilling);
 
             var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(List.of(dollyPerson.getHovedperson())).getData().getHentPersonBolk().stream()
                     .map(PdlBolkResponse.BolkPerson::getPerson)
                     .toList();
+
+            log.info("KAPPLAH - Bestilling: {}", Json.pretty(bestilling));
+            log.info("KAPPLAH - personBolk: {}", Json.pretty(pdlpersonBolk));
+            log.info("KAPPLAH - dollyperson: {}", Json.pretty(dollyPerson));
 
             tagsHendelseslagerConsumer.createTags(Stream.of(
                                     List.of(dollyPerson.getHovedperson()),
