@@ -13,6 +13,14 @@ const initialValues = {
 			fra: '18',
 			til: '70',
 		},
+		barn: {
+			barn: false,
+			doedfoedtBarn: false,
+		},
+		identitet: {
+			falskIdentitet: false,
+			utenlandskIdentitet: false,
+		},
 	},
 }
 
