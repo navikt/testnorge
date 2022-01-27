@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 public class ExcelService {
 
     private final TestgruppeRepository testgruppeRepository;
-    private final PdlForvalterExcelService pdlForvalterExcelService;
     private final PdlExcelService pdlExcelService;
 
     private static void appendRows(HSSFSheet sheet, CellStyle wrapStyle, List<Object[]> rows) {
@@ -64,12 +63,7 @@ public class ExcelService {
         wrapStyle.setWrapText(true);
 
         appendRows(sheet, wrapStyle, Stream.of(Collections.singletonList(getHeader()),
-                        pdlForvalterExcelService.getFormattetCellsFromPdlForvalter(gruppe.getTestidenter().stream()
-                                .filter(Testident::isPdlf)
-                                .map(Testident::getIdent)
-                                .toList()),
                         pdlExcelService.getFormattedCellsFromPdl(gruppe.getTestidenter().stream()
-                                .filter(ident -> ident.isPdl() || ident.isTpsf())
                                 .map(Testident::getIdent)
                                 .toList())
                 )
