@@ -40,6 +40,14 @@ const getSearchValues = (page: number, pageSize: number, values: any) => {
 		ident: {
 			ident: values?.personinformasjon?.ident?.ident,
 		},
+		identitet: {
+			falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
+			utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
+		},
+		barn: {
+			barn: values?.personinformasjon?.barn?.barn,
+			doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
+		},
 		tag: 'TESTNORGE',
 		excludeTag: 'DOLLY',
 	}
