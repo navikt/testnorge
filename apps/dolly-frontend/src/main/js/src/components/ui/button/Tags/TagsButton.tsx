@@ -3,7 +3,6 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import useBoolean from '~/utils/hooks/useBoolean'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import Button from '~/components/ui/button/Button'
-import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 
 import './TagsButton.less'
@@ -41,9 +40,8 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 							size="grow"
 							isMulti={true}
 							value={tags}
-							onChange={(event: []) => {
-								setTags(event?.map((ev: { value: string }) => ev.value))
-							}}
+							// @ts-ignore
+							onChange={(event: []) => setTags(event?.map((ev: { value: string }) => ev.value))}
 						/>
 					</div>
 					<div className="tagsModal-actions">
@@ -56,7 +54,6 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 								location.reload()
 							}}
 							type="hoved"
-							disabled={!tags || tags.length === 0}
 						>
 							TILKNYTT TAGS
 						</NavButton>
