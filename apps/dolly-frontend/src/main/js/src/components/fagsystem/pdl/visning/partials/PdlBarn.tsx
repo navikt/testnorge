@@ -34,7 +34,6 @@ const BarnVisning = ({ barn, idx }: BarnProps) => {
 }
 
 const DoedfoedtBarnVisning = ({ doedfoedtBarn, idx }: DoedfoedtBarnProps) => {
-	console.log(doedfoedtBarn)
 	return (
 		<div key={idx} className="person-visning_content">
 			<TitleValue title="Dato" value={Formatters.formatDate(doedfoedtBarn.dato)} />
