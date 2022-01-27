@@ -17,7 +17,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
@@ -77,9 +76,9 @@ public class PdlPersonBolk {
         private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
         private List<FalskIdentitetDTO> falskIdentitet;
         private List<AdressebeskyttelseDTO> adressebeskyttelse;
-        private List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
+        private List<FolkeregisterPersonstatusDTO> folkeregisterpersonstatus;
         private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
-        private List<StatsborgerskapDTO> statsborgerskap;
+        private List<PdlPerson.Statsborgerskap> statsborgerskap;
         private List<OppholdDTO> opphold;
         private List<TelefonnummerDTO> telefonnummer;
         private List<FullmaktDTO> fullmakt;
@@ -220,11 +219,11 @@ public class PdlPersonBolk {
             return adressebeskyttelse;
         }
 
-        public List<FolkeregisterPersonstatusDTO> getFolkeregisterPersonstatus() {
-            if (isNull(folkeregisterPersonstatus)) {
-                folkeregisterPersonstatus = new ArrayList<>();
+        public List<FolkeregisterPersonstatusDTO> getFolkeregisterpersonstatus() {
+            if (isNull(folkeregisterpersonstatus)) {
+                folkeregisterpersonstatus = new ArrayList<>();
             }
-            return folkeregisterPersonstatus;
+            return folkeregisterpersonstatus;
         }
 
         public List<TilrettelagtKommunikasjonDTO> getTilrettelagtKommunikasjon() {
@@ -234,7 +233,7 @@ public class PdlPersonBolk {
             return tilrettelagtKommunikasjon;
         }
 
-        public List<StatsborgerskapDTO> getStatsborgerskap() {
+        public List<PdlPerson.Statsborgerskap> getStatsborgerskap() {
             if (isNull(statsborgerskap)) {
                 statsborgerskap = new ArrayList<>();
             }

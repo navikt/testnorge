@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,5 +242,15 @@ public class PdlPerson {
     public static class Folkeregistermetadata {
 
         private LocalDate gyldighetstidspunkt;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Statsborgerskap {
+
+        private String land;
+        private LocalDateTime gyldigFraOgMed;
+        private LocalDateTime gyldigTilOgMed;
     }
 }

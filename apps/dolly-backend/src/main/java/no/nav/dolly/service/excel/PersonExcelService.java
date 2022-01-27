@@ -12,7 +12,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class PdlExcelService{
+public class PersonExcelService {
 
     private final PdlPersonConsumer pdlPersonConsumer;
 
@@ -101,7 +100,7 @@ public class PdlExcelService{
                                 person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato()),
                         getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
                         getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
-                        getPersonstatus(person.getPerson().getFolkeregisterPersonstatus().stream().findFirst().orElse(null)),
+                        getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
                         getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null)),
                         getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
                         getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO())),
@@ -117,10 +116,10 @@ public class PdlExcelService{
                 .toList();
     }
 
-    protected static String getStatsborgerskap(StatsborgerskapDTO statsborgerskap) {
+    protected static String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
 
-        return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLandkode()) ?
-                statsborgerskap.getLandkode() : "";
+        return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
+                statsborgerskap.getLand() : "";
     }
 
     protected static Integer getAlder(String ident, LocalDate doedsdato) {

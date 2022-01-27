@@ -84,6 +84,7 @@ dependencies {
     implementation 'org.codehaus.jettison:jettison:1.4.1'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
     implementation 'org.apache.poi:poi:5.2.0'
+    implementation 'org.apache.poi:poi-ooxml:5.2.0'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation 'org.springframework.security:spring-security-test'
