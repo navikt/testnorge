@@ -151,7 +151,7 @@ public class PersonSearchAdapter {
                 .ifPresent(value -> {
                     if (value.getIdent() != null && !value.getIdent().isEmpty()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.identer",
+                                "hentIdenter.identer",
                                 QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
                                 ScoreMode.Avg
                         )).must();
