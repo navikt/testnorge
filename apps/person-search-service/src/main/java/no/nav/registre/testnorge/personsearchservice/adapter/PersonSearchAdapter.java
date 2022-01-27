@@ -81,12 +81,7 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getExcludeTag())
                 .ifPresent(value -> queryBuilder.mustNot(QueryBuilders.matchQuery("tags", value)));
 
-        Optional.ofNullable(search.getKjoenn())
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentPerson.kjoenn",
-                        QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value),
-                        ScoreMode.Avg
-                )));
+        updateKjoennQuery(queryBuilder, search);
 
         Optional.ofNullable(search.getFoedsel())
                 .ifPresent(value -> queryFoedselsdato(value.getFom(), value.getTom(), queryBuilder));
@@ -207,6 +202,15 @@ public class PersonSearchAdapter {
                 searchResponse.getHits().getTotalHits().value,
                 responses.stream().map(Person::new).toList()
         );
+    }
+
+    private void updateKjoennQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getKjoenn())
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
+                        "hentPerson.kjoenn",
+                        QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value),
+                        ScoreMode.Avg
+                )));
     }
 
 
