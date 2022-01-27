@@ -35,7 +35,7 @@ public class GenererArbeidsforholdHistorikkCommand implements Callable<Mono<List
         var body = requests.toArray(new ArbeidsforholdRequest[requests.size()]);
         return webClient
                 .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold/historikk")
+                .uri("/api/v1/arbeidsforhold/historikk")
                 .body(BodyInserters.fromPublisher(Mono.just(body), ArbeidsforholdRequest[].class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
