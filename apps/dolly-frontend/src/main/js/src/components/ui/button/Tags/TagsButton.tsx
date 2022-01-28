@@ -8,6 +8,7 @@ import Loading from '~/components/ui/loading/Loading'
 import './TagsButton.less'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 type Props = {
 	action: Function
@@ -29,10 +30,15 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 			<Button onClick={openModal} kind="link">
 				TILKNYTT TAGS
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<div className="tagsModal">
 					<div className="tagsModal tagsModal-content">
 						<h1>TILKNYTT TAGS</h1>
+						<AlertStripeInfo>
+							Tags gir deg mulighet til å identifisere dine PDL testpersoner på egen “tagged”
+							Kafka-topic, der tags[dintag] legges til på responsen. Ta kontakt for ytterligere
+							informasjon.
+						</AlertStripeInfo>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
 						<DollySelect
 							options={tagOptions}
