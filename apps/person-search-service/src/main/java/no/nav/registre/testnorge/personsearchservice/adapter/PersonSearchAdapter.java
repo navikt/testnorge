@@ -149,11 +149,15 @@ public class PersonSearchAdapter {
     private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getIdent())
                 .flatMap(value -> Optional.ofNullable(value.getIdent()))
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentIdenter.identer",
-                        QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
-                        ScoreMode.Avg
-                )));
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentIdenter.identer",
+                                QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
     }
 
     private void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -179,7 +183,7 @@ public class PersonSearchAdapter {
     private void addUtflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
-                    if (value.getUtfyttet() != null && value.getUtfyttet()) {
+                    if (value.getUtflyttet() != null && value.getUtflyttet()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.utflyttingFraNorge",
                                 QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge.metadata"),
