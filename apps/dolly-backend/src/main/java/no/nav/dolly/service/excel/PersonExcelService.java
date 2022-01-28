@@ -196,6 +196,7 @@ public class PersonExcelService {
 
         } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat())) {
             return kontaktadresse.getPostadresseIFrittFormat().getAdresselinjer().stream()
+                    .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(", "));
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresseIFrittFormat())) {
