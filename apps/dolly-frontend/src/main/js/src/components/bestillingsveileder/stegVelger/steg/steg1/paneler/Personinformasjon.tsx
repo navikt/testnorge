@@ -6,6 +6,8 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import {
+	initialDoedsfall,
+	initialFoedsel,
 	initialKjoenn,
 	initialNavn,
 	initialPdlPerson,
@@ -50,6 +52,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 		>
 			<AttributtKategori title="Alder">
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.foedsel} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
@@ -126,18 +129,16 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'pdldata.opprettNyPerson.foedtFoer',
 				]),
 		},
+		foedsel: {
+			label: 'Fødsel',
+			checked: has('pdldata.person.foedsel'),
+			add: () => set('pdldata.person.foedsel', [initialFoedsel]),
+			remove: () => del(['pdldata.person.foedsel']),
+		},
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has('pdldata.person.doedsfall'),
-			add: () =>
-				set('pdldata.person.doedsfall', [
-					{
-						doedsdato: new Date(),
-						kilde: 'Dolly',
-						master: 'PDL',
-						gjeldende: true,
-					},
-				]),
+			add: () => set('pdldata.person.doedsfall', [initialDoedsfall]),
 			remove: () => del(['pdldata.person.doedsfall']),
 		},
 		statsborgerskap: {

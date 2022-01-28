@@ -150,6 +150,17 @@ export const initialDoedsfall = {
 	gjeldende: true,
 }
 
+export const initialFoedsel = {
+	fodekommune: null as string,
+	foedeland: null as string,
+	foedested: null as string,
+	foedselsaar: null as number,
+	foedselsdato: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as string,
 	organisasjonsnavn: null as string,

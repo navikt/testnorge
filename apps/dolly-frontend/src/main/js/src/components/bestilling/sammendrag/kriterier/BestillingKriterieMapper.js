@@ -202,19 +202,21 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const pdlNyPersonKriterier = bestillingData.pdldata?.opprettNyPerson
 
 	if (pdlNyPersonKriterier) {
+		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
 		const nyPersonData = {
 			header: 'Persondetaljer',
 			items: [
-				obj('Alder', pdlNyPersonKriterier.alder),
-				obj('Født etter', Formatters.formatDate(pdlNyPersonKriterier.foedtEtter)),
-				obj('Født før', Formatters.formatDate(pdlNyPersonKriterier.foedtFoer)),
+				obj('Alder', alder),
+				obj('Født etter', Formatters.formatDate(foedtEtter)),
+				obj('Født før', Formatters.formatDate(foedtFoer)),
 			],
 		}
-		data.push(nyPersonData)
+		if (alder || foedtEtter || foedtFoer) data.push(nyPersonData)
 	}
 
 	if (pdldataKriterier) {
 		const {
+			foedsel,
 			kjoenn,
 			navn,
 			telefonnummer,
@@ -284,6 +286,23 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
 				]),
 			]
+		}
+
+		if (foedsel) {
+			const foedselData = {
+				header: 'Fødsel',
+				itemRows: foedsel.map((item, idx) => {
+					return [
+						{ numberHeader: `Fødsel ${idx + 1}` },
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
+						obj('Fødselsår', item.foedselsaar),
+						obj('Fødested', item.foedested),
+						obj('Fødekommune', item.fodekommune, AdresseKodeverk.Kommunenummer),
+						obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
+					]
+				}),
+			}
+			data.push(foedselData)
 		}
 
 		if (innflytting) {

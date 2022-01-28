@@ -17,6 +17,7 @@ import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/Pd
 import Tooltip from 'rc-tooltip'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
+import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
@@ -25,6 +26,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
 	const {
+		foedsel,
 		telefonnummer,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
@@ -44,6 +46,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
+				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />

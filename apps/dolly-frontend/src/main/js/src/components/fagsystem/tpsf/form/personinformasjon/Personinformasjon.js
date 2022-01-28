@@ -18,6 +18,7 @@ import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/form/part
 import { Alder } from '~/components/fagsystem/pdlf/form/partials/alder/Alder'
 import { Kjoenn } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
+import { Foedsel } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -57,6 +58,7 @@ const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon
 const innvandringPath = ['pdldata.person.innflytting']
 const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
+const foedselPath = ['pdldata.person.foedsel']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
@@ -79,6 +81,7 @@ const panelPaths = [
 	navnPath,
 	telefonnummerPath,
 	tilrettelagtKommunikasjonPath,
+	foedselPath,
 	doedsfallPath,
 	vergemaalPath,
 	fullmaktPath,
@@ -116,6 +119,10 @@ export const Personinformasjon = ({ formikBag }) => {
 						<Alder formikBag={formikBag} />
 					</Kategori>
 				)}
+
+				<Kategori title="Fødsel" vis={foedselPath}>
+					<Foedsel formikBag={formikBag} />
+				</Kategori>
 
 				<Kategori title="Dødsfall" vis={doedsfallPath}>
 					<Doedsfall />

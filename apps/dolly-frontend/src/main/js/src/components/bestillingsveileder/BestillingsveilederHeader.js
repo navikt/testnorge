@@ -6,7 +6,7 @@ import { ImportFraEtikett } from '~/components/ui/etikett'
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
-
+	console.log('opts', opts)
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
@@ -40,10 +40,13 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.leggTil && (
 					<Header.TitleValue
 						title="Legg til/endre på person"
-						value={opts.personFoerLeggTil.tpsf.ident}
+						value={
+							opts.personFoerLeggTil.tpsf?.ident ||
+							opts.personFoerLeggTil.pdlforvalter?.person?.ident
+						}
 					/>
 				)}
-				{opts.is.leggTil && opts.personFoerLeggTil.tpsf.importFra && (
+				{opts.is.leggTil && opts.personFoerLeggTil.tpsf?.importFra && (
 					<Header.TitleValue
 						title="Importert fra"
 						value={
