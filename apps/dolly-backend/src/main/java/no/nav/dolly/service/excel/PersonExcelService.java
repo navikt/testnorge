@@ -152,8 +152,10 @@ public class PersonExcelService {
                     bostedadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-            return String.format("Gaardsnummer: %d, Bruksnummer: %s, Kommunenr: %s", bostedadresse.getMatrikkeladresse().getGaardsnummer(),
-                    bostedadresse.getMatrikkeladresse().getBruksenhetsnummer(), bostedadresse.getMatrikkeladresse().getKommunenummer());
+            return String.format("Gaardsnummer: %d, Bruksnummer: %d, Kommunenr: %s", bostedadresse.getMatrikkeladresse().getGaardsnummer(),
+                    bostedadresse.getMatrikkeladresse().getBruksnummer(), bostedadresse.getMatrikkeladresse().getKommunenummer()) +
+                    (isNotBlank(bostedadresse.getMatrikkeladresse().getBruksenhetsnummer()) ? ", Bruksenhet: " +
+                            bostedadresse.getMatrikkeladresse().getBruksenhetsnummer() : "");
 
         } else if (nonNull(bostedadresse.getUkjentBosted())) {
             return String.format("Ukjent bosted i kommunenr %s", bostedadresse.getUkjentBosted().getBostedskommune());
@@ -219,8 +221,10 @@ public class PersonExcelService {
                     oppholdsadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
-            return String.format("Gaardsnummer: %d, Bruksnummer: %s, Kommunenr: %s", oppholdsadresse.getMatrikkeladresse().getGaardsnummer(),
-                    oppholdsadresse.getMatrikkeladresse().getBruksenhetsnummer(), oppholdsadresse.getMatrikkeladresse().getKommunenummer());
+            return String.format("Gaardsnummer: %d, Bruksnummer: %d, Kommunenr: %s", oppholdsadresse.getMatrikkeladresse().getGaardsnummer(),
+                    oppholdsadresse.getMatrikkeladresse().getBruksnummer(), oppholdsadresse.getMatrikkeladresse().getKommunenummer()) +
+                    (isNotBlank(oppholdsadresse.getMatrikkeladresse().getBruksenhetsnummer()) ? ", Bruksenhet: " +
+                            oppholdsadresse.getMatrikkeladresse().getBruksenhetsnummer() : "");
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
             return Arrays.stream(new String[]{oppholdsadresse.getUtenlandskAdresse().getAdressenavnNummer(),
