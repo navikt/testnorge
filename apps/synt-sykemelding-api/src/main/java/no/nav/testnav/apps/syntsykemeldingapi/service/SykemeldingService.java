@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntsykemeldingapi.service;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.adapter.ArbeidsforholdAdapter;
@@ -35,10 +34,6 @@ public class SykemeldingService {
                 dto.getStartDato()
         );
         var helsepersonellListe = helsepersonellConsumer.hentHelsepersonell();
-
-        log.info("Pasient: {}", Json.pretty(pasient));
-        log.info("Arbeidsforhold: {}", Json.pretty(arbeidsforhold));
-        log.info("Historikk: {}", Json.pretty(arbeidsforhold));
 
         sykemeldingConsumer.opprettSykemelding(
                 new Sykemelding(pasient, historikk, dto, helsepersonellListe.getRandomLege(), arbeidsforhold)
