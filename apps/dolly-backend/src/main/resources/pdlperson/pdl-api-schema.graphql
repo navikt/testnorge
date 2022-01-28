@@ -104,15 +104,6 @@ type FalskIdentitetIdentifiserendeInformasjon {
     statsborgerskap: [String!]!
 }
 
-" todo: DEPRCATED & FOR REMOVAL: Familierelasjoner vil bli fjernet fra PDL 1. september 2021: Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon. Mer informasjon i dokumentasjonen."
-type Familierelasjon {
-    folkeregistermetadata: Folkeregistermetadata
-    metadata: Metadata!
-    minRolleForPerson: Familierelasjonsrolle
-    relatertPersonsIdent: String!
-    relatertPersonsRolle: Familierelasjonsrolle!
-}
-
 type Foedsel {
     foedekommune: String
     foedeland: String
@@ -447,7 +438,6 @@ type Person {
     doedfoedtBarn: [DoedfoedtBarn!]!
     doedsfall: [Doedsfall!]!
     falskIdentitet: FalskIdentitet
-    familierelasjoner: [Familierelasjon!]! @deprecated(reason : "Opplysningen Familierelasjon har byttet navn til ForelderBarnRelasjon. Mer informasjon i dokumentasjonen. Familierelasjoner vil bli fjernet fra PDL 1. september 2021.")
     foedsel: [Foedsel!]!
     folkeregisteridentifikator(historikk: Boolean = false): [Folkeregisteridentifikator!]!
     folkeregisterpersonstatus(historikk: Boolean = false): [Folkeregisterpersonstatus!]!
@@ -787,6 +777,15 @@ enum Sivilstandstype {
     UOPPGITT
 }
 
+"Format: YYYY-MM-DD (ISO-8601), example: 2017-11-24"
+scalar Date
+
+"Format: YYYY-MM-DDTHH:mm:SS (ISO-8601), example: 2011-12-03T10:15:30"
+scalar DateTime
+
+"Long type"
+scalar Long
+
 input CompletionFieldValue {
     fieldName: String!
     fieldValue: String
@@ -889,13 +888,3 @@ input SearchSorting {
     " Feltnavn ikludert sti til ønsket felt (eksepmel: person.navn.fornavn)"
     fieldName: String!
 }
-
-
-"Format: YYYY-MM-DD (ISO-8601), example: 2017-11-24"
-scalar Date
-
-"Format: YYYY-MM-DDTHH:mm:SS (ISO-8601), example: 2011-12-03T10:15:30"
-scalar DateTime
-
-"Long type"
-scalar Long

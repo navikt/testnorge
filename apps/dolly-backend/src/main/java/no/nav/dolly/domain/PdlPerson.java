@@ -15,6 +15,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
@@ -22,7 +23,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -115,7 +115,7 @@ public class PdlPerson {
         private List<OppholdDTO> opphold;
         private List<TelefonnummerDTO> telefonnummer;
         private List<FullmaktDTO> fullmakt;
-        private List<VergemaalDTO> vergemaal;
+        private List<Vergemaal> vergemaalEllerFremtidsfullmakt;
         private List<SikkerhetstiltakDTO> sikkerhetstiltak;
         private List<DoedfoedtBarnDTO> doedfoedtBarn;
 
@@ -294,11 +294,11 @@ public class PdlPerson {
             return fullmakt;
         }
 
-        public List<VergemaalDTO> getVergemaal() {
-            if (isNull(vergemaal))  {
-                vergemaal = new ArrayList<>();
+        public List<Vergemaal> getVergemaalEllerFremtidsfullmakt() {
+            if (isNull(vergemaalEllerFremtidsfullmakt)) {
+                vergemaalEllerFremtidsfullmakt = new ArrayList<>();
             }
-            return vergemaal;
+            return vergemaalEllerFremtidsfullmakt;
         }
 
         public List<SikkerhetstiltakDTO> getSikkerhetstiltak() {
@@ -431,5 +431,25 @@ public class PdlPerson {
         private String land;
         private LocalDateTime gyldigFraOgMed;
         private LocalDateTime gyldigTilOgMed;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Vergemaal {
+
+        private String embete;
+        private String type;
+        private VergeEllerFullmektig vergeEllerFullmektig;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class VergeEllerFullmektig {
+
+        private NavnDTO navn;
+        private String motpartsPersonident;
+        private Boolean omfangetErInnenPersonligOmraade;
     }
 }

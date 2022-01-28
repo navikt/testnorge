@@ -392,7 +392,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            fullmakt(historikk: false) {
+            fullmakt(historikk: true) {
                 motpartsPersonident,
                 motpartsRolle,
                 omraader,
@@ -448,7 +448,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            sivilstand(historikk: false) {
+            sivilstand(historikk: true) {
                 type,
                 gyldigFraOgMed,
                 relatertVedSivilstand,
@@ -488,7 +488,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            vergemaalEllerFremtidsfullmakt(historikk: false) {
+            vergemaalEllerFremtidsfullmakt(historikk: true) {
                 type,
                 embete,
                 vergeEllerFullmektig {
@@ -504,6 +504,17 @@ query($identer: [ID!]!) {
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
                 },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            forelderBarnRelasjon {
+                relatertPersonsIdent,
+                relatertPersonsRolle,
+                minRolleForPerson,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
                 metadata {
                     ...metadataDetails
                 }
