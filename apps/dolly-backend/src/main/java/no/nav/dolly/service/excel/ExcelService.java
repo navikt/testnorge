@@ -7,6 +7,8 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IgnoredErrorType;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
@@ -36,6 +38,8 @@ public class ExcelService {
     private final PersonExcelService personExcelService;
 
     private static void appendRows(XSSFSheet sheet, CellStyle wrapStyle, List<Object[]> rows) {
+
+        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, 0), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
         var columnNo = new AtomicInteger(0);
         Arrays.stream(COL_WIDTHS)
@@ -84,8 +88,9 @@ public class ExcelService {
             var excelFile = File.createTempFile("Excel-", ".xlsx");
             try (var outputStream = new FileOutputStream(excelFile)) {
                 workbook.write(outputStream);
+                workbook.close();
+                return new FileSystemResource(excelFile);
             }
-            return new FileSystemResource(excelFile);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new DollyFunctionalException("Generering av Excel-fil feilet", e);
