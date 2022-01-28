@@ -1407,8 +1407,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			obj('Refusjonsbeløp per måned', inntekt.refusjon.refusjonsbeloepPrMnd),
 			obj('Opphørsdato refusjon', Formatters.formatDate(inntekt.refusjon.refusjonsopphoersdato)),
 			obj(
-				'Endring i refusjon',
-				_has(inntekt, 'refusjon.endringIRefusjonListe') && inntekt.refusjon.endringIRefusjonListe
+				'Endringer i refusjon',
+				_has(inntekt, 'refusjon.endringIRefusjonListe') &&
+					inntekt.refusjon.endringIRefusjonListe.length
 			),
 			//Omsorg
 			obj('Har utbetalt pliktige dager', _get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
