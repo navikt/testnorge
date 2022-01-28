@@ -20,9 +20,9 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
@@ -91,7 +91,7 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL")
-    public PdlBolkResponse pdlPerson(@RequestParam("identer") List<String> identer) {
+    public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer) {
         return pdlPersonConsumer.getPdlPersoner(identer);
     }
 

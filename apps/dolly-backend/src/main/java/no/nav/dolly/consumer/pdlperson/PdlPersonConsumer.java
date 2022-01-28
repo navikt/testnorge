@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
-import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -55,7 +55,19 @@ public class PdlPersonConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
+    private static String getQueryFromFile(String pathResource) {
+
+        val resource = new ClassPathResource(pathResource);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+
+        } catch (IOException e) {
+            log.error("Lesing av query ressurs {} feilet", pathResource, e);
+            return null;
+        }
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pdl_getPerson"})
     public JsonNode getPdlPerson(String ident) {
 
         return webClient
@@ -76,8 +88,8 @@ public class PdlPersonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
-    public PdlBolkResponse getPdlPersoner(List<String> identer) {
+    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
+    public PdlPersonBolk getPdlPersoner(List<String> identer) {
 
         return webClient
                 .post()
@@ -93,7 +105,7 @@ public class PdlPersonConsumer {
                         .fromValue(new GraphQLRequest(getQueryFromFile(MULTI_PERSON_QUERY),
                                 Map.of("identer", identer))))
                 .retrieve()
-                .bodyToMono(PdlBolkResponse.class)
+                .bodyToMono(PdlPersonBolk.class)
                 .block();
     }
 
@@ -103,18 +115,6 @@ public class PdlPersonConsumer {
         } catch (SecurityException | WebClientResponseException ex) {
             log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
             return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
-        }
-    }
-
-    private static String getQueryFromFile(String pathResource) {
-
-        val resource = new ClassPathResource(pathResource);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-
-        } catch (IOException e) {
-            log.error("Lesing av query ressurs {} feilet", pathResource, e);
-            return null;
         }
     }
 }
