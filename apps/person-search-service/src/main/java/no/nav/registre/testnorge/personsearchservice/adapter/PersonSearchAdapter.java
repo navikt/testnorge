@@ -174,6 +174,11 @@ public class PersonSearchAdapter {
                                 QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
                                 ScoreMode.Avg
                         ));
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.sivilstand.metadata",
+                                QueryBuilders.matchQuery("hentPerson.sivilstand.metadata.historisk", "false"),
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }
@@ -186,6 +191,11 @@ public class PersonSearchAdapter {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.statsborgerskap",
                                 QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
+                                ScoreMode.Avg
+                        ));
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.statsborgerskap.metadata",
+                                QueryBuilders.matchQuery("hentPerson.statsborgerskap.metadata.historisk", "false"),
                                 ScoreMode.Avg
                         ));
                     }
