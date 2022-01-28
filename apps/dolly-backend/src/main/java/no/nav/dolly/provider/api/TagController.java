@@ -6,15 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.consumer.pdlperson.dto.PdlBolkResponse;
-import no.nav.dolly.consumer.pdlperson.dto.PdlPersonDTO;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
@@ -81,26 +79,27 @@ public class TagController {
                 .toList();
 
         var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk();
-        var bolkPersoner = pdlpersonBolk.stream().map(PdlBolkResponse.BolkPerson::getPerson).toList();
+        var bolkPersoner = pdlpersonBolk.stream().map(PdlPersonBolk.PersonBolk::getPerson).toList();
         var bolkIdenter = Stream.of(
                         pdlpersonBolk.stream()
-                                .map(PdlBolkResponse.BolkPerson::getIdent)
+                                .map(PdlPersonBolk.PersonBolk::getIdent)
                                 .toList(),
                         bolkPersoner.stream()
-                                .flatMap(personDTO -> personDTO.getSivilstand().stream()
-                                        .map(SivilstandDTO::getRelatertVedSivilstand))
+                                .flatMap(person -> person.getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand))
                                 .toList(),
                         bolkPersoner.stream()
-                                .flatMap(personDTO -> personDTO.getForelderBarnRelasjon().stream()
-                                        .map(PdlPersonDTO.ForelderBarnRelasjon::getRelatertPersonsIdent))
+                                .flatMap(person -> person.getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent))
                                 .toList(),
                         bolkPersoner.stream()
-                                .flatMap(personDTO -> personDTO.getFullmakt().stream()
+                                .flatMap(person -> person.getFullmakt().stream()
                                         .map(FullmaktDTO::getMotpartsPersonident))
                                 .toList(),
                         bolkPersoner.stream()
-                                .flatMap(personDTO -> personDTO.getVergemaal().stream()
-                                        .map(VergemaalDTO::getVergeIdent))
+                                .flatMap(person -> person.getVergemaalEllerFremtidsfullmakt().stream()
+                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig))
+                                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
                                 .toList()
                 ).flatMap(Collection::stream)
                 .filter(StringUtils::isNotBlank)
