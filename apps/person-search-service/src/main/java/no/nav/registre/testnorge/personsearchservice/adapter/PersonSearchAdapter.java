@@ -196,7 +196,7 @@ public class PersonSearchAdapter {
     private void addHistoriskQuery(BoolQueryBuilder queryBuilder, String path) {
         queryBuilder.must(QueryBuilders.nestedQuery(
                 path,
-                QueryBuilders.matchQuery(path + ".metadata", false),
+                QueryBuilders.matchQuery(path + ".metadata.historisk", false),
                 ScoreMode.Avg
         )).must();
     }
