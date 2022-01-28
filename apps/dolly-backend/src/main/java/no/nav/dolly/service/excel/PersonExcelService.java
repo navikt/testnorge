@@ -13,11 +13,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import wiremock.com.google.common.collect.Lists;
@@ -44,7 +42,7 @@ public class PersonExcelService {
     private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig"};
-    private static final Integer[] COL_WIDTHS = {12, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 12, 14, 14, 14, 14, 14};
+    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 12, 14, 14, 14, 14, 14};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final PdlPersonConsumer pdlPersonConsumer;
@@ -99,34 +97,6 @@ public class PersonExcelService {
                 .collect(Collectors.joining(",\n"));
     }
 
-    private static void appendRows(XSSFSheet sheet, CellStyle wrapStyle, List<Object[]> rows) {
-
-        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, 0), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
-
-        var columnNo = new AtomicInteger(0);
-        Arrays.stream(COL_WIDTHS)
-                .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
-
-        sheet.setColumnWidth(0, 15 * 256);
-        var rowCount = new AtomicInteger(0);
-        rows.stream()
-                .forEach(rowValue -> {
-                    var row = sheet.createRow(rowCount.getAndIncrement());
-                    var cellCount = new AtomicInteger(0);
-                    Arrays.stream(rowValue)
-                            .forEach(cellValue -> {
-                                var cell = row.createCell(cellCount.getAndIncrement());
-                                if (cellValue instanceof String text) {
-                                    cell.setCellValue(text);
-                                    if (text.contains(",")) {
-                                        cell.setCellStyle(wrapStyle);
-                                    }
-                                } else {
-                                    cell.setCellValue((Integer) cellValue);
-                                }
-                            });
-                });
-    }
 
     private static String getFoedselsdato(PdlPerson.Foedsel foedsel) {
 
@@ -260,14 +230,22 @@ public class PersonExcelService {
     }
 
     public void preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle, List<String> identer) {
+
         var sheet = workbook.createSheet("Personer");
-        appendRows(sheet, wrapStyle, Stream.of(Collections.singletonList(header),
-                        getFormattedCellsFromPdl(identer))
+        var rows = getPersondataRowContents(identer);
+        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, 0), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+
+        var columnNo = new AtomicInteger(0);
+        Arrays.stream(COL_WIDTHS)
+                .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
+
+        ExcelService.appendRows(sheet, wrapStyle, Stream.of(Collections.singletonList(header),
+                        getPersondataRowContents(identer))
                 .flatMap(Collection::stream)
                 .toList());
     }
 
-    private List<Object[]> getFormattedCellsFromPdl(List<String> identer) {
+    private List<Object[]> getPersondataRowContents(List<String> identer) {
 
         return Lists.partition(identer, 20).stream()
                 .map(pdlPersonConsumer::getPdlPersoner)
