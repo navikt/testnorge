@@ -10,7 +10,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @SuperBuilder
@@ -51,6 +54,13 @@ public class KontaktadresseDTO extends AdresseDTO {
 
         private List<String> adresselinjer;
         private String postnummer;
+
+        public List<String> getAdresselinjer() {
+            if (isNull(adresselinjer)) {
+                adresselinjer = new ArrayList<>();
+            }
+            return adresselinjer;
+        }
     }
 
     @Data
@@ -64,5 +74,12 @@ public class KontaktadresseDTO extends AdresseDTO {
         private String postkode;
         private String byEllerStedsnavn;
         private String landkode;
+
+        public List<String> getAdresselinjer() {
+            if (isNull(adresselinjer)) {
+                adresselinjer = new ArrayList<>();
+            }
+            return adresselinjer;
+        }
     }
 }
