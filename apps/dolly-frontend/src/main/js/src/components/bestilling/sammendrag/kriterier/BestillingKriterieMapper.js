@@ -128,34 +128,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (relasjoner) {
-			const barn = relasjoner.barn
 			const foreldre = relasjoner.foreldre
 
-			if (barn && barn.length > 0) {
-				const barn = {
-					header: 'Barn',
-					itemRows: [],
-				}
-
-				relasjoner.barn.forEach((item, i) => {
-					barn.itemRows.push([
-						{
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('Forelder 2', item.partnerIdent),
-						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
-						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
-						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
-					])
-				})
-
-				data.push(barn)
-			}
 			if (foreldre && foreldre.length > 0) {
 				const foreldreRows = {
 					header: 'Foreldre',
@@ -218,6 +192,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sikkerhetstiltak,
 			tilrettelagtKommunikasjon,
 			sivilstand,
+			barn,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -611,6 +586,31 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(sivilstandData)
+		}
+
+		if (barn) {
+			const barnData = {
+				header: 'Barn',
+				itemRows: [],
+			}
+
+			barn.forEach((item, i) => {
+				barnData.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small',
+					},
+					obj('Fnr/dnr/bost', item.ident),
+					obj('Forelder 2', item.partnerIdent),
+					obj('Foreldre', Formatters.showLabel('barnType', item.barnType)),
+					obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
+					obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
+					obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
+				])
+			})
+
+			data.push(barnData)
 		}
 
 		const sjekkRettIdent = (item) => {
