@@ -175,7 +175,8 @@ public class PersonExcelService {
 
         if (nonNull(kontaktadresse.getVegadresse())) {
             return String.format(ADR_FMT, kontaktadresse.getVegadresse().getAdressenavn(), kontaktadresse.getVegadresse().getHusnummer() +
-                    kontaktadresse.getVegadresse().getHusbokstav(), kontaktadresse.getVegadresse().getPostnummer());
+                    (isNotBlank(kontaktadresse.getVegadresse().getHusbokstav()) ? kontaktadresse.getVegadresse().getHusbokstav() : ""),
+                    kontaktadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(kontaktadresse.getPostboksadresse())) {
             return String.format(ADR_FMT, kontaktadresse.getPostboksadresse().getPostbokseier(),
@@ -209,8 +210,9 @@ public class PersonExcelService {
     private static String getOppholdsadresse(OppholdsadresseDTO oppholdsadresse) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
-            return String.format("%s %s, %s", oppholdsadresse.getVegadresse().getAdressenavn(), oppholdsadresse.getVegadresse().getHusnummer() +
-                    oppholdsadresse.getVegadresse().getHusbokstav(), oppholdsadresse.getVegadresse().getPostnummer());
+            return String.format(ADR_FMT, oppholdsadresse.getVegadresse().getAdressenavn(), oppholdsadresse.getVegadresse().getHusnummer() +
+                    (isNotBlank(oppholdsadresse.getVegadresse().getHusbokstav()) ? oppholdsadresse.getVegadresse().getHusbokstav() : ""),
+                    oppholdsadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
             return String.format("Gaardsnummer: %d, Bruksnummer: %s, Kommunenr: %s", oppholdsadresse.getMatrikkeladresse().getGaardsnummer(),
