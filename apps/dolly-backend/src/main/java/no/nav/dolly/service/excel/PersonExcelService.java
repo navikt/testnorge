@@ -44,6 +44,7 @@ public class PersonExcelService {
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig"};
     private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 12, 14, 14, 14, 14, 14};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final String ADR_FMT = "%s %s, %s";
 
     private final PdlPersonConsumer pdlPersonConsumer;
 
@@ -145,7 +146,7 @@ public class PersonExcelService {
     private static String getBoadresse(BostedadresseDTO bostedadresse) {
 
         if (nonNull(bostedadresse.getVegadresse())) {
-            return String.format("%s %s, %s", bostedadresse.getVegadresse().getAdressenavn(), bostedadresse.getVegadresse().getHusnummer() +
+            return String.format(ADR_FMT, bostedadresse.getVegadresse().getAdressenavn(), bostedadresse.getVegadresse().getHusnummer() +
                             (isNotBlank(bostedadresse.getVegadresse().getHusbokstav()) ? bostedadresse.getVegadresse().getHusbokstav() : ""),
                     bostedadresse.getVegadresse().getPostnummer());
 
@@ -173,11 +174,11 @@ public class PersonExcelService {
     private static String getKontaktadresse(KontaktadresseDTO kontaktadresse) {
 
         if (nonNull(kontaktadresse.getVegadresse())) {
-            return String.format("%s %s, %s", kontaktadresse.getVegadresse().getAdressenavn(), kontaktadresse.getVegadresse().getHusnummer() +
+            return String.format(ADR_FMT, kontaktadresse.getVegadresse().getAdressenavn(), kontaktadresse.getVegadresse().getHusnummer() +
                     kontaktadresse.getVegadresse().getHusbokstav(), kontaktadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(kontaktadresse.getPostboksadresse())) {
-            return String.format("%s, %s, %s", kontaktadresse.getPostboksadresse().getPostbokseier(),
+            return String.format(ADR_FMT, kontaktadresse.getPostboksadresse().getPostbokseier(),
                     kontaktadresse.getPostboksadresse().getPostboks(),
                     kontaktadresse.getPostboksadresse().getPostnummer());
 
@@ -212,7 +213,7 @@ public class PersonExcelService {
                     oppholdsadresse.getVegadresse().getHusbokstav(), oppholdsadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
-            return String.format("Gaardsnummer: %d, Bruksnummer: %d, Kommunenr: %s", oppholdsadresse.getMatrikkeladresse().getGaardsnummer(),
+            return String.format("Gaardsnummer: %d, Bruksnummer: %s, Kommunenr: %s", oppholdsadresse.getMatrikkeladresse().getGaardsnummer(),
                     oppholdsadresse.getMatrikkeladresse().getBruksenhetsnummer(), oppholdsadresse.getMatrikkeladresse().getKommunenummer());
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
