@@ -515,7 +515,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...metadataDetails
             }
         },
-        vergemaalEllerFremtidsfullmakt {
+        vergemaalEllerFremtidsfullmakt(historikk: $historikk) {
             type,
             embete,
             vergeEllerFullmektig {
