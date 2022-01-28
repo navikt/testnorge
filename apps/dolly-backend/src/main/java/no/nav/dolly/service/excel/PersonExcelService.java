@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
@@ -144,6 +145,19 @@ public class PersonExcelService {
         return nonNull(sivilstand) ? sivilstand.getType().name() : "";
     }
 
+    private static String formatMatrikkeladresse(MatrikkeladresseDTO matrikkeladresse) {
+
+        return Stream.of("Matrikkeladresse:",
+                        isNotBlank(matrikkeladresse.getTilleggsnavn()) ?
+                                String.format("Tilleggsadresse: %s,", matrikkeladresse.getTilleggsnavn()) : null,
+                        isNotBlank(matrikkeladresse.getBruksenhetsnummer()) ?
+                                String.format("Bruksenhet: %s,",
+                                        matrikkeladresse.getBruksenhetsnummer()) : null,
+                        String.format("Kommunenr: %s", matrikkeladresse.getKommunenummer()))
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(" "));
+    }
+
     private static String getBoadresse(BostedadresseDTO bostedadresse) {
 
         if (nonNull(bostedadresse.getVegadresse())) {
@@ -152,10 +166,7 @@ public class PersonExcelService {
                     bostedadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-            return String.format("Gaardsnummer: %d, Bruksnummer: %d, Kommunenr: %s", bostedadresse.getMatrikkeladresse().getGaardsnummer(),
-                    bostedadresse.getMatrikkeladresse().getBruksnummer(), bostedadresse.getMatrikkeladresse().getKommunenummer()) +
-                    (isNotBlank(bostedadresse.getMatrikkeladresse().getBruksenhetsnummer()) ? ", Bruksenhet: " +
-                            bostedadresse.getMatrikkeladresse().getBruksenhetsnummer() : "");
+            return formatMatrikkeladresse(bostedadresse.getMatrikkeladresse());
 
         } else if (nonNull(bostedadresse.getUkjentBosted())) {
             return String.format("Ukjent bosted i kommunenr %s", bostedadresse.getUkjentBosted().getBostedskommune());
@@ -178,7 +189,7 @@ public class PersonExcelService {
 
         if (nonNull(kontaktadresse.getVegadresse())) {
             return String.format(ADR_FMT, kontaktadresse.getVegadresse().getAdressenavn(), kontaktadresse.getVegadresse().getHusnummer() +
-                    (isNotBlank(kontaktadresse.getVegadresse().getHusbokstav()) ? kontaktadresse.getVegadresse().getHusbokstav() : ""),
+                            (isNotBlank(kontaktadresse.getVegadresse().getHusbokstav()) ? kontaktadresse.getVegadresse().getHusbokstav() : ""),
                     kontaktadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(kontaktadresse.getPostboksadresse())) {
@@ -217,14 +228,11 @@ public class PersonExcelService {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
             return String.format(ADR_FMT, oppholdsadresse.getVegadresse().getAdressenavn(), oppholdsadresse.getVegadresse().getHusnummer() +
-                    (isNotBlank(oppholdsadresse.getVegadresse().getHusbokstav()) ? oppholdsadresse.getVegadresse().getHusbokstav() : ""),
+                            (isNotBlank(oppholdsadresse.getVegadresse().getHusbokstav()) ? oppholdsadresse.getVegadresse().getHusbokstav() : ""),
                     oppholdsadresse.getVegadresse().getPostnummer());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
-            return String.format("Gaardsnummer: %d, Bruksnummer: %d, Kommunenr: %s", oppholdsadresse.getMatrikkeladresse().getGaardsnummer(),
-                    oppholdsadresse.getMatrikkeladresse().getBruksnummer(), oppholdsadresse.getMatrikkeladresse().getKommunenummer()) +
-                    (isNotBlank(oppholdsadresse.getMatrikkeladresse().getBruksenhetsnummer()) ? ", Bruksenhet: " +
-                            oppholdsadresse.getMatrikkeladresse().getBruksenhetsnummer() : "");
+            return formatMatrikkeladresse(oppholdsadresse.getMatrikkeladresse());
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
             return Arrays.stream(new String[]{oppholdsadresse.getUtenlandskAdresse().getAdressenavnNummer(),
