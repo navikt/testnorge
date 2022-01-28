@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,4 +19,6 @@ public class RsDollyUtvidetBestilling extends RsDollyBestilling {
     private Boolean navSyntetiskIdent;
 
     private String beskrivelse;
+
+    private List<Tags> tags;
 }

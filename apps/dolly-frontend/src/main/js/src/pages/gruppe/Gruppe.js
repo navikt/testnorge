@@ -25,6 +25,8 @@ export default function Gruppe({
 	brukernavn,
 	isFetching,
 	isDeletingGruppe,
+	sendTags,
+	isSendingTags,
 	isLockingGruppe,
 	match,
 	history,
@@ -68,6 +70,8 @@ export default function Gruppe({
 				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
+				sendTags={sendTags}
+				isSendingTags={isSendingTags}
 				laasGruppe={laasGruppe}
 				isLockingGruppe={isLockingGruppe}
 				bestillingStatuser={bestillingStatuser}

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.tagshendelseslager.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,7 +25,7 @@ public class TagsOpprettingCommand implements Callable<Mono<String>> {
 
     private final WebClient webClient;
     private final List<String> identer;
-    private final List<String> tagVerdier;
+    private final List<Tags> tagVerdier;
     private final String token;
 
     public Mono<String> call() {

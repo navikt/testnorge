@@ -63,16 +63,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.pdlDataConsumer = pdlDataConsumer;
     }
 
-    private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
-
-        return BestillingProgress.builder()
-                .bestilling(bestilling)
-                .ident("?")
-                .feil("NA:" + error)
-                .master(master)
-                .build();
-    }
-
     @Async
     public void executeAsync(Bestilling bestilling) {
 
@@ -94,6 +84,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 var dollyPerson = DollyPerson.builder()
                                         .hovedperson(opprettedeIdenter.get(0))
                                         .master(originator.getMaster())
+                                        .tags(bestKriterier.getTags())
                                         .build();
 
                                 progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
@@ -140,5 +131,15 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         } else {
             throw new DollyFunctionalException("Bestilling er ikke støttet.");
         }
+    }
+
+    private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
+
+        return BestillingProgress.builder()
+                .bestilling(bestilling)
+                .ident("?")
+                .feil("NA:" + error)
+                .master(master)
+                .build();
     }
 }

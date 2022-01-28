@@ -171,6 +171,7 @@ public class BestillingService {
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .bruker(fetchOrCreateBruker())
                         .beskrivelse(beskrivelse)
+                        .tags(gruppe.getTags())
                         .build());
     }
 
