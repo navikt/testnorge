@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -254,6 +255,7 @@ public class PersonExcelService {
         return Lists.partition(identer, 20).stream()
                 .map(pdlPersonConsumer::getPdlPersoner)
                 .map(PdlPersonBolk::getData)
+                .filter(Objects::nonNull)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Collection::stream)
                 .filter(bolkPerson -> nonNull(bolkPerson.getPerson()))
