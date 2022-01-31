@@ -174,7 +174,7 @@ public class PersonSearchAdapter {
                                 QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
                                 ScoreMode.Avg
                         ));
-                        addHistoriskQuery(queryBuilder. "hentPerson.sivilstand");
+                        addHistoriskQuery(queryBuilder, "hentPerson.sivilstand");
                     }
                 });
     }
