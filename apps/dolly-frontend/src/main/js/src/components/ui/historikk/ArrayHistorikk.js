@@ -7,6 +7,7 @@ import './historikk.less'
 
 export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 	const Main = component
+	const historikkHeader = header !== '' ? header + ' historikk' : 'Historikk'
 
 	return (
 		<div className="med-historikk">
@@ -19,7 +20,7 @@ export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 			)}
 			{historiskData?.length > 0 && (
 				<div className="med-historikk-blokk">
-					<Panel heading="Historikk">
+					<Panel heading={historikkHeader}>
 						{historiskData.map((element, idx) => (
 							<div key={idx} className="med-historikk-content">
 								<Main idx={idx} data={element} />
