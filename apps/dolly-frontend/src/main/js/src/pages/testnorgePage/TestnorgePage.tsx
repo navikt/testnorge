@@ -21,6 +21,10 @@ const initialValues = {
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
+		diverse: {
+			utflyttet: false,
+			innflyttet: false,
+		},
 	},
 }
 
@@ -55,6 +59,12 @@ const getSearchValues = (page: number, pageSize: number, values: any) => {
 		barn: {
 			barn: values?.personinformasjon?.barn?.barn,
 			doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
+		},
+		utflyttingFraNorge: {
+			utflyttet: values?.personinformasjon?.diverse?.utflyttet,
+		},
+		innflyttingTilNorge: {
+			innflytting: values?.personinformasjon?.diverse?.innflyttet,
 		},
 		tag: 'TESTNORGE',
 		excludeTag: 'DOLLY',

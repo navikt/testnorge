@@ -92,6 +92,16 @@ export default () => (
 					{ value: 'MANN', label: 'Mann' },
 				]}
 			/>
+			<FormikCheckbox
+				name="personinformasjon.diverse.innflyttet"
+				label="Har innflyttet til Norge"
+				checkboxMargin
+			/>
+			<FormikCheckbox
+				name="personinformasjon.diverse.utflyttet"
+				label="Har utflyttet fra Norge"
+				checkboxMargin
+			/>
 		</section>
 	</>
 )

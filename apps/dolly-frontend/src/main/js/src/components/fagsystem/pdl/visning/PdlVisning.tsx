@@ -5,7 +5,7 @@ import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Tele
 import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPersonInfo'
 import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinfo'
 import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
-import { PdlNasjonalitet } from '~/components/fagsystem/pdl/visning/partials/PdlNasjonalitet'
+import { PdlNasjonalitet } from '~/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlNasjonalitet'
 import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
@@ -14,7 +14,7 @@ import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadress
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
-import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/PdlRelasjoner'
+import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
 
 type PdlVisningProps = {
 	pdlData: PdlDataWrapper

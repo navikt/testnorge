@@ -1,6 +1,5 @@
 import React from 'react'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { PdlPartner } from '~/components/fagsystem/pdl/visning/partials/PdlPartner'
 import {
 	ForelderBarnRelasjon,
 	HentPerson,
@@ -8,8 +7,9 @@ import {
 	Sivilstand,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { PdlBarn } from '~/components/fagsystem/pdl/visning/partials/PdlBarn'
-import { PdlForeldre } from '~/components/fagsystem/pdl/visning/partials/PdlForeldre'
+import { PdlBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlBarn'
+import { PdlForeldre } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldre'
+import { PdlPartner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlPartner'
 
 type PdlRelasjonerProps = {
 	data: HentPerson

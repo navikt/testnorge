@@ -28,6 +28,9 @@ export type HentPerson = {
 	forelderBarnRelasjon: [ForelderBarnRelasjon]
 	sivilstand: [Sivilstand]
 	doedfoedtBarn: [DoedfoedtBarn]
+	statsborgerskap: [Statsborgerskap]
+	innflyttingTilNorge: [InnflyttingTilNorge]
+	utflyttingFraNorge: [UtflyttingFraNorge]
 }
 
 export type BostedData = {
@@ -118,6 +121,7 @@ export type Sivilstand = {
 	gyldigFraOgMed: Date
 	relatertVedSivilstand: string
 	bekreftelsesdato: Date
+	metadata: Metadata
 }
 
 export type DoedfoedtBarn = {
@@ -132,4 +136,27 @@ export type KodeverkValues = {
 	data: string
 	label: string
 	value: string
+}
+
+export type Statsborgerskap = {
+	land: string
+	gyldigFraOgMed: Date
+	gyldigTilOgMed: Date
+	metadata: Metadata
+}
+
+export type InnflyttingTilNorge = {
+	fraflyttingsland: string
+	fraflyttingsstedIUtlandet: string
+	metadata: Metadata
+}
+
+export type UtflyttingFraNorge = {
+	tilflyttingsland: string
+	tilflyttingsstedIUtlandet: string
+	metadata: Metadata
+}
+
+type Metadata = {
+	historisk: boolean
 }
