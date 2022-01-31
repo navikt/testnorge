@@ -16,7 +16,12 @@ type Data = {
 	data: Array<any>
 }
 
-export const Adresse = (adresse: any, idx: number) => {
+type AdresseProps = {
+	adresse: any
+	idx: number
+}
+
+export const Adresse = ({ adresse, idx }: AdresseProps) => {
 	return (
 		<>
 			{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}
@@ -114,9 +119,7 @@ export const Kontaktadresse = ({ data }: Data) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => {
-							return <Adresse adresse={adresse} idx={idx} />
-						}}
+						{(adresse: any, idx: number) => <Adresse adresse={adresse} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>
