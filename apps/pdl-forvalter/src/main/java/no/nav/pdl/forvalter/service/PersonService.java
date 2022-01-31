@@ -23,6 +23,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -176,6 +177,9 @@ public class PersonService {
         }
         if (request.getPerson().getFoedsel().isEmpty()) {
             request.getPerson().getFoedsel().add(new FoedselDTO());
+        }
+        if (request.getPerson().getSivilstand().isEmpty()) {
+            request.getPerson().getSivilstand().add(new SivilstandDTO());
         }
         if (request.getPerson().getNavn().isEmpty()) {
             request.getPerson().getNavn().add(new NavnDTO());
