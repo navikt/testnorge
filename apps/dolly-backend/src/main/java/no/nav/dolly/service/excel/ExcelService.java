@@ -39,7 +39,7 @@ public class ExcelService {
                                 var cell = row.createCell(cellCount.getAndIncrement());
                                 if (cellValue instanceof String text) {
                                     cell.setCellValue(text);
-                                    if (text.contains(",")) {
+                                    if (text.contains(",") || text.length() > 25) {
                                         cell.setCellStyle(wrapStyle);
                                     }
                                 } else {
