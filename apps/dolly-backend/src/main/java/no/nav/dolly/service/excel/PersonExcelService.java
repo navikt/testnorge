@@ -8,7 +8,6 @@ import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
@@ -47,7 +46,7 @@ public class PersonExcelService {
     private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak"};
-    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 12, 14, 14, 14, 14, 14, 14};
+    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String ADR_FMT = "%s %s, %s";
 
@@ -133,7 +132,7 @@ public class PersonExcelService {
         return nonNull(kjoenn) && nonNull(kjoenn.getKjoenn()) ? kjoenn.getKjoenn() : "";
     }
 
-    private static String getPersonstatus(FolkeregisterPersonstatusDTO personstatus) {
+    private static String getPersonstatus(PdlPerson.FolkeregisterPersonstatus personstatus) {
 
         return nonNull(personstatus) ? personstatus.getStatus().name() : "";
     }
@@ -163,12 +162,14 @@ public class PersonExcelService {
     }
 
     private static String formatVegadresse(VegadresseDTO vegadresse) {
-        return String.format(ADR_FMT, vegadresse.getAdressenavn(), vegadresse.getHusnummer() +
-                        (isNotBlank(vegadresse.getHusbokstav()) ? vegadresse.getHusbokstav() : ""),
+        return Stream.of(String.format("%s %s,", vegadresse.getAdressenavn(), vegadresse.getHusnummer() +
+                        (isNotBlank(vegadresse.getHusbokstav()) ? vegadresse.getHusbokstav() : "")),
                 isNotBlank(vegadresse.getBruksenhetsnummer()) ?
                         String.format("Bruksenhet: %s,",
-                                vegadresse.getBruksenhetsnummer()) : "",
-                vegadresse.getPostnummer());
+                                vegadresse.getBruksenhetsnummer()) : null,
+                vegadresse.getPostnummer())
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(" "));
     }
 
     private static String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse) {

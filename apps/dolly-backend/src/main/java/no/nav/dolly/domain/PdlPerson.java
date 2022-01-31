@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedfoedtBarnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
@@ -109,7 +108,7 @@ public class PdlPerson {
         private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
         private List<FalskIdentitetDTO> falskIdentitet;
         private List<AdressebeskyttelseDTO> adressebeskyttelse;
-        private List<FolkeregisterPersonstatusDTO> folkeregisterpersonstatus;
+        private List<FolkeregisterPersonstatus> folkeregisterpersonstatus;
         private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
         private List<PdlPerson.Statsborgerskap> statsborgerskap;
         private List<OppholdDTO> opphold;
@@ -252,7 +251,7 @@ public class PdlPerson {
             return adressebeskyttelse;
         }
 
-        public List<FolkeregisterPersonstatusDTO> getFolkeregisterpersonstatus() {
+        public List<FolkeregisterPersonstatus> getFolkeregisterpersonstatus() {
             if (isNull(folkeregisterpersonstatus)) {
                 folkeregisterpersonstatus = new ArrayList<>();
             }
@@ -451,5 +450,32 @@ public class PdlPerson {
         private NavnDTO navn;
         private String motpartsPersonident;
         private Boolean omfangetErInnenPersonligOmraade;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FolkeregisterPersonstatus {
+
+//        @JsonDeserialize(using = PersonStatusEnumDeserializer.class)
+        public enum Personstatus {
+            BOSATT("bosatt"),
+            UTFLYTTET("utflyttet"),
+            FORSVUNNET("forsvunnet"),
+            DOED("doed"),
+            OPPHOERT("opphoert"),
+            FOEDSELSREGISTRERT("foedselsregistrert"),
+            IKKE_BOSATT("ikkeBosatt"),
+            MIDLERTIDIG("midlertidig"),
+            INAKTIV("inaktiv");
+
+            private String camelCaseValue;
+
+            Personstatus(String camelCaseValue) {
+                this.camelCaseValue = camelCaseValue;
+            }
+        }
+
+        private Personstatus status;
     }
 }
