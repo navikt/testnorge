@@ -65,6 +65,7 @@ public class TpsBackportingClient implements ClientRegister {
                 WebClientResponseException e) {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
+            return;
         }
 
         if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
