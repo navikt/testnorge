@@ -34,9 +34,57 @@ export type HentPerson = {
 }
 
 export type BostedData = {
-	metadata: {
-		historisk: boolean
-	}
+	angittFlyttedato?: Date
+	coAdressenavn?: string
+	gyldigFraOgMed?: Date
+	gyldigTilOgMed?: Date
+	vegadresse?: Vegadresse
+	matrikkeladresse?: Matrikkeladresse
+	ukjentBosted?: UkjentBosted
+	utenlandskAdresse?: UtenlandskAdresse
+	metadata: Metadata
+}
+
+type Vegadresse = {
+	matrikkelId?: string
+	husbokstav?: string
+	husnummer?: string
+	adressenavn?: string
+	bruksenhetsnummer?: string
+	tilleggsnavn?: string
+	postnummer?: string
+	kommunenummer?: string
+	koordinater?: Koordinater
+}
+
+type Matrikkeladresse = {
+	matrikkelId?: string
+	bruksenhetsnummer?: string
+	tilleggsnavn?: string
+	postnummer?: string
+	kommunenummer?: string
+	koordinater?: Koordinater
+}
+
+type Koordinater = {
+	x?: string
+	y?: string
+	z?: string
+	kvalitet?: string
+}
+
+type UkjentBosted = {
+	bostedskommune?: string
+}
+
+type UtenlandskAdresse = {
+	adressenavnNummer?: string
+	postboksNummerNavn?: string
+	postkode?: string
+	bySted?: string
+	landkode?: string
+	bygningEtasjeLeilighet?: string
+	regionDistriktOmraade?: string
 }
 
 export type FullmaktData = {
@@ -49,15 +97,7 @@ export type FullmaktData = {
 }
 
 export type UtenlandskAdresseData = {
-	utenlandskAdresse?: {
-		adressenavnNummer?: string
-		postboksNummerNavn?: string
-		postkode?: string
-		bySted?: string
-		landkode?: string
-		bygningEtasjeLeilighet?: string
-		regionDistriktOmraade?: string
-	}
+	utenlandskAdresse?: UtenlandskAdresse
 }
 
 export type TelefonData = {
@@ -141,7 +181,7 @@ export type KodeverkValues = {
 export type Statsborgerskap = {
 	land: string
 	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
+	gyldigTilOgMed?: Date
 	metadata: Metadata
 }
 

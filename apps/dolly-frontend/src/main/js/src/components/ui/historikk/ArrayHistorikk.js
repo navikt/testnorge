@@ -7,7 +7,7 @@ import './historikk.less'
 
 export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 	const Main = component
-	const historikkHeader = header + ' historikk'
+	const historikkHeader = header !== '' ? header + ' historikk' : 'Historikk'
 
 	return (
 		<div className="med-historikk">
