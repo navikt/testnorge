@@ -49,9 +49,7 @@ const getSearchValues = (page: number, pageSize: number, values: any) => {
 			fra: values?.personinformasjon?.alder?.fra,
 			til: values?.personinformasjon?.alder?.til,
 		},
-		ident: {
-			ident: values?.personinformasjon?.ident?.ident,
-		},
+		identer: [values?.personinformasjon?.ident?.ident],
 		identitet: {
 			falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
 			utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
