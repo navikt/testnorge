@@ -177,11 +177,12 @@ public class PersonExcelService {
         return Arrays.stream(new String[]{utenlandskAdresse.getAdressenavnNummer(),
                         utenlandskAdresse.getPostboksNummerNavn(),
                         utenlandskAdresse.getRegionDistriktOmraade(),
-                        utenlandskAdresse.getBySted(),
-                        utenlandskAdresse.getPostkode(),
+                        Stream.of(utenlandskAdresse.getBySted(), utenlandskAdresse.getPostkode())
+                                .filter(StringUtils::isNotBlank)
+                                .collect(Collectors.joining(" ")),
                         utenlandskAdresse.getLandkode()})
                 .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(", "));
     }
 
     private static String getBoadresse(BostedadresseDTO bostedadresse) {
@@ -194,8 +195,8 @@ public class PersonExcelService {
 
         } else if (nonNull(bostedadresse.getUkjentBosted())) {
             return Stream.of("Ukjent bosted",
-                    isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune()) ?
-                            String.format("i kommune %s", bostedadresse.getUkjentBosted().getBostedskommune()) : null)
+                            isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune()) ?
+                                    String.format("i kommune %s", bostedadresse.getUkjentBosted().getBostedskommune()) : null)
                     .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(" "));
 
