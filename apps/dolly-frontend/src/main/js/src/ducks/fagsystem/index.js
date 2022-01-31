@@ -415,19 +415,22 @@ export const selectPersonListe = (state) => {
 
 	return identer.map((ident) => {
 		if (ident.master === 'TPSF') {
-			return getTpsfIdentInfo(ident, state)
+			const tpsfIdent = fagsystem.tpsf[ident.ident]
+			return getTpsfIdentInfo(ident, state, tpsfIdent)
 		} else if (ident.master === 'PDLF') {
-			return getPdlfIdentInfo(ident, state)
+			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]
+			return getPdlfIdentInfo(ident, state, pdlfIdent)
 		} else if (ident.master === 'PDL') {
-			return getPdlIdentInfo(ident, state)
+			const pdlData = fagsystem.pdl[ident.ident].data
+			return getPdlIdentInfo(ident, state, pdlData)
 		} else {
 			return null
 		}
 	})
 }
 
-const getTpsfIdentInfo = (ident, state) => {
-	const tpsfIdent = fagsystem.tpsf[ident.ident]
+const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
+	if (!tpsfIdent) return null
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
 	return {
@@ -444,8 +447,8 @@ const getTpsfIdentInfo = (ident, state) => {
 	}
 }
 
-const getPdlfIdentInfo = (ident, state) => {
-	const pdlIdent = fagsystem.pdlforvalter[ident.ident]
+const getPdlfIdentInfo = (ident, state, pdlIdent) => {
+	if (!pdlIdent) return null
 	return {
 		ident,
 		identNr: pdlIdent.ident,
@@ -462,8 +465,9 @@ const getPdlfIdentInfo = (ident, state) => {
 	}
 }
 
-const getPdlIdentInfo = (ident, state) => {
-	const pdlData = fagsystem.pdl[ident.ident].data
+const getPdlIdentInfo = (ident, state, pdlData) => {
+	if (!pdlData) return null
+
 	const person = pdlData.hentPerson
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
