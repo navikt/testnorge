@@ -189,14 +189,14 @@ public class PersonSearchAdapter {
                                 QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
                                 ScoreMode.Avg
                         ));
-                        addHistoriskQuery(queryBuilder,"hentPerson.statsborgerskap");
+                        addHistoriskQuery(queryBuilder, "hentPerson.statsborgerskap");
                     }
                 });
     }
 
     private void addHistoriskQuery(BoolQueryBuilder queryBuilder, String path) {
         queryBuilder.must(QueryBuilders.nestedQuery(
-                path,
+                path + ".metadata",
                 QueryBuilders.matchQuery(path + ".metadata.historisk", false),
                 ScoreMode.Avg
         )).must();
