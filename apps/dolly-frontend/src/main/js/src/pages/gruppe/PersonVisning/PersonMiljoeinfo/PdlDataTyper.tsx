@@ -18,8 +18,8 @@ export type Ident = {
 
 export type HentPerson = {
 	bostedsadresse: Array<BostedData>
-	oppholdsadresse: Array<{}>
-	kontaktadresse: Array<{}>
+	oppholdsadresse: Array<Oppholdsadresse>
+	kontaktadresse: Array<Kontaktadresse>
 	adressebeskyttelse: Array<{}>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
@@ -42,7 +42,52 @@ export type BostedData = {
 	matrikkeladresse?: Matrikkeladresse
 	ukjentBosted?: UkjentBosted
 	utenlandskAdresse?: UtenlandskAdresse
-	metadata: Metadata
+	metadata?: Metadata
+}
+
+export type Oppholdsadresse = {
+	utenlandskAdresse?: UtenlandskAdresse
+	vegadresse?: Vegadresse
+	matrikkeladresse?: Matrikkeladresse
+	oppholdAnnetSted?: string
+	coAdressenavn?: string
+	gyldigFraOgMe?: Date
+	metadata?: Metadata
+}
+
+export type Kontaktadresse = {
+	gyldigFraOgMed?: Date
+	gyldigTilOgMed?: Date
+	type?: string
+	coAdressenavn?: string
+	postboksadresse?: Postboksadresse
+	vegadresse?: Vegadresse
+	postadresseIFrittFormat?: PostadresseIFrittFormat
+	utenlandskAdresse?: UtenlandskAdresse
+	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
+	metadata?: Metadata
+}
+
+type Postboksadresse = {
+	postbokseier?: string
+	postboks?: string
+	postnummer?: string
+}
+
+type PostadresseIFrittFormat = {
+	adresselinje1?: string
+	adresselinje2?: string
+	adresselinje3?: string
+	postnummer?: string
+}
+
+type UtenlandskAdresseIFrittFormat = {
+	adresselinje1?: string
+	adresselinje2?: string
+	adresselinje3?: string
+	postkode?: string
+	byEllerStedsnavn?: string
+	landkode?: string
 }
 
 type Vegadresse = {

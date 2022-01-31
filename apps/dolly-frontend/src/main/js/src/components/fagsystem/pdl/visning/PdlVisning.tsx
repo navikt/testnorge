@@ -10,9 +10,9 @@ import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFull
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
-import { PdlBoadresse } from '~/components/fagsystem/pdl/visning/partials/PdlBoadresse'
-import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
-import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import { PdlBoadresse } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlBoadresse'
+import { PdlOppholdsadresse } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlOppholdsadresse'
+import { PdlKontaktadresse } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlKontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
 
@@ -50,8 +50,8 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<Telefonnummer data={telefonnummer} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<PdlBoadresse data={bostedsadresse} />
-				<Oppholdsadresse data={oppholdsadresse} />
-				<Kontaktadresse data={kontaktadresse} />
+				<PdlOppholdsadresse data={oppholdsadresse} />
+				<PdlKontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
