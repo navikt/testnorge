@@ -56,6 +56,7 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute("pdl-api", "https://pdl-api.dev.adeo.no", addAuthorizationAndNavConsumerTokenToRouteFilter))
                 .route(createRoute("pdl-testdata", "https://pdl-testdata.dev.adeo.no", addAuthenticationHeaderFilter))
                 .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-personmottak", "https://person-mottak.dev.intern.nav.no/", addAuthorizationAndNavConsumerTokenToRouteFilter))
                 .build();
     }
 
