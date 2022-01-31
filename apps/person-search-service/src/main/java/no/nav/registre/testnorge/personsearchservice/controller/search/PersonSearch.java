@@ -17,7 +17,6 @@ public class PersonSearch {
     String excludeTag;
     String kjoenn;
     List<String> identer;
-    IdentSearch ident;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;

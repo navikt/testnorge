@@ -161,19 +161,6 @@ public class PersonSearchAdapter {
                                 )).must();
                             }
                         });
-
-
-        Optional.ofNullable(search.getIdent())
-                .flatMap(value -> Optional.ofNullable(value.getIdent()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentIdenter.identer",
-                                QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
-                                ScoreMode.Avg
-                        )).must();
-                    }
-                });
     }
 
     private void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
