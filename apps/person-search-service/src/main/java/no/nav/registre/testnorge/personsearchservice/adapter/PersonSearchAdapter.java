@@ -151,6 +151,18 @@ public class PersonSearchAdapter {
     }
 
     private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getIdenter())
+                        .ifPresent(values -> {
+                            if(!values.isEmpty()){
+                                queryBuilder.must(QueryBuilders.nestedQuery(
+                                        "hentIdenter.identer",
+                                        QueryBuilders.termsQuery("hentIdenter.identer.ident", values),
+                                        ScoreMode.Avg
+                                )).must();
+                            }
+                        });
+
+
         Optional.ofNullable(search.getIdent())
                 .flatMap(value -> Optional.ofNullable(value.getIdent()))
                 .ifPresent(value -> {
@@ -174,7 +186,6 @@ public class PersonSearchAdapter {
                                 QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
                                 ScoreMode.Avg
                         ));
-                        addHistoriskQuery(queryBuilder, "hentPerson.sivilstand");
                     }
                 });
     }
@@ -189,17 +200,8 @@ public class PersonSearchAdapter {
                                 QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
                                 ScoreMode.Avg
                         ));
-                        addHistoriskQuery(queryBuilder,"hentPerson.statsborgerskap");
                     }
                 });
-    }
-
-    private void addHistoriskQuery(BoolQueryBuilder queryBuilder, String path) {
-        queryBuilder.must(QueryBuilders.nestedQuery(
-                path,
-                QueryBuilders.matchQuery(path + ".metadata.historisk", "false"),
-                ScoreMode.Avg
-        )).must();
     }
 
     private void addUtflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
