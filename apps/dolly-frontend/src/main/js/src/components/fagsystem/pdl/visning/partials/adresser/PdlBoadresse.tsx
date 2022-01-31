@@ -6,6 +6,7 @@ import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { BostedData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import { Adresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
 
 type PdlBoadresseProps = {
 	data: Array<BostedData>
@@ -16,23 +17,10 @@ type AdresseProps = {
 	idx?: number
 }
 
-const Adresse = ({ data, idx }: AdresseProps) => {
+const AdresseVisning = ({ data, idx }: AdresseProps) => {
 	return (
 		<div className="person-visning_content">
-			{data.vegadresse && <Vegadresse adresse={data} idx={idx} />}
-			{data.matrikkeladresse && <Matrikkeladresse adresse={data} idx={idx} />}
-			{data.utenlandskAdresse && <UtenlandskAdresse adresse={data} idx={idx} />}
-			{data.ukjentBosted && (
-				<>
-					<h4 style={{ marginTop: '0px' }}>Ukjent bosted</h4>
-					<div className="person-visning_content" key={idx}>
-						<TitleValue
-							title="Bostedskommune"
-							value={data.ukjentBosted.bostedskommune || 'Ikke oppgitt'}
-						/>
-					</div>
-				</>
-			)}
+			<Adresse adresse={data} idx={idx} />
 		</div>
 	)
 }
@@ -47,7 +35,7 @@ export const PdlBoadresse = ({ data }: PdlBoadresseProps) => {
 		<>
 			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<ArrayHistorikk
-				component={Adresse}
+				component={AdresseVisning}
 				data={gyldigeAdresser}
 				historiskData={historiskeAdresser}
 				header={''}
