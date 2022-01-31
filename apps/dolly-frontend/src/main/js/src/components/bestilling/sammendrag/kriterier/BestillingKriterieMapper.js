@@ -354,7 +354,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: navn.map((item, idx) => {
 					return [
 						{ numberHeader: `Navn ${idx + 1}` },
-						obj('Har mellomnavn', Formatters.oversettBoolean(item.hasMellomnavn)),
+						obj('Fornavn', item.fornavn),
+						obj('Mellomnavn', item.mellomnavn),
+						obj('Etternavn', item.etternavn),
+						obj('Har tilfeldig mellomnavn', Formatters.oversettBoolean(item.hasMellomnavn)),
 					]
 				}),
 			}

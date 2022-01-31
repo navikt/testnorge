@@ -236,7 +236,10 @@ export const initialKjoenn = {
 }
 
 export const initialNavn = {
-	hasMellomnavn: true,
+	fornavn: null as string,
+	mellomnavn: null as string,
+	etternavn: null as string,
+	hasMellomnavn: false,
 	kilde: 'Dolly',
 	master: 'FREG',
 	gjeldende: true,
