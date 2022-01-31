@@ -1,9 +1,12 @@
 package no.nav.dolly.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.deserialization.PersonStatusEnumDeserializer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
@@ -26,6 +29,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -457,7 +461,8 @@ public class PdlPerson {
     @AllArgsConstructor
     public static class FolkeregisterPersonstatus {
 
-//        @JsonDeserialize(using = PersonStatusEnumDeserializer.class)
+        @Getter
+        @JsonDeserialize(using = PersonStatusEnumDeserializer.class)
         public enum Personstatus {
             BOSATT("bosatt"),
             UTFLYTTET("utflyttet"),
@@ -469,10 +474,18 @@ public class PdlPerson {
             MIDLERTIDIG("midlertidig"),
             INAKTIV("inaktiv");
 
-            private String camelCaseValue;
+            private String beskrivelse;
 
             Personstatus(String camelCaseValue) {
-                this.camelCaseValue = camelCaseValue;
+                this.beskrivelse = camelCaseValue;
+            }
+
+            public static Personstatus getEnum(String value) {
+
+                return Arrays.stream(values())
+                        .filter(entry -> entry.getBeskrivelse().equals(value))
+                        .findFirst()
+                        .orElse(INAKTIV);
             }
         }
 
