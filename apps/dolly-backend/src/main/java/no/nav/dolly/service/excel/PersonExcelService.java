@@ -13,6 +13,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -43,8 +46,8 @@ public class PersonExcelService {
 
     private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
-            "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig"};
-    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 12, 14, 14, 14, 14, 14};
+            "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak"};
+    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 15, 15, 25, 25, 25, 12, 14, 14, 14, 14, 14, 14};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String ADR_FMT = "%s %s, %s";
 
@@ -145,9 +148,10 @@ public class PersonExcelService {
         return nonNull(sivilstand) ? sivilstand.getType().name() : "";
     }
 
-    private static String formatMatrikkeladresse(MatrikkeladresseDTO matrikkeladresse) {
+    private static String formatMatrikkeladresse(MatrikkeladresseDTO matrikkeladresse, String matrikkelId) {
 
         return Stream.of("Matrikkeladresse:",
+                        isNotBlank(matrikkelId) ? String.format("MatrikkelId: %s,", matrikkelId) : null,
                         isNotBlank(matrikkeladresse.getTilleggsnavn()) ?
                                 String.format("Tilleggsadresse: %s,", matrikkeladresse.getTilleggsnavn()) : null,
                         isNotBlank(matrikkeladresse.getBruksenhetsnummer()) ?
@@ -158,28 +162,39 @@ public class PersonExcelService {
                 .collect(Collectors.joining(" "));
     }
 
+    private static String formatVegadresse(VegadresseDTO vegadresse) {
+        return String.format(ADR_FMT, vegadresse.getAdressenavn(), vegadresse.getHusnummer() +
+                        (isNotBlank(vegadresse.getHusbokstav()) ? vegadresse.getHusbokstav() : ""),
+                isNotBlank(vegadresse.getBruksenhetsnummer()) ?
+                        String.format("Bruksenhet: %s,",
+                                vegadresse.getBruksenhetsnummer()) : "",
+                vegadresse.getPostnummer());
+    }
+
+    private static String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse) {
+        return Arrays.stream(new String[]{utenlandskAdresse.getAdressenavnNummer(),
+                        utenlandskAdresse.getPostboksNummerNavn(),
+                        utenlandskAdresse.getRegionDistriktOmraade(),
+                        utenlandskAdresse.getBySted(),
+                        utenlandskAdresse.getPostkode(),
+                        utenlandskAdresse.getLandkode()})
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(" "));
+    }
+
     private static String getBoadresse(BostedadresseDTO bostedadresse) {
 
         if (nonNull(bostedadresse.getVegadresse())) {
-            return String.format(ADR_FMT, bostedadresse.getVegadresse().getAdressenavn(), bostedadresse.getVegadresse().getHusnummer() +
-                            (isNotBlank(bostedadresse.getVegadresse().getHusbokstav()) ? bostedadresse.getVegadresse().getHusbokstav() : ""),
-                    bostedadresse.getVegadresse().getPostnummer());
+            return formatVegadresse(bostedadresse.getVegadresse());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-            return formatMatrikkeladresse(bostedadresse.getMatrikkeladresse());
+            return formatMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
 
         } else if (nonNull(bostedadresse.getUkjentBosted())) {
             return String.format("Ukjent bosted i kommunenr %s", bostedadresse.getUkjentBosted().getBostedskommune());
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
-            return Arrays.stream(new String[]{bostedadresse.getUtenlandskAdresse().getAdressenavnNummer(),
-                            bostedadresse.getUtenlandskAdresse().getPostboksNummerNavn(),
-                            bostedadresse.getUtenlandskAdresse().getRegionDistriktOmraade(),
-                            bostedadresse.getUtenlandskAdresse().getBySted(),
-                            bostedadresse.getUtenlandskAdresse().getPostkode(),
-                            bostedadresse.getUtenlandskAdresse().getLandkode()})
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining(" "));
+            return formatUtenlandskAdresse(bostedadresse.getUtenlandskAdresse());
         } else {
             return "";
         }
@@ -188,9 +203,7 @@ public class PersonExcelService {
     private static String getKontaktadresse(KontaktadresseDTO kontaktadresse) {
 
         if (nonNull(kontaktadresse.getVegadresse())) {
-            return String.format(ADR_FMT, kontaktadresse.getVegadresse().getAdressenavn(), kontaktadresse.getVegadresse().getHusnummer() +
-                            (isNotBlank(kontaktadresse.getVegadresse().getHusbokstav()) ? kontaktadresse.getVegadresse().getHusbokstav() : ""),
-                    kontaktadresse.getVegadresse().getPostnummer());
+            return formatVegadresse(kontaktadresse.getVegadresse());
 
         } else if (nonNull(kontaktadresse.getPostboksadresse())) {
             return String.format(ADR_FMT, kontaktadresse.getPostboksadresse().getPostbokseier(),
@@ -199,14 +212,7 @@ public class PersonExcelService {
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
-            return Arrays.stream(new String[]{kontaktadresse.getUtenlandskAdresse().getAdressenavnNummer(),
-                            kontaktadresse.getUtenlandskAdresse().getPostboksNummerNavn(),
-                            kontaktadresse.getUtenlandskAdresse().getRegionDistriktOmraade(),
-                            kontaktadresse.getUtenlandskAdresse().getBySted(),
-                            kontaktadresse.getUtenlandskAdresse().getPostkode(),
-                            kontaktadresse.getUtenlandskAdresse().getLandkode()})
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining(" "));
+            return formatUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse());
 
         } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat())) {
             return kontaktadresse.getPostadresseIFrittFormat().getAdresselinjer().stream()
@@ -227,32 +233,32 @@ public class PersonExcelService {
     private static String getOppholdsadresse(OppholdsadresseDTO oppholdsadresse) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
-            return String.format(ADR_FMT, oppholdsadresse.getVegadresse().getAdressenavn(), oppholdsadresse.getVegadresse().getHusnummer() +
-                            (isNotBlank(oppholdsadresse.getVegadresse().getHusbokstav()) ? oppholdsadresse.getVegadresse().getHusbokstav() : ""),
-                    oppholdsadresse.getVegadresse().getPostnummer());
+            return formatVegadresse(oppholdsadresse.getVegadresse());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
-            return formatMatrikkeladresse(oppholdsadresse.getMatrikkeladresse());
+            return formatMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
-            return Arrays.stream(new String[]{oppholdsadresse.getUtenlandskAdresse().getAdressenavnNummer(),
-                            oppholdsadresse.getUtenlandskAdresse().getPostboksNummerNavn(),
-                            oppholdsadresse.getUtenlandskAdresse().getRegionDistriktOmraade(),
-                            oppholdsadresse.getUtenlandskAdresse().getBySted(),
-                            oppholdsadresse.getUtenlandskAdresse().getPostkode(),
-                            oppholdsadresse.getUtenlandskAdresse().getLandkode()})
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining(" "));
+            return formatUtenlandskAdresse(oppholdsadresse.getUtenlandskAdresse());
         } else {
             return "";
         }
+    }
+
+    private static String getSikkerhetstiltak(List<SikkerhetstiltakDTO> sikkerhetstiltak) {
+
+        return sikkerhetstiltak.stream()
+                .map(tiltak -> String.format("%s -- %s", tiltak.getTiltakstype(), tiltak.getBeskrivelse()) +
+                        (nonNull(tiltak.getKontaktperson()) && isNotBlank(tiltak.getKontaktperson().getPersonident()) ?
+                                String.format(", kontaktperson: %s", tiltak.getKontaktperson().getPersonident()) : ""))
+                .collect(Collectors.joining(",\n"));
     }
 
     public void preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle, List<String> identer) {
 
         var sheet = workbook.createSheet("Personer");
         var rows = getPersondataRowContents(identer);
-        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, 0), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, 21), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
         var columnNo = new AtomicInteger(0);
         Arrays.stream(COL_WIDTHS)
@@ -294,7 +300,8 @@ public class PersonExcelService {
                         getBarn(person.getPerson().getForelderBarnRelasjon()),
                         getForeldre(person.getPerson().getForelderBarnRelasjon()),
                         getVerge(person.getPerson().getVergemaalEllerFremtidsfullmakt()),
-                        getFullmektig(person.getPerson().getFullmakt())
+                        getFullmektig(person.getPerson().getFullmakt()),
+                        getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak())
                 })
                 .toList();
     }
