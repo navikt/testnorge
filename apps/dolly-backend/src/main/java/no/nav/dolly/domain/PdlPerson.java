@@ -110,7 +110,7 @@ public class PdlPerson {
         private List<ForeldreansvarDTO> foreldreansvar;
         private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
         private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
-        private List<FalskIdentitetDTO> falskIdentitet;
+        private FalskIdentitetDTO falskIdentitet;
         private List<AdressebeskyttelseDTO> adressebeskyttelse;
         private List<FolkeregisterPersonstatus> folkeregisterpersonstatus;
         private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
@@ -239,13 +239,6 @@ public class PdlPerson {
                 utenlandskIdentifikasjonsnummer = new ArrayList<>();
             }
             return utenlandskIdentifikasjonsnummer;
-        }
-
-        public List<FalskIdentitetDTO> getFalskIdentitet() {
-            if (isNull(falskIdentitet)) {
-                falskIdentitet = new ArrayList<>();
-            }
-            return falskIdentitet;
         }
 
         public List<AdressebeskyttelseDTO> getAdressebeskyttelse() {
