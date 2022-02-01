@@ -32,6 +32,19 @@ class SivilstandServiceTest {
     private SivilstandService sivilstandService;
 
     @Test
+    void whenTypeIsMissing_thenThrowExecption() {
+
+        var request = SivilstandDTO.builder()
+                        .isNew(true)
+                        .build();
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                sivilstandService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("Type av sivilstand må oppgis"));
+    }
+
+    @Test
     void whenRelatertPersonDontExist_thenThrowExecption() {
 
         var request = SivilstandDTO.builder()

@@ -5,11 +5,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -18,7 +16,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,7 +27,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -40,6 +36,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class SivilstandService implements Validation<SivilstandDTO> {
 
+    private static final String TYPE_EMPTY_ERROR = "Type av sivilstand må oppgis";
     private static final String INVALID_RELATERT_VED_SIVILSTAND = "Sivilstand: Relatert person finnes ikke";
     private static final String SIVILSTAND_DATO_REQUIRED = "Sivilstand: dato for sivilstand må oppgis";
     private static final String SIVILSTAND_OVERLAPPENDE_DATOER_ERROR = "Sivilstand: overlappende datoer er ikke gyldig";
@@ -49,12 +46,6 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
-    private static boolean isMyndig(LocalDateTime foedselsdato) {
-
-        return foedselsdato.toLocalDate().isBefore(LocalDate.now().minusYears(18)) ||
-                foedselsdato.toLocalDate().isEqual(LocalDate.now().minusYears(18));
-    }
-
     public List<SivilstandDTO> convert(PersonDTO person) {
 
         for (var type : person.getSivilstand()) {
@@ -63,7 +54,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
                 handle(type, person);
             }
         }
@@ -73,6 +64,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     @Override
     public void validate(SivilstandDTO sivilstand) {
+
+        if (isNull(sivilstand.getType())) {
+            throw new InvalidRequestException(TYPE_EMPTY_ERROR);
+        }
 
         if ((sivilstand.getType() == GIFT ||
                 sivilstand.getType() == REGISTRERT_PARTNER) &&
@@ -85,15 +80,8 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
-        if (isNull(sivilstand.getType()) && isMyndig(hovedperson.getFoedsel().stream().findFirst()
-                .orElse(FoedselDTO.builder().foedselsdato(DatoFraIdentUtility.getDato(hovedperson.getIdent()).atStartOfDay()).build())
-                .getFoedselsdato())) {
-
-            sivilstand.setType(UGIFT);
-
-        } else if (sivilstand.getType() == GIFT ||
+        if (sivilstand.getType() == GIFT ||
                 sivilstand.getType() == REGISTRERT_PARTNER) {
-
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
 
                 if (isNull(sivilstand.getNyRelatertPerson())) {
@@ -158,13 +146,6 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     }
 
     protected void enforceIntegrity(List<SivilstandDTO> sivilstand) {
-
-        var iterator = sivilstand.iterator();
-        while (iterator.hasNext()) {
-            if (isNull(iterator.next().getType())) {
-                iterator.remove();
-            }
-        }
 
         for (var i = 0; i < sivilstand.size(); i++) {
             if (i + 1 < sivilstand.size() &&
