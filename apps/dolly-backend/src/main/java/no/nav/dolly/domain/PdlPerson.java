@@ -29,7 +29,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -471,14 +470,6 @@ public class PdlPerson {
 
             Personstatus(String camelCaseValue) {
                 this.beskrivelse = camelCaseValue;
-            }
-
-            public static Personstatus getEnum(String value) {
-
-                return Arrays.stream(values())
-                        .filter(entry -> entry.getBeskrivelse().equals(value))
-                        .findFirst()
-                        .orElse(INAKTIV);
             }
         }
 
