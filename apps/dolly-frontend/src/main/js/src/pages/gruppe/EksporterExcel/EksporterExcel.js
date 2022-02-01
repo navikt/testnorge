@@ -45,7 +45,6 @@ const hentExcelFil = (gruppeId) => {
 	return api
 		.fetch(`/dolly-backend/api/v1/excel/gruppe/${gruppeId}`, {
 			method: 'GET',
-			headers: { 'Content-Type': 'application/json' },
 		})
 		.then((response) => response.blob())
 		.then((blob) => URL.createObjectURL(blob))
