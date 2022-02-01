@@ -6,6 +6,8 @@ import lombok.Value;
 
 import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 
+import java.util.List;
+
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -14,7 +16,7 @@ public class PersonSearch {
     String tag;
     String excludeTag;
     String kjoenn;
-    IdentSearch ident;
+    List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;

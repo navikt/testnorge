@@ -120,7 +120,7 @@ public class PersonSearchAdapter {
         );
     }
 
-    private void addTagsQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
+    private void addTagsQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         queryBuilder.must(QueryBuilders.matchQuery("tags", search.getTag()));
 
         Optional.ofNullable(search.getExcludeTag())
@@ -129,11 +129,15 @@ public class PersonSearchAdapter {
 
     private void addKjoennQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getKjoenn())
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentPerson.kjoenn",
-                        QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value),
-                        ScoreMode.Avg
-                )));
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.kjoenn",
+                                QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
     }
 
     private void addFoedselQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -147,37 +151,44 @@ public class PersonSearchAdapter {
     }
 
     private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdent())
-                .flatMap(value -> Optional.ofNullable(value.getIdent()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentIdenter.identer",
-                                QueryBuilders.matchQuery("hentIdenter.identer.ident", value),
-                                ScoreMode.Avg
-                        )).must();
-                    }
-                });
+        Optional.ofNullable(search.getIdenter())
+                        .ifPresent(values -> {
+                            if(!values.isEmpty()){
+                                queryBuilder.must(QueryBuilders.nestedQuery(
+                                        "hentIdenter.identer",
+                                        QueryBuilders.termsQuery("hentIdenter.identer.ident", values),
+                                        ScoreMode.Avg
+                                )).must();
+                            }
+                        });
     }
 
     private void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getSivilstand())
                 .flatMap(value -> Optional.ofNullable(value.getType()))
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentPerson.sivilstand",
-                        QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
-                        ScoreMode.Avg
-                )));
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.sivilstand",
+                                QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
     }
 
     private void addStatsborgerskapQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getStatsborgerskap())
                 .flatMap(value -> Optional.ofNullable(value.getLand()))
-                .ifPresent(value -> queryBuilder.must(QueryBuilders.nestedQuery(
-                        "hentPerson.statsborgerskap",
-                        QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
-                        ScoreMode.Avg
-                )));
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.statsborgerskap",
+                                QueryBuilders.matchQuery("hentPerson.statsborgerskap.land", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
     }
 
     private void addUtflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
