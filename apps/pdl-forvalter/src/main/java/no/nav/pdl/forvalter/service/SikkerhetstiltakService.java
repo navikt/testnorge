@@ -36,7 +36,6 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.PDL);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
         return person.getSikkerhetstiltak();

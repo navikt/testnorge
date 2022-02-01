@@ -74,7 +74,6 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 handle(type, person.getIdent());
                 type.setKilde(StringUtils.isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
             }
         }
         return person.getKontaktinformasjonForDoedsbo();

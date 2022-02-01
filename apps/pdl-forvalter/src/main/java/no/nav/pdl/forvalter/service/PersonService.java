@@ -23,6 +23,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -65,6 +66,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final GjeldendeArtifactService gjeldendeArtifactService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -88,6 +90,8 @@ public class PersonService {
         dbPerson.setMellomnavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
         dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
+
+        gjeldendeArtifactService.setGjeldene(dbPerson.getPerson());
 
         return personRepository.save(dbPerson).getIdent();
     }
@@ -176,6 +180,9 @@ public class PersonService {
         }
         if (request.getPerson().getFoedsel().isEmpty()) {
             request.getPerson().getFoedsel().add(new FoedselDTO());
+        }
+        if (request.getPerson().getSivilstand().isEmpty()) {
+            request.getPerson().getSivilstand().add(new SivilstandDTO());
         }
         if (request.getPerson().getNavn().isEmpty()) {
             request.getPerson().getNavn().add(new NavnDTO());

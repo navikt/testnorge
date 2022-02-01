@@ -63,7 +63,6 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
                 nyeRelasjoner.addAll(handle(type, person));
             }
         }
