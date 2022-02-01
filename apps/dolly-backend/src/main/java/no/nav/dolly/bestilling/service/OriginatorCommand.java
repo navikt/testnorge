@@ -13,6 +13,7 @@ import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 
 import java.util.concurrent.Callable;
 
@@ -45,26 +46,30 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
                     .master(Master.PDL)
                     .build();
 
-        } else if (nonNull(bestillingRequest.getTpsf())) {
+        } else {
 
-            var tpsfBestilling = mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class);
+            var tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ?
+                    mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+
+            tpsfBestilling.setAntall(tpsfBestilling.getAntall() != 0 ? tpsfBestilling.getAntall() : 1);
             tpsfBestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
             tpsfBestilling.setHarIngenAdresse(nonNull(bestillingRequest.getPdldata()) &&
                     bestillingRequest.getPdldata().isPdlAdresse());
 
+            if (nonNull(bestillingRequest.getPdldata()) && nonNull(bestillingRequest.getPdldata().getPerson())) {
+                tpsfBestilling.setStatsborgerskap(
+                        bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
+                                .orElse(new StatsborgerskapDTO()).getLandkode());
+                tpsfBestilling.setStatsborgerskapRegdato(
+                        bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
+                                .orElse(new StatsborgerskapDTO()).getGyldigFraOgMed());
+                tpsfBestilling.setStatsborgerskapTildato(
+                        bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
+                                .orElse(new StatsborgerskapDTO()).getGyldigTilOgMed());
+            }
+
             return Originator.builder()
                     .tpsfBestilling(tpsfBestilling)
-                    .master(Master.TPSF)
-                    .build();
-
-        } else {
-
-            var bestilling =  new TpsfBestilling();
-            bestilling.setAntall(1);
-            bestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
-
-            return Originator.builder()
-                    .tpsfBestilling(bestilling)
                     .master(Master.TPSF)
                     .build();
         }

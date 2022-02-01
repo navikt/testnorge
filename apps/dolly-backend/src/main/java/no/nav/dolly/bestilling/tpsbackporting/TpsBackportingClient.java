@@ -6,17 +6,14 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -39,17 +36,6 @@ public class TpsBackportingClient implements ClientRegister {
     private final TpsfService tpsfService;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final DollyPersonCache dollyPersonCache;
-
-    private static StatsborgerskapDTO getStatborgerskap(PersonDTO pdlPerson) {
-
-        // Velg norsk statsborskap hvis dette finnes, TPS har kun et aktivt og NOR er dominerende
-        return pdlPerson.getStatsborgerskap().stream()
-                .anyMatch(statsborgerskap -> "NOR".equals(statsborgerskap.getLandkode())) ?
-                pdlPerson.getStatsborgerskap().stream()
-                        .filter(statsborgerskap -> "NOR".equals(statsborgerskap.getLandkode()))
-                        .toList().get(0) :
-                pdlPerson.getStatsborgerskap().get(0);
-    }
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -129,11 +115,6 @@ public class TpsBackportingClient implements ClientRegister {
         }
         if (!pdlPerson.getUtflytting().isEmpty()) {
             mapperFacade.map(pdlPerson.getUtflytting().get(0), tpsfBestilling);
-        }
-        if (!pdlPerson.getStatsborgerskap().isEmpty() &&
-                (!"NOR".equals(getStatborgerskap(pdlPerson).getLandkode()) ||
-                        IdentType.FNR != IdentTypeUtil.getIdentType(pdlPerson.getIdent()))) {
-            mapperFacade.map(getStatborgerskap(pdlPerson), tpsfBestilling);
         }
         if (!pdlPerson.getDoedsfall().isEmpty()) {
             tpsfBestilling.setDoedsdato(pdlPerson.getDoedsfall().get(0).getDoedsdato());
