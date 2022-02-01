@@ -19,7 +19,6 @@ export const initialBostedsadresse = {
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialOppholdsadresse = {
@@ -28,7 +27,6 @@ export const initialOppholdsadresse = {
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialKontaktadresse = {
@@ -37,14 +35,12 @@ export const initialKontaktadresse = {
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialAdressebeskyttelse = {
 	gradering: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialVegadresse = {
@@ -102,7 +98,6 @@ export const initialKontaktinfoForDoedebo = {
 	},
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialSikkerhetstiltak = {
@@ -116,7 +111,6 @@ export const initialSikkerhetstiltak = {
 	gyldigTilOgMed: null,
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const initialTpsSikkerhetstiltak = {
@@ -128,11 +122,10 @@ export const initialTpsSikkerhetstiltak = {
 
 export const initialStatsborgerskap = {
 	landkode: null,
-	gyldigFraOgMed: new Date(),
+	gyldigFraOgMed: null,
 	gyldigTilOgMed: null,
 	kilde: 'Dolly',
-	master: 'PDL',
-	gjeldende: true,
+	master: 'FREG',
 }
 
 export const initialTilrettelagtKommunikasjon = {
@@ -140,14 +133,12 @@ export const initialTilrettelagtKommunikasjon = {
 	spraakForTegnspraakTolk: '',
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const initialDoedsfall = {
 	doedsdato: new Date(),
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const initialOrganisasjon = {
@@ -179,14 +170,12 @@ export const initialUtenlandsIdValues = {
 	utstederland: '',
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialFalskIdentitetValues = {
 	erFalsk: true,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialInnvandring = {

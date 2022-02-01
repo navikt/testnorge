@@ -32,7 +32,6 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 					erFalsk: true,
 					kilde: 'Dolly',
 					master: 'FREG',
-					gjeldende: true,
 				},
 			])
 		},
@@ -51,7 +50,6 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 					utstederland: '',
 					kilde: 'Dolly',
 					master: 'FREG',
-					gjeldende: true,
 				},
 			]),
 		remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),

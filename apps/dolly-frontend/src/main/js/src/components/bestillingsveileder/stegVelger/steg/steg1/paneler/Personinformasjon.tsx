@@ -7,6 +7,7 @@ import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import {
 	initialPdlPerson,
+	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
@@ -120,7 +121,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						doedsdato: new Date(),
 						kilde: 'Dolly',
 						master: 'PDL',
-						gjeldende: true,
 					},
 				]),
 			remove: () => del(['pdldata.person.doedsfall']),
@@ -131,16 +131,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set('pdldata.person.statsborgerskap', fjernIdFoerLeggTil('statsborgerskap'))
-					: set('pdldata.person.statsborgerskap', [
-							{
-								landkode: null,
-								gyldigFraOgMed: new Date(),
-								gyldigTilOgMed: null,
-								kilde: 'Dolly',
-								master: 'PDL',
-								gjeldende: true,
-							},
-					  ])
+					: set('pdldata.person.statsborgerskap', [initialStatsborgerskap])
 			},
 			remove() {
 				del(['pdldata.person.statsborgerskap'])
@@ -288,7 +279,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 										prioritet: 1,
 										kilde: 'Dolly',
 										master: 'PDL',
-										gjeldende: true,
 									},
 								],
 							],
@@ -352,7 +342,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						nyFullmektig: initialPdlPerson,
 						kilde: 'Dolly',
 						master: 'PDL',
-						gjeldende: true,
 					},
 				]),
 			remove: () => del('pdldata.person.fullmakt'),
@@ -376,7 +365,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								gyldigTilOgMed: null,
 								kilde: 'Dolly',
 								master: 'PDL',
-								gjeldende: true,
 							},
 						],
 					],

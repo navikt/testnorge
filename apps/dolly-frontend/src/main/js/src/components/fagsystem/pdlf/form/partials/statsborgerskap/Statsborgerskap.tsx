@@ -26,7 +26,7 @@ export const Statsborgerskap = () => {
 						/>
 						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Statsborgerskap fra" />
 						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
-						<AvansertForm path={path} kanVelgeMaster={false} />
+						<AvansertForm path={path} />
 					</>
 				)}
 			</FormikDollyFieldArray>

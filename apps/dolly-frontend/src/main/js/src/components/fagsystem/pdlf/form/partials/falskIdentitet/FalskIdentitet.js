@@ -64,7 +64,6 @@ export const FalskIdentitet = ({ formikBag }) => {
 					erFalsk: true,
 					kilde: _get(formikBag.values, `${path}.kilde`),
 					master: _get(formikBag.values, `${path}.master`),
-					gjeldende: _get(formikBag.values, `${path}.gjeldende`),
 				}
 
 				return (
