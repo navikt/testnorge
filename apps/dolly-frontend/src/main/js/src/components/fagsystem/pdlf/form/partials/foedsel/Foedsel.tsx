@@ -29,14 +29,12 @@ export const Foedsel = ({ formikBag }) => {
 					const foedselsaar = _get(formikBag.values, `${path}.foedselsaar`)
 					return (
 						<>
-							{/*TODO: vis bare hvis legg til*/}
 							<FormikDatepicker
 								name={`${path}.foedselsdato`}
 								label="Fødselsdato"
 								disabled={foedselsaar !== null}
 								fastfield={false}
 							/>
-							{/*TODO: vis bare hvis legg til*/}
 							<Yearpicker
 								formikBag={formikBag}
 								name={`${path}.foedselsaar`}

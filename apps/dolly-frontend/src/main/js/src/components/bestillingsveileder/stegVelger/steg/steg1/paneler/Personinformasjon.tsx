@@ -12,6 +12,7 @@ import {
 	initialNavn,
 	initialPdlPerson,
 	initialTilrettelagtKommunikasjon,
+	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
 
@@ -154,7 +155,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								gyldigTilOgMed: null,
 								kilde: 'Dolly',
 								master: 'PDL',
-								gjeldende: true,
 							},
 					  ])
 			},
@@ -301,7 +301,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 										prioritet: 1,
 										kilde: 'Dolly',
 										master: 'PDL',
-										gjeldende: true,
 									},
 								],
 							],
@@ -341,16 +340,8 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		vergemaal: {
 			label: 'Vergemål',
-			checked: has('tpsf.vergemaal'),
-			add: () =>
-				set('tpsf.vergemaal', {
-					embete: null,
-					sakType: null,
-					mandatType: null,
-					vedtakDato: null,
-					identType: null,
-					harMellomnavn: null,
-				}),
+			checked: has('pdldata.person.vergemaal'),
+			add: () => set('pdldata.person.vergemaal', [initialVergemaal]),
 			remove: () => del('tpsf.vergemaal'),
 		},
 		fullmakt: {
@@ -365,7 +356,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						nyFullmektig: initialPdlPerson,
 						kilde: 'Dolly',
 						master: 'PDL',
-						gjeldende: true,
 					},
 				]),
 			remove: () => del('pdldata.person.fullmakt'),
@@ -389,7 +379,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								gyldigTilOgMed: null,
 								kilde: 'Dolly',
 								master: 'PDL',
-								gjeldende: true,
 							},
 						],
 					],

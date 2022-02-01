@@ -235,6 +235,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sikkerhetstiltak,
 			tilrettelagtKommunikasjon,
 			sivilstand,
+			vergemaal,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -376,6 +377,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(telefonnummerData)
+		}
+
+		if (vergemaal) {
+			const vergemaalData = {
+				header: 'Vergemål',
+				itemRows: vergemaal.map((item, idx) => {
+					return [
+						{ numberHeader: `Vergemål ${idx + 1}` },
+						obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+						obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
+						obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
+						obj('Gyldig f.o.m.', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig t.o.m.', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Verge', item.vergeIdent),
+						...personRelatertTil(item, 'nyVergeIdent'),
+					]
+				}),
+			}
+			data.push(vergemaalData)
 		}
 
 		if (fullmakt) {

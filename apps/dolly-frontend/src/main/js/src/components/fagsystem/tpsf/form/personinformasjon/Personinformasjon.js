@@ -4,7 +4,6 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { Diverse } from './partials/Diverse'
-import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
 import { Sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
@@ -19,6 +18,7 @@ import { Alder } from '~/components/fagsystem/pdlf/form/partials/alder/Alder'
 import { Kjoenn } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { Foedsel } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
+import { Vergemaal } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -60,7 +60,7 @@ const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
 const foedselPath = ['pdldata.person.foedsel']
 const doedsfallPath = ['pdldata.person.doedsfall']
-const vergemaalPath = ['tpsf.vergemaal']
+const vergemaalPath = ['pdldata.person.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
@@ -90,7 +90,7 @@ const panelPaths = [
 ].flat()
 
 export const Personinformasjon = ({ formikBag }) => {
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, gruppeId } = useContext(BestillingsveilederContext)
 
 	return (
 		<Vis attributt={panelPaths}>
@@ -160,7 +160,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
-					<Vergemaal />
+					<Vergemaal formikBag={formikBag} gruppeId={gruppeId} />
 				</Kategori>
 
 				<Kategori title="Fullmakt" vis={fullmaktPath}>

@@ -383,6 +383,9 @@ const kjoenn = Yup.array().of(
 
 const navn = Yup.array().of(
 	Yup.object({
+		fornavn: Yup.string().nullable(),
+		mellomnavn: Yup.string().nullable(),
+		etternavn: Yup.string().nullable(),
 		hasMellomnavn: Yup.boolean(),
 	})
 )

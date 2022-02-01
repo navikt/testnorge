@@ -51,3 +51,13 @@ export type Sivilstand = {
 	gyldigFraOgMed?: string
 	bekreftelsesdato?: string
 }
+
+export type Vergemaal = {
+	vergemaalEmbete: string
+	mandatType?: string
+	sakType: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
+	vergeIdent: string
+	id: number
+}

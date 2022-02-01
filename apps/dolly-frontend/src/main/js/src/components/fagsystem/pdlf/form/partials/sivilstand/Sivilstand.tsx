@@ -9,41 +9,16 @@ import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValue
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { getPersonOptions } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
 	gruppeId: string
 }
 
-type Option = {
-	value: string
-	label: string
-}
-
 export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => {
-	const getOptions = async () => {
-		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
-			return response.data?.identer?.map((person: PersonData) => {
-				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
-			})
-		})
-		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
-			const personListe: Array<Option> = []
-			response.data.forEach((id: Person) => {
-				personListe.push({
-					value: id.person.ident,
-					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
-				})
-			})
-			return personListe
-		})
-		return options ? options : Promise.resolve()
-	}
-
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.sivilstand"
@@ -78,7 +53,7 @@ export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => {
 						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
 						<ErrorBoundary>
 							<LoadableComponent
-								onFetch={() => getOptions()}
+								onFetch={() => getPersonOptions(gruppeId)}
 								render={(data) => (
 									<FormikSelect
 										name={`${path}.relatertVedSivilstand`}
