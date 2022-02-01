@@ -2,72 +2,11 @@ import React, { useEffect, useState } from 'react'
 import Title from '~/components/Title'
 import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
-import SearchOptions from './search/SearchOptions'
+import { SearchOptions } from './search/SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
 import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
-
-const initialValues = {
-	personinformasjon: {
-		alder: {
-			fra: '18',
-			til: '70',
-		},
-		barn: {
-			barn: false,
-			doedfoedtBarn: false,
-		},
-		identitet: {
-			falskIdentitet: false,
-			utenlandskIdentitet: false,
-		},
-		diverse: {
-			utflyttet: false,
-			innflyttet: false,
-		},
-	},
-}
-
-const getSearchValues = (page: number, pageSize: number, values: any) => {
-	return {
-		pageing: {
-			page: page,
-			pageSize: pageSize,
-		},
-		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
-		foedsel: {
-			fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
-			tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
-		},
-		statsborgerskap: {
-			land: values?.personinformasjon?.statsborgerskap?.land,
-		},
-		sivilstand: {
-			type: values?.personinformasjon?.sivilstand?.type,
-		},
-		alder: {
-			fra: values?.personinformasjon?.alder?.fra,
-			til: values?.personinformasjon?.alder?.til,
-		},
-		identer: [values?.personinformasjon?.ident?.ident],
-		identitet: {
-			falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
-			utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
-		},
-		barn: {
-			barn: values?.personinformasjon?.barn?.barn,
-			doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
-		},
-		utflyttingFraNorge: {
-			utflyttet: values?.personinformasjon?.diverse?.utflyttet,
-		},
-		innflyttingTilNorge: {
-			innflytting: values?.personinformasjon?.diverse?.innflyttet,
-		},
-		tag: 'TESTNORGE',
-		excludeTag: 'DOLLY',
-	}
-}
+import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
@@ -105,19 +44,19 @@ export default () => {
 			</p>
 
 			<Formik initialValues={initialValues} onSubmit={onSubmit}>
-				{({ handleSubmit, values }) => (
+				{(formikBag) => (
 					<SearchContainer
-						left={<SearchOptions />}
+						left={<SearchOptions formikBag={formikBag} />}
 						right={
 							<SearchViewConnector
 								items={items}
 								pageSize={pageSize}
 								page={page}
 								numberOfItems={numberOfItems}
-								onChange={(pageNumber: number) => search(pageNumber, values)}
+								onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
 							/>
 						}
-						onSubmit={handleSubmit}
+						onSubmit={formikBag.handleSubmit}
 					/>
 				)}
 			</Formik>
