@@ -4,7 +4,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Hjelpetekst from '~/components/hjelpetekst'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
-import { EksporterCSV } from '~/pages/gruppe/EksporterCSV/EksporterCSV'
+import { EksporterExcel } from '~/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton.tsx'
 import { Header } from '~/components/ui/header/Header'
@@ -99,7 +99,7 @@ export default function GruppeHeader({
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
 					)}
-					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
+					<EksporterExcel gruppeId={gruppe.id} />
 					<TagsButton
 						loading={isSendingTags}
 						action={sendTags}
