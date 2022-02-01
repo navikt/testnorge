@@ -46,9 +46,12 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
                     .master(Master.PDL)
                     .build();
 
-        } else if (nonNull(bestillingRequest.getTpsf())) {
+        } else {
 
-            var tpsfBestilling = mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class);
+            var tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ?
+                    mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+
+            tpsfBestilling.setAntall(tpsfBestilling.getAntall() != 0 ? tpsfBestilling.getAntall() : 1);
             tpsfBestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
             tpsfBestilling.setHarIngenAdresse(nonNull(bestillingRequest.getPdldata()) &&
                     bestillingRequest.getPdldata().isPdlAdresse());
@@ -67,17 +70,6 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
 
             return Originator.builder()
                     .tpsfBestilling(tpsfBestilling)
-                    .master(Master.TPSF)
-                    .build();
-
-        } else {
-
-            var bestilling = new TpsfBestilling();
-            bestilling.setAntall(1);
-            bestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
-
-            return Originator.builder()
-                    .tpsfBestilling(bestilling)
                     .master(Master.TPSF)
                     .build();
         }
