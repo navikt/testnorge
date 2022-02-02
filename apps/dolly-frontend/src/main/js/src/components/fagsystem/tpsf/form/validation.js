@@ -293,14 +293,6 @@ export const validation = {
 					),
 				})
 			).nullable(),
-			vergemaal: ifPresent(
-				'$tpsf.vergemaal',
-				Yup.object({
-					embete: requiredString.nullable(),
-					sakType: requiredString.nullable(),
-					vedtakDato: requiredDate,
-				})
-			),
 			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
 			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
 			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),

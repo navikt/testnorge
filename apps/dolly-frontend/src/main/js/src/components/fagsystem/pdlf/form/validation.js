@@ -390,6 +390,18 @@ const navn = Yup.array().of(
 	})
 )
 
+const vergemaal = Yup.array().of(
+	Yup.object({
+		vergemaalEmbete: requiredString.nullable(),
+		sakType: requiredString.nullable(),
+		gyldigFraOgMed: Yup.string().nullable(),
+		gyldigTilOgMed: Yup.string().nullable(),
+		nyVergeIdent: nyPerson,
+		vergeIdent: Yup.string().nullable(),
+		mandatType: Yup.string().nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		opprettNyPerson: Yup.object({
@@ -427,6 +439,7 @@ export const validation = {
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
 			navn: ifPresent('$pdldata.person.navn', navn),
+			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 		}),
 	}),
 }
