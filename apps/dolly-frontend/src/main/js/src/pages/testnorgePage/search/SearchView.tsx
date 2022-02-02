@@ -10,9 +10,11 @@ import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
+import Loading from '~/components/ui/loading/Loading'
 
 type Props = {
 	items?: Person[]
+	loading: boolean
 	pageing: Pageing
 	numberOfItems?: number
 	onChange?: (page: number) => void
@@ -29,11 +31,16 @@ const SearchPagination = styled(Pagination)`
 	align-self: center;
 `
 
-export default ({ items, pageing, numberOfItems, onChange, importerPersoner }: Props) => {
+export default ({ items, loading, pageing, numberOfItems, onChange, importerPersoner }: Props) => {
 	const [valgtePersoner, setValgtePersoner] = useState([])
 
+	if (loading) return <Loading label="Søker..." />
 	if (!items) {
-		return <ContentContainer>Ingen resultat</ContentContainer>
+		return (
+			<ContentContainer>
+				Ingen resultat. Resultatet viser ikke identer som allerede er importert til Dolly.
+			</ContentContainer>
+		)
 	}
 
 	const columns = [

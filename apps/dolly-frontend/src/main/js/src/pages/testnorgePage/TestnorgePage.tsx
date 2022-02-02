@@ -13,13 +13,17 @@ export default () => {
 	const [page, setPage] = useState(1)
 	const [pageSize] = useState(20)
 	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
+	const [loading, setLoading] = useState(false)
 
-	const search = (page: number, values: any) =>
+	const search = (page: number, values: any) => {
+		setLoading(true)
 		PersonSearch.search(getSearchValues(page, pageSize, values)).then((response) => {
 			setPage(page)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
+			setLoading(false)
 		})
+	}
 
 	useEffect(() => {
 		search(1, initialValues)
@@ -50,6 +54,7 @@ export default () => {
 						right={
 							<SearchViewConnector
 								items={items}
+								loading={loading}
 								pageSize={pageSize}
 								page={page}
 								numberOfItems={numberOfItems}
