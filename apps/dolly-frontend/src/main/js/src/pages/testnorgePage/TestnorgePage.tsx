@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Title from '~/components/Title'
 import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
@@ -7,6 +7,7 @@ import PersonSearch from '~/service/services/personsearch'
 import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
@@ -15,8 +16,10 @@ export default () => {
 	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
+	const [startedSearch, setStartedSearch] = useState(false)
 
 	const search = (searchPage: number, values: any) => {
+		setStartedSearch(true)
 		setLoading(true)
 		PersonSearch.search(getSearchValues(searchPage, pageSize, values)).then((response) => {
 			setPage(searchPage)
@@ -26,10 +29,6 @@ export default () => {
 			setLoading(false)
 		})
 	}
-
-	useEffect(() => {
-		search(1, initialValues)
-	}, [])
 
 	const onSubmit = (values: any) => search(1, values)
 
@@ -54,16 +53,21 @@ export default () => {
 					<SearchContainer
 						left={<SearchOptions formikBag={formikBag} />}
 						right={
-							<SearchViewConnector
-								items={items}
-								loading={loading}
-								valgtePersoner={valgtePersoner}
-								setValgtePersoner={setValgtePersoner}
-								pageSize={pageSize}
-								page={page}
-								numberOfItems={numberOfItems}
-								onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
-							/>
+							<>
+								{startedSearch && (
+									<SearchViewConnector
+										items={items}
+										loading={loading}
+										valgtePersoner={valgtePersoner}
+										setValgtePersoner={setValgtePersoner}
+										pageSize={pageSize}
+										page={page}
+										numberOfItems={numberOfItems}
+										onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
+									/>
+								)}
+								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
+							</>
 						}
 						onSubmit={formikBag.handleSubmit}
 					/>
