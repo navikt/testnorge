@@ -352,6 +352,13 @@ const sivilstand = Yup.array().of(
 
 export const validation = {
 	pdldata: Yup.object({
+		opprettNyPerson: Yup.object({
+			alder: Yup.number()
+				.transform((i, j) => (j === '' ? null : i))
+				.nullable(),
+			foedtEtter: testFoedtEtter(Yup.date().nullable()),
+			foedtFoer: testFoedtFoer(Yup.date().nullable()),
+		}).nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
