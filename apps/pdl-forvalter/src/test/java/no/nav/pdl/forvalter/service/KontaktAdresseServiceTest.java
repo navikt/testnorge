@@ -74,19 +74,6 @@ class KontaktAdresseServiceTest {
     }
 
     @Test
-    void whenNoAdressProvided_thenThrowExecption() {
-
-        var request = KontaktadresseDTO.builder()
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString("én av adressene må velges"));
-    }
-
-    @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
