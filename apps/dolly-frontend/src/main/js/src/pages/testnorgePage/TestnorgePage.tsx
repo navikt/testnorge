@@ -14,6 +14,7 @@ export default () => {
 	const [pageSize] = useState(20)
 	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
 	const [loading, setLoading] = useState(false)
+	const [valgtePersoner, setValgtePersoner] = useState([])
 
 	const search = (page: number, values: any) => {
 		setLoading(true)
@@ -21,6 +22,7 @@ export default () => {
 			setPage(page)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
+			setValgtePersoner([])
 			setLoading(false)
 		})
 	}
@@ -55,6 +57,8 @@ export default () => {
 							<SearchViewConnector
 								items={items}
 								loading={loading}
+								valgtePersoner={valgtePersoner}
+								setValgtePersoner={setValgtePersoner}
 								pageSize={pageSize}
 								page={page}
 								numberOfItems={numberOfItems}

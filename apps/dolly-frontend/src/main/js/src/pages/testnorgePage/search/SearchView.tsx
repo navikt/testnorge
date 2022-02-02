@@ -15,6 +15,8 @@ import Loading from '~/components/ui/loading/Loading'
 type Props = {
 	items?: Person[]
 	loading: boolean
+	valgtePersoner: string[]
+	setValgtePersoner: (personer: string[]) => void
 	pageing: Pageing
 	numberOfItems?: number
 	onChange?: (page: number) => void
@@ -31,9 +33,16 @@ const SearchPagination = styled(Pagination)`
 	align-self: center;
 `
 
-export default ({ items, loading, pageing, numberOfItems, onChange, importerPersoner }: Props) => {
-	const [valgtePersoner, setValgtePersoner] = useState([])
-
+export default ({
+	items,
+	loading,
+	valgtePersoner,
+	setValgtePersoner,
+	pageing,
+	numberOfItems,
+	onChange,
+	importerPersoner,
+}: Props) => {
 	if (loading) return <Loading label="Søker..." />
 	if (!items) {
 		return (
@@ -79,12 +88,8 @@ export default ({ items, loading, pageing, numberOfItems, onChange, importerPers
 								valgtePersoner.includes(person.ident)
 							)
 							alleValgtPaaSiden
-								? setValgtePersoner(
-										valgtePersoner.filter(
-											(personId) => !data.some((person) => person.ident === personId)
-										)
-								  )
-								: setValgtePersoner(valgtePersoner.concat(data.map((person) => person.ident)))
+								? setValgtePersoner([])
+								: setValgtePersoner(data.map((person) => person.ident))
 						}}
 					>
 						{text}
