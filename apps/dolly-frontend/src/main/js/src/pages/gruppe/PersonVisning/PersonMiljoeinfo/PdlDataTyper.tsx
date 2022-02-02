@@ -31,6 +31,8 @@ export type HentPerson = {
 	statsborgerskap: [Statsborgerskap]
 	innflyttingTilNorge: [InnflyttingTilNorge]
 	utflyttingFraNorge: [UtflyttingFraNorge]
+	foedsel: [Foedsel]
+	doedsfall: [Doedsfall]
 }
 
 export type BostedData = {
@@ -239,6 +241,20 @@ export type InnflyttingTilNorge = {
 export type UtflyttingFraNorge = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
+	metadata: Metadata
+}
+
+type Foedsel = {
+	foedselsaar: string
+	foedselsdato: string
+	foedeland: string
+	foedested: string
+	foedekommune: string
+	metadata: Metadata
+}
+
+type Doedsfall = {
+	doedsdato: string
 	metadata: Metadata
 }
 
