@@ -107,9 +107,6 @@ public class TpsBackportingClient implements ClientRegister {
         if (!pdlPerson.getOppholdsadresse().isEmpty()) {
             mapperFacade.map(pdlPerson.getOppholdsadresse().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getAdressebeskyttelse().isEmpty()) {
-            mapperFacade.map(pdlPerson.getAdressebeskyttelse().get(0), tpsfBestilling);
-        }
         if (!pdlPerson.getInnflytting().isEmpty()) {
             mapperFacade.map(pdlPerson.getInnflytting().get(0), tpsfBestilling);
         }

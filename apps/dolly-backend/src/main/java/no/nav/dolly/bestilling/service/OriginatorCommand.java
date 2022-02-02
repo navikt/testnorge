@@ -12,11 +12,13 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
@@ -25,6 +27,16 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
     private final RsDollyUtvidetBestilling bestillingRequest;
     private final Testident testident;
     private final MapperFacade mapperFacade;
+
+    private static String getSpesreg(AdressebeskyttelseDTO adressebeskyttelse) {
+
+        return isNull(adressebeskyttelse.getGradering()) ? null :
+                switch (adressebeskyttelse.getGradering()) {
+                    case STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND -> "SPSF";
+                    case FORTROLIG -> "SPFO";
+                    default -> null;
+                };
+    }
 
     @Override
     public Originator call() {
@@ -51,7 +63,7 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
             var tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ?
                     mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
 
-            tpsfBestilling.setAntall(tpsfBestilling.getAntall() != 0 ? tpsfBestilling.getAntall() : 1);
+            tpsfBestilling.setAntall(1);
             tpsfBestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
             tpsfBestilling.setHarIngenAdresse(nonNull(bestillingRequest.getPdldata()) &&
                     bestillingRequest.getPdldata().isPdlAdresse());
@@ -66,6 +78,8 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
                 tpsfBestilling.setStatsborgerskapTildato(
                         bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
                                 .orElse(new StatsborgerskapDTO()).getGyldigTilOgMed());
+                tpsfBestilling.setSpesreg(getSpesreg(bestillingRequest.getPdldata().getPerson().getAdressebeskyttelse()
+                        .stream().findFirst().orElse(new AdressebeskyttelseDTO())));
             }
 
             return Originator.builder()
