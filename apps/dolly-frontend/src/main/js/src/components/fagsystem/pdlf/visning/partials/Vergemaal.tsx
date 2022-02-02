@@ -29,9 +29,13 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 					<TitleValue
 						title="Fylkesmannsembete"
 						kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
-						value={data.vergemaalEmbete}
+						value={data.vergemaalEmbete || data.embete}
 					/>
-					<TitleValue title="Sakstype" kodeverk={VergemaalKodeverk.Sakstype} value={data.sakType} />
+					<TitleValue
+						title="Sakstype"
+						kodeverk={VergemaalKodeverk.Sakstype}
+						value={data.sakType || data.type}
+					/>
 					<TitleValue
 						title="Mandattype"
 						kodeverk={VergemaalKodeverk.Mandattype}
@@ -39,7 +43,12 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 					/>
 					<TitleValue title="Gyldig f.o.m." value={Formatters.formatDate(data.gyldigFraOgMed)} />
 					<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(data.gyldigTilOgMed)} />
-					{!relasjoner && <TitleValue title="Verge" value={data.vergeIdent} />}
+					{!relasjoner && (
+						<TitleValue
+							title="Verge"
+							value={data.vergeIdent || data.vergeEllerFullmektig?.motpartsPersonident}
+						/>
+					)}
 				</div>
 				{relasjon && <RelatertPerson data={relasjon.relatertPerson} tittel="Verge" />}
 			</ErrorBoundary>

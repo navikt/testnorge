@@ -17,12 +17,14 @@ export type Ident = {
 }
 
 export type HentPerson = {
+	foedsel: Array<{}>
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<{}>
 	kontaktadresse: Array<{}>
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
+	vergemaalEllerFremtidsfullmakt: Array<{}>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	sivilstand: Array<{}>

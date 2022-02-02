@@ -18,6 +18,7 @@ import Tooltip from 'rc-tooltip'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
+import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
@@ -28,6 +29,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	const {
 		foedsel,
 		telefonnummer,
+		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
 		oppholdsadresse,
@@ -48,6 +50,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<PdlNasjonalitet data={hentPerson} />
 				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
+				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
 				<Oppholdsadresse data={oppholdsadresse} />

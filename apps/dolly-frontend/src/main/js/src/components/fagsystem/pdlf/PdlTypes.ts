@@ -53,11 +53,16 @@ export type Sivilstand = {
 }
 
 export type Vergemaal = {
-	vergemaalEmbete: string
+	vergemaalEmbete?: string
+	embete?: string
 	mandatType?: string
-	sakType: string
+	sakType?: string
+	type?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
-	vergeIdent: string
+	vergeIdent?: string
+	vergeEllerFullmektig?: {
+		motpartsPersonident: string
+	}
 	id: number
 }
