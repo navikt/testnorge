@@ -34,6 +34,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -114,6 +115,11 @@ public class DollyBestillingService {
                 }
 
             } else if (originator.isPdlf()) {
+                pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                        PersonUpdateRequestDTO.builder()
+                                .person(originator.getPdlBestilling().getPerson())
+                                .build());
+
                 var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
                 dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
