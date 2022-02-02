@@ -33,6 +33,15 @@ export const BVOptions = (
 		},
 	}
 
+	let initialValuesLeggTil = {
+		antall,
+		environments: [],
+		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: null,
+		},
+	}
+
 	let initialValuesOrganisasjon = {
 		environments: [],
 		organisasjon: {
@@ -80,6 +89,7 @@ export const BVOptions = (
 
 	if (personFoerLeggTil) {
 		bestType = TYPE.LEGG_TIL
+		initialValues = initialValuesLeggTil
 	}
 
 	if (opprettOrganisasjon) {

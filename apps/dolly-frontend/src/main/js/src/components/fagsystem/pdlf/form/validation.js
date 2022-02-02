@@ -410,7 +410,7 @@ export const validation = {
 				.nullable(),
 			foedtEtter: testFoedtEtter(Yup.date().nullable()),
 			foedtFoer: testFoedtFoer(Yup.date().nullable()),
-		}),
+		}).nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),

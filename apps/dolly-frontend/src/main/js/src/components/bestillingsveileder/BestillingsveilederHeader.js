@@ -6,7 +6,6 @@ import { ImportFraEtikett } from '~/components/ui/etikett'
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
-	console.log('opts', opts)
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
