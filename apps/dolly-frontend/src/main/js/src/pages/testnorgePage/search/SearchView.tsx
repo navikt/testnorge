@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Pagination from 'paginering'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'

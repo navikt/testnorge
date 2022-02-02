@@ -16,10 +16,10 @@ export default () => {
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 
-	const search = (page: number, values: any) => {
+	const search = (searchPage: number, values: any) => {
 		setLoading(true)
-		PersonSearch.search(getSearchValues(page, pageSize, values)).then((response) => {
-			setPage(page)
+		PersonSearch.search(getSearchValues(searchPage, pageSize, values)).then((response) => {
+			setPage(searchPage)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
 			setValgtePersoner([])
