@@ -12,9 +12,8 @@ export const initialPdlPerson = {
 	gradering: null as string,
 }
 
-export const initialBostedsadresse = {
+export const initialKontaktadresse = {
 	adressetype: null as string,
-	angittFlyttedato: null as string,
 	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
 	kilde: 'Dolly',
@@ -23,21 +22,12 @@ export const initialBostedsadresse = {
 }
 
 export const initialOppholdsadresse = {
-	adressetype: null as string,
-	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
-	kilde: 'Dolly',
-	master: 'FREG',
-	gjeldende: true,
+	...initialKontaktadresse,
 }
 
-export const initialKontaktadresse = {
-	adressetype: null as string,
-	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
-	kilde: 'Dolly',
-	master: 'FREG',
-	gjeldende: true,
+export const initialBostedsadresse = {
+	...initialKontaktadresse,
+	angittFlyttedato: null as string,
 }
 
 export const initialAdressebeskyttelse = {
@@ -212,6 +202,31 @@ export const initialSivilstand = {
 	bekreftelsesdato: null as string,
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
+export const initialForelder = {
+	minRolleForPerson: 'BARN',
+	relatertPersonsRolle: 'FAR',
+	relatertPerson: null as string,
+	borIkkeSammen: false,
+	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialBarn = {
+	...initialForelder,
+	minRolleForPerson: 'FORELDER',
+	relatertPersonsRolle: 'BARN',
+	partnerErIkkeForelder: false,
+}
+
+export const initialDoedfoedtBarn = {
+	dato: new Date(),
 	kilde: 'Dolly',
 	master: 'PDL',
 	gjeldende: true,

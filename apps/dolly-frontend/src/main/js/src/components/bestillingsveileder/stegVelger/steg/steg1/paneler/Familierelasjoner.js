@@ -2,8 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import Formatters from '~/utils/DataFormatter'
-import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValues'
+import { initialBarn, initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
@@ -18,11 +17,8 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Sivilstand">
 				<Attributt attr={sm.attrs.sivilstand} />
 			</AttributtKategori>
-			<AttributtKategori title="Barn">
-				<Attributt attr={sm.attrs.barn} />
-			</AttributtKategori>
-			<AttributtKategori title="Foreldre">
-				<Attributt attr={sm.attrs.foreldre} />
+			<AttributtKategori title="Barn/Foreldre">
+				<Attributt attr={sm.attrs.barnForeldre} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -41,49 +37,20 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 			del('pdldata.person.sivilstand')
 		},
 	},
-	barn: {
-		label: 'Har barn',
-		checked: has('tpsf.relasjoner.barn'),
+	barnForeldre: {
+		label: 'Har barn/foreldre',
+		checked: has('pdldata.person.forelderBarnRelasjon'),
 		add() {
-			set('tpsf.relasjoner.barn', defaultBarn(opts))
+			set('pdldata.person.forelderBarnRelasjon', defaultBarn(opts)?.concat(defaultForeldre(opts)))
 		},
 		remove() {
-			del('tpsf.relasjoner.barn')
-			!has('tpsf.relasjoner.partnere') && !has('tpsf.relasjoner.foreldre') && del('tpsf.relasjoner')
-		},
-	},
-	foreldre: {
-		label: 'Har foreldre',
-		checked: has('tpsf.relasjoner.foreldre'),
-		add() {
-			set('tpsf.relasjoner.foreldre', defaultForeldre(opts))
-		},
-		remove() {
-			del('tpsf.relasjoner.foreldre')
-			!has('tpsf.relasjoner.partnere') && !has('tpsf.relasjoner.barn') && del('tpsf.relasjoner')
+			del('pdldata.person.forelderBarnRelasjon')
 		},
 	},
 })
 
 const defaultForeldre = (opts) => {
-	const fullForelder = [
-		{
-			identtype: 'FNR',
-			kjonn: '',
-			foreldreType: '',
-			sivilstander: [{ sivilstand: '', sivilstandRegdato: '' }],
-			harFellesAdresse: true,
-			doedsdato: null,
-			alder: Formatters.randomIntInRange(65, 100),
-			spesreg: '',
-			utenFastBopel: false,
-			statsborgerskap: '',
-			statsborgerskapRegdato: '',
-			statsborgerskapTildato: '',
-		},
-	]
-
-	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
+	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner') // TODO: Sjekke om denne fungerer
 	const eksisterendeForeldre =
 		eksisterendeRelasjoner &&
 		eksisterendeRelasjoner.filter(
@@ -98,28 +65,10 @@ const defaultForeldre = (opts) => {
 
 	return eksisterendeForelderValues && eksisterendeForelderValues.length > 0
 		? eksisterendeForelderValues
-		: fullForelder
+		: [initialBarn]
 }
 
 const defaultBarn = (opts) => {
-	const fullBarn = [
-		{
-			identtype: 'FNR',
-			kjonn: '',
-			barnType: '',
-			partnerNr: null,
-			borHos: '',
-			erAdoptert: false,
-			alder: Formatters.randomIntInRange(0, 17),
-			doedsdato: null,
-			spesreg: '',
-			utenFastBopel: false,
-			statsborgerskap: '',
-			statsborgerskapRegdato: '',
-			statsborgerskapTildato: '',
-		},
-	]
-
 	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
 	const eksisterendeBarn =
 		eksisterendeRelasjoner &&
@@ -131,7 +80,5 @@ const defaultBarn = (opts) => {
 			doedsdato: barn.personRelasjonMed.doedsdato || null,
 		}))
 
-	return eksisterendeBarnValues && eksisterendeBarnValues.length > 0
-		? eksisterendeBarnValues
-		: fullBarn
+	return eksisterendeBarnValues && eksisterendeBarnValues.length > 0 ? eksisterendeBarnValues : []
 }

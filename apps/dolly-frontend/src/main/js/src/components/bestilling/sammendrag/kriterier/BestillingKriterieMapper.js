@@ -127,35 +127,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(identhistorikkData)
 		}
 
-		if (relasjoner) {
-			const foreldre = relasjoner.foreldre
-
-			if (foreldre && foreldre.length > 0) {
-				const foreldreRows = {
-					header: 'Foreldre',
-					itemRows: [],
-				}
-
-				relasjoner.foreldre.forEach((item, i) => {
-					foreldreRows.itemRows.push([
-						{
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('ForeldreType', Formatters.showLabel('foreldreType', item.foreldreType)),
-						obj('Foreldre bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Diskresjonskoder', item.spesreg !== 'UFB' && item.spesreg, 'Diskresjonskoder'),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
-					])
-				})
-
-				data.push(foreldreRows)
-			}
-		}
-
 		if (vergemaal) {
 			const vergemaalKriterier = {
 				header: 'Vergemål',
@@ -192,7 +163,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sikkerhetstiltak,
 			tilrettelagtKommunikasjon,
 			sivilstand,
-			barn,
+			forelderBarnRelasjon,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -588,29 +559,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(sivilstandData)
 		}
 
-		if (barn) {
-			const barnData = {
-				header: 'Barn',
+		if (forelderBarnRelasjon) {
+			const foreldreBarnData = {
+				header: 'Barn/Foreldre',
 				itemRows: [],
 			}
 
-			barn.forEach((item, i) => {
-				barnData.itemRows.push([
+			forelderBarnRelasjon.forEach((item, i) => {
+				foreldreBarnData.itemRows.push([
 					{
 						label: '',
 						value: `#${i + 1}`,
 						width: 'x-small',
 					},
-					obj('Fnr/dnr/bost', item.ident),
-					obj('Forelder 2', item.partnerIdent),
-					obj('Foreldre', Formatters.showLabel('barnType', item.barnType)),
-					obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
-					obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
-					obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
+					obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+					obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
 				])
 			})
 
-			data.push(barnData)
+			data.push(foreldreBarnData)
 		}
 
 		const sjekkRettIdent = (item) => {
