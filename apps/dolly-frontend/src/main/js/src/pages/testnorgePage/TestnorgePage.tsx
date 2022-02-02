@@ -54,6 +54,7 @@ export default () => {
 						left={<SearchOptions formikBag={formikBag} />}
 						right={
 							<>
+								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
 								{startedSearch && (
 									<SearchViewConnector
 										items={items}
@@ -66,7 +67,6 @@ export default () => {
 										onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
 									/>
 								)}
-								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
 							</>
 						}
 						onSubmit={formikBag.handleSubmit}

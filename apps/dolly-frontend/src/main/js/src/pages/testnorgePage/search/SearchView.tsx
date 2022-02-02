@@ -4,7 +4,7 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import styled from 'styled-components'
-import PersonView from '~/pages/testnorgePage/search/PersonView'
+import { PersonView } from '~/pages/testnorgePage/search/PersonView'
 import { Pageing, Person } from '~/service/services/personsearch/types'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
@@ -44,10 +44,10 @@ export default ({
 	importerPersoner,
 }: Props) => {
 	if (loading) return <Loading label="Søker..." />
-	if (!items) {
+	if (!items || items.length === 0) {
 		return (
 			<ContentContainer>
-				Ingen resultat. Resultatet viser ikke identer som allerede er importert til Dolly.
+				Ingen resultat. Resultatet inkluderer ikke identer som allerede er importert til Dolly.
 			</ContentContainer>
 		)
 	}
