@@ -11,7 +11,7 @@ const Title = styled.div`
 	align-items: flex-end;
 `
 
-export default ({ title, beta = false }: Props) => (
+export default ({ title }: Props) => (
 	<Title>
 		<h1>{title}</h1>
 	</Title>

@@ -35,7 +35,7 @@ export default () => {
 
 	return (
 		<div>
-			<Title title="Søk i Testnorge" beta={true} />
+			<Title title="Søk i Testnorge" />
 			<p>
 				Testnorge er en felles offentlig testdatapopulasjon, som ble laget i forbindelse med nytt
 				folkeregister. Populasjonen er levende, og endrer seg fortløpende ved at personer fødes,
