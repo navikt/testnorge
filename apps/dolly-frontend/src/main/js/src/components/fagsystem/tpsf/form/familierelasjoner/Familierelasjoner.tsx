@@ -5,10 +5,10 @@ import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Sivilstand } from '~/components/fagsystem/pdlf/form/partials/sivilstand/Sivilstand'
-import { ForelderBarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/ForelderBarnRelasjon/ForelderBarnRelasjon'
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import { DoedfoedtBarn } from '~/components/fagsystem/pdlf/form/partials/doedfoedtBarn/DoedfoedtBarn'
+import { ForelderBarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/forelderBarnRelasjon/ForelderBarnRelasjon'
 
 const infoTekst =
 	'Savner du noen egenskaper for partner/barn? ' +
