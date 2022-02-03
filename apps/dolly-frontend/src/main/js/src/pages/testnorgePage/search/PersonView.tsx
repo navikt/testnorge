@@ -4,13 +4,9 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Person } from '~/service/services/personsearch/types'
 import Formatters from '~/utils/DataFormatter'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollyApi } from '~/service/Api'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
-import { initialValues } from '~/pages/testnorgePage/utils'
-import Loading from '~/components/ui/loading/Loading'
 
 type PdlResponse = {
 	data: PdlDataWrapper
