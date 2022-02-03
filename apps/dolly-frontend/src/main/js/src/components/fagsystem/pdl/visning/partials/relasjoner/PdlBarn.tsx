@@ -6,7 +6,7 @@ import {
 	ForelderBarnRelasjon,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import React from 'react'
-import { hasNoValues } from '~/components/fagsystem/pdl/visning/partials/PdlRelasjoner'
+import { hasNoValues } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
 import Formatters from '~/utils/DataFormatter'
 
 type BarnProps = {

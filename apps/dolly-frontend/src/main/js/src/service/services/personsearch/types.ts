@@ -22,14 +22,12 @@ export type Search = {
 		fra?: number
 		til?: number
 	}
-	ident?: {
-		ident?: string
-	}
+	identer?: Array<string>
 	utflyttingFraNorge?: {
 		utflyttet?: boolean
 	}
 	innflyttingTilNorge?: {
-		innflyttet?: boolean
+		innflytting?: boolean
 	}
 	identitet?: {
 		falskIdentitet?: boolean

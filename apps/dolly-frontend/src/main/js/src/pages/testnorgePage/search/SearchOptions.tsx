@@ -4,31 +4,22 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { IdentSearch } from '~/pages/testnorgePage/search/IdentSearch'
+import { FormikProps } from 'formik'
 
-export default () => (
+type SearchOptionsProps = {
+	formikBag: FormikProps<{}>
+}
+
+export const SearchOptions = (props: SearchOptionsProps) => (
 	<>
 		<h2>Personinformasjon</h2>
 		<section>
-			<h3>Fødsels- eller d-nummer</h3>
-			<FormikTextInput
-				name="personinformasjon.ident.ident"
-				label="Fødsels- eller d-nummer"
-				visHvisAvhuket={false}
-				maxLength="11"
-			/>
+			<h3>Fødsels- eller D-nummer</h3>
+			<IdentSearch formikBag={props.formikBag} />
 		</section>
 		<section>
 			<h3>Alder</h3>
-			<FormikDatepicker
-				name="personinformasjon.alder.foedselsdato.fom"
-				label="Fødselsdato fom"
-				visHvisAvhuket={false}
-			/>
-			<FormikDatepicker
-				name="personinformasjon.alder.foedselsdato.tom"
-				label="Fødselsdato tom"
-				visHvisAvhuket={false}
-			/>
 			<FormikTextInput
 				name="personinformasjon.alder.fra"
 				label="Alder fra"
@@ -37,6 +28,16 @@ export default () => (
 			<FormikTextInput
 				name="personinformasjon.alder.til"
 				label="Alder til"
+				visHvisAvhuket={false}
+			/>
+			<FormikDatepicker
+				name="personinformasjon.alder.foedselsdato.fom"
+				label="Fødselsdato fom"
+				visHvisAvhuket={false}
+			/>
+			<FormikDatepicker
+				name="personinformasjon.alder.foedselsdato.tom"
+				label="Fødselsdato tom"
 				visHvisAvhuket={false}
 			/>
 		</section>
@@ -91,6 +92,16 @@ export default () => (
 					{ value: 'KVINNE', label: 'Kvinne' },
 					{ value: 'MANN', label: 'Mann' },
 				]}
+			/>
+			<FormikCheckbox
+				name="personinformasjon.diverse.innflyttet"
+				label="Har innflyttet til Norge"
+				checkboxMargin
+			/>
+			<FormikCheckbox
+				name="personinformasjon.diverse.utflyttet"
+				label="Har utflyttet fra Norge"
+				checkboxMargin
 			/>
 		</section>
 	</>

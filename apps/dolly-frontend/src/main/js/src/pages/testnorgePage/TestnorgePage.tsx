@@ -1,88 +1,40 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Title from '~/components/Title'
 import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
-import SearchOptions from './search/SearchOptions'
+import { SearchOptions } from './search/SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
 import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
-
-const initialValues = {
-	personinformasjon: {
-		alder: {
-			fra: '18',
-			til: '70',
-		},
-		barn: {
-			barn: false,
-			doedfoedtBarn: false,
-		},
-		identitet: {
-			falskIdentitet: false,
-			utenlandskIdentitet: false,
-		},
-	},
-}
-
-const getSearchValues = (page: number, pageSize: number, values: any) => {
-	return {
-		pageing: {
-			page: page,
-			pageSize: pageSize,
-		},
-		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
-		foedsel: {
-			fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
-			tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
-		},
-		statsborgerskap: {
-			land: values?.personinformasjon?.statsborgerskap?.land,
-		},
-		sivilstand: {
-			type: values?.personinformasjon?.sivilstand?.type,
-		},
-		alder: {
-			fra: values?.personinformasjon?.alder?.fra,
-			til: values?.personinformasjon?.alder?.til,
-		},
-		ident: {
-			ident: values?.personinformasjon?.ident?.ident,
-		},
-		identitet: {
-			falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
-			utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
-		},
-		barn: {
-			barn: values?.personinformasjon?.barn?.barn,
-			doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
-		},
-		tag: 'TESTNORGE',
-		excludeTag: 'DOLLY',
-	}
-}
+import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
+import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
 	const [page, setPage] = useState(1)
 	const [pageSize] = useState(20)
 	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
+	const [loading, setLoading] = useState(false)
+	const [valgtePersoner, setValgtePersoner] = useState([])
+	const [startedSearch, setStartedSearch] = useState(false)
 
-	const search = (page: number, values: any) =>
-		PersonSearch.search(getSearchValues(page, pageSize, values)).then((response) => {
-			setPage(page)
+	const search = (searchPage: number, values: any) => {
+		setStartedSearch(true)
+		setLoading(true)
+		PersonSearch.search(getSearchValues(searchPage, pageSize, values)).then((response) => {
+			setPage(searchPage)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
+			setValgtePersoner([])
+			setLoading(false)
 		})
-
-	useEffect(() => {
-		search(1, initialValues)
-	}, [])
+	}
 
 	const onSubmit = (values: any) => search(1, values)
 
 	return (
 		<div>
-			<Title title="Søk i Testnorge" beta={true} />
+			<Title title="Søk i Testnorge" />
 			<p>
 				Testnorge er en felles offentlig testdatapopulasjon, som ble laget i forbindelse med nytt
 				folkeregister. Populasjonen er levende, og endrer seg fortløpende ved at personer fødes,
@@ -97,19 +49,27 @@ export default () => {
 			</p>
 
 			<Formik initialValues={initialValues} onSubmit={onSubmit}>
-				{({ handleSubmit, values }) => (
+				{(formikBag) => (
 					<SearchContainer
-						left={<SearchOptions />}
+						left={<SearchOptions formikBag={formikBag} />}
 						right={
-							<SearchViewConnector
-								items={items}
-								pageSize={pageSize}
-								page={page}
-								numberOfItems={numberOfItems}
-								onChange={(pageNumber: number) => search(pageNumber, values)}
-							/>
+							<>
+								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
+								{startedSearch && (
+									<SearchViewConnector
+										items={items}
+										loading={loading}
+										valgtePersoner={valgtePersoner}
+										setValgtePersoner={setValgtePersoner}
+										pageSize={pageSize}
+										page={page}
+										numberOfItems={numberOfItems}
+										onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
+									/>
+								)}
+							</>
 						}
-						onSubmit={handleSubmit}
+						onSubmit={formikBag.handleSubmit}
 					/>
 				)}
 			</Formik>

@@ -430,6 +430,7 @@ export const selectPersonListe = (state) => {
 }
 
 const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
+	if (!tpsfIdent) return null
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
 	return {
@@ -447,6 +448,7 @@ const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
 }
 
 const getPdlfIdentInfo = (ident, state, pdlIdent) => {
+	if (!pdlIdent) return null
 	return {
 		ident,
 		identNr: pdlIdent.ident,
@@ -464,6 +466,8 @@ const getPdlfIdentInfo = (ident, state, pdlIdent) => {
 }
 
 const getPdlIdentInfo = (ident, state, pdlData) => {
+	if (!pdlData) return null
+
 	const person = pdlData.hentPerson
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
