@@ -16,3 +16,15 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-person-service
+
+consumers:
+  synt-vedtakshistorikk:
+    url: https://synthdata-arena-vedtakshistorikk.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-vedtakshistorikk
+  arena-forvalteren:
+    url: https://arena-forvalteren.dev.adeo.no
+    cluster: dev-fss
+    namespace: teamarenanais
+    name: arena-forvalteren
