@@ -25,7 +25,6 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	}
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
-	console.log('hentPerson: ', hentPerson) //TODO - SLETT MEG
 	const {
 		telefonnummer,
 		tilrettelagtKommunikasjon,

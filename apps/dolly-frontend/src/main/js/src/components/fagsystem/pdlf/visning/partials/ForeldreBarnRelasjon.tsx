@@ -39,7 +39,6 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 }
 
 export const ForelderBarnRelasjonVisning = ({ data, relasjoner }: FamilieRelasjonerData) => {
-	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data || data.length < 1) return null
 
 	return (
