@@ -297,8 +297,8 @@ const testPrioritet = (val) => {
 	})
 }
 
-const testFoedtEtter = (validation) => {
-	return validation.test(
+const testFoedtEtter = (validering) => {
+	return validering.test(
 		'is-before-foedt-foer',
 		'Dato må være før født før-dato',
 		function isBeforeFoedtFoer(value) {
@@ -309,8 +309,8 @@ const testFoedtEtter = (validation) => {
 		}
 	)
 }
-const testFoedtFoer = (validation) => {
-	return validation.test(
+const testFoedtFoer = (validering) => {
+	return validering.test(
 		'is-after-foedt-etter',
 		'Dato må være etter født etter-dato',
 		function isAfterFoedtEtter(value) {
