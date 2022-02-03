@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.EndreInnsatsbehovResponse;
@@ -17,15 +18,12 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Head
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
+@AllArgsConstructor
 public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsbehovResponse>> {
 
-    private final WebClient webClient;
     private final EndreInnsatsbehovRequest request;
-
-    public PostEndreInnsatsbehovCommand(EndreInnsatsbehovRequest request, WebClient webClient) {
-        this.webClient = webClient;
-        this.request = request;
-    }
+    private final String token;
+    private final WebClient webClient;
 
     @Override
     public Mono<EndreInnsatsbehovResponse> call() {

@@ -54,7 +54,7 @@ public class SyntVedtakshistorikkConsumer {
             oppstartsdatoer.add(dato.toString());
         }
 
-        var token = tokenExchange.exchange(serviceProperties).block();
-        return new HentVedtakshistorikkCommand(webClient, oppstartsdatoer, token.getTokenValue()).call();
+        return tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new HentVedtakshistorikkCommand(webClient, oppstartsdatoer, accessToken.getTokenValue()).call());
     }
 }

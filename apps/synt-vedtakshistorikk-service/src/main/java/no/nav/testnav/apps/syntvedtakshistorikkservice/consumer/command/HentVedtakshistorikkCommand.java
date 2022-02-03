@@ -8,9 +8,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 
 @Slf4j
 @AllArgsConstructor
@@ -34,7 +34,7 @@ public class HentVedtakshistorikkCommand implements Callable<Mono<List<Vedtakshi
                             builder.path("/api/v1/vedtakshistorikk")
                                     .build()
                     )
-                    .header("Authorization", "Bearer " + token)
+                    .header(AUTHORIZATION, "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE);

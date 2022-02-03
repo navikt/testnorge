@@ -4,11 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PostEndreInnsatsbehovCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PostFinnTiltakCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PostRettighetCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.ArenaForvalterenProperties;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.ArenaForvalterenProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.EndreInnsatsbehovResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -24,17 +27,24 @@ import java.util.Map;
 public class ArenaForvalterConsumer {
 
     private final WebClient webClient;
+    private final TokenExchange tokenExchange;
+    private final ServerProperties serviceProperties;
 
     public ArenaForvalterConsumer(
-            ArenaForvalterenProperties properties
+            ArenaForvalterenProxyProperties serviceProperties,
+            TokenExchange tokenExchange
     ) {
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.serviceProperties = serviceProperties;
+        this.webClient = WebClient.builder().baseUrl(serviceProperties.getUrl()).build();
+        this.tokenExchange = tokenExchange;
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettRettighet(List<RettighetRequest> rettigheter) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var rettighet : rettigheter) {
-            var response = new PostRettighetCommand(rettighet, webClient).call();
+            var response = tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new PostRettighetCommand(rettighet, accessToken.getTokenValue(), webClient).call())
+                    .block();
 
             if (response != null) {
                 if (responses.containsKey(rettighet.getPersonident())) {
@@ -53,12 +63,13 @@ public class ArenaForvalterConsumer {
     }
 
     public Mono<NyttVedtakResponse> finnTiltak(FinnTiltakRequest rettighet) {
-        return new PostFinnTiltakCommand(rettighet, webClient).call();
+        return tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet,accessToken.getTokenValue(), webClient).call());
     }
 
-    public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
-        new PostEndreInnsatsbehovCommand(endreRequest, webClient)
-                .call()
+    public Mono<EndreInnsatsbehovResponse> endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
+        return tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new PostEndreInnsatsbehovCommand(endreRequest, accessToken.getTokenValue(), webClient).call())
                 .flatMap(res -> {
                     var feil = res.getNyeEndreInnsatsbehovFeilList();
                     if (feil != null && !feil.isEmpty()) {

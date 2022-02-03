@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.arena-forvalteren")
-public class ArenaForvalterenProperties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-arena-forvalteren-proxy")
+public class ArenaForvalterenProxyProperties extends ServerProperties {
 }

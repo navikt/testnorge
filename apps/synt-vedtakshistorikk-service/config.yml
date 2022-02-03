@@ -1,0 +1,50 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-synt-vedtakshistorikk-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  port: 8080
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+  prometheus:
+    enabled: true
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  image: {{ image }}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: orkestratoren
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: synthdata-arena-vedtakshistorikk
+          cluster: dev-gcp
+      external:
+        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  ingresses:
+    - "https://testnav-synt-vedtakshistorikk-service.dev.intern.nav.no"

@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
@@ -11,24 +12,22 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
-public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
+@AllArgsConstructor
+public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> {
 
-    private final WebClient webClient;
     private final RettighetRequest rettighet;
-
-    public PostRettighetCommand(RettighetRequest rettighet, WebClient webClient) {
-        this.webClient = webClient;
-        this.rettighet = rettighet;
-    }
+    private final String token;
+    private final WebClient webClient;
 
     @Override
-    public NyttVedtakResponse call() {
+    public Mono<NyttVedtakResponse> call() {
         try {
             return webClient.post()
                     .uri(builder ->
@@ -37,14 +36,14 @@ public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
                     )
                     .header(CALL_ID, NAV_CALL_ID)
                     .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                    .header(AUTHORIZATION, "Bearer " + token)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
                     .retrieve()
-                    .bodyToMono(NyttVedtakResponse.class)
-                    .block();
+                    .bodyToMono(NyttVedtakResponse.class);
         } catch (Exception e) {
             log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
-            return null;
+            return Mono.empty();
         }
     }
 }
