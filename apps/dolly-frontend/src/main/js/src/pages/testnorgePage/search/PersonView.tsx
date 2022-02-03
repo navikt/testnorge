@@ -10,6 +10,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { initialValues } from '~/pages/testnorgePage/utils'
+import Loading from '~/components/ui/loading/Loading'
 
 type PdlResponse = {
 	data: PdlDataWrapper
@@ -31,10 +32,9 @@ const Title = styled(TitleValue)`
 
 export const PersonView = ({ person }: Props) => {
 	const [data, setData] = useState(null)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
-		setLoading(true)
 		DollyApi.getPersonFraPdl(person.ident)
 			.then((response: PdlResponse) => {
 				setData(response.data)
@@ -70,12 +70,6 @@ export const PersonView = ({ person }: Props) => {
 				</Group>
 			</section>
 			<PdlPersonMiljoeInfo data={data} loading={loading} />
-			{/*<ErrorBoundary>*/}
-			{/*	<LoadableComponent*/}
-			{/*		onFetch={() => DollyApi.getPersonFraPdl(person.ident)}*/}
-			{/*		render={({ data }: PdlResponse) => <PdlPersonMiljoeInfo data={data} loading={false} />}*/}
-			{/*	/>*/}
-			{/*</ErrorBoundary>*/}
 		</div>
 	)
 }

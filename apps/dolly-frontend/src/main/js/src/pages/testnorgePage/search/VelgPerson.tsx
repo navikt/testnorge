@@ -20,16 +20,19 @@ export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: Ve
 	}
 
 	return (
-		<div className="velg-person">
-			{
-				<Checkbox
-					id={personinfo.ident}
-					title={'Marker'}
-					label={''}
-					checked={avhuket}
-					onChange={handleOnChange}
-				/>
-			}
+		<div
+			className="velg-person"
+			onClick={(event: React.MouseEvent<any>) => {
+				event.stopPropagation()
+			}}
+		>
+			<Checkbox
+				id={personinfo.ident}
+				title={'Marker'}
+				label={''}
+				checked={avhuket}
+				onChange={handleOnChange}
+			/>
 		</div>
 	)
 }
