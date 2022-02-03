@@ -1,19 +1,17 @@
 import * as React from 'react'
-import { BaseSyntheticEvent } from 'react'
+import { BaseSyntheticEvent, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialBarn, initialForelder } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
-import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
@@ -21,34 +19,17 @@ interface ForelderForm {
 	gruppeId: string
 }
 
-type Option = {
-	value: string
-	label: string
-}
-
 const RELASJON_BARN = 'Barn'
 const RELASJON_FORELDER = 'Forelder'
 
 export const ForelderBarnRelasjon = ({ formikBag, personFoerLeggTil, gruppeId }: ForelderForm) => {
-	const getOptions = async () => {
-		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
-			return response.data?.identer?.map((person: PersonData) => {
-				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
-			})
-		})
-		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
-			const personListe: Array<Option> = []
-			response.data.forEach((id: Person) => {
-				personListe.push({
-					value: id.person.ident,
-					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
-				})
-			})
-			return personListe
-		})
-		return options ? options : Promise.resolve()
-	}
-
+	const [identOptions, setIdentOptions] = useState([])
+	useEffect(() => {
+		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: []) =>
+			setIdentOptions(response)
+		)
+	}, [])
+	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
@@ -81,16 +62,11 @@ export const ForelderBarnRelasjon = ({ formikBag, personFoerLeggTil, gruppeId }:
 						</div>
 
 						<ErrorBoundary>
-							<LoadableComponent
-								onFetch={() => getOptions()}
-								render={(data) => (
-									<FormikSelect
-										name={`${path}.relatertPerson`}
-										label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
-										options={data}
-										size={'xlarge'}
-									/>
-								)}
+							<FormikSelect
+								name={`${path}.relatertPerson`}
+								label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
+								options={identOptions}
+								size={'xlarge'}
 							/>
 						</ErrorBoundary>
 
@@ -104,7 +80,7 @@ export const ForelderBarnRelasjon = ({ formikBag, personFoerLeggTil, gruppeId }:
 							<FormikSelect
 								name={`${path}.relatertPersonsRolle`}
 								label="ForeldreType"
-								options={Options('foreldreType')}
+								options={Options('foreldreTypePDL')}
 								isClearable={false}
 							/>
 						)}

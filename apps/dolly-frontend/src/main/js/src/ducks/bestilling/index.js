@@ -55,7 +55,7 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 
 	if (opts.is.leggTil) {
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(
-			opts.personFoerLeggTil.tpsf.ident,
+			opts.personFoerLeggTil.tpsf?.ident || opts.personFoerLeggTil.pdlforvalter?.person?.ident,
 			values
 		)
 	} else if (opts.is.opprettFraIdenter) {

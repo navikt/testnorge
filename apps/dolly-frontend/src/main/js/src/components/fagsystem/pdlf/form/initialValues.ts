@@ -209,7 +209,7 @@ export const initialSivilstand = {
 
 export const initialForelder = {
 	minRolleForPerson: 'BARN',
-	relatertPersonsRolle: 'FAR',
+	relatertPersonsRolle: 'FORELDER',
 	relatertPerson: null as string,
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,

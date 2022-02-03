@@ -19,6 +19,7 @@ export type PersonData = {
 	statsborgerskap?: Array<Statsborgerskap>
 	adressebeskyttelse?: Array<Adressebeskyttelse>
 	sivilstand?: Array<Sivilstand>
+	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 }
 
 type Navn = {
@@ -50,4 +51,11 @@ export type Sivilstand = {
 	sivilstandsdato?: string
 	gyldigFraOgMed?: string
 	bekreftelsesdato?: string
+}
+
+export type ForeldreBarnRelasjon = {
+	id: number
+	minRolleForPerson: string
+	relatertPerson: string
+	relatertPersonsRolle: string
 }
