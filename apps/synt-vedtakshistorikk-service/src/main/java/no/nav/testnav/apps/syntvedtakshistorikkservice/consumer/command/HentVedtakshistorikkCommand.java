@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @AllArgsConstructor
-public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistorikk>> {
+public class HentVedtakshistorikkCommand implements Callable<Mono<List<Vedtakshistorikk>>> {
 
     private final WebClient webClient;
     private final List<String> oppstartsdatoer;
@@ -26,7 +26,7 @@ public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistori
     };
 
     @Override
-    public List<Vedtakshistorikk> call() {
+    public Mono<List<Vedtakshistorikk>> call() {
         try {
             log.info("Henter vedtakshistorikk.");
             return webClient.post()
@@ -37,11 +37,10 @@ public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistori
                     .header("Authorization", "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                     .retrieve()
-                    .bodyToMono(RESPONSE_TYPE)
-                    .block();
+                    .bodyToMono(RESPONSE_TYPE);
         } catch (Exception e) {
             log.error("Klarte ikke hente vedtakshistorikk.", e);
-            return Collections.emptyList();
+            return Mono.empty();
         }
     }
 

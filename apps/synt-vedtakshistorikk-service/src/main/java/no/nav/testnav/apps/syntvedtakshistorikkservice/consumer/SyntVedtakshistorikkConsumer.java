@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -45,7 +46,7 @@ public class SyntVedtakshistorikkConsumer {
                 .build();
     }
 
-    public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
+    public Mono<List<Vedtakshistorikk>> syntetiserVedtakshistorikk(int antallIdenter) {
         List<String> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (var i = 0; i < antallIdenter; i++) {

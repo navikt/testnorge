@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.FinnTiltakRequest;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.EndreInnsatsbehovResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -17,39 +17,33 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Head
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
-public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>> {
+public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsbehovResponse>> {
 
-    private final String miljoe;
-    private final String ident;
     private final WebClient webClient;
-    private final FinnTiltakRequest rettighet;
+    private final EndreInnsatsbehovRequest request;
 
-    public PostFinnTiltakCommand(FinnTiltakRequest rettighet, WebClient webClient) {
+    public PostEndreInnsatsbehovCommand(EndreInnsatsbehovRequest request, WebClient webClient) {
         this.webClient = webClient;
-        this.miljoe = rettighet.getMiljoe();
-        this.ident = rettighet.getPersonident();
-        this.rettighet = rettighet;
+        this.request = request;
     }
 
     @Override
-    public Mono<NyttVedtakResponse> call() {
+    public Mono<EndreInnsatsbehovResponse> call() {
         try {
-            log.info("Henter tiltak for ident {} i miljø {}", ident, miljoe);
             return webClient.post()
                     .uri(builder ->
-                            builder.path("/api/v1/finntiltak")
+                            builder.path("/api/v1/endreInnsatsbehov")
                                     .build()
                     )
                     .header(CALL_ID, NAV_CALL_ID)
                     .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .body(BodyInserters.fromPublisher(Mono.just(rettighet), FinnTiltakRequest.class))
+                    .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                     .retrieve()
-                    .bodyToMono(NyttVedtakResponse.class);
+                    .bodyToMono(EndreInnsatsbehovResponse.class);
         } catch (Exception e) {
-            log.error("Klarte ikke hente tiltak for ident {} i miljø {}", ident, miljoe, e);
+            log.error("Kunne ikke endre innsatsbehov i arena forvalteren.", e);
             return Mono.empty();
         }
     }
 }
-
