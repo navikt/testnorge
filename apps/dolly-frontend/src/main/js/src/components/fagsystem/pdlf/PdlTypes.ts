@@ -57,5 +57,6 @@ export type ForeldreBarnRelasjon = {
 	id: number
 	minRolleForPerson: string
 	relatertPerson: string
+	relatertPersonsIdent: string
 	relatertPersonsRolle: string
 }

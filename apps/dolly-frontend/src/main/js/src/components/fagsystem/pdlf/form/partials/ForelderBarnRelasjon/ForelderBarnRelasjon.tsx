@@ -29,7 +29,6 @@ export const ForelderBarnRelasjon = ({ formikBag, personFoerLeggTil, gruppeId }:
 			setIdentOptions(response)
 		)
 	}, [])
-	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"

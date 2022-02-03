@@ -5,7 +5,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
-import { Sivilstand, Relasjon } from '~/components/fagsystem/pdlf/PdlTypes'
+import { Relasjon, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 
 type SivilstandData = {
 	data: Array<Sivilstand>
@@ -18,8 +18,8 @@ type VisningData = {
 }
 
 export const Visning = ({ data, relasjoner }: VisningData) => {
-	const retatertPersonIdent = data.relatertVedSivilstand
-	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
+	const relatertPersonIdent = data.relatertVedSivilstand
+	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 
 	return (
 		<>

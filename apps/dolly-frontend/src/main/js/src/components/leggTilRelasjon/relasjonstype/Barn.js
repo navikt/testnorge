@@ -4,7 +4,6 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import _has from 'lodash/has'
 
 export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 	const valgbareIdenter = lagOptions(
@@ -22,43 +21,35 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 
 	return (
 		<div className="bestilling-detaljer">
-			<FormikDollyFieldArray
-				name="pdldata.person.forelderBarnRelasjon"
-				header="Barn"
-				newEntry={initialBarn}
-			>
-				{(path, idx) => {
-					console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
-					const erBarn = _has(formikBag, `${path}[${idx}].partnerErIkkeForelder`)
-					return (
-						<React.Fragment key={idx}>
-							{/* Endres når det er bestemt hvordan bredde styles */}
-							<div style={{ minWidth: '350px' }}>
-								<FormikSelect
-									name={`${path}.ident`}
-									label="Fnr/dnr/bost"
-									options={valgbareIdenter}
-									isClearable={false}
-									size="grow"
-								/>
-							</div>
+			<FormikDollyFieldArray name="tpsf.relasjoner.barn" header="Barn" newEntry={initialBarn}>
+				{(path, idx) => (
+					<React.Fragment key={idx}>
+						{/* Endres når det er bestemt hvordan bredde styles */}
+						<div style={{ minWidth: '350px' }}>
 							<FormikSelect
-								name={`${path}.borHos`}
-								label="Bor hos"
-								options={Options('barnBorHos')}
+								name={`${path}.ident`}
+								label="Fnr/dnr/bost"
+								options={valgbareIdenter}
 								isClearable={false}
+								size="grow"
 							/>
+						</div>
+						<FormikSelect
+							name={`${path}.borHos`}
+							label="Bor hos"
+							options={Options('barnBorHos')}
+							isClearable={false}
+						/>
 
-							{muligeForeldre(formikBag).length > 0 && (
-								<FormikSelect
-									name={`${path}.partnerIdent`}
-									label="Forelder 2"
-									options={muligeForeldre(formikBag)}
-								/>
-							)}
-						</React.Fragment>
-					)
-				}}
+						{muligeForeldre(formikBag).length > 0 && (
+							<FormikSelect
+								name={`${path}.partnerIdent`}
+								label="Forelder 2"
+								options={muligeForeldre(formikBag)}
+							/>
+						)}
+					</React.Fragment>
+				)}
 			</FormikDollyFieldArray>
 		</div>
 	)

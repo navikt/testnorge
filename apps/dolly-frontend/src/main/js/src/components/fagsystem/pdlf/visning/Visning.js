@@ -17,7 +17,6 @@ import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data) return null
-	console.log('data: ', data) //TODO - SLETT MEG
 
 	const {
 		telefonnummer,

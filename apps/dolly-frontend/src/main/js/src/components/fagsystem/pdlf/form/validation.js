@@ -297,6 +297,31 @@ const testPrioritet = (val) => {
 	})
 }
 
+const testFoedtEtter = (validation) => {
+	return validation.test(
+		'is-before-foedt-foer',
+		'Dato må være før født før-dato',
+		function isBeforeFoedtFoer(value) {
+			const values = this.options.context
+			const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+			if (!value || !foedtFoer) return true
+			return isBefore(new Date(value), new Date(foedtFoer))
+		}
+	)
+}
+const testFoedtFoer = (validation) => {
+	return validation.test(
+		'is-after-foedt-etter',
+		'Dato må være etter født etter-dato',
+		function isAfterFoedtEtter(value) {
+			const values = this.options.context
+			const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+			if (!value || !foedtEtter) return true
+			return isAfter(new Date(value), new Date(foedtEtter))
+		}
+	)
+}
+
 const doedsfall = Yup.array().of(
 	Yup.object({
 		doedsdato: requiredDate.nullable(),

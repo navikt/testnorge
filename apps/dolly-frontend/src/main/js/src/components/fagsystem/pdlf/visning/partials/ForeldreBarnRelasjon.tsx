@@ -18,14 +18,14 @@ type VisningData = {
 }
 
 export const Visning = ({ data, relasjoner }: VisningData) => {
-	const retatertPersonIdent = data.relatertPerson
-	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
+	const relatertPersonIdent = data.relatertPerson || data.relatertPersonsIdent
+	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 
 	return (
 		<>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					{!relasjoner && <TitleValue title="Relatert person" value={data.relatertPerson} />}
+					{!relasjoner && <TitleValue title="Relatert person" value={relatertPersonIdent} />}
 				</div>
 				{relasjon && (
 					<RelatertPerson
@@ -39,6 +39,7 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 }
 
 export const ForelderBarnRelasjonVisning = ({ data, relasjoner }: FamilieRelasjonerData) => {
+	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data || data.length < 1) return null
 
 	return (

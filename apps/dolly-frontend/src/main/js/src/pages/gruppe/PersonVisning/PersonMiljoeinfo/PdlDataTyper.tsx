@@ -1,4 +1,5 @@
 import React from 'react'
+import { ForeldreBarnRelasjon, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
 	data: PdlData
@@ -25,7 +26,8 @@ export type HentPerson = {
 	telefonnummer: Array<TelefonData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
-	sivilstand: Array<{}>
+	sivilstand: Array<Sivilstand>
+	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	kontaktinformasjonForDoedsbo: Array<{}>
 }
 
