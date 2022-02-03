@@ -9,7 +9,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -52,6 +54,11 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         if (!bruksenhet.matches("[HULK][0-9]{4}")) {
             throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
         }
+    }
+
+    private static LocalDate getDateOrNow(LocalDateTime dateTime) {
+
+        return nonNull(dateTime) ? dateTime.toLocalDate() : LocalDate.now();
     }
 
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
@@ -122,6 +129,12 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 }
             }
         }
+
+        adresser.sort(Comparator.comparing(AdresseDTO::getGyldigFraOgMed, Comparator.reverseOrder()));
+        for (var i = adresser.size(); i > 0; i--) {
+            adresser.get(i - 1).setId(adresser.size() - i + 1);
+        }
+
         for (var i = 0; i < adresser.size(); i++) {
             if (i + 1 < adresser.size()) {
                 if (isNull(adresser.get(i + 1).getGyldigTilOgMed()) && nonNull(adresser.get(i).getGyldigFraOgMed())) {
@@ -142,16 +155,17 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
         //        |<---- Intervall A ----->|
         //             |<---- Intervall B ----->|
-        return adresse1.getGyldigFraOgMed().toLocalDate().isBefore(adresse2.getGyldigFraOgMed().toLocalDate()) &&
-                adresse2.getGyldigFraOgMed().toLocalDate().isBefore(adresse1.getGyldigTilOgMed().toLocalDate());
+        return getDateOrNow(adresse1.getGyldigFraOgMed()).isBefore(adresse2.getGyldigFraOgMed().toLocalDate()) &&
+                adresse2.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
     }
 
     private boolean isOverlappTilfelle2(T adresse1, T adresse2) {
 
         //             |<---- Intervall A ----->|
         //        |<---- Intervall B ----->|
-        return adresse1.getGyldigFraOgMed().toLocalDate().isBefore(adresse2.getGyldigTilOgMed().toLocalDate()) &&
-                adresse2.getGyldigTilOgMed().toLocalDate().isBefore(adresse1.getGyldigTilOgMed().toLocalDate());
+        return adresse1.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse2.getGyldigTilOgMed())) &&
+                (getDateOrNow(adresse2.getGyldigTilOgMed()).isBefore(getDateOrNow(adresse1.getGyldigTilOgMed())) ||
+                        getDateOrNow(adresse2.getGyldigTilOgMed()).isEqual(getDateOrNow(adresse1.getGyldigTilOgMed())));
     }
 
     private boolean isOverlappTilfelle3(T adresse1, T adresse2) {
@@ -159,6 +173,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         //          |<--- Intervall A --->|
         //      |<-------- Intervall B ------->|
         return adresse2.getGyldigFraOgMed().toLocalDate().isBefore(adresse1.getGyldigFraOgMed().toLocalDate()) &&
-                adresse2.getGyldigTilOgMed().toLocalDate().isAfter(adresse1.getGyldigTilOgMed().toLocalDate());
+                getDateOrNow(adresse2.getGyldigTilOgMed()).isAfter(getDateOrNow(adresse1.getGyldigTilOgMed()));
     }
 }
