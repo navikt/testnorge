@@ -3,8 +3,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     version: application.version.todo
-    name: reactive-rest-example
-    description: En eksempel app for et reactive rest endepunkt. For å generere tokens til loakl test. Bruk magic token fra https://testnav-oversikt.dev.intern.nav.no (NB Kun NAV epost er søttet). Dette APIet følger REST standaren.
+    name: testnav-synt-vedtakshistorikk-service
+    description: App som genererer syntetisk vedtakshistorikk(er), tilknytter dataen til testnorge ident(er) og sender historikken(e) til arena-forvalteren.
   security:
     oauth2:
       resourceserver:
