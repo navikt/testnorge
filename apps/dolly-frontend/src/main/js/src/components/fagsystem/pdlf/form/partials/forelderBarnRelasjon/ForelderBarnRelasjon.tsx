@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent } from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialBarn, initialForelder } from '~/components/fagsystem/pdlf/form/initialValues'
@@ -10,31 +10,23 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
-	personFoerLeggTil: object
-	gruppeId: string
+	identOptions: Array<Option>
 }
 
 const RELASJON_BARN = 'Barn'
 const RELASJON_FORELDER = 'Forelder'
 
-export const ForelderBarnRelasjon = ({ formikBag, personFoerLeggTil, gruppeId }: ForelderForm) => {
-	const [identOptions, setIdentOptions] = useState([])
-	useEffect(() => {
-		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: []) =>
-			setIdentOptions(response)
-		)
-	}, [])
+export const ForelderBarnRelasjon = ({ formikBag, identOptions }: ForelderForm) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
 			header={'Relasjon'}
 			newEntry={initialBarn}
-			canBeEmpty={true}
+			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
 				const erBarn = _get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
@@ -60,14 +52,12 @@ export const ForelderBarnRelasjon = ({ formikBag, personFoerLeggTil, gruppeId }:
 							</ToggleGruppe>
 						</div>
 
-						<ErrorBoundary>
-							<FormikSelect
-								name={`${path}.relatertPerson`}
-								label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
-								options={identOptions}
-								size={'xlarge'}
-							/>
-						</ErrorBoundary>
+						<FormikSelect
+							name={`${path}.relatertPerson`}
+							label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
+							options={identOptions}
+							size={'xlarge'}
+						/>
 
 						{(erBarn && (
 							<FormikCheckbox

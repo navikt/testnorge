@@ -6,9 +6,10 @@ import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 
 const uri = `/dolly-backend/api/v1`
 
-type Option = {
+export type Option = {
 	value: any
 	label: string
+	tema?: string
 }
 
 type Data = {

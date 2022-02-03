@@ -228,6 +228,6 @@ export const initialBarn = {
 export const initialDoedfoedtBarn = {
 	dato: new Date(),
 	kilde: 'Dolly',
-	master: 'PDL',
+	master: 'FREG',
 	gjeldende: true,
 }

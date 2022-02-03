@@ -13,6 +13,7 @@ import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kon
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
+import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
@@ -31,6 +32,7 @@ export const PdlfVisning = ({ data, loading }) => {
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
 		forelderBarnRelasjon,
+		doedfoedtBarn,
 	} = data.person
 
 	return (
@@ -43,6 +45,7 @@ export const PdlfVisning = ({ data, loading }) => {
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<SivilstandVisning data={sivilstand} relasjoner={data.relasjoner} />
+				<DoedfoedtBarnVisning data={doedfoedtBarn} />
 				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={data.relasjoner} />
 				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />

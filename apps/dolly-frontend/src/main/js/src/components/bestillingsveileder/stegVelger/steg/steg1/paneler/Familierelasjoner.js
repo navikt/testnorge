@@ -1,8 +1,11 @@
 import React from 'react'
-import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialBarn, initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialBarn,
+	initialDoedfoedtBarn,
+	initialSivilstand,
+} from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
@@ -20,13 +23,16 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Barn/Foreldre">
 				<Attributt attr={sm.attrs.barnForeldre} />
 			</AttributtKategori>
+			<AttributtKategori title="Dødfødt barn">
+				<Attributt attr={sm.attrs.doedfoedtBarn} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
 
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
-FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
+FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 	sivilstand: {
 		label: 'Sivilstand (har partner)',
 		checked: has('pdldata.person.sivilstand'),
@@ -41,44 +47,20 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		label: 'Har barn/foreldre',
 		checked: has('pdldata.person.forelderBarnRelasjon'),
 		add() {
-			set('pdldata.person.forelderBarnRelasjon', defaultBarn(opts)?.concat(defaultForeldre(opts)))
+			set('pdldata.person.forelderBarnRelasjon', [initialBarn])
 		},
 		remove() {
 			del('pdldata.person.forelderBarnRelasjon')
 		},
 	},
+	doedfoedtBarn: {
+		label: 'Har dødfødt barn',
+		checked: has('pdldata.person.doedfoedtBarn'),
+		add() {
+			set('pdldata.person.doedfoedtBarn', [initialDoedfoedtBarn])
+		},
+		remove() {
+			del('pdldata.person.doedfoedtBarn')
+		},
+	},
 })
-
-const defaultForeldre = (opts) => {
-	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner') // TODO: Sjekke om denne fungerer
-	const eksisterendeForeldre =
-		eksisterendeRelasjoner &&
-		eksisterendeRelasjoner.filter(
-			(relasjon) => relasjon.relasjonTypeNavn === 'MOR' || relasjon.relasjonTypeNavn === 'FAR'
-		)
-	const eksisterendeForelderValues =
-		eksisterendeForeldre &&
-		eksisterendeForeldre.map((forelder) => ({
-			ident: forelder.personRelasjonMed.ident,
-			doedsdato: forelder.personRelasjonMed.doedsdato || null,
-		}))
-
-	return eksisterendeForelderValues && eksisterendeForelderValues.length > 0
-		? eksisterendeForelderValues
-		: [initialBarn]
-}
-
-const defaultBarn = (opts) => {
-	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
-	const eksisterendeBarn =
-		eksisterendeRelasjoner &&
-		eksisterendeRelasjoner.filter((relasjon) => relasjon.relasjonTypeNavn === 'FOEDSEL')
-	const eksisterendeBarnValues =
-		eksisterendeBarn &&
-		eksisterendeBarn.map((barn) => ({
-			ident: barn.personRelasjonMed.ident,
-			doedsdato: barn.personRelasjonMed.doedsdato || null,
-		}))
-
-	return eksisterendeBarnValues && eksisterendeBarnValues.length > 0 ? eksisterendeBarnValues : []
-}

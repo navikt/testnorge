@@ -18,6 +18,7 @@ import Tooltip from 'rc-tooltip'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
+import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
@@ -37,6 +38,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 		sivilstand,
 		forelderBarnRelasjon,
 		kontaktinformasjonForDoedsbo,
+		doedfoedtBarn,
 	} = hentPerson
 
 	const getPersonInfo = () => {
@@ -56,6 +58,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<SivilstandVisning data={sivilstand} relasjoner={null} />
 				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={null} />
+				<DoedfoedtBarnVisning data={doedfoedtBarn} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 			</div>
 		)

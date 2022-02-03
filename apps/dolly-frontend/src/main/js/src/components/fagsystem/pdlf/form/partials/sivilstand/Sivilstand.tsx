@@ -9,16 +9,14 @@ import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValue
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
-	gruppeId: string
+	identOptions: Array<Option>
 }
 
-export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => (
+export const Sivilstand = ({ formikBag, identOptions }: SivilstandForm) => (
 	<FormikDollyFieldArray
 		name="pdldata.person.sivilstand"
 		header="Sivilstand"
@@ -50,19 +48,12 @@ export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => (
 						fastfield={false}
 					/>
 					<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
-					<ErrorBoundary>
-						<LoadableComponent
-							onFetch={() => SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId)}
-							render={(data) => (
-								<FormikSelect
-									name={`${path}.relatertVedSivilstand`}
-									label="Person relatert til"
-									options={data}
-									size={'xlarge'}
-								/>
-							)}
-						/>
-					</ErrorBoundary>
+					<FormikSelect
+						name={`${path}.relatertVedSivilstand`}
+						label="Person relatert til"
+						options={identOptions}
+						size={'xlarge'}
+					/>
 					<PdlPersonExpander
 						path={`${path}.nyRelatertPerson`}
 						label={'PERSON RELATERT TIL'}

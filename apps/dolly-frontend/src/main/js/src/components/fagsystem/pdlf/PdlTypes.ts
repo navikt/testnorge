@@ -60,3 +60,8 @@ export type ForeldreBarnRelasjon = {
 	relatertPersonsIdent: string
 	relatertPersonsRolle: string
 }
+
+export type DoedfoedtBarn = {
+	id: number
+	dato: Date
+}

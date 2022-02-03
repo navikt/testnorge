@@ -164,6 +164,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			tilrettelagtKommunikasjon,
 			sivilstand,
 			forelderBarnRelasjon,
+			doedfoedtBarn,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -578,6 +579,26 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			})
 
 			data.push(foreldreBarnData)
+		}
+
+		if (doedfoedtBarn) {
+			const doedfoedtBarnData = {
+				header: 'Dødfødt barn',
+				itemRows: [],
+			}
+
+			doedfoedtBarn.forEach((item, i) => {
+				doedfoedtBarnData.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small',
+					},
+					obj('Dødsdato', Formatters.formatDate(item.dato)),
+				])
+			})
+
+			data.push(doedfoedtBarnData)
 		}
 
 		const sjekkRettIdent = (item) => {
