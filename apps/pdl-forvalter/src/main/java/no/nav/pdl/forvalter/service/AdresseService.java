@@ -22,8 +22,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public abstract class AdresseService<T extends AdresseDTO, R> implements BiValidation<T, R> {
 
-    public static final String VALIDATION_MASTER_PDL_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi " +
-            "hvis master er PDL";
     public static final String VALIDATION_BRUKSENHET_ERROR = "Bruksenhetsnummer identifiserer en boligenhet innenfor et " +
             "bygg eller en bygningsdel. Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre";
     public static final String VALIDATION_POSTBOKS_ERROR = "Alfanumerisk identifikator av postboks. Kan ikke være tom";
