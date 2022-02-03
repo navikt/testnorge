@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Pagination from 'paginering'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import styled from 'styled-components'
-import PersonView from '~/pages/testnorgePage/search/PersonView'
+import { PersonView } from '~/pages/testnorgePage/search/PersonView'
 import { Pageing, Person } from '~/service/services/personsearch/types'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
+import Loading from '~/components/ui/loading/Loading'
 
 type Props = {
 	items?: Person[]
+	loading: boolean
+	valgtePersoner: string[]
+	setValgtePersoner: (personer: string[]) => void
 	pageing: Pageing
 	numberOfItems?: number
 	onChange?: (page: number) => void
@@ -29,11 +33,23 @@ const SearchPagination = styled(Pagination)`
 	align-self: center;
 `
 
-export default ({ items, pageing, numberOfItems, onChange, importerPersoner }: Props) => {
-	const [valgtePersoner, setValgtePersoner] = useState([])
-
-	if (!items) {
-		return <ContentContainer>Ingen resultat</ContentContainer>
+export default ({
+	items,
+	loading,
+	valgtePersoner,
+	setValgtePersoner,
+	pageing,
+	numberOfItems,
+	onChange,
+	importerPersoner,
+}: Props) => {
+	if (loading) return <Loading label="Søker..." />
+	if (!items || items.length === 0) {
+		return (
+			<ContentContainer>
+				Ingen resultat. Resultatet inkluderer ikke identer som allerede er importert til Dolly.
+			</ContentContainer>
+		)
 	}
 
 	const columns = [
@@ -72,12 +88,8 @@ export default ({ items, pageing, numberOfItems, onChange, importerPersoner }: P
 								valgtePersoner.includes(person.ident)
 							)
 							alleValgtPaaSiden
-								? setValgtePersoner(
-										valgtePersoner.filter(
-											(personId) => !data.some((person) => person.ident === personId)
-										)
-								  )
-								: setValgtePersoner(valgtePersoner.concat(data.map((person) => person.ident)))
+								? setValgtePersoner([])
+								: setValgtePersoner(data.map((person) => person.ident))
 						}}
 					>
 						{text}

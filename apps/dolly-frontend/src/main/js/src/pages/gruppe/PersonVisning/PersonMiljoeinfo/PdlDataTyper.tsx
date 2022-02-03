@@ -18,8 +18,8 @@ export type Ident = {
 
 export type HentPerson = {
 	bostedsadresse: Array<BostedData>
-	oppholdsadresse: Array<{}>
-	kontaktadresse: Array<{}>
+	oppholdsadresse: Array<Oppholdsadresse>
+	kontaktadresse: Array<Kontaktadresse>
 	adressebeskyttelse: Array<{}>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
@@ -28,12 +28,110 @@ export type HentPerson = {
 	forelderBarnRelasjon: [ForelderBarnRelasjon]
 	sivilstand: [Sivilstand]
 	doedfoedtBarn: [DoedfoedtBarn]
+	statsborgerskap: [Statsborgerskap]
+	innflyttingTilNorge: [InnflyttingTilNorge]
+	utflyttingFraNorge: [UtflyttingFraNorge]
+	foedsel: [Foedsel]
+	doedsfall: [Doedsfall]
 }
 
 export type BostedData = {
-	metadata: {
-		historisk: boolean
-	}
+	angittFlyttedato?: Date
+	coAdressenavn?: string
+	gyldigFraOgMed?: Date
+	gyldigTilOgMed?: Date
+	vegadresse?: Vegadresse
+	matrikkeladresse?: Matrikkeladresse
+	ukjentBosted?: UkjentBosted
+	utenlandskAdresse?: UtenlandskAdresse
+	metadata?: Metadata
+}
+
+export type Oppholdsadresse = {
+	utenlandskAdresse?: UtenlandskAdresse
+	vegadresse?: Vegadresse
+	matrikkeladresse?: Matrikkeladresse
+	oppholdAnnetSted?: string
+	coAdressenavn?: string
+	gyldigFraOgMe?: Date
+	metadata?: Metadata
+}
+
+export type Kontaktadresse = {
+	gyldigFraOgMed?: Date
+	gyldigTilOgMed?: Date
+	type?: string
+	coAdressenavn?: string
+	postboksadresse?: Postboksadresse
+	vegadresse?: Vegadresse
+	postadresseIFrittFormat?: PostadresseIFrittFormat
+	utenlandskAdresse?: UtenlandskAdresse
+	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
+	metadata?: Metadata
+}
+
+type Postboksadresse = {
+	postbokseier?: string
+	postboks?: string
+	postnummer?: string
+}
+
+type PostadresseIFrittFormat = {
+	adresselinje1?: string
+	adresselinje2?: string
+	adresselinje3?: string
+	postnummer?: string
+}
+
+type UtenlandskAdresseIFrittFormat = {
+	adresselinje1?: string
+	adresselinje2?: string
+	adresselinje3?: string
+	postkode?: string
+	byEllerStedsnavn?: string
+	landkode?: string
+}
+
+type Vegadresse = {
+	matrikkelId?: string
+	husbokstav?: string
+	husnummer?: string
+	adressenavn?: string
+	bruksenhetsnummer?: string
+	tilleggsnavn?: string
+	postnummer?: string
+	kommunenummer?: string
+	koordinater?: Koordinater
+}
+
+type Matrikkeladresse = {
+	matrikkelId?: string
+	bruksenhetsnummer?: string
+	tilleggsnavn?: string
+	postnummer?: string
+	kommunenummer?: string
+	koordinater?: Koordinater
+}
+
+type Koordinater = {
+	x?: string
+	y?: string
+	z?: string
+	kvalitet?: string
+}
+
+type UkjentBosted = {
+	bostedskommune?: string
+}
+
+type UtenlandskAdresse = {
+	adressenavnNummer?: string
+	postboksNummerNavn?: string
+	postkode?: string
+	bySted?: string
+	landkode?: string
+	bygningEtasjeLeilighet?: string
+	regionDistriktOmraade?: string
 }
 
 export type FullmaktData = {
@@ -46,15 +144,7 @@ export type FullmaktData = {
 }
 
 export type UtenlandskAdresseData = {
-	utenlandskAdresse?: {
-		adressenavnNummer?: string
-		postboksNummerNavn?: string
-		postkode?: string
-		bySted?: string
-		landkode?: string
-		bygningEtasjeLeilighet?: string
-		regionDistriktOmraade?: string
-	}
+	utenlandskAdresse?: UtenlandskAdresse
 }
 
 export type TelefonData = {
@@ -118,6 +208,7 @@ export type Sivilstand = {
 	gyldigFraOgMed: Date
 	relatertVedSivilstand: string
 	bekreftelsesdato: Date
+	metadata: Metadata
 }
 
 export type DoedfoedtBarn = {
@@ -132,4 +223,41 @@ export type KodeverkValues = {
 	data: string
 	label: string
 	value: string
+}
+
+export type Statsborgerskap = {
+	land: string
+	gyldigFraOgMed: Date
+	gyldigTilOgMed?: Date
+	metadata: Metadata
+}
+
+export type InnflyttingTilNorge = {
+	fraflyttingsland: string
+	fraflyttingsstedIUtlandet: string
+	metadata: Metadata
+}
+
+export type UtflyttingFraNorge = {
+	tilflyttingsland: string
+	tilflyttingsstedIUtlandet: string
+	metadata: Metadata
+}
+
+type Foedsel = {
+	foedselsaar: string
+	foedselsdato: string
+	foedeland: string
+	foedested: string
+	foedekommune: string
+	metadata: Metadata
+}
+
+type Doedsfall = {
+	doedsdato: string
+	metadata: Metadata
+}
+
+type Metadata = {
+	historisk: boolean
 }

@@ -12,6 +12,9 @@ const getPageing = (pageSize: number, page: number) => {
 
 const mapStateToProps = (state: any, ownProps: any) => ({
 	items: ownProps.items,
+	valgtePersoner: ownProps.valgtePersoner,
+	setValgtePersoner: ownProps.setValgtePersoner,
+	loading: ownProps.loading,
 	pageing: getPageing(ownProps.pageSize, ownProps.page),
 	numberOfItems: ownProps.numberOfItems,
 	onChange: ownProps.onChange,
