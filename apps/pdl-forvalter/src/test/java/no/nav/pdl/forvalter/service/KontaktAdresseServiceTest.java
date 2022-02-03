@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -137,12 +138,12 @@ class KontaktAdresseServiceTest {
 
         var request = PersonDTO.builder()
                 .ident(IDENT)
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+                .kontaktadresse(new ArrayList<>(List.of(KontaktadresseDTO.builder()
                         .vegadresse(VegadresseDTO.builder()
                                 .postnummer("1234")
                                 .build())
                         .isNew(true)
-                        .build()))
+                        .build())))
                 .build();
 
         var kontaktadresse =

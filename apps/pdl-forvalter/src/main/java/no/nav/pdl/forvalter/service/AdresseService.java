@@ -9,7 +9,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -20,8 +22,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public abstract class AdresseService<T extends AdresseDTO, R> implements BiValidation<T, R> {
 
-    public static final String VALIDATION_MASTER_PDL_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi " +
-            "hvis master er PDL";
     public static final String VALIDATION_BRUKSENHET_ERROR = "Bruksenhetsnummer identifiserer en boligenhet innenfor et " +
             "bygg eller en bygningsdel. Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre";
     public static final String VALIDATION_POSTBOKS_ERROR = "Alfanumerisk identifikator av postboks. Kan ikke være tom";
@@ -52,6 +52,11 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         if (!bruksenhet.matches("[HULK][0-9]{4}")) {
             throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
         }
+    }
+
+    private static LocalDate getDateOrNow(LocalDateTime dateTime) {
+
+        return nonNull(dateTime) ? dateTime.toLocalDate() : LocalDate.now();
     }
 
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
@@ -88,6 +93,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
     }
 
     private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
+
         return new StringBuilder()
                 .append("c/o ")
                 .append(coNavn.getFornavn())
@@ -109,31 +115,86 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
         adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
-        adresse.setGjeldende(nonNull(adresse.getGjeldende()) ? adresse.getGjeldende(): true);
+        adresse.setGjeldende(nonNull(adresse.getGjeldende()) ? adresse.getGjeldende() : true);
     }
 
-    protected void enforceIntegrity(List<T> adresse) {
+    protected void enforceIntegrity(List<T> adresser) {
 
-        for (var i = 0; i < adresse.size(); i++) {
-            if (i + 1 < adresse.size()) {
-                if (isOverlapUgyldigTom(adresse, i) || isOverlapUgyldigFom(adresse, i)) {
+        setPendingTilOgMedDato(adresser);
+        checkOverlappendeDatoer(adresser);
+        sortAdresser(adresser);
+    }
+
+    private void setPendingTilOgMedDato(List<T> adresser) {
+
+        for (var i = 0; i < adresser.size(); i++) {
+
+            if (i + 1 < adresser.size() &&
+                    isNull(adresser.get(i + 1).getGyldigTilOgMed())
+                    && nonNull(adresser.get(i).getGyldigFraOgMed())) {
+
+                adresser.get(i + 1).setGyldigTilOgMed(
+                        adresser.get(i).getGyldigFraOgMed().toLocalDate()
+                                .isEqual(adresser.get(i + 1).getGyldigFraOgMed().toLocalDate()) ?
+                                adresser.get(i).getGyldigFraOgMed() :
+                                adresser.get(i).getGyldigFraOgMed().minusDays(1));
+            }
+        }
+    }
+
+    private void checkOverlappendeDatoer(List<T> adresser) {
+
+        // https://stackoverflow.com/questions/13513932/algorithm-to-detect-overlapping-periods
+        for (var i = 0; i < adresser.size(); i++) {
+            for (var j = 0; j < adresser.size(); j++) {
+                if (i != j &&
+                        (adresser.get(i).getGyldigFraOgMed().toLocalDate()
+                                .isEqual(adresser.get(j).getGyldigFraOgMed().toLocalDate()) ||
+                        getDateOrNow(adresser.get(i).getGyldigTilOgMed())
+                                .isEqual(getDateOrNow(adresser.get(j).getGyldigTilOgMed())) ||
+                        isAdresseOverlapp(adresser.get(i), adresser.get(j)))) {
                     throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
-                }
-                if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
-                    adresse.get(i + 1).setGyldigTilOgMed(adresse.get(i).getGyldigFraOgMed().minusDays(1));
                 }
             }
         }
     }
 
-    private boolean isOverlapUgyldigFom(List<T> adresse, int i) {
-        return nonNull(adresse.get(i + 1).getGyldigFraOgMed()) && nonNull(adresse.get(i).getGyldigTilOgMed()) &&
-                adresse.get(i).getGyldigTilOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed());
+    private boolean isAdresseOverlapp(T adresse1, T adresse2) {
+
+        return isOverlappTilfelle1(adresse1, adresse2) ||
+                isOverlappTilfelle2(adresse1, adresse2) ||
+                isOverlappTilfelle3(adresse1, adresse2);
     }
 
-    private boolean isOverlapUgyldigTom(List<T> adresse, int i) {
-        return isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
-                nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i + 1).getGyldigFraOgMed()) &&
-                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1));
+    private boolean isOverlappTilfelle1(T adresse1, T adresse2) {
+
+        //        |<---- Intervall A ----->|
+        //             |<---- Intervall B ----->|
+        return getDateOrNow(adresse1.getGyldigFraOgMed()).isBefore(adresse2.getGyldigFraOgMed().toLocalDate()) &&
+                adresse2.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
+    }
+
+    private boolean isOverlappTilfelle2(T adresse1, T adresse2) {
+
+        //             |<---- Intervall A ----->|
+        //        |<---- Intervall B ----->|
+        return adresse1.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse2.getGyldigTilOgMed())) &&
+                getDateOrNow(adresse2.getGyldigTilOgMed()).isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
+    }
+
+    private boolean isOverlappTilfelle3(T adresse1, T adresse2) {
+
+        //          |<--- Intervall A --->|
+        //      |<-------- Intervall B ------->|
+        return adresse2.getGyldigFraOgMed().toLocalDate().isBefore(adresse1.getGyldigFraOgMed().toLocalDate()) &&
+                getDateOrNow(adresse2.getGyldigTilOgMed()).isAfter(getDateOrNow(adresse1.getGyldigTilOgMed()));
+    }
+
+    private void sortAdresser(List<T> adresser) {
+
+        adresser.sort(Comparator.comparing(AdresseDTO::getGyldigFraOgMed, Comparator.reverseOrder()));
+        for (var i = adresser.size(); i > 0; i--) {
+            adresser.get(i - 1).setId(adresser.size() - i + 1);
+        }
     }
 }
