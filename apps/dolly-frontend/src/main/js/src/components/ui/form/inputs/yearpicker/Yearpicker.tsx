@@ -16,16 +16,12 @@ interface YearpickerProps {
 	maxDate?: Date
 }
 
-const container = () => {
-	return <div style={{ width: '200px' }}></div>
-}
 export const Yearpicker = ({
 	formikBag,
 	name,
 	label,
 	date,
 	handleDateChange,
-	minDate = null,
 	maxDate = null,
 	disabled = false,
 }: YearpickerProps) => {
@@ -36,34 +32,17 @@ export const Yearpicker = ({
 
 	return (
 		<InputWrapper>
-			<Label
-				name={name}
-				label={label}
-				feil={getFeilmelding(formikBag, name)}
-				// containerClass={null}
-				// size={'medium'}
-			>
+			<Label name={name} label={label} feil={getFeilmelding(formikBag, name)}>
 				<ReactDatepicker
 					className={'skjemaelement__input'}
-					// locale="nb"
 					dateFormat="yyyy"
 					selected={date}
 					onChange={handleDateChange}
 					placeholderText={'Ikke spesifisert'}
 					showYearPicker
 					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
-					// calendarClassName={}
-					// dropdownMode="select"
-					// autoComplete="off"
 					maxDate={maxDate}
 					disabled={disabled}
-					// calendarContainer={container}
-					// scrollableYearDropdown
-					// calendarClassName={}
-					// size={'medium'}
-					// style={{ width: '500' }}
-					// yearItemNumber={15}
-					// fixedHeight={true}
 				/>
 			</Label>
 		</InputWrapper>
