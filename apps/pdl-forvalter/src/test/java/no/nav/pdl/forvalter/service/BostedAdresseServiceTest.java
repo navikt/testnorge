@@ -10,7 +10,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -158,34 +157,6 @@ class BostedAdresseServiceTest {
     }
 
     @Test
-    void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
-
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
-        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
-                                .vegadresse(new VegadresseDTO())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
-                                .isNew(true)
-                                .build(),
-                        BostedadresseDTO.builder()
-                                .matrikkeladresse(new MatrikkeladresseDTO())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .isNew(true)
-                                .build())))
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request, null));
-
-        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
-    }
-
-    @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
@@ -231,7 +202,6 @@ class BostedAdresseServiceTest {
     }
 
     @Test
-    @Disabled
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());

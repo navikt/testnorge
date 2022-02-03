@@ -93,6 +93,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
     }
 
     private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
+
         return new StringBuilder()
                 .append("c/o ")
                 .append(coNavn.getFornavn())
@@ -119,6 +120,13 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     protected void enforceIntegrity(List<T> adresser) {
 
+        setPendingTilOgMedDato(adresser);
+        checkOverlappendeDatoer(adresser);
+        sortAdresser(adresser);
+    }
+
+    private void checkOverlappendeDatoer(List<T> adresser) {
+
         // https://stackoverflow.com/questions/13513932/algorithm-to-detect-overlapping-periods
         for (var i = 0; i < adresser.size(); i++) {
             for (var j = 0; j < adresser.size(); j++) {
@@ -127,11 +135,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 }
             }
         }
+    }
 
-        adresser.sort(Comparator.comparing(AdresseDTO::getGyldigFraOgMed, Comparator.reverseOrder()));
-        for (var i = adresser.size(); i > 0; i--) {
-            adresser.get(i - 1).setId(adresser.size() - i + 1);
-        }
+    private void setPendingTilOgMedDato(List<T> adresser) {
 
         for (var i = 0; i < adresser.size(); i++) {
             if (i + 1 < adresser.size()) {
@@ -172,5 +178,13 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         //      |<-------- Intervall B ------->|
         return adresse2.getGyldigFraOgMed().toLocalDate().isBefore(adresse1.getGyldigFraOgMed().toLocalDate()) &&
                 getDateOrNow(adresse2.getGyldigTilOgMed()).isAfter(getDateOrNow(adresse1.getGyldigTilOgMed()));
+    }
+
+    private void sortAdresser(List<T> adresser) {
+
+        adresser.sort(Comparator.comparing(AdresseDTO::getGyldigFraOgMed, Comparator.reverseOrder()));
+        for (var i = adresser.size(); i > 0; i--) {
+            adresser.get(i - 1).setId(adresser.size() - i + 1);
+        }
     }
 }
