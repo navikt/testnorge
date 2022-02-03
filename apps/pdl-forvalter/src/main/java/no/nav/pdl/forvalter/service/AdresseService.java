@@ -125,24 +125,35 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         sortAdresser(adresser);
     }
 
+    private void setPendingTilOgMedDato(List<T> adresser) {
+
+        for (var i = 0; i < adresser.size(); i++) {
+
+            if (i + 1 < adresser.size() &&
+                    isNull(adresser.get(i + 1).getGyldigTilOgMed())
+                    && nonNull(adresser.get(i).getGyldigFraOgMed())) {
+
+                adresser.get(i + 1).setGyldigTilOgMed(
+                        adresser.get(i).getGyldigFraOgMed().toLocalDate()
+                                .isEqual(adresser.get(i + 1).getGyldigFraOgMed().toLocalDate()) ?
+                                adresser.get(i).getGyldigFraOgMed() :
+                                adresser.get(i).getGyldigFraOgMed().minusDays(1));
+            }
+        }
+    }
+
     private void checkOverlappendeDatoer(List<T> adresser) {
 
         // https://stackoverflow.com/questions/13513932/algorithm-to-detect-overlapping-periods
         for (var i = 0; i < adresser.size(); i++) {
             for (var j = 0; j < adresser.size(); j++) {
-                if (i != j && isAdresseOverlapp(adresser.get(i), adresser.get(j))) {
+                if (i != j &&
+                        (adresser.get(i).getGyldigFraOgMed().toLocalDate()
+                                .isEqual(adresser.get(j).getGyldigFraOgMed().toLocalDate()) ||
+                        getDateOrNow(adresser.get(i).getGyldigTilOgMed())
+                                .isEqual(getDateOrNow(adresser.get(j).getGyldigTilOgMed())) ||
+                        isAdresseOverlapp(adresser.get(i), adresser.get(j)))) {
                     throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
-                }
-            }
-        }
-    }
-
-    private void setPendingTilOgMedDato(List<T> adresser) {
-
-        for (var i = 0; i < adresser.size(); i++) {
-            if (i + 1 < adresser.size()) {
-                if (isNull(adresser.get(i + 1).getGyldigTilOgMed()) && nonNull(adresser.get(i).getGyldigFraOgMed())) {
-                    adresser.get(i + 1).setGyldigTilOgMed(adresser.get(i).getGyldigFraOgMed().minusDays(1));
                 }
             }
         }
@@ -168,8 +179,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         //             |<---- Intervall A ----->|
         //        |<---- Intervall B ----->|
         return adresse1.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse2.getGyldigTilOgMed())) &&
-                (getDateOrNow(adresse2.getGyldigTilOgMed()).isBefore(getDateOrNow(adresse1.getGyldigTilOgMed())) ||
-                        getDateOrNow(adresse2.getGyldigTilOgMed()).isEqual(getDateOrNow(adresse1.getGyldigTilOgMed())));
+                getDateOrNow(adresse2.getGyldigTilOgMed()).isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
     }
 
     private boolean isOverlappTilfelle3(T adresse1, T adresse2) {

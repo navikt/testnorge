@@ -139,6 +139,34 @@ class OppholdsadresseServiceTest {
     }
 
     @Test
+    void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
+
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
+        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
+
+        var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
+                .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
+                                .vegadresse(new VegadresseDTO())
+                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                .isNew(true)
+                                .build(),
+                        OppholdsadresseDTO.builder()
+                                .matrikkeladresse(new MatrikkeladresseDTO())
+                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                .isNew(true)
+                                .build())))
+                .build();
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                oppholdsadresseService.convert(request));
+
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
+    }
+
+    @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
