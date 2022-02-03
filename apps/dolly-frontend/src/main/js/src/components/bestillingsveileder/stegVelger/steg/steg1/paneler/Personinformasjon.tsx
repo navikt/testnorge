@@ -79,14 +79,10 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">
-				<Attributt attr={sm.attrs.identtype} vis={leggTil} />
-				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.navn} />
-				<Attributt attr={sm.attrs.harNyttNavn} vis={leggTil} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
-				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
 				<Attributt attr={sm.attrs.telefonnummer} />
@@ -202,21 +198,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del('pdldata.person.utflytting')
 			},
 		},
-		identHistorikk: {
-			label: 'Identhistorikk',
-			checked: has('tpsf.identHistorikk'),
-			add: () =>
-				set('tpsf.identHistorikk', [
-					{
-						foedtEtter: null,
-						foedtFoer: null,
-						identtype: null,
-						kjonn: null,
-						regdato: null,
-					},
-				]),
-			remove: () => del('tpsf.identHistorikk'),
-		},
 		kjonn: {
 			label: 'Kjønn',
 			checked: has('pdldata.person.kjoenn'),
@@ -228,12 +209,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('pdldata.person.navn'),
 			add: () => set('pdldata.person.navn', [initialNavn]),
 			remove: () => del('pdldata.person.navn'),
-		},
-		harNyttNavn: {
-			label: 'Nytt navn',
-			checked: has('tpsf.harNyttNavn'),
-			add: () => set('tpsf.harNyttNavn', true),
-			remove: () => del('tpsf.harNyttNavn'),
 		},
 		sprakKode: {
 			label: 'Språk',
@@ -270,16 +245,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsf.egenAnsattDatoTom',
 					'skjerming',
 				])
-			},
-		},
-		erForsvunnet: {
-			label: 'Forsvunnet',
-			checked: has('tpsf.erForsvunnet'),
-			add() {
-				setMulti(['tpsf.erForsvunnet', true], ['tpsf.forsvunnetDato', null])
-			},
-			remove() {
-				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
 			},
 		},
 		telefonnummer: {
@@ -320,29 +285,11 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del(['pdldata.person.telefonnummer', 'tpsMessaging.telefonnummer'])
 			},
 		},
-		identtype: {
-			label: 'Identtype',
-			checked: has('tpsf.identtype'),
-			add() {
-				setMulti(
-					['tpsf.identtype', 'FNR'],
-					personFoerLeggTil?.tpsf?.foedselsdato && [
-						'tpsf.foedtFoer',
-						addDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
-					],
-					personFoerLeggTil?.tpsf?.foedselsdato && [
-						'tpsf.foedtEtter',
-						subDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
-					]
-				)
-			},
-			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
-		},
 		vergemaal: {
 			label: 'Vergemål',
 			checked: has('pdldata.person.vergemaal'),
 			add: () => set('pdldata.person.vergemaal', [initialVergemaal]),
-			remove: () => del('tpsf.vergemaal'),
+			remove: () => del('pdldata.person.vergemaal'),
 		},
 		fullmakt: {
 			label: 'Fullmakt',

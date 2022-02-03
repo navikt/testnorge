@@ -3,17 +3,11 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import styled from 'styled-components'
 
 const path = 'tpsMessaging.utenlandskBankkonto'
 
-const Title = styled.h4`
-	width: 100%;
-`
-
 export const UtenlandskBankkonto = () => (
 	<Vis attributt={path} formik>
-		<Title>Utenlandsk bankkonto</Title>
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput name={`${path}.kontonummer`} label={'Kontonummer'} />
 			<FormikTextInput name={`${path}.swift`} label={'Swift kode'} />

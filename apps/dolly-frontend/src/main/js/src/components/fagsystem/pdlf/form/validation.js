@@ -442,4 +442,54 @@ export const validation = {
 			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 		}),
 	}),
+	tpsMessaging: ifPresent(
+		'$tpsMessaging',
+		Yup.object({
+			spraakKode: ifPresent('$tpsMessaging.spraakKode', requiredString),
+			egenAnsattDatoFom: ifPresent(
+				'$tpsMessaging.egenAnsattDatoFom',
+				Yup.string().test(
+					'is-before-today',
+					'Dato kan ikke være etter dagens dato',
+					function validDate(dato) {
+						return isBefore(new Date(dato), new Date())
+					}
+				)
+			),
+			egenAnsattDatoTom: ifPresent(
+				'$tpsMessaging.egenAnsattDatoTom',
+				Yup.string().test(
+					'is-after-dato-fom',
+					'Dato må være etter fra-dato og senest dagens dato',
+					function validDate(dato) {
+						const values = this.options.context
+						return (
+							isAfter(new Date(dato), new Date(_get(values, 'tpsMessaging.egenAnsattDatoFom'))) &&
+							!isAfter(new Date(dato), new Date())
+						)
+					}
+				)
+			),
+			utenlandskBankkonto: ifPresent(
+				'$tpsMessaging.utenlandskBankkonto',
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+					swift: Yup.string().nullable().optional(),
+					landkode: requiredString.nullable(),
+					iban: Yup.string().nullable().optional(),
+					valuta: requiredString.nullable(),
+					banknavn: Yup.string().nullable().optional(),
+					bankAdresse1: Yup.string().nullable().optional(),
+					bankAdresse2: Yup.string().nullable().optional(),
+					bankAdresse3: Yup.string().nullable().optional(),
+				})
+			),
+			norskBankkonto: ifPresent(
+				'$tpsMessaging.norskBankkonto',
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+				})
+			),
+		})
+	),
 }
