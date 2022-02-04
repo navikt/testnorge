@@ -409,6 +409,15 @@ export const selectPersonListe = (state) => {
 		const tpsfIdent = fagsystem.tpsf[ident.ident]
 		const pdlIdent = fagsystem.pdlforvalter[ident.ident]
 		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
+		const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
+			? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`
+			: ''
+
+		const pdlAlder = (foedselsdato) => {
+			if (!foedselsdato) return null
+			const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
+			return Math.abs(diff.getUTCFullYear() - 1970)
+		}
 
 		if (ident.master !== 'PDLF' && ident.master !== 'PDL' && !tpsfIdent) return null
 
@@ -419,10 +428,10 @@ export const selectPersonListe = (state) => {
 					bestillingId: ident.bestillingId,
 					identtype: 'FNR',
 					kilde: 'PDL',
-					navn: `${pdlIdent.person?.navn?.[0]?.fornavn} ${pdlIdent.person?.navn?.[0]?.etternavn}`,
+					navn: `${pdlIdent.person?.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.person?.navn?.[0]?.etternavn}`,
 					kjonn: pdlIdent.person?.kjoenn?.[0]?.kjoenn,
 					alder: Formatters.formatAlder(
-						new Date().getFullYear() - pdlIdent.person?.foedsel?.[0]?.foedselsaar,
+						pdlAlder(pdlIdent.person?.foedsel?.[0]?.foedselsdato),
 						pdlIdent.person?.doedsfall?.[0]?.doedsdato
 					),
 					status: hentPersonStatus(

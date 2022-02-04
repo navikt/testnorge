@@ -18,7 +18,6 @@ export const initialKontaktadresse = {
 	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialOppholdsadresse = {
@@ -34,7 +33,6 @@ export const initialAdressebeskyttelse = {
 	gradering: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialVegadresse = {
@@ -92,7 +90,6 @@ export const initialKontaktinfoForDoedebo = {
 	},
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialSikkerhetstiltak = {
@@ -106,7 +103,6 @@ export const initialSikkerhetstiltak = {
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const initialTpsSikkerhetstiltak = {
@@ -122,7 +118,6 @@ export const initialStatsborgerskap = {
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const initialTilrettelagtKommunikasjon = {
@@ -130,14 +125,22 @@ export const initialTilrettelagtKommunikasjon = {
 	spraakForTegnspraakTolk: '',
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const initialDoedsfall = {
 	doedsdato: new Date(),
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
+}
+
+export const initialFoedsel = {
+	fodekommune: null as string,
+	foedeland: null as string,
+	foedested: null as string,
+	foedselsaar: null as number,
+	foedselsdato: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
 }
 
 export const initialOrganisasjon = {
@@ -169,14 +172,12 @@ export const initialUtenlandsIdValues = {
 	utstederland: '',
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialFalskIdentitetValues = {
 	erFalsk: true,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialInnvandring = {
@@ -204,7 +205,33 @@ export const initialSivilstand = {
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
+}
+
+export const initialKjoenn = {
+	kjoenn: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialNavn = {
+	fornavn: null as string,
+	mellomnavn: null as string,
+	etternavn: null as string,
+	hasMellomnavn: false,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialVergemaal = {
+	vergemaalEmbete: null as string,
+	sakType: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	nyVergeIdent: initialPdlPerson,
+	vergeIdent: null as string,
+	mandatType: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
 }
 
 export const initialForelder = {

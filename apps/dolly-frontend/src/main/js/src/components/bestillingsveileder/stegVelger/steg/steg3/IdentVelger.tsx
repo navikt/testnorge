@@ -58,12 +58,14 @@ export const IdentVelger = ({ formikBag }: Form) => {
 	const erArenaBestilling = formikBag.values.hasOwnProperty('arenaforvalter')
 
 	const [type, setType] = useState(
-		_get(formikBag.values, `navSyntetiskIdent`) === true ? IdentType.SYNTETISK : IdentType.STANDARD
+		_get(formikBag.values, `pdldata.opprettNyPerson.syntetisk`) === true
+			? IdentType.SYNTETISK
+			: IdentType.STANDARD
 	)
 
 	const handleIdentTypeChange = (value: IdentType) => {
 		setType(value)
-		formikBag.setFieldValue('navSyntetiskIdent', value === IdentType.SYNTETISK)
+		formikBag.setFieldValue(`pdldata.opprettNyPerson.syntetisk`, value === IdentType.SYNTETISK)
 	}
 
 	return (
@@ -74,7 +76,7 @@ export const IdentVelger = ({ formikBag }: Form) => {
 			</Tittel>
 
 			<TestpersonValg
-				name="navSyntetiskIdent"
+				name="pdldata.opprettNyPerson.syntetisk"
 				legend=""
 				radios={[
 					{ label: 'Standard', value: IdentType.STANDARD },
@@ -88,8 +90,8 @@ export const IdentVelger = ({ formikBag }: Form) => {
 
 			{erArenaBestilling && type === IdentType.SYNTETISK && (
 				<AlertStripeAdvarsel>
-					Syntetisk ident er foreløpig ikke støttet for Arbeidsytelser (Arena), velg standard ident for gyldig
-					bestilling.
+					Syntetisk ident er foreløpig ikke støttet for Arbeidsytelser (Arena), velg standard ident
+					for gyldig bestilling.
 				</AlertStripeAdvarsel>
 			)}
 		</IdentVelgerField>

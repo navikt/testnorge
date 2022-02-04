@@ -144,9 +144,26 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	const pdldataKriterier = bestillingData.pdldata?.person
+	const pdlNyPersonKriterier = bestillingData.pdldata?.opprettNyPerson
+
+	if (pdlNyPersonKriterier) {
+		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
+		const nyPersonData = {
+			header: 'Persondetaljer',
+			items: [
+				obj('Alder', alder),
+				obj('Født etter', Formatters.formatDate(foedtEtter)),
+				obj('Født før', Formatters.formatDate(foedtFoer)),
+			],
+		}
+		if (alder || foedtEtter || foedtFoer) data.push(nyPersonData)
+	}
 
 	if (pdldataKriterier) {
 		const {
+			foedsel,
+			kjoenn,
+			navn,
 			telefonnummer,
 			fullmakt,
 			bostedsadresse,
@@ -163,6 +180,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			sikkerhetstiltak,
 			tilrettelagtKommunikasjon,
 			sivilstand,
+			vergemaal,
 			forelderBarnRelasjon,
 			doedfoedtBarn,
 		} = pdldataKriterier
@@ -218,6 +236,23 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			]
 		}
 
+		if (foedsel) {
+			const foedselData = {
+				header: 'Fødsel',
+				itemRows: foedsel.map((item, idx) => {
+					return [
+						{ numberHeader: `Fødsel ${idx + 1}` },
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
+						obj('Fødselsår', item.foedselsaar),
+						obj('Fødested', item.foedested),
+						obj('Fødekommune', item.fodekommune, AdresseKodeverk.Kommunenummer),
+						obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
+					]
+				}),
+			}
+			data.push(foedselData)
+		}
+
 		if (innflytting) {
 			const innflyttingData = {
 				header: 'Innvandring',
@@ -248,6 +283,35 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(utflyttingData)
 		}
 
+		if (kjoenn) {
+			const kjoennData = {
+				header: 'Kjønn',
+				itemRows: kjoenn.map((item, idx) => {
+					return [
+						{ numberHeader: `Kjønn ${idx + 1}` },
+						obj('Kjønn', Formatters.showLabel('kjoenn', item.kjoenn)),
+					]
+				}),
+			}
+			data.push(kjoennData)
+		}
+
+		if (navn) {
+			const navnData = {
+				header: 'Navn',
+				itemRows: navn.map((item, idx) => {
+					return [
+						{ numberHeader: `Navn ${idx + 1}` },
+						obj('Fornavn', item.fornavn),
+						obj('Mellomnavn', item.mellomnavn),
+						obj('Etternavn', item.etternavn),
+						obj('Har tilfeldig mellomnavn', Formatters.oversettBoolean(item.hasMellomnavn)),
+					]
+				}),
+			}
+			data.push(navnData)
+		}
+
 		if (telefonnummer) {
 			const telefonnummerData = {
 				header: 'Telefonnummer',
@@ -260,6 +324,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(telefonnummerData)
+		}
+
+		if (vergemaal) {
+			const vergemaalData = {
+				header: 'Vergemål',
+				itemRows: vergemaal.map((item, idx) => {
+					return [
+						{ numberHeader: `Vergemål ${idx + 1}` },
+						obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+						obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
+						obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
+						obj('Gyldig f.o.m.', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig t.o.m.', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Verge', item.vergeIdent),
+						...personRelatertTil(item, 'nyVergeIdent'),
+					]
+				}),
+			}
+			data.push(vergemaalData)
 		}
 
 		if (fullmakt) {

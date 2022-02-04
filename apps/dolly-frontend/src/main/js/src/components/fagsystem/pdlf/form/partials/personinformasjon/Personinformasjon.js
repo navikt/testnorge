@@ -3,22 +3,23 @@ import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { Diverse } from './partials/Diverse'
-import { Vergemaal } from './partials/vergemaal/Vergemaal'
-import { Fullmakt } from './partials/fullmakt/Fullmakt'
+import { Fullmakt } from '../fullmakt/Fullmakt'
 import { Sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import _get from 'lodash/get'
-import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
-import { TpsMessagingDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/TpsMessagingDiverse'
+import { TpsMessagingDiverse } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingDiverse'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { Doedsfall } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import { Statsborgerskap } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { Innvandring } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
 import { Utvandring } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
-
-const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
+import { Alder } from '~/components/fagsystem/pdlf/form/partials/alder/Alder'
+import { Kjoenn } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
+import { Navn } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
+import { Foedsel } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
+import { Vergemaal } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import { UtenlandskBankkonto } from '~/components/fagsystem/tpsmessaging/form/utenlandskbankkonto/UtenlandskBankkonto'
+import { NorskBankkonto } from '~/components/fagsystem/tpsmessaging/form/norskbankkonto/NorskBankkonto'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -27,41 +28,31 @@ const nasjonalitetPaths = [
 ]
 
 const diversePaths = [
-	'tpsf.kjonn',
-	'tpsf.identtype',
-	'tpsf.harMellomnavn',
-	'tpsf.harNyttNavn',
-	'tpsf.sivilstand',
-	'tpsf.sprakKode',
-	'tpsf.egenAnsattDatoFom',
-	'tpsf.egenAnsattDatoTom',
-	'tpsf.spesreg',
-	'tpsf.utenFastBopel',
-	'tpsf.erForsvunnet',
-	'tpsMessaging.utenlandskBankkonto',
-	'tpsMessaging.norskBankkonto',
-	'tpsMessaging.sikkerhetstiltak',
 	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
 ]
 
+const alderPaths = [
+	'pdldata.opprettNyPerson.alder',
+	'pdldata.opprettNyPerson.foedtEtter',
+	'pdldata.opprettNyPerson.foedtFoer',
+]
+
+const utenlandskBankkontoPath = ['tpsMessaging.utenlandskBankkonto']
+const norskBankkontoPath = ['tpsMessaging.norskBankkonto']
+const kjoennPath = ['pdldata.person.kjoenn']
+const navnPath = ['pdldata.person.navn']
 const telefonnummerPath = ['pdldata.person.telefonnummer']
 const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon']
 const innvandringPath = ['pdldata.person.innflytting']
 const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
+const foedselPath = ['pdldata.person.foedsel']
 const doedsfallPath = ['pdldata.person.doedsfall']
-const vergemaalPath = ['tpsf.vergemaal']
+const vergemaalPath = ['pdldata.person.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
-
-const sikkerhetstiltakPaths = [
-	'pdldata.person.sikkerhetstiltak',
-	'tpsf.typeSikkerhetTiltak',
-	'tpsf.beskrSikkerhetTiltak',
-	'tpsf.sikkerhetTiltakDatoFom',
-	'tpsf.sikkerhetTiltakDatoTom',
-]
+const sikkerhetstiltakPath = ['pdldata.person.sikkerhetstiltak']
 
 const panelPaths = [
 	alderPaths,
@@ -69,42 +60,40 @@ const panelPaths = [
 	diversePaths,
 	innvandringPath,
 	utvandringPath,
+	kjoennPath,
+	navnPath,
 	telefonnummerPath,
 	tilrettelagtKommunikasjonPath,
+	foedselPath,
 	doedsfallPath,
 	vergemaalPath,
 	fullmaktPath,
-	sikkerhetstiltakPaths,
+	sikkerhetstiltakPath,
 	statsborgerskapPath,
+	utenlandskBankkontoPath,
+	norskBankkontoPath,
 ].flat()
 
 export const Personinformasjon = ({ formikBag }) => {
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, gruppeId } = useContext(BestillingsveilederContext)
+
 	return (
 		<Vis attributt={panelPaths}>
 			<Panel
 				heading="Personinformasjon"
 				hasErrors={panelError(formikBag, panelPaths)}
 				iconType={'personinformasjon'}
-				startOpen={() =>
-					erForste(
-						formikBag.values,
-						alderPaths.concat(
-							nasjonalitetPaths,
-							diversePaths,
-							vergemaalPath,
-							fullmaktPath,
-							doedsfallPath,
-							statsborgerskapPath
-						)
-					)
-				}
+				startOpen={() => erForste(formikBag.values, panelPaths)}
 			>
-				{(!personFoerLeggTil || _get(formikBag.touched, 'pdldata.person.doedsfall.doedsdato')) && (
+				{!personFoerLeggTil && (
 					<Kategori title="Alder" vis={alderPaths}>
-						<Alder basePath="tpsf" formikBag={formikBag} />
+						<Alder formikBag={formikBag} />
 					</Kategori>
 				)}
+
+				<Kategori title="Fødsel" vis={foedselPath}>
+					<Foedsel formikBag={formikBag} />
+				</Kategori>
 
 				<Kategori title="Dødsfall" vis={doedsfallPath}>
 					<Doedsfall />
@@ -123,22 +112,43 @@ export const Personinformasjon = ({ formikBag }) => {
 						<Utvandring />
 					</Kategori>
 				</Kategori>
+
+				<Kategori title="Kjønn" vis={kjoennPath}>
+					<Kjoenn />
+				</Kategori>
+
+				<Kategori title="Navn" vis={navnPath}>
+					<Navn />
+				</Kategori>
+
 				<Kategori title="Diverse" vis={diversePaths}>
-					<Diverse formikBag={formikBag} />
 					<TpsMessagingDiverse formikBag={formikBag} />
 				</Kategori>
+
+				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>
+					<NorskBankkonto formikBag={formikBag} />
+				</Kategori>
+
+				<Kategori title="Utenlandsk bankkonto" vis={utenlandskBankkontoPath}>
+					<UtenlandskBankkonto />
+				</Kategori>
+
 				<Kategori title="Telefonnummer" vis={telefonnummerPath}>
 					<Telefonnummer formikBag={formikBag} />
 				</Kategori>
+
 				<Kategori title="Vergemål" vis={vergemaalPath}>
-					<Vergemaal />
+					<Vergemaal formikBag={formikBag} gruppeId={gruppeId} />
 				</Kategori>
+
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
 					<Fullmakt formikBag={formikBag} />
 				</Kategori>
-				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
+
+				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>
 					<Sikkerhetstiltak formikBag={formikBag} />
 				</Kategori>
+
 				<Kategori title="Tilrettelagt kommunikasjon" vis={tilrettelagtKommunikasjonPath}>
 					<TilrettelagtKommunikasjon />
 				</Kategori>

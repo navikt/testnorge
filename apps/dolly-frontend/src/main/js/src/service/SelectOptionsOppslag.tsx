@@ -103,6 +103,14 @@ export const SelectOptionsOppslag = {
 					}
 				})
 			return options
+		} else if (type === 'fornavn' || type === 'mellomnavn' || type === 'etternavn') {
+			const navnData = data?.value?.data || []
+			const options = []
+			navnData.length > 0 &&
+				navnData.forEach((navn) => {
+					options.push({ value: navn[type], label: navn[type] })
+				})
+			return options
 		} else if (type === 'navnOgFnr') {
 			const persondata = data.value && data.value.data ? data.value.data.liste : []
 			const options: Option[] = []

@@ -15,7 +15,7 @@ export type PersonData = {
 	ident?: string
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
-	foedsel?: Array<Foedsel>
+	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<Statsborgerskap>
 	adressebeskyttelse?: Array<Adressebeskyttelse>
 	sivilstand?: Array<Sivilstand>
@@ -32,8 +32,12 @@ type Kjoenn = {
 	kjoenn: string
 }
 
-type Foedsel = {
+export type FoedselData = {
 	foedselsdato: string
+	foedselsaar: number
+	foedested: string
+	fodekommune: string
+	foedeland: string
 }
 
 type Statsborgerskap = {
@@ -64,4 +68,19 @@ export type ForeldreBarnRelasjon = {
 export type DoedfoedtBarn = {
 	id: number
 	dato: Date
+}
+
+export type Vergemaal = {
+	vergemaalEmbete?: string
+	embete?: string
+	mandatType?: string
+	sakType?: string
+	type?: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
+	vergeIdent?: string
+	vergeEllerFullmektig?: {
+		motpartsPersonident: string
+	}
+	id: number
 }

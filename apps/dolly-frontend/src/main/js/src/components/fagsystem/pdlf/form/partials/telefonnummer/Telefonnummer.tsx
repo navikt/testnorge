@@ -15,7 +15,6 @@ const initialTelefonnummer = {
 	prioritet: 2,
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 const initialTpsTelefonnummer = {
