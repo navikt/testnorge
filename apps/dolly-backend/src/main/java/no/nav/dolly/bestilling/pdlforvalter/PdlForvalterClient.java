@@ -132,7 +132,10 @@ public class PdlForvalterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         try {
-            identer.forEach(pdlForvalterConsumer::deleteIdent);
+            identer.stream()
+                    // Testnorge identer skal ikke slettes
+                    .filter(ident -> Integer.getInteger(ident.substring(2, 3)) < 8)
+                    .forEach(pdlForvalterConsumer::deleteIdent);
 
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
