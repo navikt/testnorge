@@ -6,17 +6,23 @@ import lombok.Value;
 
 import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
 
+import java.util.List;
+
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PersonSearch {
     Pageing pageing;
     String tag;
+    String excludeTag;
     String kjoenn;
+    List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;
     AlderSearch alder;
     UtflyttingFraNorgeSearch utflyttingFraNorge;
     InnflyttingTilNorgeSearch innflyttingTilNorge;
+    IdentitetSearch identitet;
+    BarnSearch barn;
 }

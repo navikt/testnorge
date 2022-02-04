@@ -1,11 +1,6 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
-spring:
-  cloud:
-    vault:
-      enabled: false
-
 elasticsearch:
   client:
     host: localhost

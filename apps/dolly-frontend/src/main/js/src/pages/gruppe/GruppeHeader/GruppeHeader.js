@@ -4,7 +4,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Hjelpetekst from '~/components/hjelpetekst'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
-import { EksporterCSV } from '~/pages/gruppe/EksporterCSV/EksporterCSV'
+import { EksporterExcel } from '~/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton.tsx'
 import { Header } from '~/components/ui/header/Header'
@@ -12,6 +12,7 @@ import Formatters from '~/utils/DataFormatter'
 import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/GjenopprettGruppeConnector'
 
 import './GruppeHeader.less'
+import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 
 export default function GruppeHeader({
 	gruppe,
@@ -19,6 +20,8 @@ export default function GruppeHeader({
 	isDeletingGruppe,
 	deleteGruppe,
 	laasGruppe,
+	sendTags,
+	isSendingTags,
 	isLockingGruppe,
 	bestillingStatuser,
 }) {
@@ -59,6 +62,14 @@ export default function GruppeHeader({
 						value={identArray.map((p) => p.ibruk).filter(Boolean).length}
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
+					{gruppe.tags && (
+						<Header.TitleValue
+							title="Tags"
+							value={Formatters.arrayToString(
+								gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags
+							)}
+						/>
+					)}
 				</div>
 				<div className="gruppe-header__actions">
 					{gruppe.erEierAvGruppe && !erLaast && (
@@ -88,7 +99,13 @@ export default function GruppeHeader({
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
 					)}
-					<EksporterCSV identer={identArray} gruppeId={gruppe.id} />
+					<EksporterExcel gruppeId={gruppe.id} />
+					<TagsButton
+						loading={isSendingTags}
+						action={sendTags}
+						gruppeId={gruppe.id}
+						eksisterendeTags={gruppe.tags}
+					/>
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>
@@ -96,7 +113,7 @@ export default function GruppeHeader({
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
 				<GjenopprettGruppeConnector
-					onCancel={skjulGjenopprettModal}
+					onClose={skjulGjenopprettModal}
 					gruppe={gruppe}
 					bestillingStatuser={bestillingStatuser}
 				/>

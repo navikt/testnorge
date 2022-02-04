@@ -8,5 +8,5 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class UtflyttingFraNorgeSearch {
-    Boolean utfyttet;
+    Boolean utflyttet;
 }

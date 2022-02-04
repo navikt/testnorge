@@ -27,8 +27,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UOPPGITT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -69,12 +67,6 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
         if (isNull(sivilstand.getType())) {
             throw new InvalidRequestException(TYPE_EMPTY_ERROR);
-        }
-
-        if (isNull(sivilstand.getSivilstandsdato()) &&
-                UOPPGITT != sivilstand.getType() &&
-                UGIFT != sivilstand.getType()) {
-            throw new InvalidRequestException(SIVILSTAND_DATO_REQUIRED);
         }
 
         if ((sivilstand.getType() == GIFT ||

@@ -11,6 +11,7 @@ import {
 	initialKjoenn,
 	initialNavn,
 	initialPdlPerson,
+	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
@@ -143,15 +144,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set('pdldata.person.statsborgerskap', fjernIdFoerLeggTil('statsborgerskap'))
-					: set('pdldata.person.statsborgerskap', [
-							{
-								landkode: null,
-								gyldigFraOgMed: new Date(),
-								gyldigTilOgMed: null,
-								kilde: 'Dolly',
-								master: 'PDL',
-							},
-					  ])
+					: set('pdldata.person.statsborgerskap', [initialStatsborgerskap])
 			},
 			remove() {
 				del(['pdldata.person.statsborgerskap'])

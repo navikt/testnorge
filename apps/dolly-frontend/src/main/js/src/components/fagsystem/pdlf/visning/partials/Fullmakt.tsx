@@ -34,7 +34,7 @@ const Tema = styled.div`
 
 export const Visning = ({ data, relasjoner }: Data) => {
 	const fullmektigIdent = data.motpartsPersonident
-	const fullmektig = relasjoner.find(
+	const fullmektig = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
 	)
 

@@ -34,17 +34,8 @@ public class RsPostadresse {
 
     @JsonIgnore
     public boolean isValid() {
-        int count = 0;
-        if (isNotBlank(postLinje1)) {
-            count++;
-        }
-        if (isNotBlank(postLinje2)) {
-            count++;
-        }
-        if (isNotBlank(postLinje3)) {
-            count++;
-        }
-        return count > 0;
+
+        return (isNotBlank(postLinje1) || isNotBlank(postLinje2)) && isNotBlank(postLinje3);
     }
 
     @JsonIgnore

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
@@ -26,7 +25,7 @@ public class PersonSearchController {
     @PostMapping
     public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
         PersonList personList = service.search(search);
-        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).collect(Collectors.toList());
+        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).toList();
         return ResponseEntity
                 .ok()
                 .header(NUMBER_OF_ITEMS_HEADER, String.valueOf(personList.getNumberOfItems()))

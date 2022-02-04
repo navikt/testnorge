@@ -44,15 +44,17 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 	const [feilmelding, setFeilmelding] = useState(null)
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
-		personList.map((person: Person) => {
-			const navn = person.mellomnavn
-				? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
-				: `${person.fornavn} ${person.etternavn}`
-			personer.push({
-				value: person.ident,
-				label: `${person.ident} - ${navn.toUpperCase()}`,
+		personList
+			.filter((person: Person) => person.fornavn !== undefined && person.etternavn !== undefined)
+			.map((person: Person) => {
+				const navn = person.mellomnavn
+					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
+					: `${person.fornavn} ${person.etternavn}`
+				personer.push({
+					value: person.ident,
+					label: `${person.ident} - ${navn.toUpperCase()}`,
+				})
 			})
-		})
 	}
 
 	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async (tekst) => {

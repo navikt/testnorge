@@ -15,14 +15,12 @@ import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +41,13 @@ public class PdlDataConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
+    @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
     public String sendOrdre(String ident, boolean isTpsfMaster) {
 
         return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_delete"})
+    @Timed(name = "providers", tags = { "operation", "pdl_delete" })
     public void slettPdl(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
@@ -72,7 +70,13 @@ public class PdlDataConsumer {
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {
 
-        return List.of(new PdlDataHentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
+        return getPersoner(identer, 0, 10);
+    }
+
+    public List<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
+
+        return List.of(new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
+                serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
@@ -80,7 +84,7 @@ public class PdlDataConsumer {
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})
+    @Timed(name = "providers", tags = { "operation", "pdl_dataforvalter_alive" })
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }

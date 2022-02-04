@@ -22,12 +22,12 @@ public class Person {
 
     public Person(Response response) {
         this.response = response;
-        var statsborgerskap = getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null);
-        this.statsborgerskap = statsborgerskap != null ? new Statsborgerskap(statsborgerskap) : null;
-        var utfyttingFraNorge = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
-        this.utfyttingFraNorge = utfyttingFraNorge != null ? new UtfyttingFraNorge(utfyttingFraNorge) : null;
-        var innflyttingTilNorge = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
-        this.innflyttingTilNorge = innflyttingTilNorge != null ? new InnflyttingTilNorge(innflyttingTilNorge) : null;
+        var borgerskap = getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null);
+        this.statsborgerskap = borgerskap != null ? new Statsborgerskap(borgerskap) : null;
+        var utfytting = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
+        this.utfyttingFraNorge = utfytting != null ? new UtfyttingFraNorge(utfytting) : null;
+        var innflytting = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
+        this.innflyttingTilNorge = innflytting != null ? new InnflyttingTilNorge(innflytting) : null;
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
@@ -107,7 +107,7 @@ public class Person {
                 .aktorId(getAktorId())
                 .ident(getIdent())
                 .kjoenn(getKjoenn())
-                .tag(getTags().stream().findFirst().orElse(null))
+                .tags(getTags())
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
                 .statsborgerskap(toDTO(statsborgerskap))

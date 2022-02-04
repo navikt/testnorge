@@ -8,54 +8,82 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 public class OriginatorCommand implements Callable<OriginatorCommand.Originator> {
 
-    private final RsDollyBestillingRequest bestillingRequest;
+    private final RsDollyUtvidetBestilling bestillingRequest;
+    private final Testident testident;
     private final MapperFacade mapperFacade;
+
+    private static String getSpesreg(AdressebeskyttelseDTO adressebeskyttelse) {
+
+        return isNull(adressebeskyttelse.getGradering()) ? null :
+                switch (adressebeskyttelse.getGradering()) {
+                    case STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND -> "SPSF";
+                    case FORTROLIG -> "SPFO";
+                    default -> null;
+                };
+    }
 
     @Override
     public Originator call() {
 
-        if (nonNull(bestillingRequest.getPdldata()) && nonNull((bestillingRequest.getPdldata().getOpprettNyPerson()))) {
+        if (nonNull(testident) && testident.isPdlf() ||
+                nonNull(bestillingRequest.getPdldata()) && nonNull((bestillingRequest.getPdldata().getOpprettNyPerson()))) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty("navSyntetiskIdent", bestillingRequest.getNavSyntetiskIdent());
 
             return Originator.builder()
                     .pdlBestilling(mapperFacade.map(bestillingRequest.getPdldata(), BestillingRequestDTO.class, context))
-                    .master(Master.PDL)
+                    .master(Master.PDLF)
                     .build();
 
-        } else if (nonNull(bestillingRequest.getTpsf())) {
-
-            var tpsfBestilling = mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class);
-            tpsfBestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
-            tpsfBestilling.setHarIngenAdresse(nonNull(bestillingRequest.getPdldata()) &&
-                    bestillingRequest.getPdldata().isPdlAdresse());
+        } else if (nonNull(testident) && testident.isPdl()) {
 
             return Originator.builder()
-                    .tpsfBestilling(tpsfBestilling)
-                    .master(Master.TPSF)
+                    .master(Master.PDL)
                     .build();
 
         } else {
 
-            var bestilling =  new TpsfBestilling();
-            bestilling.setAntall(1);
-            bestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
+            var tpsfBestilling = nonNull(bestillingRequest.getTpsf()) ?
+                    mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+
+            tpsfBestilling.setAntall(1);
+            tpsfBestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
+            tpsfBestilling.setHarIngenAdresse(nonNull(bestillingRequest.getPdldata()) &&
+                    bestillingRequest.getPdldata().isPdlAdresse());
+
+            if (nonNull(bestillingRequest.getPdldata()) && nonNull(bestillingRequest.getPdldata().getPerson())) {
+                tpsfBestilling.setStatsborgerskap(
+                        bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
+                                .orElse(new StatsborgerskapDTO()).getLandkode());
+                tpsfBestilling.setStatsborgerskapRegdato(
+                        bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
+                                .orElse(new StatsborgerskapDTO()).getGyldigFraOgMed());
+                tpsfBestilling.setStatsborgerskapTildato(
+                        bestillingRequest.getPdldata().getPerson().getStatsborgerskap().stream().findFirst()
+                                .orElse(new StatsborgerskapDTO()).getGyldigTilOgMed());
+                tpsfBestilling.setSpesreg(getSpesreg(bestillingRequest.getPdldata().getPerson().getAdressebeskyttelse()
+                        .stream().findFirst().orElse(new AdressebeskyttelseDTO())));
+            }
 
             return Originator.builder()
-                    .tpsfBestilling(bestilling)
+                    .tpsfBestilling(tpsfBestilling)
                     .master(Master.TPSF)
                     .build();
         }
@@ -74,6 +102,11 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
         @JsonIgnore
         public boolean isTpsf() {
             return getMaster() == Master.TPSF;
+        }
+
+        @JsonIgnore
+        public boolean isPdlf() {
+            return getMaster() == Master.PDLF;
         }
 
         @JsonIgnore

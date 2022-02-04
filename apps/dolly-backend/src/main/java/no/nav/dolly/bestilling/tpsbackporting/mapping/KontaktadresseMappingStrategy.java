@@ -47,7 +47,8 @@ public class KontaktadresseMappingStrategy implements MappingStrategy {
                                     .gyldigTom(getGyldigTom(source.getGyldigTilOgMed()))
                                     .build());
 
-                        } else if (nonNull(source.getPostboksadresse())) {
+                        } else if (nonNull(source.getPostboksadresse()) &&
+                                !"SOT6 Vika".equals(source.getPostboksadresse().getPostbokseier())) {
                             target.setMidlertidigAdresse(RsMidlertidigAdresse.builder()
                                     .adressetype(RsMidlertidigAdresse.Adressetype.PBOX)
                                     .norskAdresse(RsMidlertidigAdresse.NorskAdresse.builder()

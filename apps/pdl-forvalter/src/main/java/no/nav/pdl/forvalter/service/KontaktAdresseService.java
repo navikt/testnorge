@@ -29,8 +29,6 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, PersonDTO> {
 
-    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Kontaktadresse: én av adressene må velges (vegadresse, " +
-            "postboksadresse, utenlandskAdresse)";
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kontaktadresse: kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
 
@@ -75,9 +73,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
     @Override
     public void validate(KontaktadresseDTO adresse, PersonDTO person) {
-        if (adresse.countAdresser() == 0) {
-            throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
-        }
+
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }

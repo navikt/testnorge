@@ -22,6 +22,7 @@ import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
@@ -90,7 +91,7 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL")
-    public JsonNode pdlPerson(@RequestParam("identer") List<String> identer) {
+    public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer) {
         return pdlPersonConsumer.getPdlPersoner(identer);
     }
 
@@ -116,13 +117,13 @@ public class OppslagController {
 
     @GetMapping("/skjerming/{ident}")
     @Operation(description = "Hent skjerming på ident")
-    public ResponseEntity<SkjermingsDataResponse> getSkjerming(@PathVariable String ident) {
+    public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
         return skjermingsRegisterConsumer.getSkjerming(ident);
     }
 
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
-    public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
 

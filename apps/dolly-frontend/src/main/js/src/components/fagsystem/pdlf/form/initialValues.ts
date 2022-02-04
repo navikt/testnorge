@@ -14,8 +14,8 @@ export const initialPdlPerson = {
 
 export const initialKontaktadresse = {
 	adressetype: null as string,
-	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -114,10 +114,10 @@ export const initialTpsSikkerhetstiltak = {
 
 export const initialStatsborgerskap = {
 	landkode: null as string,
-	gyldigFraOgMed: new Date(),
+	gyldigFraOgMed: null as string,
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
-	master: 'PDL',
+	master: 'FREG',
 }
 
 export const initialTilrettelagtKommunikasjon = {

@@ -407,7 +407,7 @@ export const selectPersonListe = (state) => {
 
 	return identer.map((ident) => {
 		const tpsfIdent = fagsystem.tpsf[ident.ident]
-		const pdlIdent = fagsystem.pdlforvalter[ident.ident]
+		const pdlIdent = fagsystem.pdlforvalter[ident.ident]?.person
 		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 		const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
 			? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`

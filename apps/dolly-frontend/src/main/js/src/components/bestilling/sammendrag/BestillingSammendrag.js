@@ -1,7 +1,6 @@
 import React from 'react'
 import Bestillingskriterier from './kriterier/Bestillingskriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
-import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 
 export default function BestillingSammendrag({ bestilling }) {
 	if ((!bestilling.antallIdenter || !bestilling.gruppeId) && !bestilling.organisasjonNummer) {
@@ -28,7 +27,6 @@ export default function BestillingSammendrag({ bestilling }) {
 				}}
 				header="Bestillingskriterier"
 			/>
-			<JiraLenker openAm={bestilling.openamSent && bestilling.openamSent.split(',')} />
 		</div>
 	)
 }

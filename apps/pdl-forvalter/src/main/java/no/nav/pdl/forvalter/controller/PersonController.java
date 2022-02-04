@@ -26,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/personer", produces = "application/json; charset=utf-8")
@@ -43,8 +46,16 @@ public class PersonController {
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
-                                         @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først")
-                                         @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
+                                         @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først, default 10")
+                                         @RequestParam(required = false) Integer sidestorrelse) {
+
+        if (isNull(sidestorrelse)) {
+            if (nonNull(identer)) {
+                sidestorrelse = 200;
+            } else {
+                sidestorrelse = 10;
+            }
+        }
 
         return personService.getPerson(identer, Paginering.builder()
                 .sidenummer(sidenummer)

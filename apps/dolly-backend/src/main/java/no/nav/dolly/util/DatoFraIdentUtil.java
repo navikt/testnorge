@@ -42,8 +42,7 @@ public class DatoFraIdentUtil {
     }
 
     private int getMonth(String ident) {
-        // Fix B-number
-        return ident.charAt(2) >= '2' ? parseInt(ident.substring(2, 4)) - 20 :
-                parseInt(ident.substring(2, 4));
+        // Fix BOST & TESTNORGE ident
+        return parseInt(ident.substring(2, 4)) % 20;
     }
 }
