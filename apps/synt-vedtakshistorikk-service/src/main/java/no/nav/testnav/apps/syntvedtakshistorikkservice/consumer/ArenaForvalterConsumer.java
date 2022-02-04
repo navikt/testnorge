@@ -1,17 +1,20 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PostEndreInnsatsbehovCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PostFinnTiltakCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PostRettighetCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.*;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.ArenaForvalterenProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -19,6 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Slf4j
 @Component
@@ -35,6 +40,14 @@ public class ArenaForvalterConsumer {
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder().baseUrl(serviceProperties.getUrl()).build();
         this.tokenExchange = tokenExchange;
+    }
+
+    public NyeBrukereResponse sendBrukereTilArenaForvalter(
+            List<NyBruker> nyeBrukere
+    ) {
+        return tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
+                .block();
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettRettighet(List<RettighetRequest> rettigheter) {
@@ -75,5 +88,66 @@ public class ArenaForvalterConsumer {
                 !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
             log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
         }
+    }
+
+    public List<Arbeidsoeker> hentArbeidsoeker(
+            String personident,
+            String eier,
+            String miljoe
+    ) {
+        var response = tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new GetArenaBrukereCommand(
+                        getQueryParams(personident, eier, miljoe, null), accessToken.getTokenValue(), webClient).call())
+                .block();
+        if (response != null) {
+            var arbeidssoekere = gaaGjennomSider(personident, eier, miljoe, response.getAntallSider(), response.getArbeidsoekerList().size());
+            return arbeidssoekere;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private MultiValueMap<String, String> getQueryParams(
+            String personident,
+            String eier,
+            String miljoe,
+            String page
+    ) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        if (!isNullOrEmpty(eier)) {
+            queryParams.add("filter-eier", eier);
+        }
+        if (!isNullOrEmpty(miljoe)) {
+            queryParams.add("filter-miljoe", miljoe);
+        }
+        if (!isNullOrEmpty(personident)) {
+            queryParams.add("filter-personident", personident);
+        }
+        if (!isNullOrEmpty(page)) {
+            queryParams.add("page", page);
+        }
+        return queryParams;
+    }
+
+    private List<Arbeidsoeker> gaaGjennomSider(
+            String personident,
+            String eier,
+            String miljoe,
+            int antallSider,
+            int initialLength
+    ) {
+        List<Arbeidsoeker> arbeidssoekere = new ArrayList<>(antallSider * initialLength);
+
+        for (var page = 0; page < antallSider; page++) {
+            var queryParams = getQueryParams(personident, eier, miljoe, page + "");
+            var response = tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new GetArenaBrukereCommand(queryParams, accessToken.getTokenValue(), webClient).call())
+                    .block();
+            if (response != null) {
+                arbeidssoekere.addAll(response.getArbeidsoekerList());
+            }
+        }
+
+        return arbeidssoekere;
     }
 }

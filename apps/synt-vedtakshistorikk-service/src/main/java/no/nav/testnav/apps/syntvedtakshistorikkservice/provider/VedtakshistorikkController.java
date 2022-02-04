@@ -1,8 +1,6 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.controller;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

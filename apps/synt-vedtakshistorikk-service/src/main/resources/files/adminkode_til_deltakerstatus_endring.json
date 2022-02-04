@@ -1,0 +1,56 @@
+{
+  "AMO": [
+      {
+        "kode" : "GJENN",
+        "sannsynlighet" : 4673
+      },
+      {
+        "kode" : "IKKEM",
+        "sannsynlighet" : 98
+      },
+      {
+        "kode" : "NEITAKK",
+        "sannsynlighet": 98
+      },
+      {
+        "kode" : "IKKEAKTUELL",
+        "sannsynlighet": 98
+      },
+      {
+        "kode" : "VENTELISTE",
+        "sannsynlighet": 145
+      },
+      {
+        "kode" : "TILBUD",
+        "sannsynlighet": 1078
+      }
+    ] ,
+  "IND": [
+      {
+        "kode" : "GJENN",
+        "sannsynlighet" : 32128
+      },
+      {
+        "kode" : "",
+        "sannsynlighet": 1714
+      }
+    ],
+  "INST":  [
+      {
+        "kode" : "GJENN",
+        "sannsynlighet" : 28274
+      },
+      {
+        "kode" : "",
+        "sannsynlighet": 6237
+      },
+      {
+        "kode" : "IKKEAKTUELL",
+        "sannsynlighet":  2576
+      },
+      {
+        "kode" : "IKKEM",
+        "sannsynlighet": 2576
+      }
+    ]
+}

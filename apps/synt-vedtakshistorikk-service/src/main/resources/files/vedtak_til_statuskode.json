@@ -1,0 +1,36 @@
+{
+  "AKTIVITET": [
+    {
+      "kode": "AKTUL",
+      "sannsynlighet": 4
+    },
+    {
+      "kode": "AVBR",
+      "sannsynlighet": 2
+    },
+    {
+      "kode": "BEHOV",
+      "sannsynlighet": 20
+    },
+    {
+      "kode": "DLTAV",
+      "sannsynlighet": 94
+    },
+    {
+      "kode": "FULLF",
+      "sannsynlighet": 831
+    },
+    {
+      "kode": "GJENN",
+      "sannsynlighet": 4
+    },
+    {
+      "kode": "GJNAV",
+      "sannsynlighet": 43
+    },
+    {
+      "kode": "TILBU",
+      "sannsynlighet": 1
+    }
+  ]
+}

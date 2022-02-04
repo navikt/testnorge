@@ -1,12 +1,9 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -18,31 +15,31 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Head
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
+
 @Slf4j
 @AllArgsConstructor
-public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> {
+public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>> {
 
-    private final RettighetRequest rettighet;
+    private final MultiValueMap<String, String> queryParams;
     private final String token;
     private final WebClient webClient;
 
     @Override
-    public Mono<NyttVedtakResponse> call() {
+    public Mono<NyeBrukereResponse> call() {
         try {
-            return webClient.post()
+            return webClient.get()
                     .uri(builder ->
-                            builder.path(rettighet.getArenaForvalterUrlPath())
+                            builder.path("/api/v1/bruker")
+                                    .queryParams(queryParams)
                                     .build()
                     )
                     .header(CALL_ID, NAV_CALL_ID)
                     .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
                     .retrieve()
-                    .bodyToMono(NyttVedtakResponse.class);
+                    .bodyToMono(NyeBrukereResponse.class);
         } catch (Exception e) {
-            log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
+            log.error("Klarte ikke å hente arbeidssoekere fra Arena-forvalteren.", e);
             return Mono.empty();
         }
     }
