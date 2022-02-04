@@ -20,7 +20,7 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Sivilstand">
 				<Attributt attr={sm.attrs.sivilstand} />
 			</AttributtKategori>
-			<AttributtKategori title="Barn/Foreldre">
+			<AttributtKategori title="Barn/foreldre">
 				<Attributt attr={sm.attrs.barnForeldre} />
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn">

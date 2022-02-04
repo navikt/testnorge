@@ -49,7 +49,7 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
 					<Sivilstand formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
-				<Kategori title="Barn/Foreldre" vis="pdldata.person.forelderBarnRelasjon">
+				<Kategori title="Barn/foreldre" vis="pdldata.person.forelderBarnRelasjon">
 					<ForelderBarnRelasjon formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 				<Kategori title="Dødfødt barn" vis="pdldata.person.doedfoedtBarn">

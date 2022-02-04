@@ -562,22 +562,18 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		if (forelderBarnRelasjon) {
 			const foreldreBarnData = {
-				header: 'Barn/Foreldre',
-				itemRows: [],
+				header: 'Barn/foreldre',
+				itemRows: forelderBarnRelasjon.map((item, idx) => {
+					return [
+						{ numberHeader: `Sivilstand ${idx + 1}` },
+						obj('Relasjon', Formatters.showLabel('pdlRelasjonTyper', item.relatertPersonsRolle)),
+						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
+						obj('Person relatert til', item.relatertPerson),
+						...personRelatertTil(item, 'nyRelatertPerson'),
+					]
+				}),
 			}
-
-			forelderBarnRelasjon.forEach((item, i) => {
-				foreldreBarnData.itemRows.push([
-					{
-						label: '',
-						value: `#${i + 1}`,
-						width: 'x-small',
-					},
-					obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
-					obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
-				])
-			})
-
 			data.push(foreldreBarnData)
 		}
 
