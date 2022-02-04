@@ -3,7 +3,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
-export const ArbeidInntektPanel = ({ stateModifier, startOpen }) => {
+export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -17,7 +17,7 @@ export const ArbeidInntektPanel = ({ stateModifier, startOpen }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
-			startOpen={startOpen}
+			startOpen={testnorgeIdent}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)">
 				<Attributt attr={sm.attrs.aareg} />
@@ -26,7 +26,11 @@ export const ArbeidInntektPanel = ({ stateModifier, startOpen }) => {
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
-				<Attributt attr={sm.attrs.pensjonforvalter} />
+				<Attributt
+					attr={sm.attrs.pensjonforvalter}
+					disabled={testnorgeIdent}
+					title={testnorgeIdent ? 'Venter på støtte for Testnorge identer' : null}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
 				<Attributt attr={sm.attrs.inntektstub} />
