@@ -208,15 +208,14 @@ public class PersonExcelService {
         appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, hyperlinks, hyperlinkStyle);
     }
 
-    private static void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int type, Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
+    private static void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int relasjon, Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
         IntStream.range(0, persondata.size()).boxed()
-                .filter(row -> isNotBlank((String) persondata.get(row)[type]))
-                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(type),
-                        hyperlinks.get(firstPersonInList(persondata.get(row)[type])),
-                        hyperlinkStyle));
+                .filter(row -> isNotBlank((String) persondata.get(row)[relasjon]))
+                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(relasjon),
+                        getIdenter(persondata.get(row)[relasjon]), hyperlinks, hyperlinkStyle));
     }
 
-    private static String firstPersonInList(Object personer) {
+    private static List<String> getIdenter(Object personer) {
 
         return Stream.of(personer)
                 .map(Object::toString)
@@ -224,13 +223,19 @@ public class PersonExcelService {
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
                 .map(String::trim)
-                .findFirst().get();
+                .toList();
     }
 
-    private static void appendHyperLink(XSSFCell cell, Hyperlink hyperlink, XSSFCellStyle hyperlinkStyle) {
+    private static void appendHyperLink(XSSFCell cell, List<String> identer,
+                                        Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
 
-        cell.setHyperlink(hyperlink);
-        cell.setCellStyle(hyperlinkStyle);
+        if (identer.stream().anyMatch(ident -> hyperlinks.containsKey(ident))) {
+            cell.setHyperlink(hyperlinks.get(identer.stream()
+                    .filter(ident -> hyperlinks.containsKey(ident))
+                    .findFirst()
+                    .get()));
+            cell.setCellStyle(hyperlinkStyle);
+        }
     }
 
     private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {

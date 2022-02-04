@@ -3,7 +3,6 @@ package no.nav.dolly.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +28,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDT
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -454,7 +454,7 @@ public class PdlPerson {
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PostadresseIFrittFormat {
+    public static class PostadresseIFrittFormat implements Serializable {
 
         private String adresselinje1;
         private String adresselinje2;
@@ -463,10 +463,9 @@ public class PdlPerson {
     }
 
     @lombok.Data
-    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UtenlandskAdresseIFrittFormat {
+    public static class UtenlandskAdresseIFrittFormat implements Serializable {
 
         private String adresselinje1;
         private String adresselinje2;
