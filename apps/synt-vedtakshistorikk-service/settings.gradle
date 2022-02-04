@@ -5,8 +5,8 @@ plugins {
 rootProject.name = 'synt-vedtakshistorikk-service'
 
 
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/security-core'
 

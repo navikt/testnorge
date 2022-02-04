@@ -7,9 +7,8 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -46,7 +45,7 @@ public class SyntVedtakshistorikkConsumer {
                 .build();
     }
 
-    public Mono<List<Vedtakshistorikk>> syntetiserVedtakshistorikk(int antallIdenter) {
+    public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
         List<String> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
         for (var i = 0; i < antallIdenter; i++) {
@@ -55,6 +54,7 @@ public class SyntVedtakshistorikkConsumer {
         }
 
         return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new HentVedtakshistorikkCommand(webClient, oppstartsdatoer, accessToken.getTokenValue()).call());
+                .flatMap(accessToken -> new HentVedtakshistorikkCommand(webClient, oppstartsdatoer, accessToken.getTokenValue()).call())
+                .block();
     }
 }

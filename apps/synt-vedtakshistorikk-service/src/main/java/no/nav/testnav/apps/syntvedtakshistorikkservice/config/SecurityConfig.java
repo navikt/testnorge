@@ -1,41 +1,33 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.config;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 
-@Slf4j
+@Order(1)
+@EnableWebSecurity
 @Configuration
-@EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
-@RequiredArgsConstructor
-public class SecurityConfig {
+@Profile({"prod", "dev"})
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
-
-    @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable()
-                .authorizeExchange()
-                .pathMatchers(
-                        "/swagger-ui.html",
-                        "/webjars/**",
-                        "/v3/api-docs/**",
-                        "/internal/isReady",
-                        "/internal/isAlive"
-                ).permitAll()
-                .anyExchange().authenticated()
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers("/api/**")
+                .fullyAuthenticated()
                 .and()
                 .oauth2ResourceServer()
-                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
-                .and().build();
+                .jwt();
     }
 
 }

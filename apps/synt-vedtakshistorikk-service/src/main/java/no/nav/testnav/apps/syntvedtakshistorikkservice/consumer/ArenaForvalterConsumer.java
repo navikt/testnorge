@@ -8,13 +8,11 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.Arena
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.EndreInnsatsbehovResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,23 +60,20 @@ public class ArenaForvalterConsumer {
         return responses;
     }
 
-    public Mono<NyttVedtakResponse> finnTiltak(FinnTiltakRequest rettighet) {
+    public NyttVedtakResponse finnTiltak(FinnTiltakRequest rettighet) {
         return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet,accessToken.getTokenValue(), webClient).call());
+                .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet,accessToken.getTokenValue(), webClient).call())
+                .block();
     }
 
-    public Mono<EndreInnsatsbehovResponse> endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
-        return tokenExchange.exchange(serviceProperties)
+    public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
+        var response =  tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new PostEndreInnsatsbehovCommand(endreRequest, accessToken.getTokenValue(), webClient).call())
-                .flatMap(res -> {
-                    var feil = res.getNyeEndreInnsatsbehovFeilList();
-                    if (feil != null && !feil.isEmpty()) {
-                        return Mono.empty();
-                    }
-                    return Mono.just(res);
-                }).switchIfEmpty(Mono.defer(() -> {
-                    log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
-                    return Mono.empty();
-                }));
+                .block();
+
+        if (response == null || (response.getNyeEndreInnsatsbehovFeilList() != null &&
+                !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
+            log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
+        }
     }
 }
