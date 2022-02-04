@@ -330,16 +330,24 @@ public class PersonExcelService {
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
         var personData = getPersondataRowContents(identer);
+        var uniquePersonData = ensureUniquness(personData);
 
         ExcelService.appendRows(sheet, wrapStyle,
                 Stream.of(Collections.singletonList(header),
-                                personData)
+                                uniquePersonData)
                         .flatMap(Collection::stream)
                         .toList());
 
-        var hyperlinks = createHyperlinks(personData, workbook.getCreationHelper());
+        var hyperlinks = createHyperlinks(uniquePersonData, workbook.getCreationHelper());
 
-        appendHyperlinks(sheet, personData, hyperlinks, hyperlinkStyle);
+        appendHyperlinks(sheet, uniquePersonData, hyperlinks, hyperlinkStyle);
+    }
+
+    private List<Object[]> ensureUniquness(List<Object[]> personData) {
+
+        return personData.stream()
+                .distinct()
+                .toList();
     }
 
     private void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
