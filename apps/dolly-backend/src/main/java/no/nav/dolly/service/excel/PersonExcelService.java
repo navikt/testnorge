@@ -184,6 +184,55 @@ public class PersonExcelService {
         return hyperLink;
     }
 
+    private static List<String> getIdenterForRelasjon(List<Object[]> hovedpersoner, int relasjon) {
+
+        return hovedpersoner.stream()
+                .map(row -> row[relasjon])
+                .map(Object::toString)
+                .filter(StringUtils::isNotBlank)
+                .map(partnere -> partnere.split(","))
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .map(String::trim)
+                .toList();
+    }
+
+    private static void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
+                                         Map<String, Hyperlink> hyperlinks,
+                                         XSSFCellStyle hyperlinkStyle) {
+
+        appendHyperlinkRelasjon(sheet, persondata, PARTNER, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, BARN, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, FORELDRE, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, VERGE, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, hyperlinks, hyperlinkStyle);
+    }
+
+    private static void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int type, Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
+        IntStream.range(0, persondata.size()).boxed()
+                .filter(row -> isNotBlank((String) persondata.get(row)[type]))
+                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(type),
+                        hyperlinks.get(firstPersonInList(persondata.get(row)[type])),
+                        hyperlinkStyle));
+    }
+
+    private static String firstPersonInList(Object personer) {
+
+        return Stream.of(personer)
+                .map(Object::toString)
+                .map(person -> person.split(","))
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .map(String::trim)
+                .findFirst().get();
+    }
+
+    private static void appendHyperLink(XSSFCell cell, Hyperlink hyperlink, XSSFCellStyle hyperlinkStyle) {
+
+        cell.setHyperlink(hyperlink);
+        cell.setCellStyle(hyperlinkStyle);
+    }
+
     private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
 
         return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
@@ -342,42 +391,6 @@ public class PersonExcelService {
         appendHyperlinks(sheet, personData, hyperlinks, hyperlinkStyle);
     }
 
-    private void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
-                                  Map<String, Hyperlink> hyperlinks,
-                                  XSSFCellStyle hyperlinkStyle) {
-
-        appendHyperlinkRelasjon(sheet, persondata, PARTNER, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, BARN, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, FORELDRE, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, VERGE, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, hyperlinks, hyperlinkStyle);
-    }
-
-    private void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int type, Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
-        IntStream.range(0, persondata.size()).boxed()
-                .filter(row -> isNotBlank((String) persondata.get(row)[type]))
-                        .forEach(row -> appendHyperLink(sheet.getRow(row+1).getCell(type),
-                                hyperlinks.get(firstPersonInList(persondata.get(row)[type])),
-                                hyperlinkStyle));
-    }
-
-    private String firstPersonInList(Object personer) {
-
-        return Stream.of(personer)
-                .map(Object::toString)
-                .map(person -> person.split(","))
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
-                .map(String::trim)
-                .findFirst().get();
-    }
-
-    private void appendHyperLink(XSSFCell cell, Hyperlink hyperlink, XSSFCellStyle hyperlinkStyle) {
-
-        cell.setHyperlink(hyperlink);
-        cell.setCellStyle(hyperlinkStyle);
-    }
-
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
 
         var personer = new ArrayList<>(getPersoner(hovedpersoner));
@@ -432,18 +445,5 @@ public class PersonExcelService {
                 getFullmektig(person.getPerson().getFullmakt()),
                 getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak())
         };
-    }
-
-    private List<String> getIdenterForRelasjon(List<Object[]> hovedpersoner, int relasjon) {
-
-        return hovedpersoner.stream()
-                .map(row -> row[relasjon])
-                .map(Object::toString)
-                .filter(StringUtils::isNotBlank)
-                .map(partnere -> partnere.split(","))
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
-                .map(String::trim)
-                .toList();
     }
 }
