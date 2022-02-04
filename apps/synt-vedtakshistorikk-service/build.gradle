@@ -57,6 +57,9 @@ dependencies {
 
     implementation 'com.google.guava:guava:31.0.1-jre'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
