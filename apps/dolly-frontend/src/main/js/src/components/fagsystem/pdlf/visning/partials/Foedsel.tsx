@@ -8,7 +8,6 @@ import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
-	TelefonData,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FoedselData } from '~/components/fagsystem/pdlf/PdlTypes'
