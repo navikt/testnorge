@@ -55,7 +55,7 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 
 	if (opts.is.leggTil) {
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(
-			opts.personFoerLeggTil.tpsf.ident,
+			opts.personFoerLeggTil.tpsf?.ident || opts.personFoerLeggTil.pdlforvalter?.person?.ident,
 			values
 		)
 	} else if (opts.is.opprettFraIdenter) {
@@ -65,9 +65,6 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 		trackBestilling(values)
 		bestillingAction = actions.postOrganisasjonBestilling(values)
 	} else {
-		// Sett identType (denne blir ikke satt tidligere grunnet at den sitter inne i tpsf-noden)
-		values = _set('tpsf.identtype', opts.identtype, values)
-
 		trackBestilling(values)
 		bestillingAction = actions.postBestilling(gruppeId, values)
 	}

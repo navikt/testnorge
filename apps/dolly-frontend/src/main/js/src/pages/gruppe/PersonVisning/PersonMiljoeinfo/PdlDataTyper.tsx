@@ -17,12 +17,14 @@ export type Ident = {
 }
 
 export type HentPerson = {
+	foedsel: Array<{}>
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<{}>
 	kontaktadresse: Array<{}>
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
+	vergemaalEllerFremtidsfullmakt: Array<{}>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	sivilstand: Array<{}>
@@ -99,4 +101,14 @@ export type Relasjon = {
 }
 type AdressebeskyttelseData = {
 	gradering: string
+}
+
+export type Kodeverk = {
+	values: Array<Array<KodeverkValues>>
+}
+
+export type KodeverkValues = {
+	data: string
+	label: string
+	value: string
 }

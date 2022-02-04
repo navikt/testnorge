@@ -6,7 +6,6 @@ import {
 } from '~/components/fagsystem/aareg/form/initialValues'
 import { initialValues as initialValuesInntektsmelding } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { initialValues as initialValuesInst } from '~/components/fagsystem/inst/form/Form'
-import { initialValuesDoedfoedt } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/Barn'
 
 export const initialValues = {
 	inntektstub: initialValuesInntektstub,
@@ -15,7 +14,6 @@ export const initialValues = {
 	utenlandsopphold: initialUtenlandsopphold,
 	inntektsmelding: initialValuesInntektsmelding,
 	instdata: initialValuesInst,
-	barnDoedfoedt: initialValuesDoedfoedt,
 	boadresse: {
 		bolignr: '',
 		// @ts-ignore

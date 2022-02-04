@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
-import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
+import { differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -297,6 +297,31 @@ const testPrioritet = (val) => {
 	})
 }
 
+const testFoedtEtter = (val) => {
+	return val.test(
+		'is-before-foedt-foer',
+		'Dato må være før født før-dato',
+		function isBeforeFoedtFoer(value) {
+			const values = this.options.context
+			const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+			if (!value || !foedtFoer) return true
+			return isBefore(new Date(value), new Date(foedtFoer))
+		}
+	)
+}
+const testFoedtFoer = (val) => {
+	return val.test(
+		'is-after-foedt-etter',
+		'Dato må være etter født etter-dato',
+		function isAfterFoedtEtter(value) {
+			const values = this.options.context
+			const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+			if (!value || !foedtEtter) return true
+			return isAfter(new Date(value), new Date(foedtEtter))
+		}
+	)
+}
+
 const doedsfall = Yup.array().of(
 	Yup.object({
 		doedsdato: requiredDate.nullable(),
@@ -350,8 +375,42 @@ const sivilstand = Yup.array().of(
 	})
 )
 
+const kjoenn = Yup.array().of(
+	Yup.object({
+		kjoenn: requiredString.nullable(),
+	})
+)
+
+const navn = Yup.array().of(
+	Yup.object({
+		fornavn: Yup.string().nullable(),
+		mellomnavn: Yup.string().nullable(),
+		etternavn: Yup.string().nullable(),
+		hasMellomnavn: Yup.boolean(),
+	})
+)
+
+const vergemaal = Yup.array().of(
+	Yup.object({
+		vergemaalEmbete: requiredString.nullable(),
+		sakType: requiredString.nullable(),
+		gyldigFraOgMed: Yup.string().nullable(),
+		gyldigTilOgMed: Yup.string().nullable(),
+		nyVergeIdent: nyPerson,
+		vergeIdent: Yup.string().nullable(),
+		mandatType: Yup.string().nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
+		opprettNyPerson: Yup.object({
+			alder: Yup.number()
+				.transform((i, j) => (j === '' ? null : i))
+				.nullable(),
+			foedtEtter: testFoedtEtter(Yup.date().nullable()),
+			foedtFoer: testFoedtFoer(Yup.date().nullable()),
+		}).nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
@@ -378,6 +437,59 @@ export const validation = {
 				kontaktDoedsbo
 			),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
+			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
+			navn: ifPresent('$pdldata.person.navn', navn),
+			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 		}),
 	}),
+	tpsMessaging: ifPresent(
+		'$tpsMessaging',
+		Yup.object({
+			spraakKode: ifPresent('$tpsMessaging.spraakKode', requiredString),
+			egenAnsattDatoFom: ifPresent(
+				'$tpsMessaging.egenAnsattDatoFom',
+				Yup.string().test(
+					'is-before-today',
+					'Dato kan ikke være etter dagens dato',
+					function validDate(dato) {
+						return isBefore(new Date(dato), new Date())
+					}
+				)
+			),
+			egenAnsattDatoTom: ifPresent(
+				'$tpsMessaging.egenAnsattDatoTom',
+				Yup.string().test(
+					'is-after-dato-fom',
+					'Dato må være etter fra-dato og senest dagens dato',
+					function validDate(dato) {
+						const values = this.options.context
+						return (
+							isAfter(new Date(dato), new Date(_get(values, 'tpsMessaging.egenAnsattDatoFom'))) &&
+							!isAfter(new Date(dato), new Date())
+						)
+					}
+				)
+			),
+			utenlandskBankkonto: ifPresent(
+				'$tpsMessaging.utenlandskBankkonto',
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+					swift: Yup.string().nullable().optional(),
+					landkode: requiredString.nullable(),
+					iban: Yup.string().nullable().optional(),
+					valuta: requiredString.nullable(),
+					banknavn: Yup.string().nullable().optional(),
+					bankAdresse1: Yup.string().nullable().optional(),
+					bankAdresse2: Yup.string().nullable().optional(),
+					bankAdresse3: Yup.string().nullable().optional(),
+				})
+			),
+			norskBankkonto: ifPresent(
+				'$tpsMessaging.norskBankkonto',
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+				})
+			),
+		})
+	),
 }

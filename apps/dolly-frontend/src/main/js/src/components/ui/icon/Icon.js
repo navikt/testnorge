@@ -49,6 +49,7 @@ import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
 import Globe2 from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-2.svg'
 import Hierarchy3 from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3.svg'
 import Hierarchy3Light from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3Light.svg'
+import Infants from '~/assets/icons/nav-ikoner/line/SVG/people/Infants.svg'
 import Eraser from '~/assets/icons/nav-ikoner/filled/SVG/36-text/eraser.svg'
 import ArrowLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-10.svg'
 import ArrowRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-10.svg'
@@ -159,6 +160,7 @@ export const icons = {
 	link: Link,
 	linkBroken: LinkBroken,
 	telephone: Telephone,
+	foedsel: Infants,
 }
 
 const px = (v) => `${v}px`

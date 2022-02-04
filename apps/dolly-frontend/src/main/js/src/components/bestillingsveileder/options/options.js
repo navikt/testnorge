@@ -24,16 +24,21 @@ export const BVOptions = (
 	let initialValues = {
 		antall,
 		environments: [],
-		navSyntetiskIdent: false,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
 				identtype,
-				foedtEtter: null,
-				foedtFoer: null,
-				alder: null,
 				syntetisk: false,
 			},
+		},
+	}
+
+	let initialValuesLeggTil = {
+		antall,
+		environments: [],
+		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: null,
 		},
 	}
 
@@ -84,6 +89,7 @@ export const BVOptions = (
 
 	if (personFoerLeggTil) {
 		bestType = TYPE.LEGG_TIL
+		initialValues = initialValuesLeggTil
 	}
 
 	if (opprettOrganisasjon) {

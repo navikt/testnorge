@@ -31,8 +31,12 @@ type Kjoenn = {
 	kjoenn: string
 }
 
-type Foedsel = {
+export type FoedselData = {
 	foedselsdato: string
+	foedselsaar: number
+	foedested: string
+	fodekommune: string
+	foedeland: string
 }
 
 type Statsborgerskap = {
@@ -50,4 +54,19 @@ export type Sivilstand = {
 	sivilstandsdato?: string
 	gyldigFraOgMed?: string
 	bekreftelsesdato?: string
+}
+
+export type Vergemaal = {
+	vergemaalEmbete?: string
+	embete?: string
+	mandatType?: string
+	sakType?: string
+	type?: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
+	vergeIdent?: string
+	vergeEllerFullmektig?: {
+		motpartsPersonident: string
+	}
+	id: number
 }

@@ -12,13 +12,17 @@ import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Op
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
+import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
+import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data) return null
 
 	const {
+		foedsel,
 		telefonnummer,
+		vergemaal,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
 		oppholdsadresse,
@@ -34,7 +38,9 @@ export const PdlfVisning = ({ data, loading }) => {
 	return (
 		<ErrorBoundary>
 			<div>
+				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
+				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
 				<Oppholdsadresse data={oppholdsadresse} />
