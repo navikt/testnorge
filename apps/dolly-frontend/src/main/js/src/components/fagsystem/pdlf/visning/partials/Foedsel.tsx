@@ -3,19 +3,29 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Formatters from '~/utils/DataFormatter'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
+	TelefonData,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { FoedselData } from '~/components/fagsystem/pdlf/PdlTypes'
 
-export const Foedsel = ({ data }) => {
+type FoedselTypes = {
+	data: Array<FoedselData>
+}
+
+type FoedselVisningTypes = {
+	item: FoedselData
+	idx: number
+}
+
+export const Foedsel = ({ data }: FoedselTypes) => {
 	if (!data || data.length === 0) return null
 
-	const FoedselVisning = ({ item, idx }) => {
+	const FoedselVisning = ({ item, idx }: FoedselVisningTypes) => {
 		return (
 			<div className="person-visning_content" key={idx}>
 				<TitleValue title="Fødselsdato" value={Formatters.formatDate(item.foedselsdato)} />
@@ -45,7 +55,7 @@ export const Foedsel = ({ data }) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: TelefonData, idx: number) => <FoedselVisning item={item} idx={idx} />}
+						{(item: FoedselData, idx: number) => <FoedselVisning item={item} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

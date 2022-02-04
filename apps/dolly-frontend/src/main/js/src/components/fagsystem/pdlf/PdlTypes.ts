@@ -31,8 +31,12 @@ type Kjoenn = {
 	kjoenn: string
 }
 
-type Foedsel = {
+export type FoedselData = {
 	foedselsdato: string
+	foedselsaar: number
+	foedested: string
+	fodekommune: string
+	foedeland: string
 }
 
 type Statsborgerskap = {

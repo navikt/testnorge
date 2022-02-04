@@ -14,7 +14,6 @@ import {
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
-import { addDays, subDays } from 'date-fns'
 
 const innvandret = (personFoerLeggTil: {}) =>
 	_get(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
