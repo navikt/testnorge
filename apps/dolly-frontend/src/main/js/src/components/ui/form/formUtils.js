@@ -42,6 +42,8 @@ export const erForste = (values, attributt) => {
 		'pdldata.person.kontaktadresse',
 		'pdldata.person.adressebeskyttelse',
 		'pdldata.person.sivilstand',
+		'pdldata.person.doedfoedtBarn',
+		'pdldata.person.foreldreBarnRelasjon',
 		'aareg',
 		'sigrunstub',
 		'inntektstub',

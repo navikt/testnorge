@@ -8,7 +8,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import _get from 'lodash/get'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { genererTilfeldigeNavPersonidenter } from '~/utils/GenererTilfeldigeNavPersonidenter'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
@@ -28,11 +28,6 @@ interface SikkerhetstiltakValues {
 
 interface SikkerhetstiltakProps {
 	formikBag: FormikProps<{ tpsf: SikkerhetstiltakValues }>
-}
-
-type Option = {
-	value: string
-	label: string
 }
 
 export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {

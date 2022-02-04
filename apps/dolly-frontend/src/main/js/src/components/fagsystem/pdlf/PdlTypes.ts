@@ -15,10 +15,11 @@ export type PersonData = {
 	ident?: string
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
-	foedsel?: Array<Foedsel>
+	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<Statsborgerskap>
 	adressebeskyttelse?: Array<Adressebeskyttelse>
 	sivilstand?: Array<Sivilstand>
+	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 }
 
 type Navn = {
@@ -54,6 +55,19 @@ export type Sivilstand = {
 	sivilstandsdato?: string
 	gyldigFraOgMed?: string
 	bekreftelsesdato?: string
+}
+
+export type ForeldreBarnRelasjon = {
+	id: number
+	minRolleForPerson: string
+	relatertPerson: string
+	relatertPersonsIdent: string
+	relatertPersonsRolle: string
+}
+
+export type DoedfoedtBarn = {
+	id: number
+	dato: Date
 }
 
 export type Vergemaal = {

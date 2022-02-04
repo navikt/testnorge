@@ -73,6 +73,7 @@ import Man2Light from '~/assets/icons/custom/Man2Light.svg'
 import Woman from '~/assets/icons/custom/Woman.svg'
 import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
+import Tombstone from '~/assets/icons/custom/Tombstone.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
@@ -145,6 +146,7 @@ export const icons = {
 	kommentar: ChatBubble,
 	partner: Love,
 	barn: Baby,
+	doedfoedt: Tombstone,
 	dolly: Dolly,
 	pensjon: PiggyBank,
 	brreg: BrregLogo,

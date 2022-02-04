@@ -328,6 +328,12 @@ const doedsfall = Yup.array().of(
 	})
 )
 
+const doedfoedtBarn = Yup.array().of(
+	Yup.object({
+		dato: requiredDate.nullable(),
+	})
+)
+
 const statsborgerskap = Yup.array().of(
 	Yup.object({
 		landkode: requiredString.nullable(),
@@ -426,6 +432,7 @@ export const validation = {
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', doedsfall),
+			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
 			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
 			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),
 			utenlandskIdentifikasjonsnummer: ifPresent(

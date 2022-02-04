@@ -17,6 +17,8 @@ import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/Pd
 import Tooltip from 'rc-tooltip'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
+import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
+import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 
@@ -38,7 +40,9 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 		fullmakt,
 		sikkerhetstiltak,
 		sivilstand,
+		forelderBarnRelasjon,
 		kontaktinformasjonForDoedsbo,
+		doedfoedtBarn,
 	} = hentPerson
 
 	const getPersonInfo = () => {
@@ -59,6 +63,8 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<SivilstandVisning data={sivilstand} relasjoner={null} />
+				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={null} />
+				<DoedfoedtBarnVisning data={doedfoedtBarn} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 			</div>
 		)

@@ -127,61 +127,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(identhistorikkData)
 		}
 
-		if (relasjoner) {
-			const barn = relasjoner.barn
-			const foreldre = relasjoner.foreldre
-
-			if (barn && barn.length > 0) {
-				const barn = {
-					header: 'Barn',
-					itemRows: [],
-				}
-
-				relasjoner.barn.forEach((item, i) => {
-					barn.itemRows.push([
-						{
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('Forelder 2', item.partnerIdent),
-						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
-						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
-						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
-					])
-				})
-
-				data.push(barn)
-			}
-			if (foreldre && foreldre.length > 0) {
-				const foreldreRows = {
-					header: 'Foreldre',
-					itemRows: [],
-				}
-
-				relasjoner.foreldre.forEach((item, i) => {
-					foreldreRows.itemRows.push([
-						{
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('ForeldreType', Formatters.showLabel('foreldreType', item.foreldreType)),
-						obj('Foreldre bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Diskresjonskoder', item.spesreg !== 'UFB' && item.spesreg, 'Diskresjonskoder'),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
-					])
-				})
-
-				data.push(foreldreRows)
-			}
-		}
-
 		if (vergemaal) {
 			const vergemaalKriterier = {
 				header: 'Vergemål',
@@ -236,6 +181,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			tilrettelagtKommunikasjon,
 			sivilstand,
 			vergemaal,
+			forelderBarnRelasjon,
+			doedfoedtBarn,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -694,6 +641,43 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(sivilstandData)
+		}
+
+		if (forelderBarnRelasjon) {
+			const foreldreBarnData = {
+				header: 'Barn/foreldre',
+				itemRows: forelderBarnRelasjon.map((item, idx) => {
+					return [
+						{ numberHeader: `Sivilstand ${idx + 1}` },
+						obj('Relasjon', Formatters.showLabel('pdlRelasjonTyper', item.relatertPersonsRolle)),
+						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
+						obj('Person relatert til', item.relatertPerson),
+						...personRelatertTil(item, 'nyRelatertPerson'),
+					]
+				}),
+			}
+			data.push(foreldreBarnData)
+		}
+
+		if (doedfoedtBarn) {
+			const doedfoedtBarnData = {
+				header: 'Dødfødt barn',
+				itemRows: [],
+			}
+
+			doedfoedtBarn.forEach((item, i) => {
+				doedfoedtBarnData.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small',
+					},
+					obj('Dødsdato', Formatters.formatDate(item.dato)),
+				])
+			})
+
+			data.push(doedfoedtBarnData)
 		}
 
 		const sjekkRettIdent = (item) => {

@@ -9,74 +9,63 @@ import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValue
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { getPersonOptions } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
-	gruppeId: string
+	identOptions: Array<Option>
 }
 
-export const Sivilstand = ({ formikBag, gruppeId }: SivilstandForm) => {
-	return (
-		<FormikDollyFieldArray
-			name="pdldata.person.sivilstand"
-			header="Sivilstand"
-			newEntry={initialSivilstand}
-			canBeEmpty={false}
-		>
-			{(path: string) => {
-				return (
-					<div className="flexbox--flex-wrap">
-						<FormikSelect
-							name={`${path}.type`}
-							label="Type sivilstand"
-							options={Options('sivilstandType')}
-							isClearable={false}
-						/>
-						<FormikDatepicker
-							name={`${path}.sivilstandsdato`}
-							label="Gyldig fra og med"
-							disabled={_get(formikBag.values, `${path}.bekreftelsesdato`) != null}
-							fastfield={false}
-						/>
-						<FormikDatepicker
-							name={`${path}.bekreftelsesdato`}
-							label="Bekreftelsesdato"
-							disabled={
-								_get(formikBag.values, `${path}.sivilstandsdato`) != null ||
-								_get(formikBag.values, `${path}.master`) !== 'PDL'
-							}
-							fastfield={false}
-						/>
-						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
-						<ErrorBoundary>
-							<LoadableComponent
-								onFetch={() => getPersonOptions(gruppeId)}
-								render={(data) => (
-									<FormikSelect
-										name={`${path}.relatertVedSivilstand`}
-										label="Person relatert til"
-										options={data}
-										size={'xlarge'}
-									/>
-								)}
-							/>
-						</ErrorBoundary>
-						<PdlPersonExpander
-							path={`${path}.nyRelatertPerson`}
-							label={'PERSON RELATERT TIL'}
-							formikBag={formikBag}
-							kanSettePersondata={_get(formikBag.values, `${path}.relatertVedSivilstand`) === null}
-						/>
-						<AvansertForm
-							path={path}
-							kanVelgeMaster={_get(formikBag.values, `${path}.bekreftelsesdato`) === null}
-						/>
-					</div>
-				)
-			}}
-		</FormikDollyFieldArray>
-	)
-}
+export const Sivilstand = ({ formikBag, identOptions }: SivilstandForm) => (
+	<FormikDollyFieldArray
+		name="pdldata.person.sivilstand"
+		header="Sivilstand"
+		newEntry={initialSivilstand}
+		canBeEmpty={false}
+	>
+		{(path: string) => {
+			return (
+				<div className="flexbox--flex-wrap">
+					<FormikSelect
+						name={`${path}.type`}
+						label="Type sivilstand"
+						options={Options('sivilstandType')}
+						isClearable={false}
+					/>
+					<FormikDatepicker
+						name={`${path}.sivilstandsdato`}
+						label="Gyldig fra og med"
+						disabled={_get(formikBag.values, `${path}.bekreftelsesdato`) != null}
+						fastfield={false}
+					/>
+					<FormikDatepicker
+						name={`${path}.bekreftelsesdato`}
+						label="Bekreftelsesdato"
+						disabled={
+							_get(formikBag.values, `${path}.sivilstandsdato`) != null ||
+							_get(formikBag.values, `${path}.master`) !== 'PDL'
+						}
+						fastfield={false}
+					/>
+					<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+					<FormikSelect
+						name={`${path}.relatertVedSivilstand`}
+						label="Person relatert til"
+						options={identOptions}
+						size={'xlarge'}
+					/>
+					<PdlPersonExpander
+						path={`${path}.nyRelatertPerson`}
+						label={'PERSON RELATERT TIL'}
+						formikBag={formikBag}
+						kanSettePersondata={_get(formikBag.values, `${path}.relatertVedSivilstand`) === null}
+					/>
+					<AvansertForm
+						path={path}
+						kanVelgeMaster={_get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+					/>
+				</div>
+			)
+		}}
+	</FormikDollyFieldArray>
+)

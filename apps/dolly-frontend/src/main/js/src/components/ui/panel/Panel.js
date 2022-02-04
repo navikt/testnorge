@@ -12,7 +12,7 @@ export default function Panel({
 	startOpen = false,
 	hasErrors = false,
 	heading = 'Panel',
-	content,
+	content = null,
 	children,
 	checkAttributeArray,
 	uncheckAttributeArray,
