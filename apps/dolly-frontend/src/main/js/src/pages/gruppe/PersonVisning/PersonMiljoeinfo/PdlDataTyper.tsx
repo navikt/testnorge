@@ -1,8 +1,10 @@
 import React from 'react'
 import {
 	DoedfoedtBarn,
+	FoedselData,
 	ForeldreBarnRelasjon,
 	Sivilstand,
+	Vergemaal,
 } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
@@ -22,14 +24,14 @@ export type Ident = {
 }
 
 export type HentPerson = {
-	foedsel: Array<{}>
+	foedsel: Array<FoedselData>
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<{}>
 	kontaktadresse: Array<{}>
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
-	vergemaalEllerFremtidsfullmakt: Array<{}>
+	vergemaalEllerFremtidsfullmakt: Array<Vergemaal>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	sivilstand: Array<Sivilstand>
