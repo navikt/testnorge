@@ -3,10 +3,12 @@ package no.nav.dolly.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.deserialization.PersonStatusEnumDeserializer;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
@@ -15,7 +17,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
@@ -23,8 +24,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -101,7 +104,7 @@ public class PdlPerson {
         private List<PdlPerson.PdlKjoenn> kjoenn;
         private List<PdlPerson.Folkeregisteridentifikator> folkeregisteridentifikator;
         private List<BostedadresseDTO> bostedsadresse;
-        private List<KontaktadresseDTO> kontaktadresse;
+        private List<Kontaktadresse> kontaktadresse;
         private List<OppholdsadresseDTO> oppholdsadresse;
         private List<InnflyttingDTO> innflytting;
         private List<UtflyttingDTO> utflytting;
@@ -143,7 +146,7 @@ public class PdlPerson {
         }
 
         public List<PdlPerson.Sivilstand> getSivilstand() {
-            if(isNull(sivilstand)) {
+            if (isNull(sivilstand)) {
                 sivilstand = new ArrayList<>();
             }
             return sivilstand;
@@ -184,7 +187,7 @@ public class PdlPerson {
             return bostedsadresse;
         }
 
-        public List<KontaktadresseDTO> getKontaktadresse() {
+        public List<Kontaktadresse> getKontaktadresse() {
             if (isNull(kontaktadresse)) {
                 kontaktadresse = new ArrayList<>();
             }
@@ -269,7 +272,7 @@ public class PdlPerson {
         }
 
         public List<OppholdDTO> getOpphold() {
-            if(isNull(opphold)) {
+            if (isNull(opphold)) {
                 opphold = new ArrayList<>();
             }
             return opphold;
@@ -451,7 +454,34 @@ public class PdlPerson {
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class PostadresseIFrittFormat {
+
+        private String adresselinje1;
+        private String adresselinje2;
+        private String adresselinje3;
+        private String postnummer;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UtenlandskAdresseIFrittFormat {
+
+        private String adresselinje1;
+        private String adresselinje2;
+        private String adresselinje3;
+        private String postkode;
+        private String byEllerStedsnavn;
+        private String landkode;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class FolkeregisterPersonstatus {
+
+        private Personstatus status;
 
         @Getter
         @JsonDeserialize(using = PersonStatusEnumDeserializer.class)
@@ -472,7 +502,17 @@ public class PdlPerson {
                 this.beskrivelse = camelCaseValue;
             }
         }
+    }
 
-        private Personstatus status;
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Kontaktadresse extends AdresseDTO {
+
+        private VegadresseDTO vegadresse;
+        private UtenlandskAdresseDTO utenlandskAdresse;
+        private no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO postboksadresse;
+        private PostadresseIFrittFormat postadresseIFrittFormat;
+        private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;
     }
 }
