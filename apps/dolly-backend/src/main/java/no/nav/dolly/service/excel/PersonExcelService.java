@@ -10,16 +10,20 @@ import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import wiremock.com.google.common.collect.Lists;
@@ -27,13 +31,17 @@ import wiremock.com.google.common.collect.Lists;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -56,6 +64,12 @@ public class PersonExcelService {
     private static final String LAMDKODER = "Landkoder";
     private static final String CO_ADRESSE = "CoAdressenavn: %s";
     private static final String COMMA_DELIM = ", ";
+    private static final String ARK_FANE = "Personer";
+    private static final int PARTNER = 15;
+    private static final int BARN = 16;
+    private static final int FORELDRE = 17;
+    private static final int VERGE = 18;
+    private static final int FULLMEKTIG = 19;
 
     private final PdlPersonConsumer pdlPersonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
@@ -110,7 +124,6 @@ public class PersonExcelService {
                 .collect(Collectors.joining(",\n"));
     }
 
-
     private static String getFoedselsdato(PdlPerson.Foedsel foedsel) {
 
         return nonNull(foedsel) && nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato().format(NORSK_DATO) : "";
@@ -156,6 +169,73 @@ public class PersonExcelService {
                         (nonNull(tiltak.getKontaktperson()) && isNotBlank(tiltak.getKontaktperson().getPersonident()) ?
                                 String.format(", kontaktperson: %s", tiltak.getKontaktperson().getPersonident()) : ""))
                 .collect(Collectors.joining(",\n"));
+    }
+
+    private static Map<String, Hyperlink> createHyperlinks(List<Object[]> personData, CreationHelper helper) {
+
+        return IntStream.range(0, personData.size()).boxed()
+                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> createHyperLink(helper, row)));
+    }
+
+    private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
+
+        var hyperLink = helper.createHyperlink(HyperlinkType.DOCUMENT);
+        hyperLink.setAddress(String.format("'%s'!A%d", ARK_FANE, row + 2));
+        return hyperLink;
+    }
+
+    private static List<String> getIdenterForRelasjon(List<Object[]> hovedpersoner, int relasjon) {
+
+        return hovedpersoner.stream()
+                .map(row -> row[relasjon])
+                .map(Object::toString)
+                .filter(StringUtils::isNotBlank)
+                .map(partnere -> partnere.split(","))
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .map(String::trim)
+                .toList();
+    }
+
+    private static void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
+                                         Map<String, Hyperlink> hyperlinks,
+                                         XSSFCellStyle hyperlinkStyle) {
+
+        appendHyperlinkRelasjon(sheet, persondata, PARTNER, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, BARN, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, FORELDRE, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, VERGE, hyperlinks, hyperlinkStyle);
+        appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, hyperlinks, hyperlinkStyle);
+    }
+
+    private static void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int relasjon, Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
+        IntStream.range(0, persondata.size()).boxed()
+                .filter(row -> isNotBlank((String) persondata.get(row)[relasjon]))
+                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(relasjon),
+                        getIdenter(persondata.get(row)[relasjon]), hyperlinks, hyperlinkStyle));
+    }
+
+    private static List<String> getIdenter(Object personer) {
+
+        return Stream.of(personer)
+                .map(Object::toString)
+                .map(person -> person.split(","))
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .map(String::trim)
+                .toList();
+    }
+
+    private static void appendHyperLink(XSSFCell cell, List<String> identer,
+                                        Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
+
+        if (identer.stream().anyMatch(ident -> hyperlinks.containsKey(ident))) {
+            cell.setHyperlink(hyperlinks.get(identer.stream()
+                    .filter(ident -> hyperlinks.containsKey(ident))
+                    .findFirst()
+                    .get()));
+            cell.setCellStyle(hyperlinkStyle);
+        }
     }
 
     private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
@@ -234,7 +314,7 @@ public class PersonExcelService {
         }
     }
 
-    private String getKontaktadresse(KontaktadresseDTO kontaktadresse) {
+    private String getKontaktadresse(PdlPerson.Kontaktadresse kontaktadresse) {
 
         if (nonNull(kontaktadresse.getVegadresse())) {
             return formatVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getCoAdressenavn());
@@ -250,9 +330,9 @@ public class PersonExcelService {
             return formatUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), kontaktadresse.getCoAdressenavn());
 
         } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat())) {
-            return Stream.of(kontaktadresse.getPostadresseIFrittFormat().getAdresselinjer().stream()
-                                    .filter(StringUtils::isNotBlank)
-                                    .collect(Collectors.joining(COMMA_DELIM)),
+            return Stream.of(kontaktadresse.getPostadresseIFrittFormat().getAdresselinje1(),
+                            kontaktadresse.getPostadresseIFrittFormat().getAdresselinje2(),
+                            kontaktadresse.getPostadresseIFrittFormat().getAdresselinje3(),
                             isNotBlank(kontaktadresse.getPostadresseIFrittFormat().getPostnummer()) ?
                                     String.format(DUAL_FMT, kontaktadresse.getPostadresseIFrittFormat().getPostnummer(),
                                             kodeverkConsumer.getKodeverkByName(POSTNUMMER)
@@ -261,8 +341,9 @@ public class PersonExcelService {
                     .collect(Collectors.joining(COMMA_DELIM));
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresseIFrittFormat())) {
-            return Stream.of(kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinjer().stream()
-                                    .collect(Collectors.joining(COMMA_DELIM)),
+            return Stream.of(kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje1(),
+                            kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje2(),
+                            kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje3(),
                             String.format(ADR_UTLAND_FMT, kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(),
                                     kodeverkConsumer.getKodeverkByName(LAMDKODER)
                                             .get(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode())))
@@ -290,9 +371,10 @@ public class PersonExcelService {
         }
     }
 
-    public void preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle, List<String> identer) {
+    public void preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
+                                   XSSFCellStyle hyperlinkStyle, List<String> identer) {
 
-        var sheet = workbook.createSheet("Personer");
+        var sheet = workbook.createSheet(ARK_FANE);
         var rows = getPersondataRowContents(identer);
         sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, header.length),
                 IgnoredErrorType.NUMBER_STORED_AS_TEXT);
@@ -301,14 +383,37 @@ public class PersonExcelService {
         Arrays.stream(COL_WIDTHS)
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        ExcelService.appendRows(sheet, wrapStyle, Stream.of(Collections.singletonList(header),
-                        getPersondataRowContents(identer))
-                .flatMap(Collection::stream)
-                .toList());
+        var personData = getPersondataRowContents(identer);
+
+        ExcelService.appendRows(sheet, wrapStyle,
+                Stream.of(Collections.singletonList(header),
+                                personData)
+                        .flatMap(Collection::stream)
+                        .toList());
+
+        var hyperlinks = createHyperlinks(personData, workbook.getCreationHelper());
+
+        appendHyperlinks(sheet, personData, hyperlinks, hyperlinkStyle);
     }
 
-    private List<Object[]> getPersondataRowContents(List<String> identer) {
+    private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
 
+        var personer = new ArrayList<>(getPersoner(hovedpersoner));
+
+        personer.addAll(getPersoner(Stream.of(
+                        getIdenterForRelasjon(personer, PARTNER),
+                        getIdenterForRelasjon(personer, BARN),
+                        getIdenterForRelasjon(personer, FORELDRE),
+                        getIdenterForRelasjon(personer, VERGE),
+                        getIdenterForRelasjon(personer, FULLMEKTIG))
+                .flatMap(Collection::stream)
+                .filter(ident -> !hovedpersoner.contains(ident))
+                .toList()));
+
+        return personer;
+    }
+
+    private List<Object[]> getPersoner(List<String> identer) {
         return Lists.partition(identer, 20).stream()
                 .map(pdlPersonConsumer::getPdlPersoner)
                 .map(PdlPersonBolk::getData)
@@ -316,30 +421,34 @@ public class PersonExcelService {
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Collection::stream)
                 .filter(bolkPerson -> nonNull(bolkPerson.getPerson()))
-                .map(person -> new Object[]{
-                        person.getIdent(),
-                        IdentTypeUtil.getIdentType(person.getIdent()).name(),
-                        getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
-                        getEtternavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
-                        getAlder(person.getIdent(), person.getPerson().getDoedsfall().isEmpty() ? null :
-                                person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato()),
-                        getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
-                        getFoedselsdato(person.getPerson().getFoedsel().stream().findFirst().orElse(null)),
-                        getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
-                        getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
-                        getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null)),
-                        getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
-                        getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO())),
-                        getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new KontaktadresseDTO())),
-                        getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO())),
-                        getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
-                        getPartnere(person.getPerson().getSivilstand()),
-                        getBarn(person.getPerson().getForelderBarnRelasjon()),
-                        getForeldre(person.getPerson().getForelderBarnRelasjon()),
-                        getVerge(person.getPerson().getVergemaalEllerFremtidsfullmakt()),
-                        getFullmektig(person.getPerson().getFullmakt()),
-                        getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak())
-                })
+                .map(prepDataRow())
                 .toList();
+    }
+
+    private Function<PdlPersonBolk.PersonBolk, Object[]> prepDataRow() {
+        return person -> new Object[]{
+                person.getIdent(),
+                IdentTypeUtil.getIdentType(person.getIdent()).name(),
+                getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
+                getEtternavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
+                getAlder(person.getIdent(), person.getPerson().getDoedsfall().isEmpty() ? null :
+                        person.getPerson().getDoedsfall().stream().findFirst().get().getDoedsdato()),
+                getKjoenn(person.getPerson().getKjoenn().stream().findFirst().orElse(null)),
+                getFoedselsdato(person.getPerson().getFoedsel().stream().findFirst().orElse(null)),
+                getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
+                getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
+                getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null)),
+                getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
+                getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO())),
+                getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse())),
+                getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO())),
+                getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
+                getPartnere(person.getPerson().getSivilstand()),
+                getBarn(person.getPerson().getForelderBarnRelasjon()),
+                getForeldre(person.getPerson().getForelderBarnRelasjon()),
+                getVerge(person.getPerson().getVergemaalEllerFremtidsfullmakt()),
+                getFullmektig(person.getPerson().getFullmakt()),
+                getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak())
+        };
     }
 }
