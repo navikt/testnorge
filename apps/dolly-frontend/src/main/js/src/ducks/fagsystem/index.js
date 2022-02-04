@@ -418,7 +418,7 @@ export const selectPersonListe = (state) => {
 			const tpsfIdent = fagsystem.tpsf[ident.ident]
 			return getTpsfIdentInfo(ident, state, tpsfIdent)
 		} else if (ident.master === 'PDLF') {
-			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]
+			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, state, pdlfIdent)
 		} else if (ident.master === 'PDL') {
 			const pdlData = fagsystem.pdl[ident.ident].data
