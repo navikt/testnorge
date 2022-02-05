@@ -1,6 +1,7 @@
 package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -48,6 +49,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonExcelService {
@@ -347,6 +349,7 @@ public class PersonExcelService {
                             String.format(ADR_UTLAND_FMT, kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(),
                                     kodeverkConsumer.getKodeverkByName(LAMDKODER)
                                             .get(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode())))
+                    .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(COMMA_DELIM));
 
         } else {
@@ -398,8 +401,11 @@ public class PersonExcelService {
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
 
+        var start = System.currentTimeMillis();
         var personer = new ArrayList<>(getPersoner(hovedpersoner));
 
+        log.info("Excel: hentet alle hovedpersoner, medgått tid er %d sekunder", (System.currentTimeMillis() - start) / 1000);
+        start = System.currentTimeMillis();
         personer.addAll(getPersoner(Stream.of(
                         getIdenterForRelasjon(personer, PARTNER),
                         getIdenterForRelasjon(personer, BARN),
@@ -409,12 +415,12 @@ public class PersonExcelService {
                 .flatMap(Collection::stream)
                 .filter(ident -> !hovedpersoner.contains(ident))
                 .toList()));
-
+        log.info("Excel: hentet alle relasjoner, medgått tid er %d sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
     }
 
     private List<Object[]> getPersoner(List<String> identer) {
-        return Lists.partition(identer, 20).stream()
+        return Lists.partition(identer, 10).stream()
                 .map(pdlPersonConsumer::getPdlPersoner)
                 .map(PdlPersonBolk::getData)
                 .filter(Objects::nonNull)
