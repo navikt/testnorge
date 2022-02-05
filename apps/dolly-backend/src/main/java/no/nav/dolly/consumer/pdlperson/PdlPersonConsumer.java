@@ -91,6 +91,7 @@ public class PdlPersonConsumer {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public PdlPersonBolk getPdlPersoner(List<String> identer) {
 
+        log.info("Henter identene: {}", identer.stream().collect(Collectors.joining(", ")));
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
