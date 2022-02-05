@@ -45,6 +45,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -133,6 +134,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         try {
             identer.stream()
+                    .filter(StringUtils::isNotBlank)
                     // Testnorge identer skal ikke slettes
                     .filter(ident -> Integer.getInteger(ident.substring(2, 3)) < 8)
                     .forEach(pdlForvalterConsumer::deleteIdent);
