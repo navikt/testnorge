@@ -415,8 +415,7 @@ public class PersonExcelService {
         Arrays.stream(COL_WIDTHS)
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        var personData = getPersondataRowContents(identer);
-        var unikePersoner = removeDuplicates(personData);
+        var unikePersoner = removeDuplicates(rows);
 
         var start = System.currentTimeMillis();
         ExcelService.appendRows(sheet, wrapStyle,
