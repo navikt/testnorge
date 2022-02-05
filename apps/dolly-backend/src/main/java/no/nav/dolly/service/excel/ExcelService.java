@@ -74,7 +74,7 @@ public class ExcelService {
 
         personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter);
 
-        log.info("Excel totalt medgått tid {} sekunder", (System.currentTimeMillis() - start / 1000));
+        log.info("Excel totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
         try {
             var excelFile = File.createTempFile("Excel-", ".xlsx");
             try (var outputStream = new FileOutputStream(excelFile)) {
