@@ -49,10 +49,10 @@ spec:
     path: /internal/metrics
   resources:
     requests:
-      cpu: 1000m
+      cpu: 2000m
       memory: 2048Mi
     limits:
-      cpu: 1500m
+      cpu: 3000m
       memory: 4096Mi
   vault:
     enabled: true

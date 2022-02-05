@@ -447,33 +447,33 @@ public class PersonExcelService {
         return personer;
     }
 
-    private List<Object[]> getPersoner(List<String> identer) {
-
-        return getPersonerFromPdl(identer).stream()
-                .map(PdlPersonBolk::getData)
-                .filter(Objects::nonNull)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Collection::stream)
-                .filter(bolkPerson -> nonNull(bolkPerson.getPerson()))
-                .map(prepDataRow())
-                .toList();
-    }
-
     @SneakyThrows
-    private List<PdlPersonBolk> getPersonerFromPdl(List<String> identer) {
+    private List<Object[]> getPersoner(List<String> identer) {
 
         var futures = Lists.partition(identer, 10).stream()
                 .map(list -> CompletableFuture.supplyAsync(
-                        () -> pdlPersonConsumer.getPdlPersoner(list), executorService))
+                        () -> pdlPersonConsumer.getPdlPersoner(list), executorService)
+                        .thenApply(response -> {
+                                log.info("Hentet antall personer fra PDL {} ", nonNull(response.getData()) ?
+                                        response.getData().getHentPersonBolk().size() : 0);
+                                return Stream.of(response)
+                                        .map(PdlPersonBolk::getData)
+                                        .filter(Objects::nonNull)
+                                        .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                        .flatMap(Collection::stream)
+                                        .filter(personBolk -> nonNull(personBolk.getPerson()))
+                                        .map(prepDataRow())
+                                        .toList();
+                        }))
                 .toList();
 
-        var personBolker = new ArrayList<PdlPersonBolk>();
-        for (CompletableFuture<PdlPersonBolk> future : futures) {
+        var personBolker = new ArrayList<Object[]>();
+        for (var future : futures) {
             log.info(format("Active threads: %d, Waiting to start: %d",
                     ((ThreadPoolExecutor) executorService).getActiveCount(),
                     ((ThreadPoolExecutor) executorService).getQueue().size()));
             try {
-                personBolker.add(future.get(1, TimeUnit.MINUTES));
+                personBolker.addAll(future.get(1, TimeUnit.MINUTES));
             } catch (ExecutionException | TimeoutException e) {
                 log.error("Future task exception {}", e);
             } catch (InterruptedException e) {
