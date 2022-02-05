@@ -1,11 +1,11 @@
 package no.nav.dolly.service.excel;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -71,7 +71,8 @@ public class PersonExcelService {
     private static final String ADR_UTLAND_FMT = "%s (%s)";
     private static final String POSTNUMMER = "Postnummer";
     private static final String KOMMUNENR = "Kommuner";
-    private static final String LAMDKODER = "Landkoder";
+    private static final String LANDKODER = "Landkoder";
+    private static final String UKJENT = "UKJENT";
     private static final String CO_ADRESSE = "CoAdressenavn: %s";
     private static final String COMMA_DELIM = ", ";
     private static final String ARK_FANE = "Personer";
@@ -271,8 +272,8 @@ public class PersonExcelService {
 
         return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
                 String.format(ADR_UTLAND_FMT, statsborgerskap.getLand(),
-                        kodeverkConsumer.getKodeverkByName(LAMDKODER)
-                                .get(statsborgerskap.getLand())) : "";
+                        kodeverkConsumer.getKodeverkByName(LANDKODER)
+                                .getOrDefault(statsborgerskap.getLand(), UKJENT)) : "";
     }
 
     private String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String coAdresseNavn) {
@@ -283,7 +284,8 @@ public class PersonExcelService {
                                 .filter(StringUtils::isNotBlank)
                                 .collect(Collectors.joining(" ")),
                         String.format(ADR_UTLAND_FMT, utenlandskAdresse.getLandkode(),
-                                kodeverkConsumer.getKodeverkByName(LAMDKODER).get(utenlandskAdresse.getLandkode())),
+                                kodeverkConsumer.getKodeverkByName(LANDKODER)
+                                        .getOrDefault(utenlandskAdresse.getLandkode(), UKJENT)),
                         isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null})
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(COMMA_DELIM));
@@ -374,8 +376,8 @@ public class PersonExcelService {
                             kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje2(),
                             kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje3(),
                             String.format(ADR_UTLAND_FMT, kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(),
-                                    kodeverkConsumer.getKodeverkByName(LAMDKODER)
-                                            .get(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode())))
+                                    kodeverkConsumer.getKodeverkByName(LANDKODER)
+                                            .getOrDefault(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(), UKJENT)))
                     .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(COMMA_DELIM));
 
@@ -447,38 +449,32 @@ public class PersonExcelService {
         return personer;
     }
 
-    @SneakyThrows
     private List<Object[]> getPersoner(List<String> identer) {
 
         var futures = Lists.partition(identer, 10).stream()
                 .map(list -> CompletableFuture.supplyAsync(
-                        () -> pdlPersonConsumer.getPdlPersoner(list), executorService)
-                        .thenApply(response -> {
-                                log.info("Hentet antall personer fra PDL {} ", nonNull(response.getData()) ?
-                                        response.getData().getHentPersonBolk().size() : 0);
-                                return Stream.of(response)
-                                        .map(PdlPersonBolk::getData)
-                                        .filter(Objects::nonNull)
-                                        .map(PdlPersonBolk.Data::getHentPersonBolk)
-                                        .flatMap(Collection::stream)
-                                        .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                        .map(prepDataRow())
-                                        .toList();
-                        }))
+                                () -> pdlPersonConsumer.getPdlPersoner(list), executorService)
+                        .thenApply(response -> Stream.of(response)
+                                .map(PdlPersonBolk::getData)
+                                .filter(Objects::nonNull)
+                                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                .flatMap(Collection::stream)
+                                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                                .map(prepDataRow())
+                                .toList())
+                )
                 .toList();
 
         var personBolker = new ArrayList<Object[]>();
         for (var future : futures) {
-            log.info(format("Active threads: %d, Waiting to start: %d",
+            log.trace(format("Active threads: %d, Waiting to start: %d",
                     ((ThreadPoolExecutor) executorService).getActiveCount(),
                     ((ThreadPoolExecutor) executorService).getQueue().size()));
             try {
                 personBolker.addAll(future.get(1, TimeUnit.MINUTES));
-            } catch (ExecutionException | TimeoutException e) {
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 log.error("Future task exception {}", e);
-            } catch (InterruptedException e) {
-                log.error("Interruption exception {} ", e);
-                throw e;
+                throw new DollyFunctionalException(String.format("Henting av data fra PDL feilet: %s", e.getMessage()));
             }
         }
         return personBolker;
