@@ -418,6 +418,7 @@ public class PersonExcelService {
         var personData = getPersondataRowContents(identer);
         var unikePersoner = removeDuplicates(personData);
 
+        var start = System.currentTimeMillis();
         ExcelService.appendRows(sheet, wrapStyle,
                 Stream.of(Collections.singletonList(header),
                                 unikePersoner)
@@ -427,6 +428,7 @@ public class PersonExcelService {
         var hyperlinks = createHyperlinks(unikePersoner, workbook.getCreationHelper());
 
         appendHyperlinks(sheet, unikePersoner, hyperlinks, hyperlinkStyle);
+        log.info("Excel: innlegging av data i ark, medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
