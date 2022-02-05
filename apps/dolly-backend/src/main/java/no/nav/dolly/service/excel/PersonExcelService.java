@@ -421,6 +421,7 @@ public class PersonExcelService {
 
     private List<Object[]> getPersoner(List<String> identer) {
         return Lists.partition(identer, 10).stream()
+                .peek(list -> log.info("Henter identene: %s", list.stream().collect(Collectors.joining(", "))))
                 .map(pdlPersonConsumer::getPdlPersoner)
                 .map(PdlPersonBolk::getData)
                 .filter(Objects::nonNull)
