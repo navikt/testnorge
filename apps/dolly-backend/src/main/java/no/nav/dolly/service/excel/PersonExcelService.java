@@ -1,5 +1,6 @@
 package no.nav.dolly.service.excel;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -244,13 +246,25 @@ public class PersonExcelService {
     private static void appendHyperLink(XSSFCell cell, List<String> identer,
                                         Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
 
-        if (identer.stream().anyMatch(ident -> hyperlinks.containsKey(ident))) {
+        if (identer.stream().anyMatch(hyperlinks::containsKey)) {
             cell.setHyperlink(hyperlinks.get(identer.stream()
-                    .filter(ident -> hyperlinks.containsKey(ident))
+                    .filter(hyperlinks::containsKey)
                     .findFirst()
                     .get()));
             cell.setCellStyle(hyperlinkStyle);
         }
+    }
+
+    private static List<Object[]> removeDuplicates(List<Object[]> personData) {
+
+        var seen = new HashSet<>();
+        return personData.stream()
+                .filter(data -> !seen.contains(data[0]))
+                .map(data -> {
+                    seen.add(data[0]);
+                    return data;
+                })
+                .toList();
     }
 
     private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
@@ -400,16 +414,17 @@ public class PersonExcelService {
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
         var personData = getPersondataRowContents(identer);
+        var unikePersoner = removeDuplicates(personData);
 
         ExcelService.appendRows(sheet, wrapStyle,
                 Stream.of(Collections.singletonList(header),
-                                personData)
+                                unikePersoner)
                         .flatMap(Collection::stream)
                         .toList());
 
-        var hyperlinks = createHyperlinks(personData, workbook.getCreationHelper());
+        var hyperlinks = createHyperlinks(unikePersoner, workbook.getCreationHelper());
 
-        appendHyperlinks(sheet, personData, hyperlinks, hyperlinkStyle);
+        appendHyperlinks(sheet, unikePersoner, hyperlinks, hyperlinkStyle);
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
@@ -444,6 +459,7 @@ public class PersonExcelService {
                 .toList();
     }
 
+    @SneakyThrows
     private List<PdlPersonBolk> getPersonerFromPdl(List<String> identer) {
 
         var futures = Lists.partition(identer, 10).stream()
@@ -458,8 +474,11 @@ public class PersonExcelService {
                     ((ThreadPoolExecutor) executorService).getQueue().size()));
             try {
                 personBolker.add(future.get(1, TimeUnit.MINUTES));
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            } catch (ExecutionException | TimeoutException e) {
                 log.error("Future task exception {}", e);
+            } catch (InterruptedException e) {
+                log.error("Interruption exception {} ", e);
+                throw e;
             }
         }
         return personBolker;
