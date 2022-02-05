@@ -404,7 +404,7 @@ public class PersonExcelService {
         var start = System.currentTimeMillis();
         var personer = new ArrayList<>(getPersoner(hovedpersoner));
 
-        log.info("Excel: hentet alle hovedpersoner, medgått tid er %d sekunder", (System.currentTimeMillis() - start) / 1000);
+        log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         start = System.currentTimeMillis();
         personer.addAll(getPersoner(Stream.of(
                         getIdenterForRelasjon(personer, PARTNER),
@@ -415,13 +415,13 @@ public class PersonExcelService {
                 .flatMap(Collection::stream)
                 .filter(ident -> !hovedpersoner.contains(ident))
                 .toList()));
-        log.info("Excel: hentet alle relasjoner, medgått tid er %d sekunder", (System.currentTimeMillis() - start) / 1000);
+        log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
     }
 
     private List<Object[]> getPersoner(List<String> identer) {
         return Lists.partition(identer, 10).stream()
-                .peek(list -> log.info("Henter identene: %s", list.stream().collect(Collectors.joining(", "))))
+                .peek(liste ->  log.info("Henter identene: {}", liste.stream().collect(Collectors.joining(", "))))
                 .map(pdlPersonConsumer::getPdlPersoner)
                 .map(PdlPersonBolk::getData)
                 .filter(Objects::nonNull)
