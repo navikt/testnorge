@@ -1,6 +1,5 @@
 package no.nav.dolly.service.excel;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -39,19 +38,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class PersonExcelService {
 
     private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
@@ -75,6 +81,13 @@ public class PersonExcelService {
 
     private final PdlPersonConsumer pdlPersonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
+    private final ExecutorService executorService;
+
+    public PersonExcelService(PdlPersonConsumer pdlPersonConsumer, KodeverkConsumer kodeverkConsumer) {
+        this.pdlPersonConsumer = pdlPersonConsumer;
+        this.kodeverkConsumer = kodeverkConsumer;
+        this.executorService = Executors.newFixedThreadPool(5);
+    }
 
     private static String getFornavn(PdlPerson.Navn navn) {
 
@@ -420,8 +433,8 @@ public class PersonExcelService {
     }
 
     private List<Object[]> getPersoner(List<String> identer) {
-        return Lists.partition(identer, 10).stream()
-                .map(pdlPersonConsumer::getPdlPersoner)
+
+        return getPersonerFromPdl(identer).stream()
                 .map(PdlPersonBolk::getData)
                 .filter(Objects::nonNull)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
@@ -429,6 +442,27 @@ public class PersonExcelService {
                 .filter(bolkPerson -> nonNull(bolkPerson.getPerson()))
                 .map(prepDataRow())
                 .toList();
+    }
+
+    private List<PdlPersonBolk> getPersonerFromPdl(List<String> identer) {
+
+        var futures = Lists.partition(identer, 10).stream()
+                .map(list -> CompletableFuture.supplyAsync(
+                        () -> pdlPersonConsumer.getPdlPersoner(list), executorService))
+                .toList();
+
+        var personBolker = new ArrayList<PdlPersonBolk>();
+        for (CompletableFuture<PdlPersonBolk> future : futures) {
+            log.info(format("Active threads: %d, Waiting to start: %d",
+                    ((ThreadPoolExecutor) executorService).getActiveCount(),
+                    ((ThreadPoolExecutor) executorService).getQueue().size()));
+            try {
+                personBolker.add(future.get(1, TimeUnit.MINUTES));
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                log.error("Future task exception {}", e);
+            }
+        }
+        return personBolker;
     }
 
     private Function<PdlPersonBolk.PersonBolk, Object[]> prepDataRow() {
