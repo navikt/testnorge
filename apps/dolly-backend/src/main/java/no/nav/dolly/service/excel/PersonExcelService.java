@@ -1,12 +1,12 @@
 package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -425,6 +425,7 @@ public class PersonExcelService {
         return personer;
     }
 
+    @SneakyThrows
     private List<Object[]> getPersoner(List<String> identer) {
 
         var futures = Lists.partition(identer, 20).stream()
@@ -447,9 +448,7 @@ public class PersonExcelService {
                 personBolker.addAll(future.get(1, TimeUnit.MINUTES));
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 log.error("Future task exception {}", e.getMessage(), e);
-                throw new DollyFunctionalException(String.format("Henting av data fra PDL feilet: %s", e.getMessage()));
-            } finally {
-                Thread.currentThread().interrupt();
+                throw e;
             }
         }
         return personBolker;
