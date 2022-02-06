@@ -395,7 +395,6 @@ public class PersonExcelService {
         Arrays.stream(COL_WIDTHS)
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        var start = System.currentTimeMillis();
         ExcelService.appendRows(sheet, wrapStyle,
                 Stream.of(Collections.singletonList(header), rows)
                         .flatMap(Collection::stream)
@@ -449,6 +448,8 @@ public class PersonExcelService {
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
                 log.error("Future task exception {}", e.getMessage(), e);
                 throw new DollyFunctionalException(String.format("Henting av data fra PDL feilet: %s", e.getMessage()));
+            } finally {
+                Thread.currentThread().interrupt();
             }
         }
         return personBolker;
