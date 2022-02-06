@@ -26,6 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import wiremock.com.google.common.collect.Lists;
 
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -256,18 +256,6 @@ public class PersonExcelService {
         }
     }
 
-    private static List<Object[]> removeDuplicates(List<Object[]> personData) {
-
-        var seen = new HashSet<>();
-        return personData.stream()
-                .filter(data -> !seen.contains(data[0]))
-                .map(data -> {
-                    seen.add(data[0]);
-                    return data;
-                })
-                .toList();
-    }
-
     private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
 
         return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
@@ -415,18 +403,15 @@ public class PersonExcelService {
         Arrays.stream(COL_WIDTHS)
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        var unikePersoner = removeDuplicates(rows);
-
         var start = System.currentTimeMillis();
         ExcelService.appendRows(sheet, wrapStyle,
-                Stream.of(Collections.singletonList(header),
-                                unikePersoner)
+                Stream.of(Collections.singletonList(header), rows)
                         .flatMap(Collection::stream)
                         .toList());
 
-        var hyperlinks = createHyperlinks(unikePersoner, workbook.getCreationHelper());
+        var hyperlinks = createHyperlinks(rows, workbook.getCreationHelper());
 
-        appendHyperlinks(sheet, unikePersoner, hyperlinks, hyperlinkStyle);
+        appendHyperlinks(sheet, rows, hyperlinks, hyperlinkStyle);
         log.info("Excel: innlegging av data i ark, medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
     }
 
@@ -450,7 +435,8 @@ public class PersonExcelService {
         return personer;
     }
 
-    private List<Object[]> getPersoner(List<String> identer) {
+    @Async
+    public List<Object[]> getPersoner(List<String> identer) {
 
         var futures = Lists.partition(identer, 10).stream()
                 .map(list -> CompletableFuture.supplyAsync(
@@ -474,7 +460,7 @@ public class PersonExcelService {
             try {
                 personBolker.addAll(future.get(1, TimeUnit.MINUTES));
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                log.error("Future task exception {}", e);
+                log.error("Future task exception {}", e.getMessage(), e);
                 throw new DollyFunctionalException(String.format("Henting av data fra PDL feilet: %s", e.getMessage()));
             }
         }
