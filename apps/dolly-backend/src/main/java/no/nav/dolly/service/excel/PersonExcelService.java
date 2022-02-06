@@ -1,5 +1,6 @@
 package no.nav.dolly.service.excel;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -26,7 +27,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import wiremock.com.google.common.collect.Lists;
 
@@ -43,8 +43,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,13 +51,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PersonExcelService {
 
     private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
@@ -84,13 +82,7 @@ public class PersonExcelService {
 
     private final PdlPersonConsumer pdlPersonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
-    private final ExecutorService executorService;
-
-    public PersonExcelService(PdlPersonConsumer pdlPersonConsumer, KodeverkConsumer kodeverkConsumer) {
-        this.pdlPersonConsumer = pdlPersonConsumer;
-        this.kodeverkConsumer = kodeverkConsumer;
-        this.executorService = Executors.newFixedThreadPool(10);
-    }
+    private final ExecutorService dollyForkJoinPool;
 
     private static String getFornavn(PdlPerson.Navn navn) {
 
@@ -412,7 +404,6 @@ public class PersonExcelService {
         var hyperlinks = createHyperlinks(rows, workbook.getCreationHelper());
 
         appendHyperlinks(sheet, rows, hyperlinks, hyperlinkStyle);
-        log.info("Excel: innlegging av data i ark, medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
@@ -435,12 +426,11 @@ public class PersonExcelService {
         return personer;
     }
 
-    @Async
-    public List<Object[]> getPersoner(List<String> identer) {
+    private List<Object[]> getPersoner(List<String> identer) {
 
         var futures = Lists.partition(identer, 10).stream()
                 .map(list -> CompletableFuture.supplyAsync(
-                                () -> pdlPersonConsumer.getPdlPersoner(list), executorService)
+                                () -> pdlPersonConsumer.getPdlPersoner(list), dollyForkJoinPool)
                         .thenApply(response -> Stream.of(response)
                                 .map(PdlPersonBolk::getData)
                                 .filter(Objects::nonNull)
@@ -454,9 +444,6 @@ public class PersonExcelService {
 
         var personBolker = new ArrayList<Object[]>();
         for (var future : futures) {
-            log.trace(format("Active threads: %d, Waiting to start: %d",
-                    ((ThreadPoolExecutor) executorService).getActiveCount(),
-                    ((ThreadPoolExecutor) executorService).getQueue().size()));
             try {
                 personBolker.addAll(future.get(1, TimeUnit.MINUTES));
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
