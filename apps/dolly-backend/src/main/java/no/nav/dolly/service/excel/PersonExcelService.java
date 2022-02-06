@@ -89,7 +89,7 @@ public class PersonExcelService {
     public PersonExcelService(PdlPersonConsumer pdlPersonConsumer, KodeverkConsumer kodeverkConsumer) {
         this.pdlPersonConsumer = pdlPersonConsumer;
         this.kodeverkConsumer = kodeverkConsumer;
-        this.executorService = Executors.newFixedThreadPool(5);
+        this.executorService = Executors.newFixedThreadPool(10);
     }
 
     private static String getFornavn(PdlPerson.Navn navn) {
