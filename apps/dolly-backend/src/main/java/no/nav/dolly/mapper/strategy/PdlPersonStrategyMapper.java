@@ -63,7 +63,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                                 .innutvandret(InnUtvandret.UTVANDRET)
                                                 .landkode(utflytting.getTilflyttingsland())
                                                 .flyttedato(utflytting.getFolkeregistermetadata()
-                                                        .getGyldighetstidspunkt().atStartOfDay())
+                                                        .getGyldighetstidspunkt())
                                                 .build())
                                         .collect(Collectors.toList()));
                     }

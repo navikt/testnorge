@@ -418,7 +418,10 @@ public class PdlPerson {
     @AllArgsConstructor
     public static class Folkeregistermetadata {
 
-        private LocalDate gyldighetstidspunkt;
+        private LocalDateTime gyldighetstidspunkt;
+        private String aarsak;
+        private LocalDateTime ajourholdstidspunkt;
+        private LocalDateTime opphoerstidspunkt;
     }
 
     @lombok.Data
@@ -481,6 +484,7 @@ public class PdlPerson {
     public static class FolkeregisterPersonstatus {
 
         private Personstatus status;
+        private Folkeregistermetadata folkeregistermetadata;
 
         @Getter
         @JsonDeserialize(using = PersonStatusEnumDeserializer.class)
