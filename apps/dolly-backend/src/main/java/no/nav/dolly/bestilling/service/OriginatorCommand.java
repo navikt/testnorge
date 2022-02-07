@@ -17,6 +17,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -83,24 +84,30 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
                                 .orElse(new StatsborgerskapDTO()).getGyldigTilOgMed());
                 tpsfBestilling.setSpesreg(getSpesreg(bestillingRequest.getPdldata().getPerson().getAdressebeskyttelse()
                         .stream().findFirst().orElse(new AdressebeskyttelseDTO())));
-                if (!bestillingRequest.getPdldata().getPerson().getUtflytting().isEmpty() &&
-                        !bestillingRequest.getPdldata().isPdlAdresse()) {
-                    tpsfBestilling.setHarIngenAdresse(true);
-                    bestillingRequest.getPdldata().getPerson().setKontaktadresse(List.of(
-                            KontaktadresseDTO.builder()
-                                    .utenlandskAdresse(UtenlandskAdresseDTO.builder()
-                                            .landkode(bestillingRequest.getPdldata().getPerson().getUtflytting().stream()
-                                                    .findFirst().get()
-                                                    .getTilflyttingsland())
-                                            .build())
-                                    .build()));
-                }
+
+                prepareUtflytting(tpsfBestilling);
             }
 
             return Originator.builder()
                     .tpsfBestilling(tpsfBestilling)
                     .master(Master.TPSF)
                     .build();
+        }
+    }
+
+    private void prepareUtflytting(TpsfBestilling tpsfBestilling) {
+
+        if (!bestillingRequest.getPdldata().getPerson().getUtflytting().isEmpty() &&
+                !bestillingRequest.getPdldata().isPdlAdresse()) {
+            tpsfBestilling.setHarIngenAdresse(true);
+            bestillingRequest.getPdldata().getPerson().setKontaktadresse(List.of(
+                    KontaktadresseDTO.builder()
+                            .utenlandskAdresse(UtenlandskAdresseDTO.builder()
+                                    .landkode(bestillingRequest.getPdldata().getPerson().getUtflytting().stream()
+                                            .findFirst().orElse(new UtflyttingDTO())
+                                            .getTilflyttingsland())
+                                    .build())
+                            .build()));
         }
     }
 
