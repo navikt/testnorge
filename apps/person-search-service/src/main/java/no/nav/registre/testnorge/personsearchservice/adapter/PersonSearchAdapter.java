@@ -78,6 +78,8 @@ public class PersonSearchAdapter {
 
         addTagsQueries(queryBuilder, search);
         addKjoennQuery(queryBuilder, search);
+        addLevendeQuery(queryBuilder, search);
+        addDoedsfallQuery(queryBuilder, search);
         addFoedselQuery(queryBuilder, search);
         addAlderQuery(queryBuilder, search);
         addIdentQuery(queryBuilder, search);
@@ -269,6 +271,32 @@ public class PersonSearchAdapter {
                                 QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value),
                                 ScoreMode.Avg
                         ));
+                    }
+                });
+    }
+
+    private void addLevendeQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
+        Optional.ofNullable(search.getKunLevende())
+                .ifPresent(value -> {
+                    if (value) {
+                        queryBuilder.mustNot(QueryBuilders.nestedQuery(
+                                "hentPerson.doedsfall",
+                                QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
+    }
+
+    private void addDoedsfallQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
+        Optional.ofNullable(search.getKunDoede())
+                .ifPresent(value -> {
+                    if (value) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.doedsfall",
+                                QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
+                                ScoreMode.Avg
+                        )).must();
                     }
                 });
     }

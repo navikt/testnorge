@@ -16,6 +16,8 @@ public class PersonSearch {
     String tag;
     String excludeTag;
     String kjoenn;
+    Boolean kunLevende;
+    Boolean kunDoede;
     List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
