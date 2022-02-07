@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
@@ -16,6 +17,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DollyPersonCache {
 
@@ -60,20 +63,20 @@ public class DollyPersonCache {
                             .collect(Collectors.toList())));
 
             dollyPerson.setBarn(new ArrayList<>(Stream.of(
-                    person.getRelasjoner().stream()
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toSet()),
-                    dollyPerson.getPartnere().stream()
-                            .map(dollyPerson::getPerson)
-                            .filter(Objects::nonNull)
-                            .map(Person::getRelasjoner)
-                            .flatMap(Collection::stream)
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toSet()))
+                            person.getRelasjoner().stream()
+                                    .filter(Relasjon::isBarn)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .collect(Collectors.toSet()),
+                            dollyPerson.getPartnere().stream()
+                                    .map(dollyPerson::getPerson)
+                                    .filter(Objects::nonNull)
+                                    .map(Person::getRelasjoner)
+                                    .flatMap(Collection::stream)
+                                    .filter(Relasjon::isBarn)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .collect(Collectors.toSet()))
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet())));
 
@@ -98,8 +101,8 @@ public class DollyPersonCache {
 
         Set<String> identer =
                 Stream.of(List.of(dollyPerson.getHovedperson()), dollyPerson.getPartnere(),
-                        dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
-                        dollyPerson.getVerger(), dollyPerson.getFullmektige())
+                                dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
+                                dollyPerson.getVerger(), dollyPerson.getFullmektige())
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet());
 
@@ -177,6 +180,27 @@ public class DollyPersonCache {
         return DollyPerson.builder()
                 .hovedperson(pdlfPerson.getPerson().getIdent())
                 .pdlfPerson(pdlfPerson)
+                .persondetaljer(mapperFacade.mapAsList(List.of(
+                                pdlfPerson.getPerson(),
+                                pdlfPerson.getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
+                        Person.class))
+                .partnere(pdlfPerson.getRelasjoner().stream()
+                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER &&
+                                nonNull(relasjon.getRelatertPerson()))
+                        .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
+                        .collect(Collectors.toList()))
+                .barn(pdlfPerson.getRelasjoner().stream()
+                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.FAMILIERELASJON_BARN &&
+                                nonNull(relasjon.getRelatertPerson()))
+                        .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
+                        .collect(Collectors.toList()))
+                .foreldre(pdlfPerson.getRelasjoner().stream()
+                        .filter(relasjon -> (
+                                relasjon.getRelasjonType() == RelasjonType.FAMILIERELASJON_FORELDER
+                                        || relasjon.getRelasjonType() == RelasjonType.FORELDREANSVAR)
+                                && nonNull(relasjon.getRelatertPerson()))
+                        .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
+                        .collect(Collectors.toList()))
                 .master(Master.PDLF)
                 .build();
     }

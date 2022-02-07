@@ -9,9 +9,13 @@ import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 public final class PdlPersonStrategyMapper implements MappingStrategy {
@@ -65,7 +69,51 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                                 .flyttedato(utflytting.getFolkeregistermetadata()
                                                         .getGyldighetstidspunkt().atStartOfDay())
                                                 .build())
-                                        .collect(Collectors.toList()));
+                                        .toList());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(PersonDTO.class, Person.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(PersonDTO personDto, Person person, MappingContext context) {
+
+                        mapperFacade.map(personDto.getNavn().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .findFirst().orElse(null), person);
+
+                        person.setIdenttype(personDto.getFolkeregisterPersonstatus().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .map(FolkeregisterPersonstatusDTO::getStatus)
+                                .map(Enum::name)
+                                .findFirst().orElse(null));
+
+                        person.setKjonn(personDto.getKjoenn().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .map(KjoennDTO::getKjoenn)
+                                .findFirst().orElse(KjoennDTO.Kjoenn.UKJENT).name().substring(0, 1));
+
+                        person.setFoedselsdato(personDto.getFoedsel().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .map(FoedselDTO::getFoedselsdato)
+                                .findFirst().orElse(null));
+
+                        person.setDoedsdato(personDto.getDoedsfall().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .map(DoedsfallDTO::getDoedsdato)
+                                .findFirst().orElse(null));
+
+                        person.getInnvandretUtvandret().addAll(
+                                personDto.getUtflytting().stream()
+                                        .map(utflytting -> InnvandretUtvandret.builder()
+                                                .innutvandret(InnUtvandret.UTVANDRET)
+                                                .landkode(utflytting.getTilflyttingsland())
+                                                .flyttedato(utflytting.getMetadata()
+                                                        .getGyldighetstidspunkt().atStartOfDay())
+                                                .build())
+                                        .toList());
                     }
                 })
                 .byDefault()

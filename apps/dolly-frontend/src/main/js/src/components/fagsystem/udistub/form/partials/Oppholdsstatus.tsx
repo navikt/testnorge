@@ -63,7 +63,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 		formikBag.setFieldValue(basePath, {})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: null,
-			til: nul,
+			til: null,
 		})
 		setPdlInitialValues(formikBag)
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, null)
