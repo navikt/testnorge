@@ -1,6 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialOpphold } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const UdiPanel = ({ stateModifier }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
@@ -49,12 +50,13 @@ const arbeidsadgangFelter = {
 
 UdiPanel.heading = 'UDI'
 
-UdiPanel.initialValues = ({ set, del, has }) => ({
+UdiPanel.initialValues = ({ set, setMulti, del, has }) => ({
 	oppholdStatus: {
 		label: 'Oppholdstatus',
 		checked: has('udistub.oppholdStatus'),
-		add: () => set('udistub.oppholdStatus', {}),
-		remove: () => del('udistub.oppholdStatus'),
+		add: () =>
+			setMulti(['udistub.oppholdStatus', {}], ['pdldata.person.opphold', [initialOpphold]]),
+		remove: () => del(['udistub.oppholdStatus', 'pdldata.person.opphold']),
 	},
 	arbeidsadgang: {
 		label: 'Arbeidsadgang',

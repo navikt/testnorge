@@ -4,8 +4,13 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OppholdSammeVilkaar } from '~/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
 import { IkkeOppholdSammeVilkaar } from '~/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
+import { Option } from '~/service/SelectOptionsOppslag'
+import { FormikProps } from 'formik'
 
-const findInitialStatus = (formikBag) => {
+const basePath = 'udistub.oppholdStatus'
+const pdlBasePath = 'pdldata.person.opphold'
+
+const findInitialStatus = (formikBag: FormikProps<any>) => {
 	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
 	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some((key) =>
 		key.includes('eosEllerEFTA')
@@ -29,34 +34,45 @@ const findInitialStatus = (formikBag) => {
 	return ['', '', '']
 }
 
-export const Oppholdsstatus = ({ formikBag }) => {
+function setPdlInitialValues(formikBag: FormikProps<any>) {
+	formikBag.setFieldValue(`${pdlBasePath}`, [
+		{
+			type: 'OPPLYSNING_MANGLER',
+			oppholdFra: null,
+			oppholdTil: null,
+		},
+	])
+}
+
+export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) => {
 	const initialStatus = findInitialStatus(formikBag)
 	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
 
-	const basePath = 'udistub.oppholdStatus'
-
-	const endreOppholdsstatus = (value) => {
+	const endreOppholdsstatus = (value: string) => {
 		setOppholdsstatus(value)
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
 		formikBag.setFieldValue(basePath, {})
+		setPdlInitialValues(formikBag)
 	}
 
-	const endreEosEllerEFTAtypeOpphold = (value) => {
+	const endreEosEllerEFTAtypeOpphold = (value: string) => {
 		setEosEllerEFTAtypeOpphold(value)
 		formikBag.setFieldValue(basePath, {})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: null,
-			til: null,
+			til: nul,
 		})
+		setPdlInitialValues(formikBag)
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, null)
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}`, '')
 	}
 
-	const endreTredjelandsBorgereValg = (value) => {
+	const endreTredjelandsBorgereValg = (value: string) => {
 		setTredjelandsBorgereValg(value)
+		setPdlInitialValues(formikBag)
 		formikBag.setFieldValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', true)
@@ -80,7 +96,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 		}
 	}
 
-	const feilmelding = (felt) => {
+	const feilmelding = (felt: string) => {
 		if (!felt) {
 			return { feilmelding: 'Feltet er påkrevd' }
 		}
@@ -93,7 +109,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				label="Innenfor eller utenfor EØS"
 				value={oppholdsstatus}
 				options={Options('oppholdsstatus')}
-				onChange={(v) => endreOppholdsstatus(v.value)}
+				onChange={(option: Option) => endreOppholdsstatus(option.value)}
 				feil={feilmelding(oppholdsstatus)}
 				isClearable={false}
 			/>
@@ -104,17 +120,23 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						label="Type opphold"
 						value={eosEllerEFTAtypeOpphold}
 						options={Options('eosEllerEFTAtypeOpphold')}
-						onChange={(v) => endreEosEllerEFTAtypeOpphold(v.value)}
+						onChange={(option: Option) => endreEosEllerEFTAtypeOpphold(option.value)}
 						size="xxlarge"
 						feil={feilmelding(eosEllerEFTAtypeOpphold)}
 						isClearable={false}
 					/>
 					<FormikDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.fra`}
+						afterChange={(dato: Date) =>
+							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, dato)
+						}
 						label="Oppholdstillatelse fra dato"
 					/>
 					<FormikDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.til`}
+						afterChange={(dato: Date) =>
+							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, dato)
+						}
 						label="Oppholdstillatelse til dato"
 					/>
 					<FormikDatepicker
@@ -140,11 +162,13 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						value={tredjelandsBorgereValg}
 						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
-						onChange={(v) => endreTredjelandsBorgereValg(v.value)}
+						onChange={(option: Option) => endreTredjelandsBorgereValg(option.value)}
 						feil={feilmelding(tredjelandsBorgereValg)}
 						isClearable={false}
 					/>
-					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && <OppholdSammeVilkaar />}
+					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (
+						<OppholdSammeVilkaar formikBag={formikBag} />
+					)}
 					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && (
 						<IkkeOppholdSammeVilkaar formikBag={formikBag} />
 					)}
