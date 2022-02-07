@@ -52,6 +52,7 @@ public class ExcelService {
 
     public Resource getExcelWorkbook(Long gruppeId) {
 
+        long start = System.currentTimeMillis();
         var testidenter = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId))
                 .getTestidenter().stream()
@@ -67,12 +68,13 @@ public class ExcelService {
         var hLinkFont = workbook.createFont();
         hLinkFont.setFontName("Ariel");
         hLinkFont.setUnderline(org.apache.poi.ss.usermodel.Font.U_SINGLE);
-        hLinkFont.setColor(IndexedColors.BLUE.getIndex() );
+        hLinkFont.setColor(IndexedColors.BLUE.getIndex());
         hyperlinkStyle.setFont(hLinkFont);
         hyperlinkStyle.setWrapText(true);
 
         personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter);
 
+        log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
         try {
             var excelFile = File.createTempFile("Excel-", ".xlsx");
             try (var outputStream = new FileOutputStream(excelFile)) {

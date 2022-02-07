@@ -1,6 +1,8 @@
 package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -38,6 +40,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -48,6 +55,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonExcelService {
@@ -61,7 +69,8 @@ public class PersonExcelService {
     private static final String ADR_UTLAND_FMT = "%s (%s)";
     private static final String POSTNUMMER = "Postnummer";
     private static final String KOMMUNENR = "Kommuner";
-    private static final String LAMDKODER = "Landkoder";
+    private static final String LANDKODER = "Landkoder";
+    private static final String UKJENT = "UKJENT";
     private static final String CO_ADRESSE = "CoAdressenavn: %s";
     private static final String COMMA_DELIM = ", ";
     private static final String ARK_FANE = "Personer";
@@ -73,6 +82,7 @@ public class PersonExcelService {
 
     private final PdlPersonConsumer pdlPersonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
+    private final ExecutorService dollyForkJoinPool;
 
     private static String getFornavn(PdlPerson.Navn navn) {
 
@@ -229,9 +239,9 @@ public class PersonExcelService {
     private static void appendHyperLink(XSSFCell cell, List<String> identer,
                                         Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
 
-        if (identer.stream().anyMatch(ident -> hyperlinks.containsKey(ident))) {
+        if (identer.stream().anyMatch(hyperlinks::containsKey)) {
             cell.setHyperlink(hyperlinks.get(identer.stream()
-                    .filter(ident -> hyperlinks.containsKey(ident))
+                    .filter(hyperlinks::containsKey)
                     .findFirst()
                     .get()));
             cell.setCellStyle(hyperlinkStyle);
@@ -242,8 +252,8 @@ public class PersonExcelService {
 
         return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
                 String.format(ADR_UTLAND_FMT, statsborgerskap.getLand(),
-                        kodeverkConsumer.getKodeverkByName(LAMDKODER)
-                                .get(statsborgerskap.getLand())) : "";
+                        kodeverkConsumer.getKodeverkByName(LANDKODER)
+                                .getOrDefault(statsborgerskap.getLand(), UKJENT)) : "";
     }
 
     private String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String coAdresseNavn) {
@@ -254,7 +264,8 @@ public class PersonExcelService {
                                 .filter(StringUtils::isNotBlank)
                                 .collect(Collectors.joining(" ")),
                         String.format(ADR_UTLAND_FMT, utenlandskAdresse.getLandkode(),
-                                kodeverkConsumer.getKodeverkByName(LAMDKODER).get(utenlandskAdresse.getLandkode())),
+                                kodeverkConsumer.getKodeverkByName(LANDKODER)
+                                        .getOrDefault(utenlandskAdresse.getLandkode(), UKJENT)),
                         isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null})
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(COMMA_DELIM));
@@ -345,8 +356,9 @@ public class PersonExcelService {
                             kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje2(),
                             kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje3(),
                             String.format(ADR_UTLAND_FMT, kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(),
-                                    kodeverkConsumer.getKodeverkByName(LAMDKODER)
-                                            .get(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode())))
+                                    kodeverkConsumer.getKodeverkByName(LANDKODER)
+                                            .getOrDefault(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(), UKJENT)))
+                    .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(COMMA_DELIM));
 
         } else {
@@ -383,23 +395,23 @@ public class PersonExcelService {
         Arrays.stream(COL_WIDTHS)
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        var personData = getPersondataRowContents(identer);
-
         ExcelService.appendRows(sheet, wrapStyle,
-                Stream.of(Collections.singletonList(header),
-                                personData)
+                Stream.of(Collections.singletonList(header), rows)
                         .flatMap(Collection::stream)
                         .toList());
 
-        var hyperlinks = createHyperlinks(personData, workbook.getCreationHelper());
+        var hyperlinks = createHyperlinks(rows, workbook.getCreationHelper());
 
-        appendHyperlinks(sheet, personData, hyperlinks, hyperlinkStyle);
+        appendHyperlinks(sheet, rows, hyperlinks, hyperlinkStyle);
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
 
+        var start = System.currentTimeMillis();
         var personer = new ArrayList<>(getPersoner(hovedpersoner));
 
+        log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
+        start = System.currentTimeMillis();
         personer.addAll(getPersoner(Stream.of(
                         getIdenterForRelasjon(personer, PARTNER),
                         getIdenterForRelasjon(personer, BARN),
@@ -409,20 +421,37 @@ public class PersonExcelService {
                 .flatMap(Collection::stream)
                 .filter(ident -> !hovedpersoner.contains(ident))
                 .toList()));
-
+        log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
     }
 
+    @SneakyThrows
     private List<Object[]> getPersoner(List<String> identer) {
-        return Lists.partition(identer, 20).stream()
-                .map(pdlPersonConsumer::getPdlPersoner)
-                .map(PdlPersonBolk::getData)
-                .filter(Objects::nonNull)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Collection::stream)
-                .filter(bolkPerson -> nonNull(bolkPerson.getPerson()))
-                .map(prepDataRow())
+
+        var futures = Lists.partition(identer, 20).stream()
+                .map(list -> CompletableFuture.supplyAsync(
+                                () -> pdlPersonConsumer.getPdlPersoner(list), dollyForkJoinPool)
+                        .thenApply(response -> Stream.of(response)
+                                .map(PdlPersonBolk::getData)
+                                .filter(Objects::nonNull)
+                                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                .flatMap(Collection::stream)
+                                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                                .map(prepDataRow())
+                                .toList())
+                )
                 .toList();
+
+        var personBolker = new ArrayList<Object[]>();
+        for (var future : futures) {
+            try {
+                personBolker.addAll(future.get(1, TimeUnit.MINUTES));
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                log.error("Future task exception {}", e.getMessage(), e);
+                throw e;
+            }
+        }
+        return personBolker;
     }
 
     private Function<PdlPersonBolk.PersonBolk, Object[]> prepDataRow() {
