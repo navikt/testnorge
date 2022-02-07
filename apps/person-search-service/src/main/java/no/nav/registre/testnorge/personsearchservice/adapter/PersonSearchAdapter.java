@@ -87,6 +87,7 @@ public class PersonSearchAdapter {
         addInnflyttingQuery(queryBuilder, search);
         addIdentitetQueries(queryBuilder, search);
         addBarnQueries(queryBuilder, search);
+        addPersonstatusQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -254,6 +255,20 @@ public class PersonSearchAdapter {
                                 QueryBuilders.existsQuery("hentPerson.doedfoedtBarn.metadata"),
                                 ScoreMode.Avg
                         )).must();
+                    }
+                });
+    }
+
+    private void addPersonstatusQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
+        Optional.ofNullable(search.getPersonstatus())
+                .flatMap(value -> Optional.ofNullable(value.getStatus()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.folkeregisterpersonstatus",
+                                QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value),
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }

@@ -25,4 +25,5 @@ public class PersonSearch {
     InnflyttingTilNorgeSearch innflyttingTilNorge;
     IdentitetSearch identitet;
     BarnSearch barn;
+    PersonstatusSearch personstatus;
 }
