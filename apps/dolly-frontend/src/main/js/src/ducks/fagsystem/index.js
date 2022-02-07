@@ -424,15 +424,15 @@ export const selectPersonListe = (state) => {
 		return ident.master === 'PDLF' || ident.master === 'PDL'
 			? {
 					ident,
-					identNr: pdlIdent.person?.ident,
+					identNr: pdlIdent?.ident,
 					bestillingId: ident.bestillingId,
 					identtype: 'FNR',
 					kilde: 'PDL',
-					navn: `${pdlIdent.person?.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.person?.navn?.[0]?.etternavn}`,
-					kjonn: pdlIdent.person?.kjoenn?.[0]?.kjoenn,
+					navn: `${pdlIdent?.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent?.navn?.[0]?.etternavn}`,
+					kjonn: pdlIdent?.kjoenn?.[0]?.kjoenn,
 					alder: Formatters.formatAlder(
-						pdlAlder(pdlIdent.person?.foedsel?.[0]?.foedselsdato),
-						pdlIdent.person?.doedsfall?.[0]?.doedsdato
+						pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
+						pdlIdent?.doedsfall?.[0]?.doedsdato
 					),
 					status: hentPersonStatus(
 						ident.ident,

@@ -40,14 +40,14 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 		<div>
 			<>
 				{hasTpsfData ? (
-					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData?.person} />
+					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
 				) : (
-					<PdlPersonInfo data={pdlData.person} />
+					<PdlPersonInfo data={pdlData} />
 				)}
 				{hasTpsfData ? (
 					<Nasjonalitet data={data} tpsMessagingData={tpsMessagingData} />
 				) : (
-					<PdlNasjonalitet data={pdlData?.person} />
+					<PdlNasjonalitet data={pdlData} />
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}
@@ -56,8 +56,8 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 				{!harPdlKontaktadresse && (
 					<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 				)}
-				{!hasTpsfData && <Telefonnummer data={pdlData?.person?.telefonnummer} />}
-				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData?.person?.sikkerhetstiltak} />}
+				{!hasTpsfData && <Telefonnummer data={pdlData?.telefonnummer} />}
+				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData?.sikkerhetstiltak} />}
 			</>
 			<UtenlandskBankkonto
 				data={
