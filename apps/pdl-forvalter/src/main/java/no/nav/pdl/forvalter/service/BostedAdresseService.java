@@ -15,6 +15,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -125,10 +127,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         } else if (nonNull(bostedadresse.getUtenlandskAdresse()) && bostedadresse.getUtenlandskAdresse().isEmpty()) {
 
             bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
-            bostedadresse.setUtenlandskAdresse(
-                    dummyAdresseService.getUtenlandskAdresse(
-                            person.getStatsborgerskap().stream()
-                                    .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
+            bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
@@ -137,5 +136,21 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         if (isNull(bostedadresse.getAngittFlyttedato())) {
             bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
         }
+    }
+
+    private String getLandkode(PersonDTO person) {
+
+        return Stream.of(person.getBostedsadresse().stream()
+                                .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
+                                .map(BostedadresseDTO::getUtenlandskAdresse)
+                                .map(UtenlandskAdresseDTO::getLandkode)
+                                .findFirst(),
+                        person.getStatsborgerskap().stream()
+                                .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
+                                .map(StatsborgerskapDTO::getLandkode)
+                                .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst().orElse(null);
     }
 }

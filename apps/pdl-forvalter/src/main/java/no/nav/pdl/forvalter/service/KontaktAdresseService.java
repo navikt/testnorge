@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -117,10 +119,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
                 kontaktadresse.getUtenlandskAdresse().isEmpty()) {
 
-            kontaktadresse.setUtenlandskAdresse(
-                    dummyAdresseService.getUtenlandskAdresse(
-                            person.getStatsborgerskap().stream()
-                                    .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
+            kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 
         kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
@@ -132,5 +131,21 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         if (Master.PDL == kontaktadresse.getMaster() && isNull(kontaktadresse.getGyldigTilOgMed())) {
             kontaktadresse.setGyldigTilOgMed(LocalDateTime.now().plusYears(1));
         }
+    }
+
+    private String getLandkode(PersonDTO person) {
+
+        return Stream.of(person.getKontaktadresse().stream()
+                                .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
+                                .map(KontaktadresseDTO::getUtenlandskAdresse)
+                                .map(UtenlandskAdresseDTO::getLandkode)
+                                .findFirst(),
+                        person.getStatsborgerskap().stream()
+                                .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
+                                .map(StatsborgerskapDTO::getLandkode)
+                                .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst().orElse(null);
     }
 }

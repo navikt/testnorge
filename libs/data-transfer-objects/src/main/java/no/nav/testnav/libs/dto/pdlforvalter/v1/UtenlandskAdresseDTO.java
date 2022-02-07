@@ -39,7 +39,6 @@ public class UtenlandskAdresseDTO implements Serializable {
                         bygningEtasjeLeilighet,
                         distriktsnavn,
                         etasjenummer,
-                        landkode,
                         postboksNummerNavn,
                         postkode,
                         region,

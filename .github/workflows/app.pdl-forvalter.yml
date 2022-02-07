@@ -38,7 +38,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/pdlforvalter_undertrykke_personstatus'}}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/ingen_norsk_adresse_ved_utvandring'}}
     with:
       resource: 'apps/pdl-forvalter/nais-dev.yaml'
       app-name: 'testnav-pdl-forvalter'
