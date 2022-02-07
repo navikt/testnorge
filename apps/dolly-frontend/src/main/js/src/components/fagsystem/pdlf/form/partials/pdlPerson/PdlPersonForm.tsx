@@ -11,9 +11,10 @@ import { FormikProps } from 'formik'
 interface PdlPersonValues {
 	path: string
 	formikBag: FormikProps<{}>
+	erNyIdent: boolean
 }
 
-export const PdlPersonForm = ({ path, formikBag }: PdlPersonValues) => {
+export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonValues) => {
 	const disableAlder =
 		_get(formikBag.values, `${path}.foedtEtter`) != null ||
 		_get(formikBag.values, `${path}.foedtFoer`) != null
@@ -37,15 +38,23 @@ export const PdlPersonForm = ({ path, formikBag }: PdlPersonValues) => {
 				fastfield={false}
 			/>
 			<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={disableAlder} />
-			<FormikSelect
-				name={`${path}.statsborgerskapLandkode`}
-				label="Statsborgerskap"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				size="large"
-			/>
-			<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
-			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" />
-			<FormikCheckbox name={`${path}.nyttNavn.hasMellomnavn`} label="Har mellomnavn" />
+			{!erNyIdent && (
+				<FormikSelect
+					name={`${path}.statsborgerskapLandkode`}
+					label="Statsborgerskap"
+					kodeverk={AdresseKodeverk.StatsborgerskapLand}
+					size="large"
+				/>
+			)}
+			{!erNyIdent && (
+				<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
+			)}
+			<div className="flexbox--full-width">
+				<div className="flexbox--flex-wrap">
+					<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" />
+					<FormikCheckbox name={`${path}.nyttNavn.hasMellomnavn`} label="Har mellomnavn" />
+				</div>
+			</div>
 		</>
 	)
 }

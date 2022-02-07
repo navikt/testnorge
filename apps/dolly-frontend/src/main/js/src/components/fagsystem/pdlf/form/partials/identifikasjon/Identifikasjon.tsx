@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikProps } from 'formik'
 import Panel from '~/components/ui/panel/Panel'
@@ -6,6 +6,9 @@ import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/form/partials/identifikasjon/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from '~/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
+import { NyIdent } from '~/components/fagsystem/pdlf/form/partials/nyIdent/nyIdent'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 interface IdentifikasjonValues {
 	formikBag: FormikProps<{}>
@@ -14,9 +17,20 @@ interface IdentifikasjonValues {
 const identifikasjonAttributter = [
 	'pdldata.person.falskIdentitet',
 	'pdldata.person.utenlandskIdentifikasjonsnummer',
+	'pdldata.person.nyIdent',
 ]
 
 export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { gruppeId } = opts
+
+	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
+	useEffect(() => {
+		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
+			setIdentOptions(response)
+		)
+	}, [])
+
 	return (
 		<Vis attributt={identifikasjonAttributter}>
 			<Panel
@@ -34,6 +48,9 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 					flex={false}
 				>
 					<UtenlandsId />
+				</Kategori>
+				<Kategori title="Ny identitet" vis="pdldata.person.nyIdent">
+					<NyIdent formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 			</Panel>
 		</Vis>

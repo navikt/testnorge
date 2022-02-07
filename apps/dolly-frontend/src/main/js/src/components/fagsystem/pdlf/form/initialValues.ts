@@ -242,7 +242,6 @@ export const initialForelder = {
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialBarn = {
@@ -256,5 +255,19 @@ export const initialDoedfoedtBarn = {
 	dato: new Date(),
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
+}
+
+export const initialNyIdent = {
+	eksisterendeIdent: null as string,
+	identtype: null as string,
+	kjoenn: null as string,
+	foedtEtter: null as string,
+	foedtFoer: null as string,
+	alder: '',
+	syntetisk: false,
+	nyttNavn: {
+		hasMellomnavn: false,
+	},
+	kilde: 'Dolly',
+	master: 'FREG',
 }

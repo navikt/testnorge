@@ -1,6 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialNyIdent } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const IdentifikasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)
@@ -15,6 +16,8 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
+				{/*TODO: bare på legg til??*/}
+				<Attributt attr={sm.attrs.nyIdent} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -53,5 +56,15 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 				},
 			]),
 		remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),
+	},
+	nyIdent: {
+		label: 'Har ny ident',
+		checked: has('pdldata.person.nyIdent'),
+		add() {
+			set('pdldata.person.nyIdent', [initialNyIdent])
+		},
+		remove() {
+			del('pdldata.person.nyIdent')
+		},
 	},
 })

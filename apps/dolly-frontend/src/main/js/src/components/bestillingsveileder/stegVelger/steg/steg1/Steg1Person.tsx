@@ -41,12 +41,12 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			<PersoninformasjonPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
+			<IdentifikasjonPanel stateModifier={stateModifier} />
+			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
-			<IdentifikasjonPanel stateModifier={stateModifier} />
-			<KontaktDoedsboPanel stateModifier={stateModifier} />
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<UdiPanel stateModifier={stateModifier} />
