@@ -63,24 +63,18 @@ export const SearchOptions = (props: SearchOptionsProps) => (
 		</section>
 		<section>
 			<h3>Barn</h3>
-			<FormikCheckbox name="personinformasjon.barn.barn" label="Har barn" checkboxMargin />
-			<FormikCheckbox
-				name="personinformasjon.barn.doedfoedtBarn"
-				label="Har dødfødt barn"
-				checkboxMargin
-			/>
+			<FormikCheckbox name="personinformasjon.barn.barn" label="Har barn" />
+			<FormikCheckbox name="personinformasjon.barn.doedfoedtBarn" label="Har dødfødt barn" />
 		</section>
 		<section>
 			<h3>Identitet</h3>
 			<FormikCheckbox
 				name="personinformasjon.identitet.falskIdentitet"
 				label="Har falsk identitet"
-				checkboxMargin
 			/>
 			<FormikCheckbox
 				name="personinformasjon.identitet.utenlandskIdentitet"
 				label="Har utenlandsk identitet"
-				checkboxMargin
 			/>
 		</section>
 		<section>
@@ -96,13 +90,8 @@ export const SearchOptions = (props: SearchOptionsProps) => (
 			<FormikCheckbox
 				name="personinformasjon.diverse.innflyttet"
 				label="Har innflyttet til Norge"
-				checkboxMargin
 			/>
-			<FormikCheckbox
-				name="personinformasjon.diverse.utflyttet"
-				label="Har utflyttet fra Norge"
-				checkboxMargin
-			/>
+			<FormikCheckbox name="personinformasjon.diverse.utflyttet" label="Har utflyttet fra Norge" />
 		</section>
 	</>
 )
