@@ -100,13 +100,7 @@ public class PersonSearchAdapter {
         searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
-//        searchSourceBuilder.sort(
-//                SortBuilders
-//                        .fieldSort("hentPerson.folkeregisteridentifikator.identifikasjonsnummer.keyword")
-//                        .order(SortOrder.ASC)
-//                        .setNestedSort(new NestedSortBuilder("hentPerson.folkeregisteridentifikator"))
-//        );
-        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
+//        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
 
 
