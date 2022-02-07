@@ -21,6 +21,8 @@ import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning
 import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/UtenlandsId'
+import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
@@ -38,6 +40,8 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 		kontaktadresse,
 		adressebeskyttelse,
 		fullmakt,
+		utenlandskIdentifikasjonsnummer,
+		falskIdentitet,
 		sikkerhetstiltak,
 		sivilstand,
 		forelderBarnRelasjon,
@@ -65,6 +69,8 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<SivilstandVisning data={sivilstand} relasjoner={null} />
 				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={null} />
 				<DoedfoedtBarnVisning data={doedfoedtBarn} />
+				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
+				<FalskIdentitet data={falskIdentitet} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 			</div>
 		)

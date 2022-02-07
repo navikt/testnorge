@@ -40,7 +40,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				startOpen={() => erForste(formikBag.values, identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
-					<FalskIdentitet formikBag={formikBag} />
+					<FalskIdentitet formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 				<Kategori
 					title="Utenlandsk identifikasjonsnummer"

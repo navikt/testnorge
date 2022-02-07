@@ -38,6 +38,8 @@ export type HentPerson = {
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
 	kontaktinformasjonForDoedsbo: Array<{}>
+	utenlandskIdentifikasjonsnummer: Array<{}>
+	falskIdentitet: FalskIdentitet
 }
 
 export type BostedData = {
@@ -112,14 +114,8 @@ type AdressebeskyttelseData = {
 	gradering: string
 }
 
-export type Kodeverk = {
-	values: Array<Array<KodeverkValues>>
-}
-
-export type KodeverkValues = {
-	data: string
-	label: string
-	value: string
+type FalskIdentitet = {
+	erFalsk: boolean
 }
 
 export type Kodeverk = {
