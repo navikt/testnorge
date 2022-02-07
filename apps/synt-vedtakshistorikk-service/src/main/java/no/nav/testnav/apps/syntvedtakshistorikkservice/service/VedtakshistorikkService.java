@@ -1,12 +1,5 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.SYKEPENGEERSTATNING_MAKS_PERIODE;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_AAP;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MIN_ALDER_AAP;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -27,9 +20,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntVedtakshisto
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import org.springframework.stereotype.Service;
@@ -38,7 +29,9 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoU
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnTidligsteDato;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnTidligsteDatoAap;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnTidligeDatoBarnetillegg;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_AAP;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MIN_ALDER_AAP;
 
 @Slf4j
 @Service
@@ -50,11 +43,10 @@ public class VedtakshistorikkService {
     private final IdentService identService;
     private final PensjonService pensjonService;
     private final ArenaForvalterService arenaForvalterService;
+    private final ArenaAapService arenaAapService;
     private final ArenaTiltakService arenaTiltakService;
     private final ArenaTilleggService arenaTilleggService;
-    private final ArenaAapService arenaAapService;
 
-    private static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 2, 29);
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             String miljoe,
@@ -89,9 +81,10 @@ public class VedtakshistorikkService {
         if (!vedtakshistorikkListe.isEmpty()) {
             var vedtakshistorikk = vedtakshistorikkListe.get(0);
 
-            vedtakshistorikk.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikk.getTilsynFamiliemedlemmer()));
-            vedtakshistorikk.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikk.getUngUfoer()));
-            oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk.getAap());
+            vedtakshistorikk.setTilsynFamiliemedlemmer(arenaTilleggService
+                    .fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikk.getTilsynFamiliemedlemmer()));
+            vedtakshistorikk.setUngUfoer(arenaAapService.fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikk.getUngUfoer()));
+            arenaAapService.oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk.getAap());
 
             LocalDate tidligsteDato = finnTidligsteDato(vedtakshistorikk);
             LocalDate tidligsteDatoBarnetillegg = finnTidligeDatoBarnetillegg(vedtakshistorikk.getBarnetillegg());
@@ -205,50 +198,6 @@ public class VedtakshistorikkService {
         } else {
             return Collections.emptyMap();
         }
-    }
-
-    private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
-        if (aapVedtak != null) {
-            var antallDagerEndret = 0;
-            for (var vedtak : aapVedtak) {
-                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
-                    vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
-                    if (vedtak.getTilDato() == null) {
-                        vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
-                    } else {
-                        vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
-
-                        var originalTilDato = vedtak.getTilDato();
-                        setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
-                        var nyTilDato = vedtak.getTilDato();
-
-                        antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
-                    }
-                }
-            }
-        }
-    }
-
-    private List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
-        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
-        if (tilsynFamiliemedlemmer != null) {
-            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
-                            !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
-                    .collect(Collectors.toList());
-        }
-
-        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
-    }
-
-    private List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
-        List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
-        if (ungUfoer != null) {
-            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
-                            !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
-                    .collect(Collectors.toList());
-        }
-
-        return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
     }
 
     private boolean opprettetNoedvendigInfoIPopp(

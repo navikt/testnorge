@@ -13,6 +13,7 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class ArenaTilleggService {
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
     private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
+    private static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 2, 29);
 
     public void opprettVedtakTillegg(
             Vedtakshistorikk historikk,
@@ -153,5 +155,16 @@ public class ArenaTilleggService {
             }
         }
         return false;
+    }
+
+    public List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
+        List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
+        if (tilsynFamiliemedlemmer != null) {
+            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
+                            !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
+                    .collect(Collectors.toList());
+        }
+
+        return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;
     }
 }

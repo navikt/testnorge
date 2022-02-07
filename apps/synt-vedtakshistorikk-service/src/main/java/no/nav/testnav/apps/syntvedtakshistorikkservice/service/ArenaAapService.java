@@ -9,15 +9,21 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetAap115Request;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetAapRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetFritakMeldekortRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTvungenForvaltningRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetUngUfoerRequest;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.SYKEPENGEERSTATNING_MAKS_PERIODE;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
+
 
 @Slf4j
 @Service
@@ -127,4 +133,40 @@ public class ArenaAapService {
             }
         }
     }
+
+
+    public void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
+        if (aapVedtak != null) {
+            var antallDagerEndret = 0;
+            for (var vedtak : aapVedtak) {
+                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
+                    vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
+                    if (vedtak.getTilDato() == null) {
+                        vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
+                    } else {
+                        vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+
+                        var originalTilDato = vedtak.getTilDato();
+                        setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                        var nyTilDato = vedtak.getTilDato();
+
+                        antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
+        List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
+        if (ungUfoer != null) {
+            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
+                            !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
+                    .collect(Collectors.toList());
+        }
+
+        return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
+    }
+
 }
