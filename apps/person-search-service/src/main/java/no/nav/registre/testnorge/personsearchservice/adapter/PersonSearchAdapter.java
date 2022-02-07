@@ -15,6 +15,8 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.NestedSortBuilder;
@@ -91,6 +93,8 @@ public class PersonSearchAdapter {
         addBarnQueries(queryBuilder, search);
         addPersonstatusQuery(queryBuilder, search);
 
+        FunctionScoreQueryBuilder query = QueryBuilders.functionScoreQuery(queryBuilder, ScoreFunctionBuilders.randomFunction());
+
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
 
@@ -99,10 +103,9 @@ public class PersonSearchAdapter {
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
         searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         searchSourceBuilder.size(page.getPageSize());
-        searchSourceBuilder.query(queryBuilder);
-//        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
+        searchSourceBuilder.query(query);
+        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
-
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
