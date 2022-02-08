@@ -14,8 +14,11 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.isNull;
@@ -80,12 +83,26 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
                                 .orElse(new StatsborgerskapDTO()).getGyldigTilOgMed());
                 tpsfBestilling.setSpesreg(getSpesreg(bestillingRequest.getPdldata().getPerson().getAdressebeskyttelse()
                         .stream().findFirst().orElse(new AdressebeskyttelseDTO())));
+
+                prepareUtflytting(tpsfBestilling);
             }
 
             return Originator.builder()
                     .tpsfBestilling(tpsfBestilling)
                     .master(Master.TPSF)
                     .build();
+        }
+    }
+
+    private void prepareUtflytting(TpsfBestilling tpsfBestilling) {
+
+        if (!bestillingRequest.getPdldata().getPerson().getUtflytting().isEmpty() &&
+                !bestillingRequest.getPdldata().isPdlAdresse()) {
+            tpsfBestilling.setHarIngenAdresse(true);
+            bestillingRequest.getPdldata().getPerson().setKontaktadresse(List.of(
+                    KontaktadresseDTO.builder()
+                            .utenlandskAdresse(new UtenlandskAdresseDTO())
+                            .build()));
         }
     }
 
