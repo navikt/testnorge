@@ -27,6 +27,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.GATE;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.PBOX;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.STED;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.UTAD;
@@ -63,17 +64,20 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigStedAdresseDTO.builder()
                         .eiendomsnavn(bruker.getPostadresseNorgeNAV().getEiendomsnavn())
                         .build();
+                midlertidigAdresse.setAdressetype(STED.name());
             } else if (PBOX.name().equals(bruker.getPostadresseNorgeNAV().getTypeAdresseNavNorge())) {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigPboxAdresseDTO.builder()
                         .postboksAnlegg(bruker.getPostadresseNorgeNAV().getPostboksAnlegg())
                         .postboksnr(bruker.getPostadresseNorgeNAV().getPostboksnr())
                         .build();
+                midlertidigAdresse.setAdressetype(PBOX.name());
             } else {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigGateAdresseDTO.builder()
                         .gatenavn(bruker.getPostadresseNorgeNAV().getGatenavn())
                         .gatekode(bruker.getPostadresseNorgeNAV().getGatekode())
                         .husnr(bruker.getPostadresseNorgeNAV().getHusnr())
                         .build();
+                midlertidigAdresse.setAdressetype(GATE.name());
             }
             midlertidigAdresse.setGyldigTom(getTimestamp(bruker.getPostadresseNorgeNAV().getDatoTom()));
             midlertidigAdresse.setPostnr(bruker.getPostadresseNorgeNAV().getPostnr());
@@ -90,6 +94,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
             var adresse = mapperFacade.map(bruker.getPostadresseUtlandNAV(),
                     MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.class);
             adresse.setGyldigTom(getTimestamp(bruker.getPostadresseUtlandNAV().getDatoTom()));
+            adresse.setAdressetype(UTAD.name());
             return adresse;
 
         } else {

@@ -157,6 +157,10 @@ export default class DollyEndpoints {
 		return `${personoppslagBase}/ident/${ident}`
 	}
 
+	static gruppeExcelFil(gruppeId) {
+		return `${uri}/excel/gruppe/${gruppeId}`
+	}
+
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`

@@ -30,8 +30,7 @@ public class PdlPersondata {
         private Integer alder;
         private Boolean syntetisk;
 
-
-        public enum Identtype {FNR, DNR, BOST;}
+        public enum Identtype {FNR, DNR, BOST}
     }
 
     @JsonIgnore

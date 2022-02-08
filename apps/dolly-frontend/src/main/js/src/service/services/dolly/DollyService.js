@@ -208,4 +208,9 @@ export default {
 		}
 		return Request.get(Endpoints.getTagsPaaIdent(ident))
 	},
+
+	//* Excel
+	getExcelFil(groupId) {
+		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
+	},
 }
