@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -120,6 +121,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
                 kontaktadresse.getUtenlandskAdresse().isEmpty()) {
 
+            kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
             kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 

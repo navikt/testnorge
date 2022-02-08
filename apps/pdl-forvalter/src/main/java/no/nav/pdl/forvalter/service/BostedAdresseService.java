@@ -127,7 +127,6 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse()) && bostedadresse.getUtenlandskAdresse().isEmpty()) {
 
-            bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
             bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 
