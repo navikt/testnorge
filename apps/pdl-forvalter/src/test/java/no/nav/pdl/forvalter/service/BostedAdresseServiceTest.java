@@ -276,7 +276,6 @@ class BostedAdresseServiceTest {
 
         var target = bostedAdresseService.convert(request, null).get(0);
 
-        assertThat(target.getMaster(), is(Master.PDL));
         assertThat(target.countAdresser(), is(1));
         assertThat(target.getUtenlandskAdresse(), is(notNullValue()));
     }
