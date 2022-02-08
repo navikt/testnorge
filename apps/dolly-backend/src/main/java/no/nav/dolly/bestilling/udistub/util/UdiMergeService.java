@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.udistub.util;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -65,6 +66,8 @@ public class UdiMergeService {
     private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<RsUdiAlias> aliaser, Status status, DollyPerson dollyPerson) {
 
         dollyPersonCache.fetchIfEmpty(dollyPerson);
+
+        log.info("Dollyperson: {}", Json.pretty(dollyPerson));
 
         udiPerson.setIdent(dollyPerson.getHovedperson());
         udiPerson.setNavn(mapperFacade.map(dollyPerson.getPerson(dollyPerson.getHovedperson()), UdiPersonNavn.class));
