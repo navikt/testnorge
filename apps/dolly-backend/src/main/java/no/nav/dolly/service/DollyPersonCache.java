@@ -16,8 +16,11 @@ import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -180,10 +183,7 @@ public class DollyPersonCache {
         return DollyPerson.builder()
                 .hovedperson(pdlfPerson.getPerson().getIdent())
                 .pdlfPerson(pdlfPerson)
-                .persondetaljer(mapperFacade.mapAsList(List.of(
-                                pdlfPerson.getPerson(),
-                                pdlfPerson.getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
-                        Person.class))
+                .persondetaljer(List.of(mapperFacade.map(pdlfPerson.getPerson(), Person.class)))
                 .partnere(pdlfPerson.getRelasjoner().stream()
                         .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER &&
                                 nonNull(relasjon.getRelatertPerson()))
@@ -201,6 +201,14 @@ public class DollyPersonCache {
                                 && nonNull(relasjon.getRelatertPerson()))
                         .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
                         .collect(Collectors.toList()))
+                .fullmektige(pdlfPerson.getPerson().getFullmakt().stream()
+                        .filter(DbVersjonDTO::getGjeldende)
+                        .map(FullmaktDTO::getMotpartsPersonident)
+                        .toList())
+                .verger(pdlfPerson.getPerson().getVergemaal().stream()
+                        .filter(DbVersjonDTO::getGjeldende)
+                        .map(VergemaalDTO::getVergeIdent)
+                        .toList())
                 .master(Master.PDLF)
                 .build();
     }
