@@ -28,6 +28,8 @@ export default function Gruppe({
 	sendTags,
 	isSendingTags,
 	isLockingGruppe,
+	getGruppeExcelFil,
+	isFetchingExcel,
 	match,
 	history,
 	bestillingStatuser,
@@ -75,6 +77,8 @@ export default function Gruppe({
 				laasGruppe={laasGruppe}
 				isLockingGruppe={isLockingGruppe}
 				bestillingStatuser={bestillingStatuser}
+				getGruppeExcelFil={getGruppeExcelFil}
+				isFetchingExcel={isFetchingExcel}
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />

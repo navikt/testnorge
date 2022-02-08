@@ -16,6 +16,14 @@ export default class Request {
 			.catch((error) => Request.logError(error, url))
 	}
 
+	static getExcel(url: string) {
+		return api
+			.fetch(url, { method: 'GET' })
+			.then((response) => response.blob())
+			.then((blob) => URL.createObjectURL(blob))
+			.catch((error) => Request.logError(error, url))
+	}
+
 	static post(url: string, data?: object) {
 		return api.fetchJson(url, { method: 'POST' }, data).then((response) => ({ data: response }))
 	}
