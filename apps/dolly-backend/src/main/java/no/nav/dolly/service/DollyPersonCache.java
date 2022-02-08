@@ -188,35 +188,6 @@ public class DollyPersonCache {
         return DollyPerson.builder()
                 .hovedperson(pdlfPerson.getPerson().getIdent())
                 .pdlfPerson(pdlfPerson)
-                .persondetaljer(mapperFacade.mapAsList(List.of(
-                                pdlfPerson.getPerson(),
-                                pdlfPerson.getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
-                        Person.class))
-                .partnere(pdlfPerson.getRelasjoner().stream()
-                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER &&
-                                nonNull(relasjon.getRelatertPerson()))
-                        .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
-                        .collect(Collectors.toList()))
-                .barn(pdlfPerson.getRelasjoner().stream()
-                        .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.FAMILIERELASJON_BARN &&
-                                nonNull(relasjon.getRelatertPerson()))
-                        .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
-                        .collect(Collectors.toList()))
-                .foreldre(pdlfPerson.getRelasjoner().stream()
-                        .filter(relasjon -> (
-                                relasjon.getRelasjonType() == RelasjonType.FAMILIERELASJON_FORELDER
-                                        || relasjon.getRelasjonType() == RelasjonType.FORELDREANSVAR)
-                                && nonNull(relasjon.getRelatertPerson()))
-                        .map(relasjonDTO -> relasjonDTO.getRelatertPerson().getIdent())
-                        .collect(Collectors.toList()))
-                .fullmektige(pdlfPerson.getPerson().getFullmakt().stream()
-                        .filter(DbVersjonDTO::getGjeldende)
-                        .map(FullmaktDTO::getMotpartsPersonident)
-                        .toList())
-                .verger(pdlfPerson.getPerson().getVergemaal().stream()
-                        .filter(DbVersjonDTO::getGjeldende)
-                        .map(VergemaalDTO::getVergeIdent)
-                        .toList())
                 .master(Master.PDLF)
                 .build();
     }

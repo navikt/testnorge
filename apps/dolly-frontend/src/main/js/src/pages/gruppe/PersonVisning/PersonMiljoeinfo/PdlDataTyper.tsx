@@ -38,6 +38,7 @@ export type HentPerson = {
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
 	kontaktinformasjonForDoedsbo: Array<{}>
+	opphold: Array<OppholdData>
 }
 
 export type BostedData = {
@@ -52,6 +53,13 @@ export type FullmaktData = {
 	motpartsPersonident: string
 	motpartsRolle: string
 	omraader: Array<string>
+	id: number
+}
+
+export type OppholdData = {
+	oppholdFra: Date
+	oppholdTil: Date
+	type: string
 	id: number
 }
 
@@ -110,16 +118,6 @@ export type Relasjon = {
 }
 type AdressebeskyttelseData = {
 	gradering: string
-}
-
-export type Kodeverk = {
-	values: Array<Array<KodeverkValues>>
-}
-
-export type KodeverkValues = {
-	data: string
-	label: string
-	value: string
 }
 
 export type Kodeverk = {

@@ -21,6 +21,7 @@ import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning
 import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {
@@ -43,6 +44,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 		forelderBarnRelasjon,
 		kontaktinformasjonForDoedsbo,
 		doedfoedtBarn,
+		opphold,
 	} = hentPerson
 
 	const getPersonInfo = () => {
@@ -52,6 +54,7 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
+				<PdlOppholdsstatus data={opphold} />
 				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
