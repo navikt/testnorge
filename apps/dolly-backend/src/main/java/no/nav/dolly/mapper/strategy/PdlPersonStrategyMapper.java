@@ -15,9 +15,13 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.ENKE;
@@ -92,31 +96,30 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(PersonDTO personDto, Person person, MappingContext context) {
 
+                        NavnDTO navnDTO = personDto.getNavn().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .findFirst()
+                                .orElse(null);
                         mapperFacade.map(personDto.getNavn().stream()
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .findFirst().orElse(null), person);
-
-                        person.setIdenttype(personDto.getFolkeregisterPersonstatus().stream()
+                        person.setPersonStatus(personDto.getFolkeregisterPersonstatus().stream()
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .map(FolkeregisterPersonstatusDTO::getStatus)
                                 .map(Enum::name)
                                 .findFirst().orElse(null));
-
                         person.setKjonn(personDto.getKjoenn().stream()
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .map(KjoennDTO::getKjoenn)
                                 .findFirst().orElse(KjoennDTO.Kjoenn.UKJENT).name().substring(0, 1));
-
                         person.setFoedselsdato(personDto.getFoedsel().stream()
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .map(FoedselDTO::getFoedselsdato)
                                 .findFirst().orElse(null));
-
                         person.setDoedsdato(personDto.getDoedsfall().stream()
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .map(DoedsfallDTO::getDoedsdato)
                                 .findFirst().orElse(null));
-
                         person.getInnvandretUtvandret().addAll(
                                 personDto.getUtflytting().stream()
                                         .map(utflytting -> InnvandretUtvandret.builder()
@@ -133,6 +136,32 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                         .map(SivilstandDTO::getType)
                                         .findFirst()
                                         .orElse(null)));
+                        person.setFoedselsdato(
+                                personDto.getFoedsel().stream()
+                                        .filter(DbVersjonDTO::getGjeldende)
+                                        .map(FoedselDTO::getFoedselsdato)
+                                        .findFirst()
+                                        .orElse(null)
+                        );
+                        person.setAlder(personDto.getFoedsel().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .map(foedselDTO -> ChronoUnit.YEARS.between(foedselDTO.getFoedselsdato(), LocalDateTime.now()))
+                                .map(Long::intValue)
+                                .findFirst()
+                                .orElse(null)
+                        );
+                        if (navnDTO != null) {
+                            person.setFornavn(navnDTO.getFornavn());
+                            person.setMellomnavn(navnDTO.getMellomnavn());
+                            person.setEtternavn(navnDTO.getEtternavn());
+                            person.setForkortetNavn("%s %s".formatted(navnDTO.getFornavn(), navnDTO.getEtternavn()));
+                        }
+                        person.setKjonn(personDto.getKjoenn().stream()
+                                .filter(DbVersjonDTO::getGjeldende)
+                                .map(KjoennDTO::getKjoenn)
+                                .map(Enum::name)
+                                .findFirst().orElse(null)
+                        );
                     }
                 })
                 .exclude("sivilstand")
