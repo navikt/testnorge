@@ -26,6 +26,7 @@ public class IdentRequestDTO extends DbVersjonDTO {
     private LocalDateTime foedtFoer;
     private Integer alder;
     private Boolean syntetisk;
+    private String eksisterendeIdent;
 
     private NyttNavnDTO nyttNavn;
 

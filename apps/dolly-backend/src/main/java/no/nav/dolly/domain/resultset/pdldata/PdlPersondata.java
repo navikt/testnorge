@@ -29,7 +29,7 @@ public class PdlPersondata {
         private LocalDateTime foedtFoer;
         private Integer alder;
         private Boolean syntetisk;
-
+        private Boolean eksisterendeIdent;
 
         public enum Identtype {FNR, DNR, BOST;}
     }

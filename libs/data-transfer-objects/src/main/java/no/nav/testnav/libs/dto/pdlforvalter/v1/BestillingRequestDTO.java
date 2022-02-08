@@ -24,6 +24,7 @@ public class BestillingRequestDTO {
     private Boolean syntetisk;
 
     private String opprettFraIdent;
+    private String eksisterendeIdent;
 
     private PersonDTO person;
 }
