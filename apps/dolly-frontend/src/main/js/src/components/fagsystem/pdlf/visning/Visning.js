@@ -44,12 +44,12 @@ export const PdlfVisning = ({ data, loading }) => {
 	return (
 		<ErrorBoundary>
 			<div>
+				<PdlOppholdsstatus data={opphold} />
 				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
-				<PdlOppholdsstatus data={opphold} />
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />

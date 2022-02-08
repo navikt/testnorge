@@ -50,11 +50,11 @@ export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	const getPersonInfo = () => {
 		return (
 			<div className="boks">
+				<PdlOppholdsstatus data={opphold} />
 				<PdlPersonInfo data={hentPerson} />
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
-				<PdlOppholdsstatus data={opphold} />
 				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
