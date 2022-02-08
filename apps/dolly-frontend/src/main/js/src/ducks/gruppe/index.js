@@ -17,6 +17,7 @@ export const actions = createActions(
 		update: DollyApi.updateGruppe,
 		laas: DollyApi.updateGruppeLaas,
 		sendGruppeTags: DollyApi.updateGruppeSendTags,
+		getGruppeExcelFil: DollyApi.getExcelFil,
 		remove: [
 			DollyApi.deleteGruppe,
 			(gruppeId) => ({

@@ -24,6 +24,8 @@ export default function GruppeHeader({
 	isSendingTags,
 	isLockingGruppe,
 	bestillingStatuser,
+	getGruppeExcelFil,
+	isFetchingExcel,
 }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
@@ -99,7 +101,11 @@ export default function GruppeHeader({
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
 					)}
-					<EksporterExcel gruppeId={gruppe.id} />
+					<EksporterExcel
+						gruppeId={gruppe.id}
+						action={getGruppeExcelFil}
+						loading={isFetchingExcel}
+					/>
 					<TagsButton
 						loading={isSendingTags}
 						action={sendTags}
