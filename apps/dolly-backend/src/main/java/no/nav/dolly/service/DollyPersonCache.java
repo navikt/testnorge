@@ -133,7 +133,6 @@ public class DollyPersonCache {
                         Person.class));
             }
         }
-
         return dollyPerson;
     }
 
