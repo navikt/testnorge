@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class UtenlandskAdresseDTO implements Serializable {
     private String region;
     private String regionDistriktOmraade;
 
+    @JsonIgnore
     public boolean isEmpty() {
 
         return Stream.of(adressenavnNummer,

@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
@@ -141,6 +142,9 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                                 .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
                                 .map(OppholdsadresseDTO::getUtenlandskAdresse)
                                 .map(UtenlandskAdresseDTO::getLandkode)
+                                .findFirst(),
+                        person.getUtflytting().stream()
+                                .map(UtflyttingDTO::getTilflyttingsland)
                                 .findFirst(),
                         person.getStatsborgerskap().stream()
                                 .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
