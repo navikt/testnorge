@@ -142,6 +142,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     private String getLandkode(PersonDTO person) {
 
         return Stream.of(person.getBostedsadresse().stream()
+                                .filter((adresse -> nonNull(adresse.getUtenlandskAdresse())))
                                 .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
                                 .map(BostedadresseDTO::getUtenlandskAdresse)
                                 .map(UtenlandskAdresseDTO::getLandkode)

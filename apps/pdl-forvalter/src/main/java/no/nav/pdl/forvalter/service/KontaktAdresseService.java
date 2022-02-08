@@ -137,6 +137,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
     private String getLandkode(PersonDTO person) {
 
         return Stream.of(person.getKontaktadresse().stream()
+                                .filter(adresse -> nonNull(adresse.getUtenlandskAdresse()))
                                 .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
                                 .map(KontaktadresseDTO::getUtenlandskAdresse)
                                 .map(UtenlandskAdresseDTO::getLandkode)

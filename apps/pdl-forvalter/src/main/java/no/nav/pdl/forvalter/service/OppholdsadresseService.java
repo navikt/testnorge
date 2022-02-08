@@ -139,6 +139,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
     private String getLandkode(PersonDTO person) {
 
         return Stream.of(person.getOppholdsadresse().stream()
+                                .filter(adresse -> nonNull(adresse.getUtenlandskAdresse()))
                                 .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
                                 .map(OppholdsadresseDTO::getUtenlandskAdresse)
                                 .map(UtenlandskAdresseDTO::getLandkode)
