@@ -29,6 +29,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.PBOX;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.STED;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.UTAD;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -84,9 +85,12 @@ public class S610PersonMappingStrategy implements MappingStrategy {
             return midlertidigAdresse;
 
         } else if (nonNull(bruker) && nonNull(bruker.getPostadresseUtlandNAV()) &&
-                isNotBlank(bruker.getPostadresseUtlandNAV().getAdresseType())) {
+                UTAD.name().equals(bruker.getPostadresseUtlandNAV().getAdresseType())) {
 
-            return mapperFacade.map(bruker.getPostadresseNorgeNAV(), MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.class);
+            var adresse = mapperFacade.map(bruker.getPostadresseUtlandNAV(),
+                    MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.class);
+            adresse.setGyldigTom(getTimestamp(bruker.getPostadresseUtlandNAV().getDatoTom()));
+            return adresse;
 
         } else {
             return null;

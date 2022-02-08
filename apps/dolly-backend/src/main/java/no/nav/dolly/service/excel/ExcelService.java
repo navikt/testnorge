@@ -7,6 +7,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
@@ -51,6 +52,7 @@ public class ExcelService {
 
     public Resource getExcelWorkbook(Long gruppeId) {
 
+        long start = System.currentTimeMillis();
         var testidenter = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId))
                 .getTestidenter().stream()
@@ -62,8 +64,17 @@ public class ExcelService {
         var wrapStyle = workbook.createCellStyle();
         wrapStyle.setWrapText(true);
 
-        personExcelService.preparePersonSheet(workbook, wrapStyle, testidenter);
+        var hyperlinkStyle = workbook.createCellStyle();
+        var hLinkFont = workbook.createFont();
+        hLinkFont.setFontName("Ariel");
+        hLinkFont.setUnderline(org.apache.poi.ss.usermodel.Font.U_SINGLE);
+        hLinkFont.setColor(IndexedColors.BLUE.getIndex());
+        hyperlinkStyle.setFont(hLinkFont);
+        hyperlinkStyle.setWrapText(true);
 
+        personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter);
+
+        log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
         try {
             var excelFile = File.createTempFile("Excel-", ".xlsx");
             try (var outputStream = new FileOutputStream(excelFile)) {

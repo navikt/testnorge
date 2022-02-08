@@ -37,9 +37,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
             personstatus.setGjeldende(nonNull(personstatus.getGjeldende()) ? personstatus.getGjeldende(): true);
 
-        } else if (person.getFolkeregisterPersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty() ||
-                getPersonstatus(person) != person.getFolkeregisterPersonstatus().stream()
-                        .findFirst().orElse(new FolkeregisterPersonstatusDTO()).getStatus()) {
+        } else if (person.getFolkeregisterPersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty()) {
 
             person.getFolkeregisterPersonstatus().add(0,
                     FolkeregisterPersonstatusDTO.builder()
