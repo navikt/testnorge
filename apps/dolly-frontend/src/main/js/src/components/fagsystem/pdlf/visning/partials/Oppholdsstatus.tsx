@@ -21,13 +21,17 @@ export const Visning = ({ data }: Data) => {
 				<ErrorBoundary>
 					<TitleValue
 						title="Oppholdstillatelse fra dato"
-						value={Formatters.formatDate(data.oppholdFra)}
+						value={Formatters.formatDate(data?.oppholdFra)}
 					/>
 					<TitleValue
 						title="Oppholdstillatelse til dato"
-						value={Formatters.formatDate(data.oppholdTil)}
+						value={Formatters.formatDate(data?.oppholdTil)}
 					/>
-					<TitleValue title="Type oppholdstillatelse" value={data.type} />
+					<TitleValue
+						title="Type oppholdstillatelse"
+						value={Formatters.uppercaseAndUnderscoreToCapitalized(data?.type)}
+						size={'medium'}
+					/>
 				</ErrorBoundary>
 			</div>
 		</>
