@@ -122,9 +122,15 @@ public class DollyPersonCache {
                 var pdlPersonBolk =
                         pdlPersonConsumer.getPdlPersoner(manglendeIdenter);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
-            } else if (dollyPerson.isPdlfMaster() && isNull(dollyPerson.getPdlfPerson())) {
-                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
-                        .stream().findFirst().orElse(new FullPersonDTO()));
+            } else if (dollyPerson.isPdlfMaster()) {
+                if (isNull(dollyPerson.getPdlfPerson())) {
+                    dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                            .stream().findFirst().orElse(new FullPersonDTO()));
+                }
+                dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(List.of(
+                                dollyPerson.getPdlfPerson().getPerson(),
+                                dollyPerson.getPdlfPerson().getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
+                        Person.class));
             }
         }
 
@@ -183,7 +189,10 @@ public class DollyPersonCache {
         return DollyPerson.builder()
                 .hovedperson(pdlfPerson.getPerson().getIdent())
                 .pdlfPerson(pdlfPerson)
-                .persondetaljer(List.of(mapperFacade.map(pdlfPerson.getPerson(), Person.class)))
+                .persondetaljer(mapperFacade.mapAsList(List.of(
+                                pdlfPerson.getPerson(),
+                                pdlfPerson.getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
+                        Person.class))
                 .partnere(pdlfPerson.getRelasjoner().stream()
                         .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER &&
                                 nonNull(relasjon.getRelatertPerson()))

@@ -100,9 +100,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .findFirst()
                                 .orElse(null);
-                        mapperFacade.map(personDto.getNavn().stream()
-                                .filter(DbVersjonDTO::getGjeldende)
-                                .findFirst().orElse(null), person);
+
                         person.setPersonStatus(personDto.getFolkeregisterPersonstatus().stream()
                                 .filter(DbVersjonDTO::getGjeldende)
                                 .map(FolkeregisterPersonstatusDTO::getStatus)
