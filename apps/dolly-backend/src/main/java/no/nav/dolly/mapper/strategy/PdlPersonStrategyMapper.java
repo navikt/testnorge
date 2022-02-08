@@ -8,6 +8,7 @@ import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.Person;
+import no.nav.dolly.domain.resultset.tpsf.Sivilstand;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
@@ -15,7 +16,18 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.ENKE;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.GJPA;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.REPA;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.SEPA;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.SEPR;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.SKIL;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.SKPA;
+import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.UGIF;
 
 @Component
 public final class PdlPersonStrategyMapper implements MappingStrategy {
@@ -114,9 +126,36 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                                         .getGyldighetstidspunkt().atStartOfDay())
                                                 .build())
                                         .toList());
+                        person.setSivilstand(
+                                mapSivilstand(personDto.getSivilstand()
+                                        .stream()
+                                        .filter(DbVersjonDTO::getGjeldende)
+                                        .map(SivilstandDTO::getType)
+                                        .findFirst()
+                                        .orElse(null)));
                     }
                 })
+                .exclude("sivilstand")
                 .byDefault()
                 .register();
+    }
+
+    private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
+
+        if (isNull(sivilstatus)) {
+            return UGIF;
+        } else {
+            return switch (sivilstatus) {
+                case GIFT -> Sivilstand.Sivilstatus.GIFT;
+                case ENKE_ELLER_ENKEMANN -> ENKE;
+                case SKILT -> SKIL;
+                case SEPARERT -> SEPR;
+                case REGISTRERT_PARTNER -> REPA;
+                case SEPARERT_PARTNER -> SEPA;
+                case SKILT_PARTNER -> SKPA;
+                case GJENLEVENDE_PARTNER -> GJPA;
+                default -> UGIF;
+            };
+        }
     }
 }
