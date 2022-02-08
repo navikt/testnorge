@@ -27,6 +27,7 @@ public class PersonRequestDTO implements Serializable {
     private NyttNavnDTO nyttNavn;
     private String statsborgerskapLandkode;
     private AdressebeskyttelseDTO.AdresseBeskyttelse gradering;
+    private String eksisterendeIdent;
 
     @Data
     @Builder
