@@ -17,7 +17,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -102,11 +101,7 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
             tpsfBestilling.setHarIngenAdresse(true);
             bestillingRequest.getPdldata().getPerson().setKontaktadresse(List.of(
                     KontaktadresseDTO.builder()
-                            .utenlandskAdresse(UtenlandskAdresseDTO.builder()
-                                    .landkode(bestillingRequest.getPdldata().getPerson().getUtflytting().stream()
-                                            .findFirst().orElse(new UtflyttingDTO())
-                                            .getTilflyttingsland())
-                                    .build())
+                            .utenlandskAdresse(new UtenlandskAdresseDTO())
                             .build()));
         }
     }
