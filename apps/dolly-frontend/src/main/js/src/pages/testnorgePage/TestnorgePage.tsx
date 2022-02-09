@@ -17,20 +17,25 @@ export default () => {
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
+	const [randomSeed, setRandomSeed] = useState(Math.random() + '')
 
-	const search = (searchPage: number, values: any) => {
+	const search = (searchPage: number, seed: string, values: any) => {
 		setStartedSearch(true)
 		setLoading(true)
-		PersonSearch.search(getSearchValues(searchPage, pageSize, values)).then((response) => {
+		PersonSearch.search(getSearchValues(searchPage, pageSize, seed, values)).then((response) => {
 			setPage(searchPage)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
-			setValgtePersoner([])
 			setLoading(false)
 		})
 	}
 
-	const onSubmit = (values: any) => search(1, values)
+	const onSubmit = (values: any) => {
+		const seed = Math.random() + ''
+		search(1, seed, values)
+		setValgtePersoner([])
+		setRandomSeed(seed)
+	}
 
 	return (
 		<div>
@@ -64,7 +69,9 @@ export default () => {
 										pageSize={pageSize}
 										page={page}
 										numberOfItems={numberOfItems}
-										onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
+										onChange={(pageNumber: number) =>
+											search(pageNumber, randomSeed, formikBag.values)
+										}
 									/>
 								)}
 							</>
