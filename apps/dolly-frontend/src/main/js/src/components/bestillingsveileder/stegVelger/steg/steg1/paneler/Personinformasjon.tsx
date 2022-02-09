@@ -12,31 +12,15 @@ import {
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
 
-const innvandret = (personFoerLeggTil: {}) =>
-	_get(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
-
-const utvandret = (personFoerLeggTil: {}) =>
-	_get(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
-
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil
-	const { personFoerLeggTil } = opts
 
 	const harFnr = opts.identtype === 'FNR'
-	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
-
-	const utvandretTitle = () => {
-		if (!harFnr) {
-			return 'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
-		} else if (leggTil && !innvandret(personFoerLeggTil)) {
-			return 'Personen må innvandre før den kan utvandre igjen'
-		} else return null
-	}
 
 	return (
 		// @ts-ignore
@@ -54,23 +38,13 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 			<AttributtKategori title="Nasjonalitet">
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt
-					attr={sm.attrs.innvandretFraLand}
-					disabled={
-						(harFnrLeggTil || innvandret(personFoerLeggTil)) && !utvandret(personFoerLeggTil)
-					}
-					title={
-						(harFnrLeggTil || innvandret(personFoerLeggTil)) && !utvandret(personFoerLeggTil)
-							? 'Personen må utvandre før den kan innvandre igjen'
-							: null
-					}
-				/>
+				<Attributt attr={sm.attrs.innvandretFraLand} />
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={
-						!harFnr || (leggTil && utvandret(personFoerLeggTil) && !innvandret(personFoerLeggTil))
+					disabled={!harFnr}
+					title={
+						'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
 					}
-					title={utvandretTitle()}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">
