@@ -476,7 +476,7 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 
 	return {
 		ident,
-		identNr: pdlData.hentIdenter.identer[0].ident,
+		identNr: getPdlIdent(pdlData.hentIdenter?.identer),
 		bestillingId: ident.bestillingId,
 		kilde: 'TESTNORGE',
 		importFra: 'Testnorge',
@@ -486,6 +486,13 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
 	}
+}
+
+const getPdlIdent = (identer) => {
+	for (let ident of identer) {
+		if (ident.gruppe === 'FOLKEREGISTERIDENT') return ident.ident
+	}
+	return 'undefined'
 }
 
 const getKjoenn = (kjoenn) => {
