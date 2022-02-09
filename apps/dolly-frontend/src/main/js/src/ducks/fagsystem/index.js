@@ -488,7 +488,7 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 	}
 }
 
-const getPdlIdent = (identer) => {
+export const getPdlIdent = (identer) => {
 	for (let ident of identer) {
 		if (ident.gruppe === 'FOLKEREGISTERIDENT') return ident.ident
 	}
