@@ -34,7 +34,6 @@ export default () => {
 			setPage(searchPage)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
-			setValgtePersoner([])
 			setLoading(false)
 		})
 	}
@@ -42,6 +41,7 @@ export default () => {
 	const onSubmit = (values: any) => {
 		const seed = getRandomSeed()
 		search(1, seed, values)
+		setValgtePersoner([])
 		setRandomSeed(seed)
 	}
 
