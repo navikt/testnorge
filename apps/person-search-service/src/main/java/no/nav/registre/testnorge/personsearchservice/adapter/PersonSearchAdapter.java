@@ -122,7 +122,9 @@ public class PersonSearchAdapter {
     private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRandomSeed())
                 .ifPresent(value -> {
-                    queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(value)));
+                    if (!value.isEmpty()){
+                        queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(value)));
+                    }
                 });
     }
 

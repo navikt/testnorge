@@ -16,7 +16,7 @@ public class PersonSearch {
     String tag;
     String excludeTag;
     String kjoenn;
-    Long randomSeed;
+    String randomSeed;
     Boolean kunLevende;
     Boolean kunDoede;
     List<String> identer;
