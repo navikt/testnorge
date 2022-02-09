@@ -283,7 +283,7 @@ public class PersonSearchAdapter {
     private void addLevendeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
-                    if (value) {
+                    if (Boolean.TRUE.equals(value)) {
                         queryBuilder.mustNot(QueryBuilders.nestedQuery(
                                 "hentPerson.doedsfall",
                                 QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
@@ -296,7 +296,7 @@ public class PersonSearchAdapter {
     private void addDoedsfallQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getKunDoede())
                 .ifPresent(value -> {
-                    if (value) {
+                    if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.doedsfall",
                                 QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
