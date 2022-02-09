@@ -183,6 +183,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			vergemaal,
 			forelderBarnRelasjon,
 			doedfoedtBarn,
+			nyIdent,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -727,6 +728,29 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(utenlandskIdentData)
+		}
+
+		if (nyIdent) {
+			console.log('nyIdent', nyIdent)
+			const nyIdentData = {
+				header: 'Ny identitet',
+				itemRows: nyIdent.map((item, idx) => {
+					return [
+						{
+							numberHeader: `Ny identitet ${idx + 1}`,
+						},
+						obj('Eksisterende ident', item.eksisterendeIdent),
+						obj('Identtype', item.identtype),
+						obj('Kjønn', item.kjoenn),
+						obj('Født etter', Formatters.formatDate(item.foedtEtter)),
+						obj('Født før', Formatters.formatDate(item.foedtFoer)),
+						obj('Alder', item.alder),
+						obj('Er syntetisk', Formatters.oversettBoolean(item.syntetisk)),
+						obj('Har mellomnavn', Formatters.oversettBoolean(item.nyttNavn.hasMellomnavn)),
+					]
+				}),
+			}
+			data.push(nyIdentData)
 		}
 
 		if (kontaktinformasjonForDoedsbo) {
