@@ -111,6 +111,17 @@ public class DollyPersonCache {
                         .noneMatch(ident2 -> ident2.equals(ident)))
                 .collect(Collectors.toList());
 
+        if (dollyPerson.isPdlfMaster()) {
+            if (isNull(dollyPerson.getPdlfPerson())) {
+                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                        .stream().findFirst().orElse(new FullPersonDTO()));
+            }
+            dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(List.of(
+                            dollyPerson.getPdlfPerson().getPerson(),
+                            dollyPerson.getPdlfPerson().getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
+                    Person.class));
+        }
+
         if (!manglendeIdenter.isEmpty()) {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
@@ -118,15 +129,6 @@ public class DollyPersonCache {
                 var pdlPersonBolk =
                         pdlPersonConsumer.getPdlPersoner(manglendeIdenter);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
-            } else if (dollyPerson.isPdlfMaster()) {
-                if (isNull(dollyPerson.getPdlfPerson())) {
-                    dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
-                            .stream().findFirst().orElse(new FullPersonDTO()));
-                }
-                dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(List.of(
-                                dollyPerson.getPdlfPerson().getPerson(),
-                                dollyPerson.getPdlfPerson().getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
-                        Person.class));
             }
         }
         return dollyPerson;
