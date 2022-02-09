@@ -5,6 +5,8 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Innvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
+import { Utvandring } from '~/components/fagsystem/pdlf/visning/partials/Utvandring'
 
 const Statsborgerskap = ({ statsborgerskap }) => {
 	if (!statsborgerskap) {
@@ -29,8 +31,34 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 	)
 }
 
-export const Nasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, sprakKode } = data
+const InnvandretUtvandret = ({ data }) => {
+	if (data.length < 1) return null
+	return (
+		<ErrorBoundary>
+			<DollyFieldArray data={data} header={'Innvandret/utvandret'} nested>
+				{(innvandringUtvandring) => (
+					<>
+						<TitleValue title="Status" value={innvandringUtvandring.innutvandret} />
+						<TitleValue
+							title="Land"
+							value={innvandringUtvandring.landkode}
+							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+						/>
+						<TitleValue
+							title="Flyttedato"
+							value={Formatters.formatDate(innvandringUtvandring.flyttedato)}
+						/>
+					</>
+				)}
+			</DollyFieldArray>
+		</ErrorBoundary>
+	)
+}
+
+export const Nasjonalitet = ({ data, pdlData, visTittel = true }) => {
+	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+	const pdlInnvandret = pdlData?.innflytting
+	const pdlUtvandret = pdlData?.utflytting
 
 	if (!statsborgerskap) {
 		return null
@@ -47,7 +75,12 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 						</DollyFieldArray>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
+					<Statsborgerskap statsborgerskap={statsborgerskap[0] || statsborgerskap} />
+				)}
+				{pdlInnvandret && <Innvandring data={pdlInnvandret} />}
+				{pdlUtvandret && <Utvandring data={pdlUtvandret} />}
+				{innvandretUtvandret && !pdlInnvandret && !pdlUtvandret && (
+					<InnvandretUtvandret data={innvandretUtvandret} />
 				)}
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
 			</div>
