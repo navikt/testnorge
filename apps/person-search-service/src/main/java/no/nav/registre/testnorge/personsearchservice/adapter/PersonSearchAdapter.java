@@ -104,7 +104,6 @@ public class PersonSearchAdapter {
         searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
-        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
