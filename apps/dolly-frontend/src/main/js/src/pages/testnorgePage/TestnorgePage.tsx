@@ -9,6 +9,14 @@ import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnecto
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
+export const getRandomSeed = () => {
+	let randomNumber = ''
+	for (let i = 0; i < 19; i++) {
+		randomNumber += Math.floor(Math.random() * 10)
+	}
+	return randomNumber
+}
+
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
 	const [page, setPage] = useState(1)
@@ -17,11 +25,12 @@ export default () => {
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
+	const [randomSeed, setRandomSeed] = useState(getRandomSeed)
 
-	const search = (searchPage: number, values: any) => {
+	const search = (searchPage: number, seed: string, values: any) => {
 		setStartedSearch(true)
 		setLoading(true)
-		PersonSearch.search(getSearchValues(searchPage, pageSize, values)).then((response) => {
+		PersonSearch.search(getSearchValues(searchPage, pageSize, seed, values)).then((response) => {
 			setPage(searchPage)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
@@ -30,7 +39,11 @@ export default () => {
 		})
 	}
 
-	const onSubmit = (values: any) => search(1, values)
+	const onSubmit = (values: any) => {
+		const seed = getRandomSeed()
+		search(1, seed, values)
+		setRandomSeed(seed)
+	}
 
 	return (
 		<div>
@@ -64,7 +77,9 @@ export default () => {
 										pageSize={pageSize}
 										page={page}
 										numberOfItems={numberOfItems}
-										onChange={(pageNumber: number) => search(pageNumber, formikBag.values)}
+										onChange={(pageNumber: number) =>
+											search(pageNumber, randomSeed, formikBag.values)
+										}
 									/>
 								)}
 							</>
