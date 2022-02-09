@@ -10,16 +10,20 @@ const TYPE = Object.freeze({
 	IMPORT_TESTNORGE: 'IMPORT_TESTNORGE',
 })
 
-export const BVOptions = ({
-	identtype = 'FNR',
-	mal,
-	opprettFraIdenter,
-	personFoerLeggTil,
-	tidligereBestillinger,
-	importPersoner,
-	identMaster,
-	opprettOrganisasjon = null,
-} = {}, gruppeId) => {
+export const BVOptions = (
+	{
+		antall = 1,
+		identtype = 'FNR',
+		mal,
+		opprettFraIdenter,
+		personFoerLeggTil,
+		tidligereBestillinger,
+		importPersoner,
+		identMaster,
+		opprettOrganisasjon = null,
+	} = {},
+	gruppeId
+) => {
 	let initialValues = {
 		antall,
 		navSyntetiskIdent: false,
@@ -92,6 +96,7 @@ export const BVOptions = ({
 	if (importPersoner) {
 		bestType = TYPE.IMPORT_TESTNORGE
 		initialValues.antall = importPersoner.length
+		initialValues.pdldata = undefined
 		antall = importPersoner.length
 	}
 

@@ -432,15 +432,6 @@ export const selectPersonListe = (state) => {
 const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
 	if (!tpsfIdent) return null
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
-		const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
-			? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`
-			: ''
-
-		const pdlAlder = (foedselsdato) => {
-			if (!foedselsdato) return null
-			const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
-			return Math.abs(diff.getUTCFullYear() - 1970)
-		}
 	return {
 		ident,
 		identNr: tpsfIdent.ident,
@@ -457,16 +448,27 @@ const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
 
 const getPdlfIdentInfo = (ident, state, pdlIdent) => {
 	if (!pdlIdent) return null
+
+	const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
+		? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`
+		: ''
+
+	const pdlAlder = (foedselsdato) => {
+		if (!foedselsdato) return null
+		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
+		return Math.abs(diff.getUTCFullYear() - 1970)
+	}
+
 	return {
 		ident,
 		identNr: pdlIdent.ident,
 		bestillingId: ident.bestillingId,
 		identtype: 'FNR',
 		kilde: 'PDL',
-		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlIdent.navn?.[0]?.etternavn}`,
+		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.navn?.[0]?.etternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: Formatters.formatAlder(
-			new Date().getFullYear() - pdlIdent.foedsel?.[0]?.foedselsaar,
+			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			pdlIdent?.doedsfall?.[0]?.doedsdato
 		),
 		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),

@@ -2,6 +2,7 @@ import React from 'react'
 import {
 	DoedfoedtBarn,
 	ForeldreBarnRelasjon,
+	Metadata,
 	Sivilstand,
 	Vergemaal,
 } from '~/components/fagsystem/pdlf/PdlTypes'
@@ -210,42 +211,6 @@ export type KodeverkValues = {
 	value: string
 }
 
-export type ForelderBarnRelasjon = {
-	relatertPersonsIdent: string
-	relatertPersonsRolle: Rolle
-	minRolleForPerson: Rolle
-}
-
-export enum Rolle {
-	BARN = 'BARN',
-	MOR = 'MOR',
-	FAR = 'FAR',
-	FORELDER = 'FORELDER',
-	MEDMOR = 'MEDMOR',
-}
-
-export type Sivilstand = {
-	type: string
-	gyldigFraOgMed: Date
-	relatertVedSivilstand: string
-	bekreftelsesdato: Date
-	metadata: Metadata
-}
-
-export type DoedfoedtBarn = {
-	dato: Date
-}
-
-export type Kodeverk = {
-	values: Array<Array<KodeverkValues>>
-}
-
-export type KodeverkValues = {
-	data: string
-	label: string
-	value: string
-}
-
 export type Statsborgerskap = {
 	land: string
 	gyldigFraOgMed: Date
@@ -277,10 +242,6 @@ type Foedsel = {
 type Doedsfall = {
 	doedsdato: string
 	metadata: Metadata
-}
-
-type Metadata = {
-	historisk: boolean
 }
 
 export type InnvandringValues = {

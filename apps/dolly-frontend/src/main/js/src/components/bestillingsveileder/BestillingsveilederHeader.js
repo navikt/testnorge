@@ -9,7 +9,7 @@ const getImportFra = (opts) => {
 	if (opts.is.leggTil) {
 		if (opts.identMaster === 'PDL') {
 			return 'Testnorge'
-		} else if (opts.personFoerLeggTil.tpsf.importFra) {
+		} else if (opts.personFoerLeggTil?.tpsf?.importFra) {
 			return opts.personFoerLeggTil.tpsf.importFra
 		}
 	}
@@ -52,17 +52,8 @@ export const BestillingsveilederHeader = () => {
 					<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
 				)}
 				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Testnorge" />}
+				{opts.is.leggTil && <Header.TitleValue title="Legg til/endre på person" value={ident} />}
 				{importFra !== undefined && (
-				{opts.is.leggTil && (
-					<Header.TitleValue
-						title="Legg til/endre på person"
-						value={
-							opts.personFoerLeggTil.tpsf?.ident ||
-							opts.personFoerLeggTil.pdlforvalter?.person?.ident
-						}
-					/>
-				)}
-				{opts.is.leggTil && opts.personFoerLeggTil.tpsf?.importFra && (
 					<Header.TitleValue
 						title="Importert fra"
 						value={<ImportFraEtikett type="fokus" importFra={importFra} />}

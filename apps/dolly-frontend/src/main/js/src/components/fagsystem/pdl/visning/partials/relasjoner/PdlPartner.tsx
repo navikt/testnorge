@@ -1,10 +1,10 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { Sivilstand } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import { Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 
 type VisningProps = {
 	data: Sivilstand

@@ -1,15 +1,11 @@
 import React from 'react'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import {
-	ForelderBarnRelasjon,
-	HentPerson,
-	Rolle,
-	Sivilstand,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { PdlBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlBarn'
 import { PdlForeldre } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldre'
 import { PdlPartner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlPartner'
+import { ForeldreBarnRelasjon, Rolle, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 
 type PdlRelasjonerProps = {
 	data: HentPerson
@@ -23,11 +19,11 @@ export const PdlRelasjoner = ({ data, visTittel = true }: PdlRelasjonerProps) =>
 
 	const partnere = data.sivilstand?.filter((sivilstand: Sivilstand) => sivilstand.type !== 'UGIFT')
 	const barn = data.forelderBarnRelasjon?.filter(
-		(relasjon: ForelderBarnRelasjon) => relasjon.relatertPersonsRolle == Rolle.BARN
+		(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle == Rolle.BARN
 	)
 	const doedfoedtBarn = data.doedfoedtBarn
 	const foreldre = data.forelderBarnRelasjon?.filter(
-		(relasjon: ForelderBarnRelasjon) =>
+		(relasjon: ForeldreBarnRelasjon) =>
 			relasjon.relatertPersonsRolle == Rolle.MOR ||
 			relasjon.relatertPersonsRolle == Rolle.FAR ||
 			relasjon.relatertPersonsRolle == Rolle.MEDMOR

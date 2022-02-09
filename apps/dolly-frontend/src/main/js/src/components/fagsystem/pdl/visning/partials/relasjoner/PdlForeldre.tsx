@@ -1,16 +1,16 @@
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ForelderBarnRelasjon } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import React from 'react'
+import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
 
 type VisningProps = {
-	forelder: ForelderBarnRelasjon
+	forelder: ForeldreBarnRelasjon
 	idx?: number
 }
 
 type PdlForeldreProps = {
-	data: ForelderBarnRelasjon[]
+	data: ForeldreBarnRelasjon[]
 }
 
 const Visning = ({ forelder, idx }: VisningProps) => {
@@ -29,7 +29,7 @@ export const PdlForeldre = ({ data }: PdlForeldreProps) => {
 		<div>
 			<ErrorBoundary>
 				<DollyFieldArray header="Foreldre" data={data} nested>
-					{(forelder: ForelderBarnRelasjon, idx: number) => (
+					{(forelder: ForeldreBarnRelasjon, idx: number) => (
 						<Visning forelder={forelder} idx={idx} />
 					)}
 				</DollyFieldArray>

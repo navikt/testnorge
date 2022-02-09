@@ -1,16 +1,13 @@
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import {
-	DoedfoedtBarn,
-	ForelderBarnRelasjon,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import React from 'react'
 import { hasNoValues } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
 import Formatters from '~/utils/DataFormatter'
+import { DoedfoedtBarn, ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
 
 type BarnProps = {
-	barn: ForelderBarnRelasjon
+	barn: ForeldreBarnRelasjon
 	idx?: number
 }
 
@@ -20,7 +17,7 @@ type DoedfoedtBarnProps = {
 }
 
 type PdlBarnProps = {
-	barn: ForelderBarnRelasjon[]
+	barn: ForeldreBarnRelasjon[]
 	doedfoedtBarn: DoedfoedtBarn[]
 }
 
@@ -49,7 +46,7 @@ export const PdlBarn = ({ barn, doedfoedtBarn }: PdlBarnProps) => {
 			<ErrorBoundary>
 				{!hasNoValues(barn) && (
 					<DollyFieldArray header="Barn" data={barn} nested>
-						{(data: ForelderBarnRelasjon, idx: number) => <BarnVisning barn={data} idx={idx} />}
+						{(data: ForeldreBarnRelasjon, idx: number) => <BarnVisning barn={data} idx={idx} />}
 					</DollyFieldArray>
 				)}
 				{!hasNoValues(doedfoedtBarn) && (

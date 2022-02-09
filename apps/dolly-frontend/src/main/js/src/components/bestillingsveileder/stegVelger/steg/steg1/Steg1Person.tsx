@@ -15,7 +15,7 @@ import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-const identFraTestnorge = (opts: any) => {
+export const identFraTestnorge = (opts: any) => {
 	if (opts.is.importTestnorge) return true
 	return opts.is.leggTil && opts.identMaster === 'PDL'
 }
