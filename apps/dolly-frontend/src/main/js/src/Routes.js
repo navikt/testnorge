@@ -42,6 +42,12 @@ const routes = [
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
 	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI },
 	{ path: '/soek', exact: true, breadcrumb: 'Søk', component: SearchPage },
+	{
+		path: '/importer',
+		exact: true,
+		breadcrumb: 'Importer',
+		component: BestillingsveilederConnector,
+	},
 ]
 
 export default routes

@@ -8,24 +8,29 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Innvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
 import { Utvandring } from '~/components/fagsystem/pdlf/visning/partials/Utvandring'
 
-const Statsborgerskap = ({ statsborgerskap }) =>
-	statsborgerskap ? (
-		<div className="person-visning_content">
-			<TitleValue
-				title="Statsborgerskap"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				value={statsborgerskap.land ? statsborgerskap.land : statsborgerskap.landkode}
-			/>
-			<TitleValue
-				title="Statsborgerskap registrert"
-				value={Formatters.formatDate(statsborgerskap.gyldigFraOgMed)}
-			/>
-			<TitleValue
-				title="Statsborgerskap til"
-				value={Formatters.formatDate(statsborgerskap.gyldigTilOgMed)}
-			/>
-		</div>
-	) : null
+const Statsborgerskap = ({ statsborgerskap }) => {
+	if (statsborgerskap) {
+		const land = statsborgerskap.land ? statsborgerskap.land : statsborgerskap.landkode
+		return (
+			<div className="person-visning_content">
+				<TitleValue
+					title="Statsborgerskap"
+					kodeverk={AdresseKodeverk.StatsborgerskapLand}
+					value={land}
+				/>
+				<TitleValue
+					title="Statsborgerskap registrert"
+					value={Formatters.formatDate(statsborgerskap.gyldigFraOgMed)}
+				/>
+				<TitleValue
+					title="Statsborgerskap til"
+					value={Formatters.formatDate(statsborgerskap.gyldigTilOgMed)}
+				/>
+			</div>
+		)
+	}
+	return null
+}
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge, innflytting, utflytting } = data

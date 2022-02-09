@@ -8,7 +8,6 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
-import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -146,12 +145,7 @@ export default function PersonListe({
 				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
-				return (
-					<>
-						{str}
-						<ImportFraEtikett importFra={row.importFra} type={'fokus'} venstreMargin />
-					</>
-				)
+				return <>{str}</>
 			},
 		},
 		{
@@ -163,7 +157,7 @@ export default function PersonListe({
 		},
 		{
 			text: 'Kilde',
-			width: '10',
+			width: '20',
 			dataField: 'kilde',
 		},
 		{
@@ -228,7 +222,6 @@ export default function PersonListe({
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
-						kildePdl={bruker?.kilde === 'PDL'}
 					/>
 				)}
 			/>

@@ -12,6 +12,29 @@ type Data = {
 	data: Array<any>
 }
 
+type AdresseProps = {
+	adresse: any
+	idx: number
+}
+
+export const Adresse = ({ adresse, idx }: AdresseProps) => {
+	return (
+		<>
+			{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}
+			{adresse.matrikkeladresse && <Matrikkeladresse adresse={adresse} idx={idx} />}
+			{adresse.utenlandskAdresse && <UtenlandskAdresse adresse={adresse} idx={idx} />}
+			{adresse.oppholdAnnetSted && (
+				<div className="person-visning_content" key={idx}>
+					<TitleValue
+						title="Opphold annet sted"
+						value={Formatters.showLabel('oppholdAnnetSted', adresse.oppholdAnnetSted)}
+					/>
+				</div>
+			)}
+		</>
+	)
+}
+
 export const Oppholdsadresse = ({ data }: Data) => {
 	if (!data || data.length === 0) return null
 
@@ -21,23 +44,7 @@ export const Oppholdsadresse = ({ data }: Data) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => {
-							return (
-								<>
-									{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}
-									{adresse.matrikkeladresse && <Matrikkeladresse adresse={adresse} idx={idx} />}
-									{adresse.utenlandskAdresse && <UtenlandskAdresse adresse={adresse} idx={idx} />}
-									{adresse.oppholdAnnetSted && (
-										<div className="person-visning_content" key={idx}>
-											<TitleValue
-												title="Opphold annet sted"
-												value={Formatters.showLabel('oppholdAnnetSted', adresse.oppholdAnnetSted)}
-											/>
-										</div>
-									)}
-								</>
-							)
-						}}
+						{(adresse: any, idx: number) => <Adresse adresse={adresse} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>
