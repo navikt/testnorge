@@ -181,19 +181,6 @@ public class PersonExcelService {
                 .collect(Collectors.joining(",\n"));
     }
 
-    private static Map<String, Hyperlink> createHyperlinks(List<Object[]> personData, CreationHelper helper) {
-
-        return IntStream.range(0, personData.size()).boxed()
-                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> createHyperLink(helper, row)));
-    }
-
-    private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
-
-        var hyperLink = helper.createHyperlink(HyperlinkType.DOCUMENT);
-        hyperLink.setAddress(String.format("'%s'!A%d", ARK_FANE, row + 2));
-        return hyperLink;
-    }
-
     private static List<String> getIdenterForRelasjon(List<Object[]> hovedpersoner, int relasjon) {
 
         return hovedpersoner.stream()
@@ -207,24 +194,6 @@ public class PersonExcelService {
                 .toList();
     }
 
-    private static void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
-                                         Map<String, Hyperlink> hyperlinks,
-                                         XSSFCellStyle hyperlinkStyle) {
-
-        appendHyperlinkRelasjon(sheet, persondata, PARTNER, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, BARN, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, FORELDRE, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, VERGE, hyperlinks, hyperlinkStyle);
-        appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, hyperlinks, hyperlinkStyle);
-    }
-
-    private static void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int relasjon, Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
-        IntStream.range(0, persondata.size()).boxed()
-                .filter(row -> isNotBlank((String) persondata.get(row)[relasjon]))
-                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(relasjon),
-                        getIdenter(persondata.get(row)[relasjon]), hyperlinks, hyperlinkStyle));
-    }
-
     private static List<String> getIdenter(Object personer) {
 
         return Stream.of(personer)
@@ -236,16 +205,17 @@ public class PersonExcelService {
                 .toList();
     }
 
-    private static void appendHyperLink(XSSFCell cell, List<String> identer,
-                                        Map<String, Hyperlink> hyperlinks, XSSFCellStyle hyperlinkStyle) {
+    private static Map<String, Integer> createLinkReferanser(List<Object[]> personData) {
 
-        if (identer.stream().anyMatch(hyperlinks::containsKey)) {
-            cell.setHyperlink(hyperlinks.get(identer.stream()
-                    .filter(hyperlinks::containsKey)
-                    .findFirst()
-                    .get()));
-            cell.setCellStyle(hyperlinkStyle);
-        }
+        return IntStream.range(0, personData.size()).boxed()
+                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> row));
+    }
+
+    private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
+
+        var hyperLink = helper.createHyperlink(HyperlinkType.DOCUMENT);
+        hyperLink.setAddress(String.format("'%s'!A%d", ARK_FANE, row + 2));
+        return hyperLink;
     }
 
     private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
@@ -400,9 +370,9 @@ public class PersonExcelService {
                         .flatMap(Collection::stream)
                         .toList());
 
-        var hyperlinks = createHyperlinks(rows, workbook.getCreationHelper());
+        var linkReferences = createLinkReferanser(rows);
 
-        appendHyperlinks(sheet, rows, hyperlinks, hyperlinkStyle);
+        appendHyperlinks(sheet, rows, linkReferences, hyperlinkStyle, workbook.getCreationHelper());
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
@@ -423,6 +393,40 @@ public class PersonExcelService {
                 .toList()));
         log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
+    }
+
+    private void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
+                                  Map<String, Integer> linkRefs,
+                                  XSSFCellStyle hyperlinkStyle,
+                                  CreationHelper helper) {
+
+        appendHyperlinkRelasjon(sheet, persondata, PARTNER, linkRefs, hyperlinkStyle, helper);
+        appendHyperlinkRelasjon(sheet, persondata, BARN, linkRefs, hyperlinkStyle, helper);
+        appendHyperlinkRelasjon(sheet, persondata, FORELDRE, linkRefs, hyperlinkStyle, helper);
+        appendHyperlinkRelasjon(sheet, persondata, VERGE, linkRefs, hyperlinkStyle, helper);
+        appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, linkRefs, hyperlinkStyle, helper);
+    }
+
+    private void appendHyperLink(XSSFCell cell, List<String> identer,
+                                 Map<String, Integer> linkRefs, XSSFCellStyle hyperlinkStyle,
+                                 CreationHelper helper) {
+
+        if (identer.stream().anyMatch(linkRefs::containsKey)) {
+            cell.setHyperlink(createHyperLink(helper, linkRefs.get(identer.stream()
+                    .filter(linkRefs::containsKey)
+                    .findFirst()
+                    .get())));
+            cell.setCellStyle(hyperlinkStyle);
+        }
+    }
+
+    private void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int relasjon,
+                                         Map<String, Integer> hyperlinks, XSSFCellStyle hyperlinkStyle,
+                                         CreationHelper helper) {
+        IntStream.range(0, persondata.size()).boxed()
+                .filter(row -> isNotBlank((String) persondata.get(row)[relasjon]))
+                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(relasjon),
+                        getIdenter(persondata.get(row)[relasjon]), hyperlinks, hyperlinkStyle, helper));
     }
 
     @SneakyThrows
