@@ -407,6 +407,7 @@ public class PersonExcelService {
         appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, linkRefs, hyperlinkStyle, helper);
     }
 
+    @SuppressWarnings("all")
     private void appendHyperLink(XSSFCell cell, List<String> identer,
                                  Map<String, Integer> linkRefs, XSSFCellStyle hyperlinkStyle,
                                  CreationHelper helper) {
