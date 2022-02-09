@@ -10,11 +10,7 @@ import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
 export const getRandomSeed = () => {
-	let randomNumber = ''
-	for (let i = 0; i < 19; i++) {
-		randomNumber += Math.floor(Math.random() * 10)
-	}
-	return randomNumber
+	return Math.random() + ''
 }
 
 export default () => {
