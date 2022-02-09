@@ -5,6 +5,8 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Innvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
+import { Utvandring } from '~/components/fagsystem/pdlf/visning/partials/Utvandring'
 
 const Statsborgerskap = ({ statsborgerskap }) =>
 	statsborgerskap ? (
@@ -30,7 +32,9 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 	if (
 		statsborgerskap?.length < 1 &&
 		innflyttingTilNorge?.length < 1 &&
-		utflyttingFraNorge?.length < 1
+		utflyttingFraNorge?.length < 1 &&
+		innflytting?.length < 1 &&
+		utflytting?.length < 1
 	)
 		return null
 
@@ -50,40 +54,11 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 			</div>
 
 			{(innflyttingTilNorge?.length > 0 || innflytting?.length > 0) && (
-				<ErrorBoundary>
-					<DollyFieldArray data={innflyttingTilNorge || innflytting} header={'Innvandret'} nested>
-						{(innvandring) => (
-							<>
-								<TitleValue
-									title="Fraflyttingsland"
-									value={innvandring.fraflyttingsland}
-									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-								/>
-								<TitleValue
-									title="Fraflyttingssted"
-									value={innvandring.fraflyttingsstedIUtlandet}
-								/>
-							</>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
+				<Innvandring data={innflyttingTilNorge || innflytting} />
 			)}
 
 			{(utflyttingFraNorge?.length > 0 || utflytting?.length > 0) && (
-				<ErrorBoundary>
-					<DollyFieldArray data={utflyttingFraNorge || utflytting} header={'Utvandret'} nested>
-						{(utvandring) => (
-							<>
-								<TitleValue
-									title="Tilflyttingsland"
-									value={utvandring.tilflyttingsland}
-									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-								/>
-								<TitleValue title="Tilflyttingssted" value={utvandring.tilflyttingsstedIUtlandet} />
-							</>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
+				<Utvandring data={utflyttingFraNorge || utflytting} />
 			)}
 		</div>
 	)

@@ -45,7 +45,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 					<PdlPersonInfo data={pdlData} />
 				)}
 				{hasTpsfData ? (
-					<Nasjonalitet data={data} tpsMessagingData={tpsMessagingData} />
+					<Nasjonalitet data={data} pdlData={pdlData} />
 				) : (
 					<PdlNasjonalitet data={pdlData} />
 				)}

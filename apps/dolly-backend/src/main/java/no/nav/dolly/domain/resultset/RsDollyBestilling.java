@@ -42,37 +42,21 @@ public class RsDollyBestilling {
 
     @Schema(description = "Navn på malbestillling")
     private String malBestillingNavn;
-
     private RsPdldata pdlforvalter;
-
     private PdlPersondata pdldata;
-
     private RsDigitalKontaktdata krrstub;
-
     private List<RsInstdata> instdata;
-
     private List<RsAareg> aareg;
-
     private List<OpprettSkattegrunnlag> sigrunstub;
-
     private InntektMultiplierWrapper inntektstub;
-
     private Arenadata arenaforvalter;
-
     private RsUdiPerson udistub;
-
     private PensjonData pensjonforvalter;
-
     private RsInntektsmelding inntektsmelding;
-
     private RsBregdata brregstub;
-
     private RsDokarkiv dokarkiv;
-
     private RsSykemelding sykemelding;
-
     private RsTpsMessaging tpsMessaging;
-
     private RsSkjerming skjerming;
 
     public List<RsAareg> getAareg() {

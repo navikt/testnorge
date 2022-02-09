@@ -17,4 +17,5 @@ public class HentPersonModel {
     List<StatsborgerskapModel> statsborgerskap;
     List<UtflyttingFraNorgeModel> utflyttingFraNorge;
     List<InnflyttingTilNorgeModel> innflyttingTilNorge;
+    List<PersonstatusModel> folkeregisterpersonstatus;
 }

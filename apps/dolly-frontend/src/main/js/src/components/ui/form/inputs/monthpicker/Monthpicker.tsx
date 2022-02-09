@@ -27,6 +27,7 @@ export const Monthpicker = ({
 		const feilmelding = _get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
+	const formattedDate = date instanceof Date || date === null ? date : new Date(date)
 
 	return (
 		<InputWrapper size={'medium'}>
@@ -35,7 +36,7 @@ export const Monthpicker = ({
 					className={'skjemaelement__input'}
 					locale="nb"
 					dateFormat="yyyy-MM"
-					selected={date}
+					selected={formattedDate}
 					onChange={handleDateChange}
 					placeholderText={'yyyy-MM'}
 					showMonthYearPicker

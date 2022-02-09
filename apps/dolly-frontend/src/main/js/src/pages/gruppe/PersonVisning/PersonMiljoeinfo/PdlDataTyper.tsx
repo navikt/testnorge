@@ -131,3 +131,15 @@ export type KodeverkValues = {
 	label: string
 	value: string
 }
+
+export type InnvandringValues = {
+	fraflyttingsland: string
+	fraflyttingsstedIUtlandet: string
+	innflyttingsdato: string
+}
+
+export type UtvandringValues = {
+	tilflyttingsland: string
+	tilflyttingsstedIUtlandet: string
+	utflyttingsdato: string
+}
