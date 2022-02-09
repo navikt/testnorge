@@ -24,12 +24,17 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 			const dateValue = val
 			const path = this.path.substring(0, this.path.lastIndexOf('.'))
 			const values = this.options.context
+			const personFoerLeggTil = values.personFoerLeggTil
 
 			if (validateFomBasedOnAge) {
 				const inntektFom = val
 				let alder = _get(values, 'tpsf.alder')
-				if (values.personFoerLeggTil) {
-					alder = calculate_age(new Date(values.personFoerLeggTil.tpsf.foedselsdato))
+
+				if (personFoerLeggTil?.tpsf?.foedselsdato) {
+					alder = calculate_age(new Date(personFoerLeggTil.tpsf.foedselsdato))
+				} else if (personFoerLeggTil?.pdl) {
+					const foedselsdato = personFoerLeggTil?.pdl?.data?.hentPerson?.foedsel?.[0]?.foedselsdato
+					if (foedselsdato) alder = calculate_age(new Date(foedselsdato))
 				}
 
 				const foedtFoer = new Date(_get(values, 'tpsf.foedtFoer'))
@@ -65,8 +70,11 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 
 				let doedsdato = _get(values, 'tpsf.doedsdato')
 
-				if (values.personFoerLeggTil && values.personFoerLeggTil.tpsf.doedsdato) {
+				if (personFoerLeggTil?.tpsf?.doedsdato) {
 					doedsdato = values.personFoerLeggTil.tpsf.doedsdato
+				} else if (personFoerLeggTil?.pdl) {
+					const pdlDoedsdato = personFoerLeggTil?.pdl?.data?.hentPerson?.doedsfall?.[0]?.doedsdato
+					if (pdlDoedsdato) doedsdato = pdlDoedsdato
 				}
 
 				if (!_isNil(doedsdato)) {

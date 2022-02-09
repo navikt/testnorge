@@ -1,18 +1,7 @@
 import React from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinfo'
-import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
-import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
-import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
-import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
-import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
-import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
-import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
-import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
-import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
-import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
+import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
 import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
@@ -22,52 +11,18 @@ import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partia
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 
-export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
+type PdlDataVisningProps = {
+	pdlData: PdlDataWrapper
+}
+
+export const PdlDataVisning = ({ pdlData }: PdlDataVisningProps) => {
+	const data = pdlData.data
 	if (!data || !data.hentPerson) {
 		return null
 	}
 
-	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
-	const {
-		foedsel,
-		telefonnummer,
-		vergemaalEllerFremtidsfullmakt,
-		tilrettelagtKommunikasjon,
-		bostedsadresse,
-		oppholdsadresse,
-		kontaktadresse,
-		adressebeskyttelse,
-		fullmakt,
-		sikkerhetstiltak,
-		sivilstand,
-		forelderBarnRelasjon,
-		kontaktinformasjonForDoedsbo,
-		doedfoedtBarn,
-	} = hentPerson
-
 	const getPersonInfo = () => {
-		return (
-			<div className="boks">
-				<PdlPersonInfo data={hentPerson} />
-				<IdentInfo pdlResponse={hentIdenter} />
-				<GeografiskTilknytning data={hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={hentPerson} />
-				<Foedsel data={foedsel} />
-				<Telefonnummer data={telefonnummer} />
-				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
-				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
-				<Boadresse data={bostedsadresse} />
-				<Oppholdsadresse data={oppholdsadresse} />
-				<Kontaktadresse data={kontaktadresse} />
-				<Adressebeskyttelse data={adressebeskyttelse} />
-				<PdlFullmakt data={fullmakt} />
-				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
-				<SivilstandVisning data={sivilstand} relasjoner={null} />
-				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={null} />
-				<DoedfoedtBarnVisning data={doedfoedtBarn} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
-			</div>
-		)
+		return <PdlVisning pdlData={pdlData} />
 	}
 
 	return (
