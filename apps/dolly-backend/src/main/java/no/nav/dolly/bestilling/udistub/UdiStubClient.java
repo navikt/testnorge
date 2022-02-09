@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.udistub;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -31,6 +32,8 @@ public class UdiStubClient implements ClientRegister {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
+            log.info("Bestilling: {}", Json.pretty(bestilling));
+            log.info("DollyPerson: {}", Json.pretty(dollyPerson));
 
             try {
                 UdiPersonResponse eksisterendeUdiPerson = udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson());
@@ -45,10 +48,8 @@ public class UdiStubClient implements ClientRegister {
                 status.append("OK");
 
             } catch (RuntimeException e) {
-
                 status.append(errorStatusDecoder.decodeRuntimeException(e));
             }
-
             progress.setUdistubStatus(status.toString());
         }
     }
