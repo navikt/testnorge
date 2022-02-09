@@ -9,10 +9,6 @@ import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnecto
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 
-export const getRandomSeed = () => {
-	return Math.random() + ''
-}
-
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
 	const [page, setPage] = useState(1)
@@ -21,7 +17,7 @@ export default () => {
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
-	const [randomSeed, setRandomSeed] = useState(getRandomSeed)
+	const [randomSeed, setRandomSeed] = useState(Math.random() + '')
 
 	const search = (searchPage: number, seed: string, values: any) => {
 		setStartedSearch(true)
@@ -35,7 +31,7 @@ export default () => {
 	}
 
 	const onSubmit = (values: any) => {
-		const seed = getRandomSeed()
+		const seed = Math.random() + ''
 		search(1, seed, values)
 		setValgtePersoner([])
 		setRandomSeed(seed)
