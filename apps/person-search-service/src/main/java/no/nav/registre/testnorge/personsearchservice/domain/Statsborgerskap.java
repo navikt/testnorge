@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.personsearchservice.domain;
 import lombok.RequiredArgsConstructor;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.model.StatsborgerskapModel;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.StatsborgerskapDTO;
 
 @RequiredArgsConstructor
 public class Statsborgerskap implements WithDTO<StatsborgerskapDTO> {

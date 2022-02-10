@@ -3,8 +3,7 @@ package no.nav.registre.testnorge.personsearchservice.controller.search;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-
-import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
+import no.nav.testnav.libs.dto.personsearchservice.v1.Pageing;
 
 import java.util.List;
 

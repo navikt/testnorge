@@ -10,9 +10,9 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.NavnModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
 
 public class Person {
     private final Response response;
