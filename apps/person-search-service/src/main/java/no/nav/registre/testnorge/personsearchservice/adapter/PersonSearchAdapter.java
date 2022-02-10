@@ -76,7 +76,8 @@ public class PersonSearchAdapter {
         var searchSourceBuilder = new SearchSourceBuilder();
         Pageing page = search.getPageing();
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
-        searchSourceBuilder.timeout(new TimeValue(1, TimeUnit.SECONDS));
+        searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+        searchSourceBuilder.terminateAfter(100);
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
         searchRequest.source(searchSourceBuilder);
