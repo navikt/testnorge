@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.HentVedtakshistorikkCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Slf4j
 @Component
 public class SyntVedtakshistorikkConsumer {
 

@@ -33,3 +33,8 @@ consumers:
     namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+  person-search-service:
+    cluster: dev-fss
+    namespace: dolly
+    name: person-search-service
+    url: https://person-search-service.dev-fss-pub.nais.io

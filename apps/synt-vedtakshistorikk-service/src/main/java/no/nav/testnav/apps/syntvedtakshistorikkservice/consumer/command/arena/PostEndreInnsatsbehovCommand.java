@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
@@ -36,6 +37,7 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
                     .header(CALL_ID, NAV_CALL_ID)
                     .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(AUTHORIZATION, "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                     .retrieve()
                     .bodyToMono(EndreInnsatsbehovResponse.class);

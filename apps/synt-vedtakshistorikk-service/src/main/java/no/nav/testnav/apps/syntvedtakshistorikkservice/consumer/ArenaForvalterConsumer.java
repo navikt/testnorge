@@ -100,8 +100,7 @@ public class ArenaForvalterConsumer {
                         getQueryParams(personident, eier, miljoe, null), accessToken.getTokenValue(), webClient).call())
                 .block();
         if (response != null) {
-            var arbeidssoekere = gaaGjennomSider(personident, eier, miljoe, response.getAntallSider(), response.getArbeidsoekerList().size());
-            return arbeidssoekere;
+            return gaaGjennomSider(personident, eier, miljoe, response.getAntallSider(), response.getArbeidsoekerList().size());
         } else {
             return new ArrayList<>();
         }
