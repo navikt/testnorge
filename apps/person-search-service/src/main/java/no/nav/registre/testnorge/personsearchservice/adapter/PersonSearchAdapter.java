@@ -50,25 +50,6 @@ public class PersonSearchAdapter {
         }).toList();
     }
 
-    private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
-        getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
-                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.foedsel",
-                                rangeQueryBuilder,
-                                ScoreMode.Avg
-                        ))
-                );
-    }
-
-    private void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
-        LocalDate now = LocalDate.now();
-
-        LocalDate tom = now.minusYears(fra == null ? 0 : fra).plusMonths(12).minusDays(1);
-        LocalDate fom = til != null ? now.minusYears(til).minusMonths(12) : null;
-
-        queryFoedselsdato(fom, tom, queryBuilder);
-    }
-
     @SneakyThrows
     public PersonList search(PersonSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
@@ -95,7 +76,7 @@ public class PersonSearchAdapter {
         var searchSourceBuilder = new SearchSourceBuilder();
         Pageing page = search.getPageing();
         searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
-        searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+        searchSourceBuilder.timeout(new TimeValue(2, TimeUnit.SECONDS));
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
         searchRequest.source(searchSourceBuilder);
@@ -111,6 +92,25 @@ public class PersonSearchAdapter {
                 searchResponse.getHits().getTotalHits().value,
                 responses.stream().map(Person::new).toList()
         );
+    }
+
+    private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
+        getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
+                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.foedsel",
+                                rangeQueryBuilder,
+                                ScoreMode.Avg
+                        ))
+                );
+    }
+
+    private void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
+        LocalDate now = LocalDate.now();
+
+        LocalDate tom = now.minusYears(fra == null ? 0 : fra).plusMonths(12).minusDays(1);
+        LocalDate fom = til != null ? now.minusYears(til).minusMonths(12) : null;
+
+        queryFoedselsdato(fom, tom, queryBuilder);
     }
 
     private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
