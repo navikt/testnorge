@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class StatsborgerskapDTO {
-    String land;
+    List<String> land;
 }

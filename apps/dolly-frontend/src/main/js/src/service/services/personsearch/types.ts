@@ -56,6 +56,6 @@ export type Person = {
 		type?: string
 	}
 	statsborgerskap?: {
-		land?: string
+		land?: string[]
 	}
 }
