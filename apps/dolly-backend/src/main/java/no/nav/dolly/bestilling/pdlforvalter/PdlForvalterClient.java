@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -145,6 +146,8 @@ public class PdlForvalterClient implements ClientRegister {
     private void hentPersondetaljer(DollyPerson dollyPerson) {
 
         dollyPersonCache.fetchIfEmpty(dollyPerson);
+
+        log.info("Dollyperson: {}", Json.pretty(dollyPerson));
 
         dollyPerson.getPersondetaljer()
                 .forEach(person -> person.getRelasjoner().forEach(relasjon ->
