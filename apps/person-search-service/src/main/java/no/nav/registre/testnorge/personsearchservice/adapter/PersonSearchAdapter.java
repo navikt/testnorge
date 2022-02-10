@@ -76,7 +76,7 @@ public class PersonSearchAdapter {
         int page = search.getPage();
         int pageSize = search.getPageSize();
         searchSourceBuilder.from((page - 1) * pageSize);
-        searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
+        searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.SECONDS));
         searchSourceBuilder.size(pageSize);
         searchSourceBuilder.query(queryBuilder);
         Optional.ofNullable(search.getTerminateAfter())
@@ -110,8 +110,8 @@ public class PersonSearchAdapter {
     private void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
         LocalDate now = LocalDate.now();
 
-        LocalDate tom = now.minusYears(fra == null ? 0 : fra).plusMonths(12).minusDays(1);
-        LocalDate fom = til != null ? now.minusYears(til).minusMonths(12) : null;
+        LocalDate tom = fra != null ? now.minusYears(fra).minusMonths(3) : now.minusMonths(3);
+        LocalDate fom = til != null ? now.minusYears(til).minusYears(1) : null;
 
         queryFoedselsdato(fom, tom, queryBuilder);
     }

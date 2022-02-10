@@ -34,12 +34,7 @@ export const initialValues = {
 	},
 }
 
-export const getSearchValues = (
-	page: number,
-	pageSize: number,
-	randomSeed: string,
-	values: any
-) => {
+export const getSearchValues = (randomSeed: string, values: any) => {
 	let identer = values?.personinformasjon?.identer ? [...values.personinformasjon.identer] : []
 	if (values?.personinformasjon?.ident?.ident) {
 		identer.push(values?.personinformasjon?.ident?.ident)
@@ -47,9 +42,10 @@ export const getSearchValues = (
 	}
 
 	return {
-		page: page,
-		pageSize: pageSize,
+		page: 1,
+		pageSize: 100,
 		randomSeed: randomSeed,
+		terminateAfter: 100,
 		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
 		foedsel: {
 			fom: values?.personinformasjon?.alder?.foedselsdato?.fom,

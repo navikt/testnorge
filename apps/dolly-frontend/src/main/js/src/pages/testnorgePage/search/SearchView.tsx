@@ -17,9 +17,6 @@ type Props = {
 	loading: boolean
 	valgtePersoner: string[]
 	setValgtePersoner: (personer: string[]) => void
-	pageing: Pageing
-	numberOfItems?: number
-	onChange?: (page: number) => void
 	importerPersoner: (valgtePersoner: string[]) => void
 }
 
@@ -28,21 +25,7 @@ const SearchView = styled.div`
 	flex-direction: column;
 `
 
-const SearchPagination = styled(Pagination)`
-	display: flex;
-	align-self: center;
-`
-
-export default ({
-	items,
-	loading,
-	valgtePersoner,
-	setValgtePersoner,
-	pageing,
-	numberOfItems,
-	onChange,
-	importerPersoner,
-}: Props) => {
+export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPersoner }: Props) => {
 	if (loading) return <Loading label="Søker..." />
 	if (!items || items.length === 0) {
 		return (
@@ -122,12 +105,7 @@ export default ({
 					person?.kjoenn === 'MANN' ? <ManIconItem /> : <WomanIconItem />
 				}
 				onExpand={(person: Person) => <PersonView person={person} />}
-			/>
-			<SearchPagination
-				currentPage={pageing.page}
-				numberOfItems={numberOfItems || pageing.page * pageing.pageSize}
-				itemsPerPage={pageing.pageSize}
-				onChange={onChange}
+				pagination
 			/>
 			<div className="flexbox--align-center--justify-end">
 				<NavButton
