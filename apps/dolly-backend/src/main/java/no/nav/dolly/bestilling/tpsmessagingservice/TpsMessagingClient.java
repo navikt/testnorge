@@ -21,7 +21,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-@Order(7)
+@Order(6)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
