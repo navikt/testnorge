@@ -88,6 +88,14 @@ public class PdlForvalterClient implements ClientRegister {
                 .append(utenlandsIdentifikasjonsnummer);
     }
 
+    private static boolean hasNoPdldataAdresse(PersonDTO person) {
+
+        return nonNull(person) &&
+                person.getBostedsadresse().isEmpty() &&
+                person.getKontaktadresse().isEmpty() &&
+                person.getOppholdsadresse().isEmpty();
+    }
+
     private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
     }
@@ -332,7 +340,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendOppholdsadresse(Person person, PersonDTO persondata, boolean erHovedperson) {
 
-        if (!erHovedperson || isNull(persondata) || persondata.getOppholdsadresse().isEmpty()) {
+        if (!erHovedperson || hasNoPdldataAdresse(persondata)) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty(PERSON, person);
@@ -343,7 +351,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendBostedadresse(Person person, PersonDTO persondata, boolean erHovedperson) {
 
-        if (!erHovedperson || isNull(persondata) || persondata.getBostedsadresse().isEmpty()) {
+        if (!erHovedperson || hasNoPdldataAdresse(persondata)) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty(PERSON, person);
@@ -363,7 +371,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendKontaktadresse(Person person, PersonDTO persondata, boolean erHovedperson) {
 
-        if (!erHovedperson || isNull(persondata) || persondata.getKontaktadresse().isEmpty()) {
+        if (!erHovedperson || hasNoPdldataAdresse(persondata)) {
 
             var context = new MappingContext.Factory().getContext();
             context.setProperty(PERSON, person);
