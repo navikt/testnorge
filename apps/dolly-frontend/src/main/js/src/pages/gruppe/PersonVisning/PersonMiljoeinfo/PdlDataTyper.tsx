@@ -1,6 +1,7 @@
 import React from 'react'
 import {
 	DoedfoedtBarn,
+	FoedselData,
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
@@ -24,7 +25,7 @@ export type Ident = {
 }
 
 export type HentPerson = {
-	foedsel: Array<Foedsel>
+	foedsel: [FoedselData]
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<Oppholdsadresse>
 	kontaktadresse: Array<Kontaktadresse>
@@ -228,7 +229,7 @@ export type UtflyttingFraNorge = {
 	metadata: Metadata
 }
 
-type Foedsel = {
+export type Foedsel = {
 	foedselsaar: string
 	foedselsdato: string
 	foedeland: string
@@ -252,4 +253,14 @@ export type UtvandringValues = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
+}
+
+export type Kodeverk = {
+	values: Array<Array<KodeverkValues>>
+}
+
+export type KodeverkValues = {
+	data: string
+	label: string
+	value: string
 }

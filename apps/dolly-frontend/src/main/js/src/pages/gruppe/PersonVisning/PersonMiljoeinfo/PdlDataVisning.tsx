@@ -4,13 +4,6 @@ import 'rc-tooltip/assets/bootstrap_white.css'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
-import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
-import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
-import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
-import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
-import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
-import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
-import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 
 type PdlDataVisningProps = {
 	pdlData: PdlDataWrapper
