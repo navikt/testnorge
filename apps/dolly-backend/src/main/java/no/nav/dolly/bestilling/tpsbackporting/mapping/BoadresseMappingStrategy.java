@@ -9,9 +9,12 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -60,10 +63,15 @@ public class BoadresseMappingStrategy implements MappingStrategy {
                                                .postLinje1(isNotBlank(source.getUtenlandskAdresse().getAdressenavnNummer()) ?
                                                        source.getUtenlandskAdresse().getAdressenavnNummer() :
                                                        source.getUtenlandskAdresse().getPostboksNummerNavn())
-                                               .postLinje2(source.getUtenlandskAdresse().getBySted() +
-                                                       (isNotBlank(source.getUtenlandskAdresse().getPostkode()) ?
-                                                               (" " + source.getUtenlandskAdresse().getPostkode()) : ""))
-                                               .postLinje3(source.getUtenlandskAdresse().getRegionDistriktOmraade())
+                                               .postLinje2(Stream.of(source.getUtenlandskAdresse().getBySted(),
+                                                               source.getUtenlandskAdresse().getPostkode())
+                                                       .filter(StringUtils::isNotBlank)
+                                                       .collect(Collectors.joining(" ")))
+                                               .postLinje3(Stream.of(source.getUtenlandskAdresse().getRegion(),
+                                                               source.getUtenlandskAdresse().getRegionDistriktOmraade(),
+                                                               source.getUtenlandskAdresse().getDistriktsnavn())
+                                                       .filter(StringUtils::isNotBlank)
+                                                       .collect(Collectors.joining(" ")))
                                                .postLand(source.getUtenlandskAdresse().getLandkode())
                                                .build()));
                                    }
