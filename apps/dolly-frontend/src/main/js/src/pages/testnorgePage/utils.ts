@@ -49,7 +49,6 @@ export const getSearchValues = (
 	return {
 		page: page,
 		pageSize: pageSize,
-		terminateAfter: 100,
 		randomSeed: randomSeed,
 		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
 		foedsel: {
