@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.personsearchservice.controller.search;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.testnav.libs.dto.personsearchservice.v1.Pageing;
 
 import java.util.List;
 
@@ -11,7 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PersonSearch {
-    Pageing pageing;
+    Integer page;
+    Integer pageSize;
+    Integer terminateAfter;
     String tag;
     String excludeTag;
     String kjoenn;

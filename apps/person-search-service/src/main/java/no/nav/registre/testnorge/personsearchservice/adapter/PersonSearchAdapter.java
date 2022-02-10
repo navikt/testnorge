@@ -30,7 +30,6 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.testnav.libs.dto.personsearchservice.v1.Pageing;
 
 
 @Slf4j
@@ -74,12 +73,15 @@ public class PersonSearchAdapter {
         searchRequest.indices("pdl-sok");
 
         var searchSourceBuilder = new SearchSourceBuilder();
-        Pageing page = search.getPageing();
-        searchSourceBuilder.from((page.getPage() - 1) * page.getPageSize());
+        int page = search.getPage();
+        int pageSize = search.getPageSize();
+        searchSourceBuilder.from((page - 1) * pageSize);
         searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
-        searchSourceBuilder.terminateAfter(100);
-        searchSourceBuilder.size(page.getPageSize());
+        searchSourceBuilder.size(pageSize);
         searchSourceBuilder.query(queryBuilder);
+        Optional.ofNullable(search.getTerminateAfter())
+                .ifPresent(searchSourceBuilder::terminateAfter);
+
         searchRequest.source(searchSourceBuilder);
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
