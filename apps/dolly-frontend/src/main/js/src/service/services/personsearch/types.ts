@@ -4,7 +4,9 @@ export type Pageing = {
 }
 
 export type Search = {
-	pageing: Pageing
+	page: number
+	pageSize: number
+	terminateAfter: number
 	tag: string
 	excludeTag: string
 	kjoenn?: string

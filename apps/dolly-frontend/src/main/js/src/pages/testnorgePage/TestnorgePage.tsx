@@ -12,7 +12,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
 	const [page, setPage] = useState(1)
-	const [pageSize] = useState(20)
+	const [pageSize] = useState(10)
 	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
