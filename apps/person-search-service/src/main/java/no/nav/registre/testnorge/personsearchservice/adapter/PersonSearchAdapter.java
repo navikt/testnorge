@@ -18,8 +18,6 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.elasticsearch.search.sort.ScoreSortBuilder;
-import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -81,7 +79,6 @@ public class PersonSearchAdapter {
         searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         searchSourceBuilder.size(pageSize);
         searchSourceBuilder.query(queryBuilder);
-        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         Optional.ofNullable(search.getTerminateAfter())
                 .ifPresent(searchSourceBuilder::terminateAfter);
 
