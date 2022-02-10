@@ -8,6 +8,7 @@ import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import { Exception } from 'sass'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
@@ -18,16 +19,23 @@ export default () => {
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
 	const [randomSeed, setRandomSeed] = useState(Math.random() + '')
+	const [error, setError] = useState(null)
 
 	const search = (searchPage: number, seed: string, values: any) => {
+		setError(null)
 		setStartedSearch(true)
 		setLoading(true)
-		PersonSearch.search(getSearchValues(searchPage, pageSize, seed, values)).then((response) => {
-			setPage(searchPage)
-			setItems(response.items)
-			setNumberOfItems(response.numerOfItems)
-			setLoading(false)
-		})
+		PersonSearch.search(getSearchValues(searchPage, pageSize, seed, values))
+			.then((response) => {
+				setPage(searchPage)
+				setItems(response.items)
+				setNumberOfItems(response.numerOfItems)
+				setLoading(false)
+			})
+			.catch((e: Exception) => {
+				setLoading(false)
+				setError('Noe gikk galt med søket. Ta kontakt med Dolly hvis feilen vedvarer.')
+			})
 	}
 
 	const onSubmit = (values: any) => {
@@ -59,8 +67,9 @@ export default () => {
 						left={<SearchOptions formikBag={formikBag} />}
 						right={
 							<>
+								{error && <ContentContainer>{error}</ContentContainer>}
 								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
-								{startedSearch && (
+								{startedSearch && !error && (
 									<SearchViewConnector
 										items={items}
 										loading={loading}
