@@ -158,7 +158,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 		if (alder || foedtEtter || foedtFoer) data.push(nyPersonData)
 	}
-
+	console.log('bestillingData', bestillingData)
 	if (pdldataKriterier) {
 		const {
 			foedsel,
@@ -183,7 +183,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			vergemaal,
 			forelderBarnRelasjon,
 			doedfoedtBarn,
-			nyIdent,
+			nyident,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -730,11 +730,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(utenlandskIdentData)
 		}
 
-		if (nyIdent) {
-			console.log('nyIdent', nyIdent)
-			const nyIdentData = {
+		if (nyident) {
+			const nyidentData = {
 				header: 'Ny identitet',
-				itemRows: nyIdent.map((item, idx) => {
+				itemRows: nyident.map((item, idx) => {
 					return [
 						{
 							numberHeader: `Ny identitet ${idx + 1}`,
@@ -750,7 +749,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					]
 				}),
 			}
-			data.push(nyIdentData)
+			data.push(nyidentData)
 		}
 
 		if (kontaktinformasjonForDoedsbo) {

@@ -17,7 +17,7 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
 				{/*TODO: bare på legg til??*/}
-				<Attributt attr={sm.attrs.nyIdent} />
+				<Attributt attr={sm.attrs.nyident} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -57,14 +57,14 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 			]),
 		remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),
 	},
-	nyIdent: {
+	nyident: {
 		label: 'Har ny ident',
-		checked: has('pdldata.person.nyIdent'),
+		checked: has('pdldata.person.nyident'),
 		add() {
-			set('pdldata.person.nyIdent', [initialNyIdent])
+			set('pdldata.person.nyident', [initialNyIdent])
 		},
 		remove() {
-			del('pdldata.person.nyIdent')
+			del('pdldata.person.nyident')
 		},
 	},
 })

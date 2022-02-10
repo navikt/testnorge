@@ -17,7 +17,7 @@ interface IdentifikasjonValues {
 const identifikasjonAttributter = [
 	'pdldata.person.falskIdentitet',
 	'pdldata.person.utenlandskIdentifikasjonsnummer',
-	'pdldata.person.nyIdent',
+	'pdldata.person.nyident',
 ]
 
 export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
@@ -49,7 +49,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				>
 					<UtenlandsId />
 				</Kategori>
-				<Kategori title="Ny identitet" vis="pdldata.person.nyIdent">
+				<Kategori title="Ny identitet" vis="pdldata.person.nyident">
 					<NyIdent formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 			</Panel>

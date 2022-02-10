@@ -14,7 +14,7 @@ interface NyIdentForm {
 
 export const NyIdent = ({ formikBag, identOptions }: NyIdentForm) => (
 	<FormikDollyFieldArray
-		name="pdldata.person.nyIdent"
+		name="pdldata.person.nyident"
 		header="Ny identitet"
 		newEntry={initialNyIdent}
 		canBeEmpty={false}

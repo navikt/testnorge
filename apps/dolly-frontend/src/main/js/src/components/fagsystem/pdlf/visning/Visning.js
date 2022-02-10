@@ -16,6 +16,7 @@ import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning
 import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
@@ -56,6 +57,7 @@ export const PdlfVisning = ({ data, loading }) => {
 				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
+				<IdenthistorikkVisning relasjoner={data.relasjoner} />
 				<KontaktinformasjonForDoedsbo
 					data={kontaktinformasjonForDoedsbo}
 					relasjoner={data.relasjoner}
