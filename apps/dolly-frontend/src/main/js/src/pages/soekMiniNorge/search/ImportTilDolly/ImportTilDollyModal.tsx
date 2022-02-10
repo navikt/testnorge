@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { DollyApi } from '~/service/Api'
-import { VelgGruppeToggle } from './gruppe/VelgGruppeToggle'
+import { VelgGruppeToggle } from '~/components/velgGruppe/VelgGruppeToggle'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import useBoolean from '~/utils/hooks/useBoolean'
 

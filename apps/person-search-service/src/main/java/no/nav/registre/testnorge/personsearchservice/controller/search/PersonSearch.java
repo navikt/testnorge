@@ -16,6 +16,9 @@ public class PersonSearch {
     String tag;
     String excludeTag;
     String kjoenn;
+    String randomSeed;
+    Boolean kunLevende;
+    Boolean kunDoede;
     List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
@@ -25,4 +28,5 @@ public class PersonSearch {
     InnflyttingTilNorgeSearch innflyttingTilNorge;
     IdentitetSearch identitet;
     BarnSearch barn;
+    PersonstatusSearch personstatus;
 }

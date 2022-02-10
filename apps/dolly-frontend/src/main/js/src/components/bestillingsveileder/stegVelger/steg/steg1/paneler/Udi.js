@@ -2,7 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 
-export const UdiPanel = ({ stateModifier }) => {
+export const UdiPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
 
 	const infoTekst =
@@ -26,7 +26,7 @@ export const UdiPanel = ({ stateModifier }) => {
 			</AttributtKategori>
 
 			<AttributtKategori title="Alias">
-				<Attributt attr={sm.attrs.aliaser} />
+				<Attributt disabled={testnorgeIdent} attr={sm.attrs.aliaser} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Annet">

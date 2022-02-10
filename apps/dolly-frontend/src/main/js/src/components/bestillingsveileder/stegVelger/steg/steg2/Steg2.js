@@ -19,16 +19,25 @@ import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/Doka
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
 
+const getEmptyMessage = (leggTil, importTestnorge) => {
+	if (leggTil) {
+		return 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
+	} else if (importTestnorge) {
+		return (
+			'Du har ikke lagt til egenskaper. Dolly vil importere valgt Testnorge person(er) til ' +
+			'gruppe du velger i neste steg.'
+		)
+	}
+	return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
+}
+
 export const Steg2 = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const leggTil = opts.is.leggTil
+	const importTestnorge = opts.is.importTestnorge
 
 	if (!harAvhukedeAttributter(formikBag.values)) {
-		const message = leggTil
-			? 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
-			: 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
-
-		return <AlertStripeInfo>{message}</AlertStripeInfo>
+		return <AlertStripeInfo>{getEmptyMessage(leggTil, importTestnorge)}</AlertStripeInfo>
 	}
 
 	return (
