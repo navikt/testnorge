@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+
 
 @RestController
 @RequestMapping("/api/v1/person")

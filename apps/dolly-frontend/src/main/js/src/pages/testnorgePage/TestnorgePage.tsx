@@ -8,33 +8,34 @@ import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import { Exception } from 'sass'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
-	const [page, setPage] = useState(1)
-	const [pageSize] = useState(20)
-	const [numberOfItems, setNumberOfItems] = useState<number | null>(null)
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
-	const [randomSeed, setRandomSeed] = useState(Math.random() + '')
+	const [error, setError] = useState(null)
 
-	const search = (searchPage: number, seed: string, values: any) => {
+	const search = (seed: string, values: any) => {
+		setError(null)
 		setStartedSearch(true)
 		setLoading(true)
-		PersonSearch.search(getSearchValues(searchPage, pageSize, seed, values)).then((response) => {
-			setPage(searchPage)
-			setItems(response.items)
-			setNumberOfItems(response.numerOfItems)
-			setLoading(false)
-		})
+		PersonSearch.search(getSearchValues(seed, values))
+			.then((response) => {
+				setItems(response.items)
+				setLoading(false)
+			})
+			.catch((e: Exception) => {
+				setLoading(false)
+				setError('Noe gikk galt med søket. Ta kontakt med Dolly hvis feilen vedvarer.')
+			})
 	}
 
 	const onSubmit = (values: any) => {
 		const seed = Math.random() + ''
-		search(1, seed, values)
+		search(seed, values)
 		setValgtePersoner([])
-		setRandomSeed(seed)
 	}
 
 	return (
@@ -50,7 +51,8 @@ export default () => {
 				Testnorge er tilgjengelig i PDL.
 				<br />
 				<br />
-				Søket viser kun Testnorge-identer som ikke allerede er importert til en gruppe i Dolly.
+				Søket returnerer maks 100 tilfeldige Testnorge-identer som passer søkekriteriene og som ikke
+				allerede er importert til en gruppe i Dolly.
 			</p>
 
 			<Formik initialValues={initialValues} onSubmit={onSubmit}>
@@ -59,19 +61,14 @@ export default () => {
 						left={<SearchOptions formikBag={formikBag} />}
 						right={
 							<>
+								{error && <ContentContainer>{error}</ContentContainer>}
 								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
-								{startedSearch && (
+								{startedSearch && !error && (
 									<SearchViewConnector
 										items={items}
 										loading={loading}
 										valgtePersoner={valgtePersoner}
 										setValgtePersoner={setValgtePersoner}
-										pageSize={pageSize}
-										page={page}
-										numberOfItems={numberOfItems}
-										onChange={(pageNumber: number) =>
-											search(pageNumber, randomSeed, formikBag.values)
-										}
 									/>
 								)}
 							</>
