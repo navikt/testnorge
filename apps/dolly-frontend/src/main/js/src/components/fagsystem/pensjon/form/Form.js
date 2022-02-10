@@ -42,7 +42,7 @@ export const PensjonForm = ({ formikBag }) => (
 						isClearable={false}
 					/>
 
-					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" fastfield={false} />
+					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" fastfield="false" />
 
 					<FormikCheckbox
 						name={`${path}.redusertMedGrunnbelop`}

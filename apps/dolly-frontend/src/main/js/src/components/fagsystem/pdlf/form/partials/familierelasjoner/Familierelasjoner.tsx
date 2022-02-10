@@ -9,6 +9,7 @@ import { FormikProps } from 'formik'
 import { DoedfoedtBarn } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { ForelderBarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { Sivilstand } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
+import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
 
 const relasjonerAttributter = [
 	'pdldata.person.sivilstand',
@@ -19,12 +20,15 @@ const relasjonerAttributter = [
 export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { gruppeId } = opts
+	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
 	useEffect(() => {
-		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
-			setIdentOptions(response)
-		)
+		if (!isTestnorgeIdent) {
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
+				setIdentOptions(response)
+			)
+		}
 	}, [])
 
 	return (

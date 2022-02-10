@@ -49,24 +49,37 @@ type Adressebeskyttelse = {
 }
 
 export type Sivilstand = {
-	relatertVedSivilstand: string
-	id: number
 	type: string
-	sivilstandsdato?: string
 	gyldigFraOgMed?: string
+	relatertVedSivilstand: string
 	bekreftelsesdato?: string
+	id?: number
+	sivilstandsdato?: string
+	metadata: Metadata
+}
+
+export type Metadata = {
+	historisk: boolean
+}
+
+export enum Rolle {
+	BARN = 'BARN',
+	MOR = 'MOR',
+	FAR = 'FAR',
+	FORELDER = 'FORELDER',
+	MEDMOR = 'MEDMOR',
 }
 
 export type ForeldreBarnRelasjon = {
-	id: number
-	minRolleForPerson: string
-	relatertPerson: string
+	id?: number
+	minRolleForPerson: Rolle
+	relatertPerson?: string
 	relatertPersonsIdent: string
-	relatertPersonsRolle: string
+	relatertPersonsRolle: Rolle
 }
 
 export type DoedfoedtBarn = {
-	id: number
+	id?: number
 	dato: Date
 }
 

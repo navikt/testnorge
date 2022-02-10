@@ -22,6 +22,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
+import { getAlder } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/utils'
 
 export const actions = createActions(
 	{
@@ -244,7 +245,7 @@ export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
 	let identListe = []
 	Object.values(state.gruppe?.ident)?.forEach((person) => {
-		if (!person.master || person.master !== 'PDLF') {
+		if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
 			identListe.push(person.ident)
 		}
 	})
@@ -257,7 +258,12 @@ export const fetchPdlPersoner = () => (dispatch, getState) => {
 	let identListe = []
 	Object.values(state.gruppe?.ident)?.forEach((person) => identListe.push(person.ident))
 
-	if (identListe && identListe.length >= 1) dispatch(actions.getPdlForvalter(identListe))
+	if (identListe && identListe.length >= 1) {
+		dispatch(actions.getPdlForvalter(identListe))
+		for (const ident of identListe) {
+			dispatch(actions.getPDL(ident))
+		}
+	}
 }
 
 /**
@@ -390,7 +396,8 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 export const selectPersonListe = (state) => {
 	const { gruppe, fagsystem } = state
 
-	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter)) return null
+	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+		return null
 
 	// Sortert etter bestillingsId
 	const identer = Object.values(gruppe.ident)
@@ -402,59 +409,111 @@ export const selectPersonListe = (state) => {
 		.filter(
 			(gruppeIdent) =>
 				Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident) ||
-				Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident)
+				Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident) ||
+				Object.keys(fagsystem.pdl).includes(gruppeIdent.ident)
 		)
 
 	return identer.map((ident) => {
-		const tpsfIdent = fagsystem.tpsf[ident.ident]
-		const pdlIdent = fagsystem.pdlforvalter[ident.ident]?.person
-		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
-		const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
-			? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`
-			: ''
-
-		const pdlAlder = (foedselsdato) => {
-			if (!foedselsdato) return null
-			const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
-			return Math.abs(diff.getUTCFullYear() - 1970)
+		if (ident.master === 'TPSF') {
+			const tpsfIdent = fagsystem.tpsf[ident.ident]
+			return getTpsfIdentInfo(ident, state, tpsfIdent)
+		} else if (ident.master === 'PDLF') {
+			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
+			return getPdlfIdentInfo(ident, state, pdlfIdent)
+		} else if (ident.master === 'PDL') {
+			const pdlData = fagsystem.pdl[ident.ident].data
+			return getPdlIdentInfo(ident, state, pdlData)
+		} else {
+			return null
 		}
-
-		if (ident.master !== 'PDLF' && ident.master !== 'PDL' && !tpsfIdent) return null
-
-		return ident.master === 'PDLF' || ident.master === 'PDL'
-			? {
-					ident,
-					identNr: pdlIdent?.ident,
-					bestillingId: ident.bestillingId,
-					identtype: 'FNR',
-					kilde: 'PDL',
-					navn: `${pdlIdent?.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent?.navn?.[0]?.etternavn}`,
-					kjonn: pdlIdent?.kjoenn?.[0]?.kjoenn,
-					alder: Formatters.formatAlder(
-						pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
-						pdlIdent?.doedsfall?.[0]?.doedsdato
-					),
-					status: hentPersonStatus(
-						ident.ident,
-						state.bestillingStatuser.byId[ident.bestillingId[0]]
-					),
-			  }
-			: {
-					ident,
-					identNr: tpsfIdent?.ident,
-					bestillingId: ident?.bestillingId,
-					importFra: tpsfIdent?.importFra,
-					identtype: tpsfIdent?.identtype,
-					kilde: 'TPS',
-					navn: `${tpsfIdent?.fornavn} ${mellomnavn} ${tpsfIdent?.etternavn}`,
-					kjonn: Formatters.kjonn(tpsfIdent?.kjonn, tpsfIdent?.alder),
-					alder: Formatters.formatAlder(tpsfIdent?.alder, tpsfIdent?.doedsdato),
-					status: hentPersonStatus(
-						ident?.ident,
-						state.bestillingStatuser.byId[ident?.bestillingId[0]]
-					),
-			  }
 	})
+}
+
+const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
+	if (!tpsfIdent) return null
+	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
+	return {
+		ident,
+		identNr: tpsfIdent.ident,
+		bestillingId: ident.bestillingId,
+		importFra: tpsfIdent.importFra,
+		identtype: tpsfIdent.identtype,
+		kilde: 'TPS',
+		navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
+		kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
+		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
+	}
+}
+
+const getPdlfIdentInfo = (ident, state, pdlIdent) => {
+	if (!pdlIdent) return null
+
+	const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
+		? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`
+		: ''
+
+	const pdlAlder = (foedselsdato) => {
+		if (!foedselsdato) return null
+		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
+		return Math.abs(diff.getUTCFullYear() - 1970)
+	}
+
+	return {
+		ident,
+		identNr: pdlIdent.ident,
+		bestillingId: ident.bestillingId,
+		identtype: 'FNR',
+		kilde: 'PDL',
+		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.navn?.[0]?.etternavn}`,
+		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
+		alder: Formatters.formatAlder(
+			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
+			pdlIdent?.doedsfall?.[0]?.doedsdato
+		),
+		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
+	}
+}
+
+const getPdlIdentInfo = (ident, state, pdlData) => {
+	if (!pdlData) return null
+
+	const person = pdlData.hentPerson
+	const navn = person.navn[0]
+	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
+	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
+	const alder = getAlder(person.foedsel[0]?.foedselsdato)
+
+	return {
+		ident,
+		identNr: getPdlIdent(pdlData.hentIdenter?.identer),
+		bestillingId: ident.bestillingId,
+		kilde: 'TESTNORGE',
+		importFra: 'Testnorge',
+		identtype: person.folkeregisteridentifikator[0]?.type,
+		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
+		kjonn: Formatters.kjonn(kjonn, alder),
+		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
+		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
+	}
+}
+
+export const getPdlIdent = (identer) => {
+	for (let ident of identer) {
+		if (ident.gruppe === 'FOLKEREGISTERIDENT') return ident.ident
+	}
+	return 'undefined'
+}
+
+const getKjoenn = (kjoenn) => {
+	switch (kjoenn) {
+		case 'KVINNE':
+			return 'K'
+		case 'MANN':
+			return 'M'
+		default:
+			return 'U'
+	}
 }
 
 export const selectDataForIdent = (state, ident) => {
