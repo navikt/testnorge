@@ -47,10 +47,9 @@ export const getSearchValues = (
 	}
 
 	return {
-		pageing: {
-			page: page,
-			pageSize: pageSize,
-		},
+		page: page,
+		pageSize: pageSize,
+		terminateAfter: 100,
 		randomSeed: randomSeed,
 		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
 		foedsel: {
