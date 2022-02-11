@@ -21,7 +21,6 @@ public class ElasticConfig {
 
     @Bean
     public RestHighLevelClient client() {
-        log.info("Endpoints: {}", elasticSearchCredentials.getEndpoints());
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(elasticSearchCredentials.getEndpoints())
                 .usingSsl()
