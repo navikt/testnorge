@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class InnflyttingUtflyttingMappingStrategy implements MappingStrategy {
 
-    private static final String STATSBORGERSKAP_NORGE = "NOR";
-
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(InnflyttingDTO.class, TpsfBestilling.class)
