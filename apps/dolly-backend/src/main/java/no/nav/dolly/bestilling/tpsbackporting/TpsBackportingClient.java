@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
@@ -54,7 +55,9 @@ public class TpsBackportingClient implements ClientRegister {
             return;
         }
 
-        if (isOpprettEndre && nonNull(bestilling.getPdldata()) && bestilling.getPdldata().isTpsdataPresent()) {
+        if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
+                !getNonPdlTpsCreateEnv(bestilling.getEnvironments()).isEmpty() &&
+                nonNull(bestilling.getPdldata()) && bestilling.getPdldata().isTpsdataPresent()) {
 
             var pdldata = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
 
@@ -64,7 +67,7 @@ public class TpsBackportingClient implements ClientRegister {
                         .harIngenAdresse(true)
                         .build();
 
-                mapAtrifacter(pdlPerson, tpsfBestilling);
+                mapAtrifacter(bestilling.getPdldata(), pdlPerson, tpsfBestilling);
                 dollyPersonCache.fetchIfEmpty(dollyPerson);
 
                 try {
@@ -94,24 +97,24 @@ public class TpsBackportingClient implements ClientRegister {
         }
     }
 
-    private void mapAtrifacter(PersonDTO pdlPerson, TpsfBestilling tpsfBestilling) {
+    private void mapAtrifacter(PdlPersondata bestilling, PersonDTO pdlPerson, TpsfBestilling tpsfBestilling) {
 
-        if (!pdlPerson.getBostedsadresse().isEmpty()) {
+        if (!bestilling.getPerson().getBostedsadresse().isEmpty()) {
             mapperFacade.map(pdlPerson.getBostedsadresse().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getKontaktadresse().isEmpty()) {
+        if (!bestilling.getPerson().getKontaktadresse().isEmpty()) {
             mapperFacade.map(pdlPerson.getKontaktadresse().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getOppholdsadresse().isEmpty()) {
+        if (!bestilling.getPerson().getOppholdsadresse().isEmpty()) {
             mapperFacade.map(pdlPerson.getOppholdsadresse().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getInnflytting().isEmpty()) {
+        if (!bestilling.getPerson().getInnflytting().isEmpty()) {
             mapperFacade.map(pdlPerson.getInnflytting().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getUtflytting().isEmpty()) {
+        if (!bestilling.getPerson().getUtflytting().isEmpty()) {
             mapperFacade.map(pdlPerson.getUtflytting().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getDoedsfall().isEmpty()) {
+        if (!bestilling.getPerson().getDoedsfall().isEmpty()) {
             tpsfBestilling.setDoedsdato(pdlPerson.getDoedsfall().get(0).getDoedsdato());
         }
     }

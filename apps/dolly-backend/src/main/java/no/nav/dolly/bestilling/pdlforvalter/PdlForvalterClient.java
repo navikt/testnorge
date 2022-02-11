@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
@@ -34,7 +35,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -45,6 +45,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.IdentTypeUtil;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -78,11 +79,7 @@ public class PdlForvalterClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
-
-    private static PersonDTO getPdldataHovedIdent(PdlPersondata pdlPersondata) {
-
-        return nonNull(pdlPersondata) && nonNull(pdlPersondata.getPerson()) ? pdlPersondata.getPerson() : null;
-    }
+    private final PdlDataConsumer pdlDataConsumer;
 
     private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
         builder.append('$')
@@ -99,6 +96,13 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
+    }
+
+    private PersonDTO getPdldataHovedIdent(String ident) {
+
+        var personer = pdlDataConsumer.getPersoner(List.of(ident));
+        return personer.isEmpty() ? null :
+                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
     }
 
     @Override
@@ -204,7 +208,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person, boolean erHovedperson) {
 
         if (IdentType.FDAT != IdentTypeUtil.getIdentType(person.getIdent())) {
-            var pdldataHovedIdent = getPdldataHovedIdent(bestilling.getPdldata());
+            var pdldataHovedIdent = getPdldataHovedIdent(dollyPerson.getHovedperson());
 
             sendOpprettPerson(person, dollyPerson);
             sendFoedselsmelding(person);
