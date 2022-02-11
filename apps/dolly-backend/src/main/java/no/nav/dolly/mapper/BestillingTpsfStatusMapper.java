@@ -38,7 +38,7 @@ public final class BestillingTpsfStatusMapper {
                     String[] environErrMsg = error.split(":", 2);
                     String environ = environErrMsg[0];
                     String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("\\d{11}\\s", "") : "";
-                    checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
+                    checkNUpdateStatus(errorEnvIdents, progress.getIdent(), environ, getWhiteList(errMsg));
                 });
             }
         });
@@ -46,17 +46,26 @@ public final class BestillingTpsfStatusMapper {
         return errorEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(TPSF).navn(TPSF.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->
-                                RsStatusRapport.Status.builder()
-                                        .melding(status.getKey().replace('=', ':').replace(';', ':'))
-                                        .detaljert(status.getValue().entrySet().stream()
-                                                .map(detaljert -> RsStatusRapport.Detaljert.builder()
-                                                        .miljo(detaljert.getKey())
-                                                        .identer(new ArrayList<>(detaljert.getValue()))
-                                                        .build())
-                                                .collect(Collectors.toList()))
-                                        .build())
+                                        RsStatusRapport.Status.builder()
+                                                .melding(status.getKey().replace('=', ':').replace(';', ':'))
+                                                .detaljert(status.getValue().entrySet().stream()
+                                                        .map(detaljert -> RsStatusRapport.Detaljert.builder()
+                                                                .miljo(detaljert.getKey())
+                                                                .identer(new ArrayList<>(detaljert.getValue()))
+                                                                .build())
+                                                        .collect(Collectors.toList()))
+                                                .build())
                                 .collect(Collectors.toList()))
                         .build());
+    }
+
+    private static String getWhiteList(String errMsg) {
+
+        if (errMsg.toLowerCase().contains("lik adresse med samme tomdato finnes fra før")) {
+            return SUCCESS;
+        } else {
+            return errMsg;
+        }
     }
 
     private static void checkNUpdateStatus(Map<String, Map<String, Set<String>>> errorEnvIdents, String ident, String environ, String status) {
