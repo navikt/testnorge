@@ -27,7 +27,7 @@ spec:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
         - host: elastic-dolly-testdata-gjeter-nav-dev.aivencloud.com
-  opensearch:
+  openSearch:
     instance: testdata-gjeter
     access: admin
   tokenx:
