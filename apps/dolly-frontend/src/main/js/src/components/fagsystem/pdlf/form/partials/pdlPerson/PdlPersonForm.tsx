@@ -25,6 +25,7 @@ export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonV
 		<>
 			<FormikSelect name={`${path}.identtype`} label="Identtype" options={Options('identtype')} />
 			<FormikSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
+			<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={disableAlder} />
 			<FormikDatepicker
 				name={`${path}.foedtEtter`}
 				label="Født etter"
@@ -37,7 +38,6 @@ export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonV
 				disabled={disableFoedtDato}
 				fastfield={false}
 			/>
-			<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={disableAlder} />
 			{!erNyIdent && (
 				<FormikSelect
 					name={`${path}.statsborgerskapLandkode`}
@@ -49,12 +49,12 @@ export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonV
 			{!erNyIdent && (
 				<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
 			)}
-			<div className="flexbox--full-width">
-				<div className="flexbox--flex-wrap">
-					<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" />
-					<FormikCheckbox name={`${path}.nyttNavn.hasMellomnavn`} label="Har mellomnavn" />
-				</div>
-			</div>
+			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" checkboxMargin />
+			<FormikCheckbox
+				name={`${path}.nyttNavn.hasMellomnavn`}
+				label="Har mellomnavn"
+				checkboxMargin
+			/>
 		</>
 	)
 }

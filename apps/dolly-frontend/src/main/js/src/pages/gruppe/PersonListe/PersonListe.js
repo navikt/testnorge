@@ -36,6 +36,7 @@ export default function PersonListe({
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
 }) {
+	console.log('personListe', personListe)
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 

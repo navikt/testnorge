@@ -231,7 +231,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Alder', alder),
 					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
 					obj('Gradering', Formatters.showLabel('gradering', gradering)),
-					obj('Syntetisk', syntetisk && 'JA'),
+					obj('Er syntetisk', syntetisk && 'JA'),
 					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
 				]),
 			]
@@ -744,8 +744,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Født etter', Formatters.formatDate(item.foedtEtter)),
 						obj('Født før', Formatters.formatDate(item.foedtFoer)),
 						obj('Alder', item.alder),
-						obj('Er syntetisk', Formatters.oversettBoolean(item.syntetisk)),
-						obj('Har mellomnavn', Formatters.oversettBoolean(item.nyttNavn.hasMellomnavn)),
+						obj('Er syntetisk', item.syntetisk && 'JA'),
+						obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
 					]
 				}),
 			}

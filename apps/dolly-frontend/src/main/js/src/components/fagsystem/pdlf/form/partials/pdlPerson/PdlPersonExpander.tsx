@@ -9,6 +9,7 @@ interface PdlPersonValues {
 	label: string
 	formikBag: FormikProps<{}>
 	kanSettePersondata?: boolean
+	erNyIdent?: boolean
 }
 
 export const PdlPersonExpander = ({
@@ -16,6 +17,7 @@ export const PdlPersonExpander = ({
 	label,
 	formikBag,
 	kanSettePersondata = true,
+	erNyIdent = false,
 }: PdlPersonValues) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
@@ -32,7 +34,7 @@ export const PdlPersonExpander = ({
 			)}
 			{visPersonValg && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<PdlPersonForm path={path} formikBag={formikBag} />
+					<PdlPersonForm path={path} formikBag={formikBag} erNyIdent={erNyIdent} />
 				</div>
 			)}
 		</div>

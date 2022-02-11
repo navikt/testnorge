@@ -3,9 +3,10 @@ import { FormikProps } from 'formik'
 import { initialNyIdent } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { Option } from '~/service/SelectOptionsOppslag'
+import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
+import _get from 'lodash/get'
 
 interface NyIdentForm {
 	formikBag: FormikProps<{}>
@@ -22,14 +23,19 @@ export const NyIdent = ({ formikBag, identOptions }: NyIdentForm) => (
 		{(path: string) => {
 			return (
 				<div className="flexbox--flex-wrap">
-					{/*TODO: Endre name når api er oppdatert*/}
 					<FormikSelect
 						name={`${path}.eksisterendeIdent`}
 						label="Eksisterende ident"
 						options={identOptions}
 						size={'xlarge'}
 					/>
-					<PdlPersonForm path={path} formikBag={formikBag} erNyIdent />
+					<PdlPersonExpander
+						path={path}
+						label="NY IDENTITET"
+						formikBag={formikBag}
+						kanSettePersondata={_get(formikBag.values, `${path}.eksisterendeIdent`) === null}
+						erNyIdent
+					/>
 					<AvansertForm path={path} kanVelgeMaster={true} />
 				</div>
 			)
