@@ -5,9 +5,9 @@ spring:
     elasticsearch:
       client:
         reactive:
-          username: ${ELASTIC_USERNAME}
-          password: ${ELASTIC_PASSWORD}
-          endpoints: ${ELASTIC_HOST}:${ELASTIC_PORT}
+          username: ${OPEN_SEARCH_USERNAME}
+          password: ${OPEN_SEARCH_PASSWORD}
+          endpoints: ${OPEN_SEARCH_URI}
           use-ssl: true
   security:
     oauth2:
@@ -22,9 +22,9 @@ spring:
     description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innsendte oppsummeringsdokumenter.
   elasticsearch:
     rest:
-      username: ${ELASTIC_USERNAME}
-      password: ${ELASTIC_PASSWORD}
-      uris: ${ELASTIC_HOST}:${ELASTIC_PORT}
+      username: ${OPEN_SEARCH_USERNAME}
+      password: ${OPEN_SEARCH_PASSWORD}
+      uris: ${OPEN_SEARCH_URI}
 
 consumers.aareg-synt-services:
   url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
