@@ -22,7 +22,6 @@ public class InnflyttingUtflyttingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(InnflyttingDTO source, TpsfBestilling target, MappingContext context) {
                         target.setInnvandretFraLand(source.getFraflyttingsland());
                         target.setInnvandretFraLandFlyttedato(source.getInnflyttingsdato());
-                        target.setStatsborgerskap(STATSBORGERSKAP_NORGE);
                     }
                 })
                 .register();
