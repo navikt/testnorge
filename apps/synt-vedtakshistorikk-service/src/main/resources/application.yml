@@ -38,3 +38,8 @@ consumers:
     namespace: dolly
     name: person-search-service
     url: https://person-search-service.dev-fss-pub.nais.io
+  pdl-api-proxy:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
