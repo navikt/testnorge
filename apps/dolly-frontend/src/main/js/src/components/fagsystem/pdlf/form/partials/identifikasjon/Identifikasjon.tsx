@@ -21,6 +21,9 @@ const identifikasjonAttributter = [
 	'pdldata.person.nyident',
 ]
 
+const hjelpetekst =
+	'Her kan du velge ny identitet for person, enten fra en eksisterende ident, eller ved å opprette en helt ny ident. Ny ident vil settes som gjeldende, og tidligere valgte attributter vil settes som identhistorikk på personen.'
+
 export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { gruppeId } = opts
@@ -53,7 +56,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				>
 					<UtenlandsId />
 				</Kategori>
-				<Kategori title="Ny identitet" vis="pdldata.person.nyident">
+				<Kategori title="Ny identitet" vis="pdldata.person.nyident" hjelpetekst={hjelpetekst}>
 					<NyIdent formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 			</Panel>
