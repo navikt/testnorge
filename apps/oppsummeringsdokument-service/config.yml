@@ -58,6 +58,6 @@ spec:
       cpu: 1000m
       memory: 2048Mi
   envFrom:
-    - secret: teamdolly-elastic
+    - secret: teamdolly-opensearch
   ingresses:
     - "https://oppsummeringsdokument-service.dev.intern.nav.no"

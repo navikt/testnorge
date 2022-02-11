@@ -1,6 +1,4 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-OPEN_SEARCH_HOST: opensearch-dolly-testdata-gjeter-nav-dev.aivencloud.com
-OPEN_SEARCH_PORT: 26482
 
 spring:
   data:
@@ -9,7 +7,7 @@ spring:
         reactive:
           username: ${OPEN_SEARCH_USERNAME}
           password: ${OPEN_SEARCH_PASSWORD}
-          endpoints: ${OPEN_SEARCH_HOST}:${OPEN_SEARCH_PORT}
+          endpoints: ${OPENSEARCH_HOST}:${OPENSEARCH_PORT}
   security:
     oauth2:
       resourceserver:
