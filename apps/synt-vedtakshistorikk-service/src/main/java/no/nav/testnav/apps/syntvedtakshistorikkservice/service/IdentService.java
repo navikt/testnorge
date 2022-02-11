@@ -24,7 +24,8 @@ public class IdentService {
 
     private final PersonSearchServiceConsumer personSearchServiceConsumer;
     private final Random rand = new Random();
-    private final int MAX_SEARCH_REQUESTS = 20;
+    private static final int MAX_SEARCH_REQUESTS = 20;
+    private static final int PAGE_SIZE = 10;
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             int antallNyeIdenter,
@@ -38,24 +39,20 @@ public class IdentService {
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
         while (page < MAX_SEARCH_REQUESTS) {
-            var request = getSearchRequest(randomSeed, page, 10, minimumAlder, maksimumAlder, "bosatt", null);
+            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, "bosatt", null);
             var response = personSearchServiceConsumer.search(request);
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
-                if (validIdent(person)) utvalgteIdenter.add(person.getIdent());
+                if (validIdent(person, tidligsteDatoBosatt)) utvalgteIdenter.add(person.getIdent());
                 if (utvalgteIdenter.size() >= antallNyeIdenter) break;
             }
 
             page++;
-            if (page >= MAX_SEARCH_REQUESTS || page > numberOfPages) break;
+            if (page > numberOfPages) break;
         }
 
-        return Collections.emptyList();
-    }
-
-    private boolean validIdent(PersonDTO person) {
-        return true;
+        return utvalgteIdenter;
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
@@ -65,7 +62,33 @@ public class IdentService {
             LocalDate tidligsteDatoBosatt,
             LocalDate tidligsteDatoBarnetillegg
     ) {
-        return Collections.emptyList();
+        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
+
+        var randomSeed = rand.nextFloat() + "";
+        var page = 1;
+        while (page < MAX_SEARCH_REQUESTS) {
+            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, "bosatt", true);
+            var response = personSearchServiceConsumer.search(request);
+            int numberOfPages = response.getNumberOfItems() / 10;
+
+            for (PersonDTO person : response.getItems()) {
+                if (validIdent(person, tidligsteDatoBosatt) && validBarn(person, tidligsteDatoBarnetillegg)) utvalgteIdenter.add(person.getIdent());
+                if (utvalgteIdenter.size() >= antallNyeIdenter) break;
+            }
+
+            page++;
+            if (page > numberOfPages) break;
+        }
+
+        return utvalgteIdenter;
+    }
+
+    private boolean validIdent(PersonDTO person, LocalDate tidligsteDatoBosatt) {
+        return true;
+    }
+
+    private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
+        return true;
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -77,7 +100,6 @@ public class IdentService {
     private PersonSearchRequest getSearchRequest(
             String randomSeed,
             int page,
-            int pageSize,
             int minimumAlder,
             int maksimumAlder,
             String personstatus,
@@ -86,7 +108,7 @@ public class IdentService {
         var request = PersonSearchRequest.builder()
                 .randomSeed(randomSeed)
                 .page(page)
-                .pageSize(pageSize)
+                .pageSize(PAGE_SIZE)
                 .alder(AlderSearch.builder()
                         .fra((short) minimumAlder)
                         .til((short) maksimumAlder)
