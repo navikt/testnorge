@@ -44,6 +44,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.IdentTypeUtil;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -100,7 +101,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         var personer = pdlDataConsumer.getPersoner(List.of(ident));
         return personer.isEmpty() ? null :
-                personer.stream().findFirst().get().getPerson();
+                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
     }
 
     @Override
