@@ -1,23 +1,22 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
-@Value
+
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
 public class PersonSearchRequest {
-    Integer page = 1;
-    Integer pageSize = 100;
-    String tag = "TESTNORGE";
-    String excludeTag = "DOLLY";
-    Boolean kunLevende = true;
+    private final String tag = "TESTNORGE";
+    private final String excludeTag = "DOLLY";
+    private final Boolean kunLevende = true;
 
-    String randomSeed;
-    AlderSearch alder;
-    BarnSearch barn;
-    PersonstatusSearch personstatus;
+    private Integer page;
+    private Integer pageSize;
+    private String randomSeed;
+    private AlderSearch alder;
+    private BarnSearch barn;
+    private PersonstatusSearch personstatus;
+
 }

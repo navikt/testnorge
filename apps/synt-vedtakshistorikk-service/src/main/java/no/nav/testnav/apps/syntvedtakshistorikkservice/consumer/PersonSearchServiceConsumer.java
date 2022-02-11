@@ -3,13 +3,11 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PersonSearchCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PersonSearchServiceProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PersonSearchResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.List;
 
 @Component
 public class PersonSearchServiceConsumer {
@@ -27,7 +25,7 @@ public class PersonSearchServiceConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public List<PersonDTO> search(PersonSearchRequest request){
+    public PersonSearchResponse search(PersonSearchRequest request){
         return tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new PersonSearchCommand(request, accessToken.getTokenValue(), webClient).call())
                 .block();
