@@ -17,6 +17,7 @@ import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials
 import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
 import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/UtenlandsId'
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
+import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 
 type PdlVisningProps = {
 	pdlData: PdlDataWrapper
@@ -42,6 +43,7 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 		utenlandskIdentifikasjonsnummer,
 		falskIdentitet,
 		sikkerhetstiltak,
+		kontaktinformasjonForDoedsbo,
 	} = hentPerson
 
 	return (
@@ -62,6 +64,7 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<PdlRelasjoner data={hentPerson} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
+				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} />
 			</div>
 		</ErrorBoundary>
 	)

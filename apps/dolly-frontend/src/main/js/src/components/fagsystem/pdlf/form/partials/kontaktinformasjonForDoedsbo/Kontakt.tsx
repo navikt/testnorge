@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '../utils'
 import _get from 'lodash/get'
 import {
@@ -16,6 +16,8 @@ import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
 
 interface KontaktValues {
 	formikBag: FormikProps<{}>
@@ -33,6 +35,19 @@ type OrgValues = {
 }
 
 export const Kontakt = ({ formikBag, path }: KontaktValues) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { gruppeId } = opts
+	const isTestnorgeIdent = identFraTestnorge(opts)
+
+	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
+	useEffect(() => {
+		if (!isTestnorgeIdent) {
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
+				setIdentOptions(response)
+			)
+		}
+	}, [])
+
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
@@ -75,6 +90,12 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 		formikBag.setFieldValue(`${orgPath}.organisasjonsnavn`, values.navn)
 	}
 
+	const disableIdent =
+		_get(formikBag.values, `${personPath}.foedselsdato`) ||
+		_get(formikBag.values, `${personPath}.navn.fornavn`)
+
+	const disablePersoninfo = _get(formikBag.values, `${personPath}.identifikasjonsnummer`)
+
 	return (
 		<Kategori title="Kontakt">
 			<FormikSelect
@@ -84,10 +105,10 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 				options={Options('kontaktType')}
 				onChange={handleAfterChange}
 				isClearable={false}
-				size="medium"
+				size="large"
 			/>
 			{kontaktType === 'ADVOKAT' && (
-				<>
+				<div className="flexbox--flex-wrap">
 					<OrganisasjonSelect
 						path={`${advokatPath}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
@@ -105,11 +126,11 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						}
 						value={_get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
 					/>
-				</>
+				</div>
 			)}
 
 			{kontaktType === 'ORGANISASJON' && (
-				<>
+				<div className="flexbox--flex-wrap">
 					<OrganisasjonSelect
 						path={`${organisasjonPath}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
@@ -127,12 +148,24 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						}
 						value={_get(formikBag.values, `${organisasjonPath}.kontaktperson.fornavn`)}
 					/>
-				</>
+				</div>
 			)}
 
 			{kontaktType === 'PERSON_FDATO' && (
-				<>
-					<FormikDatepicker name={`${personPath}.foedselsdato`} label="Fødselsdato" />
+				<div className="flexbox--flex-wrap">
+					<FormikSelect
+						name={`${personPath}.identifikasjonsnummer`}
+						label="Kontaktperson"
+						options={identOptions}
+						size={'xlarge'}
+						disabled={disableIdent}
+					/>
+					<FormikDatepicker
+						name={`${personPath}.foedselsdato`}
+						label="Fødselsdato"
+						disabled={disablePersoninfo}
+						fastfield={false}
+					/>
 					<DollySelect
 						name={`${personPath}.navn.fornavn`}
 						label="Kontaktperson navn"
@@ -144,8 +177,9 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${personPath}.navn.fornavn`)}
+						disabled={disablePersoninfo}
 					/>
-				</>
+				</div>
 			)}
 
 			{kontaktType === 'NY_PERSON' && (
