@@ -16,7 +16,6 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
-				{/*TODO: bare på legg til??*/}
 				<Attributt attr={sm.attrs.nyident} />
 			</AttributtKategori>
 		</Panel>

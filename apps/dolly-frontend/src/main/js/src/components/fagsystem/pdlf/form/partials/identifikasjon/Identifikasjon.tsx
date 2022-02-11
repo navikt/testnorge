@@ -9,6 +9,7 @@ import { UtenlandsId } from '~/components/fagsystem/pdlf/form/partials/identifik
 import { NyIdent } from '~/components/fagsystem/pdlf/form/partials/nyIdent/nyIdent'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
 
 interface IdentifikasjonValues {
 	formikBag: FormikProps<{}>
@@ -23,12 +24,15 @@ const identifikasjonAttributter = [
 export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { gruppeId } = opts
+	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
 	useEffect(() => {
-		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
-			setIdentOptions(response)
-		)
+		if (!isTestnorgeIdent) {
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
+				setIdentOptions(response)
+			)
+		}
 	}, [])
 
 	return (

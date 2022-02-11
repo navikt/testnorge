@@ -12,7 +12,7 @@ export default function DollyTable({
 	...props
 }) {
 	if (!pagination) return <Table data={data} {...props} />
-	console.log('data', data)
+
 	return (
 		<Pagination
 			items={data}

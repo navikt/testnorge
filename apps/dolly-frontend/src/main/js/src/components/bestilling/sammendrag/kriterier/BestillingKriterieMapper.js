@@ -158,7 +158,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 		if (alder || foedtEtter || foedtFoer) data.push(nyPersonData)
 	}
-	console.log('bestillingData', bestillingData)
+
 	if (pdldataKriterier) {
 		const {
 			foedsel,

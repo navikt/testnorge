@@ -203,6 +203,16 @@ type AdressebeskyttelseData = {
 	gradering: string
 }
 
+export type Kodeverk = {
+	values: Array<Array<KodeverkValues>>
+}
+
+export type KodeverkValues = {
+	data: string
+	label: string
+	value: string
+}
+
 type FalskIdentitet = {
 	erFalsk: boolean
 }
