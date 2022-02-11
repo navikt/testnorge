@@ -14,9 +14,9 @@ import {
 	Vergemaal,
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
-import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
-import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
-import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
+import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPersonInfo'
+import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/PdlNasjonalitet'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
@@ -45,7 +45,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 					<PdlPersonInfo data={pdlData} />
 				)}
 				{hasTpsfData ? (
-					<Nasjonalitet data={data} tpsMessagingData={tpsMessagingData} />
+					<Nasjonalitet data={data} pdlData={pdlData} />
 				) : (
 					<PdlNasjonalitet data={pdlData} />
 				)}

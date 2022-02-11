@@ -15,6 +15,9 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.NestedSortBuilder;
@@ -76,8 +79,11 @@ public class PersonSearchAdapter {
     public PersonList search(PersonSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
+        addRandomScoreQuery(queryBuilder, search);
         addTagsQueries(queryBuilder, search);
         addKjoennQuery(queryBuilder, search);
+        addLevendeQuery(queryBuilder, search);
+        addDoedsfallQuery(queryBuilder, search);
         addFoedselQuery(queryBuilder, search);
         addAlderQuery(queryBuilder, search);
         addIdentQuery(queryBuilder, search);
@@ -87,6 +93,7 @@ public class PersonSearchAdapter {
         addInnflyttingQuery(queryBuilder, search);
         addIdentitetQueries(queryBuilder, search);
         addBarnQueries(queryBuilder, search);
+        addPersonstatusQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -97,15 +104,7 @@ public class PersonSearchAdapter {
         searchSourceBuilder.timeout(new TimeValue(60, TimeUnit.SECONDS));
         searchSourceBuilder.size(page.getPageSize());
         searchSourceBuilder.query(queryBuilder);
-        searchSourceBuilder.sort(
-                SortBuilders
-                        .fieldSort("hentPerson.folkeregisteridentifikator.identifikasjonsnummer.keyword")
-                        .order(SortOrder.ASC)
-                        .setNestedSort(new NestedSortBuilder("hentPerson.folkeregisteridentifikator"))
-        );
-        searchSourceBuilder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
         searchRequest.source(searchSourceBuilder);
-
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
@@ -118,6 +117,15 @@ public class PersonSearchAdapter {
                 searchResponse.getHits().getTotalHits().value,
                 responses.stream().map(Person::new).toList()
         );
+    }
+
+    private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getRandomSeed())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()){
+                        queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(value)));
+                    }
+                });
     }
 
     private void addTagsQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -152,15 +160,15 @@ public class PersonSearchAdapter {
 
     private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getIdenter())
-                        .ifPresent(values -> {
-                            if(!values.isEmpty()){
-                                queryBuilder.must(QueryBuilders.nestedQuery(
-                                        "hentIdenter.identer",
-                                        QueryBuilders.termsQuery("hentIdenter.identer.ident", values),
-                                        ScoreMode.Avg
-                                )).must();
-                            }
-                        });
+                .ifPresent(values -> {
+                    if (!values.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentIdenter.identer",
+                                QueryBuilders.termsQuery("hentIdenter.identer.ident", values),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
     }
 
     private void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -252,6 +260,46 @@ public class PersonSearchAdapter {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.doedfoedtBarn",
                                 QueryBuilders.existsQuery("hentPerson.doedfoedtBarn.metadata"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
+    }
+
+    private void addPersonstatusQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getPersonstatus())
+                .flatMap(value -> Optional.ofNullable(value.getStatus()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.folkeregisterpersonstatus",
+                                QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
+    }
+
+    private void addLevendeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getKunLevende())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.mustNot(QueryBuilders.nestedQuery(
+                                "hentPerson.doedsfall",
+                                QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                });
+    }
+
+    private void addDoedsfallQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getKunDoede())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.doedsfall",
+                                QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
                                 ScoreMode.Avg
                         )).must();
                     }

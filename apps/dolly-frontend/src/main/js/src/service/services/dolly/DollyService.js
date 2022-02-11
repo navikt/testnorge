@@ -143,17 +143,12 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
 	},
 
-	//* Oppslag
-	getEnhetByTknr(tknr) {
-		return Request.get(Endpoints.enhetByTknr(tknr))
+	importerPersonerFraPdl: (gruppeId, request) => {
+		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
 	getPersonFraPdl(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
-	},
-
-	getFasteOrgnummer() {
-		return Request.get(Endpoints.fasteOrgnummer())
 	},
 
 	getArbeidsforhold(ident, miljoe) {
@@ -207,5 +202,10 @@ export default {
 			return null
 		}
 		return Request.get(Endpoints.getTagsPaaIdent(ident))
+	},
+
+	//* Excel
+	getExcelFil(groupId) {
+		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 }

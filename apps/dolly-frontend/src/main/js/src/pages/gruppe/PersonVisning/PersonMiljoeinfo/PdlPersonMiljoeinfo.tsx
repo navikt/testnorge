@@ -18,7 +18,7 @@ export const PdlPersonMiljoeInfo = ({ data, loading }: PdlMiljoeValues) => {
 				<SubOverskrift label="PDL" iconKind="visTpsData" />
 				{loading && <Loading label="Henter info fra PDL" />}
 				{/* @ts-ignore */}
-				{data && <PdlDataVisning data={data.data} />}
+				{data && <PdlDataVisning pdlData={data} />}
 				{data && (
 					<p>
 						<i>Hold pekeren over PDL for å se dataene som finnes på denne personen i PDL</i>

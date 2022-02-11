@@ -7,23 +7,26 @@ const TYPE = Object.freeze({
 	LEGG_TIL: 'LEGG_TIL',
 	NY_ORGANISASJON: 'NY_ORGANISASJON',
 	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
+	IMPORT_TESTNORGE: 'IMPORT_TESTNORGE',
 })
 
 export const BVOptions = (
 	{
+		antall = 1,
+		identtype = 'FNR',
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
 		tidligereBestillinger,
-		antall = 1,
-		identtype = 'FNR',
+		importPersoner,
+		identMaster,
 		opprettOrganisasjon = null,
 	} = {},
 	gruppeId
 ) => {
 	let initialValues = {
 		antall,
-		environments: [],
+		navSyntetiskIdent: false,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
@@ -43,14 +46,12 @@ export const BVOptions = (
 	}
 
 	let initialValuesOrganisasjon = {
-		environments: [],
 		organisasjon: {
 			enhetstype: '',
 		},
 	}
 
 	let initialValuesStandardOrganisasjon = {
-		environments: [],
 		organisasjon: {
 			enhetstype: 'AS',
 			naeringskode: '01.451',
@@ -92,6 +93,13 @@ export const BVOptions = (
 		initialValues = initialValuesLeggTil
 	}
 
+	if (importPersoner) {
+		bestType = TYPE.IMPORT_TESTNORGE
+		initialValues.antall = importPersoner.length
+		initialValues.pdldata = undefined
+		antall = importPersoner.length
+	}
+
 	if (opprettOrganisasjon) {
 		if (opprettOrganisasjon === 'STANDARD') {
 			bestType = TYPE.NY_STANDARD_ORGANISASJON
@@ -110,6 +118,8 @@ export const BVOptions = (
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
+		importPersoner,
+		identMaster,
 		tidligereBestillinger,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
@@ -118,6 +128,7 @@ export const BVOptions = (
 			leggTil: bestType === TYPE.LEGG_TIL,
 			nyOrganisasjon: bestType === TYPE.NY_ORGANISASJON,
 			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON,
+			importTestnorge: bestType === TYPE.IMPORT_TESTNORGE,
 		},
 	}
 }

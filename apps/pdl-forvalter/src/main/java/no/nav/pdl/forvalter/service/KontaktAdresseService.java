@@ -6,16 +6,20 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -117,10 +121,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
                 kontaktadresse.getUtenlandskAdresse().isEmpty()) {
 
-            kontaktadresse.setUtenlandskAdresse(
-                    dummyAdresseService.getUtenlandskAdresse(
-                            person.getStatsborgerskap().stream()
-                                    .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
+            kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
+            kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 
         kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
@@ -132,5 +134,25 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         if (Master.PDL == kontaktadresse.getMaster() && isNull(kontaktadresse.getGyldigTilOgMed())) {
             kontaktadresse.setGyldigTilOgMed(LocalDateTime.now().plusYears(1));
         }
+    }
+
+    private String getLandkode(PersonDTO person) {
+
+        return Stream.of(person.getKontaktadresse().stream()
+                                .filter(adresse -> nonNull(adresse.getUtenlandskAdresse()))
+                                .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
+                                .map(KontaktadresseDTO::getUtenlandskAdresse)
+                                .map(UtenlandskAdresseDTO::getLandkode)
+                                .findFirst(),
+                        person.getUtflytting().stream()
+                                .map(UtflyttingDTO::getTilflyttingsland)
+                                .findFirst(),
+                        person.getStatsborgerskap().stream()
+                                .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
+                                .map(StatsborgerskapDTO::getLandkode)
+                                .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst().orElse(null);
     }
 }

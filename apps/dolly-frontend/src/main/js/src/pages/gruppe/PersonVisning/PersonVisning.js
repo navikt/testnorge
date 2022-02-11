@@ -26,6 +26,7 @@ import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasj
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
@@ -37,7 +38,6 @@ export const PersonVisning = ({
 	slettPerson,
 	leggTilPaaPerson,
 	iLaastGruppe,
-	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -54,11 +54,14 @@ export const PersonVisning = ({
 		<div className="person-visning">
 			<div className="person-visning_actions">
 				{!iLaastGruppe && (
-					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
+					<Button
+						onClick={() => leggTilPaaPerson(data, bestillingsListe, ident.master)}
+						kind="add-circle"
+					>
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && !kildePdl && (
+				{!iLaastGruppe && ident.master === 'TPSF' && (
 					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
@@ -68,12 +71,17 @@ export const PersonVisning = ({
 					</SlettButton>
 				)}
 			</div>
-			<TpsfVisning
-				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-				pdlData={data.pdlforvalter?.person}
-				environments={bestilling?.environments}
-			/>
-			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			{ident.master !== 'PDL' && (
+				<TpsfVisning
+					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+					pdlData={data.pdlforvalter?.person}
+					environments={bestilling?.environments}
+				/>
+			)}
+			{ident.master !== 'PDL' && (
+				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			)}
+			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
