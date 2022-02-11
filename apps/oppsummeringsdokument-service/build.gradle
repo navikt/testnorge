@@ -71,10 +71,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-    implementation 'org.opensearch.client:opensearch-rest-client:1.1.0'
-    implementation 'org.opensearch.client:opensearch-rest-high-level-client:1.1.0'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'

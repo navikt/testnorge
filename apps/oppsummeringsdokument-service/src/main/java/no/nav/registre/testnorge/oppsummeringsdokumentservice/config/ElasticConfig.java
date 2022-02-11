@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.oppsummeringsdokumentservice.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.config.credentials.ElasticSearchCredentials;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 
 @Configuration
 @RequiredArgsConstructor
-@Slf4j
 @EnableElasticsearchRepositories(basePackages = "no.nav.registre.testnorge.oppsummeringsdokumentservice.repository")
 @EnableElasticsearchAuditing
 public class ElasticConfig {
