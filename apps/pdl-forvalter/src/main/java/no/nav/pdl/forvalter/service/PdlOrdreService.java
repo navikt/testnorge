@@ -55,6 +55,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_TILRETTELA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
@@ -79,6 +80,7 @@ public class PdlOrdreService {
                                 .block())
                         .build())
                 .relasjoner(dbPerson.getRelasjoner().stream()
+                        .filter(relasjon -> GAMMEL_IDENTITET != relasjon.getRelasjonType())
                         .map(relasjon -> PersonHendelserDTO.builder()
                                 .ident(relasjon.getRelatertPerson().getIdent())
                                 .ordrer(sendAlleInformasjonselementer(relasjon.getRelatertPerson(), true)
