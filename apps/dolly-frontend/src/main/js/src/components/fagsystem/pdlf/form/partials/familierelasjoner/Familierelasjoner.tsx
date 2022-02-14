@@ -25,8 +25,9 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
 	useEffect(() => {
 		if (!isTestnorgeIdent) {
+			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
 			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
-				setIdentOptions(response)
+				setIdentOptions(response.filter((person) => person.value !== eksisterendeIdent))
 			)
 		}
 	}, [])
