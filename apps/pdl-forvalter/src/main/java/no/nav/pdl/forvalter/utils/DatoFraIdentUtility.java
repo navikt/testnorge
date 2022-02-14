@@ -15,7 +15,7 @@ import static java.lang.Integer.parseInt;
 @UtilityClass
 public class DatoFraIdentUtility {
 
-    public LocalDate getDato(String ident) {
+    public static LocalDate getDato(String ident) {
 
         var year = parseInt(ident.substring(4, 6));
         var individ = parseInt(ident.substring(6, 9));
