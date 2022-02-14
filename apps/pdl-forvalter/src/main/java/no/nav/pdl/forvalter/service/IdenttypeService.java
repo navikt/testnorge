@@ -102,20 +102,20 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
     }
 
-    public String convert(PersonDTO person) {
+    public PersonDTO convert(PersonDTO person) {
 
-        var ident = person.getIdent();
+        var nyPerson = person;
         for (var type : person.getNyident()) {
 
             if (isTrue(type.getIsNew())) {
 
-                ident = handle(type, person);
+                nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
                 type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
-        return ident;
+        return nyPerson;
     }
 
     @Override
@@ -146,7 +146,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         }
     }
 
-    private String handle(IdentRequestDTO request, PersonDTO person) {
+    private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
 
         var nyPerson = isNotBlank(request.getEksisterendeIdent()) ?
 
@@ -165,17 +165,10 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         .syntetisk(isSyntetisk(request, person.getIdent()))
                         .build());
 
-        swopIdentsService.execute(person.getIdent(), nyPerson.getIdent(), nonNull(request.getNyttNavn()));
+        swopIdentsService.execute(person.getIdent(), nyPerson.getIdent());
 
         relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
-        person.setFoedsel(nyPerson.getFoedsel());
-        person.setKjoenn(nyPerson.getKjoenn());
-        if (!nyPerson.getNavn().isEmpty()) {
-            person.setNavn(nyPerson.getNavn());
-        }
-        person.setNyident(null);
-
-        return nyPerson.getIdent();
+        return nyPerson;
     }
 }
