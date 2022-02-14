@@ -73,8 +73,8 @@ public class UdiStubConsumer {
                     .block();
 
         } catch (RuntimeException e) {
-            throw new DollyFunctionalException(format("Feilet å hente UDI-person: %s",
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
+            log.info("Fant ikke noen udi-person med ident: {}", ident);
+            return null;
         }
     }
 
