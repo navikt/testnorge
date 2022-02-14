@@ -29,8 +29,8 @@ public class GenererSyntMeldekortController {
     @Operation(description = "Generer et gitt antall meldekort i XML format for meldegrupper i Arena.")
     public Mono<ResponseEntity<List<String>>> generateMeldekort(
             @PathVariable String meldegruppe,
-            @RequestParam(value = "Antall meldekort") int numToGenerate,
-            @RequestParam(value = "Verdi som vil overskriver alle ArbeidetTimerSum i genererte meldekort", required = false) Double arbeidstimer
+            @RequestParam int numToGenerate,
+            @RequestParam(required = false) Double arbeidstimer
     ) {
         return InputValidator.validateInput(meldegruppe)
                 .then(meldekortConsumer.getSyntheticMeldekort(meldegruppe, numToGenerate, arbeidstimer))

@@ -8,7 +8,7 @@ parent: Applikasjoner
 App for å generere syntetiske meldekort for Arena.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-generer-synt-meldekort-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-generer-synt-meldekort-service.dev.intern.nav.no/swagger-ui.html) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør GenererSyntMeldekortApplicationStarter med følgende argumenter:
