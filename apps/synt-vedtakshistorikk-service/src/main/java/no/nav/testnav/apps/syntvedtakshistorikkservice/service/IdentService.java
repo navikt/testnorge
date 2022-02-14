@@ -125,6 +125,7 @@ public class IdentService {
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
             int antall
     ) {
+        // TODO: hente tilfeldige identer og opprett konto på de
         return Collections.emptyList();
     }
 
