@@ -9,8 +9,8 @@ plugins {
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "testnav-generer-synt-amelding-service"
-        property "sonar.projectName", "testnav-generer-synt-amelding-service"
+        property "sonar.projectKey", "testnav-generer-synt-meldekort-service"
+        property "sonar.projectName", "testnav-generer-synt-meldekort-service"
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
