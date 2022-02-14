@@ -165,10 +165,10 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                         .syntetisk(isSyntetisk(request, person.getIdent()))
                         .build());
 
-        swopIdentsService.execute(person.getIdent(), nyPerson.getIdent());
+        var oppdatertPerson = swopIdentsService.execute(person.getIdent(), nyPerson.getIdent());
 
         relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
-        return nyPerson;
+        return nonNull(oppdatertPerson) ? oppdatertPerson : person;
     }
 }

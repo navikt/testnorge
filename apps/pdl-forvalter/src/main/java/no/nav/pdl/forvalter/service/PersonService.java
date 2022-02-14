@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +43,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.getDato;
+import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -60,7 +59,6 @@ public class PersonService {
     private static final String IDENT_ALREADY_EXISTS = "Ident %s eksisterer allerede i database";
 
     private static final String SORT_BY_FIELD = "sistOppdatert";
-    private static final long MYNDIG = 18;
 
     private final PersonRepository personRepository;
     private final MergeService mergeService;
@@ -70,11 +68,6 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
-
-    private static boolean isMyndig(String ident) {
-
-        return ChronoUnit.YEARS.between(getDato(ident), now()) >= MYNDIG;
-    }
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
