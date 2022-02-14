@@ -8,6 +8,7 @@ spring:
           username: ${OPEN_SEARCH_USERNAME}
           password: ${OPEN_SEARCH_PASSWORD}
           endpoints: ${OPENSEARCH_HOST}:${OPENSEARCH_PORT}
+          use-ssl: true
   security:
     oauth2:
       resourceserver:
