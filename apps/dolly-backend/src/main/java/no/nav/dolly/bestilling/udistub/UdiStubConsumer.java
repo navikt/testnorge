@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.config.credentials.UdistubServerProperties;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -72,42 +73,55 @@ public class UdiStubConsumer {
                     .block();
 
         } catch (RuntimeException e) {
-            return null;
+            throw new DollyFunctionalException(format("Feilet å hente UDI-person: %s",
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
         }
     }
 
     @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
     public UdiPersonResponse createUdiPerson(UdiPerson udiPerson) {
 
-        return webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
-                .retrieve()
-                .bodyToMono(UdiPersonResponse.class)
-                .block();
+        try {
+            return webClient
+                    .post()
+                    .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header(HEADER_NAV_CALL_ID, getNavCallId())
+                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                    .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
+                    .retrieve()
+                    .bodyToMono(UdiPersonResponse.class)
+                    .block();
+        } catch (RuntimeException e) {
+
+            throw new DollyFunctionalException(format("Feilet å opprette UDI-person: %s",
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
+        }
     }
 
 
     @Timed(name = "providers", tags = { "operation", "udi_updatePerson" })
     public UdiPersonResponse updateUdiPerson(UdiPerson udiPerson) {
 
-        return webClient
-                .put()
-                .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
-                .retrieve()
-                .bodyToMono(UdiPersonResponse.class)
-                .block();
+        try {
+            return webClient
+                    .put()
+                    .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
+                    .header(HEADER_NAV_CALL_ID, getNavCallId())
+                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                    .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
+                    .retrieve()
+                    .bodyToMono(UdiPersonResponse.class)
+                    .block();
+        } catch (RuntimeException e) {
+
+            throw new DollyFunctionalException(format("Feilet å oppdatere UDI-person: %s",
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
+        }
     }
 
     @Timed(name = "providers", tags = { "operation", "udi_deletePerson" })
