@@ -31,6 +31,7 @@ public class IdentService {
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
+    private static final String BOSATT_STATUS = "bosatt";
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             int antallNyeIdenter,
@@ -43,13 +44,13 @@ public class IdentService {
 
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
-        while (page < MAX_SEARCH_REQUESTS) {
-            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, "bosatt", null);
+        while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
+            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, null);
             var response = personSearchServiceConsumer.search(request);
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
-                if (validIdent(person, tidligsteDatoBosatt)) utvalgteIdenter.add(person.getIdent());
+                if (validBosattdato(person, tidligsteDatoBosatt)) utvalgteIdenter.add(person.getIdent());
                 if (utvalgteIdenter.size() >= antallNyeIdenter) break;
             }
 
@@ -67,17 +68,17 @@ public class IdentService {
             LocalDate tidligsteDatoBosatt,
             LocalDate tidligsteDatoBarnetillegg
     ) {
-        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
+        List<String> utvalgteIdenter = new ArrayList<>();
 
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
-        while (page < MAX_SEARCH_REQUESTS) {
-            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, "bosatt", true);
+        while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
+            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, true);
             var response = personSearchServiceConsumer.search(request);
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
-                if (validIdent(person, tidligsteDatoBosatt) && validBarn(person, tidligsteDatoBarnetillegg)) utvalgteIdenter.add(person.getIdent());
+                if (validBosattdato(person, tidligsteDatoBosatt) && validBarn(person, tidligsteDatoBarnetillegg)) utvalgteIdenter.add(person.getIdent());
                 if (utvalgteIdenter.size() >= antallNyeIdenter) break;
             }
 
@@ -88,15 +89,15 @@ public class IdentService {
         return utvalgteIdenter;
     }
 
-    private boolean validIdent(PersonDTO person, LocalDate tidligsteDatoBosatt) {
+    private boolean validBosattdato(PersonDTO person, LocalDate tidligsteDatoBosatt) {
         var personData = pdlPersonConsumer.getPdlPerson(person.getIdent());
-        var bosattTidspunkt = personData.getData().getHentPerson()
+        var gyldigeBosattstatuser = personData.getData().getHentPerson()
                 .getFolkeregisterpersonstatus().stream()
-                .filter(status -> status.getStatus().equals("bosatt"))
-                .filter(status -> !status.getMetadata().isHistorisk())
+                .filter(status -> status.getStatus().equals(BOSATT_STATUS) && !status.getMetadata().isHistorisk())
                 .map(status -> status.getFolkeregistermetadata().getGyldighetstidspunkt())
+                .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
                 .toList();
-        return true;
+        return !gyldigeBosattstatuser.isEmpty();
     }
 
     private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
