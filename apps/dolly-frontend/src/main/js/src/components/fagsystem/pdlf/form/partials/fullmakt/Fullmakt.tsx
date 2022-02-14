@@ -1,27 +1,19 @@
 import * as React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
+import { initialFullmakt } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 
 interface FullmaktForm {
 	formikBag: FormikProps<{}>
+	identOptions: Array<Option>
 }
 
-const initialFullmakt = {
-	omraader: [],
-	gyldigFraOgMed: null,
-	gyldigTilOgMed: null,
-	nyFullmektig: initialPdlPerson,
-	kilde: 'Dolly',
-	master: 'PDL',
-}
-
-export const Fullmakt = ({ formikBag }: FullmaktForm) => {
+export const Fullmakt = ({ formikBag, identOptions }: FullmaktForm) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
@@ -48,6 +40,12 @@ export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 						</div>
 						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+						<FormikSelect
+							name={`${path}.motpartsPersonident`}
+							label="Fullmektig"
+							options={identOptions}
+							size={'xlarge'}
+						/>
 						<PdlPersonExpander
 							path={`${path}.nyFullmektig`}
 							label={'FULLMEKTIG'}

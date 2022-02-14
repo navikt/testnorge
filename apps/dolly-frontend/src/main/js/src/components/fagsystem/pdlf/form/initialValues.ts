@@ -272,3 +272,13 @@ export const initialNyIdent = {
 	kilde: 'Dolly',
 	master: 'FREG',
 }
+
+export const initialFullmakt = {
+	omraader: [],
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	motpartsPersonident: null as string,
+	nyFullmektig: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'PDL',
+}

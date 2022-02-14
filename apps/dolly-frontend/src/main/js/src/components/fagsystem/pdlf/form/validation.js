@@ -149,6 +149,7 @@ const fullmakt = Yup.array().of(
 		omraader: Yup.array().min(1, 'Velg minst ett område'),
 		gyldigFraOgMed: requiredDate,
 		gyldigTilOgMed: requiredDate,
+		motpartsPersonident: Yup.string().nullable(),
 		nyFullmektig: nyPerson,
 	})
 )

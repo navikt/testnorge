@@ -355,6 +355,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Fullmektig', item.motpartsPersonident),
 						...personRelatertTil(item, 'nyFullmektig'),
 					]
 				}),

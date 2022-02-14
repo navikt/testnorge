@@ -27,22 +27,3 @@ export const setNavn = (navn, path, setFieldValue) => {
 export const setValue = (value, path, setFieldValue) => {
 	setFieldValue(`${path}`, value.value)
 }
-
-export const getPersonOptions = async (gruppeId) => {
-	const gruppe = await DollyApi.getGruppeById(gruppeId).then((response) => {
-		return response.data?.identer?.map((person) => {
-			if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
-		})
-	})
-	const options = await PdlforvalterApi.getPersoner(gruppe).then((response) => {
-		const personListe = []
-		response.data.forEach((id) => {
-			personListe.push({
-				value: id.person.ident,
-				label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
-			})
-		})
-		return personListe
-	})
-	return options ? options : Promise.resolve()
-}

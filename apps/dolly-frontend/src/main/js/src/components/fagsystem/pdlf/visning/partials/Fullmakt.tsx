@@ -50,6 +50,12 @@ export const Visning = ({ data, relasjoner }: Data) => {
 						title="Gyldig til og med"
 						value={Formatters.formatDate(data.gyldigTilOgMed)}
 					/>
+					{!fullmektig && (
+						<TitleValue
+							title="Fullmektig"
+							value={data.motpartsPersonident || data.vergeEllerFullmektig?.motpartsPersonident}
+						/>
+					)}
 				</div>
 				<Tema>
 					<h4>Tema</h4>

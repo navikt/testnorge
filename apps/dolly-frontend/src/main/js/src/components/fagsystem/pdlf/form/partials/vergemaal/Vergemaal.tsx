@@ -7,11 +7,15 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { getPersonOptions } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { FormikProps } from 'formik'
+import { Option } from '~/service/SelectOptionsOppslag'
 
-export const Vergemaal = ({ formikBag, gruppeId }) => {
+interface VergemaalForm {
+	formikBag: FormikProps<{}>
+	identOptions: Array<Option>
+}
+
+export const Vergemaal = ({ formikBag, identOptions }: VergemaalForm) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -45,19 +49,12 @@ export const Vergemaal = ({ formikBag, gruppeId }) => {
 							/>
 							<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 							<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-							<ErrorBoundary>
-								<LoadableComponent
-									onFetch={() => getPersonOptions(gruppeId)}
-									render={(data) => (
-										<FormikSelect
-											name={`${path}.vergeIdent`}
-											label="Verge"
-											options={data}
-											size={'xlarge'}
-										/>
-									)}
-								/>
-							</ErrorBoundary>
+							<FormikSelect
+								name={`${path}.vergeIdent`}
+								label="Verge"
+								options={identOptions}
+								size={'xlarge'}
+							/>
 							<PdlPersonExpander
 								path={`${path}.nyVergeIdent`}
 								label={'VERGE'}

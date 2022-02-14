@@ -149,6 +149,9 @@ export type FullmaktData = {
 	gyldigFraOgMed: Date
 	gyldigTilOgMed: Date
 	motpartsPersonident: string
+	vergeEllerFullmektig?: {
+		motpartsPersonident: string
+	}
 	motpartsRolle: string
 	omraader: Array<string>
 	id: number

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
@@ -20,6 +20,8 @@ import { Foedsel } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foeds
 import { Vergemaal } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { UtenlandskBankkonto } from '~/components/fagsystem/tpsmessaging/form/utenlandskbankkonto/UtenlandskBankkonto'
 import { NorskBankkonto } from '~/components/fagsystem/tpsmessaging/form/norskbankkonto/NorskBankkonto'
+import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -75,7 +77,17 @@ const panelPaths = [
 ].flat()
 
 export const Personinformasjon = ({ formikBag }) => {
-	const { personFoerLeggTil, gruppeId } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, gruppeId, opts } = useContext(BestillingsveilederContext)
+	const isTestnorgeIdent = identFraTestnorge(opts)
+
+	const [identOptions, setIdentOptions] = useState([])
+	useEffect(() => {
+		if (!isTestnorgeIdent) {
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response) =>
+				setIdentOptions(response)
+			)
+		}
+	}, [])
 
 	return (
 		<Vis attributt={panelPaths}>
@@ -138,11 +150,11 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
-					<Vergemaal formikBag={formikBag} gruppeId={gruppeId} />
+					<Vergemaal formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
-					<Fullmakt formikBag={formikBag} />
+					<Fullmakt formikBag={formikBag} identOptions={identOptions} />
 				</Kategori>
 
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>

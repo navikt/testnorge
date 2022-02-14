@@ -16,8 +16,8 @@ import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const identFraTestnorge = (opts: any) => {
-	if (opts.is.importTestnorge) return true
-	return opts.is.leggTil && opts.identMaster === 'PDL'
+	if (opts?.is?.importTestnorge) return true
+	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 
 export const Steg1Person = ({ stateModifier }: any) => {
