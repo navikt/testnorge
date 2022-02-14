@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.controller.dto;
+package no.nav.testnav.libs.dto.personsearchservice.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Pageing {
-    Integer page;
-    Integer pageSize;
+public class SivilstandDTO {
+    String type;
 }

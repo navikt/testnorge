@@ -107,25 +107,25 @@ public class DollyBestillingService {
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
                         .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())));
 
-                if (!bestilling.getIdent().equals(dollyPerson.getHovedperson())) {
-                    progress.setIdent(dollyPerson.getHovedperson());
-                    identService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
-                    bestillingProgressService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
-                    bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
-                }
-
             } else if (originator.isPdlf()) {
-                pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
                         PersonUpdateRequestDTO.builder()
                                 .person(originator.getPdlBestilling().getPerson())
                                 .build());
 
-                var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
+                var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
                 dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
             } else {
                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
                 dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
+            }
+
+            if ((originator.isPdlf() || originator.isTpsf()) && !bestilling.getIdent().equals(dollyPerson.getHovedperson())) {
+                progress.setIdent(dollyPerson.getHovedperson());
+                identService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
+                bestillingProgressService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
+                bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
             }
 
             counterCustomRegistry.invoke(request);

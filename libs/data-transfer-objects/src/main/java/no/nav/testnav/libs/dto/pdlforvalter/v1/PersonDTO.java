@@ -89,7 +89,6 @@ public class PersonDTO implements Serializable {
             forelderBarnRelasjon = new ArrayList<>();
         }
         return forelderBarnRelasjon;
-
     }
 
     public List<AdressebeskyttelseDTO> getAdressebeskyttelse() {

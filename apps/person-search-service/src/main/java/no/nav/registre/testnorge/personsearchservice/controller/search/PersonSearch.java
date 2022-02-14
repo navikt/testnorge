@@ -4,15 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.personsearchservice.controller.dto.Pageing;
-
 import java.util.List;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PersonSearch {
-    Pageing pageing;
+    Integer page;
+    Integer pageSize;
+    Integer terminateAfter;
     String tag;
     String excludeTag;
     String kjoenn;

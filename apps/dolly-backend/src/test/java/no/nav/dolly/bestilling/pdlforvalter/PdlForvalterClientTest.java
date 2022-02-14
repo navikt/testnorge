@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFullmaktHistorikk;
@@ -76,6 +77,9 @@ public class PdlForvalterClientTest {
 
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
+
+    @Mock
+    private PdlDataConsumer pdlDataConsumer;
 
     @InjectMocks
     private PdlForvalterClient pdlForvalterClient;

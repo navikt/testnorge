@@ -29,9 +29,11 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 		}
 	}, [])
 	if (!data) return null
-	const harPdlBoadresse = pdlData && _has(pdlData, 'person.bostedsadresse')
-	const harPdlOppholdsadresse = pdlData && _has(pdlData, 'person.oppholdsadresse')
-	const harPdlKontaktadresse = pdlData && _has(pdlData, 'person.kontaktadresse')
+
+	const harPdlAdresse =
+		_has(pdlData, 'person.bostedsadresse') ||
+		_has(pdlData, 'person.oppholdsadresse') ||
+		_has(pdlData, 'person.kontaktadresse')
 	const harPdlFullmakt = pdlData && _has(pdlData, 'person.fullmakt')
 
 	const hasTpsfData = data.ident
@@ -51,10 +53,12 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}
-				{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
-				{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
-				{!harPdlKontaktadresse && (
-					<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+				{!harPdlAdresse && (
+					<>
+						<Boadresse boadresse={data.boadresse} />
+						<Postadresse postadresse={data.postadresse} />
+						<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+					</>
 				)}
 				{!hasTpsfData && <Telefonnummer data={pdlData?.telefonnummer} />}
 				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData?.sikkerhetstiltak} />}
