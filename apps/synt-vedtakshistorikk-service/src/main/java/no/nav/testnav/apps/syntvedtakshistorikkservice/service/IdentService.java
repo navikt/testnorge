@@ -2,16 +2,20 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlPersonConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchServiceConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.AlderSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.BarnSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonstatusSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PdlPerson;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.Random;
 public class IdentService {
 
     private final PersonSearchServiceConsumer personSearchServiceConsumer;
+    private final PdlPersonConsumer pdlPersonConsumer;
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
@@ -84,12 +89,37 @@ public class IdentService {
     }
 
     private boolean validIdent(PersonDTO person, LocalDate tidligsteDatoBosatt) {
+        var personData = pdlPersonConsumer.getPdlPerson(person.getIdent());
+        var bosattTidspunkt = personData.getData().getHentPerson()
+                .getFolkeregisterpersonstatus().stream()
+                .filter(status -> status.getStatus().equals("bosatt"))
+                .filter(status -> !status.getMetadata().isHistorisk())
+                .map(status -> status.getFolkeregistermetadata().getGyldighetstidspunkt())
+                .toList();
         return true;
     }
 
     private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
-        return true;
+        var personData = pdlPersonConsumer.getPdlPerson(person.getIdent());
+        var barnIdenter = personData.getData().getHentPerson().getForelderBarnRelasjon()
+                .stream()
+                .filter(relasjon -> relasjon.getRelatertPersonsRolle().equals("BARN"))
+                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                .filter(ident -> under18VedTidspunkt(ident, tidligsteDatoBarnetillegg))
+                .toList();
+
+        return !barnIdenter.isEmpty();
     }
+
+    private boolean under18VedTidspunkt(String ident, LocalDate tidspunkt){
+        var month = Integer.parseInt(ident.substring(2,4)) - 80;
+        var oppdatertFnr = ident.substring(0,2) + month + ident.substring(4);
+        var foedselsdato = IdentUtil.getFoedselsdatoFraIdent(oppdatertFnr);
+
+        var alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
+        return alder > -1 && alder < 18;
+    }
+
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
             int antall
