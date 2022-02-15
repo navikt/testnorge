@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.Ordre;
@@ -15,6 +16,7 @@ import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
@@ -63,11 +66,16 @@ import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 @RequiredArgsConstructor
 public class PdlOrdreService {
 
+    private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke sendes. Benytt gjeldende ident %s for denne operasjonen";
+
     private final DeployService deployService;
     private final PersonRepository personRepository;
+    private final AliasRepository aliasRepository;
     private final MapperFacade mapperFacade;
 
     public OrdreResponseDTO send(String ident, Boolean isTpsMaster) {
+
+        checkAlias(ident);
 
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(String.format("Ident %s finnes ikke i databasen", ident)));
@@ -89,6 +97,15 @@ public class PdlOrdreService {
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    private void checkAlias(String ident) {
+
+        var alias = aliasRepository.findByTidligereIdent(ident);
+        if (alias.isPresent()) {
+            throw new InvalidRequestException(
+                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
+        }
     }
 
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(DbPerson person, boolean skalSlettes) {
