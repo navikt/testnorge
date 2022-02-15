@@ -119,10 +119,9 @@ public class DollyPersonCache {
             }
             log.info("Dollyperson: {}", Json.pretty(dollyPerson));
 
-            dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(List.of(
-                            dollyPerson.getPdlfPerson().getPerson(),
-                            dollyPerson.getPdlfPerson().getRelasjoner().stream().map(FullPersonDTO.RelasjonDTO::getRelatertPerson)),
-                    Person.class));
+            dollyPerson.setPersondetaljer(List.of(mapperFacade.map(
+                    dollyPerson.getPdlfPerson().getPerson(),
+                    Person.class)));
 
             log.info("Dollyperson ferdig mappet: {}", Json.pretty(dollyPerson));
         }
