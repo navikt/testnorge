@@ -87,10 +87,10 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static boolean hasNoPdldataAdresse(PersonDTO person) {
 
-        return nonNull(person) &&
-                person.getBostedsadresse().isEmpty() &&
+        return isNull(person) ||
+                (person.getBostedsadresse().isEmpty() &&
                 person.getKontaktadresse().isEmpty() &&
-                person.getOppholdsadresse().isEmpty();
+                person.getOppholdsadresse().isEmpty());
     }
 
     private static void appendOkStatus(StringBuilder builder) {
