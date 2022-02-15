@@ -10,7 +10,7 @@ type PdlDataVisningProps = {
 }
 
 export const PdlDataVisning = ({ pdlData }: PdlDataVisningProps) => {
-	const data = pdlData.data
+	const data = pdlData?.data
 	if (!data || !data.hentPerson) {
 		return null
 	}
