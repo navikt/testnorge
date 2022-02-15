@@ -1,6 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -163,10 +162,6 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                 .map(Enum::name)
                                 .findFirst().orElse(null)
                         );
-
-                        log.info("personDTO: {}", Json.pretty(personDto));
-                        log.info("person: {}", Json.pretty(person));
-
                     }
                 })
                 .exclude("sivilstand")
