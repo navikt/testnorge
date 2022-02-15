@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.registre.aareg.consumer.rs.SyntAaregConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
 import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
@@ -52,7 +51,7 @@ public class SyntetiseringServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
-    private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
+    private SyntAaregConsumer aaregSyntetisererenConsumer;
 
     @Mock
     private AaregService aaregService;
