@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => ({
 	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
 	identer: state.gruppe.ident,
 	brukernavn: state.bruker.brukerData.brukernavn,
+	brukertype: state.bruker.brukerData.brukertype,
 	bestillingStatuser: state.bestillingStatuser.byId,
 })
 

@@ -30,6 +30,7 @@ export default function PersonListe({
 	setSidetall,
 	sideStoerrelse,
 	setSideStoerrelse,
+	brukertype,
 	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
@@ -76,12 +77,13 @@ export default function PersonListe({
 		window.sessionStorage.removeItem('sidetall')
 	}
 
-	if (!personListe || personListe.length === 0)
-		return (
-			<ContentContainer>
-				Trykk på opprett personer-knappen for å starte en bestilling.
-			</ContentContainer>
-		)
+	if (!personListe || personListe.length === 0) {
+		const infoTekst =
+			brukertype === 'BANKID'
+				? 'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
+				: 'Trykk på opprett personer-knappen for å starte en bestilling.'
+		return <ContentContainer>{infoTekst}</ContentContainer>
+	}
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
