@@ -112,7 +112,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
         return nyPerson;
