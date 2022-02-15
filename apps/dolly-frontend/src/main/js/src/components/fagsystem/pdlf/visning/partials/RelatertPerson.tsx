@@ -31,12 +31,10 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 	}, [])
 
 	const getRelatertPersonPdl = async () => {
-		await DollyApi.getPersonFraPdl(data.ident).then((response) => {
+		await DollyApi.getPersonFraPdl(data.ident).then((response: any) => {
 			setRelatertPersonPdl(response.data)
 		})
 	}
-
-	console.log('relatertPersonPdl', relatertPersonPdl)
 
 	return (
 		<>
