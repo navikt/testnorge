@@ -1,6 +1,5 @@
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
 
 export const getPlaceholder = (values, selectedValuePath) => {
 	const fornavn = _get(values, `${selectedValuePath}.fornavn`)

@@ -11,7 +11,6 @@ import {
 	initialFullmakt,
 	initialKjoenn,
 	initialNavn,
-	initialPdlPerson,
 	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
