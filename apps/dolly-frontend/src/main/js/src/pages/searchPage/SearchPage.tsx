@@ -5,24 +5,30 @@ import TestnorgePage from '~/pages/testnorgePage'
 
 type Selected = 'MININORGE' | 'TESTNORGE'
 
-export default () => {
-	const [selected, setSelected] = useState<Selected>('TESTNORGE')
+type Props = {
+	brukertype: string
+}
 
+export default ({ brukertype }: Props) => {
+	const [selected, setSelected] = useState<Selected>('TESTNORGE')
+	const bankIdBruker = brukertype === 'BANKID'
 	return (
 		<div>
-			<RadioPanelGruppe
-				legend="Hvilket datasett ønsker du å søke i?"
-				radios={[
-					{ label: 'Testnorge', value: 'TESTNORGE' },
-					{ label: 'Mini-Norge', value: 'MININORGE' },
-				]}
-				checked={selected}
-				// @ts-ignore
-				onChange={(value) => setSelected(value.target.value)}
-				name="velg_datasett"
-			/>
+			{!bankIdBruker && (
+				<RadioPanelGruppe
+					legend="Hvilket datasett ønsker du å søke i?"
+					radios={[
+						{ label: 'Testnorge', value: 'TESTNORGE' },
+						{ label: 'Mini-Norge', value: 'MININORGE' },
+					]}
+					checked={selected}
+					// @ts-ignore
+					onChange={(value) => setSelected(value.target.value)}
+					name="velg_datasett"
+				/>
+			)}
 			{selected === 'TESTNORGE' && <TestnorgePage />}
-			{selected === 'MININORGE' && <SoekMiniNorge />}
+			{!bankIdBruker && selected === 'MININORGE' && <SoekMiniNorge />}
 		</div>
 	)
 }
