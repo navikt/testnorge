@@ -78,13 +78,13 @@ export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id
 // Henter alle bestillinger som er gjort på en ident
 export const getBestillingsListe = (state, IDer) => {
 	const bestillingsListe = []
-	for (let i = 0; i < IDer.length; i++) {
+	for (let id of IDer) {
 		const bestilling = {
-			data: state.bestillingStatuser.byId[IDer[i]].bestilling,
-			id: IDer[i],
-			erGjenopprettet: state.bestillingStatuser.byId[IDer[i]].hasOwnProperty('opprettetFraId'),
+			data: state.bestillingStatuser.byId[id].bestilling,
+			id: id,
+			erGjenopprettet: state.bestillingStatuser.byId[id].hasOwnProperty('opprettetFraId'),
 		}
-		const suksessMiljoer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)
+		const suksessMiljoer = successMiljoSelector(state.bestillingStatuser.byId[id].status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
 		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiljoer.hasOwnProperty('ARENA')) {
 			bestillingsListe.push(bestilling)

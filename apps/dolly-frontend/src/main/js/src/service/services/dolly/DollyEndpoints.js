@@ -1,6 +1,7 @@
 const uri = `/dolly-backend/api/v1`
 
 const groupBase = `${uri}/gruppe`
+const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
@@ -10,6 +11,7 @@ const personoppslagBase = `${uri}/pdlperson`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
 const dokarkivBase = `${uri}/dokarkiv`
+const skjermingBase = `${uri}/skjerming`
 const inntektsmeldingBase = `${uri}/inntektsmelding`
 const organisasjonBase = `${uri}/organisasjon`
 
@@ -47,8 +49,24 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/importFraTps`
 	}
 
+	static gruppeBestillingImportFraPdl(gruppeId) {
+		return `${groupBase}/${gruppeId}/bestilling/importfrapdl`
+	}
+
 	static laasGruppe(gruppeId) {
 		return `${groupBase}/${gruppeId}/laas`
+	}
+
+	static sendGruppeTags(gruppeId) {
+		return `${tagsBase}/gruppe/${gruppeId}`
+	}
+
+	static getTags() {
+		return `${tagsBase}`
+	}
+
+	static getTagsPaaIdent(ident) {
+		return `${tagsBase}/ident/${ident}`
 	}
 
 	static gruppeBestillingStatus(gruppeId) {
@@ -57,6 +75,10 @@ export default class DollyEndpoints {
 
 	static organisasjonBestilling() {
 		return `${organisasjonBase}/bestilling`
+	}
+
+	static skjermingByIdent(ident) {
+		return `${skjermingBase}/${ident}`
 	}
 
 	static organisasjonStatusByBestillingId(bestillingId) {
@@ -137,6 +159,10 @@ export default class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
+	}
+
+	static gruppeExcelFil(gruppeId) {
+		return `${uri}/excel/gruppe/${gruppeId}`
 	}
 
 	//TESTPERSON-CONTROLLER

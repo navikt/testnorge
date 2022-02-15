@@ -37,7 +37,7 @@ export const LeggTilRelasjon = ({
 		<div className="add-relasjon">
 			<Formik
 				onSubmit={onSubmit}
-				validate={async (values) => await validate(values, validation)}
+				validate={async (values) => validate(values, validation)}
 				initialValues={initialValues}
 			>
 				{(formikBag) => {

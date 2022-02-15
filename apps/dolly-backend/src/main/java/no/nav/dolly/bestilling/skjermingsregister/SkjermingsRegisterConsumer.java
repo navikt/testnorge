@@ -56,7 +56,6 @@ public class SkjermingsRegisterConsumer {
                         .path(SKJERMINGSREGISTER_URL)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callid)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(skjermingsDataRequest)
@@ -66,7 +65,7 @@ public class SkjermingsRegisterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-hent" })
-    public ResponseEntity<SkjermingsDataResponse> getSkjerming(String ident) {
+    public SkjermingsDataResponse getSkjerming(String ident) {
 
         String callid = getNavCallId();
         logInfoSkjermingsMelding(callid);
@@ -76,10 +75,10 @@ public class SkjermingsRegisterConsumer {
                         .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callid)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve().toEntity(SkjermingsDataResponse.class)
+                .retrieve()
+                .bodyToMono(SkjermingsDataResponse.class)
                 .block();
     }
 
@@ -94,7 +93,6 @@ public class SkjermingsRegisterConsumer {
                         .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callid)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve().toEntity(String.class)

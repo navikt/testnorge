@@ -15,6 +15,10 @@ export default {
 		return Request.get(Endpoints.gruppeByIdPaginert(gruppeId, pageNo, pageSize))
 	},
 
+	getSkjerming(ident) {
+		return Request.get(Endpoints.skjermingByIdent(ident))
+	},
+
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
@@ -45,6 +49,10 @@ export default {
 
 	updateGruppeLaas(gruppeId, data) {
 		return Request.put(Endpoints.laasGruppe(gruppeId), data)
+	},
+
+	updateGruppeSendTags(gruppeId, data) {
+		return Request.post(Endpoints.sendGruppeTags(gruppeId), data)
 	},
 
 	gjenopprettGruppe(gruppeId, envs) {
@@ -135,17 +143,12 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
 	},
 
-	//* Oppslag
-	getEnhetByTknr(tknr) {
-		return Request.get(Endpoints.enhetByTknr(tknr))
+	importerPersonerFraPdl: (gruppeId, request) => {
+		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
 	getPersonFraPdl(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
-	},
-
-	getFasteOrgnummer() {
-		return Request.get(Endpoints.fasteOrgnummer())
 	},
 
 	getArbeidsforhold(ident, miljoe) {
@@ -187,5 +190,22 @@ export default {
 
 	deleteOrganisasjonOrgnummer(orgnummer) {
 		return Request.delete(Endpoints.deleteOrganisasjonOrgnummer(orgnummer))
+	},
+
+	//* Tags
+	getTags() {
+		return Request.get(Endpoints.getTags())
+	},
+
+	getTagsPaaIdent(ident) {
+		if (!ident) {
+			return null
+		}
+		return Request.get(Endpoints.getTagsPaaIdent(ident))
+	},
+
+	//* Excel
+	getExcelFil(groupId) {
+		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 }

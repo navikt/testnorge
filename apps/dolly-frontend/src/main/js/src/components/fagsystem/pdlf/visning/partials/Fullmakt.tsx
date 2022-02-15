@@ -6,38 +6,16 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FullmaktKodeverk } from '~/config/kodeverk'
 import styled from 'styled-components'
+import { FullmaktData, Relasjon } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type Data = {
 	data: FullmaktData
-	relasjoner: Array<relasjon>
+	relasjoner: Array<Relasjon>
 }
 
 type DataListe = {
 	data: Array<FullmaktData>
-	relasjoner: Array<relasjon>
-}
-
-type FullmaktData = {
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-	omraader: Array<string>
-	motpartsPersonident: string
-	id: number
-}
-
-type relasjon = {
-	relasjonType: string
-	relatertPerson: {
-		ident: string
-		navn: Array<{
-			fornavn: string
-			mellomnavn?: string
-			etternavn: string
-		}>
-		kjoenn: Array<{
-			kjoenn: string
-		}>
-	}
+	relasjoner: Array<Relasjon>
 }
 
 const Tema = styled.div`
@@ -46,6 +24,7 @@ const Tema = styled.div`
 		margin-bottom: 10px;
 		margin-top: 0px;
 	}
+
 	TitleValue {
 		margin-bottom: 5px;
 	}
@@ -53,7 +32,7 @@ const Tema = styled.div`
 
 export const Visning = ({ data, relasjoner }: Data) => {
 	const fullmektigIdent = data.motpartsPersonident
-	const fullmektig = relasjoner.find(
+	const fullmektig = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
 	)
 	const { fornavn, mellomnavn, etternavn } = fullmektig?.relatertPerson?.navn?.[0]

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.ArbeidsforholdServiceConsumer;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
@@ -21,6 +22,7 @@ import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
@@ -54,7 +56,6 @@ public class OppslagController {
 
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
-    private final AaregConsumer aaregConsumer;
     private final ArbeidsforholdServiceConsumer arbeidsforholdServiceConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
@@ -65,6 +66,7 @@ public class OppslagController {
     private final ProfilApiConsumer profilApiConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
+    private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -89,7 +91,7 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL")
-    public JsonNode pdlPerson(@RequestParam("identer") List<String> identer) {
+    public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer) {
         return pdlPersonConsumer.getPdlPersoner(identer);
     }
 
@@ -113,9 +115,15 @@ public class OppslagController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/skjerming/{ident}")
+    @Operation(description = "Hent skjerming på ident")
+    public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
+        return skjermingsRegisterConsumer.getSkjerming(ident);
+    }
+
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
-    public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
 
@@ -184,5 +192,4 @@ public class OppslagController {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
     }
-
 }

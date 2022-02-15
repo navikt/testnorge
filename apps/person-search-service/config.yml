@@ -22,11 +22,7 @@ spec:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend-dev
           cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-gcp
         - application: app-1
@@ -47,6 +43,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /kv/preprod/fss/person-search-service/dolly
+        mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:
       cpu: 200m

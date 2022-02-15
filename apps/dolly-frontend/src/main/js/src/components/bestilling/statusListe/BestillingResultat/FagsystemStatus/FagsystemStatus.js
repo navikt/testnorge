@@ -2,6 +2,7 @@ import React from 'react'
 import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
+import { fixNamesAndDuplicatesOfStatus } from '~/utils/BestillingStatusFormattering'
 
 export default function FagsystemStatus({ bestilling }) {
 	const iconTypes = {
@@ -10,7 +11,8 @@ export default function FagsystemStatus({ bestilling }) {
 		feil: 'report-problem-triangle',
 	}
 
-	const iconType = (statuser) => {
+	const iconType = (statusListe) => {
+		const statuser = fixNamesAndDuplicatesOfStatus(statusListe)
 		// Alle er OK
 		if (statuser.every((status) => status.melding === 'OK')) return iconTypes.suksess
 		// Denne statusmeldingen gir kun avvik

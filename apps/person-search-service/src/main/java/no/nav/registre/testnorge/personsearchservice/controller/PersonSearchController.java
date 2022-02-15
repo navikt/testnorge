@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+
 
 @RestController
 @RequestMapping("/api/v1/person")
@@ -26,7 +26,7 @@ public class PersonSearchController {
     @PostMapping
     public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
         PersonList personList = service.search(search);
-        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).collect(Collectors.toList());
+        List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).toList();
         return ResponseEntity
                 .ok()
                 .header(NUMBER_OF_ITEMS_HEADER, String.valueOf(personList.getNumberOfItems()))

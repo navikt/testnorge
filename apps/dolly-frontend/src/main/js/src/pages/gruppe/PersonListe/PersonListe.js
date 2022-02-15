@@ -8,7 +8,6 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
-import { ImportFraEtikett } from '~/components/ui/etikett'
 
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -34,6 +33,7 @@ export default function PersonListe({
 	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
+	fetchPdlPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -63,6 +63,7 @@ export default function PersonListe({
 	useEffect(() => {
 		if (gruppeEndret()) {
 			fetchTpsfPersoner()
+			fetchPdlPersoner()
 			previousValues.current = identer
 		}
 	}, [identer])
@@ -138,18 +139,13 @@ export default function PersonListe({
 		},
 		{
 			text: 'Bestilling-ID',
-			width: '25',
+			width: '20',
 			dataField: 'bestillingId',
 			formatter: (cell, row) => {
 				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
-				return (
-					<>
-						{str}
-						<ImportFraEtikett importFra={row.importFra} type={'fokus'} venstreMargin />
-					</>
-				)
+				return <>{str}</>
 			},
 		},
 		{
@@ -160,12 +156,15 @@ export default function PersonListe({
 			formatter: (cell) => <Icon kind={ikonTypeMap[cell]} title={cell} />,
 		},
 		{
+			text: 'Kilde',
+			width: '20',
+			dataField: 'kilde',
+		},
+		{
 			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => (
-				<PersonIBrukButtonConnector ident={row.ident} iLaastGruppe={iLaastGruppe} />
-			),
+			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
 			text: '',
@@ -227,11 +226,7 @@ export default function PersonListe({
 				)}
 			/>
 			{isKommentarModalOpen && selectedIdent && (
-				<KommentarModal
-					closeModal={closeKommentarModal}
-					ident={selectedIdent}
-					iLaastGruppe={iLaastGruppe}
-				/>
+				<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />
 			)}
 		</ErrorBoundary>
 	)

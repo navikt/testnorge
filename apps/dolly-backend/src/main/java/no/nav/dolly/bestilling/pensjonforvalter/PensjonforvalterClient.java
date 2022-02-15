@@ -46,7 +46,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            if (!bestilteMiljoer.isEmpty()) {
+            if (!bestilteMiljoer.isEmpty() && !progress.isPdlf()) {
                 opprettPerson(dollyPerson, bestilteMiljoer, status);
 
                 if (nonNull(bestilling.getPensjonforvalter())) {

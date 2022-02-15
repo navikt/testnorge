@@ -37,7 +37,7 @@ public class SkjermingsregisterProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
+                .bearerAuthenticationHeaderFilter(stsOidcTokenService::getToken);
 
         return builder.routes()
                 .route(spec -> spec

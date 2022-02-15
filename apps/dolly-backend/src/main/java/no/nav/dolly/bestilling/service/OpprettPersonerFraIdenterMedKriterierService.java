@@ -21,7 +21,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -48,7 +47,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
         super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
+                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer, pdlDataConsumer);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -94,6 +93,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                     DollyPerson dollyPerson = DollyPerson.builder()
                                             .hovedperson(leverteIdenter.get(0))
                                             .master(identStatus.getMaster())
+                                            .tags(bestKriterier.getTags())
                                             .build();
 
                                     gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);

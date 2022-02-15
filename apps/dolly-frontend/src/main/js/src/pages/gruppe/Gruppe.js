@@ -25,7 +25,11 @@ export default function Gruppe({
 	brukernavn,
 	isFetching,
 	isDeletingGruppe,
+	sendTags,
+	isSendingTags,
 	isLockingGruppe,
+	getGruppeExcelFil,
+	isFetchingExcel,
 	match,
 	history,
 	bestillingStatuser,
@@ -68,9 +72,13 @@ export default function Gruppe({
 				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
+				sendTags={sendTags}
+				isSendingTags={isSendingTags}
 				laasGruppe={laasGruppe}
 				isLockingGruppe={isLockingGruppe}
 				bestillingStatuser={bestillingStatuser}
+				getGruppeExcelFil={getGruppeExcelFil}
+				isFetchingExcel={isFetchingExcel}
 			/>
 
 			<StatusListeConnector gruppeId={gruppe.id} />

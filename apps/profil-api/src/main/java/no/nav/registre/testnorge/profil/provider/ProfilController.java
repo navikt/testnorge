@@ -17,13 +17,13 @@ import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 @RequestMapping("/api/v1/profil")
 public class ProfilController {
 
+    private final ProfilService profilService;
+    private final CacheControl cacheControl;
+
     public ProfilController(ProfilService profilService) {
         this.profilService = profilService;
         this.cacheControl = CacheControl.maxAge(30, TimeUnit.MINUTES).noTransform().mustRevalidate();
     }
-
-    private final ProfilService profilService;
-    private final CacheControl cacheControl;
 
     @SneakyThrows
     @GetMapping

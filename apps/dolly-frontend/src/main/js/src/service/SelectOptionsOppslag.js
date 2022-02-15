@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
@@ -17,6 +17,10 @@ export const SelectOptionsOppslag = {
 
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
+	},
+
+	hentNavEnheter: () => {
+		return useAsync(async () => Norg2Api.getNavEnheter(), [Norg2Api.getNavEnheter])
 	},
 
 	hentPersonnavn: () => {
@@ -57,6 +61,10 @@ export const SelectOptionsOppslag = {
 
 	hentUnderstatusFraBrregstub: () => {
 		return useAsync(async () => BrregstubApi.getUnderstatus(), [BrregstubApi.getUnderstatus])
+	},
+
+	hentTagsFraDolly: () => {
+		return useAsync(async () => DollyApi.getTags(), [DollyApi.getTags])
 	},
 
 	hentVirksomheterFraOrgforvalter: () => {
@@ -119,12 +127,30 @@ export const SelectOptionsOppslag = {
 				options.push({ value: rolle[0], label: rolle[1] })
 			})
 			return options
+		} else if (type === 'navEnheter') {
+			const enheter = data.value ? Object.entries(data.value.data) : []
+			const options = []
+			enheter.forEach((enhet) => {
+				options.push({
+					value: enhet?.[1]?.enhetNr,
+					label: `${enhet?.[1]?.navn} (${enhet?.[1]?.enhetNr})`,
+				})
+			})
+			return options
 		} else if (type === 'sdpLeverandoer') {
 			const leverandoerer = data.value ? Object.entries(data.value.data) : []
 			const options = []
 			leverandoerer.forEach((leverandoer) => {
 				data = leverandoer[1]
 				options.push({ value: parseInt(data.id), label: data.navn })
+			})
+			return options
+		} else if (type === 'tags') {
+			const tags = data.value ? Object.entries(data.value.data) : []
+			const options = []
+			tags.forEach((leverandoer) => {
+				data = leverandoer[1]
+				options.push({ value: data.tag, label: data.beskrivelse })
 			})
 			return options
 		} else if (type === 'fullmaktOmraader') {

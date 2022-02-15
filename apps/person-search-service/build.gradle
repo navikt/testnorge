@@ -40,6 +40,7 @@ dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.data:spring-data-elasticsearch'
 
@@ -53,7 +54,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'

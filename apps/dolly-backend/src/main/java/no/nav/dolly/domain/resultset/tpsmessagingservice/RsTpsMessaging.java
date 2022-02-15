@@ -8,10 +8,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -25,6 +29,21 @@ public class RsTpsMessaging {
     private LocalDate egenAnsattDatoFom;
     private LocalDate egenAnsattDatoTom;
     private BankkontonrUtlandDTO utenlandskBankkonto;
+    private List<SikkerhetstiltakDTO> sikkerhetstiltak;
     private BankkontonrNorskDTO norskBankkonto;
     private List<TelefonnummerDTO> telefonnummer;
+
+    public List<SikkerhetstiltakDTO> getSikkerhetstiltak() {
+        if (isNull(sikkerhetstiltak)) {
+            sikkerhetstiltak = new ArrayList<>();
+        }
+        return sikkerhetstiltak;
+    }
+
+    public List<TelefonnummerDTO> getTelefonnummer() {
+        if (isNull(telefonnummer)) {
+            telefonnummer = new ArrayList<>();
+        }
+        return telefonnummer;
+    }
 }

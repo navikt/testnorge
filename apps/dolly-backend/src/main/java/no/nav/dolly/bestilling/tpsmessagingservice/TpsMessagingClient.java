@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -22,7 +21,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-@Order(7)
+@Order(6)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
@@ -39,8 +38,6 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
-
             if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSpraakkodeRequest(
@@ -48,7 +45,31 @@ public class TpsMessagingClient implements ClientRegister {
                                 bestilling.getEnvironments(),
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
-                        "SprakKode"
+                        "SprakKode_opprett"
+                );
+            }
+
+            if (!bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
+                var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                        dollyPerson.getHovedperson(),
+                        bestilling.getEnvironments());
+
+                if (sikkerhetstiltakStatus.stream()
+                        .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))) {
+                    appendResponseStatus(sikkerhetstiltakStatus.stream()
+                                    .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
+                                    .toList(),
+                            status,
+                            "Sikkerhetstiltak_slett"
+                    );
+                }
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendSikkerhetstiltakRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
+                        status,
+                        "Sikkerhetstiltak_opprett"
                 );
             }
 
@@ -73,20 +94,21 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+            if (!bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
 
-                appendResponseStatus(tlfStatus.stream()
-                                .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
-                                .toList(),
-                        status,
-                        "Telefonnummer_slett"
-                );
-            }
+                if (tlfStatus.stream()
+                        .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))) {
 
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+                    appendResponseStatus(tlfStatus.stream()
+                                    .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
+                                    .toList(),
+                            status,
+                            "Telefonnummer_slett"
+                    );
+                }
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
@@ -109,7 +131,7 @@ public class TpsMessagingClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        throw new UnsupportedOperationException("Release ikke implementert");
+        // TpsMessaging har ikke sletting
     }
 
     private void sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {

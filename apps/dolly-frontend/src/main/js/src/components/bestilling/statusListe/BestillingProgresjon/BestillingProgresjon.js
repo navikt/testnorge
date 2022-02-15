@@ -35,7 +35,11 @@ export default class BestillingProgresjon extends PureComponent {
 		if (!this.state.ferdig && !this.props.bestilling.organisasjonNummer) {
 			this.interval = setInterval(() => this.getBestillingStatus(), this.PULL_INTERVAL)
 		}
-		if (!this.state.ferdig && this.props.bestilling.organisasjonNummer) {
+		if (
+			!this.state.ferdig &&
+			(sessionStorage.getItem('organisasjon_bestilling') ||
+				this.props.bestilling.organisasjonNummer)
+		) {
 			this.interval = setInterval(
 				() => this.getOrganisasjonBestillingStatus(),
 				this.PULL_INTERVAL_ORG
@@ -50,10 +54,14 @@ export default class BestillingProgresjon extends PureComponent {
 	stopPolling = () => clearInterval(this.interval)
 
 	getOrganisasjonBestillingStatus = async () => {
-		const bestillingId = this.props.bestilling.id
+		const bestillingId = this.props.bestilling?.id
 
 		try {
 			const { data } = await DollyApi.getOrganisasjonBestillingStatus(bestillingId)
+
+			if (!data?.message?.includes('Status ikke funnet')) {
+				sessionStorage.clear()
+			}
 
 			if (data.ferdig) {
 				this.stopPolling()

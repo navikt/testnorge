@@ -38,7 +38,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || 'refs/heads/master/feature/sikkerhetstiltak'}}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/innsending_av_historisk_blir_feil'}}
     with:
       resource: 'apps/pdl-forvalter/nais-dev.yaml'
       app-name: 'testnav-pdl-forvalter'

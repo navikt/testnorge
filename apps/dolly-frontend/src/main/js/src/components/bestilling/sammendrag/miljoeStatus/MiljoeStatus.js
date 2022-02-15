@@ -13,6 +13,7 @@ const mapStatusrapport = (bestillingstatus) => {
 				curr.statuser.map((status) => {
 					const feil = {
 						navn: curr.navn,
+						id: curr.id,
 						melding: status.melding !== 'OK' ? status.melding : null,
 					}
 
@@ -54,7 +55,7 @@ export default function MiljoeStatus({ bestilling }) {
 					{statusrapport.length < 1 && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				</div>
 			)}
-			<FagsystemStatus statusrapport={statusrapport} />
+			<FagsystemStatus statusrapportListe={statusrapport} />
 		</div>
 	)
 }

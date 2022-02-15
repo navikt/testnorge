@@ -21,6 +21,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: endringsmelding-service
@@ -35,10 +37,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
+        - application: import-fra-tpsf-service-dev
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
@@ -57,6 +59,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtps-forvalteren
+        mountPath: /credentials
   resources:
     requests:
       cpu: 200m

@@ -5,40 +5,29 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialPdlPerson,
+	initialStatsborgerskap,
+	initialTilrettelagtKommunikasjon,
+} from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
-import { cloneDeep } from 'lodash'
 
-const innvandret = (personFoerLeggTil) =>
-	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
-
+// @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil
-	const { personFoerLeggTil } = opts
-
-	const tomInnvandretUtvandret =
-		personFoerLeggTil && _get(personFoerLeggTil, 'tpsf.innvandretUtvandret').length < 1
 
 	const harFnr = opts.identtype === 'FNR'
-	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
-	const utvandretTitle = () => {
-		if (!harFnr) {
-			return 'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
-		} else if (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)) {
-			return 'Personen må innvandre før den kan utvandre igjen'
-		} else return null
-	}
-
 	return (
+		// @ts-ignore
 		<Panel
 			heading={PersoninformasjonPanel.heading}
 			startOpen
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => sm.batchAdd('identtype')}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
@@ -49,25 +38,13 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 			<AttributtKategori title="Nasjonalitet">
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt
-					attr={sm.attrs.innvandretFraLand}
-					disabled={
-						(tomInnvandretUtvandret && harFnrLeggTil) ||
-						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
-					}
-					title={
-						(tomInnvandretUtvandret && harFnrLeggTil) ||
-						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
-							? 'Personen må utvandre før den kan innvandre igjen'
-							: null
-					}
-				/>
+				<Attributt attr={sm.attrs.innvandretFraLand} />
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={
-						!harFnr || (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil))
+					disabled={!harFnr}
+					title={
+						'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
 					}
-					title={utvandretTitle()}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">
@@ -81,11 +58,11 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
-				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
+				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -93,18 +70,13 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
+// @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil } = opts
 
-	const telefonnummerFoerLeggTil = () => {
-		const tlfListe = _get(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
-		const tlfListeClone = cloneDeep(tlfListe)
-		tlfListeClone.forEach((nr) => {
-			if (_has(nr, 'id')) {
-				delete nr.id
-			}
-		})
-		return tlfListeClone
+	const fjernIdFoerLeggTil = (path: string) => {
+		const pdlDataElement = _get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
+		return pdlDataElement.map(({ id, ...restProperties }: { id: string }) => restProperties)
 	}
 
 	return {
@@ -116,45 +88,67 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		doedsdato: {
 			label: 'Dødsdato',
-			checked: has('tpsf.doedsdato'),
-			add: () => set('tpsf.doedsdato', null),
-			remove: () => del(['tpsf.doedsdato', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
+			checked: has('pdldata.person.doedsfall'),
+			add: () =>
+				set('pdldata.person.doedsfall', [
+					{
+						doedsdato: new Date(),
+						kilde: 'Dolly',
+						master: 'PDL',
+					},
+				]),
+			remove: () => del(['pdldata.person.doedsfall']),
 		},
 		statsborgerskap: {
 			label: 'Statsborgerskap',
-			checked: has('tpsf.statsborgerskap'),
+			checked: has('pdldata.person.statsborgerskap'),
 			add() {
-				setMulti(
-					['tpsf.statsborgerskap', ''],
-					['tpsf.statsborgerskapRegdato', null],
-					['tpsf.statsborgerskapTildato', null]
-				)
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
+					? set('pdldata.person.statsborgerskap', fjernIdFoerLeggTil('statsborgerskap'))
+					: set('pdldata.person.statsborgerskap', [initialStatsborgerskap])
 			},
 			remove() {
-				del(
-					['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'],
-					['tpsf.statsborgerskap', 'tpsf.statsborgerskapTildato']
-				)
+				del(['pdldata.person.statsborgerskap'])
 			},
 		},
 		innvandretFraLand: {
 			label: 'Innvandret fra',
-			checked: has('tpsf.innvandretFraLand'),
+			checked: has('pdldata.person.innflytting'),
 			add() {
-				setMulti(['tpsf.innvandretFraLand', ''], ['tpsf.innvandretFraLandFlyttedato', null])
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
+					? set('pdldata.person.innflytting', fjernIdFoerLeggTil('innflytting'))
+					: set('pdldata.person.innflytting', [
+							{
+								fraflyttingsland: '',
+								fraflyttingsstedIUtlandet: '',
+								innflyttingsdato: new Date(),
+								master: 'FREG',
+								kilde: 'Dolly',
+							},
+					  ])
 			},
 			remove() {
-				del(['tpsf.innvandretFraLand', 'tpsf.innvandretFraLandFlyttedato'])
+				del('pdldata.person.innflytting')
 			},
 		},
 		utvandretTilLand: {
 			label: 'Utvandret til',
-			checked: has('tpsf.utvandretTilLand'),
+			checked: has('pdldata.person.utflytting'),
 			add() {
-				setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
+					? set('pdldata.person.utflytting', fjernIdFoerLeggTil('utflytting'))
+					: set('pdldata.person.utflytting', [
+							{
+								tilflyttingsland: '',
+								tilflyttingsstedIUtlandet: '',
+								utflyttingsdato: new Date(),
+								master: 'FREG',
+								kilde: 'Dolly',
+							},
+					  ])
 			},
 			remove() {
-				del(['tpsf.utvandretTilLand', 'tpsf.utvandretTilLandFlyttedato'])
+				del('pdldata.person.utflytting')
 			},
 		},
 		identHistorikk: {
@@ -206,11 +200,18 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(
 					[
 						'tpsMessaging.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') ||
+						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
 							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
 							new Date(),
 					],
-					['tpsMessaging.egenAnsattDatoTom', undefined]
+					['tpsMessaging.egenAnsattDatoTom', undefined],
+					[
+						'skjerming.egenAnsattDatoFom',
+						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
+							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+							new Date(),
+					],
+					['skjerming.egenAnsattDatoTom', undefined]
 				)
 			},
 			remove() {
@@ -219,6 +220,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsMessaging.egenAnsattDatoTom',
 					'tpsf.egenAnsattDatoFom',
 					'tpsf.egenAnsattDatoTom',
+					'skjerming',
 				])
 			},
 		},
@@ -238,7 +240,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
 					? setMulti(
-							['pdldata.person.telefonnummer', telefonnummerFoerLeggTil()],
+							['pdldata.person.telefonnummer', fjernIdFoerLeggTil('telefonnummer')],
 							['tpsMessaging.telefonnummer', _get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
 					  )
 					: setMulti(
@@ -251,7 +253,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 										prioritet: 1,
 										kilde: 'Dolly',
 										master: 'PDL',
-										gjeldende: true,
 									},
 								],
 							],
@@ -271,20 +272,10 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del(['pdldata.person.telefonnummer', 'tpsMessaging.telefonnummer'])
 			},
 		},
-		spesreg: {
-			label: 'Diskresjonskode',
-			checked: has('tpsf.spesreg') || has('tpsf.utenFastBopel'),
-			add() {
-				setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
-			},
-			remove() {
-				del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
-			},
-		},
 		identtype: {
 			label: 'Identtype',
 			checked: has('tpsf.identtype'),
-			add: () =>
+			add() {
 				setMulti(
 					['tpsf.identtype', 'FNR'],
 					personFoerLeggTil?.tpsf?.foedselsdato && [
@@ -295,7 +286,8 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						'tpsf.foedtEtter',
 						subDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
 					]
-				),
+				)
+			},
 			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		vergemaal: {
@@ -324,28 +316,60 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						nyFullmektig: initialPdlPerson,
 						kilde: 'Dolly',
 						master: 'PDL',
-						gjeldende: true,
 					},
 				]),
 			remove: () => del('pdldata.person.fullmakt'),
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
-			checked: has('tpsf.typeSikkerhetTiltak'),
+			checked: has('pdldata.person.sikkerhetstiltak'),
 			add: () =>
 				setMulti(
-					['tpsf.typeSikkerhetTiltak', ''],
-					['tpsf.beskrSikkerhetTiltak', ''],
-					['tpsf.sikkerhetTiltakDatoFom', new Date()],
-					['tpsf.sikkerhetTiltakDatoTom', '']
+					[
+						'pdldata.person.sikkerhetstiltak',
+						[
+							{
+								tiltakstype: '',
+								beskrivelse: '',
+								kontaktperson: {
+									personident: '',
+									enhet: '',
+								},
+								gyldigFraOgMed: new Date(),
+								gyldigTilOgMed: null,
+								kilde: 'Dolly',
+								master: 'PDL',
+							},
+						],
+					],
+					[
+						'tpsMessaging.sikkerhetstiltak',
+						[
+							{
+								tiltakstype: '',
+								beskrivelse: '',
+								gyldigFraOgMed: new Date(),
+								gyldigTilOgMed: null,
+							},
+						],
+					]
 				),
-			remove: () =>
-				del([
-					'tpsf.typeSikkerhetTiltak',
-					'tpsf.beskrSikkerhetTiltak',
-					'tpsf.sikkerhetTiltakDatoFom',
-					'tpsf.sikkerhetTiltakDatoTom',
-				]),
+			remove: () => del(['pdldata.person.sikkerhetstiltak', 'tpsMessaging.sikkerhetstiltak']),
+		},
+		tilrettelagtKommunikasjon: {
+			label: 'Tilrettelagt komm.',
+			checked: has('pdldata.person.tilrettelagtKommunikasjon'),
+			add() {
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.tilrettelagtKommunikasjon')
+					? set(
+							'pdldata.person.tilrettelagtKommunikasjon',
+							fjernIdFoerLeggTil('tilrettelagtKommunikasjon')
+					  )
+					: set('pdldata.person.tilrettelagtKommunikasjon', [initialTilrettelagtKommunikasjon])
+			},
+			remove() {
+				del('pdldata.person.tilrettelagtKommunikasjon')
+			},
 		},
 		utenlandskBankkonto: {
 			label: 'Utenlandsk bank',

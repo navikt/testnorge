@@ -4,8 +4,11 @@ export type Pageing = {
 }
 
 export type Search = {
-	pageing: Pageing
+	page: number
+	pageSize: number
+	terminateAfter: number
 	tag: string
+	excludeTag: string
 	kjoenn?: string
 	foedsel?: {
 		fom?: string
@@ -21,6 +24,21 @@ export type Search = {
 		fra?: number
 		til?: number
 	}
+	identer?: Array<string>
+	utflyttingFraNorge?: {
+		utflyttet?: boolean
+	}
+	innflyttingTilNorge?: {
+		innflytting?: boolean
+	}
+	identitet?: {
+		falskIdentitet?: boolean
+		utenlandskIdentitet?: boolean
+	}
+	barn?: {
+		barn?: boolean
+		doedfoedtBarn?: boolean
+	}
 }
 
 export type Person = {
@@ -30,7 +48,7 @@ export type Person = {
 	etternavn?: string
 	kjoenn?: string
 	aktorId: string
-	tag: string
+	tags: string[]
 	foedsel?: {
 		foedselsdato?: string
 	}
@@ -38,6 +56,6 @@ export type Person = {
 		type?: string
 	}
 	statsborgerskap?: {
-		land?: string
+		land?: string[]
 	}
 }

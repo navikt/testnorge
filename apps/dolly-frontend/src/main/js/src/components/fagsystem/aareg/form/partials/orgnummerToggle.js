@@ -83,7 +83,7 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 					label={'Organisasjonsnummer'}
 				/>
 			) : (
-				<div className={'flexbox--align-center'}>
+				<div className={'flexbox--align-start'}>
 					<DollyTextInput
 						name={path}
 						type={'number'}
@@ -120,12 +120,16 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 									label: value.toUpperCase(),
 								}))
 						}
-						placeholder={'q1'}
 						value={environment}
 						onChange={(event) => {
 							setEnvironment(event.value)
 							handleManualOrgChange(orgnummer, event.value)
 						}}
+						feil={
+							!environment && {
+								feilmelding: 'Må velge miljø',
+							}
+						}
 					/>
 					{success && (
 						<>

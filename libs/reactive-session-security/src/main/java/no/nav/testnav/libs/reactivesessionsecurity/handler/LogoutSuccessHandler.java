@@ -29,13 +29,14 @@ public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
         response.getCookies().remove("sessionExpiry");
         response.getCookies().remove("serverTime");
 
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            var oAuth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+        if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+            var registrationId = oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
+            var logOutState = getLogoutState(exchange, registrationId);
             return Optional
-                    .ofNullable(resolvers.get(oAuth2AuthenticationToken.getAuthorizedClientRegistrationId()))
-                    .map(resolver -> resolver.generateUrl((DefaultOidcUser) authentication.getPrincipal()))
+                    .ofNullable(resolvers.get(registrationId))
+                    .map(resolver -> resolver.generateUrl((DefaultOidcUser) authentication.getPrincipal(), logOutState))
                     .orElse(Mono.empty())
-                    .switchIfEmpty(Mono.just(URI.create("/login?logout")))
+                    .switchIfEmpty(Mono.just(URI.create("/login?state=" + logOutState)))
                     .doOnNext(uri -> response.getHeaders().setLocation(uri))
                     .then(exchange
                             .getExchange()
@@ -43,11 +44,22 @@ public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
                             .flatMap(WebSession::invalidate)
                     );
         }
-        response.getHeaders().setLocation(URI.create("/login?logout"));
+        response.getHeaders().setLocation(URI.create("/login?state=logout"));
         return exchange
                 .getExchange()
                 .getSession()
                 .flatMap(WebSession::invalidate);
+    }
+
+    private String getLogoutState(WebFilterExchange exchange, String registrationId) {
+        var request = exchange.getExchange().getRequest();
+        var state = request.getQueryParams().get("state");
+        if (state != null && !state.isEmpty()) {
+            var stateValue = state.get(0);
+            if (registrationId.equals("aad") && stateValue.equals("organisation_error")) stateValue = "unknown_error";
+            return stateValue;
+        }
+        return "logout";
     }
 
     public void applyOn(String authorizedClientRegistrationId, OcidLogoutUriResolver resolver) {

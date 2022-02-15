@@ -91,7 +91,7 @@ public class CreatePersonService {
                 .findFirst().get().getIdent());
 
         Stream.of(
-                        Flux.just(bostedAdresseService.convert(mergedPerson)),
+                        Flux.just(bostedAdresseService.convert(mergedPerson, null)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
                         Flux.just(foedselService.convert(mergedPerson)),

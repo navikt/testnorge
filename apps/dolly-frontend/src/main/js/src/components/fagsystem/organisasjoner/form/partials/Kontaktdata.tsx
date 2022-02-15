@@ -9,7 +9,7 @@ type KontaktdataProps = {
 
 export const Kontaktdata = ({ path }: KontaktdataProps) => {
 	return (
-		<Kategori title="Kontaktdata" vis={kontaktPaths}>
+		<Kategori title="Kontaktdata" vis={kontaktPaths} flexRow={true}>
 			<FormikTextInput name={`${path}.telefon`} label="Telefon" size="large" type="number" />
 			<FormikTextInput name={`${path}.epost`} label="E-postadresse" size="large" />
 			<FormikTextInput name={`${path}.nettside`} label="Internettadresse" size="large" />

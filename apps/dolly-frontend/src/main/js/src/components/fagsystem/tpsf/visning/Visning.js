@@ -14,32 +14,72 @@ import {
 	Vergemaal,
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
+import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPersonInfo'
+import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/PdlNasjonalitet'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 
-export const TpsfVisning = ({ data, environments }) => {
+export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
-			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) => {
+			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) =>
 				setTpsMessagingData(response?.data[0]?.person)
-			})
+			)
 		}
 	}, [])
 	if (!data) return null
 
+	const harPdlAdresse =
+		_has(pdlData, 'bostedsadresse') ||
+		_has(pdlData, 'oppholdsadresse') ||
+		_has(pdlData, 'kontaktadresse')
+
+	const hasTpsfData = data.ident
+
 	return (
 		<div>
-			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />
-			<Nasjonalitet data={data} />
-			<Vergemaal data={data.vergemaal} />
-			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
-			<Boadresse boadresse={data.boadresse} />
-			<Postadresse postadresse={data.postadresse} />
-			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+			<>
+				{hasTpsfData ? (
+					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
+				) : (
+					<PdlPersonInfo data={pdlData} />
+				)}
+				{hasTpsfData ? (
+					<Nasjonalitet data={data} pdlData={pdlData} />
+				) : (
+					<PdlNasjonalitet data={pdlData} />
+				)}
+				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
+				{hasTpsfData ? (
+					<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
+				) : (
+					<PdlFullmakt data={pdlData.fullmakt} />
+				)}
+				{!harPdlAdresse && (
+					<>
+						<Boadresse boadresse={data.boadresse} />
+						<Postadresse postadresse={data.postadresse} />
+						<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+					</>
+				)}
+				{!hasTpsfData && <Telefonnummer data={pdlData.telefonnummer} />}
+				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData.sikkerhetstiltak} />}
+			</>
 			<UtenlandskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
+				data={
+					tpsMessagingData?.bankkontonrUtland
+						? tpsMessagingData.bankkontonrUtland
+						: data.bankkontonrUtland
+				}
 			/>
 			<NorskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrNorsk : data.bankkontonrNorsk}
+				data={
+					tpsMessagingData?.bankkontonrNorsk
+						? tpsMessagingData.bankkontonrNorsk
+						: data.bankkontonrNorsk
+				}
 			/>
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />
@@ -60,8 +100,9 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 	if (harFoedselsinnvandring)
 		data = {
 			...data,
-			innvandretUtvandret: data.innvandretUtvandret.filter(
-				(i, idx) => idx !== data.innvandretUtvandret.length - 1 || i.innutvandret === 'UTVANDRET'
+			innvandretUtvandret: data?.innvandretUtvandret?.filter(
+				(element, idx) =>
+					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET'
 			),
 		}
 	return data

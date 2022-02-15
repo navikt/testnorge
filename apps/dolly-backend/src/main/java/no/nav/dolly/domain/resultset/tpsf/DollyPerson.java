@@ -2,22 +2,24 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.Tags;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DollyPerson {
+
+    private FullPersonDTO pdlfPerson;
 
     private List<Person> persondetaljer;
 
@@ -29,6 +31,7 @@ public class DollyPerson {
     private List<String> verger;
     private List<String> fullmektige;
     private List<String> identhistorikk;
+    private List<Tags> tags;
     private Testident.Master master;
 
     public List<String> getPartnere() {
@@ -80,6 +83,13 @@ public class DollyPerson {
         return persondetaljer;
     }
 
+    public List<Tags> getTags() {
+        if (isNull(tags)) {
+            tags = new ArrayList<>();
+        }
+        return tags;
+    }
+
     public Person getPerson(String ident) {
         for (Person person : getPersondetaljer()) {
             if (person.getIdent().equals(ident)) {
@@ -95,5 +105,9 @@ public class DollyPerson {
 
     public boolean isPdlMaster() {
         return getMaster() == Testident.Master.PDL;
+    }
+
+    public boolean isPdlfMaster() {
+        return getMaster() == Testident.Master.PDLF;
     }
 }

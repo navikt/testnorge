@@ -6,11 +6,12 @@ import Profil from './Profil'
 import './MinSide.less'
 
 export default ({ brukerBilde, brukerProfil }) => {
+	const AzureADProfil = brukerProfil && brukerProfil.type && brukerProfil.type === 'AzureAD'
 	return (
 		<>
 			<h1>Min side</h1>
 			<Profil bilde={brukerBilde} info={brukerProfil} />
-			<GruppeImport />
+			{AzureADProfil && <GruppeImport />}
 			{brukerProfil && <Maler brukerId={brukerProfil.visningsNavn} />}
 		</>
 	)

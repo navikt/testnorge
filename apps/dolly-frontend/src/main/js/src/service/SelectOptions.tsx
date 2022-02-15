@@ -114,6 +114,34 @@ const selectOptions: SelectOptions = {
 		{ value: 'UGRADERT', label: 'Ugradert' },
 	],
 
+	//PDLF - adresser
+	adressetypeBostedsadresse: [
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
+	],
+
+	adressetypeOppholdsadresse: [
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'OPPHOLD_ANNET_STED', label: 'Opphold annet sted' },
+	],
+
+	adressetypeKontaktadresse: [
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
+	],
+
+	oppholdAnnetSted: [
+		{ value: 'MILITAER', label: 'Militær' },
+		{ value: 'UTENRIKS', label: 'Utenriks' },
+		{ value: 'PAA_SVALBARD', label: 'På Svalbard' },
+		{ value: 'PENDLER', label: 'Pendler' },
+	],
+
 	//PDLF - kontaktinformasjon dødsbo
 	kontaktType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },

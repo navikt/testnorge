@@ -1,11 +1,12 @@
 import './FinnPerson.less'
+// @ts-ignore
 import { AsyncFn } from 'react-use/lib/useAsync'
 import { useAsyncFn } from 'react-use'
 // @ts-ignore
 import AsyncSelect from 'react-select/async'
 // @ts-ignore
 import { components } from 'react-select'
-import { TpsfApi } from '~/service/Api'
+import { PdlforvalterApi, TpsfApi } from '~/service/Api'
 import useBoolean from '~/utils/hooks/useBoolean'
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
@@ -46,18 +47,26 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 	const [gruppe, setGruppe] = useState(null)
 	const [feilmelding, setFeilmelding] = useState(null)
 
-	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async (tekst) => {
-		const { data }: any = await TpsfApi.soekPersoner(tekst)
-		const personer: Array<Option> = []
-		data.map((person: Person) => {
-			const navn = person.mellomnavn
-				? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
-				: `${person.fornavn} ${person.etternavn}`
-			personer.push({
-				value: person.ident,
-				label: `${person.ident} - ${navn.toUpperCase()}`,
+	function mapToPersoner(personList: any, personer: Array<Option>) {
+		personList
+			.filter((person: Person) => person.fornavn !== undefined && person.etternavn !== undefined)
+			.map((person: Person) => {
+				const navn = person.mellomnavn
+					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
+					: `${person.fornavn} ${person.etternavn}`
+				personer.push({
+					value: person.ident,
+					label: `${person.ident} - ${navn.toUpperCase()}`,
+				})
 			})
-		})
+	}
+
+	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async (tekst) => {
+		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
+		const { data: pdlIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
+		const personer: Array<Option> = []
+		mapToPersoner(tpsfIdenter, personer)
+		mapToPersoner(pdlIdenter, personer)
 		return personer
 	}, [])
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,9 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/personer")
+@RequestMapping(value = "/api/v1/personer", produces = "application/json; charset=utf-8")
 @RequiredArgsConstructor
 public class PersonController {
 
@@ -36,14 +40,22 @@ public class PersonController {
     private final ArtifactDeleteService artifactDeleteService;
 
     @ResponseBody
-    @GetMapping(produces = "application/json; charset=utf-8")
+    @GetMapping
     @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
     public List<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
-                                         @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først")
-                                         @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
+                                         @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først, default 10")
+                                         @RequestParam(required = false) Integer sidestorrelse) {
+
+        if (isNull(sidestorrelse)) {
+            if (nonNull(identer)) {
+                sidestorrelse = 200;
+            } else {
+                sidestorrelse = 10;
+            }
+        }
 
         return personService.getPerson(identer, Paginering.builder()
                 .sidenummer(sidenummer)
@@ -52,7 +64,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(produces = "application/json; charset=utf-8")
+    @PostMapping
     @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
     public String createPerson(@RequestBody BestillingRequestDTO request) {
 
@@ -60,17 +72,21 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PutMapping(value = "/{ident}", produces = "application/json; charset=utf-8")
+    @PutMapping(value = "/{ident}")
     @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
     public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
                                @PathVariable String ident,
-                               @RequestBody PersonUpdateRequestDTO request) {
+                               @RequestBody PersonUpdateRequestDTO request,
+                               @Parameter(description = "Angir om tidligere historie skal skrives over")
+                               @RequestHeader(required = false) Boolean overwrite,
+                               @Parameter(description = "Angir om validering skal sløyfes for navn, adresse m.fl.")
+                               @RequestHeader(required = false) Boolean relaxed) {
 
-        return personService.updatePerson(ident, request);
+        return personService.updatePerson(ident, request, overwrite, relaxed);
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre", produces = "application/json; charset=utf-8")
+    @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,
@@ -92,9 +108,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/foedsel/{id}")
     @Operation(description = "Slett indikert foedsel for person")
     public void deleteFoedsel(@Parameter(description = "Ident for testperson")
-                                 @PathVariable String ident,
-                                 @Parameter(description = "id som identifiserer foedsel")
-                                 @PathVariable Integer id) {
+                              @PathVariable String ident,
+                              @Parameter(description = "id som identifiserer foedsel")
+                              @PathVariable Integer id) {
 
         artifactDeleteService.deleteFoedsel(ident, id);
     }
@@ -122,9 +138,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/bostedsadresse/{id}")
     @Operation(description = "Slett indikert bostedsadresse for person")
     public void deleteBostedsadresse(@Parameter(description = "Ident for testperson")
-                                   @PathVariable String ident,
-                                   @Parameter(description = "id som identifiserer bostedsadresse")
-                                   @PathVariable Integer id) {
+                                     @PathVariable String ident,
+                                     @Parameter(description = "id som identifiserer bostedsadresse")
+                                     @PathVariable Integer id) {
 
         artifactDeleteService.deleteBostedsadresse(ident, id);
     }
@@ -142,9 +158,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/oppholdsadresse/{id}")
     @Operation(description = "Slett indikert oppholdsadresse for person")
     public void deleteOppholdsadresse(@Parameter(description = "Ident for testperson")
-                                     @PathVariable String ident,
-                                     @Parameter(description = "id som identifiserer oppholdsadresse")
-                                     @PathVariable Integer id) {
+                                      @PathVariable String ident,
+                                      @Parameter(description = "id som identifiserer oppholdsadresse")
+                                      @PathVariable Integer id) {
 
         artifactDeleteService.deleteOppholdsadresse(ident, id);
     }
@@ -152,9 +168,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/innflytting/{id}")
     @Operation(description = "Slett indikert innflytting for person")
     public void deleteInnflytting(@Parameter(description = "Ident for testperson")
-                                      @PathVariable String ident,
-                                      @Parameter(description = "id som identifiserer innflytting")
-                                      @PathVariable Integer id) {
+                                  @PathVariable String ident,
+                                  @Parameter(description = "id som identifiserer innflytting")
+                                  @PathVariable Integer id) {
 
         artifactDeleteService.deleteInnflytting(ident, id);
     }
@@ -162,9 +178,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/utflytting/{id}")
     @Operation(description = "Slett indikert utflytting for person")
     public void deleteUtflytting(@Parameter(description = "Ident for testperson")
-                                  @PathVariable String ident,
-                                  @Parameter(description = "id som identifiserer utflytting")
-                                  @PathVariable Integer id) {
+                                 @PathVariable String ident,
+                                 @Parameter(description = "id som identifiserer utflytting")
+                                 @PathVariable Integer id) {
 
         artifactDeleteService.deleteUtflytting(ident, id);
     }
@@ -182,9 +198,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/forelderbarnrelasjon/{id}")
     @Operation(description = "Slett indikert forelderbarnrelasjon for person")
     public void deleteForelderBarnRelasjon(@Parameter(description = "Ident for testperson")
-                                 @PathVariable String ident,
-                                 @Parameter(description = "id som identifiserer forelderbarnrelasjon")
-                                 @PathVariable Integer id) {
+                                           @PathVariable String ident,
+                                           @Parameter(description = "id som identifiserer forelderbarnrelasjon")
+                                           @PathVariable Integer id) {
 
         artifactDeleteService.deleteForelderBarnRelasjon(ident, id);
     }
@@ -192,19 +208,19 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/kontaktinformasjonfordoedsbo/{id}")
     @Operation(description = "Slett indikert kontaktinformasjonfordoedsbo på person")
     public void deleteKontaktinformasjonForDoedsbo(@Parameter(description = "Ident for testperson")
-                                           @PathVariable String ident,
-                                           @Parameter(description = "id som identifiserer kontaktinformasjonfordoedsbo")
-                                           @PathVariable Integer id) {
+                                                   @PathVariable String ident,
+                                                   @Parameter(description = "id som identifiserer kontaktinformasjonfordoedsbo")
+                                                   @PathVariable Integer id) {
 
         artifactDeleteService.deleteKontaktinformasjonForDoedsbo(ident, id);
     }
-    
+
     @DeleteMapping(value = "/{ident}/utenlandskidentifikasjonsnummer/{id}")
     @Operation(description = "Slett indikert utenlandskidentifikasjonsnummer for person")
     public void deleteUtenlandskIdentifikasjonsnummer(@Parameter(description = "Ident for testperson")
-                                                   @PathVariable String ident,
-                                                   @Parameter(description = "id som identifiserer utenlandskidentifikasjonsnummer")
-                                                   @PathVariable Integer id) {
+                                                      @PathVariable String ident,
+                                                      @Parameter(description = "id som identifiserer utenlandskidentifikasjonsnummer")
+                                                      @PathVariable Integer id) {
 
         artifactDeleteService.deleteUtenlandskIdentifikasjonsnummer(ident, id);
     }
@@ -212,9 +228,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/falskidentitet/{id}")
     @Operation(description = "Slett indikert falskidentitet for person")
     public void deleteFalskIdentitet(@Parameter(description = "Ident for testperson")
-                                                      @PathVariable String ident,
-                                                      @Parameter(description = "id som identifiserer falskidentitet")
-                                                      @PathVariable Integer id) {
+                                     @PathVariable String ident,
+                                     @Parameter(description = "id som identifiserer falskidentitet")
+                                     @PathVariable Integer id) {
 
         artifactDeleteService.deleteFalskIdentitet(ident, id);
     }
@@ -222,9 +238,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/adressebeskyttelse/{id}")
     @Operation(description = "Slett indikert adressebeskyttelse for person")
     public void deleteAdressebeskyttelse(@Parameter(description = "Ident for testperson")
-                                     @PathVariable String ident,
-                                     @Parameter(description = "id som identifiserer adressebeskyttelse")
-                                     @PathVariable Integer id) {
+                                         @PathVariable String ident,
+                                         @Parameter(description = "id som identifiserer adressebeskyttelse")
+                                         @PathVariable Integer id) {
 
         artifactDeleteService.deleteAdressebeskyttelse(ident, id);
     }
@@ -232,9 +248,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/doedsfall/{id}")
     @Operation(description = "Slett indikert doedsfall for person")
     public void deleteDoedsfall(@Parameter(description = "Ident for testperson")
-                                         @PathVariable String ident,
-                                         @Parameter(description = "id som identifiserer doedsfall")
-                                         @PathVariable Integer id) {
+                                @PathVariable String ident,
+                                @Parameter(description = "id som identifiserer doedsfall")
+                                @PathVariable Integer id) {
 
         artifactDeleteService.deleteDoedsfall(ident, id);
     }
@@ -242,9 +258,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/folkeregisterpersonstatus/{id}")
     @Operation(description = "Slett indikert folkeregisterpersonstatus for person")
     public void deleteFolkeregisterPersonstatus(@Parameter(description = "Ident for testperson")
-                                @PathVariable String ident,
-                                @Parameter(description = "id som identifiserer folkeregisterpersonstatus")
-                                @PathVariable Integer id) {
+                                                @PathVariable String ident,
+                                                @Parameter(description = "id som identifiserer folkeregisterpersonstatus")
+                                                @PathVariable Integer id) {
 
         artifactDeleteService.deleteFolkeregisterPersonstatus(ident, id);
     }
@@ -258,13 +274,13 @@ public class PersonController {
 
         artifactDeleteService.deleteTilrettelagtKommunikasjon(ident, id);
     }
-    
+
     @DeleteMapping(value = "/{ident}/statsborgerskap/{id}")
     @Operation(description = "Slett indikert statsborgerskap for person")
     public void deleteStatsborgerskap(@Parameter(description = "Ident for testperson")
-                                                @PathVariable String ident,
-                                                @Parameter(description = "id som identifiserer statsborgerskap")
-                                                @PathVariable Integer id) {
+                                      @PathVariable String ident,
+                                      @Parameter(description = "id som identifiserer statsborgerskap")
+                                      @PathVariable Integer id) {
 
         artifactDeleteService.deleteStatsborgerskap(ident, id);
     }
@@ -272,9 +288,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/opphold/{id}")
     @Operation(description = "Slett indikert opphold for person")
     public void deleteOpphold(@Parameter(description = "Ident for testperson")
-                                      @PathVariable String ident,
-                                      @Parameter(description = "id som identifiserer opphold")
-                                      @PathVariable Integer id) {
+                              @PathVariable String ident,
+                              @Parameter(description = "id som identifiserer opphold")
+                              @PathVariable Integer id) {
 
         artifactDeleteService.deleteOpphold(ident, id);
     }
@@ -282,9 +298,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/sivilstand/{id}")
     @Operation(description = "Slett indikert sivilstand for person")
     public void deleteSivilstand(@Parameter(description = "Ident for testperson")
-                              @PathVariable String ident,
-                              @Parameter(description = "id som identifiserer sivilstand")
-                              @PathVariable Integer id) {
+                                 @PathVariable String ident,
+                                 @Parameter(description = "id som identifiserer sivilstand")
+                                 @PathVariable Integer id) {
 
         artifactDeleteService.deleteSivilstand(ident, id);
     }
@@ -292,9 +308,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/telefonnummer/{id}")
     @Operation(description = "Slett indikert telefonnummer for person")
     public void deleteTelefonnummer(@Parameter(description = "Ident for testperson")
-                                 @PathVariable String ident,
-                                 @Parameter(description = "id som identifiserer telefonnummer")
-                                 @PathVariable Integer id) {
+                                    @PathVariable String ident,
+                                    @Parameter(description = "id som identifiserer telefonnummer")
+                                    @PathVariable Integer id) {
 
         artifactDeleteService.deleteTelefonnummer(ident, id);
     }
@@ -302,9 +318,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/fullmakt/{id}")
     @Operation(description = "Slett indikert fullmakt for person")
     public void deleteFullmakt(@Parameter(description = "Ident for testperson")
-                                   @PathVariable String ident,
-                                   @Parameter(description = "id som identifiserer fullmakt")
-                                   @PathVariable Integer id) {
+                               @PathVariable String ident,
+                               @Parameter(description = "id som identifiserer fullmakt")
+                               @PathVariable Integer id) {
 
         artifactDeleteService.deleteFullmakt(ident, id);
     }
@@ -312,9 +328,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/vergemaal/{id}")
     @Operation(description = "Slett indikert vergemaal for person")
     public void deleteVergemaal(@Parameter(description = "Ident for testperson")
-                               @PathVariable String ident,
-                               @Parameter(description = "id som identifiserer vergemaal")
-                               @PathVariable Integer id) {
+                                @PathVariable String ident,
+                                @Parameter(description = "id som identifiserer vergemaal")
+                                @PathVariable Integer id) {
 
         artifactDeleteService.deleteVergemaal(ident, id);
     }
@@ -322,9 +338,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/sikkerhetstiltak/{id}")
     @Operation(description = "Slett indikert sikkerhetstiltak for person")
     public void deleteSikkerhetstiltak(@Parameter(description = "Ident for testperson")
-                                @PathVariable String ident,
-                                @Parameter(description = "id som identifiserer sikkerhetstiltak")
-                                @PathVariable Integer id) {
+                                       @PathVariable String ident,
+                                       @Parameter(description = "id som identifiserer sikkerhetstiltak")
+                                       @PathVariable Integer id) {
 
         artifactDeleteService.deleteSikkerhetstiltak(ident, id);
     }
@@ -332,9 +348,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/doedfoedtbarn/{id}")
     @Operation(description = "Slett indikert doedfoedtbarn for person")
     public void deleteDoedfoedtBarn(@Parameter(description = "Ident for testperson")
-                                @PathVariable String ident,
-                                @Parameter(description = "id som identifiserer doedfoedtbarn")
-                                @PathVariable Integer id) {
+                                    @PathVariable String ident,
+                                    @Parameter(description = "id som identifiserer doedfoedtbarn")
+                                    @PathVariable Integer id) {
 
         artifactDeleteService.deleteDoedfoedtBarn(ident, id);
     }

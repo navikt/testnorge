@@ -2,8 +2,7 @@ import React from 'react'
 
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { panelError, erForste } from '~/components/ui/form/formUtils'
 import { validation } from '~/components/fagsystem/pensjon/form/validation'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -43,7 +42,7 @@ export const PensjonForm = ({ formikBag }) => (
 						isClearable={false}
 					/>
 
-					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" fastfield={false} />
+					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" fastfield="false" />
 
 					<FormikCheckbox
 						name={`${path}.redusertMedGrunnbelop`}

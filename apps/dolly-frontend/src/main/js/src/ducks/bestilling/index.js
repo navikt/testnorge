@@ -7,6 +7,7 @@ import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { rootPaths } from '@/components/bestillingsveileder/utils'
 import Logger from '@/logger'
 import { v4 as uuid } from 'uuid'
+import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
 export const actions = createActions(
 	{
@@ -14,6 +15,7 @@ export const actions = createActions(
 		postBestillingFraEksisterendeIdenter: DollyApi.createBestillingFraEksisterendeIdenter,
 		postBestilling: DollyApi.createBestilling,
 		postOrganisasjonBestilling: DollyApi.createOrganisasjonBestilling,
+		postTestnorgeBestilling: DollyApi.importerPersonerFraPdl,
 		bestillingFeilet: (error) => ({ error }),
 	},
 	{ prefix: 'bestveil' }
@@ -54,13 +56,17 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	let bestillingAction = null
 
 	if (opts.is.leggTil) {
-		bestillingAction = actions.postBestillingLeggTilPaaPerson(
-			opts.personFoerLeggTil.tpsf.ident,
-			values
-		)
+		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
+		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
+	} else if (opts.is.importTestnorge) {
+		values = _set('identer', opts.importPersoner, values)
+		if (!values.environments) {
+			values = _set('environments', [], values)
+		}
+		bestillingAction = actions.postTestnorgeBestilling(values.gruppeId, values)
 	} else if (values.organisasjon) {
 		trackBestilling(values)
 		bestillingAction = actions.postOrganisasjonBestilling(values)
@@ -80,7 +86,10 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 	if (res.error) {
 		dispatch(actions.bestillingFeilet(res))
 	} else if (type.includes('OrganisasjonBestilling')) {
+		sessionStorage.setItem('organisasjon_bestilling', JSON.stringify({ bestilling: {}, ...res }))
 		dispatch(push(`/organisasjoner`))
+	} else if (opts.is.importTestnorge) {
+		dispatch(push(`/gruppe/${values.gruppeId}`))
 	} else {
 		dispatch(push(`/gruppe/${gruppeId}`))
 	}

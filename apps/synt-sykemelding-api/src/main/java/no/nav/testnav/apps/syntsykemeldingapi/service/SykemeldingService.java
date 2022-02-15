@@ -1,16 +1,17 @@
 package no.nav.testnav.apps.syntsykemeldingapi.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import no.nav.testnav.apps.syntsykemeldingapi.consumer.HelsepersonellConsumer;
-import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.adapter.ArbeidsforholdAdapter;
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.HelsepersonellConsumer;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.HodejegerenConsumer;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.SykemeldingConsumer;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.SyntSykemeldingHistorikkConsumer;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SykemeldingService {

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -18,21 +19,22 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.domain.resultset.tpsf.ServiceRoutineResponseStatus;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -83,49 +84,53 @@ public class DollyBestillingService {
     private final List<ClientRegister> clientRegisters;
     private final CounterCustomRegistry counterCustomRegistry;
     private final PdlPersonConsumer pdlPersonConsumer;
+    private final PdlDataConsumer pdlDataConsumer;
 
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
             Testident testident = identService.getTestIdent(bestilling.getIdent());
-            if (testident.isPdl() && nonNull(request.getTpsf())) {
-                throw new DollyFunctionalException("Importert person fra TESTNORGE kan ikke endres.");
-            }
             BestillingProgress progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
-            TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
-            tpsfBestilling.setAntall(1);
-            tpsfBestilling.setNavSyntetiskIdent(isSyntetisk(bestilling.getIdent()));
-            request.setNavSyntetiskIdent(tpsfBestilling.getNavSyntetiskIdent());
 
-            AtomicReference<DollyPerson> dollyPerson = new AtomicReference<>(null);
-            if (testident.isTpsf()) {
+            var originator = new OriginatorCommand(request, testident, mapperFacade).call();
 
-                var oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), tpsfBestilling);
+            DollyPerson dollyPerson;
+            if (originator.isTpsf()) {
+                var oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), originator.getTpsfBestilling());
                 sendIdenterTilTPS(request.getEnvironments(),
                         oppdaterPersonResponse.getIdentTupler().stream()
                                 .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null,
                         progress, request.getBeskrivelse());
 
-                dollyPerson.set(dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
+                dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                        .findFirst().get()));
+                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())));
 
-                if (!bestilling.getIdent().equals(dollyPerson.get().getHovedperson())) {
-                    progress.setIdent(dollyPerson.get().getHovedperson());
-                    identService.swapIdent(bestilling.getIdent(), dollyPerson.get().getHovedperson());
-                    bestillingProgressService.swapIdent(bestilling.getIdent(), dollyPerson.get().getHovedperson());
-                    bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.get().getHovedperson());
-                }
+            } else if (originator.isPdlf()) {
+                var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                        PersonUpdateRequestDTO.builder()
+                                .person(originator.getPdlBestilling().getPerson())
+                                .build());
+
+                var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
+                dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
             } else {
                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
-                dollyPerson.set(dollyPersonCache.preparePdlPersoner(pdlPerson));
-
+                dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
             }
+
+            if ((originator.isPdlf() || originator.isTpsf()) && !bestilling.getIdent().equals(dollyPerson.getHovedperson())) {
+                progress.setIdent(dollyPerson.getHovedperson());
+                identService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
+                bestillingProgressService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
+                bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
+            }
+
             counterCustomRegistry.invoke(request);
             clientRegisters.forEach(clientRegister ->
-                    clientRegister.gjenopprett(request, dollyPerson.get(), progress, true));
+                    clientRegister.gjenopprett(request, dollyPerson, progress, true));
 
             oppdaterProgress(bestilling, progress);
 
@@ -288,6 +293,7 @@ public class DollyBestillingService {
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
+            bestKriterier.setTags(bestilling.getTags());
             return bestKriterier;
 
         } catch (JsonProcessingException e) {
@@ -362,7 +368,7 @@ public class DollyBestillingService {
 
         DollyPerson dollyPerson = null;
         if (progress.isTpsf()) {
-            List<Person> personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
+            var personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
             if (!personer.isEmpty()) {
                 dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0));
                 sendIdenterTilTPS(asList(bestilling.getMiljoer().split(",")),
@@ -372,8 +378,12 @@ public class DollyBestillingService {
                         bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
             }
 
+        } else if (progress.isPdlf()) {
+            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent()));
+            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()));
+
         } else if (progress.isPdl()) {
-            PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
+            var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
             dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
         }
 

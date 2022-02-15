@@ -3,20 +3,15 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type DataListe = {
-	data: Array<Data>
+	data: Array<TelefonData>
 }
 
 type Data = {
-	item: Telefon
+	item: TelefonData
 	idx: number
-}
-
-type Telefon = {
-	landskode: string
-	nummer: string
-	prioritet: number
 }
 
 export const Telefonnummer = ({ data }: DataListe) => {
@@ -37,7 +32,7 @@ export const Telefonnummer = ({ data }: DataListe) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: Telefon, idx: number) => <TelefonnummerVisning item={item} idx={idx} />}
+						{(item: TelefonData, idx: number) => <TelefonnummerVisning item={item} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

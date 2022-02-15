@@ -1,0 +1,11 @@
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+proxy:
+  url: http://localhost
+
+username: dummy
+password: dummy

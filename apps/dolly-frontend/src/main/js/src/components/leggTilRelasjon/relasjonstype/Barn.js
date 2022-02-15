@@ -7,7 +7,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 	const valgbareIdenter = lagOptions(
-		Object.keys(identInfo).filter((ident) => !(ident === hovedIdent)),
+		Object.keys(identInfo).filter((ident) => ident !== hovedIdent),
 		identInfo
 	)
 

@@ -19,7 +19,6 @@ const initialFullmakt = {
 	nyFullmektig: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'PDL',
-	gjeldende: true,
 }
 
 export const Fullmakt = ({ formikBag }: FullmaktForm) => {

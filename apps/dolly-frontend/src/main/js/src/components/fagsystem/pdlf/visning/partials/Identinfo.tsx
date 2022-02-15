@@ -3,17 +3,12 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
+import { Ident } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type Data = {
 	pdlResponse: {
 		identer: [Ident]
 	}
-}
-
-type Ident = {
-	gruppe: string
-	ident: string
-	historisk: boolean
 }
 
 export const IdentInfo = ({ pdlResponse }: Data) => {
@@ -24,7 +19,7 @@ export const IdentInfo = ({ pdlResponse }: Data) => {
 	return (
 		<ErrorBoundary>
 			<div>
-				<SubOverskrift label="Ident informasjon" iconKind="personinformasjon" />
+				<SubOverskrift label="Identinformasjon" iconKind="personinformasjon" />
 				{pdlResponse.identer.map((ident: Ident, index: number) => (
 					<div key={index}>
 						<h4 style={{ marginTop: '0px' }}>{ident.gruppe}</h4>

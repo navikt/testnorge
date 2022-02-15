@@ -24,6 +24,9 @@ public interface PersonRepository extends PagingAndSortingRepository<DbPerson, L
     @Modifying
     int deleteByIdentIn(List<String> ident);
 
+    @Modifying
+    int deleteByIdent(String ident);
+
     boolean existsByIdent(String ident);
 
     @Query("from DbPerson p "

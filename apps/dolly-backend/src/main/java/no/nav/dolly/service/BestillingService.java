@@ -171,6 +171,7 @@ public class BestillingService {
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .bruker(fetchOrCreateBruker())
                         .beskrivelse(beskrivelse)
+                        .tags(gruppe.getTags())
                         .build());
     }
 
@@ -345,6 +346,7 @@ public class BestillingService {
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
                 .tpsMessaging(request.getTpsMessaging())
+                .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());
     }

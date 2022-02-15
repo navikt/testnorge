@@ -1,13 +1,12 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -16,6 +15,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class DollyPersonCache {
 
     private final TpsfService tpsfService;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final ObjectMapper objectMapper;
+    private final PdlDataConsumer pdlDataConsumer;
     private final MapperFacade mapperFacade;
 
     @SneakyThrows
@@ -112,11 +112,13 @@ public class DollyPersonCache {
         if (!manglendeIdenter.isEmpty()) {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
-            } else {
-                PdlPersonBolk pdlPersonBolk = objectMapper.readValue(
-                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter).toString(),
-                        PdlPersonBolk.class);
+            } else if (dollyPerson.isPdlMaster()) {
+                var pdlPersonBolk =
+                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
+            } else if (dollyPerson.isPdlfMaster() && isNull(dollyPerson.getPdlfPerson())) {
+                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                        .stream().findFirst().orElse(new FullPersonDTO()));
             }
         }
 
@@ -167,6 +169,15 @@ public class DollyPersonCache {
                         .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
                         .collect(Collectors.toList()))
                 .master(Master.PDL)
+                .build();
+    }
+
+    public DollyPerson preparePdlfPerson(FullPersonDTO pdlfPerson) {
+
+        return DollyPerson.builder()
+                .hovedperson(pdlfPerson.getPerson().getIdent())
+                .pdlfPerson(pdlfPerson)
+                .master(Master.PDLF)
                 .build();
     }
 }

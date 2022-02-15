@@ -7,20 +7,24 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -44,14 +48,16 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         this.dummyAdresseService = dummyAdresseService;
     }
 
-    public List<BostedadresseDTO> convert(PersonDTO person) {
+    public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
 
         for (var adresse : person.getBostedsadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
 
                 populateMiscFields(adresse, person);
-                handle(adresse, person);
+                if (isNotTrue(relaxed)) {
+                    handle(adresse, person);
+                }
             }
         }
         enforceIntegrity(person.getBostedsadresse());
@@ -70,7 +76,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 adresse.countAdresser() > 0) {
             throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
-        if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
+        if (Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
@@ -121,11 +127,8 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse()) && bostedadresse.getUtenlandskAdresse().isEmpty()) {
 
-            bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
-            bostedadresse.setUtenlandskAdresse(
-                    dummyAdresseService.getUtenlandskAdresse(
-                            person.getStatsborgerskap().stream()
-                                    .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
+            bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
+            bostedadresse.setMaster(Master.PDL);
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
@@ -134,5 +137,25 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         if (isNull(bostedadresse.getAngittFlyttedato())) {
             bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
         }
+    }
+
+    private String getLandkode(PersonDTO person) {
+
+        return Stream.of(person.getBostedsadresse().stream()
+                                .filter((adresse -> nonNull(adresse.getUtenlandskAdresse())))
+                                .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
+                                .map(BostedadresseDTO::getUtenlandskAdresse)
+                                .map(UtenlandskAdresseDTO::getLandkode)
+                                .findFirst(),
+                        person.getUtflytting().stream()
+                                .map(UtflyttingDTO::getTilflyttingsland)
+                                .findFirst(),
+                        person.getStatsborgerskap().stream()
+                                .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
+                                .map(StatsborgerskapDTO::getLandkode)
+                                .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst().orElse(null);
     }
 }

@@ -1,0 +1,54 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-import-fra-tpsf-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{image}}
+  webproxy: true
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  ingresses:
+    - "https://testnav-import-fra-tpsf-service.dev.intern.nav.no"
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 3000m
+      memory: 2048Mi
+    requests:
+      cpu: 2000m
+      memory: 1024Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: tps-forvalteren
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
+    outbound:
+      external:
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

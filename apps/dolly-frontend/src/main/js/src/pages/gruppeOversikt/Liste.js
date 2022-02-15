@@ -7,6 +7,7 @@ import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import ImporterGrupperConnector from './ImporterGrupperConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import Formatters from '~/utils/DataFormatter'
 
 export default function Liste({
 	items,
@@ -17,8 +18,10 @@ export default function Liste({
 	visSide,
 	setSidetall,
 	setSideStoerrelse,
+	brukerProfil,
 }) {
 	if (isFetching) return <Loading label="Laster grupper" panel />
+	const azureAdProfil = brukerProfil && brukerProfil.type && brukerProfil.type === 'AzureAD'
 
 	if (!items || !items.length) {
 		return (
@@ -28,14 +31,18 @@ export default function Liste({
 				) : (
 					<>
 						<p>Du har for øyeblikket ingen testdatagrupper på denne brukerkontoen.</p>
-						<p>
-							Om dette er første gang du bruker din personlige brukerkonto kan du importere
-							testdatagrupper Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen
-							nedenfor. Du kan når som helst importere testdatagrupper fra Z-brukere via Min side
-							øverst til høyre.
-						</p>
 						<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe"-knappen over.</p>
-						<ImporterGrupperConnector />
+						{azureAdProfil && (
+							<>
+								<p>
+									Om dette er første gang du bruker din personlige brukerkonto kan du importere
+									testdatagrupper Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen
+									nedenfor. Du kan når som helst importere testdatagrupper fra Z-brukere via Min
+									side øverst til høyre.
+								</p>
+								<ImporterGrupperConnector />
+							</>
+						)}
 					</>
 				)}
 			</ContentContainer>
@@ -81,6 +88,13 @@ export default function Liste({
 			width: '10',
 			dataField: 'erLaast',
 			formatter: (cell, row) => row.erLaast && <Icon kind={'lock'} />,
+		},
+		{
+			text: 'Tags',
+			width: '25',
+			dataField: 'tags',
+			formatter: (cell, row) =>
+				Formatters.arrayToString(row.tags?.length > 1 ? [...row.tags].sort() : row.tags),
 		},
 	]
 	return (

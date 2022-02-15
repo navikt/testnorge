@@ -61,6 +61,7 @@ export default function Table({
 				</div>
 			)}
 			{data.map((row, rowIdx) => {
+				if (!row) return null
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
 				const iconType = getIconType(iconItem, row)

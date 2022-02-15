@@ -24,5 +24,3 @@ sts:
   token:
     provider:
       url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
-      username: ${STS_TOKEN_PROVIDER_USERNAME}
-      password: ${STS_TOKEN_PROVIDER_PASSWORD}

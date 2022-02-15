@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
@@ -53,6 +54,9 @@ public class TestpersonController {
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
+        if (nonNull(request.getPdldata())) {
+            request.getPdldata().setOpprettNyPerson(null);
+        }
         Bestilling bestilling = bestillingService.saveBestilling(request, ident);
 
         dollyBestillingService.oppdaterPersonAsync(request, bestilling);

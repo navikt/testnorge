@@ -15,6 +15,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Logger from './logger'
 import { v4 as uuid } from 'uuid'
 import LoginPage from '~/pages/loginPage'
+import BrukerPage from '~/pages/brukerPage'
 
 window.uuid = uuid()
 window.onerror = (message) => {
@@ -36,6 +37,9 @@ render(
 		<ConnectedRouter history={history}>
 			<ErrorBoundary>
 				<Switch>
+					<Route path="/bruker">
+						<BrukerPage />
+					</Route>
 					<Route path="/login">
 						<LoginPage />
 					</Route>

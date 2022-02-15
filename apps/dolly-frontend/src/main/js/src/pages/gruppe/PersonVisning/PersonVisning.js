@@ -26,6 +26,7 @@ import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasj
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
@@ -40,16 +41,28 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
+	const personInfo = data.tpsf
+		? data.tpsf
+		: {
+				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
+				ident: data.pdlforvalter?.person?.ident,
+				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
+				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
+		  }
+
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && (
-					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
+				{!iLaastGruppe && ident.master !== 'PDLF' && (
+					<Button
+						onClick={() => leggTilPaaPerson(data, bestillingsListe, ident.master)}
+						kind="add-circle"
+					>
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && (
-					<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
+				{!iLaastGruppe && ident.master === 'TPSF' && (
+					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (
@@ -58,11 +71,17 @@ export const PersonVisning = ({
 					</SlettButton>
 				)}
 			</div>
-			<TpsfVisning
-				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-				environments={bestilling.environments}
-			/>
-			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			{ident.master !== 'PDL' && (
+				<TpsfVisning
+					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+					pdlData={data.pdlforvalter?.person}
+					environments={bestilling?.environments}
+				/>
+			)}
+			{ident.master !== 'PDL' && (
+				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			)}
+			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
@@ -81,14 +100,14 @@ export const PersonVisning = ({
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning
-				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
+				data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
-			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
-			<PdlPersonMiljoeInfo ident={ident.ident} />
+			{data.tpsf && <PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />}
+			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
-			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
+			<BeskrivelseConnector ident={ident} />
 		</div>
 	)
 }

@@ -38,7 +38,7 @@ export const getNasjonalitet = (data: Innhold) => {
 	}
 }
 
-const getAlder = (datoFoedt: Date) => {
+export const getAlder = (datoFoedt: Date) => {
 	const foedselsdato = new Date(datoFoedt)
 	const diff_ms = Date.now() - foedselsdato.getTime()
 	const age_dt = new Date(diff_ms)
@@ -89,14 +89,14 @@ export const getRelasjoner = (data: Innhold) => {
 	let emptyArray: string[]
 	emptyArray = []
 	let dollyRelasjoner = []
-	for (let i = 0; i < data.relasjoner.length; i++) {
-		const type = getRelasjonsType(data.relasjoner[i].rolle)
+	for (let relasjon of data.relasjoner) {
+		const type = getRelasjonsType(relasjon.rolle)
 		if (type === Relasjon.MOR || type === Relasjon.FAR) continue
 		dollyRelasjoner.push({
 			relasjonTypeNavn: type,
 			personRelasjonMed: {
-				ident: data.relasjoner[i].ident,
-				identtype: data.relasjoner[i].type,
+				ident: relasjon.ident,
+				identtype: relasjon.type,
 				boadresse: emptyArray,
 				postadresse: emptyArray,
 				sivilstander: emptyArray,

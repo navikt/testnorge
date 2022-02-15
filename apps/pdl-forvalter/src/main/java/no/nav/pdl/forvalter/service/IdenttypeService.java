@@ -2,7 +2,9 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
@@ -50,6 +52,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private final RelasjonService relasjonService;
     private final SwopIdentsService swopIdentsService;
     private final MapperFacade mapperFacade;
+    private final PersonRepository personRepository;
 
     private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
 
@@ -99,20 +102,20 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
     }
 
-    public String convert(PersonDTO person) {
+    public PersonDTO convert(PersonDTO person) {
 
-        var ident = person.getIdent();
+        var nyPerson = person;
         for (var type : person.getNyident()) {
 
             if (isTrue(type.getIsNew())) {
 
-                ident = handle(type, person);
+                nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
-        return ident;
+        return nyPerson;
     }
 
     @Override
@@ -143,28 +146,29 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         }
     }
 
-    private String handle(IdentRequestDTO request, PersonDTO person) {
+    private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
 
-        var nyPerson = createPersonService.execute(PersonRequestDTO.builder()
-                .identtype(getIdenttype(request, person.getIdent()))
-                .kjoenn(getKjoenn(request, person.getIdent()))
-                .foedtEtter(getFoedtEtter(request, person.getIdent()))
-                .foedtFoer(getFoedtFoer(request, person.getIdent()))
-                .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
-                .syntetisk(isSyntetisk(request, person.getIdent()))
-                .build());
+        var nyPerson = isNotBlank(request.getEksisterendeIdent()) ?
 
-        swopIdentsService.execute(person.getIdent(), nyPerson.getIdent(), nonNull(request.getNyttNavn()));
+                personRepository.findByIdent(request.getEksisterendeIdent())
+                        .orElseThrow(() -> new NotFoundException(String.format("Eksisterende ident %s ble ikke funnet",
+                                request.getEksisterendeIdent())))
+                        .getPerson() :
+
+                createPersonService.execute(PersonRequestDTO.builder()
+                        .eksisterendeIdent(request.getEksisterendeIdent())
+                        .identtype(getIdenttype(request, person.getIdent()))
+                        .kjoenn(getKjoenn(request, person.getIdent()))
+                        .foedtEtter(getFoedtEtter(request, person.getIdent()))
+                        .foedtFoer(getFoedtFoer(request, person.getIdent()))
+                        .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
+                        .syntetisk(isSyntetisk(request, person.getIdent()))
+                        .build());
+
+        var oppdatertPerson = swopIdentsService.execute(person.getIdent(), nyPerson.getIdent());
 
         relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
-        person.setFoedsel(nyPerson.getFoedsel());
-        person.setKjoenn(nyPerson.getKjoenn());
-        if (!nyPerson.getNavn().isEmpty()) {
-            person.setNavn(nyPerson.getNavn());
-        }
-        person.setNyident(null);
-
-        return nyPerson.getIdent();
+        return nonNull(oppdatertPerson) ? oppdatertPerson : person;
     }
 }

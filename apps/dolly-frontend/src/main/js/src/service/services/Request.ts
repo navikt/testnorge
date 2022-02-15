@@ -16,6 +16,14 @@ export default class Request {
 			.catch((error) => Request.logError(error, url))
 	}
 
+	static getExcel(url: string) {
+		return api
+			.fetch(url, { method: 'GET' })
+			.then((response) => response.blob())
+			.then((blob) => URL.createObjectURL(blob))
+			.catch((error) => Request.logError(error, url))
+	}
+
 	static post(url: string, data?: object) {
 		return api.fetchJson(url, { method: 'POST' }, data).then((response) => ({ data: response }))
 	}
@@ -28,12 +36,13 @@ export default class Request {
 		return api.fetch(url, { method: 'PUT' }, data)
 	}
 
-	static delete(url: string) {
-		return api.fetch(url, { method: 'DELETE' })
+	static delete(url: string, headers: Record<string, string> = {}) {
+		return api.fetch(url, { headers, method: 'DELETE' })
 	}
 
 	private static logError(error: any, url: string) {
 		const event = `Henting av data fra ${url} feilet.`
+		console.error(event, error.message)
 		Logger.error({
 			event: event,
 			message: error.message,

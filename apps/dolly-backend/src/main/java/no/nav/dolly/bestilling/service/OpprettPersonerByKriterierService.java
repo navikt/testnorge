@@ -14,6 +14,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
@@ -23,13 +24,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @Slf4j
 @Service
@@ -53,7 +52,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
         super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer);
+                pdlPersonConsumer, pdlDataConsumer);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -64,16 +63,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.pdlDataConsumer = pdlDataConsumer;
     }
 
-    private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
-
-        return BestillingProgress.builder()
-                .bestilling(bestilling)
-                .ident("?")
-                .feil("NA:" + error)
-                .master(master)
-                .build();
-    }
-
     @Async
     public void executeAsync(Bestilling bestilling) {
 
@@ -81,7 +70,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            var originator = new OriginatorCommand(bestKriterier, mapperFacade).call();
+            var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
             dollyForkJoinPool.submit(() -> {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
@@ -95,6 +84,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 var dollyPerson = DollyPerson.builder()
                                         .hovedperson(opprettedeIdenter.get(0))
                                         .master(originator.getMaster())
+                                        .tags(bestKriterier.getTags())
                                         .build();
 
                                 progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
@@ -105,7 +95,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                                 } else {
                                     identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                            PDL, bestKriterier.getBeskrivelse());
+                                            originator.getMaster(), bestKriterier.getBeskrivelse());
                                 }
 
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
@@ -130,8 +120,26 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
     private List<String> getOpprettedeIdenter(OriginatorCommand.Originator originator) {
 
-        return originator.isTpsf() ?
-                tpsfService.opprettIdenterTpsf(originator.getTpsfBestilling()) :
-                List.of(pdlDataConsumer.opprettPdl(originator.getPdlBestilling()));
+        if (originator.isTpsf()) {
+            return tpsfService.opprettIdenterTpsf(originator.getTpsfBestilling());
+
+        } else if (originator.isPdlf()) {
+            var ident = pdlDataConsumer.opprettPdl(originator.getPdlBestilling());
+            log.info("Opprettet person med ident {} ", ident);
+            return List.of(ident);
+
+        } else {
+            throw new DollyFunctionalException("Bestilling er ikke støttet.");
+        }
+    }
+
+    private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
+
+        return BestillingProgress.builder()
+                .bestilling(bestilling)
+                .ident("?")
+                .feil("NA:" + error)
+                .master(master)
+                .build();
     }
 }
