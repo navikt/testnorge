@@ -1,5 +1,5 @@
 server:
-  port: 8020
+  port: 8080
 
 consumers:
   testnav-udistub-proxy:

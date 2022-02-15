@@ -5,6 +5,16 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import { DollyApi } from '~/service/Api'
+import styled from 'styled-components'
+
+const StyledPdlData = styled.div`
+	margin-bottom: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	p {
+		margin: 0;
+	}
+`
 
 type RelatertPersonData = {
 	data: PersonData
@@ -25,6 +35,8 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 			setRelatertPersonPdl(response.data)
 		})
 	}
+
+	console.log('relatertPersonPdl', relatertPersonPdl)
 
 	return (
 		<>
@@ -49,8 +61,14 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 					value={Formatters.showLabel('gradering', data.adressebeskyttelse?.[0].gradering)}
 				/>
 			</div>
-			{/*<PdlPersonMiljoeInfo data={data} loading={false} />*/}
-			<PdlDataVisning pdlData={relatertPersonPdl} />
+			{relatertPersonPdl?.data?.hentPerson && (
+				<StyledPdlData>
+					<PdlDataVisning pdlData={relatertPersonPdl} />
+					<p>
+						<i>Hold pekeren over PDL for å se dataene som finnes på {tittel.toLowerCase()} i PDL</i>
+					</p>
+				</StyledPdlData>
+			)}
 		</>
 	)
 }
