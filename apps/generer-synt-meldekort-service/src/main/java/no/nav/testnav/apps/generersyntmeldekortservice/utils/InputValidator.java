@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.generersyntmeldekortservice.utils;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
@@ -9,8 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class InputValidator {
+
+    private InputValidator() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final List<String> meldegrupper = new ArrayList<>(Arrays.asList("ATTF", "DAGP", "INDIV", "ARBS", "FY"));
 

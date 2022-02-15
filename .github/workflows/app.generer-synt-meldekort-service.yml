@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/generer-synt-meldekort-service'  }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/generer-synt-meldekort-service/config.yml'
       app-name: 'generer-synt-meldekort-service'
