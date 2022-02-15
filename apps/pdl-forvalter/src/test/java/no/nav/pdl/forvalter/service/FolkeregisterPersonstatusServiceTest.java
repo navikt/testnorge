@@ -22,6 +22,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusD
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FORSVUNNET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.IKKE_BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.INAKTIV;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.MIDLERTIDIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -153,7 +154,7 @@ class FolkeregisterPersonstatusServiceTest {
                                 .build()))
                         .build()).get(0);
 
-        assertThat(target.getStatus(), is(equalTo(IKKE_BOSATT)));
+        assertThat(target.getStatus(), is(equalTo(INAKTIV)));
     }
 
     @Test
