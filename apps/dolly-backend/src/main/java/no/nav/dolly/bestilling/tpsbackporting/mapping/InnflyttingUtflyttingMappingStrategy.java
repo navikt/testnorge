@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class InnflyttingUtflyttingMappingStrategy implements MappingStrategy {
 
-    private static final String STATSBORGERSKAP_NORGE = "NOR";
-
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(InnflyttingDTO.class, TpsfBestilling.class)
@@ -22,7 +20,6 @@ public class InnflyttingUtflyttingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(InnflyttingDTO source, TpsfBestilling target, MappingContext context) {
                         target.setInnvandretFraLand(source.getFraflyttingsland());
                         target.setInnvandretFraLandFlyttedato(source.getInnflyttingsdato());
-                        target.setStatsborgerskap(STATSBORGERSKAP_NORGE);
                     }
                 })
                 .register();

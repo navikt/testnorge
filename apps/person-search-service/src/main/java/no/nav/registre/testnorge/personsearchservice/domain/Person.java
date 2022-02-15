@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,10 +10,11 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.KjoennModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.NavnModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandModel;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.StatsborgerskapModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
 
 public class Person {
     private final Response response;
@@ -22,7 +24,7 @@ public class Person {
 
     public Person(Response response) {
         this.response = response;
-        var borgerskap = getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null);
+        var borgerskap = getAllCurrentStatborgerskap(response.getHentPerson().getStatsborgerskap());
         this.statsborgerskap = borgerskap != null ? new Statsborgerskap(borgerskap) : null;
         var utfytting = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
         this.utfyttingFraNorge = utfytting != null ? new UtfyttingFraNorge(utfytting) : null;
@@ -38,6 +40,13 @@ public class Person {
                 .stream()
                 .filter(value -> !value.getMetadata().getHistorisk())
                 .findFirst();
+    }
+
+    private static List<StatsborgerskapModel> getAllCurrentStatborgerskap(List<StatsborgerskapModel> list) {
+        if(list == null) {
+            return Collections.emptyList();
+        }
+        return list.stream().filter(value -> !value.getMetadata().getHistorisk()).toList();
     }
 
     private Optional<NavnModel> getNavn() {

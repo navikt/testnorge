@@ -4,7 +4,9 @@ export type Pageing = {
 }
 
 export type Search = {
-	pageing: Pageing
+	page: number
+	pageSize: number
+	terminateAfter: number
 	tag: string
 	excludeTag: string
 	kjoenn?: string
@@ -54,6 +56,6 @@ export type Person = {
 		type?: string
 	}
 	statsborgerskap?: {
-		land?: string
+		land?: string[]
 	}
 }

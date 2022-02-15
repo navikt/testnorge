@@ -44,6 +44,8 @@ public final class BestillingTpsMessagingStatusMapper {
                                     .filter(melding -> !melding.equals("Sikkerhetstiltak_slett#"))
                                     .map(melding ->
                                             Stream.of(melding.split("#")[1].split(","))
+                                                    .filter(status -> !status.toLowerCase()
+                                                            .contains("person ikke funnet i tps"))
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
                                                             .melding(cleanOK(String.format("%s %s", melding.split("#")[0],

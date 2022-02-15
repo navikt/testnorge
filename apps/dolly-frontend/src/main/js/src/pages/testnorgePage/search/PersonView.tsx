@@ -62,7 +62,10 @@ export const PersonView = ({ person }: Props) => {
 			<section>
 				<SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />
 				<Group>
-					<Title title="Statsborgerskap" value={person.statsborgerskap?.land} />
+					<Title
+						title="Statsborgerskap"
+						value={person.statsborgerskap?.land ? person.statsborgerskap.land.toString() : ''}
+					/>
 				</Group>
 			</section>
 			<PdlPersonMiljoeInfo data={data} loading={loading} />

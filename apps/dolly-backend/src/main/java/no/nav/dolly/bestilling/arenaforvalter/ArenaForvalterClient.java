@@ -14,7 +14,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,7 +28,6 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-@Order(8)
 @RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
