@@ -13,6 +13,8 @@ import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
+import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
+import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
@@ -67,6 +69,7 @@ public class OppslagController {
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
+    private final UdiStubConsumer udiStubConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -119,6 +122,12 @@ public class OppslagController {
     @Operation(description = "Hent skjerming på ident")
     public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
         return skjermingsRegisterConsumer.getSkjerming(ident);
+    }
+
+    @GetMapping("/udistub/{ident}")
+    @Operation(description = "Hent udistub ident")
+    public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
+        return udiStubConsumer.getUdiPerson(ident);
     }
 
     @GetMapping("/helsepersonell")
