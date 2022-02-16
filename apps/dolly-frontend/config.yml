@@ -17,7 +17,7 @@ spec:
       replyURLs:
         - https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad
   replicas:
-    min: 1
+    min: 2
     max: 3
   port: 8080
   ingresses:
