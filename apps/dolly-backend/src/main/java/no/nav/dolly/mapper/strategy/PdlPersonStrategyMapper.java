@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.ENKE;
 import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.GJPA;
 import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.REPA;
@@ -150,7 +151,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                 .findFirst()
                                 .orElse(null)
                         );
-                        if (navnDTO != null) {
+                        if (nonNull(navnDTO)) {
                             person.setFornavn(navnDTO.getFornavn());
                             person.setMellomnavn(navnDTO.getMellomnavn());
                             person.setEtternavn(navnDTO.getEtternavn());

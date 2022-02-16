@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -81,30 +80,6 @@ public class PdlForvalterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final PdlDataConsumer pdlDataConsumer;
 
-    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
-        builder.append('$')
-                .append(utenlandsIdentifikasjonsnummer);
-    }
-
-    private static boolean hasNoPdldataAdresse(PersonDTO person) {
-
-        return isNull(person) ||
-                (person.getBostedsadresse().isEmpty() &&
-                person.getKontaktadresse().isEmpty() &&
-                person.getOppholdsadresse().isEmpty());
-    }
-
-    private static void appendOkStatus(StringBuilder builder) {
-        builder.append("&OK");
-    }
-
-    private PersonDTO getPdldataHovedIdent(String ident) {
-
-        var personer = pdlDataConsumer.getPersoner(List.of(ident));
-        return personer.isEmpty() ? null :
-                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
-    }
-
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -155,11 +130,16 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
+    private PersonDTO getPdldataHovedIdent(String ident) {
+
+        var personer = pdlDataConsumer.getPersoner(List.of(ident));
+        return personer.isEmpty() ? null :
+                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
+    }
+
     private void hentPersondetaljer(DollyPerson dollyPerson) {
 
         dollyPersonCache.fetchIfEmpty(dollyPerson);
-
-        log.info("Dollyperson: {}", Json.pretty(dollyPerson));
 
         dollyPerson.getPersondetaljer()
                 .forEach(person -> person.getRelasjoner().forEach(relasjon ->
@@ -512,5 +492,22 @@ public class PdlForvalterClient implements ClientRegister {
 
         builder.append('&')
                 .append(errorStatusDecoder.decodeRuntimeException(exception));
+    }
+
+    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
+        builder.append('$')
+                .append(utenlandsIdentifikasjonsnummer);
+    }
+
+    private static boolean hasNoPdldataAdresse(PersonDTO person) {
+
+        return isNull(person) ||
+                (person.getBostedsadresse().isEmpty() &&
+                        person.getKontaktadresse().isEmpty() &&
+                        person.getOppholdsadresse().isEmpty());
+    }
+
+    private static void appendOkStatus(StringBuilder builder) {
+        builder.append("&OK");
     }
 }
