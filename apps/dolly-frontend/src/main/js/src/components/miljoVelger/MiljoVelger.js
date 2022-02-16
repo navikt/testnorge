@@ -26,8 +26,8 @@ const bankIdMiljoer = {
 }
 
 export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
-	const filterEnvironments = (miljoer, erOrg, bankIdBruker) => {
-		if (bankIdBruker) return bankIdMiljoer
+	const filterEnvironments = (miljoer, erOrg, erBankIdBruker) => {
+		if (erBankIdBruker) return bankIdMiljoer
 		if (!erOrg) return miljoer
 		const filtrerteMiljoer = { ...miljoer }
 		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter((env) => !env.id.includes('qx'))
