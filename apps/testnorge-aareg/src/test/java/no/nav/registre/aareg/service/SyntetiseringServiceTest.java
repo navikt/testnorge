@@ -43,7 +43,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @ExtendWith(MockitoExtension.class)
-public class SyntetiseringServiceTest {
+class SyntetiseringServiceTest {
 
     private static final int MINIMUM_ALDER = 13;
 
@@ -95,7 +95,7 @@ public class SyntetiseringServiceTest {
     }
 
     @Test
-    public void shouldOppretteArbeidshistorikk() {
+    void shouldOppretteArbeidshistorikk() {
         when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(identer);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
         Map<String, String> status = new HashMap<>();
@@ -114,7 +114,7 @@ public class SyntetiseringServiceTest {
     }
 
     @Test
-    public void shouldHenteIdenterMedArbeidsforhold() {
+    void shouldHenteIdenterMedArbeidsforhold() {
         when(hodejegerenConsumer.get(avspillergruppeId)).thenReturn(identer);
         when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().body(new ArrayList<>(Collections.singletonList(new Arbeidsforhold()))));
 

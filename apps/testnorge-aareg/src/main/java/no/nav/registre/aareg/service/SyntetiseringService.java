@@ -114,7 +114,7 @@ public class SyntetiseringService {
     ) {
         List<RsAaregResponse> aaregResponses = new ArrayList<>(arbeidsforhold.size());
         if (fyllUtArbeidsforhold) {
-            List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).collect(Collectors.toList());
+            List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
             var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(identer);
 

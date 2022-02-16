@@ -21,7 +21,7 @@ import no.nav.registre.aareg.fasit.FasitResourceScope;
 import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 
 @ExtendWith(MockitoExtension.class)
-public class AaregArbeidsforholdFasitConsumerTest {
+class AaregArbeidsforholdFasitConsumerTest {
 
     @Mock
     private FasitApiConsumer fasitApiConsumer;
@@ -47,7 +47,7 @@ public class AaregArbeidsforholdFasitConsumerTest {
     }
 
     @Test
-    public void fetchWsUrslAllEnvironments_OK() {
+    void fetchWsUrslAllEnvironments_OK() {
         var urlResult = aaregArbeidsforholdFasitConsumer.getUrlForEnv("t0");
 
         assertThat(urlResult, is(equalTo("BaseUrl/v1/arbeidstaker/arbeidsforhold")));
