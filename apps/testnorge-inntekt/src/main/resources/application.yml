@@ -32,3 +32,8 @@ consumers:
     name: testnav-inntektsmelding-service
     cluster: dev-gcp
     namespace: dolly
+  synt-inntekt:
+    url: https://nais-synthdata-inntekt.dev.intern.nav.no
+    name: nais-synthdata-inntekt
+    cluster: dev-fss
+    namespace: dolly

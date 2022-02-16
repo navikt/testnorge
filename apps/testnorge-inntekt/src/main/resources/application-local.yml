@@ -2,7 +2,6 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
-syntrest.rest.api.url: https://syntrest.nais.preprod.local/api
 inntektstub.rest.api.url: https://inntektstub.nais.preprod.local/api
 dokmot.joark.rest.api.url: https://dokarkiv-{miljoe}.nais.preprod.local/
 inntektstub-u1.rest.api.url: https://inntektstub-u1.nais.preprod.local/api

@@ -25,7 +25,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
-import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
+import no.nav.registre.inntekt.consumer.rs.SyntInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
@@ -42,7 +42,7 @@ public class SyntetiseringServiceTest {
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     @Mock
-    private InntektSyntConsumer inntektSyntConsumer;
+    private SyntInntektConsumer inntektSyntConsumer;
 
     @Mock
     private InntektstubV2Consumer inntektstubV2Consumer;
