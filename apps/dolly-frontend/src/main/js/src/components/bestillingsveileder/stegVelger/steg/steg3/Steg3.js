@@ -10,7 +10,7 @@ import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-export const Steg3 = ({ formikBag }) => {
+export const Steg3 = ({ formikBag, brukertype }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
@@ -42,6 +42,7 @@ export const Steg3 = ({ formikBag }) => {
 				<MiljoVelger
 					bestillingsdata={formikBag.values}
 					heading="Hvilke miljøer vil du opprette i?"
+					brukertype={brukertype}
 				/>
 			)}
 			{importTestnorge && <VelgGruppe formikBag={formikBag} />}

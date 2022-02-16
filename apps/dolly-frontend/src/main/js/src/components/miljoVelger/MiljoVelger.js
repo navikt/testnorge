@@ -16,8 +16,18 @@ const StyledH3 = styled.h3`
 	align-items: center;
 `
 
-export const MiljoVelger = ({ bestillingsdata, heading }) => {
-	const filterEnvironments = (miljoer, erOrg) => {
+const bankIdMiljoer = {
+	Q: [
+		{
+			id: 'q1',
+			label: 'Q1',
+		},
+	],
+}
+
+export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
+	const filterEnvironments = (miljoer, erOrg, bankIdBruker) => {
+		if (bankIdBruker) return bankIdMiljoer
 		if (!erOrg) return miljoer
 		const filtrerteMiljoer = { ...miljoer }
 		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter((env) => !env.id.includes('qx'))
@@ -27,10 +37,11 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 	const environments = useSelector((state) => state.environments.data)
 
 	if (!environments) return null
+	const bankIdBruker = brukertype && brukertype === 'BANKID'
 	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
-	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon)
+	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon, bankIdBruker)
 
-	const order = ['T', 'Q']
+	const order = bankIdBruker ? ['Q'] : ['T', 'Q']
 
 	return (
 		<div className="miljo-velger">
@@ -64,13 +75,11 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					}
 
 					if (
-						bestillingsdata &&
-						bestillingsdata.sykemelding &&
 						!isChecked('q1') &&
-						!isChecked('q2')
+						bestillingsdata &&
+						(bestillingsdata.sykemelding || bankIdBruker)
 					) {
 						push('q1')
-						push('q2')
 					}
 
 					return order.map((type) => {
