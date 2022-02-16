@@ -129,11 +129,6 @@ consumers:
     namespace: dolly
     name: testnav-miljoer-service
     url: https://testnav-miljoer-service.dev.intern.nav.no
-  testnav-udistub-proxy:
-    name: testnav-udistub-proxy
-    namespace: dolly
-    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
-    cluster: dev-fss
   person-search-service:
     cluster: dev-fss
     namespace: dolly

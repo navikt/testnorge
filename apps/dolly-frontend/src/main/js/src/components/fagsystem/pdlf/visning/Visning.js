@@ -16,7 +16,6 @@ import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning
 import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
-import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
@@ -37,14 +36,12 @@ export const PdlfVisning = ({ data, loading }) => {
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
 		forelderBarnRelasjon,
-		opphold,
 		doedfoedtBarn,
 	} = data.person
 
 	return (
 		<ErrorBoundary>
 			<div>
-				<PdlOppholdsstatus data={opphold} />
 				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
