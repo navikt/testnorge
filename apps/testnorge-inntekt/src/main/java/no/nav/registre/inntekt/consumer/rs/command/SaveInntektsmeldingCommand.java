@@ -33,10 +33,10 @@ public class SaveInntektsmeldingCommand implements Callable<Mono<Inntektsmelding
                 .retrieve()
                 .bodyToMono(InntektsmeldingResponse.class)
                 .doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
+                    if (error instanceof WebClientResponseException webClientResponseException) {
                         log.error(
                                 "Feil ved lagring av inntektsmelding med body: \n{}.",
-                                ((WebClientResponseException) error).getResponseBodyAsString(),
+                                webClientResponseException.getResponseBodyAsString(),
                                 error
                         );
                     } else {

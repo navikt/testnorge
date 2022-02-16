@@ -34,7 +34,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
 @ExtendWith(MockitoExtension.class)
-public class SyntetiseringServiceTest {
+class SyntetiseringServiceTest {
 
     private static final int ALDER = 13;
 
@@ -75,7 +75,7 @@ public class SyntetiseringServiceTest {
      * Ingen feil under hele løpet
      */
     @Test
-    public void startSyntetiseringTestIngenFeil() {
+    void startSyntetiseringTestIngenFeil() {
         when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(inntekter);
 
@@ -90,7 +90,7 @@ public class SyntetiseringServiceTest {
      * En inntektsmelding feiler av en eller annen grunn hos inntekt
      */
     @Test
-    public void startSyntetiseringTestEnFeil() {
+    void startSyntetiseringTestEnFeil() {
         when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
         double beloep = 1490;
         List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", beloep)));
@@ -106,7 +106,7 @@ public class SyntetiseringServiceTest {
      * Får forespørsel om å genere og lagre syntet meldinger men vi får ingen meldinger fra InntektSynt
      */
     @Test
-    public void startSyntetiseringTestInntektSyntGirIngen() {
+    void startSyntetiseringTestInntektSyntGirIngen() {
         SortedMap<String, List<RsInntekt>> tomSyntInntekt = new TreeMap<>();
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(tomSyntInntekt);
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request, true);
@@ -114,7 +114,7 @@ public class SyntetiseringServiceTest {
     }
 
     @Test
-    public void startSyntetiseringTestInntektSyntGirEn() {
+    void startSyntetiseringTestInntektSyntGirEn() {
         SortedMap<String, List<RsInntekt>> tomSyntInntekt = new TreeMap<>();
         tomSyntInntekt.put("10128400000", new ArrayList<>(Collections.singletonList(RsInntekt.builder().build())));
         List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", 0)));

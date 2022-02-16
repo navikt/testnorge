@@ -270,7 +270,7 @@ public class SyntetiseringService {
                 .inngaarIGrunnlagForTrekk(inntekt.isInngaarIGrunnlagForTrekk())
                 .utloeserArbeidsgiveravgift(inntekt.isUtloeserArbeidsgiveravgift())
                 .virksomhet(inntektsinformasjon.getVirksomhet())
-                .build()).collect(Collectors.toList());
+                .build()).toList();
     }
 
     private static List<Map<String, List<RsInntekt>>> paginerInntekter(SortedMap<String, List<RsInntekt>> map) {
