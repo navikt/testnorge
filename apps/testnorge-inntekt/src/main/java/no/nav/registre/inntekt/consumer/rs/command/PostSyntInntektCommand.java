@@ -20,9 +20,10 @@ public class PostSyntInntektCommand implements Callable<SortedMap<String, List<R
     private final Map<String, List<RsInntekt>> fnrInntektMap;
     private final WebClient webClient;
 
-    private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> INNTEKTSMELDING_MAP_TYPE =
-            new ParameterizedTypeReference<>() {
-            };
+    private static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     @Override
     public SortedMap<String, List<RsInntekt>> call() {
@@ -31,9 +32,9 @@ public class PostSyntInntektCommand implements Callable<SortedMap<String, List<R
                     .uri(uriBuilder -> uriBuilder
                             .path("/api/v1/generate/inntekt")
                             .build())
-                    .body(Mono.just(fnrInntektMap), INNTEKTSMELDING_MAP_TYPE)
+                    .body(Mono.just(fnrInntektMap), REQUEST_TYPE)
                     .retrieve()
-                    .bodyToMono(INNTEKTSMELDING_MAP_TYPE)
+                    .bodyToMono(RESPONSE_TYPE)
                     .block();
         } catch (HttpStatusCodeException e) {
             log.warn(e.getMessage(), e);
