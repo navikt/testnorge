@@ -45,11 +45,11 @@ public abstract class AdresseDTO extends DbVersjonDTO {
         private Boolean hasMellomnavn;
     }
 
-    public abstract boolean isNorskAdresse();
+    public abstract boolean isAdresseNorge();
 
     @JsonIgnore
-    public boolean isUtenlandskAdresse() {
+    public boolean isAdresseUtland() {
 
-        return !isNorskAdresse();
+        return !isAdresseNorge();
     }
 }

@@ -36,7 +36,7 @@ public class PdlKontaktadresse extends AdresseDTO {
 
     @Override
     @JsonIgnore
-    public boolean isNorskAdresse() {
+    public boolean isAdresseNorge() {
         return false;
     }
 

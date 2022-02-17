@@ -29,7 +29,7 @@ public class OppholdsadresseDTO extends AdresseDTO {
 
     @Override
     @JsonIgnore
-    public boolean isNorskAdresse() {
+    public boolean isAdresseNorge() {
 
         return nonNull(getVegadresse()) || nonNull(getMatrikkeladresse());
     }

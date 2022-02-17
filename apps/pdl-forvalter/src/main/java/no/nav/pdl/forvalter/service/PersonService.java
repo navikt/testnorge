@@ -93,7 +93,7 @@ public class PersonService {
         dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
 
-//        gjeldendeArtifactService.setGjeldene(dbPerson);
+        gjeldendeArtifactService.setGjeldene(dbPerson);
 
         return personRepository.save(dbPerson).getIdent();
     }
