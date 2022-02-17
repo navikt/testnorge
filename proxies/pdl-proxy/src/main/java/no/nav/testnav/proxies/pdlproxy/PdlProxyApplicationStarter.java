@@ -42,7 +42,7 @@ public class PdlProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService,
-                @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
+                                           @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
                                            @Value("${person.aktor.admin.api}") String aktoerAdminApiKey) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
@@ -53,7 +53,6 @@ public class PdlProxyApplicationStarter {
                 .apiKeyAuthenticationHeaderFilter(hendelselagerApiKey);
         var addAktoerAdminApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(aktoerAdminApiKey);
-
 
 
         return builder
