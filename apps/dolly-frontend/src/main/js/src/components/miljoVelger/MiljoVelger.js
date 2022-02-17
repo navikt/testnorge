@@ -25,7 +25,10 @@ const bankIdMiljoer = {
 	],
 }
 
-export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
+export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
+	const environments = useSelector((state) => state.environments.data)
+	if (!environments) return null
+
 	const filterEnvironments = (miljoer, erOrg, erBankIdBruker) => {
 		if (erBankIdBruker) return bankIdMiljoer
 		if (!erOrg) return miljoer
@@ -34,14 +37,10 @@ export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
 		return filtrerteMiljoer
 	}
 
-	const environments = useSelector((state) => state.environments.data)
-
-	if (!environments) return null
-	const bankIdBruker = brukertype && brukertype === 'BANKID'
 	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
 	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon, bankIdBruker)
 
-	const order = bankIdBruker ? ['Q'] : ['T', 'Q']
+	const order = ['T', 'Q']
 
 	return (
 		<div className="miljo-velger">
@@ -58,7 +57,9 @@ export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
 
 					const onClick = (e) => {
 						const { id } = e.target
-						isChecked(id) ? remove(values.indexOf(id)) : push(id)
+						if (!alleredeValgtMiljoe.includes(id)) {
+							isChecked(id) ? remove(values.indexOf(id)) : push(id)
+						}
 					}
 
 					const velgAlle = (type) => {
@@ -70,16 +71,12 @@ export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
 					const fjernAlle = (type) => {
 						form.setFieldValue(
 							'environments',
-							values.filter((id) => !filteredEnvironments[type].map((a) => a.id).includes(id))
+							values.filter(
+								(id) =>
+									alleredeValgtMiljoe.includes(id) ||
+									!filteredEnvironments[type].map((a) => a.id).includes(id)
+							)
 						)
-					}
-
-					if (
-						!isChecked('q1') &&
-						bestillingsdata &&
-						(bestillingsdata.sykemelding || bankIdBruker)
-					) {
-						push('q1')
 					}
 
 					return order.map((type) => {
@@ -105,7 +102,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, brukertype }) => {
 										/>
 									))}
 								</div>
-								{!allDisabled && (
+								{!allDisabled && category.length > 1 && (
 									<div className="miljo-velger_buttons">
 										<LinkButton text="Velg alle" onClick={() => velgAlle(type)} />
 										<LinkButton text="Fjern alle" onClick={() => fjernAlle(type)} />

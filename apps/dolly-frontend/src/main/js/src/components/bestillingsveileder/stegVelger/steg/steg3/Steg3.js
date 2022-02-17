@@ -15,15 +15,23 @@ export const Steg3 = ({ formikBag, brukertype }) => {
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+	const bankIdBruker = brukertype === 'BANKID'
+
+	const alleredeValgtMiljoe = () => {
+		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
+			return ['q1']
+		}
+		return []
+	}
 
 	useEffect(() => {
 		if (importTestnorge) {
 			if (harAvhukedeAttributter(formikBag.values)) {
-				formikBag.setFieldValue('environments', [])
+				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', '')
 		} else {
-			formikBag.setFieldValue('environments', [])
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 		}
 	}, [])
 
@@ -42,7 +50,8 @@ export const Steg3 = ({ formikBag, brukertype }) => {
 				<MiljoVelger
 					bestillingsdata={formikBag.values}
 					heading="Hvilke miljøer vil du opprette i?"
-					brukertype={brukertype}
+					bankIdBruker={bankIdBruker}
+					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
 			{importTestnorge && <VelgGruppe formikBag={formikBag} />}
