@@ -42,20 +42,26 @@ public class PdlProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService,
-                @Value("${hendelse.lager.api.key}") String apiKey) {
+                @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
+                                           @Value("${person.aktor.admin.api}") String aktoerAdminApiKey) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(stsOidcTokenService::getToken);
         var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
-        var addApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
-                .apiKeyAuthenticationHeaderFilter(apiKey);
+        var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .apiKeyAuthenticationHeaderFilter(hendelselagerApiKey);
+        var addAktoerAdminApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .apiKeyAuthenticationHeaderFilter(aktoerAdminApiKey);
+
+
 
         return builder
                 .routes()
                 .route(createRoute("pdl-api", "https://pdl-api.dev.adeo.no", addAuthorizationAndNavConsumerTokenToRouteFilter))
                 .route(createRoute("pdl-testdata", "https://pdl-testdata.dev.adeo.no", addAuthenticationHeaderFilter))
-                .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addHendelselagerApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-npid", "https://pdl-aktor.dev.intern.nav.no", addAktoerAdminApiKeyAuthenticationHeader))
                 .build();
     }
 
