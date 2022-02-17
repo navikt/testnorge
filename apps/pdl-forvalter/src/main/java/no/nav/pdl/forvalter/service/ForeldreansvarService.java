@@ -117,7 +117,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
                 isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isRelasjonMor(hovedperson)) {
+                !isRelasjonMor(hovedperson) && isNull(foreldreansvar.getNyAnsvarlig())) {
             throw new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION);
         }
 
