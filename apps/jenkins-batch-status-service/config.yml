@@ -40,7 +40,7 @@ spec:
     periodSeconds: 5
     failureThreshold: 500
   replicas:
-    min: 1
+    min: 2
     max: 2
   resources:
     requests:

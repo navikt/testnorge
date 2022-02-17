@@ -27,7 +27,7 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   replicas:
-    min: 1
+    min: 2
     max: 2
   port: 8080
   ingresses:
