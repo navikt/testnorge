@@ -45,6 +45,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
@@ -94,12 +95,14 @@ public class PdlForvalterConsumer {
     private final NaisServerProperties serviceProperties;
     private final WebClient webClient;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final ObjectMapper objectMapper;
 
     public PdlForvalterConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ErrorStatusDecoder errorStatusDecoder, ObjectMapper objectMapper) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.errorStatusDecoder = errorStatusDecoder;
+        this.objectMapper = objectMapper;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -123,9 +126,10 @@ public class PdlForvalterConsumer {
     public ResponseEntity<JsonNode> postOpprettPerson(PdlOpprettPerson opprettPerson, String ident) {
 
         if (IdentType.BOST == IdentTypeUtil.getIdentType(ident)) {
-
-            return new PdlAktoerNpidCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call()
+            new PdlAktoerNpidCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call()
                     .block();
+            return ResponseEntity.of(Optional.of(objectMapper.valueToTree("opprett person")));
+
         } else {
             return postRequest(
                     opprettPerson.getHistoriskeIdenter(),

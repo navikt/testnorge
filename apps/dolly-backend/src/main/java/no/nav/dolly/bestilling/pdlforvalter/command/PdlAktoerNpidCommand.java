@@ -1,12 +1,10 @@
 package no.nav.dolly.bestilling.pdlforvalter.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -17,7 +15,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlAktoerNpidCommand implements Callable<Mono<ResponseEntity<JsonNode>>> {
+public class PdlAktoerNpidCommand implements Callable<Mono<Void>> {
 
     private static final String PDL_AKTOER_ADMIN_PREFIX = "/pdl-npid";
     private static final String PDL_PERSON_AKTOER_URL = PDL_AKTOER_ADMIN_PREFIX + "/api/npid";
@@ -26,7 +24,7 @@ public class PdlAktoerNpidCommand implements Callable<Mono<ResponseEntity<JsonNo
     private final String npid;
     private final String token;
 
-    public Mono<ResponseEntity<JsonNode>> call() {
+    public Mono<Void> call() {
 
         return webClient
                 .post()
@@ -36,6 +34,6 @@ public class PdlAktoerNpidCommand implements Callable<Mono<ResponseEntity<JsonNo
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(npid))
                 .retrieve()
-                .toEntity(JsonNode.class);
+                .bodyToMono(Void.class);
     }
 }
