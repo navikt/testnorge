@@ -117,13 +117,9 @@ public class DollyPersonCache {
                 dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
                         .stream().findFirst().orElse(new FullPersonDTO()));
             }
-            log.info("Dollyperson: {}", Json.pretty(dollyPerson));
-
             dollyPerson.setPersondetaljer(List.of(mapperFacade.map(
                     dollyPerson.getPdlfPerson().getPerson(),
                     Person.class)));
-
-            log.info("Dollyperson ferdig mappet: {}", Json.pretty(dollyPerson));
         }
 
         if (!manglendeIdenter.isEmpty()) {

@@ -18,9 +18,6 @@ import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/relas
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
-import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
-import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
-import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 
 type PdlVisningProps = {
@@ -72,9 +69,6 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
-				<SivilstandVisning data={sivilstand} relasjoner={null} />
-				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={null} />
-				<DoedfoedtBarnVisning data={doedfoedtBarn} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 				<PdlRelasjoner data={hentPerson} />
 			</div>
