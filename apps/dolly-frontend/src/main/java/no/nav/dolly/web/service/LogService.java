@@ -20,24 +20,21 @@ public class LogService {
     private final TilbakemeldingConsumer tilbakemeldingConsumer;
 
     public Mono<Void> log(LogEvent event, ServerWebExchange exchange) {
-        logKibana(event);
+        logKibana(event, exchange);
         if (event.getMessage() != null && event.getLevel() == Level.INFO) {
             return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO(), exchange);
         }
         return Mono.empty();
     }
 
-    private void logKibana(LogEvent event) {
+    private void logKibana(LogEvent event, ServerWebExchange exchange) {
         var original = MDC.getCopyOfContextMap() == null ? new HashMap<String, String>() : MDC.getCopyOfContextMap();
         MDC.setContextMap(event.toPropertyMap());
         switch (event.getLevel()) {
             case TRACE -> log.trace(event.getMessage());
             case INFO -> log.info(event.getMessage());
-            case WARNING -> log.warn(event.getMessage(), event.getEvent());
-            case ERROR -> {
-                log.error(event.getMessage(), event.getEvent());
-                log.info("Error event: {}", event);
-            }
+            case WARNING -> log.warn(event.getMessage(), exchange.getResponse());
+            case ERROR -> log.error(event.getMessage(), exchange.getResponse());
             default -> log.debug(event.getMessage());
         }
         MDC.setContextMap(original);
