@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import static java.util.Objects.nonNull;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -40,5 +42,12 @@ public class BostedadresseDTO extends AdresseDTO {
 
         return count(getVegadresse()) + count(getMatrikkeladresse()) +
                 count(getUkjentBosted()) + count(getUtenlandskAdresse());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseNorge() {
+
+        return nonNull(getVegadresse()) || nonNull(getUkjentBosted()) || nonNull(getMatrikkeladresse());
     }
 }
