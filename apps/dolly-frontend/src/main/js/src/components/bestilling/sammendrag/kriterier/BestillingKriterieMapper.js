@@ -183,6 +183,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			vergemaal,
 			forelderBarnRelasjon,
 			doedfoedtBarn,
+			foreldreansvar,
 		} = pdldataKriterier
 
 		const isEmpty = (attributt) => {
@@ -658,6 +659,51 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(foreldreBarnData)
+		}
+
+		if (foreldreansvar) {
+			const foreldreansvarData = {
+				header: 'Foreldreansvar',
+				itemRows: foreldreansvar.map((item, idx) => {
+					return [
+						{ numberHeader: `Foreldreansvar ${idx + 1}` },
+						obj('Hvem har ansvaret', Formatters.showLabel('foreldreansvar', item.ansvar)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Ansvarlig', item.ansvarlig),
+						{ numberHeader: 'Ny ansvarlig' }, //TODO: Funker ikke
+						obj('Identtype', item.nyAnsvarlig?.identtype),
+						obj('Kjønn', item.nyAnsvarlig?.kjoenn),
+						obj('Født etter', Formatters.formatDate(item.nyAnsvarlig?.foedtEtter)),
+						obj('Født før', Formatters.formatDate(item.nyAnsvarlig?.foedtFoer)),
+						obj('Alder', item.nyAnsvarlig?.alder),
+						obj(
+							'Statsborgerskap',
+							item.nyAnsvarlig?.statsborgerskapLandkode,
+							AdresseKodeverk.StatsborgerskapLand
+						),
+						obj('Gradering', Formatters.showLabel('gradering', item.nyAnsvarlig?.gradering)),
+						obj('Syntetisk', item.nyAnsvarlig?.syntetisk && 'JA'),
+						obj('Har mellomnavn', item.nyAnsvarlig?.nyttNavn?.hasMellomnavn && 'JA'),
+						{ numberHeader: 'Ansvarlig uten identifikator' }, //TODO: Funker ikke
+						obj('Kjønn', item.ansvarligUtenIdentifikator?.kjoenn),
+						obj(
+							'Fødselsdato',
+							Formatters.formatDate(item.ansvarligUtenIdentifikator?.foedselsdato)
+						),
+						obj(
+							'Statsborgerskap',
+							item.ansvarligUtenIdentifikator?.statsborgerskap,
+							AdresseKodeverk.StatsborgerskapLand
+						),
+						obj('Fornavn', item.ansvarligUtenIdentifikator?.navn?.fornavn),
+						obj('Mellomnavn', item.ansvarligUtenIdentifikator?.navn?.mellomnavn),
+						obj('Etternavn', item.ansvarligUtenIdentifikator?.navn?.etternavn),
+						// ...personRelatertTil(item, 'nyAnsvarlig'),
+					]
+				}),
+			}
+			data.push(foreldreansvarData)
 		}
 
 		if (doedfoedtBarn) {

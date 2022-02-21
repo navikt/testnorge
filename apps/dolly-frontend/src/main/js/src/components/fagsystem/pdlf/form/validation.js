@@ -408,6 +408,12 @@ const vergemaal = Yup.array().of(
 	})
 )
 
+const foreldreansvar = Yup.array().of(
+	Yup.object({
+		ansvar: requiredString.nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		opprettNyPerson: Yup.object({
@@ -447,6 +453,7 @@ export const validation = {
 			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
 			navn: ifPresent('$pdldata.person.navn', navn),
 			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
+			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
 		}),
 	}),
 	tpsMessaging: ifPresent(
