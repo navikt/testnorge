@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.reactivesecurity.action;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -8,9 +9,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 
+@Slf4j
 abstract class JwtResolver {
 
     Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
@@ -21,8 +22,9 @@ abstract class JwtResolver {
                 .map(JwtAuthenticationToken.class::cast)
                 .doOnSuccess(jwtAuthenticationToken -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
+                    log.info("Jwt ExpiresAt: {} \nLocalTime now: {}", credentials.getExpiresAt(), OffsetDateTime.now().toInstant());
                     Instant expiresAt = credentials.getExpiresAt();
-                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC))) {
+                    if (expiresAt == null || expiresAt.isBefore(OffsetDateTime.now().toInstant())) {
                         throw new CredentialsExpiredException("Jwt er utloept");
                     }
                 });
