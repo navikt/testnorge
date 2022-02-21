@@ -2,22 +2,6 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.credentials.TestnavNorg2ProxyProperties;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.Buildable;
-import org.springframework.cloud.gateway.route.builder.PredicateSpec;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import reactor.core.publisher.Mono;
-
-import java.util.Optional;
-import java.util.function.Function;
-
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
@@ -28,6 +12,7 @@ import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
 import no.nav.dolly.web.credentials.TestnavKrrstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
+import no.nav.dolly.web.credentials.TestnavNorg2ProxyProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServiceProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
@@ -52,7 +37,20 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
+import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 @Import({
