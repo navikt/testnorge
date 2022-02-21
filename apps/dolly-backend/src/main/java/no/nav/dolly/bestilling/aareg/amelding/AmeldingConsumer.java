@@ -43,12 +43,13 @@ public class AmeldingConsumer {
     public Map<String, ResponseEntity<Void>> putAmeldingList(Map<String, AMeldingDTO> ameldingList, String miljoe) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
+        String userJwt = getUserJwt();
         Map<String, ResponseEntity<Void>> ameldingMap = new HashMap<>();
 
         if (nonNull(accessToken)) {
             ameldingList.values().forEach(amelding ->
             {
-                ResponseEntity<Void> response = putAmeldingdata(amelding, miljoe, accessToken);
+                ResponseEntity<Void> response = putAmeldingdata(amelding, miljoe, accessToken, userJwt);
                 ameldingMap.put(amelding.getKalendermaaned().toString(), response);
             });
             return ameldingMap;
@@ -57,12 +58,12 @@ public class AmeldingConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "amelding_put" })
-    public ResponseEntity<Void> putAmeldingdata(AMeldingDTO amelding, String miljoe, String accessTokenValue) {
+    public ResponseEntity<Void> putAmeldingdata(AMeldingDTO amelding, String miljoe, String accessTokenValue, String userJwt) {
 
         ResponseEntity<Void> response = webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/amelding").build())
                 .header(HttpHeaders.AUTHORIZATION, accessTokenValue)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(UserConstant.USER_HEADER_JWT, userJwt)
                 .header("Nav-Call-Id", generateCallId())
                 .header("miljo", miljoe)
                 .bodyValue(amelding)
