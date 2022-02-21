@@ -33,8 +33,11 @@ public class LogService {
         switch (event.getLevel()) {
             case TRACE -> log.trace(event.getMessage());
             case INFO -> log.info(event.getMessage());
-            case WARNING -> log.warn(event.getMessage(), event);
-            case ERROR -> log.error(event.getMessage(), event);
+            case WARNING -> log.warn(event.getMessage(), event.getEvent());
+            case ERROR -> {
+                log.error(event.getMessage(), event.getEvent());
+                log.info("Error event: {}", event);
+            }
             default -> log.debug(event.getMessage());
         }
         MDC.setContextMap(original);
