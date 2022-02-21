@@ -48,7 +48,7 @@ public class GjeldendeArtifactService {
         }
     }
 
-    public DbPerson setGjeldene(DbPerson person) {
+    public void setGjeldene(DbPerson person) {
 
         Stream.of(List.of(person.getPerson()),
                 person.getRelasjoner().stream()
@@ -59,8 +59,6 @@ public class GjeldendeArtifactService {
                 .toList()
                 .parallelStream()
                 .forEach(this::setGjeldene);
-
-        return person;
     }
 
     private PersonDTO setGjeldene(PersonDTO person) {
