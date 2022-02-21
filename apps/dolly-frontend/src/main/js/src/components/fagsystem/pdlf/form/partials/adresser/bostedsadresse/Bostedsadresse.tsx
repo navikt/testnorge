@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -20,6 +20,7 @@ import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
 import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 import { FormikProps } from 'formik'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>
@@ -30,6 +31,14 @@ type Target = {
 }
 
 export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
+	const getAdresseOptions = () => {
+		if (opts.identtype && opts.identtype !== 'FNR') {
+			return Options('adressetypeUtenlandskBostedsadresse')
+		}
+		return Options('adressetypeBostedsadresse')
+	}
+
 	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
@@ -91,7 +100,7 @@ export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
 								<FormikSelect
 									name={`${path}.adressetype`}
 									label="Adressetype"
-									options={Options('adressetypeBostedsadresse')}
+									options={getAdresseOptions()}
 									onChange={(target: Target) => handleChangeAdressetype(target, path)}
 									size="large"
 								/>
