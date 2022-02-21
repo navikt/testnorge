@@ -9,7 +9,6 @@ import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 import './App.less'
 import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
-import { CriticalError } from '~/components/ui/appError/CriticalError'
 
 export default class App extends Component {
 	state = {
@@ -44,7 +43,15 @@ export default class App extends Component {
 			updateVarslingerBruker,
 		} = this.props
 
-		if (this.state.criticalError) return <CriticalError error={this.state.criticalError.stack} />
+		const logout = (stackTrace) => {
+			let feilmelding = 'unknown_error'
+			if (stackTrace.includes('miljoer')) return 'miljoe_error'
+			else if (stackTrace.includes('current')) return 'azure_error'
+
+			window.location.href = '/logout?state=' + feilmelding
+		}
+
+		if (this.state.criticalError) logout(this.state.criticalError.stack)
 
 		if (!brukerData) return <Loading label="Laster Dolly applikasjon" fullpage />
 		return (
