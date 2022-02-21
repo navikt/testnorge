@@ -517,5 +517,10 @@ public class PdlPerson {
         private no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO postboksadresse;
         private PostadresseIFrittFormat postadresseIFrittFormat;
         private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;
+
+        @Override
+        public boolean isAdresseNorge() {
+            return false;
+        }
     }
 }
