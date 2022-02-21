@@ -45,8 +45,8 @@ export default class App extends Component {
 
 		const logout = (stackTrace) => {
 			let feilmelding = 'unknown_error'
-			if (stackTrace.includes('miljoer')) return 'miljoe_error'
-			else if (stackTrace.includes('current')) return 'azure_error'
+			if (stackTrace.includes('miljoer')) feilmelding = 'miljoe_error'
+			else if (stackTrace.includes('current')) feilmelding = 'azure_error'
 
 			window.location.href = '/logout?state=' + feilmelding
 		}
