@@ -169,7 +169,7 @@ public class DollyFrontendApplicationStarter {
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filters(filter, addUserJwtHeaderFilter())
+                        .filters(addUserJwtHeaderFilter())
                 ).uri(host);
     }
 }
