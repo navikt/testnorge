@@ -29,17 +29,23 @@ import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Mono;
 
@@ -85,52 +91,52 @@ public class DollyFrontendApplicationStarter {
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
     private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
 
-//    @Bean
-//    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-//        return builder
-//                .routes()
-//                .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
-//                .route(createRoute(testnavAdresseServiceProperties))
-//                .route(createRoute(testnavOrganisasjonForvalterProperties))
-//                .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
-//                .route(createRoute(testnorgeProfilApiProperties))
-//                .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
-//                .route(createRoute(testnorgeProfilApiProperties, "testnorge-profil-api"))
-//                .route(createRoute(testnavMiljoerServiceProperties))
-//                .route(createRoute(dollyBackendProperties, "dolly-backend"))
-//                .route(createRoute(testnavJoarkDokumentServiceProperties))
-//                .route(createRoute(testnavPensjonTestdataFacadeProxyProperties))
-//                .route(createRoute(testnavInntektstubProxyProperties))
-//                .route(createRoute(testnavHodejegerenProxyProperties))
-//                .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
-//                .route(createRoute(testnavBrregstubProxyProperties))
-//                .route(createRoute(testnavArenaForvalterenProxyProperties))
-//                .route(createRoute(testnavTestnorgeInstProxyProperties))
-//                .route(createRoute(testnavTestnorgeAaregProxyProperties))
-//                .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
-//                .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
-//                .route(createRoute(testnavOrganisasjonServiceProperties))
-//                .route(createRoute(testnavSigrunstubProxyProperties))
-//                .route(createRoute(udiStubProxyProperties, "udi-stub"))
-//                .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
-//                .route(createRoute(personSearchServiceProperties))
-//                .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
-//                .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
-//                .build();
-//    }
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
+                .route(createRoute(testnavAdresseServiceProperties))
+                .route(createRoute(testnavOrganisasjonForvalterProperties))
+                .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
+                .route(createRoute(testnorgeProfilApiProperties))
+                .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
+                .route(createRoute(testnorgeProfilApiProperties, "testnorge-profil-api"))
+                .route(createRoute(testnavMiljoerServiceProperties))
+                .route(createRoute(dollyBackendProperties, "dolly-backend"))
+                .route(createRoute(testnavJoarkDokumentServiceProperties))
+                .route(createRoute(testnavPensjonTestdataFacadeProxyProperties))
+                .route(createRoute(testnavInntektstubProxyProperties))
+                .route(createRoute(testnavHodejegerenProxyProperties))
+                .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
+                .route(createRoute(testnavBrregstubProxyProperties))
+                .route(createRoute(testnavArenaForvalterenProxyProperties))
+                .route(createRoute(testnavTestnorgeInstProxyProperties))
+                .route(createRoute(testnavTestnorgeAaregProxyProperties))
+                .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
+                .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
+                .route(createRoute(testnavOrganisasjonServiceProperties))
+                .route(createRoute(testnavSigrunstubProxyProperties))
+                .route(createRoute(udiStubProxyProperties, "udi-stub"))
+                .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
+                .route(createRoute(personSearchServiceProperties))
+                .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
+                .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
+                .build();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(DollyFrontendApplicationStarter.class, args);
     }
 
-//    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
-//        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
-//                .apply(exchange -> {
-//                    return tokenExchange
-//                            .exchange(serverProperties, exchange)
-//                            .map(AccessToken::getTokenValue);
-//                });
-//    }
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .exchange(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
+    }
 
     private GatewayFilter addUserJwtHeaderFilter() {
         return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
@@ -142,21 +148,21 @@ public class DollyFrontendApplicationStarter {
         });
     }
 
-//    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
-//        return createRoute(
-//                serverProperties.getName(),
-//                serverProperties.getUrl(),
-//                addAuthenticationHeaderFilterFrom(serverProperties)
-//        );
-//    }
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
+        return createRoute(
+                serverProperties.getName(),
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
+        );
+    }
 
-//    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, String segment) {
-//        return createRoute(
-//                segment,
-//                serverProperties.getUrl(),
-//                addAuthenticationHeaderFilterFrom(serverProperties)
-//        );
-//    }
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, String segment) {
+        return createRoute(
+                segment,
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
+        );
+    }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         return spec -> spec
