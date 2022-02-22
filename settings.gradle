@@ -49,7 +49,6 @@ includeBuild './proxies/testnorge-inst-proxy'
 includeBuild './proxies/sigrunstub-proxy'
 includeBuild './proxies/pensjon-testdata-facade-proxy'
 includeBuild './proxies/norg2-proxy'
-includeBuild './proxies/syntrest-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
