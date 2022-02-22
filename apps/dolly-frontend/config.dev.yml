@@ -27,8 +27,11 @@ spec:
       tenant: nav.no
       replyURLs:
         - https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad
+        - https://dolly-frontend-dev.dev.intern.nav.no/oauth2/callback
         - http://localhost:8020/login/oauth2/code/aad
+        - http://localhost:8020/oauth2/callback
         - http://localhost:3000/login/oauth2/code/aad
+        - http://localhost:3000/oauth2/callback
   accessPolicy:
     outbound:
       rules:
@@ -87,7 +90,7 @@ spec:
     limits:
       cpu: 1500m
       memory: 2048Mi
-  image: {{ image }}
+  image: {{image}}
   env:
     - name: DOLLY_BACKEND_NAME
       value: dolly-backend-dev
