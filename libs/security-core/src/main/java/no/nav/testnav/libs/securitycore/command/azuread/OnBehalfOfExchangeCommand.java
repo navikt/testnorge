@@ -34,49 +34,15 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
             MDC.setContextMap(contextMap);
         }
 
-        log.info("Scope: {}", scope);
-
         var body = BodyInserters
                 .fromFormData("scope", scope)
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("assertion", token.getAccessTokenValue())
+                .with("assertion", token.getValue())
                 .with("requested_token_use", "on_behalf_of")
-                .with("connection_scope", "offline_access")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        var refreshBody = BodyInserters
-                .fromFormData("scope", scope)
-                .with("grant_type", "refresh_token")
-                .with("refresh_token", token.getRefreshTokenValue())
-                .with("client_id", clientCredential.getClientId())
-                .with("client_secret", clientCredential.getClientSecret());
-
         log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
-        log.info("AccessToken expirer: {}", token.getExpiresAt());
-        log.info("RefreshToken: {}", token.getRefreshTokenValue());
-
-        if (ZonedDateTime.now().toInstant().isAfter(token.getExpiresAt())) {
-            log.info("Accesstoken expired, prøver å hente nytt");
-            return webClient
-                    .post()
-                    .body(refreshBody)
-                    .retrieve()
-                    .bodyToMono(AccessToken.class)
-                    .doOnError(
-                            WebClientResponseException.class::isInstance,
-                            throwable -> log.error(
-                                    "Feil ved refresh av access token for {}. Feilmelding: {}.",
-                                    scope,
-                                    ((WebClientResponseException) throwable).getResponseBodyAsString()
-                            )
-                    )
-                    .doOnError(
-                            throwable -> !(throwable instanceof WebClientResponseException),
-                            throwable -> log.error("Feil ved refresh av access token for {}", scope, throwable)
-                    );
-        }
-
         return webClient
                 .post()
                 .body(body)
