@@ -12,18 +12,14 @@ import java.time.LocalDateTime;
 public abstract class AdresseDTO {
 
     private String kommunenr;
-
     private LocalDateTime flyttedato;
-
     private LocalDateTime gyldigTilDato;
-
     private String postnr;
-
     private String tilleggsadresse;
-
     private String bolignr;
-
     private Boolean deltAdresse;
-
     private String matrikkelId;
+    private Adressetype adressetype;
+
+    public enum Adressetype {GATE, MATR}
 }
