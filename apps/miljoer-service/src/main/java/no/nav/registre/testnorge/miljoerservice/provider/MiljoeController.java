@@ -17,7 +17,7 @@ public class MiljoeController {
     private final MiljoerService miljoerService;
 
     @GetMapping
-    @Operation(description = "Tjeneste for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå")
+    @Operation(description = "Hent liste over aktive miljøer i test og preprod (manuell oppdatering)")
     public List<String> hentAktiveMiljoer() {
 
         return miljoerService.getMiljoer();
