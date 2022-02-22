@@ -60,6 +60,10 @@ public class SecurityConfig {
                         "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()
+                .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+                        .authenticationManager(authenticationManger)
+                        .authenticationSuccessHandler(authenticationSuccessHandler))
+                .formLogin().loginPage("/login")
                 .and().logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
                         .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
