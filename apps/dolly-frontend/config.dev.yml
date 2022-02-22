@@ -17,6 +17,10 @@ spec:
     postLogoutRedirectURIs:
       - https://dolly-frontend-dev.dev.intern.nav.no/login
   azure:
+    sidecar:
+      enabled: true
+      autoLogin: false
+      errorPath: ""
     application:
       enabled: true
       # enum of {trygdeetaten.no, nav.no}

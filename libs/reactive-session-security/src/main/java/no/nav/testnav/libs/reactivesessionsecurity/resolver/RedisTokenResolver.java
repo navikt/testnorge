@@ -1,13 +1,12 @@
 package no.nav.testnav.libs.reactivesessionsecurity.resolver;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.securitycore.domain.Token;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import no.nav.testnav.libs.securitycore.domain.Token;
 
 
 @Service
@@ -23,6 +22,6 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                 authenticationToken,
                                 exchange
                         ).map(OAuth2AuthorizedClient::getAccessToken)
-                ).map(accessToken -> Token.builder().value(accessToken.getTokenValue()).clientCredentials(false).build());
+                ).map(accessToken -> Token.builder().accessTokenValue(accessToken.getTokenValue()).clientCredentials(false).build());
     }
 }
