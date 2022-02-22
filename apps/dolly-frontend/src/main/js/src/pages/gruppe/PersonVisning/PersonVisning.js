@@ -28,6 +28,16 @@ import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 
+const getIdenttype = (ident) => {
+	if (parseInt(ident.charAt(0)) > 3) {
+		return 'DNR'
+	} else if (parseInt(ident.charAt(2)) % 4 >= 2) {
+		return 'BOST'
+	} else {
+		return 'FNR'
+	}
+}
+
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
@@ -55,7 +65,9 @@ export const PersonVisning = ({
 			<div className="person-visning_actions">
 				{!iLaastGruppe && ident.master !== 'PDLF' && (
 					<Button
-						onClick={() => leggTilPaaPerson(data, bestillingsListe, ident.master)}
+						onClick={() =>
+							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+						}
 						kind="add-circle"
 					>
 						LEGG TIL/ENDRE

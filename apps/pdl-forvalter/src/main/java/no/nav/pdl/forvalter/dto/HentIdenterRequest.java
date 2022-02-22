@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 
 import javax.validation.constraints.NotNull;
@@ -15,6 +14,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HentIdenterRequest {
+
+    public enum Identtype {
+        FNR,
+        DNR,
+        BOST
+    }
 
     private Identtype identtype;
     private LocalDate foedtEtter;

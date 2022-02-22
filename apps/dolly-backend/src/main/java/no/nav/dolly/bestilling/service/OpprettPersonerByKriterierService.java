@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
+import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 
 @Slf4j
 @Service
@@ -138,7 +140,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         return BestillingProgress.builder()
                 .bestilling(bestilling)
                 .ident("?")
-                .feil("NA:" + error)
+                .feil(TPSF == master ? ("NA:" + error) : null)
+                .pdlDataStatus(PDLF == master ? error : null)
                 .master(master)
                 .build();
     }

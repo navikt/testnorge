@@ -68,6 +68,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final GjeldendeArtifactService gjeldendeArtifactService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -92,6 +93,8 @@ public class PersonService {
         dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
 
+        gjeldendeArtifactService.setGjeldene(dbPerson);
+
         return personRepository.save(dbPerson).getIdent();
     }
 
@@ -107,13 +110,13 @@ public class PersonService {
         var personer = Stream.of(List.of(dbPerson),
                         dbPerson.getRelasjoner().stream()
                                 .map(DbRelasjon::getRelatertPerson)
-                                .collect(Collectors.toList()))
+                                .toList())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         var identer = personer.stream()
                 .map(DbPerson::getIdent)
-                .collect(Collectors.toList());
+                .toList();
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),
