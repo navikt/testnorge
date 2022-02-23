@@ -44,7 +44,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
         log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
-        if (token.getExpiredAt().isAfter(ZonedDateTime.now().toInstant())) {
+        if (token.getExpiredAt().isBefore(ZonedDateTime.now().toInstant())) {
             log.warn("AccessToken har expired! Tokenet gikk ut: {}", token.getExpiredAt());
             //TODO: Håndtere utgått token, request nytt
         }
