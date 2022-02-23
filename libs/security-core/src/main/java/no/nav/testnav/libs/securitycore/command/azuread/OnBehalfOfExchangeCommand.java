@@ -53,7 +53,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                         throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
-                                ((WebClientResponseException) throwable).getResponseBodyAsString()
+                                throwable
                         )
                 )
                 .doOnError(

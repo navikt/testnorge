@@ -48,7 +48,7 @@ export default () => {
 				<NavButton
 					className="login-modal_button-nav"
 					type="hoved"
-					onClick={redirectOnClick('/oauth2/login')}
+					onClick={redirectOnClick('/oauth2/authorization/aad')}
 				>
 					Logg inn med NAV epost
 				</NavButton>
