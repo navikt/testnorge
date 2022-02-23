@@ -25,11 +25,8 @@ spec:
       tenant: nav.no
       replyURLs:
         - https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad
-        - https://dolly-frontend-dev.dev.intern.nav.no/oauth2/callback
         - http://localhost:8020/login/oauth2/code/aad
-        - http://localhost:8020/oauth2/callback
         - http://localhost:3000/login/oauth2/code/aad
-        - http://localhost:3000/oauth2/callback
   accessPolicy:
     outbound:
       rules:
