@@ -2,7 +2,7 @@ import React from 'react'
 import BlankHeader from '~/components/layout/blankHeader/BlankHeader'
 import BrukerModal from '~/pages/brukerPage/BrukerModel'
 import './BrukerPage.less'
-import { WinterBackground as Background } from '~/components/ui/background/Background'
+import { SpringBackground as Background } from '~/components/ui/background/Background'
 
 import './../../snow.scss'
 

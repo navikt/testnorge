@@ -10,6 +10,55 @@
     top: -5vh;
 }
 
+.flower {
+    //--size: 1vw;
+    //width: 42px;
+    //height: 15px;
+    width: 3vw;
+    height: 1vw;
+    background: #FFACD9;
+    border-radius: 50%;
+    //border-radius: 50px;
+    //margin-top: 200px;
+    position: absolute;
+    top: -5vh;
+}
+
+.flower::before {
+    //--size: 1vw;
+    content: "";
+    display: block;
+    position: absolute;
+    //width: 42px;
+    //height: 15px;
+    width: 3vw;
+    height: 1vw;
+    background: #FFACD9;
+    border-radius: 50%;
+    //border-radius: 50px;
+    //margin-top: 200px;
+    //top: -5vh;
+    transform: rotate(60deg);
+}
+
+.flower::after {
+    //--size: 1vw;
+    content: "";
+    display: block;
+    //width: 42px;
+    //height: 15px;
+    width: 3vw;
+    height: 1vw;
+    background: #FFACD9;
+    border-radius: 50%;
+    //border-radius: 50px;
+    //margin-top: 200px;
+    //position: absolute;
+    //top: -5vh;
+    transform: rotate(-60deg);
+}
+
+
 @keyframes snowfall {
     0% {
         transform: translate3d(var(--left-ini), 5vh, 0);
@@ -19,18 +68,22 @@
     }
 }
 
-@for $i from 1 through 50 {
-    .snowflake:nth-child(#{$i}) {
-        --size: #{random(5) * 0.2}vw;
+@for $i from 1 through 40 {
+    .flower:nth-child(#{$i}) {
+        //--size: #{random(5) * 0.2}vw;
+        --width: #{random(5) * 0.2}vw;
+        --height: #{random(5) * 0.2}vw;
         --left-ini: #{random(20) - 10}vw;
         --left-end: #{random(20) - 10}vw;
         left: #{random(93)}vw;
         animation: snowfall #{5 + random(10)}s linear infinite;
         animation-delay: -#{random(10)}s;
+        //rotation: #{random(10)}deg;
+        transform: rotate(#{random(5)}deg);
     }
 }
 
 /* added small blur every 6 snowflakes*/
-.snowflake:nth-child(6n) {
+.flower:nth-child(6n) {
     filter: blur(1px);
 }
