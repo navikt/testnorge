@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
-
     private final ReactiveOAuth2AuthorizedClientService auth2AuthorizedClientService;
 
     @Override
@@ -26,7 +25,11 @@ public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements 
                 ).map(accessToken -> {
                     log.info("Token expires: {}", accessToken.getExpiresAt());
                     log.info("Token issued: {}", accessToken.getIssuedAt());
-                    return Token.builder().value(accessToken.getTokenValue()).clientCredentials(false).build();
+                    return Token.builder()
+                            .value(accessToken.getTokenValue())
+                            .expiredAt(accessToken.getExpiresAt())
+                            .clientCredentials(false)
+                            .build();
                 });
     }
 }

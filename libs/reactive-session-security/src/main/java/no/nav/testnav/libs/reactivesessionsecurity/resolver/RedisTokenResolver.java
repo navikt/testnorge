@@ -27,7 +27,12 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                 ).map(accessToken -> {
                     log.info("Token expires: {}", accessToken.getExpiresAt());
                     log.info("Token issued: {}", accessToken.getIssuedAt());
-                    return Token.builder().value(accessToken.getTokenValue()).clientCredentials(false).build();
+                    return Token.builder()
+                            .value(accessToken.getTokenValue())
+                            .expiredAt(accessToken.getExpiresAt())
+                            .clientCredentials(false)
+                            .build();
+
                 });
     }
 }
