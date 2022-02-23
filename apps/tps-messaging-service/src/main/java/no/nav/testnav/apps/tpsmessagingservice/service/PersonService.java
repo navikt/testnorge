@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
@@ -52,15 +53,16 @@ public class PersonService {
 
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
-    private final MiljoerService miljoerService;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
     private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
 
-    public PersonService(ServicerutineConsumer servicerutineConsumer, ObjectMapper objectMapper, MapperFacade mapperFacade, MiljoerService miljoerService) throws JAXBException {
+    public PersonService(ServicerutineConsumer servicerutineConsumer, ObjectMapper objectMapper,
+                         MapperFacade mapperFacade, TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
         this.objectMapper = objectMapper;
         this.mapperFacade = mapperFacade;
-        this.miljoerService = miljoerService;
+        this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
     }
 
@@ -190,7 +192,7 @@ public class PersonService {
     public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
         if (miljoer.isEmpty()) {
-            miljoer = miljoerService.getMiljoer();
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
         }
 
         var tpsPersoner = readFromTps(ident, miljoer);

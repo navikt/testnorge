@@ -38,6 +38,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+        - application: testnav-tps-messaging-service
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp

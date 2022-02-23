@@ -1,8 +1,0 @@
-MQ_USERNAME: ${mq.username}
-MQ_PASSWORD: ${mq.password}
-MQ_CHANNEL_POSTFIX: ${mq.channel.postfix}
-MQ_CHANNEL_NAME: ${mq.channel.name}
-MQ_CHANNEL_HOSTNAME: ${mq.channel.hostname}
-MQ_CHANNEL_PORT: ${mq.channel.port}
-MQ_QUEUE_NAME: ${mq.queue.name}
-MQ_TPS_SERVICEROUTINE: ${mq.tps.serviceroutine}
