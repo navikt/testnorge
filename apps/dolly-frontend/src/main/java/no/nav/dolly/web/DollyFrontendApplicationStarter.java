@@ -29,10 +29,13 @@ import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -49,6 +52,7 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.function.Function;
 
+
 @Slf4j
 @Import({
         CoreConfig.class,
@@ -58,6 +62,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class DollyFrontendApplicationStarter {
 
+    private final TokenExchange tokenExchange;
     private final UserJwtExchange userJwtExchange;
 
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
@@ -125,6 +130,15 @@ public class DollyFrontendApplicationStarter {
         SpringApplication.run(DollyFrontendApplicationStarter.class, args);
     }
 
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .exchange(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
+    }
+
     private GatewayFilter addUserJwtHeaderFilter() {
         return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
             return exchange.getSession()
@@ -138,23 +152,25 @@ public class DollyFrontendApplicationStarter {
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
         return createRoute(
                 serverProperties.getName(),
-                serverProperties.getUrl()
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
         );
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, String segment) {
         return createRoute(
                 segment,
-                serverProperties.getUrl()
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
         );
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filters(addUserJwtHeaderFilter())
+                        .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
 }
