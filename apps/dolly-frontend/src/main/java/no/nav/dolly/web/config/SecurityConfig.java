@@ -59,6 +59,7 @@ public class SecurityConfig {
                         "/oauth2/logout",
                         "/*.png"
                 ).permitAll()
+                .and().authorizeExchange()
 //                .formLogin().loginPage("/login")
                 .and().logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
