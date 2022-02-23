@@ -242,7 +242,6 @@ export const initialForelder = {
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
 }
 
 export const initialBarn = {
@@ -256,5 +255,12 @@ export const initialDoedfoedtBarn = {
 	dato: new Date(),
 	kilde: 'Dolly',
 	master: 'FREG',
-	gjeldende: true,
+}
+
+export const initialOpphold = {
+	oppholdFra: null as Date,
+	oppholdTil: null as Date,
+	type: 'OPPLYSNING_MANGLER',
+	kilde: 'Dolly',
+	master: 'FREG',
 }

@@ -36,8 +36,9 @@ export type FoedselData = {
 	foedselsdato: string
 	foedselsaar: number
 	foedested: string
-	fodekommune: string
+	foedekommune: string
 	foedeland: string
+	metadata: Metadata
 }
 
 type Statsborgerskap = {

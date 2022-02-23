@@ -1,6 +1,7 @@
 import React from 'react'
 import {
 	DoedfoedtBarn,
+	FoedselData,
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
@@ -24,7 +25,7 @@ export type Ident = {
 }
 
 export type HentPerson = {
-	foedsel: Array<Foedsel>
+	foedsel: [FoedselData]
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<Oppholdsadresse>
 	kontaktadresse: Array<Kontaktadresse>
@@ -38,6 +39,7 @@ export type HentPerson = {
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
 	kontaktinformasjonForDoedsbo: Array<{}>
+	opphold: Array<OppholdData>
 	statsborgerskap: [Statsborgerskap]
 	innflyttingTilNorge: [InnflyttingTilNorge]
 	utflyttingFraNorge: [UtflyttingFraNorge]
@@ -152,6 +154,13 @@ export type FullmaktData = {
 	id: number
 }
 
+export type OppholdData = {
+	oppholdFra: Date
+	oppholdTil: Date
+	type: string
+	id: number
+}
+
 export type UtenlandskAdresseData = {
 	utenlandskAdresse?: UtenlandskAdresse
 }
@@ -201,16 +210,6 @@ type AdressebeskyttelseData = {
 	gradering: string
 }
 
-export type Kodeverk = {
-	values: Array<Array<KodeverkValues>>
-}
-
-export type KodeverkValues = {
-	data: string
-	label: string
-	value: string
-}
-
 export type Statsborgerskap = {
 	land: string
 	gyldigFraOgMed: Date
@@ -230,7 +229,7 @@ export type UtflyttingFraNorge = {
 	metadata: Metadata
 }
 
-type Foedsel = {
+export type Foedsel = {
 	foedselsaar: string
 	foedselsdato: string
 	foedeland: string
@@ -254,4 +253,14 @@ export type UtvandringValues = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
+}
+
+export type Kodeverk = {
+	values: Array<Array<KodeverkValues>>
+}
+
+export type KodeverkValues = {
+	data: string
+	label: string
+	value: string
 }
