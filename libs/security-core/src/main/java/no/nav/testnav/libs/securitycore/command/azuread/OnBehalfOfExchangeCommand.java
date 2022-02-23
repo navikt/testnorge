@@ -47,8 +47,10 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
         log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
         if (token.getExpiredAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
             log.warn("AccessToken har expired! Tokenet gikk ut: {}", token.getExpiredAt());
+
             //TODO: Håndtere utgått token, request nytt
         }
+
         return webClient
                 .post()
                 .body(body)
@@ -59,9 +61,9 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                         throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
+                                ((WebClientResponseException) throwable).getResponseBodyAsString(),
                                 throwable
-                        )
-                )
+                        ))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException),
                         throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)
