@@ -25,6 +25,7 @@ public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements 
                         ).map(OAuth2AuthorizedClient::getAccessToken)
                 ).map(accessToken -> {
                     log.info("Token expires: {}", accessToken.getExpiresAt());
+                    log.info("Token issued: {}", accessToken.getIssuedAt());
                     return Token.builder().value(accessToken.getTokenValue()).clientCredentials(false).build();
                 });
     }
