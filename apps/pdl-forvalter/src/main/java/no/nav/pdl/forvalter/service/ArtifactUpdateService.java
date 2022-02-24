@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -44,33 +45,66 @@ public class ArtifactUpdateService {
     private static final String INFO_NOT_FOUND = "%s med id: %s ble ikke funnet";
 
     private final PersonRepository personRepository;
+    private final AdressebeskyttelseService adressebeskyttelseService;
+    private final BostedAdresseService bostedAdresseService;
+    private final DeltBostedService deltBostedService;
+    private final DoedfoedtBarnService doedfoedtBarnService;
+    private final DoedsfallService doedsfallService;
+    private final FalskIdentitetService falskIdentitetService;
+    private final FoedselService foedselService;
+    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
+    private final ForelderBarnRelasjonService forelderBarnRelasjonService;
+    private final ForeldreansvarService foreldreansvarService;
+    private final FullmaktService fullmaktService;
+    private final KjoennService kjoennService;
+    private final KontaktAdresseService kontaktAdresseService;
+    private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
+    private final InnflyttingService innflyttingService;
+    private final NavnService navnService;
+    private final OppholdsadresseService oppholdsadresseService;
+    private final OppholdService oppholdService;
+    private final SivilstandService sivilstandService;
+    private final StatsborgerskapService statsborgerskapService;
+    private final TelefonnummerService telefonnummerService;
+    private final TilrettelagtKommunikasjonService tilrettelagtKommunikasjonService;
+    private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
+    private final UtflyttingService utflyttingService;
+    private final VergemaalService vergemaalService;
+    private final SikkerhetstiltakService sikkerhetstiltakService;
 
-    private static void checkExists(List<? extends DbVersjonDTO> artifacter, String ident, Integer id) {
+    private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, String ident, Integer id) {
 
         if (artifacter.stream().noneMatch(artifact -> artifact.getId().equals(id))) {
             throw new NotFoundException(String.format(INFO_NOT_FOUND, ident, id));
         }
     }
 
-    private static <T extends DbVersjonDTO> T initOpprett(List<? extends DbVersjonDTO> artifacter, T oppretting) {
+    private static <T extends DbVersjonDTO> T initOpprett(List<T> artifacter, T oppretting) {
 
-        oppretting.setIsNew(true);
         oppretting.setId(artifacter.stream()
                 .mapToInt(DbVersjonDTO::getId)
                 .max().orElse(0) + 1);
         return oppretting;
     }
 
-    private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact, String ident, Integer id) {
+    private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
+                                                                   String ident, Integer id) {
 
-        if (id == 0) {
+        artifact.setIsNew(true);
+        if (id.equals(0)) {
             artifacter.add(0, initOpprett(artifacter, artifact));
             return artifacter;
 
         } else {
             checkExists(artifacter, ident, id);
             return artifacter.stream()
-                    .map(data -> data.getId() == id ? artifact : data)
+                    .map(data -> {
+                                if (data.getId().equals(id)) {
+                                    artifact.setId(id);
+                                    return artifact;
+                                }
+                                return data;
+                            })
                     .toList();
         }
     }
@@ -81,377 +115,284 @@ public class ArtifactUpdateService {
 
         person.getPerson().setFoedsel(
                 updateArtifact(person.getPerson().getFoedsel(), oppdatertFoedsel, ident, id));
+
+        foedselService.validate(oppdatertFoedsel, person.getPerson());
+        foedselService.convert(person.getPerson());
     }
 
     public void updateNavn(String ident, Integer id, NavnDTO oppdatertNavn) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getNavn()
-                    .add(0, initOpprett(person.getPerson().getNavn(), oppdatertNavn));
 
-        } else {
-            checkExists(person.getPerson().getNavn(), ident, id);
-            person.getPerson().setNavn(person.getPerson().getNavn().stream()
-                    .map(navn -> navn.getId() == id ? oppdatertNavn : navn)
-                    .toList());
-        }
+        person.getPerson().setNavn(
+                updateArtifact(person.getPerson().getNavn(), oppdatertNavn, ident, id));
+
+        navnService.validate(oppdatertNavn);
+        navnService.convert(person.getPerson().getNavn());
     }
 
     public void updateKjoenn(String ident, Integer id, KjoennDTO oppdatertKjoenn) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getKjoenn()
-                    .add(0, initOpprett(person.getPerson().getKjoenn(), oppdatertKjoenn));
 
-        } else {
-            checkExists(person.getPerson().getKjoenn(), ident, id);
-            person.getPerson().setKjoenn(person.getPerson().getKjoenn().stream()
-                    .map(kjoenn -> kjoenn.getId() == id ? oppdatertKjoenn : kjoenn)
-                    .toList());
-        }
+        person.getPerson().setKjoenn(
+                updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, ident, id));
+
+        kjoennService.validate(oppdatertKjoenn, person.getPerson());
+        kjoennService.convert(person.getPerson());
     }
 
-    public void updateBostedsadresse(String ident, Integer id, BostedadresseDTO oppdatertBostedadresse) {
+    public void updateBostedsadresse(String ident, Integer id, BostedadresseDTO oppdatertAdresse) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getBostedsadresse()
-                    .add(0, initOpprett(person.getPerson().getBostedsadresse(),
-                            oppdatertBostedadresse));
 
-        } else {
-            checkExists(person.getPerson().getBostedsadresse(), ident, id);
-            person.getPerson().setBostedsadresse(person.getPerson().getBostedsadresse().stream()
-                    .map(adresse -> adresse.getId() == id ? oppdatertBostedadresse : adresse)
-                    .toList());
-        }
+        person.getPerson().setBostedsadresse(
+                updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, ident, id));
+
+        bostedAdresseService.validate(oppdatertAdresse, person.getPerson());
+        bostedAdresseService.convert(person.getPerson(), false);
     }
 
     public void updateKontaktadresse(String ident, Integer id, KontaktadresseDTO oppdatertAdresse) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getKontaktadresse()
-                    .add(0, initOpprett(person.getPerson().getKontaktadresse(),
-                            oppdatertAdresse));
-        } else {
-            checkExists(person.getPerson().getKontaktadresse(), ident, id);
-            person.getPerson().setKontaktadresse(person.getPerson().getKontaktadresse().stream()
-                    .map(adresse -> adresse.getId() == id ? oppdatertAdresse : adresse)
-                    .toList());
-        }
+
+        person.getPerson().setKontaktadresse(
+                updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, ident, id));
+
+        kontaktAdresseService.validate(oppdatertAdresse, person.getPerson());
+        kontaktAdresseService.convert(person.getPerson(), false);
     }
 
     public void updateOppholdsadresse(String ident, Integer id, OppholdsadresseDTO oppdatertAdresse) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getOppholdsadresse()
-                    .add(0, initOpprett(person.getPerson().getOppholdsadresse(),
-                            oppdatertAdresse));
 
-        } else {
-            checkExists(person.getPerson().getOppholdsadresse(), ident, id);
-            person.getPerson().setOppholdsadresse(person.getPerson().getOppholdsadresse().stream()
-                    .map(adresse -> adresse.getId() == id ? oppdatertAdresse : adresse)
-                    .toList());
-        }
+        person.getPerson().setOppholdsadresse(
+                updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, ident, id));
+
+        oppholdsadresseService.validate(oppdatertAdresse, person.getPerson());
+        oppholdsadresseService.convert(person.getPerson());
     }
 
     public void updateInnflytting(String ident, Integer id, InnflyttingDTO oppdatertInnflytting) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getInnflytting()
-                    .add(0, initOpprett(person.getPerson().getInnflytting(), oppdatertInnflytting));
 
-        } else {
-            checkExists(person.getPerson().getInnflytting(), ident, id);
-            person.getPerson().setInnflytting(person.getPerson().getInnflytting().stream()
-                    .map(innflytting -> innflytting.getId() == id ? oppdatertInnflytting : innflytting)
-                    .toList());
-        }
+        person.getPerson().setInnflytting(
+                updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, ident, id));
+
+        innflyttingService.validate(oppdatertInnflytting);
+        innflyttingService.convert(person.getPerson().getInnflytting());
     }
 
     public void updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getUtflytting()
-                    .add(0, initOpprett(person.getPerson().getUtflytting(), oppdatertUtflytting));
 
-        } else {
-            checkExists(person.getPerson().getUtflytting(), ident, id);
-            person.getPerson().setUtflytting(person.getPerson().getUtflytting().stream()
-                    .map(utflytting -> utflytting.getId() == id ? oppdatertUtflytting : utflytting)
-                    .toList());
-        }
+        person.getPerson().setUtflytting(
+                updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, ident, id));
+
+        utflyttingService.validate(oppdatertUtflytting);
+        utflyttingService.convert(person.getPerson().getUtflytting());
     }
 
     public void updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getDeltBosted()
-                    .add(0, initOpprett(person.getPerson().getDeltBosted(), oppdatertDeltBosted));
 
-        } else {
-            checkExists(person.getPerson().getDeltBosted(), ident, id);
-            person.getPerson().setDeltBosted(person.getPerson().getDeltBosted().stream()
-                    .map(bosted -> bosted.getId() == id ? oppdatertDeltBosted : bosted)
-                    .toList());
-        }
+        person.getPerson().setDeltBosted(
+                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, ident, id));
+
+        deltBostedService.validate(oppdatertDeltBosted, person.getPerson());
+        deltBostedService.convert(person.getPerson());
     }
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getForelderBarnRelasjon()
-                    .add(0, initOpprett(person.getPerson().getForelderBarnRelasjon(),
-                            oppdatertRelasjon));
 
-        } else {
-            checkExists(person.getPerson().getForelderBarnRelasjon(), ident, id);
-            person.getPerson().setForelderBarnRelasjon(person.getPerson().getForelderBarnRelasjon().stream()
-                    .map(foedsel -> foedsel.getId() == id ? oppdatertRelasjon : foedsel)
-                    .toList());
-        }
+        person.getPerson().setForelderBarnRelasjon(
+                updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, ident, id));
+
+        forelderBarnRelasjonService.validate(oppdatertRelasjon);
+        forelderBarnRelasjonService.convert(person.getPerson());
+    }
+
+    public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
+
+        var person = getPerson(ident);
+
+        person.getPerson().setForeldreansvar(
+                updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, ident, id));
+
+        foreldreansvarService.validate(oppdatertAnsvar, person.getPerson());
+        foreldreansvarService.convert(person.getPerson());
     }
 
     public void updateKontaktinformasjonForDoedsbo(String ident, Integer id, KontaktinformasjonForDoedsboDTO oppdatertInformasjon) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getKontaktinformasjonForDoedsbo()
-                    .add(0, initOpprett(person.getPerson()
-                            .getKontaktinformasjonForDoedsbo(), oppdatertInformasjon));
 
-        } else {
-            checkExists(person.getPerson().getKontaktinformasjonForDoedsbo(), ident, id);
-            person.getPerson().setKontaktinformasjonForDoedsbo(person.getPerson()
-                    .getKontaktinformasjonForDoedsbo().stream()
-                    .map(informasjon -> informasjon.getId() == id ? oppdatertInformasjon : informasjon)
-                    .toList());
-        }
+        person.getPerson().setKontaktinformasjonForDoedsbo(
+                updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, ident, id));
+
+        kontaktinformasjonForDoedsboService.validate(oppdatertInformasjon);
+        kontaktinformasjonForDoedsboService.convert(person.getPerson());
     }
 
     public void updateUtenlandskIdentifikasjonsnummer(String ident, Integer id, UtenlandskIdentifikasjonsnummerDTO oppdatertIdentifikasjon) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getUtenlandskIdentifikasjonsnummer()
-                    .add(0, initOpprett(person.getPerson()
-                            .getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon));
 
-        } else {
-            checkExists(person.getPerson().getUtenlandskIdentifikasjonsnummer(), ident, id);
-            person.getPerson().setUtenlandskIdentifikasjonsnummer(person.getPerson()
-                    .getUtenlandskIdentifikasjonsnummer().stream()
-                    .map(foedsel -> foedsel.getId() == id ? oppdatertIdentifikasjon : foedsel)
-                    .toList());
-        }
+        person.getPerson().setUtenlandskIdentifikasjonsnummer(
+                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, ident, id));
+
+        utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon);
+        utenlandsidentifikasjonsnummerService.convert(person.getPerson().getUtenlandskIdentifikasjonsnummer());
     }
 
     public void updateFalskIdentitet(String ident, Integer id, FalskIdentitetDTO oppdatertIdentitet) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getFalskIdentitet()
-                    .add(0, initOpprett(person.getPerson().getFalskIdentitet(), oppdatertIdentitet));
 
-        } else {
-            checkExists(person.getPerson().getUtenlandskIdentifikasjonsnummer(), ident, id);
-            person.getPerson().setFalskIdentitet(person.getPerson().getFalskIdentitet().stream()
-                    .map(identitet -> identitet.getId() == id ? oppdatertIdentitet : identitet)
-                    .toList());
-        }
+        person.getPerson().setFalskIdentitet(
+                updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, ident, id));
+
+        falskIdentitetService.validate(oppdatertIdentitet);
+        falskIdentitetService.convert(person.getPerson());
     }
 
     public void updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getAdressebeskyttelse()
-                    .add(0, initOpprett(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse));
 
-        } else {
-            checkExists(person.getPerson().getAdressebeskyttelse(), ident, id);
-            person.getPerson().setAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream()
-                    .map(beskyttelse -> beskyttelse.getId() == id ? oppdatertBeskyttelse : beskyttelse)
-                    .toList());
-        }
+        person.getPerson().setAdressebeskyttelse(
+                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, ident, id));
+
+        adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson());
+        adressebeskyttelseService.convert(person.getPerson());
     }
 
     public void updateDoedsfall(String ident, Integer id, DoedsfallDTO oppdatertDoedsfall) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getDoedsfall()
-                    .add(0, initOpprett(person.getPerson().getDoedsfall(), oppdatertDoedsfall));
 
-        } else {
-            checkExists(person.getPerson().getDoedsfall(), ident, id);
-            person.getPerson().setDoedsfall(person.getPerson().getDoedsfall().stream()
-                    .map(doedsfall -> doedsfall.getId() == id ? oppdatertDoedsfall : doedsfall)
-                    .toList());
-        }
+        person.getPerson().setDoedsfall(
+                updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, ident, id));
+
+        doedsfallService.validate(oppdatertDoedsfall);
+        doedsfallService.convert(person.getPerson().getDoedsfall());
     }
 
     public void updateFolkeregisterPersonstatus(String ident, Integer id, FolkeregisterPersonstatusDTO oppdatertStatus) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getFolkeregisterPersonstatus()
-                    .add(0, initOpprett(person.getPerson()
-                            .getFolkeregisterPersonstatus(), oppdatertStatus));
 
-        } else {
-            checkExists(person.getPerson().getFolkeregisterPersonstatus(), ident, id);
-            person.getPerson().setFolkeregisterPersonstatus(person.getPerson().getFolkeregisterPersonstatus().stream()
-                    .map(status -> status.getId() == id ? oppdatertStatus : status)
-                    .toList());
-        }
+        person.getPerson().setFolkeregisterPersonstatus(
+                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, ident, id));
+
+        folkeregisterPersonstatusService.validate(oppdatertStatus, person.getPerson());
+        folkeregisterPersonstatusService.convert(person.getPerson());
     }
 
     public void updateTilrettelagtKommunikasjon(String ident, Integer id, TilrettelagtKommunikasjonDTO oppdatertKommunikasjon) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getTilrettelagtKommunikasjon()
-                    .add(0, initOpprett(person.getPerson()
-                            .getTilrettelagtKommunikasjon(), oppdatertKommunikasjon));
 
-        } else {
-            checkExists(person.getPerson().getTilrettelagtKommunikasjon(), ident, id);
-            person.getPerson().setTilrettelagtKommunikasjon(person.getPerson().getTilrettelagtKommunikasjon().stream()
-                    .map(kommunikasjon -> kommunikasjon.getId() == id ? oppdatertKommunikasjon : kommunikasjon)
-                    .toList());
-        }
+        person.getPerson().setTilrettelagtKommunikasjon(
+                updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, ident, id));
+
+        tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon);
+        tilrettelagtKommunikasjonService.convert(person.getPerson().getTilrettelagtKommunikasjon());
     }
 
     public void updateStatsborgerskap(String ident, Integer id, StatsborgerskapDTO oppdatertStatsborgerskap) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getStatsborgerskap()
-                    .add(0, initOpprett(person.getPerson().getStatsborgerskap(),
-                            oppdatertStatsborgerskap));
 
-        } else {
-            checkExists(person.getPerson().getStatsborgerskap(), ident, id);
-            person.getPerson().setStatsborgerskap(person.getPerson().getStatsborgerskap().stream()
-                    .map(statsborgerskap -> statsborgerskap.getId() == id ? oppdatertStatsborgerskap : statsborgerskap)
-                    .toList());
-        }
+        person.getPerson().setStatsborgerskap(
+                updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, ident, id));
+
+        statsborgerskapService.validate(oppdatertStatsborgerskap);
+        statsborgerskapService.convert(person.getPerson());
     }
 
     public void updateOpphold(String ident, Integer id, OppholdDTO oppdatertOpphold) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getOpphold()
-                    .add(0, initOpprett(person.getPerson().getOpphold(), oppdatertOpphold));
 
-        } else {
-            checkExists(person.getPerson().getOpphold(), ident, id);
-            person.getPerson().setOpphold(person.getPerson().getOpphold().stream()
-                    .map(opphold -> opphold.getId() == id ? oppdatertOpphold : opphold)
-                    .toList());
-        }
+        person.getPerson().setOpphold(
+                updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, ident, id));
+
+        oppholdService.validate(oppdatertOpphold);
+        oppholdService.convert(person.getPerson().getOpphold());
     }
 
     public void updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getSivilstand()
-                    .add(0, initOpprett(person.getPerson().getSivilstand(), oppdatertSivilstand));
 
-        } else {
-            checkExists(person.getPerson().getSivilstand(), ident, id);
-            person.getPerson().setSivilstand(person.getPerson().getSivilstand().stream()
-                    .map(sivilstand -> sivilstand.getId() == id ? oppdatertSivilstand : sivilstand)
-                    .toList());
-        }
+        person.getPerson().setSivilstand(
+                updateArtifact(person.getPerson().getSivilstand(), oppdatertSivilstand, ident, id));
+
+        sivilstandService.validate(oppdatertSivilstand);
+        sivilstandService.convert(person.getPerson());
     }
 
     public void updateTelefonnummer(String ident, Integer id, TelefonnummerDTO oppdatertTelefonnummer) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getTelefonnummer()
-                    .add(0, initOpprett(person.getPerson().getTelefonnummer(),
-                            oppdatertTelefonnummer));
 
-        } else {
-            checkExists(person.getPerson().getTelefonnummer(), ident, id);
-            person.getPerson().setTelefonnummer(person.getPerson().getTelefonnummer().stream()
-                    .map(telefonnummer -> telefonnummer.getId() == id ? oppdatertTelefonnummer : telefonnummer)
-                    .toList());
-        }
+        person.getPerson().setTelefonnummer(
+                updateArtifact(person.getPerson().getTelefonnummer(), oppdatertTelefonnummer, ident, id));
+
+        telefonnummerService.validate(oppdatertTelefonnummer);
+        telefonnummerService.convert(person.getPerson().getTelefonnummer());
     }
 
     public void updateFullmakt(String ident, Integer id, FullmaktDTO oppdatertFullmakt) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getFullmakt()
-                    .add(0, initOpprett(person.getPerson().getFullmakt(), oppdatertFullmakt));
 
-        } else {
-            checkExists(person.getPerson().getFullmakt(), ident, id);
-            person.getPerson().setFullmakt(person.getPerson().getFullmakt().stream()
-                    .map(fullmakt -> fullmakt.getId() == id ? oppdatertFullmakt : fullmakt)
-                    .toList());
-        }
+        person.getPerson().setFullmakt(
+                updateArtifact(person.getPerson().getFullmakt(), oppdatertFullmakt, ident, id));
+
+        fullmaktService.validate(oppdatertFullmakt);
+        fullmaktService.convert(person.getPerson());
     }
 
     public void updateVergemaal(String ident, Integer id, VergemaalDTO oppdatertVergemaal) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getVergemaal()
-                    .add(0, initOpprett(person.getPerson().getVergemaal(), oppdatertVergemaal));
 
-        } else {
-            checkExists(person.getPerson().getVergemaal(), ident, id);
-            person.getPerson().setVergemaal(person.getPerson().getVergemaal().stream()
-                    .map(vergemaal -> vergemaal.getId() == id ? oppdatertVergemaal : vergemaal)
-                    .toList());
-        }
+        person.getPerson().setVergemaal(
+                updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, ident, id));
+
+        vergemaalService.validate(oppdatertVergemaal);
+        vergemaalService.convert(person.getPerson());
     }
 
     public void updateSikkerhetstiltak(String ident, Integer id, SikkerhetstiltakDTO oppdatertSikkerhetstiltak) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getSikkerhetstiltak()
-                    .add(0, initOpprett(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak));
 
-        } else {
-            checkExists(person.getPerson().getSikkerhetstiltak(), ident, id);
-            person.getPerson().setSikkerhetstiltak(person.getPerson().getSikkerhetstiltak().stream()
-                    .map(sikkerhetstiltak -> sikkerhetstiltak.getId() == id ? oppdatertSikkerhetstiltak : sikkerhetstiltak)
-                    .toList());
-        }
+        person.getPerson().setSikkerhetstiltak(
+                updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, ident, id));
+
+        sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak);
+        sikkerhetstiltakService.convert(person.getPerson());
     }
 
     public void updateDoedfoedtBarn(String ident, Integer id, DoedfoedtBarnDTO oppdatertDoedfoedt) {
 
         var person = getPerson(ident);
-        if (id == 0) {
-            person.getPerson().getDoedfoedtBarn()
-                    .add(0, initOpprett(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt));
 
-        } else {
-            checkExists(person.getPerson().getDoedfoedtBarn(), ident, id);
-            person.getPerson().setDoedfoedtBarn(person.getPerson().getDoedfoedtBarn().stream()
-                    .map(doedfoedt -> doedfoedt.getId() == id ? oppdatertDoedfoedt : doedfoedt)
-                    .toList());
-        }
+        person.getPerson().setDoedfoedtBarn(
+                updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, ident, id));
+
+        doedfoedtBarnService.validate(oppdatertDoedfoedt);
+        doedfoedtBarnService.convert(person.getPerson().getDoedfoedtBarn());
     }
 
     private DbPerson getPerson(String ident) {

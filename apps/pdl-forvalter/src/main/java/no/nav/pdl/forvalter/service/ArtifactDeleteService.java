@@ -175,6 +175,21 @@ public class ArtifactDeleteService {
     }
 
     @Transactional
+    public void deleteForeldreansvar(String ident, Integer id) {
+
+        var dbPerson = fetchPerson(ident);
+
+        if (dbPerson.getPerson().getForeldreansvar().stream().noneMatch(type -> id.equals(type.getId()))) {
+            throw new InvalidRequestException(format(INFO_NOT_FOUND, "Foreldreansvar", id));
+
+        } else {
+            dbPerson.getPerson().setForeldreansvar(dbPerson.getPerson().getForeldreansvar().stream()
+                    .filter(type -> !id.equals(type.getId()))
+                    .toList());
+        }
+    }
+
+    @Transactional
     public void deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
 
         var hovedPerson = fetchPerson(ident);

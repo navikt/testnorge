@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
@@ -340,6 +341,27 @@ public class PersonController {
                                            @RequestBody ForelderBarnRelasjonDTO forelderBarnRelasjon) {
 
         artifactUpdateService.updateForelderBarnRelasjon(ident, id, forelderBarnRelasjon);
+    }
+
+    @DeleteMapping(value = "/{ident}/foreldreansvar/{id}")
+    @Operation(description = "Slett angitt foreldreansvar for person (barn)")
+    public void deleteForeldreansvar(@Parameter(description = "Ident for testperson")
+                                           @PathVariable String ident,
+                                           @Parameter(description = "id som identifiserer foreldreansvar")
+                                           @PathVariable Integer id) {
+
+        artifactDeleteService.deleteForeldreansvar(ident, id);
+    }
+
+    @PutMapping(value = "/{ident}/foreldreansvar/{id}")
+    @Operation(description = "Oppdater angitt foreldreansvar for person (barn)")
+    public void updateForeldreansvar(@Parameter(description = "Ident for testperson")
+                                           @PathVariable String ident,
+                                           @Parameter(description = "id som identifiserer foreldreansvar")
+                                           @PathVariable Integer id,
+                                           @RequestBody ForeldreansvarDTO foreldreansvar) {
+
+        artifactUpdateService.updateForeldreansvar(ident, id, foreldreansvar);
     }
 
     @DeleteMapping(value = "/{ident}/kontaktinformasjonfordoedsbo/{id}")
