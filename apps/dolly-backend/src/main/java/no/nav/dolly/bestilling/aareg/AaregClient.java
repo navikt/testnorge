@@ -9,6 +9,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingConsumer;
 import no.nav.dolly.bestilling.aareg.amelding.OrganisasjonServiceConsumer;
+import no.nav.dolly.bestilling.aareg.amelding.domain.Ordre;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AmeldingTransaksjon;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
@@ -29,29 +30,30 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import wiremock.com.google.common.collect.Maps;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Order(5)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
-
-    private static final int NOT_FOUND = -1;
 
     private final AaregConsumer aaregConsumer;
     private final AmeldingConsumer ameldingConsumer;
@@ -102,17 +104,16 @@ public class AaregClient implements ClientRegister {
                         .arbeidsforhold(arbforhold)
                         .environments(singletonList(env))
                         .build();
-                appendResult(aaregConsumer.opprettArbeidsforhold(aaregOpprettRequest).getStatusPerMiljoe(), arbforhold.getArbeidsforholdID(), result);
+                aaregConsumer.opprettArbeidsforhold(aaregOpprettRequest).getStatusPerMiljoe().entrySet().forEach(entry ->
+                        appendResult(entry, arbforhold.getArbeidsforholdID(), result));
             });
 
             if (arbeidsforhold.isEmpty()) {
-                appendResult(singletonMap(env, "OK"), "0", result);
+                appendResult(Maps.immutableEntry(env, "OK"), "0", result);
             }
         } catch (RuntimeException e) {
             log.error("Innsending til Aareg feilet: ", e);
-            Map<String, String> status = new HashMap<>();
-            status.put(env, errorStatusDecoder.decodeRuntimeException(e));
-            appendResult(status, "1", result);
+            appendResult(Maps.immutableEntry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
         }
     }
 
@@ -147,25 +148,31 @@ public class AaregClient implements ClientRegister {
                 dtoMaanedMap.put(amelding.getMaaned(), mapperFacade.map(amelding, AMeldingDTO.class, context));
             });
 
-            Map<String, ResponseEntity<Void>> response = ameldingConsumer.putAmeldingList(dtoMaanedMap, env);
-            response.forEach((maaned, resp) -> {
-                if (resp.getStatusCode().is2xxSuccessful()) {
-                    if (result.indexOf("OK") == NOT_FOUND) {
-                        appendResult((singletonMap(env, "OK")), "1", result);
-                        saveTransaksjonId(resp, maaned, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
-                    }
-                } else {
-                    if (result.indexOf(resp.getStatusCode().getReasonPhrase()) == NOT_FOUND) {
-                        appendResult((singletonMap(env, resp.getStatusCode().getReasonPhrase())), "1", result);
-                    }
+            Flux<Map<String, ResponseEntity<Void>>> response = ameldingConsumer.sendOrders(createOrder(dtoMaanedMap.values().stream().toList(), env));
+            response.map(stringStringMap -> stringStringMap.entrySet().stream().map(entrySet -> {
+                if (entrySet.getValue().getStatusCode().is2xxSuccessful()) {
+                    saveTransaksjonId(entrySet.getValue(), entrySet.getKey(), dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
                 }
-            });
+                return appendResult(
+                        Maps.immutableEntry(entrySet.getKey(),
+                                entrySet.getValue().getStatusCode().is2xxSuccessful()
+                                        ? "OK"
+                                        : entrySet.getValue().getStatusCode().getReasonPhrase()),
+                        "1",
+                        result);
+            }));
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
-            Map<String, String> status = new HashMap<>();
-            status.put(env, errorStatusDecoder.decodeRuntimeException(e));
-            appendResult(status, "1", result);
+            appendResult(Maps.immutableEntry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
         }
+    }
+
+    private List<Ordre> createOrder(List<AMeldingDTO> ameldingList, String miljoe) {
+        String userJwt = getUserJwt();
+        return ameldingList
+                .stream()
+                .map(value -> (Ordre) accessToken -> ameldingConsumer.putAmeldingdata(value, miljoe, accessToken.getTokenValue(), userJwt))
+                .toList();
     }
 
     private void saveTransaksjonId(ResponseEntity<Void> response, String maaned, String ident, Long bestillingId, String miljoe) {
@@ -175,8 +182,8 @@ public class AaregClient implements ClientRegister {
                         .ident(ident)
                         .bestillingId(bestillingId)
                         .transaksjonId(toJson(AmeldingTransaksjon.builder()
-                                .id(nonNull(response.getHeaders().get("id")) && !response.getHeaders().get("id").isEmpty()
-                                        ? response.getHeaders().get("id").get(0)
+                                .id(response.getHeaders().containsKey("id")
+                                        ? response.getHeaders().get("id").stream().findFirst().orElse(null)
                                         : null)
                                 .maaned(maaned)
                                 .build()))
@@ -196,15 +203,12 @@ public class AaregClient implements ClientRegister {
         return null;
     }
 
-    private static StringBuilder appendResult(Map<String, String> result, String arbeidsforholdId, StringBuilder builder) {
-        for (Map.Entry<String, String> entry : result.entrySet()) {
-            builder.append(',')
-                    .append(entry.getKey())
-                    .append(": arbforhold=")
-                    .append(arbeidsforholdId)
-                    .append('$')
-                    .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
-        }
-        return builder;
+    private static StringBuilder appendResult(Entry<String, String> entry, String arbeidsforholdId, StringBuilder builder) {
+        return builder.append(',')
+                .append(entry.getKey())
+                .append(": arbforhold=")
+                .append(arbeidsforholdId)
+                .append('$')
+                .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
     }
 }

@@ -433,7 +433,7 @@ public class PersonExcelService {
     @SneakyThrows
     private List<Object[]> getPersoner(List<String> identer) {
 
-        var futures = Lists.partition(identer, 20).stream()
+        var futures = Lists.partition(identer, 40).stream()
                 .map(list -> CompletableFuture.supplyAsync(
                                 () -> pdlPersonConsumer.getPdlPersoner(list), dollyForkJoinPool)
                         .thenApply(response -> Stream.of(response)
