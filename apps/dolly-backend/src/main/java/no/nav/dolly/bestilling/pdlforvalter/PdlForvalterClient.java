@@ -43,7 +43,6 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
@@ -59,6 +58,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
 import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.IdentTypeUtil.getIdentType;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -204,7 +204,7 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person, boolean erHovedperson) {
 
-        if (IdentType.FDAT != IdentTypeUtil.getIdentType(person.getIdent())) {
+        if (IdentType.FDAT != getIdentType(person.getIdent())) {
             var pdldataHovedIdent = getPdldataHovedIdent(dollyPerson.getHovedperson());
 
             sendOpprettPerson(person, dollyPerson);
@@ -366,7 +366,8 @@ public class PdlForvalterClient implements ClientRegister {
 
     private void sendFolkeregisterpersonstatus(Person person, PersonDTO persondata, boolean erHovedperson) {
 
-        if (!erHovedperson || isNull(persondata) || persondata.getFolkeregisterPersonstatus().isEmpty()) {
+        if (IdentType.BOST != getIdentType(person.getIdent()) &&
+                (!erHovedperson || isNull(persondata) || persondata.getFolkeregisterPersonstatus().isEmpty())) {
 
             pdlForvalterConsumer.postFolkeregisterpersonstatus(
                     mapperFacade.map(person, PdlFolkeregisterpersonstatus.class), person.getIdent());
