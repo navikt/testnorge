@@ -31,7 +31,7 @@ IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 spring:
   session:
-    timeout: 30m
+    timeout: 15m
   redis:
     host: localhost
     port: 6379
