@@ -115,7 +115,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
         adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
-        adresse.setGjeldende(nonNull(adresse.getGjeldende()) ? adresse.getGjeldende() : true);
     }
 
     protected void enforceIntegrity(List<T> adresser) {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @SuperBuilder
@@ -50,6 +51,9 @@ public class KontaktadresseDTO extends AdresseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Deprecated
+    /**
+     * @Deprecated Denne benyttes kun for import av SKD-meldinger fra TPS-Forvalteren
+     */
     public static class PostadresseIFrittFormat implements Serializable {
 
         private List<String> adresselinjer;
@@ -68,6 +72,9 @@ public class KontaktadresseDTO extends AdresseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Deprecated
+    /**
+     * @Deprecated Denne benyttes kun for import av SKD-meldinger fra TPS-Forvalteren
+     */
     public static class UtenlandskAdresseIFrittFormat implements Serializable {
 
         private List<String> adresselinjer;
@@ -81,5 +88,13 @@ public class KontaktadresseDTO extends AdresseDTO {
             }
             return adresselinjer;
         }
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseNorge() {
+
+        return nonNull(getVegadresse()) || nonNull(getPostboksadresse()) ||
+                nonNull(getPostadresseIFrittFormat());
     }
 }

@@ -1,12 +1,11 @@
 package no.nav.dolly.web.config;
 
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdRedisSessionConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
-
-import no.nav.testnav.libs.reactivesessionsecurity.config.OicdRedisSessionConfiguration;
 import redis.clients.jedis.Jedis;
 
 @Configuration

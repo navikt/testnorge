@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import static java.util.Objects.nonNull;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -23,5 +25,12 @@ public class OppholdsadresseDTO extends AdresseDTO {
     public int countAdresser() {
 
         return count(getVegadresse()) + count(getUtenlandskAdresse()) + count(getMatrikkeladresse());
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseNorge() {
+
+        return nonNull(getVegadresse()) || nonNull(getMatrikkeladresse());
     }
 }

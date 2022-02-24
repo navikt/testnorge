@@ -32,11 +32,11 @@ config:
       queueManager: MQLS03
       user: ${mq.dev.username}
       password: ${mq.dev.password}
-  miljoer: t0, t1, t3, t4, t5, t6, t13, q1, q2, q4, q5, q6, qx
 
 consumers:
-  pdl-services:
-    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-pdl-proxy
+  testmiljoer:
+    service:
+      url: https://testnav-miljoer-service.dev.intern.nav.no
+      cluster: dev-gcp
+      namespace: dolly
+      name: testnav-miljoer-service

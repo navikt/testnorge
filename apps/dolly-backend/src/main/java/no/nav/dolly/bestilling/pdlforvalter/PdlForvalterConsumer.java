@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.pdlforvalter.command.PdlAktoerNpidCommand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted;
@@ -28,12 +29,14 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,6 +45,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
@@ -91,12 +95,14 @@ public class PdlForvalterConsumer {
     private final NaisServerProperties serviceProperties;
     private final WebClient webClient;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final ObjectMapper objectMapper;
 
     public PdlForvalterConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ErrorStatusDecoder errorStatusDecoder, ObjectMapper objectMapper) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.errorStatusDecoder = errorStatusDecoder;
+        this.objectMapper = objectMapper;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -119,11 +125,17 @@ public class PdlForvalterConsumer {
     @Timed(name = "providers", tags = { "operation", "pdl_opprettPerson" })
     public ResponseEntity<JsonNode> postOpprettPerson(PdlOpprettPerson opprettPerson, String ident) {
 
-        return postRequest(
-                opprettPerson.getHistoriskeIdenter(),
-                opprettPerson, ident, "opprett person");
-    }
+        if (IdentType.BOST == IdentTypeUtil.getIdentType(ident)) {
+            new PdlAktoerNpidCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call()
+                    .block();
+            return ResponseEntity.of(Optional.of(objectMapper.valueToTree("opprett person")));
 
+        } else {
+            return postRequest(
+                    opprettPerson.getHistoriskeIdenter(),
+                    opprettPerson, ident, "opprett person");
+        }
+    }
 
     @Timed(name = "providers", tags = { "operation", "pdl_navn" })
     public ResponseEntity<JsonNode> postNavn(PdlNavn pdlNavn, String ident) {

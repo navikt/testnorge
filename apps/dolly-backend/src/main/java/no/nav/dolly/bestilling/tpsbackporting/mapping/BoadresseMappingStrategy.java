@@ -22,6 +22,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Component
 public class BoadresseMappingStrategy implements MappingStrategy {
 
+    private static String getStringVal(Integer number) {
+
+        return nonNull(number) ? number.toString() : null;
+    }
+
     @Override
     public void register(MapperFactory factory) {
 
@@ -43,8 +48,8 @@ public class BoadresseMappingStrategy implements MappingStrategy {
 
                                    } else if (nonNull(source.getMatrikkeladresse())) {
                                        target.setBoadresse(RsMatrikkeladresse.builder()
-                                               .gardsnr(source.getMatrikkeladresse().getGaardsnummer().toString())
-                                               .bruksnr(source.getMatrikkeladresse().getBruksenhetsnummer())
+                                               .gardsnr(getStringVal(source.getMatrikkeladresse().getGaardsnummer()))
+                                               .bruksnr(getStringVal(source.getMatrikkeladresse().getBruksnummer()))
                                                .mellomnavn(source.getMatrikkeladresse().getTilleggsnavn())
                                                .kommunenr(source.getMatrikkeladresse().getKommunenummer())
                                                .postnr(source.getMatrikkeladresse().getPostnummer())
