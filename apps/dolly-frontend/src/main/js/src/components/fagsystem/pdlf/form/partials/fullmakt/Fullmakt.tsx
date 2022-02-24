@@ -8,6 +8,8 @@ import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdl
 import { initialFullmakt } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import _get from 'lodash/get'
 
 interface FullmaktForm {
 	formikBag: FormikProps<{}>
@@ -55,6 +57,7 @@ export const Fullmakt = ({ formikBag, identOptions, loadingOptions }: FullmaktFo
 							path={`${path}.nyFullmektig`}
 							label={'FULLMEKTIG'}
 							formikBag={formikBag}
+							isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyFullmektig`))}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</div>

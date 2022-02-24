@@ -12,6 +12,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Option } from '~/service/SelectOptionsOppslag'
 import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
@@ -83,6 +84,7 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }
 							label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 							formikBag={formikBag}
 							kanSettePersondata={_get(formikBag.values, `${path}.relatertPerson`) === null}
+							isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`))}
 						/>
 						<AvansertForm
 							path={path}

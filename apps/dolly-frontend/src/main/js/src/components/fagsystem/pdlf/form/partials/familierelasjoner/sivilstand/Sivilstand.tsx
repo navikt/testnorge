@@ -11,6 +11,7 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { Option } from '~/service/SelectOptionsOppslag'
 import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
@@ -64,6 +65,7 @@ export const Sivilstand = ({ formikBag, identOptions, loadingOptions }: Sivilsta
 						label={'PERSON RELATERT TIL'}
 						formikBag={formikBag}
 						kanSettePersondata={_get(formikBag.values, `${path}.relatertVedSivilstand`) === null}
+						isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`))}
 					/>
 					<AvansertForm
 						path={path}

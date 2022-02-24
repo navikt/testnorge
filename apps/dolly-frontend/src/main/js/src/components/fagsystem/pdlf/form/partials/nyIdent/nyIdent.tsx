@@ -8,6 +8,7 @@ import { Option } from '~/service/SelectOptionsOppslag'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import _get from 'lodash/get'
 import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface NyIdentForm {
 	formikBag: FormikProps<{}>
@@ -23,6 +24,13 @@ export const NyIdent = ({ formikBag, identOptions, loadingOptions }: NyIdentForm
 		canBeEmpty={false}
 	>
 		{(path: string) => {
+			const nyIdentValg = Object.keys(_get(formikBag.values, path))
+				.filter((key) => key !== 'eksisterendeIdent' && key !== 'kilde' && key !== 'master')
+				.reduce((obj, key) => {
+					obj[key] = _get(formikBag.values, path)[key]
+					return obj
+				}, {})
+
 			return (
 				<div className="flexbox--flex-wrap">
 					{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
@@ -40,7 +48,10 @@ export const NyIdent = ({ formikBag, identOptions, loadingOptions }: NyIdentForm
 						formikBag={formikBag}
 						kanSettePersondata={_get(formikBag.values, `${path}.eksisterendeIdent`) === null}
 						erNyIdent
-						isExpanded={!loadingOptions && (!identOptions || identOptions?.length < 1)}
+						isExpanded={
+							(!loadingOptions && (!identOptions || identOptions?.length < 1)) ||
+							!isEmpty(nyIdentValg)
+						}
 					/>
 					<AvansertForm path={path} kanVelgeMaster={true} />
 				</div>

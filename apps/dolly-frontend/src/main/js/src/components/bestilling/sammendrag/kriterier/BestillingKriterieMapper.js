@@ -9,6 +9,7 @@ import {
 	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -185,28 +186,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			doedfoedtBarn,
 			nyident,
 		} = pdldataKriterier
-
-		const isEmpty = (attributt) => {
-			const flattenData = (objekt) => {
-				let result = {}
-				for (const i in objekt) {
-					if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
-						const temp = flattenData(objekt[i])
-						for (const j in temp) {
-							result[i + '.' + j] = temp[j]
-						}
-					} else {
-						result[i] = objekt[i]
-					}
-				}
-				return result
-			}
-
-			return (
-				attributt.empty ||
-				Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
-			)
-		}
 
 		const personRelatertTil = (personData, path) => {
 			if (!personData || !_get(personData, path)) return null

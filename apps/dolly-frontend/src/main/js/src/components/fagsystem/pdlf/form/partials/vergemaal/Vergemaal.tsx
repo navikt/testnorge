@@ -10,6 +10,7 @@ import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdl
 import { FormikProps } from 'formik'
 import { Option } from '~/service/SelectOptionsOppslag'
 import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface VergemaalForm {
 	formikBag: FormikProps<{}>
@@ -65,6 +66,7 @@ export const Vergemaal = ({ formikBag, identOptions, loadingOptions }: Vergemaal
 								label={'VERGE'}
 								formikBag={formikBag}
 								kanSettePersondata={_get(formikBag.values, `${path}.vergeIdent`) === null}
+								isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`))}
 							/>
 							<AvansertForm path={path} kanVelgeMaster={false} />
 						</>

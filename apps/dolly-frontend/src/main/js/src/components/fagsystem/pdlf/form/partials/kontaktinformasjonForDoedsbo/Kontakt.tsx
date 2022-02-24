@@ -4,7 +4,7 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { getPlaceholder, setNavn } from '../utils'
+import { getPlaceholder, isEmpty, setNavn } from '../utils'
 import _get from 'lodash/get'
 import {
 	initialNyPerson,
@@ -196,6 +196,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 					path={`${personPath}.nyKontaktperson`}
 					label="KONTAKTPERSON"
 					formikBag={formikBag}
+					isExpanded={!isEmpty(_get(formikBag.values, `${personPath}.nyKontaktperson`))}
 				/>
 			)}
 		</Kategori>
