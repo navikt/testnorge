@@ -44,4 +44,10 @@ public class SivilstandDTO extends DbVersjonDTO {
 
         return Sivilstand.GIFT == type || Sivilstand.REGISTRERT_PARTNER == type;
     }
+
+    @JsonIgnore
+    public boolean isUgift() {
+
+        return Sivilstand.UGIFT == type;
+    }
 }

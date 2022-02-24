@@ -3,8 +3,10 @@ package no.nav.pdl.forvalter.utils;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import static java.lang.Integer.parseInt;
+import static java.time.LocalDateTime.now;
 
 /**
  * INDIVID(POS 7-9) 500-749 OG AAR > 54 => AARHUNDRE = 1800
@@ -15,7 +17,14 @@ import static java.lang.Integer.parseInt;
 @UtilityClass
 public class DatoFraIdentUtility {
 
-    public LocalDate getDato(String ident) {
+    private static final long MYNDIG = 18;
+
+    public static boolean isMyndig(String ident) {
+
+        return ChronoUnit.YEARS.between(getDato(ident), now()) >= MYNDIG;
+    }
+
+    public static LocalDate getDato(String ident) {
 
         var year = parseInt(ident.substring(4, 6));
         var individ = parseInt(ident.substring(6, 9));

@@ -42,7 +42,7 @@ public class PdlProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService,
-                @Value("${hendelse.lager.api.key}") String apiKey) {
+                                           @Value("${hendelse.lager.api.key}") String apiKey) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(stsOidcTokenService::getToken);
@@ -53,8 +53,8 @@ public class PdlProxyApplicationStarter {
 
         return builder
                 .routes()
-                .route(createRoute("pdl-api", "https://pdl-api.dev.adeo.no", addAuthorizationAndNavConsumerTokenToRouteFilter))
-                .route(createRoute("pdl-testdata", "https://pdl-testdata.dev.adeo.no", addAuthenticationHeaderFilter))
+                .route(createRoute("pdl-api", "http://pdl-api.pdl.svc.nais.local", addAuthorizationAndNavConsumerTokenToRouteFilter))
+                .route(createRoute("pdl-testdata", "http://pdl-testdata.pdl.svc.nais.local", addAuthenticationHeaderFilter))
                 .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addApiKeyAuthenticationHeader))
                 .build();
     }

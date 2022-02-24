@@ -15,7 +15,6 @@ import {
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
-	UdiApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -82,7 +81,7 @@ export const actions = createActions(
 			}),
 		],
 		getUdi: [
-			UdiApi.getPerson,
+			DollyApi.getUdiPerson,
 			(ident) => ({
 				ident,
 			}),

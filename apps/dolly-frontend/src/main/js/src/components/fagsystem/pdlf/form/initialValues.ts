@@ -282,3 +282,11 @@ export const initialFullmakt = {
 	kilde: 'Dolly',
 	master: 'PDL',
 }
+
+export const initialOpphold = {
+	oppholdFra: null as Date,
+	oppholdTil: null as Date,
+	type: 'OPPLYSNING_MANGLER',
+	kilde: 'Dolly',
+	master: 'FREG',
+}

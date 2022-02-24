@@ -47,7 +47,6 @@ spec:
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
