@@ -8,6 +8,7 @@ import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -44,28 +45,26 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
-    public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo, Mono<String> accessToken) {
-        return
-                accessToken.flatMap(token -> new SaveOppsummeringsdokumenterCommand(
-                        webClient,
-                        token,
-                        dto,
-                        miljo,
-                        applicationProperties.getName(),
-                        Populasjon.DOLLY
-                ).call());
+    public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo, AccessToken accessToken) {
+        return new SaveOppsummeringsdokumenterCommand(
+                webClient,
+                accessToken.getTokenValue(),
+                dto,
+                miljo,
+                applicationProperties.getName(),
+                Populasjon.DOLLY
+        ).call();
     }
 
 
-    public Mono<OppsummeringsdokumentDTO> get(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo, Mono<String> accessToken) {
-        return
-                accessToken.flatMap(token -> new GetOppsummeringsdokumentCommand(
-                        webClient,
-                        token,
-                        opplysningspliktigOrgnummer,
-                        kalendermaaned,
-                        miljo
-                ).call());
+    public Mono<OppsummeringsdokumentDTO> get(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo, AccessToken accessToken) {
+        return new GetOppsummeringsdokumentCommand(
+                webClient,
+                accessToken.getTokenValue(),
+                opplysningspliktigOrgnummer,
+                kalendermaaned,
+                miljo
+        ).call();
     }
 
     public Mono<OppsummeringsdokumentDTO> get(String id, Mono<String> accessToken) {

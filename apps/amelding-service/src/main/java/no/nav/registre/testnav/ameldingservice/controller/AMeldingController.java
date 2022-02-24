@@ -39,21 +39,6 @@ public class AMeldingController {
                 );
     }
 
-    @PutMapping
-    public Mono<ResponseEntity<HttpStatus>> saveAll(
-            @RequestHeader String miljo,
-            @RequestBody AMeldingDTO dto,
-            ServerHttpRequest serverHttpRequest
-    ) {
-        return service
-                .save(new AMelding(dto), miljo)
-                .map(id -> ResponseEntity
-                        .created(URI.create(serverHttpRequest.getURI() + "/" + id))
-                        .header("ID", id)
-                        .build()
-                );
-    }
-
     @GetMapping("/{id}")
     public Mono<ResponseEntity<AMeldingDTO>> get(@PathVariable("id") String id) {
         return service.get(id)
