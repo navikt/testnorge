@@ -9,13 +9,15 @@ import _get from 'lodash/get'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
 import { Option } from '~/service/SelectOptionsOppslag'
+import Loading from '~/components/ui/loading/Loading'
 
 interface VergemaalForm {
 	formikBag: FormikProps<{}>
 	identOptions: Array<Option>
+	loadingOptions: boolean
 }
 
-export const Vergemaal = ({ formikBag, identOptions }: VergemaalForm) => {
+export const Vergemaal = ({ formikBag, identOptions, loadingOptions }: VergemaalForm) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -49,12 +51,15 @@ export const Vergemaal = ({ formikBag, identOptions }: VergemaalForm) => {
 							/>
 							<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 							<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-							<FormikSelect
-								name={`${path}.vergeIdent`}
-								label="Verge"
-								options={identOptions}
-								size={'xlarge'}
-							/>
+							{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+							{identOptions?.length > 0 && (
+								<FormikSelect
+									name={`${path}.vergeIdent`}
+									label="Verge"
+									options={identOptions}
+									size={'xlarge'}
+								/>
+							)}
 							<PdlPersonExpander
 								path={`${path}.nyVergeIdent`}
 								label={'VERGE'}

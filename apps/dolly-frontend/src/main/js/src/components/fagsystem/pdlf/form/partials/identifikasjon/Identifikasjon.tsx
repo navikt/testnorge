@@ -10,6 +10,7 @@ import { NyIdent } from '~/components/fagsystem/pdlf/form/partials/nyIdent/nyIde
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
+import { useBoolean } from 'react-use'
 
 interface IdentifikasjonValues {
 	formikBag: FormikProps<{}>
@@ -30,12 +31,15 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
+	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
+
 	useEffect(() => {
 		if (!isTestnorgeIdent) {
 			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
-				setIdentOptions(response.filter((person) => person.value !== eksisterendeIdent))
-			)
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
+				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
+				setLoadingIdentOptions(false)
+			})
 		}
 	}, [])
 
@@ -48,7 +52,11 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				startOpen={() => erForste(formikBag.values, identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
-					<FalskIdentitet formikBag={formikBag} identOptions={identOptions} />
+					<FalskIdentitet
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
 				</Kategori>
 				<Kategori
 					title="Utenlandsk identifikasjonsnummer"
@@ -58,7 +66,11 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 					<UtenlandsId />
 				</Kategori>
 				<Kategori title="Ny identitet" vis="pdldata.person.nyident" hjelpetekst={hjelpetekst}>
-					<NyIdent formikBag={formikBag} identOptions={identOptions} />
+					<NyIdent
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
 				</Kategori>
 			</Panel>
 		</Vis>

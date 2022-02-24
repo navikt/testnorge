@@ -22,6 +22,7 @@ import { UtenlandskBankkonto } from '~/components/fagsystem/tpsmessaging/form/ut
 import { NorskBankkonto } from '~/components/fagsystem/tpsmessaging/form/norskbankkonto/NorskBankkonto'
 import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { useBoolean } from 'react-use'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -81,12 +82,15 @@ export const Personinformasjon = ({ formikBag }) => {
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState([])
+	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
+
 	useEffect(() => {
 		if (!isTestnorgeIdent) {
 			const eksisterendeIdent = personFoerLeggTil?.pdlforvalter?.person?.ident
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response) =>
-				setIdentOptions(response.filter((person) => person.value !== eksisterendeIdent))
-			)
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response) => {
+				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
+				setLoadingIdentOptions(false)
+			})
 		}
 	}, [])
 
@@ -151,11 +155,19 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
-					<Vergemaal formikBag={formikBag} identOptions={identOptions} />
+					<Vergemaal
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
 				</Kategori>
 
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
-					<Fullmakt formikBag={formikBag} identOptions={identOptions} />
+					<Fullmakt
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
 				</Kategori>
 
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>

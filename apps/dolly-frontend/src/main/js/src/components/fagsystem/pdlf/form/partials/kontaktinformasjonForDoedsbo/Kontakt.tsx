@@ -18,6 +18,8 @@ import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdl
 import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
+import { useBoolean } from 'react-use'
+import Loading from '~/components/ui/loading/Loading'
 
 interface KontaktValues {
 	formikBag: FormikProps<{}>
@@ -40,12 +42,15 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
+	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
+
 	useEffect(() => {
 		if (!isTestnorgeIdent) {
 			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
-				setIdentOptions(response.filter((person) => person.value !== eksisterendeIdent))
-			)
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
+				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
+				setLoadingIdentOptions(false)
+			})
 		}
 	}, [])
 
@@ -154,13 +159,16 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 
 			{kontaktType === 'PERSON_FDATO' && (
 				<div className="flexbox--flex-wrap">
-					<FormikSelect
-						name={`${personPath}.identifikasjonsnummer`}
-						label="Kontaktperson"
-						options={identOptions}
-						size={'xlarge'}
-						disabled={disableIdent}
-					/>
+					{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
+					{identOptions?.length > 0 && (
+						<FormikSelect
+							name={`${personPath}.identifikasjonsnummer`}
+							label="Kontaktperson"
+							options={identOptions}
+							size={'xlarge'}
+							disabled={disableIdent}
+						/>
+					)}
 					<FormikDatepicker
 						name={`${personPath}.foedselsdato`}
 						label="Fødselsdato"

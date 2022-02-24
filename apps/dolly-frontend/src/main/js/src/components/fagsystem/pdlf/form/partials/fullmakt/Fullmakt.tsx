@@ -7,13 +7,15 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
+import Loading from '~/components/ui/loading/Loading'
 
 interface FullmaktForm {
 	formikBag: FormikProps<{}>
 	identOptions: Array<Option>
+	loadingOptions: boolean
 }
 
-export const Fullmakt = ({ formikBag, identOptions }: FullmaktForm) => {
+export const Fullmakt = ({ formikBag, identOptions, loadingOptions }: FullmaktForm) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
@@ -40,12 +42,15 @@ export const Fullmakt = ({ formikBag, identOptions }: FullmaktForm) => {
 						</div>
 						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-						<FormikSelect
-							name={`${path}.motpartsPersonident`}
-							label="Fullmektig"
-							options={identOptions}
-							size={'xlarge'}
-						/>
+						{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+						{identOptions?.length > 0 && (
+							<FormikSelect
+								name={`${path}.motpartsPersonident`}
+								label="Fullmektig"
+								options={identOptions}
+								size={'xlarge'}
+							/>
+						)}
 						<PdlPersonExpander
 							path={`${path}.nyFullmektig`}
 							label={'FULLMEKTIG'}

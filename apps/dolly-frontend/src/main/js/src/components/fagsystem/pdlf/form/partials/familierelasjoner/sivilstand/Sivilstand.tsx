@@ -10,13 +10,15 @@ import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { Option } from '~/service/SelectOptionsOppslag'
+import Loading from '~/components/ui/loading/Loading'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
 	identOptions: Array<Option>
+	loadingOptions: boolean
 }
 
-export const Sivilstand = ({ formikBag, identOptions }: SivilstandForm) => (
+export const Sivilstand = ({ formikBag, identOptions, loadingOptions }: SivilstandForm) => (
 	<FormikDollyFieldArray
 		name="pdldata.person.sivilstand"
 		header="Sivilstand"
@@ -48,12 +50,15 @@ export const Sivilstand = ({ formikBag, identOptions }: SivilstandForm) => (
 						fastfield={false}
 					/>
 					<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
-					<FormikSelect
-						name={`${path}.relatertVedSivilstand`}
-						label="Person relatert til"
-						options={identOptions}
-						size={'xlarge'}
-					/>
+					{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+					{identOptions?.length > 0 && (
+						<FormikSelect
+							name={`${path}.relatertVedSivilstand`}
+							label="Person relatert til"
+							options={identOptions}
+							size={'xlarge'}
+						/>
+					)}
 					<PdlPersonExpander
 						path={`${path}.nyRelatertPerson`}
 						label={'PERSON RELATERT TIL'}
