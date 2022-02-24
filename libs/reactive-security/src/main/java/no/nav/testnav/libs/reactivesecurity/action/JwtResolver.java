@@ -23,7 +23,6 @@ abstract class JwtResolver {
                 .map(JwtAuthenticationToken.class::cast)
                 .doOnError(throwable -> log.error("Klarte ikke hente Jwt Auth Token: ", throwable))
                 .doOnSuccess(jwtAuthenticationToken -> {
-                    log.info("Kapplahjajaj");
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
                     if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {

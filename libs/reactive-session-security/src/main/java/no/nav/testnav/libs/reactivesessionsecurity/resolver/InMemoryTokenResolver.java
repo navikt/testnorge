@@ -22,13 +22,10 @@ public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements 
                                 oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
                                 oAuth2AuthenticationToken.getPrincipal().getName()
                         ).map(OAuth2AuthorizedClient::getAccessToken)
-                ).map(accessToken -> {
-                    log.info("Hentet token fra InMemoryResolver");
-                    return Token.builder()
-                            .value(accessToken.getTokenValue())
-                            .expiredAt(accessToken.getExpiresAt())
-                            .clientCredentials(false)
-                            .build();
-                });
+                ).map(accessToken -> Token.builder()
+                        .value(accessToken.getTokenValue())
+                        .expiredAt(accessToken.getExpiresAt())
+                        .clientCredentials(false)
+                        .build());
     }
 }

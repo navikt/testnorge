@@ -37,7 +37,7 @@ public class OicdInMemorySessionConfiguration {
     public ReactiveSessionRepository reactiveSessionRepository() {
         OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
         int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
-                ? Duration.ofMinutes(10)
+                ? Duration.ofMinutes(15)
                 : sessionProperties.getTimeout()
         ).toSeconds();
         sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
