@@ -28,25 +28,6 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
     private WebClient webClient = WebClient.builder().build();
     private NimbusJwtClientAuthenticationParametersConverter<OAuth2AuthorizationCodeGrantRequest> converter;
 
-    @Override
-    public Mono<OAuth2AccessTokenResponse> getTokenResponse(OAuth2AuthorizationCodeGrantRequest grantRequest) {
-        Assert.notNull(grantRequest, "grantRequest cannot be null");
-        return Mono.defer(() -> this.webClient.post()
-                .uri(clientRegistration(grantRequest).getProviderDetails().getTokenUri())
-                .headers((headers) -> populateTokenRequestHeaders(grantRequest, headers))
-                .body(createTokenRequestBody(grantRequest))
-                .exchangeToMono(clientResponse -> readTokenResponse(grantRequest, clientResponse))
-        );
-    }
-
-    public void setWebClient(WebClient webClient) {
-        this.webClient = webClient;
-    }
-
-    public void setConverter(NimbusJwtClientAuthenticationParametersConverter<OAuth2AuthorizationCodeGrantRequest> converter) {
-        this.converter = converter;
-    }
-
     private ClientRegistration clientRegistration(OAuth2AuthorizationCodeGrantRequest grantRequest) {
         return grantRequest.getClientRegistration();
     }
@@ -61,10 +42,12 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
     ) {
 
         ClientRegistration clientRegistration = clientRegistration(grantRequest);
-        if (!ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
+        if (!ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(clientRegistration.getClientAuthenticationMethod())
+                && !ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
             body.with(OAuth2ParameterNames.CLIENT_ID, clientRegistration.getClientId());
         }
-        if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(clientRegistration.getClientAuthenticationMethod())) {
+        if (ClientAuthenticationMethod.CLIENT_SECRET_POST.equals(clientRegistration.getClientAuthenticationMethod())
+                || ClientAuthenticationMethod.POST.equals(clientRegistration.getClientAuthenticationMethod())) {
             body.with(OAuth2ParameterNames.CLIENT_SECRET, clientRegistration.getClientSecret());
         }
 
@@ -88,11 +71,24 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
         return body;
     }
 
+    @Override
+    public Mono<OAuth2AccessTokenResponse> getTokenResponse(OAuth2AuthorizationCodeGrantRequest grantRequest) {
+        Assert.notNull(grantRequest, "grantRequest cannot be null");
+        return Mono.defer(() -> this.webClient.post()
+                .uri(clientRegistration(grantRequest).getProviderDetails().getTokenUri())
+                .headers((headers) -> populateTokenRequestHeaders(grantRequest, headers))
+                .body(createTokenRequestBody(grantRequest))
+                .exchange()
+                .flatMap((response) -> readTokenResponse(grantRequest, response))
+        );
+    }
+
     private void populateTokenRequestHeaders(OAuth2AuthorizationCodeGrantRequest grantRequest, HttpHeaders headers) {
         ClientRegistration clientRegistration = clientRegistration(grantRequest);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
+        if (ClientAuthenticationMethod.CLIENT_SECRET_BASIC.equals(clientRegistration.getClientAuthenticationMethod())
+                || ClientAuthenticationMethod.BASIC.equals(clientRegistration.getClientAuthenticationMethod())) {
             headers.setBasicAuth(clientRegistration.getClientId(), clientRegistration.getClientSecret());
         }
     }
@@ -117,5 +113,13 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
                     .build();
         }
         return tokenResponse;
+    }
+
+    public void setWebClient(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
+    public void setConverter(NimbusJwtClientAuthenticationParametersConverter<OAuth2AuthorizationCodeGrantRequest> converter) {
+        this.converter = converter;
     }
 }
