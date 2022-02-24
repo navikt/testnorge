@@ -18,6 +18,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusD
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.MIDLERTIDIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -79,7 +80,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
             return UTFLYTTET;
 
-        } else if (!person.getOpphold().isEmpty()) {
+        } else if (!person.getOpphold().isEmpty() || DNR == getIdenttype(person.getIdent())) {
 
             return MIDLERTIDIG;
 
