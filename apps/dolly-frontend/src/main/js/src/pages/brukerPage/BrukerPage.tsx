@@ -4,14 +4,14 @@ import BrukerModal from '~/pages/brukerPage/BrukerModel'
 import './BrukerPage.less'
 import { SpringBackground as Background } from '~/components/ui/background/Background'
 
-import './../../snow.scss'
+import './../../flowers.scss'
 
 export default () => {
 	return (
 		<React.Fragment>
 			<BlankHeader />
 			{Array.from(Array(50).keys()).map(() => (
-				<div className="snowflake" />
+				<div className="flower" />
 			))}
 			<Background>
 				<BrukerModal />

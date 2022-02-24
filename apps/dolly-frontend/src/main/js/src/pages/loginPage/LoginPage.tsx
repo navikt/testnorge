@@ -4,7 +4,7 @@ import LoginModal from '~/pages/loginPage/LoginModal'
 import './LoginPage.less'
 import { SpringBackground as Background } from '~/components/ui/background/Background'
 
-import './../../snow.scss'
+import './../../flowers.scss'
 
 export default () => {
 	return (
