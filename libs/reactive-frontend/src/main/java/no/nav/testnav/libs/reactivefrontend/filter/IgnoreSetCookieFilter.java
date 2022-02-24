@@ -13,8 +13,9 @@ public class IgnoreSetCookieFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         exchange.getResponse().beforeCommit(() -> {
             if (exchange.getResponse().getHeaders().containsKey("set-cookie")) {
+                log.warn("Fjerner 'set-cookie' fra remote response siden vi ønsker at frontend skal håndtere cookies selv, ikke fra en remote app. Cookie: {}",
+                        exchange.getResponse().getHeaders().get("set-cookie"));
                 exchange.getResponse().getHeaders().remove("set-cookie");
-                log.warn("Fjerner 'set-cookie' fra remote response siden vi ønsker at frontend skal håndtere cookies selv, ikke fra en remote app.");
             }
             return Mono.empty();
         });
