@@ -39,6 +39,8 @@ export type HentPerson = {
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
 	kontaktinformasjonForDoedsbo: Array<{}>
+	utenlandskIdentifikasjonsnummer: Array<{}>
+	falskIdentitet: FalskIdentitet
 	opphold: Array<OppholdData>
 	statsborgerskap: [Statsborgerskap]
 	innflyttingTilNorge: [InnflyttingTilNorge]
@@ -149,6 +151,9 @@ export type FullmaktData = {
 	gyldigFraOgMed: Date
 	gyldigTilOgMed: Date
 	motpartsPersonident: string
+	vergeEllerFullmektig?: {
+		motpartsPersonident: string
+	}
 	motpartsRolle: string
 	omraader: Array<string>
 	id: number
@@ -208,6 +213,20 @@ export type Relasjon = {
 }
 type AdressebeskyttelseData = {
 	gradering: string
+}
+
+export type Kodeverk = {
+	values: Array<Array<KodeverkValues>>
+}
+
+export type KodeverkValues = {
+	data: string
+	label: string
+	value: string
+}
+
+type FalskIdentitet = {
+	erFalsk: boolean
 }
 
 export type Statsborgerskap = {

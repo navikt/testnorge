@@ -11,16 +11,19 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Option } from '~/service/SelectOptionsOppslag'
+import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
 	identOptions: Array<Option>
+	loadingOptions: boolean
 }
 
 const RELASJON_BARN = 'Barn'
 const RELASJON_FORELDER = 'Forelder'
 
-export const ForelderBarnRelasjon = ({ formikBag, identOptions }: ForelderForm) => {
+export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }: ForelderForm) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
@@ -51,13 +54,15 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions }: ForelderForm) 
 								</ToggleKnapp>
 							</ToggleGruppe>
 						</div>
-
-						<FormikSelect
-							name={`${path}.relatertPerson`}
-							label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
-							options={identOptions}
-							size={'xlarge'}
-						/>
+						{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+						{identOptions?.length > 0 && (
+							<FormikSelect
+								name={`${path}.relatertPerson`}
+								label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
+								options={identOptions}
+								size={'xlarge'}
+							/>
+						)}
 
 						{(erBarn && (
 							<FormikCheckbox
@@ -79,6 +84,7 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions }: ForelderForm) 
 							label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 							formikBag={formikBag}
 							kanSettePersondata={_get(formikBag.values, `${path}.relatertPerson`) === null}
+							isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`))}
 						/>
 						<AvansertForm
 							path={path}

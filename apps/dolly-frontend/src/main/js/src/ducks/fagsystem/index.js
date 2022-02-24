@@ -420,7 +420,7 @@ export const selectPersonListe = (state) => {
 			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, state, pdlfIdent)
 		} else if (ident.master === 'PDL') {
-			const pdlData = fagsystem.pdl[ident.ident].data
+			const pdlData = fagsystem.pdl[ident.ident]?.data
 			return getPdlIdentInfo(ident, state, pdlData)
 		} else {
 			return null

@@ -11,9 +11,10 @@ import { FormikProps } from 'formik'
 interface PdlPersonValues {
 	path: string
 	formikBag: FormikProps<{}>
+	erNyIdent: boolean
 }
 
-export const PdlPersonForm = ({ path, formikBag }: PdlPersonValues) => {
+export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonValues) => {
 	const disableAlder =
 		_get(formikBag.values, `${path}.foedtEtter`) != null ||
 		_get(formikBag.values, `${path}.foedtFoer`) != null
@@ -24,6 +25,7 @@ export const PdlPersonForm = ({ path, formikBag }: PdlPersonValues) => {
 		<>
 			<FormikSelect name={`${path}.identtype`} label="Identtype" options={Options('identtype')} />
 			<FormikSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
+			<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={disableAlder} />
 			<FormikDatepicker
 				name={`${path}.foedtEtter`}
 				label="Født etter"
@@ -36,16 +38,23 @@ export const PdlPersonForm = ({ path, formikBag }: PdlPersonValues) => {
 				disabled={disableFoedtDato}
 				fastfield={false}
 			/>
-			<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={disableAlder} />
-			<FormikSelect
-				name={`${path}.statsborgerskapLandkode`}
-				label="Statsborgerskap"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				size="large"
+			{!erNyIdent && (
+				<FormikSelect
+					name={`${path}.statsborgerskapLandkode`}
+					label="Statsborgerskap"
+					kodeverk={AdresseKodeverk.StatsborgerskapLand}
+					size="large"
+				/>
+			)}
+			{!erNyIdent && (
+				<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
+			)}
+			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" checkboxMargin />
+			<FormikCheckbox
+				name={`${path}.nyttNavn.hasMellomnavn`}
+				label="Har mellomnavn"
+				checkboxMargin
 			/>
-			<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
-			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" />
-			<FormikCheckbox name={`${path}.nyttNavn.hasMellomnavn`} label="Har mellomnavn" />
 		</>
 	)
 }

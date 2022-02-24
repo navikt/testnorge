@@ -8,9 +8,9 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 import {
 	initialDoedsfall,
 	initialFoedsel,
+	initialFullmakt,
 	initialKjoenn,
 	initialNavn,
-	initialPdlPerson,
 	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
@@ -260,17 +260,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		fullmakt: {
 			label: 'Fullmakt',
 			checked: has('pdldata.person.fullmakt'),
-			add: () =>
-				set('pdldata.person.fullmakt', [
-					{
-						omraader: [],
-						gyldigFraOgMed: null,
-						gyldigTilOgMed: null,
-						nyFullmektig: initialPdlPerson,
-						kilde: 'Dolly',
-						master: 'PDL',
-					},
-				]),
+			add: () => set('pdldata.person.fullmakt', [initialFullmakt]),
 			remove: () => del('pdldata.person.fullmakt'),
 		},
 		sikkerhetstiltak: {

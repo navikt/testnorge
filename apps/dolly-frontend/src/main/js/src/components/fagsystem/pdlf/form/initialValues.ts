@@ -154,6 +154,7 @@ export const initialOrganisasjon = {
 }
 
 export const initialPerson = {
+	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
 	navn: {
 		fornavn: null as string,
@@ -255,6 +256,31 @@ export const initialDoedfoedtBarn = {
 	dato: new Date(),
 	kilde: 'Dolly',
 	master: 'FREG',
+}
+
+export const initialNyIdent = {
+	eksisterendeIdent: null as string,
+	identtype: null as string,
+	kjoenn: null as string,
+	foedtEtter: null as string,
+	foedtFoer: null as string,
+	alder: '',
+	syntetisk: false,
+	nyttNavn: {
+		hasMellomnavn: false,
+	},
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialFullmakt = {
+	omraader: [],
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	motpartsPersonident: null as string,
+	nyFullmektig: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'PDL',
 }
 
 export const initialOpphold = {

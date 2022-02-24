@@ -9,6 +9,7 @@ import {
 	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -183,29 +184,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			vergemaal,
 			forelderBarnRelasjon,
 			doedfoedtBarn,
+			nyident,
 		} = pdldataKriterier
-
-		const isEmpty = (attributt) => {
-			const flattenData = (objekt) => {
-				let result = {}
-				for (const i in objekt) {
-					if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
-						const temp = flattenData(objekt[i])
-						for (const j in temp) {
-							result[i + '.' + j] = temp[j]
-						}
-					} else {
-						result[i] = objekt[i]
-					}
-				}
-				return result
-			}
-
-			return (
-				attributt.empty ||
-				Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
-			)
-		}
 
 		const personRelatertTil = (personData, path) => {
 			if (!personData || !_get(personData, path)) return null
@@ -230,7 +210,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Alder', alder),
 					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
 					obj('Gradering', Formatters.showLabel('gradering', gradering)),
-					obj('Syntetisk', syntetisk && 'JA'),
+					obj('Er syntetisk', syntetisk && 'JA'),
 					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
 				]),
 			]
@@ -354,6 +334,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Fullmektig', item.motpartsPersonident),
 						...personRelatertTil(item, 'nyFullmektig'),
 					]
 				}),
@@ -727,6 +708,28 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(utenlandskIdentData)
+		}
+
+		if (nyident) {
+			const nyidentData = {
+				header: 'Ny identitet',
+				itemRows: nyident.map((item, idx) => {
+					return [
+						{
+							numberHeader: `Ny identitet ${idx + 1}`,
+						},
+						obj('Eksisterende ident', item.eksisterendeIdent),
+						obj('Identtype', item.identtype),
+						obj('Kjønn', item.kjoenn),
+						obj('Født etter', Formatters.formatDate(item.foedtEtter)),
+						obj('Født før', Formatters.formatDate(item.foedtFoer)),
+						obj('Alder', item.alder),
+						obj('Er syntetisk', item.syntetisk && 'JA'),
+						obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
+					]
+				}),
+			}
+			data.push(nyidentData)
 		}
 
 		if (kontaktinformasjonForDoedsbo) {

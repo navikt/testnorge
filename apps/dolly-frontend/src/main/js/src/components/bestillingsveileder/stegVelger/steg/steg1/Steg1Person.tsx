@@ -16,8 +16,8 @@ import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const identFraTestnorge = (opts: any) => {
-	if (opts.is.importTestnorge) return true
-	return opts.is.leggTil && opts.identMaster === 'PDL'
+	if (opts?.is?.importTestnorge) return true
+	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 
 export const Steg1Person = ({ stateModifier }: any) => {
@@ -49,12 +49,12 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			{!testnorgeIdent && <PersoninformasjonPanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <AdressePanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <FamilierelasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<ArbeidInntektPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
 			{!testnorgeIdent && <ArenaPanel stateModifier={stateModifier} />}
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
-			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
-			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
 			<KontaktReservasjonsPanel stateModifier={stateModifier} />
 			<UdiPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
