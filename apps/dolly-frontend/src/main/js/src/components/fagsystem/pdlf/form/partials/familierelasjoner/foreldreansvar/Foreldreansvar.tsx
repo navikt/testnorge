@@ -17,13 +17,15 @@ import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPers
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import Loading from '~/components/ui/loading/Loading'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
 	identOptions: Array<Option>
+	loadingOptions: boolean
 }
 
-export const Foreldreansvar = ({ formikBag, identOptions }: ForeldreansvarForm) => {
+export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: ForeldreansvarForm) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
 	const mellomnavnOptions = SelectOptionsOppslag.formatOptions('mellomnavn', navnInfo)
@@ -121,12 +123,17 @@ export const Foreldreansvar = ({ formikBag, identOptions }: ForeldreansvarForm) 
 							)}
 
 							{typeAnsvarlig === 'EKSISTERENDE' && (
-								<FormikSelect
-									name={`${path}.ansvarlig`}
-									label="Ansvarlig"
-									options={identOptions}
-									size="xlarge"
-								/>
+								<>
+									{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+									{identOptions?.length > 0 && (
+										<FormikSelect
+											name={`${path}.ansvarlig`}
+											label="Ansvarlig"
+											options={identOptions}
+											size="xlarge"
+										/>
+									)}
+								</>
 							)}
 
 							{typeAnsvarlig === 'UTEN_ID' && (
