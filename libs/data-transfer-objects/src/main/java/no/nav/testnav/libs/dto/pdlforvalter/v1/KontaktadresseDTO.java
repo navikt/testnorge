@@ -43,7 +43,8 @@ public class KontaktadresseDTO extends AdresseDTO {
     @JsonIgnore
     public int countAdresser() {
 
-        return count(getVegadresse()) + count(getUtenlandskAdresse()) + count(getPostboksadresse());
+        return count(getVegadresse()) + count(getUtenlandskAdresse()) + count(getPostboksadresse())
+                + count(getPostadresseIFrittFormat()) + count(getUtenlandskAdresseIFrittFormat());
     }
 
     @Data

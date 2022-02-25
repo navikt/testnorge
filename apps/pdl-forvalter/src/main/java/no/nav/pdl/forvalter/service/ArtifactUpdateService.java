@@ -115,8 +115,8 @@ public class ArtifactUpdateService {
     private static RelasjonType getRelasjonstype(ForelderBarnRelasjonDTO.Rolle rolle) {
 
         return switch (rolle) {
-            case BARN -> FAMILIERELASJON_BARN;
-            case MOR, MEDMOR, FAR, FORELDER -> FAMILIERELASJON_FORELDER;
+            case BARN -> FAMILIERELASJON_FORELDER;
+            case MOR, MEDMOR, FAR, FORELDER -> FAMILIERELASJON_BARN;
         };
     }
 
@@ -266,7 +266,9 @@ public class ArtifactUpdateService {
 
             deleteRelasjon(person, tidligereRelatert, getRelasjonstype(tidligereMinRolle));
             deleteRelasjon(getPerson(tidligereRelatert), ident, getRelasjonstype(tidligereRelatertRolle));
-            deletePerson(tidligereRelatert, isEksisterendePerson);
+            if (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson())) {
+                deletePerson(tidligereRelatert, isEksisterendePerson);
+            }
         }
     }
 
