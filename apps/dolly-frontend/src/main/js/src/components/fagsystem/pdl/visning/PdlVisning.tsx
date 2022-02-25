@@ -15,6 +15,12 @@ import { PdlOppholdsadresse } from '~/components/fagsystem/pdl/visning/partials/
 import { PdlKontaktadresse } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlKontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { PdlRelasjoner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
+import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/UtenlandsId'
+import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
+import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
+import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
+import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
+import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 
 type PdlVisningProps = {
 	pdlData: PdlDataWrapper
@@ -30,14 +36,20 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 	}
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
 	const {
+		foedsel,
 		telefonnummer,
+		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
 		oppholdsadresse,
+		opphold,
 		kontaktadresse,
 		adressebeskyttelse,
 		fullmakt,
+		utenlandskIdentifikasjonsnummer,
+		falskIdentitet,
 		sikkerhetstiltak,
+		kontaktinformasjonForDoedsbo,
 	} = hentPerson
 
 	return (
@@ -47,15 +59,21 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
+				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
+				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<PdlBoadresse data={bostedsadresse} />
 				<PdlOppholdsadresse data={oppholdsadresse} />
+				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
+				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 				<PdlRelasjoner data={hentPerson} />
+				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
+				<FalskIdentitet data={falskIdentitet} />
 			</div>
 		</ErrorBoundary>
 	)

@@ -1,7 +1,9 @@
 package no.nav.dolly.service;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
@@ -30,6 +32,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DollyPersonCache {
 
@@ -60,20 +63,20 @@ public class DollyPersonCache {
                             .collect(Collectors.toList())));
 
             dollyPerson.setBarn(new ArrayList<>(Stream.of(
-                    person.getRelasjoner().stream()
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toSet()),
-                    dollyPerson.getPartnere().stream()
-                            .map(dollyPerson::getPerson)
-                            .filter(Objects::nonNull)
-                            .map(Person::getRelasjoner)
-                            .flatMap(Collection::stream)
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toSet()))
+                            person.getRelasjoner().stream()
+                                    .filter(Relasjon::isBarn)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .collect(Collectors.toSet()),
+                            dollyPerson.getPartnere().stream()
+                                    .map(dollyPerson::getPerson)
+                                    .filter(Objects::nonNull)
+                                    .map(Person::getRelasjoner)
+                                    .flatMap(Collection::stream)
+                                    .filter(Relasjon::isBarn)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .collect(Collectors.toSet()))
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet())));
 
@@ -98,8 +101,8 @@ public class DollyPersonCache {
 
         Set<String> identer =
                 Stream.of(List.of(dollyPerson.getHovedperson()), dollyPerson.getPartnere(),
-                        dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
-                        dollyPerson.getVerger(), dollyPerson.getFullmektige())
+                                dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
+                                dollyPerson.getVerger(), dollyPerson.getFullmektige())
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet());
 
@@ -109,6 +112,16 @@ public class DollyPersonCache {
                         .noneMatch(ident2 -> ident2.equals(ident)))
                 .collect(Collectors.toList());
 
+        if (dollyPerson.isPdlfMaster()) {
+            if (isNull(dollyPerson.getPdlfPerson())) {
+                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                        .stream().findFirst().orElse(new FullPersonDTO()));
+            }
+            dollyPerson.setPersondetaljer(List.of(mapperFacade.map(
+                    dollyPerson.getPdlfPerson().getPerson(),
+                    Person.class)));
+        }
+
         if (!manglendeIdenter.isEmpty()) {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
@@ -116,12 +129,8 @@ public class DollyPersonCache {
                 var pdlPersonBolk =
                         pdlPersonConsumer.getPdlPersoner(manglendeIdenter);
                 dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
-            } else if (dollyPerson.isPdlfMaster() && isNull(dollyPerson.getPdlfPerson())) {
-                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
-                        .stream().findFirst().orElse(new FullPersonDTO()));
             }
         }
-
         return dollyPerson;
     }
 

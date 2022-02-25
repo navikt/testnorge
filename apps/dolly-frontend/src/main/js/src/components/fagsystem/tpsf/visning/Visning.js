@@ -34,6 +34,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 		_has(pdlData, 'person.bostedsadresse') ||
 		_has(pdlData, 'person.oppholdsadresse') ||
 		_has(pdlData, 'person.kontaktadresse')
+
 	const harPdlFullmakt = pdlData && _has(pdlData, 'person.fullmakt')
 
 	const hasTpsfData = data.ident

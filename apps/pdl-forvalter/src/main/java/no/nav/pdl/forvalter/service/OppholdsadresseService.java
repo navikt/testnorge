@@ -15,12 +15,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
@@ -123,17 +121,11 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse()) &&
                 oppholdsadresse.getUtenlandskAdresse().isEmpty()) {
             oppholdsadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
+            oppholdsadresse.setMaster(Master.PDL);
         }
 
         oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
         oppholdsadresse.setOpprettCoAdresseNavn(null);
-
-        if (Master.PDL == oppholdsadresse.getMaster() && isNull(oppholdsadresse.getGyldigFraOgMed())) {
-            oppholdsadresse.setGyldigFraOgMed(LocalDateTime.now());
-        }
-        if (Master.PDL == oppholdsadresse.getMaster() && isNull(oppholdsadresse.getGyldigTilOgMed())) {
-            oppholdsadresse.setGyldigTilOgMed(LocalDateTime.now().plusYears(1));
-        }
     }
 
     private String getLandkode(PersonDTO person) {

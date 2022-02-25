@@ -7,11 +7,18 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { getPersonOptions } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { FormikProps } from 'formik'
+import { Option } from '~/service/SelectOptionsOppslag'
+import Loading from '~/components/ui/loading/Loading'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
-export const Vergemaal = ({ formikBag, gruppeId }) => {
+interface VergemaalForm {
+	formikBag: FormikProps<{}>
+	identOptions: Array<Option>
+	loadingOptions: boolean
+}
+
+export const Vergemaal = ({ formikBag, identOptions, loadingOptions }: VergemaalForm) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -45,24 +52,21 @@ export const Vergemaal = ({ formikBag, gruppeId }) => {
 							/>
 							<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 							<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-							<ErrorBoundary>
-								<LoadableComponent
-									onFetch={() => getPersonOptions(gruppeId)}
-									render={(data) => (
-										<FormikSelect
-											name={`${path}.vergeIdent`}
-											label="Verge"
-											options={data}
-											size={'xlarge'}
-										/>
-									)}
+							{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+							{identOptions?.length > 0 && (
+								<FormikSelect
+									name={`${path}.vergeIdent`}
+									label="Verge"
+									options={identOptions}
+									size={'xlarge'}
 								/>
-							</ErrorBoundary>
+							)}
 							<PdlPersonExpander
 								path={`${path}.nyVergeIdent`}
 								label={'VERGE'}
 								formikBag={formikBag}
 								kanSettePersondata={_get(formikBag.values, `${path}.vergeIdent`) === null}
+								isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`))}
 							/>
 							<AvansertForm path={path} kanVelgeMaster={false} />
 						</>

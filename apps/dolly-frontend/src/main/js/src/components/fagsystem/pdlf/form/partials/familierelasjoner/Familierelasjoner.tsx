@@ -11,6 +11,7 @@ import { ForelderBarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/
 import { Sivilstand } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
 import { Foreldreansvar } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import { useBoolean } from 'react-use'
 
 const relasjonerAttributter = [
 	'pdldata.person.sivilstand',
@@ -25,11 +26,15 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
+	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
+
 	useEffect(() => {
 		if (!isTestnorgeIdent) {
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) =>
-				setIdentOptions(response)
-			)
+			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
+			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
+				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
+				setLoadingIdentOptions(false)
+			})
 		}
 	}, [])
 
@@ -45,10 +50,18 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 				uncheckAttributeArray={undefined}
 			>
 				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
-					<Sivilstand formikBag={formikBag} identOptions={identOptions} />
+					<Sivilstand
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
 				</Kategori>
 				<Kategori title="Barn/foreldre" vis="pdldata.person.forelderBarnRelasjon">
-					<ForelderBarnRelasjon formikBag={formikBag} identOptions={identOptions} />
+					<ForelderBarnRelasjon
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
 				</Kategori>
 				<Kategori title="Foreldreansvar" vis="pdldata.person.foreldreansvar">
 					<Foreldreansvar formikBag={formikBag} identOptions={identOptions} />

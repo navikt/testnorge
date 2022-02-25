@@ -1,0 +1,25 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: application.version.todo
+    name: Generer-synt-meldekort-service
+    description: App for å genere syntetiske meldekort for meldegrupper i Arena.
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+consumers:
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-meldekort
+
+server:
+  error:
+    include-message: always

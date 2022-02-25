@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
 import { FormikProps } from 'formik'
@@ -9,6 +9,8 @@ interface PdlPersonValues {
 	label: string
 	formikBag: FormikProps<{}>
 	kanSettePersondata?: boolean
+	erNyIdent?: boolean
+	isExpanded?: boolean
 }
 
 export const PdlPersonExpander = ({
@@ -16,8 +18,17 @@ export const PdlPersonExpander = ({
 	label,
 	formikBag,
 	kanSettePersondata = true,
+	erNyIdent = false,
+	isExpanded = false,
 }: PdlPersonValues) => {
-	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
+	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(isExpanded)
+	useEffect(() => {
+		if (isExpanded) {
+			setVisPersonValg()
+		} else {
+			setSkjulPersonValg()
+		}
+	}, [isExpanded])
 
 	return (
 		<div className="flexbox--full-width">
@@ -32,7 +43,7 @@ export const PdlPersonExpander = ({
 			)}
 			{visPersonValg && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<PdlPersonForm path={path} formikBag={formikBag} />
+					<PdlPersonForm path={path} formikBag={formikBag} erNyIdent={erNyIdent} />
 				</div>
 			)}
 		</div>

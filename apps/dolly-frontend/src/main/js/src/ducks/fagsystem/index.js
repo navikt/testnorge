@@ -15,7 +15,6 @@ import {
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
-	UdiApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -82,7 +81,7 @@ export const actions = createActions(
 			}),
 		],
 		getUdi: [
-			UdiApi.getPerson,
+			DollyApi.getUdiPerson,
 			(ident) => ({
 				ident,
 			}),
@@ -421,7 +420,7 @@ export const selectPersonListe = (state) => {
 			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, state, pdlfIdent)
 		} else if (ident.master === 'PDL') {
-			const pdlData = fagsystem.pdl[ident.ident].data
+			const pdlData = fagsystem.pdl[ident.ident]?.data
 			return getPdlIdentInfo(ident, state, pdlData)
 		} else {
 			return null

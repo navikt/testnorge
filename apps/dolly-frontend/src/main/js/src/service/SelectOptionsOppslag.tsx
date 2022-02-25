@@ -28,6 +28,7 @@ export const SelectOptionsOppslag = {
 				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
 			})
 		})
+		if (gruppe?.length < 1) return null
 		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
 			if (gruppe.length < 1) return null
 			const personListe: Array<{ value: string; label: string }> = []

@@ -8,11 +8,11 @@ import { setNavn } from '../../utils'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import _has from 'lodash/has'
-import { FalskIdentitetToggle } from '~/components/fagsystem/pdlf/form/partials/identifikasjon/falskIdentitet/FalskIdentitetToggle'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialFalskIdentitetValues } from '~/components/fagsystem/pdlf/form/initialValues'
+import Loading from '~/components/ui/loading/Loading'
 
-export const FalskIdentitet = ({ formikBag }) => {
+export const FalskIdentitet = ({ formikBag, identOptions, loadingOptions }) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
@@ -79,7 +79,17 @@ export const FalskIdentitet = ({ formikBag }) => {
 							/>
 
 							{identType() === 'ENTYDIG' && (
-								<FalskIdentitetToggle formikBag={formikBag} path={path} />
+								<>
+									{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
+									{identOptions?.length > 0 && (
+										<FormikSelect
+											name={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
+											label="Eksisterende identifikasjonsnummer"
+											options={identOptions}
+											size={'xlarge'}
+										/>
+									)}
+								</>
 							)}
 							{identType() === 'OMTRENTLIG' && (
 								<>

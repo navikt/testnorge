@@ -90,7 +90,13 @@ public class IdentService {
 
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
-        identRepository.swapIdent(oldIdent, newIdent);
+
+        if (identRepository.findByIdent(newIdent).isPresent()) {
+            identRepository.deleteTestidentByIdent(oldIdent);
+
+        } else {
+            identRepository.swapIdent(oldIdent, newIdent);
+        }
     }
 
     public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {

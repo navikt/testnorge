@@ -36,9 +36,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class SivilstandService implements Validation<SivilstandDTO> {
 
-    private static final String TYPE_EMPTY_ERROR = "Type av sivilstand må oppgis";
     private static final String INVALID_RELATERT_VED_SIVILSTAND = "Sivilstand: Relatert person finnes ikke";
-    private static final String SIVILSTAND_DATO_REQUIRED = "Sivilstand: dato for sivilstand må oppgis";
     private static final String SIVILSTAND_OVERLAPPENDE_DATOER_ERROR = "Sivilstand: overlappende datoer er ikke gyldig";
 
     private final PersonRepository personRepository;
@@ -64,10 +62,6 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     @Override
     public void validate(SivilstandDTO sivilstand) {
-
-        if (isNull(sivilstand.getType())) {
-            throw new InvalidRequestException(TYPE_EMPTY_ERROR);
-        }
 
         if ((sivilstand.getType() == GIFT ||
                 sivilstand.getType() == REGISTRERT_PARTNER) &&

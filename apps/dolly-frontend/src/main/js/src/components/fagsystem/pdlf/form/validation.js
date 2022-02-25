@@ -149,6 +149,7 @@ const fullmakt = Yup.array().of(
 		omraader: Yup.array().min(1, 'Velg minst ett område'),
 		gyldigFraOgMed: requiredDate,
 		gyldigTilOgMed: requiredDate,
+		motpartsPersonident: Yup.string().nullable(),
 		nyFullmektig: nyPerson,
 	})
 )
@@ -258,14 +259,24 @@ const kontaktDoedsbo = Yup.array().of(
 		personSomKontakt: Yup.object()
 			.when('kontaktType', {
 				is: 'PERSON_FDATO',
-				then: Yup.object({
-					foedselsdato: requiredString.nullable(),
-					navn: Yup.object({
-						fornavn: Yup.string().nullable(),
-						mellomnavn: Yup.string().nullable(),
-						etternavn: Yup.string().nullable(),
-					}).nullable(),
-				}),
+				then: Yup.object().shape(
+					{
+						identifikasjonsnummer: Yup.mixed().when('foedselsdato', {
+							is: null,
+							then: requiredString.nullable(),
+						}),
+						foedselsdato: Yup.mixed().when('identifikasjonsnummer', {
+							is: null,
+							then: requiredString.nullable(),
+						}),
+						navn: Yup.object({
+							fornavn: Yup.string().nullable(),
+							mellomnavn: Yup.string().nullable(),
+							etternavn: Yup.string().nullable(),
+						}).nullable(),
+					},
+					['identifikasjonsnummer', 'foedselsdato']
+				),
 			})
 			.when('kontaktType', {
 				is: 'NY_PERSON',
