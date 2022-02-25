@@ -2,6 +2,13 @@ package no.nav.testnav.libs.reactivesessionsecurity.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,14 +18,6 @@ import org.springframework.session.config.annotation.web.server.EnableSpringWebS
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
-
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
-import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
 
 @Slf4j
 @EnableSpringWebSession
@@ -38,7 +37,7 @@ public class OicdInMemorySessionConfiguration {
     public ReactiveSessionRepository reactiveSessionRepository() {
         OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
         int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
-                ? Duration.ofMinutes(30)
+                ? Duration.ofMinutes(15)
                 : sessionProperties.getTimeout()
         ).toSeconds();
         sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
