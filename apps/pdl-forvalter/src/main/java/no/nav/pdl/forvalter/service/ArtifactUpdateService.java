@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -23,6 +24,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -34,7 +36,15 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Service
 @Transactional
@@ -45,6 +55,7 @@ public class ArtifactUpdateService {
     private static final String INFO_NOT_FOUND = "%s med id: %s ble ikke funnet";
 
     private final PersonRepository personRepository;
+    private final PersonService personService;
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
     private final DeltBostedService deltBostedService;
@@ -72,10 +83,10 @@ public class ArtifactUpdateService {
     private final VergemaalService vergemaalService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 
-    private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, String ident, Integer id) {
+    private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
 
         if (artifacter.stream().noneMatch(artifact -> artifact.getId().equals(id))) {
-            throw new NotFoundException(String.format(INFO_NOT_FOUND, ident, id));
+            throw new NotFoundException(String.format(INFO_NOT_FOUND, navn, id));
         }
     }
 
@@ -87,8 +98,30 @@ public class ArtifactUpdateService {
         return oppretting;
     }
 
+    private static void deleteRelasjon(DbPerson person, String tidligereRelatert, RelasjonType type) {
+
+        Iterator<DbRelasjon> it = person.getRelasjoner().iterator();
+        while (it.hasNext()) {
+            var relasjon = it.next();
+            if (type == relasjon.getRelasjonType() &&
+                    relasjon.getPerson().getIdent().equals(person.getIdent()) &&
+                    relasjon.getRelatertPerson().getIdent().equals(tidligereRelatert)) {
+
+                it.remove();
+            }
+        }
+    }
+
+    private static RelasjonType getRelasjonstype(ForelderBarnRelasjonDTO.Rolle rolle) {
+
+        return switch (rolle) {
+            case BARN -> FAMILIERELASJON_BARN;
+            case MOR, MEDMOR, FAR, FORELDER -> FAMILIERELASJON_FORELDER;
+        };
+    }
+
     private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
-                                                                   String ident, Integer id) {
+                                                            Integer id, String navn) {
 
         artifact.setIsNew(true);
         if (id.equals(0)) {
@@ -96,16 +129,16 @@ public class ArtifactUpdateService {
             return artifacter;
 
         } else {
-            checkExists(artifacter, ident, id);
-            return artifacter.stream()
+            checkExists(artifacter, id, navn);
+            return new ArrayList<>(artifacter.stream()
                     .map(data -> {
-                                if (data.getId().equals(id)) {
-                                    artifact.setId(id);
-                                    return artifact;
-                                }
-                                return data;
-                            })
-                    .toList();
+                        if (data.getId().equals(id)) {
+                            artifact.setId(id);
+                            return artifact;
+                        }
+                        return data;
+                    })
+                    .toList());
         }
     }
 
@@ -114,7 +147,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setFoedsel(
-                updateArtifact(person.getPerson().getFoedsel(), oppdatertFoedsel, ident, id));
+                updateArtifact(person.getPerson().getFoedsel(), oppdatertFoedsel, id, "Foedsel"));
 
         foedselService.validate(oppdatertFoedsel, person.getPerson());
         foedselService.convert(person.getPerson());
@@ -125,7 +158,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setNavn(
-                updateArtifact(person.getPerson().getNavn(), oppdatertNavn, ident, id));
+                updateArtifact(person.getPerson().getNavn(), oppdatertNavn, id, "Navn"));
 
         navnService.validate(oppdatertNavn);
         navnService.convert(person.getPerson().getNavn());
@@ -136,7 +169,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setKjoenn(
-                updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, ident, id));
+                updateArtifact(person.getPerson().getKjoenn(), oppdatertKjoenn, id, "Kjoenn"));
 
         kjoennService.validate(oppdatertKjoenn, person.getPerson());
         kjoennService.convert(person.getPerson());
@@ -147,7 +180,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setBostedsadresse(
-                updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, ident, id));
+                updateArtifact(person.getPerson().getBostedsadresse(), oppdatertAdresse, id, "Bostedsadresse"));
 
         bostedAdresseService.validate(oppdatertAdresse, person.getPerson());
         bostedAdresseService.convert(person.getPerson(), false);
@@ -158,7 +191,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setKontaktadresse(
-                updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, ident, id));
+                updateArtifact(person.getPerson().getKontaktadresse(), oppdatertAdresse, id, "Kontaktadresse"));
 
         kontaktAdresseService.validate(oppdatertAdresse, person.getPerson());
         kontaktAdresseService.convert(person.getPerson(), false);
@@ -169,7 +202,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setOppholdsadresse(
-                updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, ident, id));
+                updateArtifact(person.getPerson().getOppholdsadresse(), oppdatertAdresse, id, "Oppholdsadresse"));
 
         oppholdsadresseService.validate(oppdatertAdresse, person.getPerson());
         oppholdsadresseService.convert(person.getPerson());
@@ -180,7 +213,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setInnflytting(
-                updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, ident, id));
+                updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting"));
 
         innflyttingService.validate(oppdatertInnflytting);
         innflyttingService.convert(person.getPerson().getInnflytting());
@@ -191,7 +224,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setUtflytting(
-                updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, ident, id));
+                updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting"));
 
         utflyttingService.validate(oppdatertUtflytting);
         utflyttingService.convert(person.getPerson().getUtflytting());
@@ -202,7 +235,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setDeltBosted(
-                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, ident, id));
+                updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted"));
 
         deltBostedService.validate(oppdatertDeltBosted, person.getPerson());
         deltBostedService.convert(person.getPerson());
@@ -212,11 +245,29 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
+        var tidligereRelatert = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson() : null;
+        var tidligereMinRolle = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+                person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() : null;
+        var tidligereRelatertRolle = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() : null;
+        var isEksisterendePerson = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+                person.getPerson().getForelderBarnRelasjon().get(id - 1).getEksisterendePerson() : null;
+
         person.getPerson().setForelderBarnRelasjon(
-                updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, ident, id));
+                updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
 
         forelderBarnRelasjonService.validate(oppdatertRelasjon);
         forelderBarnRelasjonService.convert(person.getPerson());
+
+        if (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
+                !tidligereMinRolle.equals(oppdatertRelasjon.getMinRolleForPerson()) ||
+                !tidligereRelatertRolle.equals(oppdatertRelasjon.getRelatertPersonsRolle())) {
+
+            deleteRelasjon(person, tidligereRelatert, getRelasjonstype(tidligereMinRolle));
+            deleteRelasjon(getPerson(tidligereRelatert), ident, getRelasjonstype(tidligereRelatertRolle));
+            deletePerson(tidligereRelatert, isEksisterendePerson);
+        }
     }
 
     public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
@@ -224,7 +275,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setForeldreansvar(
-                updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, ident, id));
+                updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar"));
 
         foreldreansvarService.validate(oppdatertAnsvar, person.getPerson());
         foreldreansvarService.convert(person.getPerson());
@@ -235,7 +286,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setKontaktinformasjonForDoedsbo(
-                updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, ident, id));
+                updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo"));
 
         kontaktinformasjonForDoedsboService.validate(oppdatertInformasjon);
         kontaktinformasjonForDoedsboService.convert(person.getPerson());
@@ -246,7 +297,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setUtenlandskIdentifikasjonsnummer(
-                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, ident, id));
+                updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer"));
 
         utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon);
         utenlandsidentifikasjonsnummerService.convert(person.getPerson().getUtenlandskIdentifikasjonsnummer());
@@ -257,7 +308,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setFalskIdentitet(
-                updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, ident, id));
+                updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet"));
 
         falskIdentitetService.validate(oppdatertIdentitet);
         falskIdentitetService.convert(person.getPerson());
@@ -268,7 +319,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setAdressebeskyttelse(
-                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, ident, id));
+                updateArtifact(person.getPerson().getAdressebeskyttelse(), oppdatertBeskyttelse, id, "Adressebeskyttelse"));
 
         adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson());
         adressebeskyttelseService.convert(person.getPerson());
@@ -279,7 +330,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setDoedsfall(
-                updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, ident, id));
+                updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall"));
 
         doedsfallService.validate(oppdatertDoedsfall);
         doedsfallService.convert(person.getPerson().getDoedsfall());
@@ -290,7 +341,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setFolkeregisterPersonstatus(
-                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, ident, id));
+                updateArtifact(person.getPerson().getFolkeregisterPersonstatus(), oppdatertStatus, id, "FolkeregisterPersonstatus"));
 
         folkeregisterPersonstatusService.validate(oppdatertStatus, person.getPerson());
         folkeregisterPersonstatusService.convert(person.getPerson());
@@ -301,7 +352,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setTilrettelagtKommunikasjon(
-                updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, ident, id));
+                updateArtifact(person.getPerson().getTilrettelagtKommunikasjon(), oppdatertKommunikasjon, id, "TilrettelagtKommunikasjon"));
 
         tilrettelagtKommunikasjonService.validate(oppdatertKommunikasjon);
         tilrettelagtKommunikasjonService.convert(person.getPerson().getTilrettelagtKommunikasjon());
@@ -312,7 +363,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setStatsborgerskap(
-                updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, ident, id));
+                updateArtifact(person.getPerson().getStatsborgerskap(), oppdatertStatsborgerskap, id, "Statsborgerskap"));
 
         statsborgerskapService.validate(oppdatertStatsborgerskap);
         statsborgerskapService.convert(person.getPerson());
@@ -323,7 +374,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setOpphold(
-                updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, ident, id));
+                updateArtifact(person.getPerson().getOpphold(), oppdatertOpphold, id, "Opphold"));
 
         oppholdService.validate(oppdatertOpphold);
         oppholdService.convert(person.getPerson().getOpphold());
@@ -333,11 +384,30 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
+        var tidligereRelatert = id > 0 && id <= person.getPerson().getSivilstand().size() ?
+                person.getPerson().getSivilstand().get(id - 1).getRelatertVedSivilstand() : null;
+        var isEksisterendePerson = id > 0 && id <= person.getPerson().getSivilstand().size() ?
+                person.getPerson().getSivilstand().get(id - 1).getEksisterendePerson() : null;
+
         person.getPerson().setSivilstand(
-                updateArtifact(person.getPerson().getSivilstand(), oppdatertSivilstand, ident, id));
+                updateArtifact(person.getPerson().getSivilstand(), oppdatertSivilstand, id, "Sivilstand"));
 
         sivilstandService.validate(oppdatertSivilstand);
         sivilstandService.convert(person.getPerson());
+
+        if (nonNull(tidligereRelatert) && !oppdatertSivilstand.getRelatertVedSivilstand().equals(tidligereRelatert)) {
+
+            deleteRelasjon(person, tidligereRelatert, EKTEFELLE_PARTNER);
+            deleteRelasjon(getPerson(tidligereRelatert), ident, EKTEFELLE_PARTNER);
+            deletePerson(tidligereRelatert, isEksisterendePerson);
+        }
+    }
+
+    private void deletePerson(String tidligereRelatert, Boolean isEksisterendePerson) {
+
+        if (isNotTrue(isEksisterendePerson)) {
+            personService.deletePerson(tidligereRelatert);
+        }
     }
 
     public void updateTelefonnummer(String ident, Integer id, TelefonnummerDTO oppdatertTelefonnummer) {
@@ -345,7 +415,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setTelefonnummer(
-                updateArtifact(person.getPerson().getTelefonnummer(), oppdatertTelefonnummer, ident, id));
+                updateArtifact(person.getPerson().getTelefonnummer(), oppdatertTelefonnummer, id, "Telefonnummer"));
 
         telefonnummerService.validate(oppdatertTelefonnummer);
         telefonnummerService.convert(person.getPerson().getTelefonnummer());
@@ -356,7 +426,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setFullmakt(
-                updateArtifact(person.getPerson().getFullmakt(), oppdatertFullmakt, ident, id));
+                updateArtifact(person.getPerson().getFullmakt(), oppdatertFullmakt, id, "Fullmakt"));
 
         fullmaktService.validate(oppdatertFullmakt);
         fullmaktService.convert(person.getPerson());
@@ -367,7 +437,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setVergemaal(
-                updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, ident, id));
+                updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"));
 
         vergemaalService.validate(oppdatertVergemaal);
         vergemaalService.convert(person.getPerson());
@@ -378,7 +448,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setSikkerhetstiltak(
-                updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, ident, id));
+                updateArtifact(person.getPerson().getSikkerhetstiltak(), oppdatertSikkerhetstiltak, id, "Sikkerhetstiltak"));
 
         sikkerhetstiltakService.validate(oppdatertSikkerhetstiltak);
         sikkerhetstiltakService.convert(person.getPerson());
@@ -389,7 +459,7 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         person.getPerson().setDoedfoedtBarn(
-                updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, ident, id));
+                updateArtifact(person.getPerson().getDoedfoedtBarn(), oppdatertDoedfoedt, id, "DoedfoedtBarn"));
 
         doedfoedtBarnService.validate(oppdatertDoedfoedt);
         doedfoedtBarnService.convert(person.getPerson().getDoedfoedtBarn());

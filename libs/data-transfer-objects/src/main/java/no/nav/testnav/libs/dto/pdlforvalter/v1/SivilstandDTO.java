@@ -39,6 +39,8 @@ public class SivilstandDTO extends DbVersjonDTO {
     private Boolean borIkkeSammen;
     private PersonRequestDTO nyRelatertPerson;
 
+    private Boolean eksisterendePerson;
+
     @JsonIgnore
     public boolean isGift() {
 

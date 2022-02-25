@@ -22,6 +22,8 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     private PersonRequestDTO nyRelatertPerson;
     private Boolean partnerErIkkeForelder;
 
+    private Boolean eksisterendePerson;
+
     public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
 
     @JsonIgnore

@@ -75,6 +75,9 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
         if (sivilstand.getType() == GIFT ||
                 sivilstand.getType() == REGISTRERT_PARTNER) {
+
+            sivilstand.setEksisterendePerson(nonNull(sivilstand.getRelatertVedSivilstand()));
+
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
 
                 if (isNull(sivilstand.getNyRelatertPerson())) {

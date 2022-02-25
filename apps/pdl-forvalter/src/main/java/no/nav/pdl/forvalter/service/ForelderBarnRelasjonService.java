@@ -147,6 +147,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private String setRelatertPerson(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
+        relasjon.setEksisterendePerson(nonNull(relasjon.getRelatertPerson()));
         if (isBlank(relasjon.getRelatertPerson())) {
 
             if (isNull(relasjon.getNyRelatertPerson())) {
