@@ -84,6 +84,12 @@ export type DoedfoedtBarn = {
 	dato: Date
 }
 
+export type Foreldreansvar = {
+	ansvar: string
+	ansvarlig: string
+	ansvarligUtenIdentifikator: string
+}
+
 export type Vergemaal = {
 	vergemaalEmbete?: string
 	embete?: string

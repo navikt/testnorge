@@ -6,6 +6,7 @@ import { PdlBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/
 import { PdlForeldre } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldre'
 import { PdlPartner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlPartner'
 import { ForeldreBarnRelasjon, Rolle, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
+import { PdlForeldreansvar } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreansvar'
 
 type PdlRelasjonerProps = {
 	data: HentPerson
@@ -28,6 +29,7 @@ export const PdlRelasjoner = ({ data, visTittel = true }: PdlRelasjonerProps) =>
 			relasjon.relatertPersonsRolle == Rolle.FAR ||
 			relasjon.relatertPersonsRolle == Rolle.MEDMOR
 	)
+	const foreldreansvar = data.foreldreansvar
 
 	if (
 		hasNoValues(partnere) &&
@@ -44,6 +46,7 @@ export const PdlRelasjoner = ({ data, visTittel = true }: PdlRelasjonerProps) =>
 				<PdlPartner data={partnere} />
 				<PdlBarn barn={barn} doedfoedtBarn={doedfoedtBarn} />
 				<PdlForeldre data={foreldre} />
+				<PdlForeldreansvar data={foreldreansvar} />
 			</div>
 		</ErrorBoundary>
 	)

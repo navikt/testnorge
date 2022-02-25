@@ -630,7 +630,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				header: 'Barn/foreldre',
 				itemRows: forelderBarnRelasjon.map((item, idx) => {
 					return [
-						{ numberHeader: `Sivilstand ${idx + 1}` },
+						{ numberHeader: `Relasjon ${idx + 1}` },
 						obj('Relasjon', Formatters.showLabel('pdlRelasjonTyper', item.relatertPersonsRolle)),
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
@@ -651,7 +651,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Hvem har ansvaret', Formatters.showLabel('foreldreansvar', item.ansvar)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-						obj('Ansvarlig', item.ansvarlig),
+						obj('Type ansvarlig', Formatters.showLabel('typeAnsvarlig', item.typeAnsvarlig)),
+						obj('Ansvarlig', Formatters.showLabel('foreldreansvar', item.ansvarlig)),
 						{ numberHeader: 'Ny ansvarlig' }, //TODO: Funker ikke
 						obj('Identtype', item.nyAnsvarlig?.identtype),
 						obj('Kjønn', item.nyAnsvarlig?.kjoenn),
