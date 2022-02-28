@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -44,6 +45,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
+import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -68,6 +70,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final GjeldendeArtifactService gjeldendeArtifactService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -92,6 +95,8 @@ public class PersonService {
         dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
 
+        gjeldendeArtifactService.setGjeldene(dbPerson);
+
         return personRepository.save(dbPerson).getIdent();
     }
 
@@ -107,13 +112,13 @@ public class PersonService {
         var personer = Stream.of(List.of(dbPerson),
                         dbPerson.getRelasjoner().stream()
                                 .map(DbRelasjon::getRelatertPerson)
-                                .collect(Collectors.toList()))
+                                .toList())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         var identer = personer.stream()
                 .map(DbPerson::getIdent)
-                .collect(Collectors.toList());
+                .toList();
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),
@@ -194,7 +199,8 @@ public class PersonService {
                     .type(Sivilstand.UGIFT)
                     .build());
         }
-        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty()) {
+        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
+                Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {
             request.getPerson().getFolkeregisterPersonstatus().add(new FolkeregisterPersonstatusDTO());
         }
 

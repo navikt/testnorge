@@ -60,7 +60,9 @@ public final class BestillingTpsMessagingStatusMapper {
 
             intermediateStatus.stream()
                     .filter(status -> OKEY.equals(status.getMelding()) && intermediateStatus.stream()
-                            .noneMatch(status2 -> !OKEY.equals(status2.getMelding()) && status.getMiljoe().equals(status2.getMiljoe())) ||
+                            .noneMatch(status2 -> !OKEY.equals(status2.getMelding()) &&
+                                    status.getMiljoe().equals(status2.getMiljoe()) &&
+                                    status.getIdent().equals(status2.getIdent())) ||
                             !OKEY.equals(status.getMelding()))
                     .forEach(entry -> {
                         if (statusMap.containsKey(entry.getMelding())) {

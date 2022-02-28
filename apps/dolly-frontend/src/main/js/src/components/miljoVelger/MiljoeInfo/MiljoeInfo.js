@@ -66,7 +66,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{sykemelding && <li>Sykemelding: Både Q1 og Q2 må velges</li>}
+				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
 
 				{udistub && udistub.oppholdStatus && (
 					<li>

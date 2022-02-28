@@ -1,11 +1,12 @@
 package no.nav.dolly.web.config;
 
 import com.nimbusds.jose.jwk.JWK;
-
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
+import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
+import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +15,6 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
-
-import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
-import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
 
 
 @Slf4j

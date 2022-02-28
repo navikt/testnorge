@@ -136,6 +136,10 @@ const selectOptions: SelectOptions = {
 		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
 		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
 	],
+	//DNR og BOST kan kun ha utenlandsk adresse
+	adressetypeUtenlandskBostedsadresse: [
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+	],
 
 	adressetypeOppholdsadresse: [
 		{ value: 'VEGADRESSE', label: 'Vegadresse' },

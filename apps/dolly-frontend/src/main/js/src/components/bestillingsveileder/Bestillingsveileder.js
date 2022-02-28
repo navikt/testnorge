@@ -7,7 +7,14 @@ import './bestillingsveileder.less'
 
 export const BestillingsveilederContext = createContext()
 
-export const Bestillingsveileder = ({ error, gruppeId, location, sendBestilling, match }) => {
+export const Bestillingsveileder = ({
+	error,
+	gruppeId,
+	brukertype,
+	location,
+	sendBestilling,
+	match,
+}) => {
 	const options = BVOptions(location.state, gruppeId)
 	const handleSubmit = (values, formikBag) => {
 		sendBestilling(values, options)
@@ -16,13 +23,13 @@ export const Bestillingsveileder = ({ error, gruppeId, location, sendBestilling,
 	if (error) {
 		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
 	}
-	return renderBestillingsVeileder(options.initialValues, options, handleSubmit)
+	return renderBestillingsVeileder(options.initialValues, options, brukertype, handleSubmit)
 }
-const renderBestillingsVeileder = (initialValues, options, handleSubmit) => {
+const renderBestillingsVeileder = (initialValues, options, brukertype, handleSubmit) => {
 	return (
 		<div className="bestillingsveileder">
 			<BestillingsveilederContext.Provider value={options}>
-				<StegVelger initialValues={initialValues} onSubmit={handleSubmit} />
+				<StegVelger initialValues={initialValues} onSubmit={handleSubmit} brukertype={brukertype} />
 			</BestillingsveilederContext.Provider>
 		</div>
 	)

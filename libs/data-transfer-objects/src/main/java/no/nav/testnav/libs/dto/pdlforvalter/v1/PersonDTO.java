@@ -1,16 +1,20 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
 
 @Data
 @Builder
@@ -236,5 +240,15 @@ public class PersonDTO implements Serializable {
             sikkerhetstiltak = new ArrayList<>();
         }
         return sikkerhetstiltak;
+    }
+
+    @JsonIgnore
+    public boolean isStatusIn(FolkeregisterPersonstatus... statuser) {
+
+        return Arrays.asList(statuser).contains(getFolkeregisterPersonstatus().stream()
+                .findFirst().orElse(FolkeregisterPersonstatusDTO.builder()
+                        .status(FOEDSELSREGISTRERT)
+                        .build())
+                .getStatus());
     }
 }
