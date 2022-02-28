@@ -16,19 +16,29 @@ const StyledH3 = styled.h3`
 	align-items: center;
 `
 
-export const MiljoVelger = ({ bestillingsdata, heading }) => {
-	const filterEnvironments = (miljoer, erOrg) => {
+const bankIdMiljoer = {
+	Q: [
+		{
+			id: 'q1',
+			label: 'Q1',
+		},
+	],
+}
+
+export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
+	const environments = useSelector((state) => state.environments.data)
+	if (!environments) return null
+
+	const filterEnvironments = (miljoer, erOrg, erBankIdBruker) => {
+		if (erBankIdBruker) return bankIdMiljoer
 		if (!erOrg) return miljoer
 		const filtrerteMiljoer = { ...miljoer }
 		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter((env) => !env.id.includes('qx'))
 		return filtrerteMiljoer
 	}
 
-	const environments = useSelector((state) => state.environments.data)
-
-	if (!environments) return null
 	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
-	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon)
+	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon, bankIdBruker)
 
 	const order = ['T', 'Q']
 
@@ -47,7 +57,9 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 					const onClick = (e) => {
 						const { id } = e.target
-						isChecked(id) ? remove(values.indexOf(id)) : push(id)
+						if (!alleredeValgtMiljoe.includes(id)) {
+							isChecked(id) ? remove(values.indexOf(id)) : push(id)
+						}
 					}
 
 					const velgAlle = (type) => {
@@ -59,18 +71,12 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 					const fjernAlle = (type) => {
 						form.setFieldValue(
 							'environments',
-							values.filter((id) => !filteredEnvironments[type].map((a) => a.id).includes(id))
+							values.filter(
+								(id) =>
+									alleredeValgtMiljoe.includes(id) ||
+									!filteredEnvironments[type].map((a) => a.id).includes(id)
+							)
 						)
-					}
-
-					if (
-						bestillingsdata &&
-						bestillingsdata.sykemelding &&
-						!isChecked('q1') &&
-						!isChecked('q2')
-					) {
-						push('q1')
-						push('q2')
 					}
 
 					return order.map((type) => {
@@ -96,7 +102,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 										/>
 									))}
 								</div>
-								{!allDisabled && (
+								{!allDisabled && category.length > 1 && (
 									<div className="miljo-velger_buttons">
 										<LinkButton text="Velg alle" onClick={() => velgAlle(type)} />
 										<LinkButton text="Fjern alle" onClick={() => fjernAlle(type)} />

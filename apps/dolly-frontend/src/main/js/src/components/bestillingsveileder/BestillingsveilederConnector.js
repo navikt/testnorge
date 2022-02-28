@@ -3,6 +3,7 @@ import { sendBestilling } from '~/ducks/bestilling'
 import { Bestillingsveileder } from './Bestillingsveileder'
 
 const mapStateToProps = (state) => ({
+	brukertype: state.bruker.brukerData.brukertype,
 	error: state.bestveil.error,
 })
 
