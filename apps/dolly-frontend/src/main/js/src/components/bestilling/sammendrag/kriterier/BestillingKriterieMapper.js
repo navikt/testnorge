@@ -631,6 +631,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					return [
 						{ numberHeader: `Sivilstand ${idx + 1}` },
 						obj('Relasjon', Formatters.showLabel('pdlRelasjonTyper', item.relatertPersonsRolle)),
+						obj(
+							'Rolle for barn',
+							item.relatertPersonsRolle === 'BARN' &&
+								Formatters.showLabel('pdlRelasjonTyper', item.minRolleForPerson)
+						),
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
 						obj('Person relatert til', item.relatertPerson),
