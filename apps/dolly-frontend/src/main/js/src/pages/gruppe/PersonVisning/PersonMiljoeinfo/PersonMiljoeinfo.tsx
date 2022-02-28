@@ -6,14 +6,17 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TpsMessagingApi } from '~/service/Api'
 
 type PersonMiljoeinfoProps = {
+	bankIdBruker: boolean
 	ident: string
 	miljoe: Array<string>
 }
 
-export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfoProps) => {
+export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps) => {
 	if (!ident) return null
 
-	const state = useAsync(async () => TpsMessagingApi.getTpsPersonInfo(ident, miljoe), [])
+	const state = bankIdBruker
+		? useAsync(async () => TpsMessagingApi.getTpsPersonInfo(ident, 'q1'), [])
+		: useAsync(async () => TpsMessagingApi.getTpsPersonInfoAllEnvs(ident), [])
 
 	return (
 		<div>
