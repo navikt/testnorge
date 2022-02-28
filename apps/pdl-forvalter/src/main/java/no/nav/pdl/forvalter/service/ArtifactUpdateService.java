@@ -267,9 +267,10 @@ public class ArtifactUpdateService {
         forelderBarnRelasjonService.validate(oppdatertRelasjon);
         forelderBarnRelasjonService.convert(person.getPerson());
 
-        if (nonNull(tidligereRelatert) && !tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
-                !tidligereMinRolle.equals(oppdatertRelasjon.getMinRolleForPerson()) ||
-                !tidligereRelatertRolle.equals(oppdatertRelasjon.getRelatertPersonsRolle())) {
+        if (nonNull(tidligereRelatert) &&
+                (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
+                        !tidligereMinRolle.equals(oppdatertRelasjon.getMinRolleForPerson()) ||
+                        !tidligereRelatertRolle.equals(oppdatertRelasjon.getRelatertPersonsRolle()))) {
 
             deleteRelasjon(person, tidligereRelatert, getRelasjonstype(tidligereMinRolle));
             deleteRelasjon(getPerson(tidligereRelatert), ident, getRelasjonstype(tidligereRelatertRolle));

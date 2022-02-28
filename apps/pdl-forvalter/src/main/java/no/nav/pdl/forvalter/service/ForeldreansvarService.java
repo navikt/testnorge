@@ -203,6 +203,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             setRelasjoner(barnFellesRelasjoner, foreldreansvar);
 
         } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
+
+            foreldreansvar.setEksisterendePerson(isNotBlank(foreldreansvar.getAnsvarlig()));
+
             if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
                 makeAnsvarligUtenIdentifier(foreldreansvar, hovedperson);

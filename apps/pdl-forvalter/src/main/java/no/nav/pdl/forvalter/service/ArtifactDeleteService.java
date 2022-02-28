@@ -5,6 +5,8 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,8 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -31,6 +35,14 @@ public class ArtifactDeleteService {
         if (artifacter.stream().noneMatch(type -> id.equals(type.getId()))) {
             throw new NotFoundException(format(INFO_NOT_FOUND, navn, id));
         }
+    }
+
+    private static RelasjonType getRelasjonstype(ForelderBarnRelasjonDTO.Rolle rolle) {
+
+        return switch (rolle) {
+            case BARN -> FAMILIERELASJON_FORELDER;
+            case MOR, MEDMOR, FAR, FORELDER -> FAMILIERELASJON_BARN;
+        };
     }
 
     @Transactional
@@ -138,6 +150,19 @@ public class ArtifactDeleteService {
         var dbPerson = fetchPerson(ident);
 
         checkExists(dbPerson.getPerson().getForelderBarnRelasjon(), id, "ForelderBarnRelasjon");
+
+        dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                .filter(type -> id.equals(type.getId()) &&
+                        isNotBlank(type.getRelatertPerson()))
+                .forEach(type -> {
+                    deleteRelasjon(dbPerson, type.getRelatertPerson(), getRelasjonstype(type.getMinRolleForPerson()));
+                    deleteRelasjon(fetchPerson(type.getRelatertPerson()), dbPerson.getIdent(), getRelasjonstype(type.getRelatertPersonsRolle()));
+
+                    if (isNotTrue(type.getEksisterendePerson())) {
+                        personService.deletePerson(type.getRelatertPerson());
+                    }
+                });
+
         dbPerson.getPerson().setForelderBarnRelasjon(dbPerson.getPerson().getForelderBarnRelasjon().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -149,6 +174,19 @@ public class ArtifactDeleteService {
         var dbPerson = fetchPerson(ident);
 
         checkExists(dbPerson.getPerson().getForeldreansvar(), id, "Foreldreansvar");
+        dbPerson.getPerson().getForeldreansvar().stream()
+                .filter(type -> id.equals(type.getId()) &&
+                        isNotBlank(type.getAnsvarlig()) &&
+                        Ansvar.ANDRE == type.getAnsvar())
+                .forEach(type -> {
+                    deleteRelasjon(dbPerson, type.getAnsvarlig(), RelasjonType.FORELDREANSVAR);
+                    deleteRelasjon(fetchPerson(type.getAnsvarlig()), dbPerson.getIdent(), RelasjonType.FORELDREANSVAR);
+
+                    if (isNotTrue(type.getEksisterendePerson())) {
+                        personService.deletePerson(type.getAnsvarlig());
+                    }
+                });
+
         dbPerson.getPerson().setForeldreansvar(dbPerson.getPerson().getForeldreansvar().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -284,6 +322,18 @@ public class ArtifactDeleteService {
         var dbPerson = fetchPerson(ident);
 
         checkExists(dbPerson.getPerson().getSivilstand(), id, "Sivilstand");
+        dbPerson.getPerson().getSivilstand().stream()
+                .filter(type -> id.equals(type.getId()) &&
+                        isNotBlank(type.getRelatertVedSivilstand()))
+                .forEach(type -> {
+                    deleteRelasjon(dbPerson, type.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
+                    deleteRelasjon(fetchPerson(type.getRelatertVedSivilstand()), dbPerson.getIdent(), RelasjonType.EKTEFELLE_PARTNER);
+
+                    if (isNotTrue(type.getEksisterendePerson())) {
+                        personService.deletePerson(type.getRelatertVedSivilstand());
+                    }
+                });
+
         dbPerson.getPerson().setSivilstand(dbPerson.getPerson().getSivilstand().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());

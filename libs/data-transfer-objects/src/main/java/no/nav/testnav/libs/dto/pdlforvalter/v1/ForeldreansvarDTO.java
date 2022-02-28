@@ -26,6 +26,9 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     private RelatertBiPersonDTO ansvarligUtenIdentifikator;
     private LocalDateTime gyldigFraOgMed;
     private LocalDateTime gyldigTilOgMed;
+
+    private Boolean eksisterendePerson;
+
     public enum Ansvar {FELLES, MOR, FAR, MEDMOR, ANDRE, UKJENT}
 
     @Data
