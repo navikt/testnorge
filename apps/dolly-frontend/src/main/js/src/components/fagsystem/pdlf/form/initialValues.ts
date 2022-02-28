@@ -272,9 +272,6 @@ export const initialDoedfoedtBarn = {
 export const initialForeldreansvar = {
 	typeAnsvarlig: null as string,
 	ansvar: null as string,
-	// ansvarlig: null as string,
-	// nyAnsvarlig: initialPdlPerson,
-	// ansvarligUtenIdentifikator: initialPdlBiPerson,
 	gyldigFraOgMed: null as string,
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',

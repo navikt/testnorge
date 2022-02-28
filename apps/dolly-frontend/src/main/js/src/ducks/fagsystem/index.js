@@ -451,6 +451,7 @@ const getPdlfIdentInfo = (ident, state, pdlIdent) => {
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
 		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
 		: ''
+
 	const pdlAlder = (foedselsdato) => {
 		if (!foedselsdato) return null
 		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())

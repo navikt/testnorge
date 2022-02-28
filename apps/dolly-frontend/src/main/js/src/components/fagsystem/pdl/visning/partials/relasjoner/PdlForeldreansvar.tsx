@@ -6,11 +6,21 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import _capitalize from 'lodash/capitalize'
 import Formatters from '~/utils/DataFormatter'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { Foreldreansvar } from '~/components/fagsystem/pdlf/PdlTypes'
 
-export const PdlForeldreansvar = ({ data }) => {
+type PdlForeldreansvarProps = {
+	data: Array<Foreldreansvar>
+}
+
+type VisningProps = {
+	item: Foreldreansvar
+	idx: number
+}
+
+export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 	if (!data || data.length === 0) return null
 
-	const PdlForeldreansvarVisning = ({ item, idx }) => {
+	const PdlForeldreansvarVisning = ({ item, idx }: VisningProps) => {
 		return (
 			<div className="person-visning_content" key={idx}>
 				<TitleValue title="Hvem har ansvaret" value={_capitalize(item.ansvar)} />
@@ -51,7 +61,9 @@ export const PdlForeldreansvar = ({ data }) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item, idx: number) => <PdlForeldreansvarVisning item={item} idx={idx} />}
+						{(item: Foreldreansvar, idx: number) => (
+							<PdlForeldreansvarVisning item={item} idx={idx} />
+						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

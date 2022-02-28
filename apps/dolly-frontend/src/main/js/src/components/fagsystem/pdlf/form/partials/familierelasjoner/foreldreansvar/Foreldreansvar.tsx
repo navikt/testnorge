@@ -18,6 +18,7 @@ import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import Loading from '~/components/ui/loading/Loading'
+import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
@@ -25,13 +26,21 @@ interface ForeldreansvarForm {
 	loadingOptions: boolean
 }
 
+type Target = {
+	label: string
+	value: string
+}
+
 export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: ForeldreansvarForm) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	//@ts-ignore
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
+	//@ts-ignore
 	const mellomnavnOptions = SelectOptionsOppslag.formatOptions('mellomnavn', navnInfo)
+	//@ts-ignore
 	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
 
-	const handleChangeTypeAnsvarlig = (target, path) => {
+	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
 		const foreldreansvar = _get(formikBag.values, path)
 		const foreldreansvarClone = _cloneDeep(foreldreansvar)
 
@@ -60,7 +69,7 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 		formikBag.setFieldValue(path, foreldreansvarClone)
 	}
 
-	const handleChangeAnsvar = (target, path) => {
+	const handleChangeAnsvar = (target: Target, path: string) => {
 		const foreldreansvar = _get(formikBag.values, path)
 		const foreldreansvarClone = _cloneDeep(foreldreansvar)
 
@@ -77,10 +86,10 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 
 	const harBarn = () => {
 		const relasjoner = _get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
-		return relasjoner?.some((relasjon) => relasjon.relatertPersonsRolle === 'BARN')
+		return relasjoner?.some(
+			(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+		)
 	}
-
-	// Feil: error:Bad Request: message:Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor ikke funnet:
 
 	return (
 		<>
@@ -107,7 +116,7 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 								name={`${path}.ansvar`}
 								label="Hvem har ansvaret"
 								options={Options('foreldreansvar')}
-								onChange={(target) => handleChangeAnsvar(target, path)}
+								onChange={(target: Target) => handleChangeAnsvar(target, path)}
 							/>
 							<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 							<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
@@ -117,7 +126,7 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 									name={`${path}.typeAnsvarlig`}
 									label="Type ansvarlig"
 									options={Options('typeAnsvarlig')}
-									onChange={(target) => handleChangeTypeAnsvarlig(target, path)}
+									onChange={(target: Target) => handleChangeTypeAnsvarlig(target, path)}
 									size="medium"
 								/>
 							)}
