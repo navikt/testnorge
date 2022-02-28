@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -31,6 +31,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MEDMOR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MOR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -128,20 +132,27 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
                 isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isRelasjonMor(hovedperson) && !isRelasjonFar(hovedperson)) {
+                hovedperson.getForelderBarnRelasjon().isEmpty() &&
+                !isRelasjonForelder(hovedperson)) {
             throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
         }
     }
 
+    private boolean isRelasjonForelder(PersonDTO hovedperson) {
+
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon -> FORELDER == relasjon.getMinRolleForPerson() ||
+                        MOR == relasjon.getMinRolleForPerson() ||
+                        FAR == relasjon.getMinRolleForPerson() ||
+                        MEDMOR == relasjon.getMinRolleForPerson());
+    }
+
     private boolean isRelasjonMor(PersonDTO hovedperson) {
 
-        return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
-            Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
-            return barn.isPresent() &&
-                    barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
-                            forelderRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
-                                    forelderRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR);
-        });
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon ->
+                        MOR == relasjon.getMinRolleForPerson() ||
+                                MEDMOR == relasjon.getMinRolleForPerson());
     }
 
     private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO hovedperson) {
@@ -156,19 +167,17 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                     .build())
-                            .findFirst().get();
+                            .findFirst().orElse(null);
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     private boolean isRelasjonFar(PersonDTO hovedperson) {
 
-        return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
-            Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
-            return barn.isPresent() &&
-                    barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
-                            forelderRelasjon.getRelatertPersonsRolle() == Rolle.FAR);
-        });
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon ->
+                        FAR == relasjon.getMinRolleForPerson());
     }
 
     private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO hovedperson) {
@@ -182,8 +191,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                     .build())
-                            .findFirst().get();
+                            .findFirst().orElse(null);
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
