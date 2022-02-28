@@ -42,6 +42,7 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	brukertype,
 	bestilling,
 	bestillingsListe,
 	loading,
@@ -116,7 +117,7 @@ export const PersonVisning = ({
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
-			{data.tpsf && <PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />}
+			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
 			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />
