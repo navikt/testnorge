@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 import static java.util.Objects.nonNull;
 
 
@@ -29,8 +26,7 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                         exchange
                 ).mapNotNull(oAuth2AuthorizedClient -> Token.builder()
                         .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
-//                        .expiredAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt()) //TODO: Revert til denne
-                        .expiredAt(LocalDateTime.now().toInstant(ZoneOffset.UTC))
+                        .expiredAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
                         .refreshTokenValue(nonNull(oAuth2AuthorizedClient.getRefreshToken()) ? oAuth2AuthorizedClient.getRefreshToken().getTokenValue() : null)
                         .clientCredentials(false)
                         .build()));
