@@ -10,7 +10,8 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 public class Token {
-    String value;
+    String accessTokenValue;
+    String refreshTokenValue;
     String userId;
     boolean clientCredentials;
     Instant expiredAt;
