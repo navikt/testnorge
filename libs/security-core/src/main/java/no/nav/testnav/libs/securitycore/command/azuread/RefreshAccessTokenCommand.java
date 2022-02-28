@@ -4,50 +4,41 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import org.slf4j.MDC;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Objects.nonNull;
+import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
-public class OnBehalfOfExchangeCommand implements ExchangeCommand {
+public class RefreshAccessTokenCommand implements ExchangeCommand {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final String scope;
-    private final Token token;
+    private final String refreshToken;
 
     @Override
     public Mono<AccessToken> call() {
-        String oid = token.getUserId();
-        if (oid != null) {
-            Map<String, String> contextMap = nonNull(MDC.getCopyOfContextMap()) ? MDC.getCopyOfContextMap() : new HashMap<>();
-            contextMap.put("oid", oid);
-            MDC.setContextMap(contextMap);
-        }
-
+        log.trace("Henter OAuth2 access token fra refresh token...");
         var body = BodyInserters
-                .fromFormData("scope", scope)
+                .fromFormData("scope", "openid")
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("assertion", token.getAccessTokenValue())
-                .with("requested_token_use", "on_behalf_of")
-                .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+                .with("refresh_token", refreshToken)
+                .with("grant_type", "refresh_token");
 
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
-        return webClient
-                .post()
+        log.trace("Access token opprettet for OAuth 2.0. ved bruk av refresh token");
+        return webClient.post()
                 .body(body)
                 .retrieve()
                 .bodyToMono(AccessToken.class)
+                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                        .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
+                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt.")))
                 .doOnError(
                         WebClientResponseException.class::isInstance,
                         throwable -> log.error(

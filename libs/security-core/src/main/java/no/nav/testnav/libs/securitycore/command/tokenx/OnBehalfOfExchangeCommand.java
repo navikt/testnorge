@@ -45,7 +45,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                                         .with("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
                                         .with("client_assertion", createClientAssertion(config.getToken_endpoint()))
                                         .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
-                                        .with("subject_token", token.getValue())
+                                        .with("subject_token", token.getAccessTokenValue())
                                         .with("audience", scope)
                                 ).retrieve()
                                 .bodyToMono(AccessToken.class)
