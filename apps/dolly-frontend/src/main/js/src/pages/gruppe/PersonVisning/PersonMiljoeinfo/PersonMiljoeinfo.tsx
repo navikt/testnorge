@@ -14,7 +14,7 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps)
 	if (!ident) return null
 
 	const state = bankIdBruker
-		? useAsync(async () => TpsMessagingApi.getTpsPersonInfo(ident, 'q1'), [])
+		? useAsync(async () => TpsMessagingApi.getTpsPersonInfo(ident, ['q1']), [])
 		: useAsync(async () => TpsMessagingApi.getTpsPersonInfoAllEnvs(ident), [])
 
 	return (
