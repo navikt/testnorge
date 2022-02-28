@@ -651,9 +651,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Hvem har ansvaret', Formatters.showLabel('foreldreansvar', item.ansvar)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-						obj('Type ansvarlig', Formatters.showLabel('typeAnsvarlig', item.typeAnsvarlig)),
+						obj(
+							'Type ansvarlig',
+							(item.ansvarlig && 'Eksisterende person') ||
+								(item.nyAnsvarlig && 'Ny person') ||
+								(item.ansvarligUtenIdentifikator && 'Person uten identifikator')
+						),
 						obj('Ansvarlig', Formatters.showLabel('foreldreansvar', item.ansvarlig)),
-						{ numberHeader: 'Ny ansvarlig' }, //TODO: Funker ikke
 						obj('Identtype', item.nyAnsvarlig?.identtype),
 						obj('Kjønn', item.nyAnsvarlig?.kjoenn),
 						obj('Født etter', Formatters.formatDate(item.nyAnsvarlig?.foedtEtter)),
@@ -667,7 +671,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Gradering', Formatters.showLabel('gradering', item.nyAnsvarlig?.gradering)),
 						obj('Syntetisk', item.nyAnsvarlig?.syntetisk && 'JA'),
 						obj('Har mellomnavn', item.nyAnsvarlig?.nyttNavn?.hasMellomnavn && 'JA'),
-						{ numberHeader: 'Ansvarlig uten identifikator' }, //TODO: Funker ikke
 						obj('Kjønn', item.ansvarligUtenIdentifikator?.kjoenn),
 						obj(
 							'Fødselsdato',
@@ -681,7 +684,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Fornavn', item.ansvarligUtenIdentifikator?.navn?.fornavn),
 						obj('Mellomnavn', item.ansvarligUtenIdentifikator?.navn?.mellomnavn),
 						obj('Etternavn', item.ansvarligUtenIdentifikator?.navn?.etternavn),
-						// ...personRelatertTil(item, 'nyAnsvarlig'),
 					]
 				}),
 			}

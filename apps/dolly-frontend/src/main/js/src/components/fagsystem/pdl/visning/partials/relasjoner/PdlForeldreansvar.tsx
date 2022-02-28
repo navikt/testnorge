@@ -11,7 +11,6 @@ export const PdlForeldreansvar = ({ data }) => {
 	if (!data || data.length === 0) return null
 
 	const PdlForeldreansvarVisning = ({ item, idx }) => {
-		console.log('iteem: ', item) //TODO - SLETT MEG
 		return (
 			<div className="person-visning_content" key={idx}>
 				<TitleValue title="Hvem har ansvaret" value={_capitalize(item.ansvar)} />
@@ -45,7 +44,7 @@ export const PdlForeldreansvar = ({ data }) => {
 			</div>
 		)
 	}
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	return (
 		<div>
 			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />

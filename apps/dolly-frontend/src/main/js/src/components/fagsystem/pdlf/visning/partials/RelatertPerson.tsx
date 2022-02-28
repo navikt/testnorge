@@ -35,7 +35,7 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 			setRelatertPersonPdl(response.data)
 		})
 	}
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	return (
 		<>
 			<div className="person-visning_content">
