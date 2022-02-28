@@ -51,9 +51,9 @@ public class AzureAdTokenExchange implements ExchangeToken {
         return tokenResolver
                 .getToken(exchange)
                 .flatMap(token -> {
-                    if (token.getExpiredAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(60))) {
+                    if (token.getExpiredAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
                         return refreshAccessToken(serverProperties, token.getRefreshTokenValue()).flatMap(accessToken -> {
-                            log.info("Accesstoken har utløpt! Prøver å hente nytt accesstoken fra refreshtoken..");
+                            log.info("Accesstoken har utløpt! Prøver å hente nytt accesstoken fra refreshtoken.");
                             return new OnBehalfOfExchangeCommand(
                                     webClient,
                                     clientCredential,
