@@ -19,7 +19,7 @@ public final class CommonKeysAndUtils {
     public static final String CONSUMER = "Dolly";
 
     private static final String[] SYNTH_ENV = {"q1", "q2", "q4", "t4"};
-    public static final Set<String> PDL_TPS_CREATE_ENV = Set.of("q4", "t6");
+    public static final Set<String> PDL_TPS_CREATE_ENV = Set.of("q4", "t6", "q2");
 
     public static String getSynthEnv() {
 
