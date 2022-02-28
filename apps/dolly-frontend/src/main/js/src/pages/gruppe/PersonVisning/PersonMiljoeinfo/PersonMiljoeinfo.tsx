@@ -8,7 +8,6 @@ import { TpsMessagingApi } from '~/service/Api'
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean
 	ident: string
-	miljoe: Array<string>
 }
 
 export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps) => {
