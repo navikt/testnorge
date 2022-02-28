@@ -25,5 +25,5 @@ public class FullmaktDTO extends DbVersjonDTO {
     private LocalDateTime gyldigTilOgMed;
     private List<String> omraader;
 
-    private Boolean isIdentExternal;
+    private Boolean eksisterendePerson;
 }

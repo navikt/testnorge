@@ -127,6 +127,9 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private void handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
 
+        kontaktinfo.setEksisterendePerson(nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
+
         if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
             kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
         }

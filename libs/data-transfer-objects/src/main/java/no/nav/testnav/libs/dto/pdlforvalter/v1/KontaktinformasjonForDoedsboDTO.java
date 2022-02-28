@@ -76,7 +76,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private LocalDateTime foedselsdato;
         private PersonNavnDTO navn;
 
-        private Boolean isIdentExternal;
+        private Boolean eksisterendePerson;
     }
 
     @Data

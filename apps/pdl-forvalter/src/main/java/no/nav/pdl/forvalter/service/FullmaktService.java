@@ -73,6 +73,8 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
     private void handle(FullmaktDTO fullmakt, String ident) {
 
+        fullmakt.setEksisterendePerson(isNotBlank(fullmakt.getMotpartsPersonident()));
+
         if (isBlank(fullmakt.getMotpartsPersonident())) {
 
             if (isNull(fullmakt.getNyFullmektig())) {
@@ -94,10 +96,6 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                     fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
-
-        } else {
-
-            fullmakt.setIsIdentExternal(true);
         }
 
         fullmakt.setMaster(Master.PDL);

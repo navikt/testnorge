@@ -168,7 +168,7 @@ public class ArtifactDeleteService {
                     deleteRelasjon(hovedPerson, doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
                     deleteRelasjon(fetchPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer()), hovedPerson.getIdent(), RelasjonType.AVDOEDD_FOR_KONTAKT);
 
-                    if (isNotTrue(doedsbo.getPersonSomKontakt().getIsIdentExternal())) {
+                    if (isNotTrue(doedsbo.getPersonSomKontakt().getEksisterendePerson())) {
                         personService.deletePerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer());
                     }
                 });
@@ -312,7 +312,7 @@ public class ArtifactDeleteService {
                     deleteRelasjon(hovedPerson, fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
                     deleteRelasjon(fetchPerson(fullmakt.getMotpartsPersonident()), hovedPerson.getIdent(), RelasjonType.FULLMAKTSGIVER);
 
-                    if (isNotTrue(fullmakt.getIsIdentExternal())) {
+                    if (isNotTrue(fullmakt.getEksisterendePerson())) {
                         personService.deletePerson(fullmakt.getMotpartsPersonident());
                     }
                 });
@@ -334,7 +334,7 @@ public class ArtifactDeleteService {
                     deleteRelasjon(hovedPerson, vergemaal.getVergeIdent(), RelasjonType.VERGE);
                     deleteRelasjon(fetchPerson(vergemaal.getVergeIdent()), hovedPerson.getIdent(), RelasjonType.VERGE_MOTTAKER);
 
-                    if (isNotTrue(vergemaal.getIsIdentExternal())) {
+                    if (isNotTrue(vergemaal.getEksisterendePerson())) {
                         personService.deletePerson(vergemaal.getVergeIdent());
                     }
                 });

@@ -40,10 +40,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Service
@@ -260,7 +267,7 @@ public class ArtifactUpdateService {
         forelderBarnRelasjonService.validate(oppdatertRelasjon);
         forelderBarnRelasjonService.convert(person.getPerson());
 
-        if (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
+        if (nonNull(tidligereRelatert) && !tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
                 !tidligereMinRolle.equals(oppdatertRelasjon.getMinRolleForPerson()) ||
                 !tidligereRelatertRolle.equals(oppdatertRelasjon.getRelatertPersonsRolle())) {
 
@@ -287,11 +294,27 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
+        var eksisterendeInfo = id > 0 && id <= person.getPerson().getKontaktinformasjonForDoedsbo().size() ?
+                person.getPerson().getKontaktinformasjonForDoedsbo().get(id - 1) : null;
+
+        var tidligereRelatert = nonNull(eksisterendeInfo) && nonNull(eksisterendeInfo.getPersonSomKontakt()) ?
+                eksisterendeInfo.getPersonSomKontakt().getIdentifikasjonsnummer() : null;
+        var isEksisterendePerson = nonNull(eksisterendeInfo) && nonNull(eksisterendeInfo.getPersonSomKontakt()) ?
+                eksisterendeInfo.getPersonSomKontakt().getEksisterendePerson() : null;
+
         person.getPerson().setKontaktinformasjonForDoedsbo(
                 updateArtifact(person.getPerson().getKontaktinformasjonForDoedsbo(), oppdatertInformasjon, id, "KontaktinformasjonForDoedsbo"));
 
         kontaktinformasjonForDoedsboService.validate(oppdatertInformasjon);
         kontaktinformasjonForDoedsboService.convert(person.getPerson());
+
+        if (nonNull(tidligereRelatert) && (isNull(oppdatertInformasjon.getPersonSomKontakt()) ||
+                !tidligereRelatert.equals(oppdatertInformasjon.getPersonSomKontakt().getIdentifikasjonsnummer()))) {
+
+            deleteRelasjon(person, tidligereRelatert, KONTAKT_FOR_DOEDSBO);
+            deleteRelasjon(getPerson(tidligereRelatert), ident, AVDOEDD_FOR_KONTAKT);
+            deletePerson(tidligereRelatert, isEksisterendePerson);
+        }
     }
 
     public void updateUtenlandskIdentifikasjonsnummer(String ident, Integer id, UtenlandskIdentifikasjonsnummerDTO oppdatertIdentifikasjon) {
@@ -427,22 +450,46 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
+        var tidligereRelatert = id > 0 && id <= person.getPerson().getFullmakt().size() ?
+                person.getPerson().getFullmakt().get(id - 1).getMotpartsPersonident() : null;
+        var isEksisterendePerson = id > 0 && id <= person.getPerson().getFullmakt().size() ?
+                person.getPerson().getFullmakt().get(id - 1).getEksisterendePerson() : null;
+
         person.getPerson().setFullmakt(
                 updateArtifact(person.getPerson().getFullmakt(), oppdatertFullmakt, id, "Fullmakt"));
 
         fullmaktService.validate(oppdatertFullmakt);
         fullmaktService.convert(person.getPerson());
+
+        if (nonNull(tidligereRelatert) && !oppdatertFullmakt.getMotpartsPersonident().equals(tidligereRelatert)) {
+
+            deleteRelasjon(person, tidligereRelatert, FULLMEKTIG);
+            deleteRelasjon(getPerson(tidligereRelatert), ident, FULLMAKTSGIVER);
+            deletePerson(tidligereRelatert, isEksisterendePerson);
+        }
     }
 
     public void updateVergemaal(String ident, Integer id, VergemaalDTO oppdatertVergemaal) {
 
         var person = getPerson(ident);
 
+        var tidligereRelatert = id > 0 && id <= person.getPerson().getVergemaal().size() ?
+                person.getPerson().getVergemaal().get(id - 1).getVergeIdent() : null;
+        var isEksisterendePerson = id > 0 && id <= person.getPerson().getVergemaal().size() ?
+                person.getPerson().getVergemaal().get(id - 1).getEksisterendePerson() : null;
+
         person.getPerson().setVergemaal(
                 updateArtifact(person.getPerson().getVergemaal(), oppdatertVergemaal, id, "Vergemaal"));
 
         vergemaalService.validate(oppdatertVergemaal);
         vergemaalService.convert(person.getPerson());
+
+        if (nonNull(tidligereRelatert) && !oppdatertVergemaal.getVergeIdent().equals(tidligereRelatert)) {
+
+            deleteRelasjon(person, tidligereRelatert, VERGE);
+            deleteRelasjon(getPerson(tidligereRelatert), ident, VERGE_MOTTAKER);
+            deletePerson(tidligereRelatert, isEksisterendePerson);
+        }
     }
 
     public void updateSikkerhetstiltak(String ident, Integer id, SikkerhetstiltakDTO oppdatertSikkerhetstiltak) {
