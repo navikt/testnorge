@@ -24,8 +24,9 @@ abstract class JwtResolver {
                 .doOnError(throwable -> log.error("Klarte ikke hente Jwt Auth Token: ", throwable))
                 .doOnSuccess(jwtAuthenticationToken -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
+                    log.info("credentials: {}", credentials);
                     Instant expiresAt = credentials.getExpiresAt();
-                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
+                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(60))) {
                         throw new CredentialsExpiredException("Jwt er utloept");
                     }
                 });

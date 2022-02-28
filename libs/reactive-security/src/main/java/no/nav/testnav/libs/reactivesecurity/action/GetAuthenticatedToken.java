@@ -24,14 +24,14 @@ public class GetAuthenticatedToken extends JwtResolver implements Callable<Mono<
                             .map(jwt -> Token.builder()
                                     .clientCredentials(false)
                                     .userId(jwt.getTokenAttributes().get("pid").toString())
-                                    .value(jwt.getToken().getTokenValue())
+                                    .accessTokenValue(jwt.getToken().getTokenValue())
                                     .expiredAt(jwt.getToken().getExpiresAt())
                                     .build());
                     case AZURE_AD -> getJwtAuthenticationToken()
                             .map(jwt -> Token.builder()
                                     .clientCredentials(jwt.getTokenAttributes().get("oid").equals(jwt.getTokenAttributes().get("sub")))
                                     .userId(jwt.getTokenAttributes().get("oid").toString())
-                                    .value(jwt.getToken().getTokenValue())
+                                    .accessTokenValue(jwt.getToken().getTokenValue())
                                     .expiredAt(jwt.getToken().getExpiresAt())
                                     .build());
                 });
