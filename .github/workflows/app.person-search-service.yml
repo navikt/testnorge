@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/person-search-service/oppdatere-soeke-alternativer'}}
     with:
       resource: 'apps/person-search-service/config.yml'
       app-name: 'person-search-service'
