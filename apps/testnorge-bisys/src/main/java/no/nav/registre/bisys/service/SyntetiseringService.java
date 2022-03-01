@@ -1,6 +1,5 @@
 package no.nav.registre.bisys.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -10,36 +9,31 @@ import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.format.DateTimeFormat;
 
-import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.registre.bisys.consumer.SyntBisysConsumer;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
-import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
+import no.nav.registre.bisys.provider.request.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.utils.Barn;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.consumers.hodejegeren.responses.Relasjon;
-import no.nav.registre.testnorge.consumers.hodejegeren.responses.RelasjonsResponse;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static no.nav.registre.bisys.service.utils.DateUtils.getBirthdate;
+import static no.nav.registre.bisys.service.utils.DateUtils.getAgeInMonths;
+
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SyntetiseringService {
 
-    private static final String KIBANA_X_STATUS = "x_status";
-
-    public static final String RELASJON_MOR = "MORA";
-    public static final String RELASJON_FAR = "FARA";
-
     public static final LocalDate MIN_MOTTATT_DATO = new LocalDate(2007, 1, 1);
-    public static final int MAX_AGE_BARN_AT_MOTTATTDATO = 20;
 
-    private final HodejegerenConsumer hodejegerenConsumer;
     private final SyntBisysConsumer syntBisysConsumer;
+    private final IdentService identService;
 
     @Value("${USE_HISTORICAL_MOTTATTDATO}")
     private boolean useHistoricalMottattdato;
@@ -47,10 +41,9 @@ public class SyntetiseringService {
     public List<SyntetisertBidragsmelding> generateBidragsmeldinger(
             SyntetiserBisysRequest syntetiserBisysRequest) throws SyntetisertBidragsmeldingException {
 
-        List<String> identerMedFoedselsmelding = finnFoedteIdenter(syntetiserBisysRequest.getAvspillergruppeId());
-        List<Barn> utvalgteIdenter = selectValidUids(
+        List<Barn> utvalgteIdenter = identService.selectValidUids(
                 syntetiserBisysRequest.getAntallNyeIdenter(),
-                identerMedFoedselsmelding,
+                syntetiserBisysRequest.getAvspillergruppeId(),
                 syntetiserBisysRequest.getMiljoe());
 
         if (utvalgteIdenter.size() < syntetiserBisysRequest.getAntallNyeIdenter()) {
@@ -71,55 +64,11 @@ public class SyntetiseringService {
         }
     }
 
-    private List<Barn> selectValidUids(
-            int antallIdenter, List<String> identerMedFoedselsmelding, String miljoe) {
-        List<Barn> utvalgteIdenter = new ArrayList<>();
-
-        for (String ident : identerMedFoedselsmelding) {
-
-            if (isBarnTooOld(ident)) {
-                continue;
-            }
-
-            RelasjonsResponse relasjonsResponse = finnRelasjonerTilIdent(ident, miljoe);
-            List<Relasjon> relasjoner = relasjonsResponse.getRelasjoner();
-
-            String morFnr = "";
-            String farFnr = "";
-
-            for (Relasjon relasjon : relasjoner) {
-                if (RELASJON_MOR.equals(relasjon.getTypeRelasjon())) {
-                    morFnr = relasjon.getFnrRelasjon();
-                } else if (RELASJON_FAR.equals(relasjon.getTypeRelasjon())) {
-                    farFnr = relasjon.getFnrRelasjon();
-                }
-            }
-
-            if (!morFnr.isEmpty() && !farFnr.isEmpty()) {
-                utvalgteIdenter.add(Barn.builder().fnr(ident).morFnr(morFnr).farFnr(farFnr).build());
-            }
-
-            if (utvalgteIdenter.size() >= antallIdenter) {
-                break;
-            }
-        }
-
-        return utvalgteIdenter;
-    }
 
     private void setRelationsInBidragsmeldinger(
             List<Barn> utvalgteIdenter, List<SyntetisertBidragsmelding> bidragsmeldinger) {
         for (SyntetisertBidragsmelding bidragsmelding : bidragsmeldinger) {
             finalizeBidragsmeldinger(utvalgteIdenter, bidragsmelding);
-        }
-    }
-
-    private boolean isBarnTooOld(String baFnr) {
-        LocalDate birthdate = getBirthdate(baFnr);
-        if (useHistoricalMottattdato) {
-            return birthdate.isBefore(MIN_MOTTATT_DATO.minusYears(MAX_AGE_BARN_AT_MOTTATTDATO));
-        } else {
-            return birthdate.isBefore(LocalDate.now().minusYears(MAX_AGE_BARN_AT_MOTTATTDATO));
         }
     }
 
@@ -276,18 +225,6 @@ public class SyntetiseringService {
         return Optional.empty();
     }
 
-    private int getAgeInMonths(String baFnr, LocalDate dateMeasured) {
-        LocalDate fodselsdato = getBirthdate(baFnr);
-
-        return Months.monthsBetween(fodselsdato.dayOfMonth().withMinimumValue(), dateMeasured.dayOfMonth().withMinimumValue()).getMonths();
-    }
-
-    private LocalDate getBirthdate(String baFnr) {
-        String birthdateStr = baFnr.substring(0, 6);
-        LocalDate birthdate = LocalDate.parse(birthdateStr, DateTimeFormat.forPattern("ddMMyy"));
-        log.trace("Barn {} was born on {}", baFnr, birthdate);
-        return birthdate;
-    }
 
     /**
      * Look for BA that is valid age range
@@ -328,13 +265,4 @@ public class SyntetiseringService {
         return withinUpperBound && withinLowerBound;
     }
 
-    @Timed(value = "bisys.resource.latency", extraTags = {"operation", "hodejegeren"})
-    private List<String> finnFoedteIdenter(Long avspillergruppeId) {
-        return hodejegerenConsumer.getFoedte(avspillergruppeId);
-    }
-
-    @Timed(value = "bisys.resource.latency", extraTags = {"operation", "hodejegeren"})
-    public RelasjonsResponse finnRelasjonerTilIdent(String ident, String miljoe) {
-        return hodejegerenConsumer.getRelasjoner(ident, miljoe);
-    }
 }

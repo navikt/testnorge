@@ -13,7 +13,7 @@ import java.util.List;
 import no.nav.registre.bisys.consumer.BidragsmeldingConsumer;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
-import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
+import no.nav.registre.bisys.provider.request.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.SyntetiseringService;
 
 @RestController
