@@ -25,11 +25,12 @@ public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements 
                 .flatMap(oAuth2AuthenticationToken -> auth2AuthorizedClientService.loadAuthorizedClient(
                                 oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
                                 oAuth2AuthenticationToken.getPrincipal().getName())
-                        .map(oAuth2AuthorizedClient -> {
+                        .mapNotNull(oAuth2AuthorizedClient -> {
                                     if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
                                         log.warn("Auth client har utløpt, fjerner den som authenticated");
                                         oAuth2AuthenticationToken.setAuthenticated(false);
                                         oAuth2AuthenticationToken.eraseCredentials();
+                                        return null;
                                     }
                                     return Token.builder()
                                             .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())

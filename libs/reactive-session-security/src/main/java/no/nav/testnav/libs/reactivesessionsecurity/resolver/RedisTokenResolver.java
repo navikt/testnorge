@@ -27,11 +27,12 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                         authenticationToken.getAuthorizedClientRegistrationId(),
                         authenticationToken,
                         exchange
-                ).map(oAuth2AuthorizedClient -> {
+                ).mapNotNull(oAuth2AuthorizedClient -> {
                     if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
                         log.warn("Auth client har utløpt, fjerner den som authenticated");
                         authenticationToken.setAuthenticated(false);
                         authenticationToken.eraseCredentials();
+                        return null;
                     }
                     return Token.builder()
                             .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
