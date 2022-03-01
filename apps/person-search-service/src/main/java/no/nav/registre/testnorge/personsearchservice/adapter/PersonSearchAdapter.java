@@ -39,6 +39,10 @@ public class PersonSearchAdapter {
     private final ObjectMapper objectMapper;
     private final RestHighLevelClient client;
 
+    private static final String FORELDER_BARN_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
+    private static final String RELATERT_PERSONS_ROLLE_PATH = FORELDER_BARN_RELASJON_PATH + ".relatertPersonsRolle";
+
+
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
             try {
@@ -251,8 +255,8 @@ public class PersonSearchAdapter {
                 .ifPresent(value -> {
                     if (value.getBarn() != null && value.getBarn()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.forelderBarnRelasjon",
-                                QueryBuilders.matchQuery("hentPerson.forelderBarnRelasjon.relatertPersonsRolle", "BARN"),
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "BARN"),
                                 ScoreMode.Avg
                         )).must();
                     }
@@ -265,15 +269,15 @@ public class PersonSearchAdapter {
                     }
                     if (value.getFar() != null && value.getFar()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.forelderBarnRelasjon",
-                                QueryBuilders.matchQuery("hentPerson.forelderBarnRelasjon.relatertPersonsRolle", "FAR"),
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "FAR"),
                                 ScoreMode.Avg
                         )).must();
                     }
                     if (value.getMor() != null && value.getMor()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.forelderBarnRelasjon",
-                                QueryBuilders.matchQuery("hentPerson.forelderBarnRelasjon.relatertPersonsRolle", "MOR"),
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "MOR"),
                                 ScoreMode.Avg
                         )).must();
                     }
