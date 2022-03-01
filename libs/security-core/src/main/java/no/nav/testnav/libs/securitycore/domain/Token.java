@@ -15,8 +15,7 @@ import static java.util.Objects.nonNull;
 @Builder
 @AllArgsConstructor
 public class Token {
-    String accessTokenValue;
-    String refreshTokenValue;
+    String value;
     String userId;
     boolean clientCredentials;
     Instant expiredAt;
