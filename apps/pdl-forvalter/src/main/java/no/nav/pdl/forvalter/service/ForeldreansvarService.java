@@ -50,8 +50,12 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             "og 'ansvarligUtenIdentifikator' kan benyttes";
     private static final String INVALID_ANSVARLIG_PERSON_EXCEPTION = "Foreldreansvar: Ansvarlig person %s finnes ikke";
     private static final String INVALID_NAVN_ERROR = "Foreldreansvar: Navn er ikke i liste over gyldige verdier";
-    private static final String INVALID_RELASJON_EXCEPTION = "Foreldreansvar: barn mangler / " +
-            "barnets foreldrerelasjon ikke funnet";
+    private static final String INVALID_RELASJON_MOR_EXCEPTION = "Foreldreansvar: barn mangler / " +
+            "barnets foreldrerelasjon til mor ikke funnet";
+    private static final String INVALID_RELASJON_FAR_EXCEPTION = "Foreldreansvar: barn mangler / " +
+            "barnets foreldrerelasjon til far ikke funnet";
+    private static final String INVALID_RELASJON_FELLES_EXCEPTION = "Foreldreansvar: barn mangler / " +
+            "barnets foreldrerelasjon til mor og/eller far ikke funnet";
 
     private final static Random random = new SecureRandom();
     private final PersonRepository personRepository;
@@ -114,22 +118,51 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             }
         }
 
-        if (foreldreansvar.getAnsvar() != Ansvar.ANDRE  &&
+        if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
                 isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isForelderBarnRelasjon(hovedperson)) {
-            throw new InvalidRequestException(INVALID_RELASJON_EXCEPTION);
+                !isRelasjonMor(hovedperson)) {
+            throw new InvalidRequestException(INVALID_RELASJON_MOR_EXCEPTION);
+        }
+
+        if ((foreldreansvar.getAnsvar() == Ansvar.FAR) &&
+                isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+                !isRelasjonFar(hovedperson)) {
+            throw new InvalidRequestException(INVALID_RELASJON_FAR_EXCEPTION);
+        }
+
+        if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
+                isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
+                hovedperson.getForelderBarnRelasjon().isEmpty() &&
+                !isRelasjonForelder(hovedperson)) {
+            throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
         }
     }
 
-    private List<BarnRelasjon> getForeldreBarnRelasjoner(PersonDTO hovedperson) {
+    private boolean isRelasjonForelder(PersonDTO hovedperson) {
+
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon -> FORELDER == relasjon.getMinRolleForPerson() ||
+                        MOR == relasjon.getMinRolleForPerson() ||
+                        FAR == relasjon.getMinRolleForPerson() ||
+                        MEDMOR == relasjon.getMinRolleForPerson());
+    }
+
+    private boolean isRelasjonMor(PersonDTO hovedperson) {
+
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon ->
+                        MOR == relasjon.getMinRolleForPerson() ||
+                                MEDMOR == relasjon.getMinRolleForPerson());
+    }
+
+    private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .map(barnRelasjon -> {
                     DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
                     return barn.getPerson().getForelderBarnRelasjon().stream()
                             .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
-                                    foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR ||
-                                    foreldreRelasjon.getRelatertPersonsRolle() == FAR)
+                                    foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
                             .map(foreldreRelasjon -> BarnRelasjon.builder()
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
@@ -140,22 +173,43 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .collect(Collectors.toList());
     }
 
-    private boolean isForelderBarnRelasjon(PersonDTO hovedperson) {
+    private boolean isRelasjonFar(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon ->
-                        FAR == relasjon.getMinRolleForPerson() ||
-                                MOR == relasjon.getMinRolleForPerson() ||
-                                MEDMOR == relasjon.getMinRolleForPerson() ||
-                                FORELDER == relasjon.getMinRolleForPerson());
+                        FAR == relasjon.getMinRolleForPerson());
+    }
+
+    private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO hovedperson) {
+
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .map(barnRelasjon -> {
+                    DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
+                    return barn.getPerson().getForelderBarnRelasjon().stream()
+                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
+                            .map(foreldreRelasjon -> BarnRelasjon.builder()
+                                    .barn(barn)
+                                    .ansvarlig(foreldreRelasjon.getRelatertPerson())
+                                    .build())
+                            .findFirst().orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     private void handle(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
 
-        if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR ||
-        foreldreansvar.getAnsvar() == Ansvar.FAR || foreldreansvar.getAnsvar() == Ansvar.FELLES) {
+        if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
+            var barnMorRelasjoner = getBarnMorRelasjoner(hovedperson);
+            setRelasjoner(barnMorRelasjoner, foreldreansvar);
 
-            var barnFellesRelasjoner = getForeldreBarnRelasjoner(hovedperson);
+        } else if (foreldreansvar.getAnsvar() == Ansvar.FAR) {
+            var barnFarRelasjoner = getBarnFarRelasjoner(hovedperson);
+            setRelasjoner(barnFarRelasjoner, foreldreansvar);
+
+        } else if (foreldreansvar.getAnsvar() == Ansvar.FELLES) {
+            var barnFellesRelasjoner = getBarnMorRelasjoner(hovedperson);
+            barnFellesRelasjoner.addAll(getBarnFarRelasjoner(hovedperson));
             setRelasjoner(barnFellesRelasjoner, foreldreansvar);
 
         } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
