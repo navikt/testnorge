@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -51,7 +52,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
                 .getToken(exchange)
                 .flatMap(token -> {
                     if (token.getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
-                        log.info("Accesstoken har utløpt!");
+                        return Mono.error(new AccessDeniedException("Access token har utloept"));
                     }
                     return new OnBehalfOfExchangeCommand(
                             webClient,

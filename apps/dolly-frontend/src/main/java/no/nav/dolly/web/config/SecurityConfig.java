@@ -61,8 +61,7 @@ public class SecurityConfig {
                 .anyExchange().authenticated()
                 .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationManager(authenticationManger)
-                        .authenticationSuccessHandler(authenticationSuccessHandler)
-                )
+                        .authenticationSuccessHandler(authenticationSuccessHandler))
                 .formLogin().loginPage("/login")
                 .and().logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
