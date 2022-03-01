@@ -66,7 +66,6 @@ public class PersonSearchAdapter {
         addUtflyttingQuery(queryBuilder, search);
         addInnflyttingQuery(queryBuilder, search);
         addIdentitetQueries(queryBuilder, search);
-        addBarnQueries(queryBuilder, search);
         addRelasjonQueries(queryBuilder, search);
         addPersonstatusQuery(queryBuilder, search);
 
@@ -128,9 +127,6 @@ public class PersonSearchAdapter {
 
     private void addTagsQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         queryBuilder.must(QueryBuilders.matchQuery("tags", search.getTag()));
-
-        Optional.ofNullable(search.getExcludeTag())
-                .ifPresent(value -> queryBuilder.mustNot(QueryBuilders.matchQuery("tags", value)));
 
         Optional.ofNullable(search.getExcludeTags())
                 .ifPresent(values -> {
@@ -244,27 +240,6 @@ public class PersonSearchAdapter {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.utenlandskIdentifikasjonsnummer",
                                 QueryBuilders.existsQuery("hentPerson.utenlandskIdentifikasjonsnummer.metadata"),
-                                ScoreMode.Avg
-                        )).must();
-                    }
-                });
-    }
-
-    private void addBarnQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getBarn())
-                .ifPresent(value -> {
-                    if (value.getBarn() != null && value.getBarn()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.forelderBarnRelasjon",
-                                QueryBuilders.matchQuery("hentPerson.forelderBarnRelasjon.relatertPersonsRolle", "BARN"),
-                                ScoreMode.Avg
-                        )).must();
-                    }
-
-                    if (value.getDoedfoedtBarn() != null && value.getDoedfoedtBarn()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.doedfoedtBarn",
-                                QueryBuilders.existsQuery("hentPerson.doedfoedtBarn.metadata"),
                                 ScoreMode.Avg
                         )).must();
                     }
