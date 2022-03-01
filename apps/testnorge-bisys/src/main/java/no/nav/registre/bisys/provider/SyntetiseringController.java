@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.provider.rs;
+package no.nav.registre.bisys.provider;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import no.nav.registre.bisys.consumer.BidragsmeldingConsumer;
-import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.SyntetiseringService;

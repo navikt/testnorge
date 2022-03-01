@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.config.dev;
+package no.nav.registre.bisys.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
