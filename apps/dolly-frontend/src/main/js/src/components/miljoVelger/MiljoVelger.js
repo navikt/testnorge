@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { ErrorMessage, FieldArray } from 'formik'
-import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
@@ -62,28 +61,9 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 						}
 					}
 
-					const velgAlle = (type) => {
-						const c = filteredEnvironments[type].filter((f) => !isChecked(f.id)).map((a) => a.id)
-						const n = values.concat(c)
-						form.setFieldValue('environments', n)
-					}
-
-					const fjernAlle = (type) => {
-						form.setFieldValue(
-							'environments',
-							values.filter(
-								(id) =>
-									alleredeValgtMiljoe.includes(id) ||
-									!filteredEnvironments[type].map((a) => a.id).includes(id)
-							)
-						)
-					}
-
 					return order.map((type) => {
 						const category = filteredEnvironments[type]
 						if (!category) return null
-
-						const allDisabled = category.some((f) => f.disabled)
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
@@ -102,12 +82,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 										/>
 									))}
 								</div>
-								{!allDisabled && category.length > 1 && (
-									<div className="miljo-velger_buttons">
-										<LinkButton text="Velg alle" onClick={() => velgAlle(type)} />
-										<LinkButton text="Fjern alle" onClick={() => fjernAlle(type)} />
-									</div>
-								)}
 							</fieldset>
 						)
 					})

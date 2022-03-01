@@ -190,10 +190,10 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private void getRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
-        if (relasjon.getRelatertPersonsRolle() == Rolle.BARN) {
-            relasjon.setMinRolleForPerson(
-                    KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? Rolle.FAR : Rolle.MOR);
-        } else {
+        if (Rolle.FORELDER == relasjon.getMinRolleForPerson()) {
+            relasjon.setMinRolleForPerson(KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? Rolle.FAR : Rolle.MOR);
+
+        } else if (Rolle.FORELDER == relasjon.getRelatertPersonsRolle()) {
             relasjon.setRelatertPersonsRolle(
                     KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == KVINNE ? Rolle.MOR : Rolle.FAR);
         }
