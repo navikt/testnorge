@@ -10,6 +10,10 @@ const Advarsler = {
 		'Ta kontakt med Dolly hvis feilen vedvarer.',
 	unknown_error:
 		'Ukjent feil oppsto og du ble logget ut. Ta kontakt med Dolly hvis feilen vedvarer.',
+	miljoe_error:
+		'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. Ta kontakt med Dolly hvis feilen vedvarer.',
+	azure_error:
+		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. Ta kontakt med Dolly hvis feilen vedvarer.',
 }
 
 const getAdvarsel: () => string = () => {

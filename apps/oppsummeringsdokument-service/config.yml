@@ -27,7 +27,8 @@ spec:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
         - host: elastic-dolly-testdata-gjeter-nav-dev.aivencloud.com
-  elastic:
+        - host: opensearch-dolly-testdata-gjeter-nav-dev.aivencloud.com
+  openSearch:
     instance: testdata-gjeter
     access: admin
   tokenx:
@@ -57,6 +58,6 @@ spec:
       cpu: 1000m
       memory: 2048Mi
   envFrom:
-    - secret: teamdolly-elastic
+    - secret: teamdolly-opensearch
   ingresses:
     - "https://oppsummeringsdokument-service.dev.intern.nav.no"

@@ -26,11 +26,11 @@ export const Adressevisning = ({ boadresse }) => {
 
 	const matrikkel = (
 		<div>
-			{mellomnavn && <span>{`${mellomnavn}, `}</span>}
-			<span>{`${gardsnr}`}</span>
-			<span>{`/${bruksnr}`}</span>
-			{festenr && <span>{`/${festenr}`}</span>}
-			{undernr && <span>{`-${undernr}`}</span>}
+			{mellomnavn && <span>{`${mellomnavn}`}</span>}
+			<span>{`, gårdsnr. ${gardsnr}`}</span>
+			<span>{`, bruksnr. ${bruksnr}`}</span>
+			{festenr && <span>{`, festenr. ${festenr}`}</span>}
+			{undernr && <span>{`, undernr. ${undernr}`}</span>}
 		</div>
 	)
 

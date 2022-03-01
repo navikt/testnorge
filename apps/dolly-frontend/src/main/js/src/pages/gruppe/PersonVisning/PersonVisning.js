@@ -28,10 +28,21 @@ import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 
+const getIdenttype = (ident) => {
+	if (parseInt(ident.charAt(0)) > 3) {
+		return 'DNR'
+	} else if (parseInt(ident.charAt(2)) % 4 >= 2) {
+		return 'BOST'
+	} else {
+		return 'FNR'
+	}
+}
+
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	brukertype,
 	bestilling,
 	bestillingsListe,
 	loading,
@@ -55,7 +66,9 @@ export const PersonVisning = ({
 			<div className="person-visning_actions">
 				{!iLaastGruppe && (
 					<Button
-						onClick={() => leggTilPaaPerson(data, bestillingsListe, ident.master)}
+						onClick={() =>
+							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+						}
 						kind="add-circle"
 					>
 						LEGG TIL/ENDRE
@@ -104,7 +117,7 @@ export const PersonVisning = ({
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
-			{data.tpsf && <PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />}
+			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
 			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} />

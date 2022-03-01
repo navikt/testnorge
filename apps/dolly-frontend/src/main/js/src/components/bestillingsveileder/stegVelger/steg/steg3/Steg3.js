@@ -10,20 +10,28 @@ import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-export const Steg3 = ({ formikBag }) => {
+export const Steg3 = ({ formikBag, brukertype }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+	const bankIdBruker = brukertype === 'BANKID'
+
+	const alleredeValgtMiljoe = () => {
+		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
+			return ['q1']
+		}
+		return []
+	}
 
 	useEffect(() => {
 		if (importTestnorge) {
 			if (harAvhukedeAttributter(formikBag.values)) {
-				formikBag.setFieldValue('environments', [])
+				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', '')
 		} else {
-			formikBag.setFieldValue('environments', [])
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 		}
 	}, [])
 
@@ -42,6 +50,8 @@ export const Steg3 = ({ formikBag }) => {
 				<MiljoVelger
 					bestillingsdata={formikBag.values}
 					heading="Hvilke miljøer vil du opprette i?"
+					bankIdBruker={bankIdBruker}
+					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
 			{importTestnorge && <VelgGruppe formikBag={formikBag} />}

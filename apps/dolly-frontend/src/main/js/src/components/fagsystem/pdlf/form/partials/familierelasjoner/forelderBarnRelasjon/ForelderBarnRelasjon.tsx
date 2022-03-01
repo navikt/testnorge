@@ -65,15 +65,23 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }
 						)}
 
 						{(erBarn && (
-							<FormikCheckbox
-								name={`${path}.partnerErIkkeForelder`}
-								label="Partner ikke forelder"
-								checkboxMargin
-							/>
+							<>
+								<FormikSelect
+									name={`${path}.minRolleForPerson`}
+									label="Rolle for barn"
+									options={Options('foreldreTypePDL')}
+									isClearable={false}
+								/>
+								<FormikCheckbox
+									name={`${path}.partnerErIkkeForelder`}
+									label="Partner ikke forelder"
+									checkboxMargin
+								/>
+							</>
 						)) || (
 							<FormikSelect
 								name={`${path}.relatertPersonsRolle`}
-								label="ForeldreType"
+								label="Foreldretype"
 								options={Options('foreldreTypePDL')}
 								isClearable={false}
 							/>

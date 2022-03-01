@@ -9,6 +9,7 @@ export const fixNamesAndDuplicatesOfStatus = (statusListe: []) => {
 						miljo: string
 						melding: string
 						orgnummer: string
+						identer: Array<string>
 					}) => {
 						if (status.id?.includes('TPS_MESSAGING')) {
 							status.navn = 'Tjenestebasert personsystem (TPS)'
@@ -16,7 +17,9 @@ export const fixNamesAndDuplicatesOfStatus = (statusListe: []) => {
 						return status
 					}
 				)
-				.map((v) => [JSON.stringify([v.id, v.navn, v.miljo]), v])
+				.map((v) => {
+					return [JSON.stringify([v.navn, v.miljo, v.identer]), v]
+				})
 		).values(),
 	]
 }

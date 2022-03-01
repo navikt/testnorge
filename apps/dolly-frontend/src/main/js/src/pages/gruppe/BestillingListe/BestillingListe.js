@@ -22,18 +22,19 @@ export default function BestillingListe({
 	searchActive,
 	isFetchingBestillinger,
 	iLaastGruppe,
+	brukertype,
 }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
 
 	if (bestillinger.length === 0) {
-		return (
-			<ContentContainer>
-				{searchActive
-					? 'Søket gav ingen resultater.'
-					: 'Trykk på opprett personer-knappen for å starte en bestilling.'}
-			</ContentContainer>
-		)
+		let infoTekst = 'Trykk på opprett personer-knappen for å starte en bestilling.'
+		if (searchActive) infoTekst = 'Søket gav ingen resultater.'
+		else if (brukertype === 'BANKID')
+			infoTekst =
+				'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
+
+		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
 	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])

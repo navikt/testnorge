@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
@@ -36,12 +37,14 @@ public class IdentService {
 
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
-    private final MiljoerService miljoerService;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
     private final XmlMapper xmlMapper;
 
-    public IdentService(ServicerutineConsumer servicerutineConsumer, MiljoerService miljoerService, XmlMapper xmlMapper) throws JAXBException {
+    public IdentService(ServicerutineConsumer servicerutineConsumer,
+                        TestmiljoerServiceConsumer testmiljoerServiceConsumer,
+                        XmlMapper xmlMapper) throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
-        this.miljoerService = miljoerService;
+        this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
         this.xmlMapper = xmlMapper;
     }
@@ -63,7 +66,8 @@ public class IdentService {
             throw new BadRequestException(BAD_REQUEST);
         }
 
-        var tpsResponse = readFromTps(identer, isNull(miljoer) ? miljoerService.getMiljoer() : miljoer, false);
+        var tpsResponse = readFromTps(identer, isNull(miljoer) ?
+                testmiljoerServiceConsumer.getMiljoer() : miljoer, false);
 
         if (isTrue(includeProd)) {
             tpsResponse.put(PROD, readFromTps(identer, List.of(PROD_LIKE_ENV), true).get(PROD_LIKE_ENV));

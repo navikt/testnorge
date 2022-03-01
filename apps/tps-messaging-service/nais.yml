@@ -72,5 +72,8 @@ spec:
         - application: dolly-backend
           cluster: dev-fss
     outbound:
+      rules:
+        - application: testnav-miljoer-service
+          cluster: dev-gcp
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

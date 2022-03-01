@@ -22,9 +22,9 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.BOST;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
@@ -112,7 +112,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
         return nyPerson;
@@ -122,7 +121,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     public void validate(IdentRequestDTO request) {
 
         if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
-                DNR != request.getIdenttype() && BOST != request.getIdenttype()) {
+                DNR != request.getIdenttype() && NPID != request.getIdenttype()) {
             throw new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID);
         }
 
