@@ -1,7 +1,7 @@
 package no.nav.registre.bisys.consumer.command;
 
 import lombok.AllArgsConstructor;
-import no.nav.registre.bisys.consumer.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 

@@ -14,6 +14,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-bisys
+  person-search-service:
+    url: https://person-search-service.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: person-search-service
 
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 

@@ -3,7 +3,7 @@ package no.nav.registre.bisys.consumer;
 import io.micrometer.core.annotation.Timed;
 import no.nav.registre.bisys.consumer.command.GetSyntBisysMeldingerCommand;
 import no.nav.registre.bisys.consumer.credential.SyntBisysProperties;
-import no.nav.registre.bisys.consumer.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;

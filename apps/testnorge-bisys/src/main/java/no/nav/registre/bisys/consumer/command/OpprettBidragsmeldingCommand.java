@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import no.nav.registre.bisys.consumer.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import java.time.Duration;
 
 @Slf4j

@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 import no.nav.registre.bisys.consumer.command.OpprettBidragsmeldingCommand;
-import no.nav.registre.bisys.consumer.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 
 @Component
 public class BidragsmeldingConsumer {

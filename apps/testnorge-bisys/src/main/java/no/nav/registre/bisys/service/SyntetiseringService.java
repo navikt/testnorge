@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.registre.bisys.consumer.SyntBisysConsumer;
-import no.nav.registre.bisys.consumer.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
 import no.nav.registre.bisys.service.utils.Barn;

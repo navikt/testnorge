@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.responses;
+package no.nav.registre.bisys.consumer.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
