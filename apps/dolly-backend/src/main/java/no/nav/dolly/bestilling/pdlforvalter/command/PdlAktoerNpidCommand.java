@@ -3,10 +3,12 @@ package no.nav.dolly.bestilling.pdlforvalter.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -34,6 +36,8 @@ public class PdlAktoerNpidCommand implements Callable<Mono<Void>> {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(npid))
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class)
+                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
+                .onErrorResume(WebClientResponseException.class, error -> Mono.empty());
     }
 }
