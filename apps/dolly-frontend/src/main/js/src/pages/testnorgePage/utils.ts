@@ -41,42 +41,54 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		identer = identer.filter((item: string) => item)
 	}
 
-	return {
-		page: 1,
-		pageSize: 100,
-		randomSeed: randomSeed,
-		terminateAfter: 100,
-		kjoenn: values?.personinformasjon?.diverse?.kjoenn,
-		foedsel: {
-			fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
-			tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
-		},
-		statsborgerskap: {
-			land: values?.personinformasjon?.statsborgerskap?.land,
-		},
-		sivilstand: {
-			type: values?.personinformasjon?.sivilstand?.type,
-		},
-		alder: {
-			fra: values?.personinformasjon?.alder?.fra,
-			til: values?.personinformasjon?.alder?.til,
-		},
-		identer: identer,
-		identitet: {
-			falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
-			utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
-		},
-		barn: {
-			barn: values?.personinformasjon?.barn?.barn,
-			doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
-		},
-		utflyttingFraNorge: {
-			utflyttet: values?.personinformasjon?.diverse?.utflyttet,
-		},
-		innflyttingTilNorge: {
-			innflytting: values?.personinformasjon?.diverse?.innflyttet,
-		},
-		tag: 'TESTNORGE',
-		excludeTag: 'DOLLY',
+	if (identer.length > 0) {
+		return {
+			page: 1,
+			pageSize: 100,
+			randomSeed: randomSeed,
+			terminateAfter: 100,
+			identer: identer,
+			tag: 'TESTNORGE',
+			excludeTag: 'DOLLY',
+		}
+	} else {
+		return {
+			page: 1,
+			pageSize: 100,
+			randomSeed: randomSeed,
+			terminateAfter: 100,
+			kjoenn: values?.personinformasjon?.diverse?.kjoenn,
+			foedsel: {
+				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
+				tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
+			},
+			statsborgerskap: {
+				land: values?.personinformasjon?.statsborgerskap?.land,
+			},
+			sivilstand: {
+				type: values?.personinformasjon?.sivilstand?.type,
+			},
+			alder: {
+				fra: values?.personinformasjon?.alder?.fra,
+				til: values?.personinformasjon?.alder?.til,
+			},
+			identer: identer,
+			identitet: {
+				falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
+				utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
+			},
+			barn: {
+				barn: values?.personinformasjon?.barn?.barn,
+				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
+			},
+			utflyttingFraNorge: {
+				utflyttet: values?.personinformasjon?.diverse?.utflyttet,
+			},
+			innflyttingTilNorge: {
+				innflytting: values?.personinformasjon?.diverse?.innflyttet,
+			},
+			tag: 'TESTNORGE',
+			excludeTag: 'DOLLY',
+		}
 	}
 }

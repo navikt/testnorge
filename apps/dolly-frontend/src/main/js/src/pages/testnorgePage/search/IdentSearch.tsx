@@ -60,6 +60,13 @@ export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
 		if (identer.includes(idnr)) setError('Ident allerede valgt')
 	}
 
+	const handleKeyPress = (event: React.KeyboardEvent<any>) => {
+		if (event.key === 'Enter') {
+			const idnr = event.target?.value
+			if (idnr !== '' && validIdent(idnr)) addIdent()
+		}
+	}
+
 	return (
 		<div>
 			{identer?.length > 0 && (
@@ -84,6 +91,7 @@ export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
 				name={identPath}
 				value={ident}
 				onChange={handleChange}
+				onKeyPress={handleKeyPress}
 				feil={
 					error && {
 						feilmelding: error,
