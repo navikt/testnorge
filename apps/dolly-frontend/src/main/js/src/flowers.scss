@@ -1,0 +1,51 @@
+.flower {
+  width: 3vw;
+  height: 1vw;
+  background: #FFACD9;
+  border-radius: 50%;
+  position: absolute;
+  top: -5vh;
+}
+
+.flower::before {
+  content: "";
+  display: block;
+  width: inherit;
+  height: inherit;
+  background: #FFACD9;
+  border-radius: 50%;
+  transform: rotate(60deg);
+  position: absolute;
+}
+
+.flower::after {
+  content: "";
+  display: block;
+  width: inherit;
+  height: inherit;
+  background: #FFACD9;
+  border-radius: 50%;
+  transform: rotate(-60deg);
+}
+
+
+@keyframes flowerfall {
+  0% {
+    transform: translate3d(var(--left-ini), 5vh, 0);
+  }
+  100% {
+    transform: translate3d(var(--left-end), 100vh, 0);
+  }
+}
+
+@for $i from 1 through 30 {
+  .flower:nth-child(#{$i}) {
+    width: #{random(2)}vw;
+    height: #{random(2) * 0.33}vw;
+    --left-ini: #{random(20) - 10}vw;
+    --left-end: #{random(20) - 10}vw;
+    left: #{random(93)}vw;
+    animation: flowerfall #{5 + random(10)}s linear infinite;
+    animation-delay: -#{random(10)}s;
+  }
+}

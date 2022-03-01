@@ -12,6 +12,8 @@ import Halloween from '~/components/ui/background/backgrounds/Halloween.svg'
 import Snowing from '~/components/ui/background/backgrounds/Snowing.svg'
 // @ts-ignore
 import Fall from '~/components/ui/background/backgrounds/Fall.svg'
+// @ts-ignore
+import Spring from '~/components/ui/background/backgrounds/Spring.svg'
 
 export const SummerBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
@@ -55,6 +57,14 @@ export const HalloweenBackground = styled.div`
 
 export const FallBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Fall)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #cce4ee;
+`
+
+export const SpringBackground = styled.div`
+	background-image: url(data:image/svg+xml;base64,${btoa(Spring)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;

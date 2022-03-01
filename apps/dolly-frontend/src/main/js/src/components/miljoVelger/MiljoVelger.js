@@ -56,7 +56,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 					const onClick = (e) => {
 						const { id } = e.target
-						if (!alleredeValgtMiljoe.includes(id)) {
+						if (!alleredeValgtMiljoe?.includes(id)) {
 							isChecked(id) ? remove(values.indexOf(id)) : push(id)
 						}
 					}
