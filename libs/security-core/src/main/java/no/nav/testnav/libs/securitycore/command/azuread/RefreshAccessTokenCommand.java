@@ -2,9 +2,8 @@ package no.nav.testnav.libs.securitycore.command.azuread;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -12,17 +11,18 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RefreshAccessTokenCommand implements ExchangeCommand {
+public class RefreshAccessTokenCommand implements Callable {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final String scope;
     private final String refreshToken;
 
     @Override
-    public Mono<AccessToken> call() {
+    public Mono<OAuth2AccessTokenResponse> call() {
         log.trace("Henter OAuth2 access token fra refresh token...");
         var body = BodyInserters
                 .fromFormData("scope", "openid")
@@ -35,7 +35,7 @@ public class RefreshAccessTokenCommand implements ExchangeCommand {
         return webClient.post()
                 .body(body)
                 .retrieve()
-                .bodyToMono(AccessToken.class)
+                .bodyToMono(OAuth2AccessTokenResponse.class)
                 .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
                         .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
                         .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt.")))

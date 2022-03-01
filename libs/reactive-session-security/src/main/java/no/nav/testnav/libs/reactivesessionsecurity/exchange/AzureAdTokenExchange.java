@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -52,7 +53,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
                 .getToken(exchange)
                 .flatMap(token -> {
                     if (token.getExpiredAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
-                        return refreshAccessToken(serverProperties, token.getRefreshTokenValue()).flatMap(accessToken -> {
+                        return refreshAccessToken(serverProperties, token.getRefreshTokenValue()).log().flatMap(response -> {
                             log.info("Accesstoken har utløpt! Prøver å hente nytt accesstoken fra refreshtoken.");
                             return new OnBehalfOfExchangeCommand(
                                     webClient,
@@ -61,7 +62,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
                                     Token.builder()
                                             .userId(token.getUserId())
                                             .clientCredentials(token.isClientCredentials())
-                                            .accessTokenValue(accessToken.getTokenValue())
+                                            .accessTokenValue(response.getAccessToken().getTokenValue())
                                             .refreshTokenValue(token.getRefreshTokenValue())
                                             .expiredAt(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(600))
                                             .build()
@@ -82,7 +83,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
         return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
     }
 
-    public Mono<AccessToken> refreshAccessToken(ServerProperties serverProperties, String refreshToken) {
+    public Mono<OAuth2AccessTokenResponse> refreshAccessToken(ServerProperties serverProperties, String refreshToken) {
         return new RefreshAccessTokenCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), refreshToken).call();
     }
 
