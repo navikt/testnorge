@@ -71,8 +71,8 @@ public class AzureAdTokenService implements TokenService {
         return getAuthenticatedToken
                 .call()
                 .flatMap(token -> {
-                    if (token.getExpiredAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
-                        log.warn("AccessToken har expired! Tokenet gikk ut: {}", token.getExpiredAt());
+                        if (token.getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
+                            log.warn("AccessToken har expired!");
                         return Mono.error(new AccessDeniedException("Access token har utloept"));
                     }
                     if (token.isClientCredentials()) {
