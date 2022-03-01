@@ -26,6 +26,9 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 			<ErrorBoundary>
 				<div className="person-visning_content">
 					{!relasjoner && <TitleValue title="Relatert person" value={relatertPersonIdent} />}
+					{data.relatertPersonsRolle === 'BARN' && (
+						<TitleValue title="Rolle for barn" value={data.minRolleForPerson} />
+					)}
 				</div>
 				{relasjon && (
 					<RelatertPerson
