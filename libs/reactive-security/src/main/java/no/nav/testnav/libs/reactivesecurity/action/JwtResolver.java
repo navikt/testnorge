@@ -25,9 +25,10 @@ abstract class JwtResolver {
                 .doOnSuccess(jwtAuthenticationToken -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
-                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
+                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
                         throw new CredentialsExpiredException("Jwt er utloept");
                     }
                 });
     }
+
 }
