@@ -60,7 +60,7 @@ export const InntektstubVirksomhetToggle = ({
 				<InntektstubOrgnummerSelect path={path} formikBag={formikBag} />
 			) : (
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={virksomhetPath} label="Virksomhet (fnr/dnr/bost)" size="medium" />
+					<FormikTextInput name={virksomhetPath} label="Virksomhet (fnr/dnr/npid)" size="medium" />
 					<FormikTextInput name={opplysningspliktigPath} label="Opplysningspliktig" size="medium" />
 				</div>
 			)}

@@ -156,7 +156,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
 										<FormikTextInput
 											name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
-											label="Arbeidsgiver (fnr/dnr/bost)"
+											label="Arbeidsgiver (fnr/dnr/npid)"
 										/>
 									)}
 									<FormikDatepicker
