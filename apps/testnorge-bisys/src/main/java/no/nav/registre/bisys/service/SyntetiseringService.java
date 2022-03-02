@@ -1,5 +1,6 @@
 package no.nav.registre.bisys.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -37,6 +38,21 @@ public class SyntetiseringService {
 
     @Value("${USE_HISTORICAL_MOTTATTDATO}")
     private boolean useHistoricalMottattdato;
+//
+//    public List<SyntetisertBidragsmelding> generateBidragsmeldinger(int antallIdenter, String miljoe){
+//        var bidragsmeldinger = syntBisysConsumer.getSyntetiserteBidragsmeldinger(antallIdenter);
+//
+//        for (var melding: bidragsmeldinger){
+//            var barn = identService.getValidId(melding);
+//
+//        }
+//
+//        if (bidragsmeldinger.size() < antallIdenter){
+//            log.warn("Oppretter {} av {} bidragsmelding(er).", bidragsmeldinger.size(), antallIdenter);
+//        }
+//
+//        return Collections.emptyList();
+//    }
 
     public List<SyntetisertBidragsmelding> generateBidragsmeldinger(
             SyntetiserBisysRequest syntetiserBisysRequest) throws SyntetisertBidragsmeldingException {

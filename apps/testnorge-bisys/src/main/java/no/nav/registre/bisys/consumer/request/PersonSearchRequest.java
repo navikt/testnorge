@@ -5,18 +5,22 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
 @AllArgsConstructor
 public class PersonSearchRequest {
     private final String tag = "TESTNORGE";
-    private final String excludeTag = "DOLLY";
+    private final List<String> excludeTags = Collections.singletonList("DOLLY");
     private final Boolean kunLevende = true;
 
     private Integer page;
     private Integer pageSize;
     private String randomSeed;
-    private AlderSearch alder;
+    private FoedselSearch foedsel;
+    RelasjonSearch relasjoner;
 
 }
