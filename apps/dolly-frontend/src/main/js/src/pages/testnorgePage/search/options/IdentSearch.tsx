@@ -74,8 +74,8 @@ export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
 					<ul>
 						{identer.map((element: string, idx: number) => (
 							<ListItem key={idx}>
-								<div className="flexbox" style={{ lineHeight: '1em' }}>
-									<p>{element}</p>
+								<div className="flexbox--align-center" style={{ lineHeight: '1em' }}>
+									{element}
 									<Button
 										onClick={() => removeIdent(element)}
 										kind="trashcan"
@@ -97,9 +97,10 @@ export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
 						feilmelding: error,
 					}
 				}
+				size="medium"
 			/>
 			{ident && !ident.isEmpty && !error && (
-				<Button onClick={addIdent} kind="add-circle">
+				<Button onClick={addIdent} kind="add-circle" style={{ marginBottom: '10px' }}>
 					Legg til flere
 				</Button>
 			)}

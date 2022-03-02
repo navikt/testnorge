@@ -1,0 +1,63 @@
+@import (reference) '~lessVars';
+
+.options-panel {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+	border-bottom: 1px solid @color-nav-black;
+
+	.options-panel-heading {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+
+		h1,
+		h2,
+		h3,
+		h4 {
+			margin: 0 0 10px 0;
+			font-size: 1.1rem;
+		}
+
+		&:hover {
+			h1,
+			h2,
+			h3,
+			h4 {
+				color: @color-lightblue;
+			}
+			.dolly-button {
+				border: none !important;
+				.svg-icon {
+					fill: @color-lightblue;
+				}
+			}
+
+		}
+
+
+		.header-icon {
+			background: @color-bg-shallow;
+			align-items: center;
+			padding: 10px;
+		}
+
+		.dolly-button {
+			width: 36px;
+			height: 36px;
+			margin-bottom: 10px;
+		}
+
+		&_buttons {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			padding-right: 5px;
+		}
+	}
+
+	.options-panel-content {
+		border-top: 1px solid @color-bg-grey-border;
+		padding-top: 10px;
+	}
+}

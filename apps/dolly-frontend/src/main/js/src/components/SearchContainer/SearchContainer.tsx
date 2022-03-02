@@ -34,7 +34,7 @@ type Props = {
 export default ({ left, right, buttonLabel = 'Søk', onSubmit }: Props) => (
 	<Container>
 		<Left>
-			<Options>{left}</Options>
+			<>{left}</>
 			<Button onClick={() => onSubmit()}>{buttonLabel}</Button>
 		</Left>
 		<Right>{right}</Right>
