@@ -31,7 +31,7 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                         .mapNotNull(oAuth2AuthorizedClient -> {
                             log.info("Henter token fra Redis som utløper: {}", oAuth2AuthorizedClient.getAccessToken().getExpiresAt());
 //                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
-                            if (oAuth2AuthorizedClient.getAccessToken().getIssuedAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(80))) {
+                            if (oAuth2AuthorizedClient.getAccessToken().getIssuedAt().isAfter(ZonedDateTime.now().toInstant().plusSeconds(80))) {
                                 log.warn("Auth client har utløpt, fjerner den som authenticated");
                                 authenticationToken.setAuthenticated(false);
                                 authenticationToken.eraseCredentials();
