@@ -100,25 +100,34 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         setRelatertPerson(relasjon, hovedperson);
         addForelderBarnRelasjon(relasjon, hovedperson);
 
-        if (relasjon.getRelatertPersonsRolle() == Rolle.BARN &&
-                isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
+        if (request.getRelatertPersonsRolle() == Rolle.BARN &&
+                isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
-            DbPerson partner = hovedperson.getSivilstand().stream()
+            request.setRelatertPerson(relasjon.getRelatertPerson());
+            request.setNyRelatertPerson(null);
+            request.setBorIkkeSammen(null);
+            request.setMinRolleForPerson(switch (request.getMinRolleForPerson()) {
+                case FAR, MEDMOR -> Rolle.MOR;
+                case MOR -> Rolle.FAR;
+                default -> request.getMinRolleForPerson();
+            });
+
+            var partner = hovedperson.getSivilstand().stream()
                     .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
                     .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get())
                     .findFirst().get();
 
             partner.getPerson().getForelderBarnRelasjon().add(0,
-                    addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner.getPerson()));
+                    addForelderBarnRelasjon(mapperFacade.map(request, ForelderBarnRelasjonDTO.class), partner.getPerson()));
             personRepository.save(partner);
         }
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (relasjon.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
-            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
+        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
+            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                    .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
+                    .kjoenn(KjoennFraIdentUtility.getKjoenn(request.getRelatertPerson()) == MANN ? KVINNE : MANN)
                     .build());
             forelderRelasjon.setRelatertPerson(null);
 

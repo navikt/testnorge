@@ -15,13 +15,17 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.PersonnavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -152,7 +156,36 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         return hovedperson.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon ->
                         MOR == relasjon.getMinRolleForPerson() ||
-                                MEDMOR == relasjon.getMinRolleForPerson());
+                                MEDMOR == relasjon.getMinRolleForPerson() ||
+                                (FORELDER == relasjon.getMinRolleForPerson() &&
+                                        Kjoenn.KVINNE == hovedperson.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn())) ||
+                isPartnerMor(hovedperson);
+    }
+
+    private boolean isPartnerMor(PersonDTO hovedperson) {
+
+        var partnere = personRepository.findByIdentIn(hovedperson.getSivilstand().stream()
+                .filter(SivilstandDTO::isGift)
+                .map(SivilstandDTO::getRelatertVedSivilstand)
+                .toList(), Pageable.unpaged());
+
+        return hovedperson.getSivilstand().stream()
+                .filter(SivilstandDTO::isGift)
+                .map(SivilstandDTO::getRelatertVedSivilstand)
+                .anyMatch(Objects::isNull)
+                ||
+                partnere.stream()
+                        .map(DbPerson::getPerson)
+                        .map(PersonDTO::getForelderBarnRelasjon)
+                        .flatMap(Collection::stream)
+                        .anyMatch(relasjon -> MOR == relasjon.getMinRolleForPerson() ||
+                                MEDMOR == relasjon.getMinRolleForPerson() ||
+                                (FORELDER == relasjon.getMinRolleForPerson() &&
+                                        partnere.stream()
+                                                .map(DbPerson::getPerson)
+                                                .map(PersonDTO::getKjoenn)
+                                                .flatMap(Collection::stream)
+                                                .anyMatch(type -> Kjoenn.KVINNE == type.getKjoenn())));
     }
 
     private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO hovedperson) {
@@ -177,7 +210,36 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon ->
-                        FAR == relasjon.getMinRolleForPerson());
+                        FAR == relasjon.getMinRolleForPerson() ||
+                                (FORELDER == relasjon.getMinRolleForPerson() &&
+                                        Kjoenn.MANN == hovedperson.getKjoenn().stream().findFirst()
+                                                .orElse(new KjoennDTO()).getKjoenn())) ||
+                isPartnerFar(hovedperson);
+    }
+
+    private boolean isPartnerFar(PersonDTO hovedperson) {
+
+        var partnere = personRepository.findByIdentIn(hovedperson.getSivilstand().stream()
+                .filter(SivilstandDTO::isGift)
+                .map(SivilstandDTO::getRelatertVedSivilstand)
+                .toList(), Pageable.unpaged());
+
+        return hovedperson.getSivilstand().stream()
+                .filter(SivilstandDTO::isGift)
+                .map(SivilstandDTO::getRelatertVedSivilstand)
+                .anyMatch(Objects::isNull)
+                ||
+                 partnere.stream()
+                .map(DbPerson::getPerson)
+                .map(PersonDTO::getForelderBarnRelasjon)
+                .flatMap(Collection::stream)
+                .anyMatch(relasjon -> FAR == relasjon.getMinRolleForPerson() ||
+                        (FORELDER == relasjon.getMinRolleForPerson() &&
+                                partnere.stream()
+                                        .map(DbPerson::getPerson)
+                                        .map(PersonDTO::getKjoenn)
+                                        .flatMap(Collection::stream)
+                                        .anyMatch(type -> Kjoenn.MANN == type.getKjoenn())));
     }
 
     private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO hovedperson) {
