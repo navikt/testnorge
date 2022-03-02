@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.web.server.ServerOAuth2Authori
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.ZonedDateTime;
 
@@ -23,24 +24,29 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
     public Mono<Token> getToken(ServerWebExchange exchange) {
         return oauth2AuthenticationToken()
                 .flatMap(authenticationToken -> clientRepository.loadAuthorizedClient(
-                        authenticationToken.getAuthorizedClientRegistrationId(),
-                        authenticationToken,
-                        exchange
-                ).mapNotNull(oAuth2AuthorizedClient -> {
-                    log.info("Henter token fra Redis som utløper: {}", oAuth2AuthorizedClient.getAccessToken().getExpiresAt());
+                                authenticationToken.getAuthorizedClientRegistrationId(),
+                                authenticationToken,
+                                exchange)
+                        .publishOn(Schedulers.boundedElastic())
+                        .mapNotNull(oAuth2AuthorizedClient -> {
+                            log.info("Henter token fra Redis som utløper: {}", oAuth2AuthorizedClient.getAccessToken().getExpiresAt());
 //                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
-                    if (oAuth2AuthorizedClient.getAccessToken().getIssuedAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(80))) {
-                        log.warn("Auth client har utløpt, fjerner den som authenticated");
-                        authenticationToken.setAuthenticated(false);
-                        authenticationToken.eraseCredentials();
-                        return null;
-                    }
-                    return Token.builder()
-                            .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
-                            .expiresAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
-                            .refreshTokenValue(nonNull(oAuth2AuthorizedClient.getRefreshToken()) ? oAuth2AuthorizedClient.getRefreshToken().getTokenValue() : null)
-                            .clientCredentials(false)
-                            .build();
-                }));
+                            if (oAuth2AuthorizedClient.getAccessToken().getIssuedAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(80))) {
+                                log.warn("Auth client har utløpt, fjerner den som authenticated");
+                                authenticationToken.setAuthenticated(false);
+                                authenticationToken.eraseCredentials();
+                                clientRepository.removeAuthorizedClient(
+                                        oAuth2AuthorizedClient.getClientRegistration().getRegistrationId(),
+                                        authenticationToken,
+                                        exchange).block();
+                                return null;
+                            }
+                            return Token.builder()
+                                    .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
+                                    .expiresAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
+                                    .refreshTokenValue(nonNull(oAuth2AuthorizedClient.getRefreshToken()) ? oAuth2AuthorizedClient.getRefreshToken().getTokenValue() : null)
+                                    .clientCredentials(false)
+                                    .build();
+                        }));
     }
 }
