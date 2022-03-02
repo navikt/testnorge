@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -115,12 +116,14 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
             var partner = hovedperson.getSivilstand().stream()
                     .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
-                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get())
-                    .findFirst().get();
-
-            partner.getPerson().getForelderBarnRelasjon().add(0,
-                    addForelderBarnRelasjon(mapperFacade.map(request, ForelderBarnRelasjonDTO.class), partner.getPerson()));
-            personRepository.save(partner);
+                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
+                            .orElseThrow(() -> new NotFoundException("Partner ikke funnet " + sivilstand.getRelatertVedSivilstand())))
+                    .findFirst();
+            if (partner.isPresent()) {
+                partner.get().getPerson().getForelderBarnRelasjon().add(0,
+                        addForelderBarnRelasjon(request, partner.get().getPerson()));
+                personRepository.save(partner.get());
+            }
         }
         relasjon.setPartnerErIkkeForelder(null);
 
