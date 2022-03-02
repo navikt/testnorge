@@ -26,6 +26,8 @@ import reactor.netty.transport.ProxyProvider;
 import java.net.URI;
 import java.time.ZonedDateTime;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @Service
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
@@ -70,7 +72,7 @@ public class AzureAdTokenService implements TokenService {
         return getAuthenticatedToken
                 .call()
                 .flatMap(token -> {
-                    if (token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
+                    if (isNull(token) || token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                         log.warn("AccessToken har expired!");
                         return Mono.error(new AccessDeniedException("Access token har utloept"));
                     }

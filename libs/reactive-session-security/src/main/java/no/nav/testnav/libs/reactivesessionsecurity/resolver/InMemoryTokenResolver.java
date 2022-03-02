@@ -27,7 +27,7 @@ public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements 
                                 oAuth2AuthenticationToken.getPrincipal().getName())
                         .publishOn(Schedulers.boundedElastic())
                         .mapNotNull(oAuth2AuthorizedClient -> {
-                                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
+                                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                                         log.warn("Auth client har utløpt, fjerner den som authenticated");
                                         oAuth2AuthenticationToken.setAuthenticated(false);
                                         oAuth2AuthenticationToken.eraseCredentials();

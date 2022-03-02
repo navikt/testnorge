@@ -21,6 +21,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.ZonedDateTime;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @Service
 @Import({
@@ -50,7 +52,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
         return tokenResolver
                 .getToken(exchange)
                 .flatMap(token -> {
-                    if (token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
+                    if (isNull(token) || token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                         return Mono.error(new AccessDeniedException("Access token har utloept"));
                     }
                     return new OnBehalfOfExchangeCommand(
