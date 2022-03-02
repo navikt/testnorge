@@ -29,17 +29,16 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                 exchange)
                         .publishOn(Schedulers.boundedElastic())
                         .mapNotNull(oAuth2AuthorizedClient -> {
-                            log.info("Henter token fra Redis som utløper: {}", oAuth2AuthorizedClient.getAccessToken().getExpiresAt());
-                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                        log.warn("Auth client har utløpt, fjerner den som authenticated");
-                        authenticationToken.setAuthenticated(false);
-                        authenticationToken.eraseCredentials();
-                        clientRepository.removeAuthorizedClient(
-                                oAuth2AuthorizedClient.getClientRegistration().getRegistrationId(),
-                                authenticationToken,
-                                exchange).block();
-                        return null;
-                    }
+                            if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
+                                log.warn("Auth client har utløpt, fjerner den som authenticated");
+                                authenticationToken.setAuthenticated(false);
+                                authenticationToken.eraseCredentials();
+                                clientRepository.removeAuthorizedClient(
+                                        oAuth2AuthorizedClient.getClientRegistration().getRegistrationId(),
+                                        authenticationToken,
+                                        exchange).block();
+                                return null;
+                            }
                             return Token.builder()
                                     .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
                                     .expiresAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
