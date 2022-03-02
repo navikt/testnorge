@@ -1,9 +1,7 @@
 import React from 'react'
 import { useToggle } from 'react-use'
 import cn from 'classnames'
-import Icon from '~/components/ui/icon/Icon'
 import ExpandButton from '~/components/ui/button/ExpandButton'
-
 import './OptionsPanel.less'
 
 type OptionsPanelProps = {
@@ -11,7 +9,8 @@ type OptionsPanelProps = {
 	heading: string
 	content?: React.ReactNode
 	children?: React.ReactNode
-	iconType?: string
+	circleColor?: string
+	circleCount?: number
 }
 
 export const OptionsPanel = ({
@@ -19,7 +18,8 @@ export const OptionsPanel = ({
 	heading,
 	content,
 	children,
-	iconType,
+	circleColor,
+	circleCount,
 }: OptionsPanelProps) => {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 
@@ -28,12 +28,19 @@ export const OptionsPanel = ({
 	})
 
 	const renderContent = children ? children : content
+	const circleClassName = circleColor
+		? 'options-panel-heading_' + circleColor + '-circle'
+		: 'circle'
 
 	return (
 		<div className={panelClass}>
 			<div className="options-panel-heading" onClick={toggleOpen}>
 				<h2>{heading}</h2>
-				{iconType && <Icon size={45} kind={iconType} className="header-icon" />}
+				{circleColor && circleCount && (
+					<div className={circleClassName}>
+						<p className="circle-text">{circleCount}</p>
+					</div>
+				)}
 				<span className="options-panel-heading_buttons">
 					<ExpandButton expanded={isOpen} onClick={toggleOpen} />
 				</span>
