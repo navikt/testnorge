@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.time.ZonedDateTime;
+
 import static java.util.Objects.nonNull;
 
 
@@ -27,12 +29,12 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                 ).mapNotNull(oAuth2AuthorizedClient -> {
                     log.info("Henter token fra Redis som utløper: {}", oAuth2AuthorizedClient.getAccessToken().getExpiresAt());
 //                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
-                        if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isAfter(oAuth2AuthorizedClient.getAccessToken().getExpiresAt().plusSeconds(60))) {
-                            log.warn("Auth client har utløpt, fjerner den som authenticated");
-                            authenticationToken.setAuthenticated(false);
-                            authenticationToken.eraseCredentials();
-                            return null;
-                        }
+                    if (oAuth2AuthorizedClient.getAccessToken().getIssuedAt().isAfter(ZonedDateTime.now().toInstant().plusSeconds(60))) {
+                        log.warn("Auth client har utløpt, fjerner den som authenticated");
+                        authenticationToken.setAuthenticated(false);
+                        authenticationToken.eraseCredentials();
+                        return null;
+                    }
                     return Token.builder()
                             .accessTokenValue(oAuth2AuthorizedClient.getAccessToken().getTokenValue())
                             .expiresAt(oAuth2AuthorizedClient.getAccessToken().getExpiresAt())
