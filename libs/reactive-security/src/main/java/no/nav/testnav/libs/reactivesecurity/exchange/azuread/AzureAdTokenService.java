@@ -24,8 +24,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Slf4j
 @Service
@@ -71,8 +70,8 @@ public class AzureAdTokenService implements TokenService {
         return getAuthenticatedToken
                 .call()
                 .flatMap(token -> {
-                        if (token.getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
-                            log.warn("AccessToken har expired!");
+                    if (token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
+                        log.warn("AccessToken har expired!");
                         return Mono.error(new AccessDeniedException("Access token har utloept"));
                     }
                     if (token.isClientCredentials()) {

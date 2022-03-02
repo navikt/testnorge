@@ -19,8 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Slf4j
 @Service
@@ -51,7 +50,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
         return tokenResolver
                 .getToken(exchange)
                 .flatMap(token -> {
-                    if (token.getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
+                    if (token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
                         return Mono.error(new AccessDeniedException("Access token har utloept"));
                     }
                     return new OnBehalfOfExchangeCommand(

@@ -9,8 +9,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Slf4j
 abstract class JwtResolver {
@@ -25,7 +24,7 @@ abstract class JwtResolver {
                 .doOnSuccess(jwtAuthenticationToken -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
-                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
+                    if (expiresAt == null || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
                         throw new CredentialsExpiredException("Jwt er utloept");
                     }
                 });

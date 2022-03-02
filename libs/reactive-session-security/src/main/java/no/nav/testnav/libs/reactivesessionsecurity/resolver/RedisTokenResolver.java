@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -28,7 +27,8 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                         authenticationToken,
                         exchange
                 ).mapNotNull(oAuth2AuthorizedClient -> {
-                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC).plusSeconds(180))) {
+                    log.info("Henter token fra Redis som utløper: {}", oAuth2AuthorizedClient.getAccessToken().getExpiresAt());
+                    if (oAuth2AuthorizedClient.getAccessToken().getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(180))) {
                         log.warn("Auth client har utløpt, fjerner den som authenticated");
                         authenticationToken.setAuthenticated(false);
                         authenticationToken.eraseCredentials();
