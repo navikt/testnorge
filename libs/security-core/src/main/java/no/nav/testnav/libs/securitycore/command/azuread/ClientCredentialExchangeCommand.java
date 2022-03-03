@@ -2,6 +2,9 @@ package no.nav.testnav.libs.securitycore.command.azuread;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -9,10 +12,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-
-import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,15 +36,15 @@ public class ClientCredentialExchangeCommand implements ExchangeCommand {
                 .bodyToMono(AccessToken.class)
                 .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
                         .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
-                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
-                ).doOnError(
+                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt.")))
+                .doOnError(
                         WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
-                                ((WebClientResponseException) throwable).getResponseBodyAsString()
-                        )
-                )
+                                ((WebClientResponseException) throwable).getResponseBodyAsString(),
+                                throwable
+                        ))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException),
                         throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)

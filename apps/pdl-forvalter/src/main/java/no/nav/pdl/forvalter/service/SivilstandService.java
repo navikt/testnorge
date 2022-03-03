@@ -16,9 +16,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
@@ -37,7 +38,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class SivilstandService implements Validation<SivilstandDTO> {
 
     private static final String INVALID_RELATERT_VED_SIVILSTAND = "Sivilstand: Relatert person finnes ikke";
-    private static final String SIVILSTAND_OVERLAPPENDE_DATOER_ERROR = "Sivilstand: overlappende datoer er ikke gyldig";
 
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
@@ -55,8 +55,8 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 handle(type, person);
             }
         }
-        enforceIntegrity(person.getSivilstand());
-        return person.getSivilstand();
+
+        return enforceIntegrity(person.getSivilstand());
     }
 
     @Override
@@ -73,10 +73,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
-        if (sivilstand.getType() == GIFT ||
-                sivilstand.getType() == REGISTRERT_PARTNER) {
-
-            sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
+        if (sivilstand.isGift() || sivilstand.isSeparert()) {
 
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
 
@@ -87,8 +84,8 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                         isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
                         isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
 
-                    sivilstand.getNyRelatertPerson().setFoedtFoer(LocalDateTime.now().minusYears(30));
-                    sivilstand.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(60));
+                    sivilstand.getNyRelatertPerson().setFoedtFoer(now().minusYears(30));
+                    sivilstand.getNyRelatertPerson().setFoedtEtter(now().minusYears(60));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
                     KjoennDTO.Kjoenn kjonn = hovedperson.getKjoenn().stream().findFirst()
@@ -122,6 +119,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
             }
 
+            sivilstand.setSivilstandsdato(nonNull(sivilstand.getSivilstandsdato()) ? sivilstand.getSivilstandsdato() : now());
             relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
                     sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
             createRelatertSivilstand(sivilstand, hovedperson.getIdent());
@@ -141,14 +139,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         personRepository.save(relatertPerson);
     }
 
-    protected void enforceIntegrity(List<SivilstandDTO> sivilstand) {
+    protected List<SivilstandDTO> enforceIntegrity(List<SivilstandDTO> sivilstand) {
 
-        for (var i = 0; i < sivilstand.size(); i++) {
-            if (i + 1 < sivilstand.size() &&
-                    sivilstand.get(i + 1).getSivilstandsdato().isAfter(sivilstand.get(i).getSivilstandsdato())) {
-
-                throw new InvalidRequestException(SIVILSTAND_OVERLAPPENDE_DATOER_ERROR);
-            }
-        }
+        return sivilstand.stream()
+                .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
+                .toList();
     }
 }

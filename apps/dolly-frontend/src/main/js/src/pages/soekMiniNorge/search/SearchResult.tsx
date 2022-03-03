@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
@@ -7,9 +7,6 @@ import { HodejegerenApi } from '~/service/Api'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ResultatVisningConnecter from '~/pages/soekMiniNorge/search/ResultatVisning/ResultatVisningConnecter'
 import { Innhold } from '../hodejegeren/types'
-import { VelgPerson } from './ImportTilDolly/VelgPerson'
-import { ImportTilDolly } from './ImportTilDolly/ImportTilDolly'
-import Button from '~/components/ui/button/Button'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface SearchResultVisningProps {
@@ -20,8 +17,6 @@ interface SearchResultVisningProps {
 }
 
 export const SearchResult = (props: SearchResultVisningProps) => {
-	const [valgtePersoner, setValgtePersoner] = useState([])
-
 	if (!props.searchActive) {
 		return <ContentContainer>Ingen søk er gjort</ContentContainer>
 	}
@@ -66,40 +61,6 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 				return Math.abs(age_dt.getUTCFullYear() - 1970)
 			},
 		},
-		{
-			text: 'Velg alle',
-			width: '15',
-			dataField: 'velg',
-			headerFormatter: (text: string, data: Array<Innhold>) => {
-				return (
-					<Button
-						onClick={() => {
-							const alleValgtPaaSiden = data.every((person) =>
-								valgtePersoner.includes(person.personIdent.id)
-							)
-							alleValgtPaaSiden
-								? setValgtePersoner(
-										valgtePersoner.filter(
-											(personId) => !data.some((person) => person.personIdent.id === personId)
-										)
-								  )
-								: setValgtePersoner(
-										valgtePersoner.concat(data.map((person) => person.personIdent.id))
-								  )
-						}}
-					>
-						{text}
-					</Button>
-				)
-			},
-			formatter: (cell: any, row: Innhold) => (
-				<VelgPerson
-					personinfo={row}
-					valgtePersoner={valgtePersoner}
-					setValgtePersoner={setValgtePersoner}
-				/>
-			),
-		},
 	]
 
 	return (
@@ -124,7 +85,6 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 									)}
 								/>
 							</ErrorBoundary>
-							<ImportTilDolly valgtePersoner={valgtePersoner} />
 						</>
 					)
 				}}

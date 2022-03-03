@@ -10,6 +10,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
 import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
+import { Redirect } from 'react-router-dom'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -23,6 +24,7 @@ export default function Gruppe({
 	gruppe,
 	identer,
 	brukernavn,
+	brukertype,
 	isFetching,
 	isDeletingGruppe,
 	sendTags,
@@ -38,6 +40,7 @@ export default function Gruppe({
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [sidetall, setSidetall] = useState(0)
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
+	const [redirectToSoek, setRedirectToSoek] = useState(false)
 
 	useEffect(() => {
 		getBestillinger()
@@ -63,6 +66,8 @@ export default function Gruppe({
 	const startBestilling = (values) =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
 
+	if (redirectToSoek) return <Redirect to={`/soek`} />
+
 	const erLaast = gruppe.erLaast
 
 	return (
@@ -84,14 +89,27 @@ export default function Gruppe({
 			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<div className="toolbar">
-				<NavButton
-					type="hoved"
-					onClick={visStartBestilling}
-					disabled={erLaast}
-					title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-				>
-					Opprett personer
-				</NavButton>
+				{brukertype === 'AZURE' && (
+					<NavButton
+						type="hoved"
+						onClick={visStartBestilling}
+						disabled={erLaast}
+						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+					>
+						Opprett personer
+					</NavButton>
+				)}
+
+				{brukertype === 'BANKID' && (
+					<NavButton
+						type="hoved"
+						onClick={() => setRedirectToSoek(true)}
+						disabled={erLaast}
+						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+					>
+						Importer personer
+					</NavButton>
+				)}
 
 				<ToggleGruppe onChange={byttVisning} name="toggler">
 					<ToggleKnapp value={VISNING_PERSONER} checked={visning === VISNING_PERSONER}>
@@ -125,9 +143,12 @@ export default function Gruppe({
 					sideStoerrelse={sideStoerrelse}
 					setSidetall={setSidetall}
 					setSideStoerrelse={setSideStoerrelse}
+					brukertype={brukertype}
 				/>
 			)}
-			{visning === VISNING_BESTILLING && <BestillingListeConnector iLaastGruppe={erLaast} />}
+			{visning === VISNING_BESTILLING && (
+				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
+			)}
 		</div>
 	)
 }

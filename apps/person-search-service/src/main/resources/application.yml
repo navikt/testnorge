@@ -14,4 +14,4 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:person-search-service
+          accepted-audience: dev-fss:dolly:person-search-service
