@@ -1,7 +1,5 @@
 package no.nav.pdl.forvalter.service;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
@@ -14,7 +12,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SKILT;
@@ -23,8 +20,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,12 +29,6 @@ class SivilstandServiceTest {
 
     @Mock
     private PersonRepository personRepository;
-
-    @Mock
-    private RelasjonService relasjonService;
-
-    @Mock
-    private MapperFacade mapperFacade;
 
     @InjectMocks
     private SivilstandService sivilstandService;
@@ -76,12 +65,6 @@ class SivilstandServiceTest {
                                 .sivilstandsdato(LocalDateTime.now())
                                 .build()))
                 .build();
-
-        when(personRepository.findByIdent(any())).thenReturn(Optional.of(
-                DbPerson.builder()
-                        .person(new PersonDTO())
-                        .build()));
-        when(mapperFacade.map(any(SivilstandDTO.class), eq(SivilstandDTO.class))).thenReturn(new SivilstandDTO());
 
         var target = sivilstandService.convert(request);
 

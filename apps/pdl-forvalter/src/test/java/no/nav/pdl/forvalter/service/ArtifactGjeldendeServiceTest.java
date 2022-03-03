@@ -9,11 +9,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +22,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusD
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -138,12 +135,6 @@ class ArtifactGjeldendeServiceTest {
                                         .build())
                                 .build()))
                         .build()));
-
-        when(personRepository.findByIdentIn(ArgumentMatchers.anyList(), eq(Pageable.unpaged())))
-                .thenReturn(List.of(DbPerson.builder()
-                        .ident(TEST_IDENT_2)
-                        .person(person2)
-                .build()));
 
         artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
 
