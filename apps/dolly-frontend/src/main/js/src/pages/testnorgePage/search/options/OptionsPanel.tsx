@@ -13,7 +13,7 @@ type OptionsPanelProps = {
 	numSelected?: number
 }
 
-export const OptionsPanel = ({
+export const OptionsPanel: React.FC<OptionsPanelProps> = ({
 	startOpen = false,
 	heading,
 	content,

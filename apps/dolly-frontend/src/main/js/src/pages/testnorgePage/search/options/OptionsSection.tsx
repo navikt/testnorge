@@ -9,7 +9,7 @@ type OptionsSectionProps = {
 	selectionColor?: string
 }
 
-export const OptionsSection = ({
+export const OptionsSection: React.FC<OptionsSectionProps> = ({
 	heading,
 	startOpen = false,
 	options,

@@ -23,7 +23,7 @@ export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
 }
 
-export const getCount = (values: any, formikBag: FormikProps<{}>) => {
+export const getCount = (values: Record<string, string>, formikBag: FormikProps<{}>) => {
 	let count = 0
 	for (let key in values) {
 		const value = _get(formikBag.values, key)
@@ -41,7 +41,7 @@ export const getCount = (values: any, formikBag: FormikProps<{}>) => {
 	return count
 }
 
-export const SearchOptions = (props: SearchOptionsProps) => {
+export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
 	const [selectionColor, setSelectionColor] = useState('blue')
 
 	return (

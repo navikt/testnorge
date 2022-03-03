@@ -22,7 +22,7 @@ const ListItem = styled.li`
 const identPath = 'personinformasjon.ident.ident'
 const identerPath = 'personinformasjon.identer'
 
-export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
+export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchProps) => {
 	const [identer, setIdenter] = useState(_get(formikBag.values, identerPath))
 	const [ident, setIdent] = useState(_get(formikBag.values, identPath))
 	const [error, setError] = useState(null)
