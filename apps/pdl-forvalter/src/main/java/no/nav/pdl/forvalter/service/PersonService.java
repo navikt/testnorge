@@ -70,6 +70,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final UnhookEksternePersonerService unhookEksternePersonerService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -105,6 +106,8 @@ public class PersonService {
         checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
                 new NotFoundException(format("Ident %s ble ikke funnet", ident)));
+
+        unhookEksternePersonerService.unhook(dbPerson);
 
         var personer = Stream.of(List.of(dbPerson),
                         dbPerson.getRelasjoner().stream()

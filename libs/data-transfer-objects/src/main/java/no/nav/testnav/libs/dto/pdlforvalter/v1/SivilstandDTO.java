@@ -10,6 +10,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -40,6 +42,12 @@ public class SivilstandDTO extends DbVersjonDTO {
     private PersonRequestDTO nyRelatertPerson;
 
     private Boolean eksisterendePerson;
+
+    @JsonIgnore
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
 
     @JsonIgnore
     public boolean isGift() {

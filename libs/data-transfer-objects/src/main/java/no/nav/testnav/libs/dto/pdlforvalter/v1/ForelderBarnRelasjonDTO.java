@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -23,6 +25,12 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     private Boolean partnerErIkkeForelder;
 
     private Boolean eksisterendePerson;
+
+    @JsonIgnore
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
 
     @JsonIgnore
     public boolean hasBarn() {

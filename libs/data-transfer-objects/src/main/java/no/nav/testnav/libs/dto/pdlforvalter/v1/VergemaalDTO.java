@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @SuperBuilder
@@ -27,4 +30,10 @@ public class VergemaalDTO extends DbVersjonDTO {
     private VergemaalMandattype mandatType;
 
     private Boolean eksisterendePerson;
+
+    @JsonIgnore
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
 }

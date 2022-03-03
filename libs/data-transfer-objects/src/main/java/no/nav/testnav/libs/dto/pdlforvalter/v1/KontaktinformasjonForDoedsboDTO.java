@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @SuperBuilder
@@ -77,6 +80,12 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private PersonNavnDTO navn;
 
         private Boolean eksisterendePerson;
+
+        @JsonIgnore
+        public boolean isEksisterendePerson() {
+
+            return isTrue(eksisterendePerson);
+        }
     }
 
     @Data
