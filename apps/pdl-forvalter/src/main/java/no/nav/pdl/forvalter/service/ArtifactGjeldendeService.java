@@ -1,13 +1,11 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +22,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusD
 
 @Service
 @RequiredArgsConstructor
-public class GjeldendeArtifactService {
+public class ArtifactGjeldendeService {
 
     private final PersonRepository personRepository;
 
@@ -60,11 +58,9 @@ public class GjeldendeArtifactService {
 
         if (hovedperson.isPresent()) {
             setGjeldene(hovedperson.get().getPerson());
-            var relasjoner = personRepository.findByIdentIn(
-                    hovedperson.get().getRelasjoner().stream()
-                            .map(DbRelasjon::getRelatertPerson)
-                            .map(DbPerson::getIdent)
-                            .toList(), Pageable.unpaged());
+            var relasjoner = hovedperson.get().getRelasjoner().stream()
+                    .map(DbRelasjon::getRelatertPerson)
+                    .toList();
 
             relasjoner.forEach(relasjon -> setGjeldene(relasjon.getPerson()));
         }

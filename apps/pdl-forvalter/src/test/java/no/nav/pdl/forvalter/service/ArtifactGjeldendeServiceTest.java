@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GjeldendeArtifactServiceTest {
+class ArtifactGjeldendeServiceTest {
 
     private static final String TEST_IDENT_1 = "11111111111";
     private static final String TEST_IDENT_2 = "22222222222";
@@ -37,7 +37,7 @@ class GjeldendeArtifactServiceTest {
     private PersonRepository personRepository;
 
     @InjectMocks
-    private GjeldendeArtifactService gjeldendeArtifactService;
+    private ArtifactGjeldendeService artifactGjeldendeService;
 
     @Test
     void whenBosatt_thenSisteInfoErGjeldene() {
@@ -60,7 +60,7 @@ class GjeldendeArtifactServiceTest {
         when(personRepository.findByIdent(TEST_IDENT_1))
                 .thenReturn(Optional.of(DbPerson.builder().person(person).build()));
 
-        gjeldendeArtifactService.setGjeldene(TEST_IDENT_1);
+        artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
 
         assertThat(person.getNavn().get(0).getGjeldende(), is(equalTo(true)));
         assertThat(person.getNavn().get(1).getGjeldende(), is(equalTo(false)));
@@ -88,7 +88,7 @@ class GjeldendeArtifactServiceTest {
         when(personRepository.findByIdent(TEST_IDENT_1))
                 .thenReturn(Optional.of(DbPerson.builder().person(person).build()));
 
-        gjeldendeArtifactService.setGjeldene(TEST_IDENT_1);
+        artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
 
         assertThat(person.getNavn().get(0).getGjeldende(), is(equalTo(false)));
         assertThat(person.getNavn().get(1).getGjeldende(), is(equalTo(false)));
@@ -145,7 +145,7 @@ class GjeldendeArtifactServiceTest {
                         .person(person2)
                 .build()));
 
-        gjeldendeArtifactService.setGjeldene(TEST_IDENT_1);
+        artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
 
         assertThat(person1.getNavn().get(0).getGjeldende(), is(equalTo(true)));
         assertThat(person1.getNavn().get(1).getGjeldende(), is(equalTo(false)));
