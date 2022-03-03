@@ -41,11 +41,11 @@ export const getCount = (values: Record<string, string>, formikBag: FormikProps<
 	return count
 }
 
-export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
-	const getSelectionColor = (formikBag: FormikProps<{}>) => {
-		return getCount(IdentPaths, formikBag) > 0 ? 'grey' : 'blue'
-	}
+const getSelectionColor = (formikBag: FormikProps<{}>) => {
+	return getCount(IdentPaths, formikBag) > 0 ? 'grey' : 'blue'
+}
 
+export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
 	return (
 		<>
 			<h2>Personinformasjon</h2>

@@ -1,6 +1,4 @@
 import React from 'react'
-// @ts-ignore
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { antallResultatOptions } from '~/pages/soekMiniNorge/search/utils'
 import { OptionsSection } from '~/pages/testnorgePage/search/options/OptionsSection'
