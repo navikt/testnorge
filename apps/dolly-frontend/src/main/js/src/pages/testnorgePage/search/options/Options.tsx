@@ -16,6 +16,12 @@ export const IdentNummer = ({ formikBag }: Props) => (
 		<IdentSearch formikBag={formikBag} />
 	</section>
 )
+
+export const IdentPaths = {
+	'personinformasjon.ident.ident': 'ident',
+	'personinformasjon.identer': 'list',
+}
+
 export const Alder = () => (
 	<section>
 		<FormikTextInput
@@ -45,6 +51,13 @@ export const Alder = () => (
 	</section>
 )
 
+export const AlderPaths = {
+	'personinformasjon.alder.fra': 'string',
+	'personinformasjon.alder.til': 'string',
+	'personinformasjon.alder.foedselsdato.fom': 'string',
+	'personinformasjon.alder.foedselsdato.tom': 'string',
+}
+
 export const Statsborgerskap = () => (
 	<section>
 		<FormikSelect
@@ -56,6 +69,10 @@ export const Statsborgerskap = () => (
 		/>
 	</section>
 )
+
+export const StatsborgerskapPaths = {
+	'personinformasjon.statsborgerskap.land': 'string',
+}
 
 export const Sivilstand = () => (
 	<section>
@@ -71,6 +88,10 @@ export const Sivilstand = () => (
 	</section>
 )
 
+export const SivilstandPaths = {
+	'personinformasjon.sivilstand.type': 'string',
+}
+
 export const Barn = () => (
 	<section>
 		<FormikCheckbox name="personinformasjon.barn.barn" label="Har barn" size="medium" />
@@ -81,6 +102,11 @@ export const Barn = () => (
 		/>
 	</section>
 )
+
+export const BarnPaths = {
+	'personinformasjon.barn.barn': 'boolean',
+	'personinformasjon.barn.doedfoedtBarn': 'boolean',
+}
 
 export const Identitet = () => (
 	<section>
@@ -96,6 +122,11 @@ export const Identitet = () => (
 		/>
 	</section>
 )
+
+export const IdentitetPaths = {
+	'personinformasjon.identitet.falskIdentitet': 'boolean',
+	'personinformasjon.identitet.utenlandskIdentitet': 'boolean',
+}
 
 export const Diverse = () => (
 	<section>
@@ -120,3 +151,9 @@ export const Diverse = () => (
 		/>
 	</section>
 )
+
+export const DiversePaths = {
+	'personinformasjon.diverse.kjoenn': 'string',
+	'personinformasjon.diverse.innflyttet': 'boolean',
+	'personinformasjon.diverse.utflyttet': 'boolean',
+}

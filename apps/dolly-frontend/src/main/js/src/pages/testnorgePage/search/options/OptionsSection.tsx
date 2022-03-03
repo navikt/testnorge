@@ -1,23 +1,37 @@
 import React from 'react'
-import { FormikProps } from 'formik'
 import { OptionsPanel } from '~/pages/testnorgePage/search/options/OptionsPanel'
 
 type OptionsSectionProps = {
 	heading: string
 	startOpen?: boolean
 	options: React.ReactNode
-	formikBag: FormikProps<{}>
+	numSelected: number
+	selectionColor?: string
 }
 
 export const OptionsSection = ({
 	heading,
 	startOpen = false,
 	options,
-	formikBag,
+	numSelected,
+	selectionColor = 'blue',
 }: OptionsSectionProps) => {
-	return (
-		<OptionsPanel startOpen={startOpen} heading={heading}>
-			{options}
-		</OptionsPanel>
-	)
+	if (numSelected > 0) {
+		return (
+			<OptionsPanel
+				startOpen={startOpen}
+				heading={heading}
+				circleCount={numSelected}
+				circleColor={selectionColor}
+			>
+				{options}
+			</OptionsPanel>
+		)
+	} else {
+		return (
+			<OptionsPanel startOpen={startOpen} heading={heading}>
+				{options}
+			</OptionsPanel>
+		)
+	}
 }
