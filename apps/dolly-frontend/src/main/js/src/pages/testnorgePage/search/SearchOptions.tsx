@@ -19,11 +19,11 @@ import {
 } from './options/Options'
 import _get from 'lodash/get'
 
-type SearchOptionsProps = {
+export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
 }
 
-const getCount = (values: any, formikBag: FormikProps<{}>) => {
+export const getCount = (values: any, formikBag: FormikProps<{}>) => {
 	let count = 0
 	for (let key in values) {
 		const value = _get(formikBag.values, key)

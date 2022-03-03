@@ -1,50 +1,50 @@
-import * as React from 'react'
+import React from 'react'
 // @ts-ignore
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { antallResultatOptions } from '~/pages/soekMiniNorge/search/utils'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { OptionsSection } from '~/pages/testnorgePage/search/options/OptionsSection'
+import { getCount, SearchOptionsProps } from '~/pages/testnorgePage/search/SearchOptions'
+import {
+	Ident,
+	IdentPaths,
+	Nasjonalitet,
+	NasjonalitetPaths,
+	Boadresse,
+	BoadressePaths,
+	Diverse,
+	DiversePaths,
+} from './Options'
 
-export const SearchOptions = () => (
+export const SearchOptions = (props: SearchOptionsProps) => (
 	<>
 		<FormikSelect
 			name="antallResultat"
 			label="Maks antall resultat"
 			options={antallResultatOptions}
 		/>
+
 		<h2>Personinformasjon</h2>
-		<h3>Ident</h3>
-		<FormikSelect name="personIdent.type" label="Type" options={Options('identtype')} />
-		<h3>Nasjonalitet</h3>
-		<FormikSelect
-			name="statsborger.land"
-			label="Statsborgerskap"
-			kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			optionHeight={50}
+		<OptionsSection
+			heading="Ident"
+			options={<Ident />}
+			startOpen={true}
+			numSelected={getCount(IdentPaths, props.formikBag)}
 		/>
-		<h3>Boadresse</h3>
-		<FormikTextInput name="boadresse.adresse" label="Gatenavn" />
-		<FormikSelect
-			name="boadresse.kommune"
-			label="Kommune"
-			kodeverk={AdresseKodeverk.Kommunenummer}
+		<OptionsSection
+			heading="Nasjonalitet"
+			options={<Nasjonalitet />}
+			numSelected={getCount(NasjonalitetPaths, props.formikBag)}
 		/>
-		<FormikSelect
-			name="boadresse.postnr"
-			label="Postnummer"
-			kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
+		<OptionsSection
+			heading="Boadresse"
+			options={<Boadresse />}
+			numSelected={getCount(BoadressePaths, props.formikBag)}
 		/>
-		<h3>Diverse</h3>
-		<FormikSelect
-			name="personInfo.kjoenn"
-			label="Kjønn"
-			kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
-		/>
-		<FormikSelect
-			name="sivilstand.type"
-			label="Sivilstand"
-			kodeverk={PersoninformasjonKodeverk.Sivilstander}
+		<OptionsSection
+			heading="Diverse"
+			options={<Diverse />}
+			numSelected={getCount(DiversePaths, props.formikBag)}
 		/>
 	</>
 )
