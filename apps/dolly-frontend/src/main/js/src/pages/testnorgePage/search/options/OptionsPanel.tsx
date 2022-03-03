@@ -9,8 +9,8 @@ type OptionsPanelProps = {
 	heading: string
 	content?: React.ReactNode
 	children?: React.ReactNode
-	circleColor?: string
-	circleCount?: number
+	selectionColor?: string
+	numSelected?: number
 }
 
 export const OptionsPanel = ({
@@ -18,8 +18,8 @@ export const OptionsPanel = ({
 	heading,
 	content,
 	children,
-	circleColor,
-	circleCount,
+	selectionColor,
+	numSelected,
 }: OptionsPanelProps) => {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 
@@ -28,17 +28,17 @@ export const OptionsPanel = ({
 	})
 
 	const renderContent = children ? children : content
-	const circleClassName = circleColor
-		? 'options-panel-heading_' + circleColor + '-circle'
+	const circleClassName = selectionColor
+		? 'options-panel-heading_' + selectionColor + '-circle'
 		: 'circle'
 
 	return (
 		<div className={panelClass}>
 			<div className="options-panel-heading" onClick={toggleOpen}>
 				<h2>{heading}</h2>
-				{circleColor && circleCount && (
+				{selectionColor && numSelected && (
 					<div className={circleClassName}>
-						<p className="circle-text">{circleCount}</p>
+						<p className="circle-text">{numSelected}</p>
 					</div>
 				)}
 				<span className="options-panel-heading_buttons">

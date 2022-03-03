@@ -21,8 +21,8 @@ export const OptionsSection = ({
 			<OptionsPanel
 				startOpen={startOpen}
 				heading={heading}
-				circleCount={numSelected}
-				circleColor={selectionColor}
+				numSelected={numSelected}
+				selectionColor={selectionColor}
 			>
 				{options}
 			</OptionsPanel>
