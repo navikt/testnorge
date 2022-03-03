@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -145,13 +146,18 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .anyMatch(ForelderBarnRelasjonDTO::isForeldre) &&
-                personRepository.findByIdent(hovedperson.getSivilstand().stream()
+
+                (personRepository.findByIdent(hovedperson.getSivilstand().stream()
                                 .filter(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())
                                 .map(SivilstandDTO::getRelatertVedSivilstand)
+                                .filter(Objects::nonNull)
                                 .findFirst().orElse("0"))
                         .orElse(DbPerson.builder().person(new PersonDTO()).build())
                         .getPerson().getForelderBarnRelasjon().stream()
-                        .anyMatch(ForelderBarnRelasjonDTO::isForeldre);
+                        .anyMatch(ForelderBarnRelasjonDTO::isForeldre) ||
+
+                        hovedperson.getSivilstand().stream()
+                                .anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
     private boolean isRelasjonMor(PersonDTO hovedperson) {
