@@ -22,11 +22,20 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     private PersonRequestDTO nyRelatertPerson;
     private Boolean partnerErIkkeForelder;
 
-    public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
-
     @JsonIgnore
     public boolean hasBarn() {
 
         return Rolle.BARN == relatertPersonsRolle;
     }
+
+    @JsonIgnore
+    public boolean isForeldre() {
+
+        return Rolle.FORELDER == relatertPersonsRolle ||
+                Rolle.MOR == relatertPersonsRolle ||
+                Rolle.FAR == relatertPersonsRolle ||
+                Rolle.MEDMOR == relatertPersonsRolle;
+    }
+
+    public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
 }

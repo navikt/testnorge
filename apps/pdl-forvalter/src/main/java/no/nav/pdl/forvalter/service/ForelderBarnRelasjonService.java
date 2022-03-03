@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -100,25 +101,36 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         setRelatertPerson(relasjon, hovedperson);
         addForelderBarnRelasjon(relasjon, hovedperson);
 
-        if (relasjon.getRelatertPersonsRolle() == Rolle.BARN &&
-                isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
+        if (request.getRelatertPersonsRolle() == Rolle.BARN &&
+                isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
-            DbPerson partner = hovedperson.getSivilstand().stream()
-                    .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
-                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get())
-                    .findFirst().get();
+            request.setRelatertPerson(relasjon.getRelatertPerson());
+            request.setNyRelatertPerson(null);
+            request.setBorIkkeSammen(null);
+            request.setMinRolleForPerson(switch (request.getMinRolleForPerson()) {
+                case FAR, MEDMOR -> Rolle.MOR;
+                case MOR -> Rolle.FAR;
+                default -> request.getMinRolleForPerson();
+            });
 
-            partner.getPerson().getForelderBarnRelasjon().add(0,
-                    addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner.getPerson()));
-            personRepository.save(partner);
+            var partner = hovedperson.getSivilstand().stream()
+                    .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
+                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
+                            .orElseThrow(() -> new NotFoundException("Partner ikke funnet " + sivilstand.getRelatertVedSivilstand())))
+                    .findFirst();
+            if (partner.isPresent()) {
+                partner.get().getPerson().getForelderBarnRelasjon().add(0,
+                        addForelderBarnRelasjon(request, partner.get().getPerson()));
+                personRepository.save(partner.get());
+            }
         }
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (relasjon.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
-            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
+        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
+            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                    .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
+                    .kjoenn(KjoennFraIdentUtility.getKjoenn(request.getRelatertPerson()) == MANN ? KVINNE : MANN)
                     .build());
             forelderRelasjon.setRelatertPerson(null);
 
