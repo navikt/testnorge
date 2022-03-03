@@ -10,8 +10,8 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
@@ -20,7 +20,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -41,6 +40,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Ro
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MOR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -144,14 +144,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private boolean isRelasjonForeldre(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream()
-                .anyMatch(ForelderBarnRelasjonDTO::isForeldre) &&
-                personRepository.findByIdent(hovedperson.getSivilstand().stream()
-                                .filter(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())
-                                .map(SivilstandDTO::getRelatertVedSivilstand)
-                                .findFirst().orElse("0"))
-                        .orElse(DbPerson.builder().person(new PersonDTO()).build())
-                        .getPerson().getForelderBarnRelasjon().stream()
-                        .anyMatch(ForelderBarnRelasjonDTO::isForeldre);
+                .anyMatch(relasjon -> relasjon.isForeldre() && isNotTrue(relasjon.getPartnerErIkkeForelder())) &&
+                hovedperson.getSivilstand().stream()
+                        .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
     private boolean isRelasjonMor(PersonDTO hovedperson) {
@@ -160,21 +155,14 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .anyMatch(relasjon ->
                         MOR == relasjon.getMinRolleForPerson() ||
                                 MEDMOR == relasjon.getMinRolleForPerson() ||
+
                                 (FORELDER == relasjon.getMinRolleForPerson() &&
-                                        Kjoenn.KVINNE == hovedperson.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn())) ||
-                isPartnerMor(hovedperson);
-    }
+                                        (Kjoenn.KVINNE == hovedperson.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
+                                                Kjoenn.KVINNE == KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()))) ||
 
-    private boolean isPartnerMor(PersonDTO hovedperson) {
-
-        return personRepository.findByIdent(hovedperson.getSivilstand().stream()
-                        .filter(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())
-                        .map(SivilstandDTO::getRelatertVedSivilstand)
-                        .findFirst().orElse("0"))
-                .orElse(DbPerson.builder().person(new PersonDTO()).build())
-                .getPerson().getForelderBarnRelasjon().stream()
-                .anyMatch(relasjon -> MOR == relasjon.getMinRolleForPerson() ||
-                        MEDMOR == relasjon.getMinRolleForPerson());
+                                isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
+                                        hovedperson.getSivilstand().stream()
+                                                .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert())));
     }
 
     private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO hovedperson) {
@@ -198,24 +186,15 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private boolean isRelasjonFar(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream()
-                .anyMatch(relasjon ->
-                        MEDMOR != relasjon.getMinRolleForPerson() &&
-                                (FAR == relasjon.getMinRolleForPerson() ||
-                                        (FORELDER == relasjon.getMinRolleForPerson() &&
-                                                Kjoenn.MANN == hovedperson.getKjoenn().stream().findFirst()
-                                                        .orElse(new KjoennDTO()).getKjoenn()) ||
-                                        isPartnerFar(hovedperson)));
-    }
+                .anyMatch(relasjon -> FAR == relasjon.getMinRolleForPerson() ||
 
-    private boolean isPartnerFar(PersonDTO hovedperson) {
+                        (FORELDER == relasjon.getMinRolleForPerson() &&
+                                (Kjoenn.MANN == hovedperson.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
+                                        Kjoenn.MANN == KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()))) ||
 
-        return personRepository.findByIdent(hovedperson.getSivilstand().stream()
-                        .filter(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert())
-                        .map(SivilstandDTO::getRelatertVedSivilstand)
-                        .findFirst().orElse("0"))
-                .orElse(DbPerson.builder().person(new PersonDTO()).build())
-                .getPerson().getForelderBarnRelasjon().stream()
-                .anyMatch(relasjon -> FAR == relasjon.getMinRolleForPerson());
+                        isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
+                                hovedperson.getSivilstand().stream()
+                                        .anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
     private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO hovedperson) {

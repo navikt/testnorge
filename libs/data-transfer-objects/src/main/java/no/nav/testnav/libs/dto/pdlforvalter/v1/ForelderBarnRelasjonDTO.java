@@ -33,10 +33,10 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     @JsonIgnore
     public boolean isForeldre() {
 
-        return Rolle.FORELDER == relatertPersonsRolle ||
-                Rolle.MOR == relatertPersonsRolle ||
-                Rolle.FAR == relatertPersonsRolle ||
-                Rolle.MEDMOR == relatertPersonsRolle;
+        return Rolle.FORELDER == minRolleForPerson ||
+                Rolle.MOR == minRolleForPerson ||
+                Rolle.FAR == minRolleForPerson ||
+                Rolle.MEDMOR == minRolleForPerson;
     }
 
     public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
