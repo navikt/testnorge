@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { FormikProps } from 'formik'
 import { OptionsSection } from './options/OptionsSection'
 import {
@@ -42,7 +42,9 @@ export const getCount = (values: Record<string, string>, formikBag: FormikProps<
 }
 
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
-	const [selectionColor, setSelectionColor] = useState('blue')
+	const getSelectionColor = (formikBag: FormikProps<{}>) => {
+		return getCount(IdentPaths, formikBag) > 0 ? 'grey' : 'blue'
+	}
 
 	return (
 		<>
@@ -57,37 +59,37 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				heading={'Alder'}
 				options={<Alder />}
 				numSelected={getCount(AlderPaths, props.formikBag)}
-				selectionColor={selectionColor}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
 				heading={'Statsborgerskap'}
 				options={<Statsborgerskap />}
 				numSelected={getCount(StatsborgerskapPaths, props.formikBag)}
-				selectionColor={selectionColor}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
 				heading={'Sivilstand'}
 				options={<Sivilstand />}
 				numSelected={getCount(SivilstandPaths, props.formikBag)}
-				selectionColor={selectionColor}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
 				heading={'Barn'}
 				options={<Barn />}
 				numSelected={getCount(BarnPaths, props.formikBag)}
-				selectionColor={selectionColor}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
 				heading={'Identitet'}
 				options={<Identitet />}
 				numSelected={getCount(IdentitetPaths, props.formikBag)}
-				selectionColor={selectionColor}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
 				heading={'Diverse'}
 				options={<Diverse />}
 				numSelected={getCount(DiversePaths, props.formikBag)}
-				selectionColor={selectionColor}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 		</>
 	)
