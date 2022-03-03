@@ -73,56 +73,55 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
-        if (sivilstand.getType() == GIFT ||
-                sivilstand.getType() == REGISTRERT_PARTNER) {
-            if (isBlank(sivilstand.getRelatertVedSivilstand())) {
+        if ((sivilstand.isGift() || sivilstand.isSeparert()) &&
+                isBlank(sivilstand.getRelatertVedSivilstand())) {
 
-                if (isNull(sivilstand.getNyRelatertPerson())) {
-                    sivilstand.setNyRelatertPerson(new PersonRequestDTO());
-                }
-                if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
-                        isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
-                        isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
-
-                    sivilstand.getNyRelatertPerson().setFoedtFoer(now().minusYears(30));
-                    sivilstand.getNyRelatertPerson().setFoedtEtter(now().minusYears(60));
-                }
-                if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                    KjoennDTO.Kjoenn kjonn = hovedperson.getKjoenn().stream().findFirst()
-                            .map(KjoennDTO::getKjoenn)
-                            .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
-                    sivilstand.getNyRelatertPerson().setKjoenn(kjonn == MANN ? KVINNE : MANN);
-                }
-                if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
-                    sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
-                }
-
-                PersonDTO relatertPerson = createPersonService.execute(sivilstand.getNyRelatertPerson());
-
-                if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
-                    BostedadresseDTO fellesAdresse = hovedperson.getBostedsadresse().stream()
-                            .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
-                            .findFirst()
-                            .orElse(BostedadresseDTO.builder()
-                                    .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
-                                    .build());
-
-                    fellesAdresse.setGyldigFraOgMed(sivilstand.getSivilstandsdato());
-                    fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
-                            .map(BostedadresseDTO::getId).findFirst()
-                            .orElse(0) + 1);
-                    relatertPerson.getBostedsadresse().add(0, fellesAdresse);
-                }
-
-                sivilstand.setBorIkkeSammen(null);
-                sivilstand.setNyRelatertPerson(null);
-                sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
+            if (isNull(sivilstand.getNyRelatertPerson())) {
+                sivilstand.setNyRelatertPerson(new PersonRequestDTO());
             }
-            sivilstand.setSivilstandsdato(nonNull(sivilstand.getSivilstandsdato()) ? sivilstand.getSivilstandsdato() : now());
-            relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
-                    sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
-            createRelatertSivilstand(sivilstand, hovedperson.getIdent());
+            if (isNull(sivilstand.getNyRelatertPerson().getAlder()) &&
+                    isNull(sivilstand.getNyRelatertPerson().getFoedtEtter()) &&
+                    isNull(sivilstand.getNyRelatertPerson().getFoedtFoer())) {
+
+                sivilstand.getNyRelatertPerson().setFoedtFoer(now().minusYears(30));
+                sivilstand.getNyRelatertPerson().setFoedtEtter(now().minusYears(60));
+            }
+            if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
+                KjoennDTO.Kjoenn kjonn = hovedperson.getKjoenn().stream().findFirst()
+                        .map(KjoennDTO::getKjoenn)
+                        .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
+                sivilstand.getNyRelatertPerson().setKjoenn(kjonn == MANN ? KVINNE : MANN);
+            }
+            if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
+                sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
+            }
+
+            PersonDTO relatertPerson = createPersonService.execute(sivilstand.getNyRelatertPerson());
+
+            if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
+                BostedadresseDTO fellesAdresse = hovedperson.getBostedsadresse().stream()
+                        .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
+                        .findFirst()
+                        .orElse(BostedadresseDTO.builder()
+                                .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
+                                .build());
+
+                fellesAdresse.setGyldigFraOgMed(sivilstand.getSivilstandsdato());
+                fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
+                        .map(BostedadresseDTO::getId).findFirst()
+                        .orElse(0) + 1);
+                relatertPerson.getBostedsadresse().add(0, fellesAdresse);
+            }
+
+            sivilstand.setBorIkkeSammen(null);
+            sivilstand.setNyRelatertPerson(null);
+            sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
         }
+
+        sivilstand.setSivilstandsdato(nonNull(sivilstand.getSivilstandsdato()) ? sivilstand.getSivilstandsdato() : now());
+        relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
+                sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
+        createRelatertSivilstand(sivilstand, hovedperson.getIdent());
     }
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
