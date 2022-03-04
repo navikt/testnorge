@@ -16,8 +16,8 @@ type PdlForeldreProps = {
 const Visning = ({ forelder, idx }: VisningProps) => {
 	return (
 		<div key={idx} className="person-visning_content">
+			<TitleValue title="Foreldretype" value={forelder.relatertPersonsRolle} />
 			<TitleValue title="Ident" value={forelder.relatertPersonsIdent} />
-			<TitleValue title="Foreldretype" value={forelder.relatertPersonsRolle} size="medium" />
 		</div>
 	)
 }

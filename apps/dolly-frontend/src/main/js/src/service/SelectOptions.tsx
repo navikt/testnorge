@@ -33,14 +33,14 @@ const selectOptions: SelectOptions = {
 	],
 
 	foreldreTypePDL: [
-		{ value: 'FORELDER', label: 'Begge' },
+		{ value: 'FORELDER', label: 'Forelder' },
 		{ value: 'MOR', label: 'Mor' },
 		{ value: 'MEDMOR', label: 'Medmor' },
 		{ value: 'FAR', label: 'Far' },
 	],
 
 	pdlRelasjonTyper: [
-		{ value: 'FORELDER', label: 'Begge' },
+		{ value: 'FORELDER', label: 'Forelder' },
 		{ value: 'MOR', label: 'Mor' },
 		{ value: 'MEDMOR', label: 'Medmor' },
 		{ value: 'FAR', label: 'Far' },

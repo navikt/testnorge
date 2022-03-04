@@ -320,6 +320,7 @@ const testFoedtEtter = (val) => {
 		}
 	)
 }
+
 const testFoedtFoer = (val) => {
 	return val.test(
 		'is-after-foedt-etter',
@@ -331,6 +332,66 @@ const testFoedtFoer = (val) => {
 			return isAfter(new Date(value), new Date(foedtEtter))
 		}
 	)
+}
+
+const testForeldreansvar = (val) => {
+	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
+		var feilmelding = null
+		const values = this.options.context
+
+		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
+			(a) => a.minRolleForPerson
+		)
+		const sivilstander = _get(values, 'pdldata.person.sivilstand')?.map((a) => a.type)
+		const barn = _get(values, 'pdldata.person.forelderBarnRelasjon')?.filter(
+			(a) => a.relatertPersonsRolle === 'BARN'
+		)
+		const kjoennListe = _get(values, 'pdldata.person.kjoenn')
+
+		const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
+
+		if (selected === 'MOR' || selected === 'MEDMOR') {
+			const gyldigeRelasjoner = ['MOR', 'MEDMOR']
+			if (
+				(foreldrerelasjoner?.includes('FORELDER') &&
+					!kjoennListe?.some((a) => a.kjoenn === 'KVINNE') &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) ||
+				(!foreldrerelasjoner?.includes('FORELDER') &&
+					!gyldigeRelasjoner.some((a) => foreldrerelasjoner?.includes(a)) &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a)))
+			) {
+				feilmelding = 'Barn med foreldrerolle mor eller medmor finnes ikke'
+			}
+			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+				feilmelding = 'Partner er ikke forelder'
+			}
+		}
+		if (selected === 'FAR') {
+			if (
+				(foreldrerelasjoner?.includes('FORELDER') &&
+					!kjoennListe?.some((a) => a.kjoenn === 'MANN') &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) ||
+				(!foreldrerelasjoner?.includes('FORELDER') &&
+					!foreldrerelasjoner?.includes('FAR') &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a)))
+			) {
+				feilmelding = 'Barn med foreldrerolle far finnes ikke'
+			}
+			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+				feilmelding = 'Partner er ikke forelder'
+			}
+		}
+		if (selected === 'FELLES') {
+			if (!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) {
+				feilmelding =
+					'Partner med sivilstand gift, registrert partner, separert eller separert partner finnes ikke'
+			}
+			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+				feilmelding = 'Partner er ikke forelder'
+			}
+		}
+		return feilmelding ? this.createError({ message: feilmelding }) : true
+	})
 }
 
 const doedsfall = Yup.array().of(
@@ -421,7 +482,7 @@ const vergemaal = Yup.array().of(
 
 const foreldreansvar = Yup.array().of(
 	Yup.object({
-		ansvar: requiredString.nullable(),
+		ansvar: testForeldreansvar(requiredString.nullable()),
 	})
 )
 
