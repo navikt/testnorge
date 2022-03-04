@@ -20,16 +20,22 @@ public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
+        final String bearerAuth = "bearer-jwt";
+        final String userJwt = "user-jwt";
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                        .in(SecurityScheme.In.HEADER)
-                        .name("Authorization")
-                ))
+                .components(new Components().addSecuritySchemes(
+                        bearerAuth,
+                        new SecurityScheme()
+                                .description("Legg inn token kun, uten \"Bearer \"")
+                                .name(bearerAuth)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT"))
+                )
                 .addSecurityItem(
-                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
+                        new SecurityRequirement()
+                                .addList(bearerAuth, Arrays.asList("read", "write"))
+                )
                 .info(new Info()
                         .title(applicationProperties.getName())
                         .version(applicationProperties.getVersion())
