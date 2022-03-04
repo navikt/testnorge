@@ -22,6 +22,10 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 				window.location.href = response.url
 			}
 			if (!response.ok) {
+				if (response.status === 401) {
+					console.error('Auth feilet, reloader siden for å få ny auth client.')
+					window.location.reload()
+				}
 				if (response.status === 404) {
 					throw new NotFoundError()
 				}

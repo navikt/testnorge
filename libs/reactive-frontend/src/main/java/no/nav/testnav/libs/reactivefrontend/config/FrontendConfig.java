@@ -1,10 +1,9 @@
 package no.nav.testnav.libs.reactivefrontend.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
 import no.nav.testnav.libs.reactivefrontend.filter.IgnoreSetCookieFilter;
 import no.nav.testnav.libs.reactivefrontend.filter.SessionTimeoutCookieFilter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Import({
         SessionTimeoutCookieFilter.class,

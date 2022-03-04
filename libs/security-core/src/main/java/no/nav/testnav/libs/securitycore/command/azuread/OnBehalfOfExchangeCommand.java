@@ -12,8 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,15 +38,11 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                 .fromFormData("scope", scope)
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("assertion", token.getValue())
+                .with("assertion", token.getAccessTokenValue())
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
         log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
-        if (token.getExpiredAt().isBefore(LocalDateTime.now().toInstant(ZoneOffset.UTC))) {
-            log.warn("AccessToken har expired! Tokenet gikk ut: {}", token.getExpiredAt());
-            //TODO: Håndtere utgått token, request nytt
-        }
         return webClient
                 .post()
                 .body(body)
@@ -59,9 +53,9 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
                         throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
+                                ((WebClientResponseException) throwable).getResponseBodyAsString(),
                                 throwable
-                        )
-                )
+                        ))
                 .doOnError(
                         throwable -> !(throwable instanceof WebClientResponseException),
                         throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)

@@ -2,16 +2,19 @@ package no.nav.testnav.libs.securitycore.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.Instant;
 
-@Value
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 public class Token {
-    String value;
+    String accessTokenValue;
+    String refreshTokenValue;
     String userId;
     boolean clientCredentials;
-    Instant expiredAt;
+    Instant expiresAt;
 }

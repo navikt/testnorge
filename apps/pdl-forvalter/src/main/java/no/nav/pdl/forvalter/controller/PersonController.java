@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.ArtifactDeleteService;
+import no.nav.pdl.forvalter.service.ArtifactGjeldendeService;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
@@ -38,6 +39,7 @@ public class PersonController {
     private final PersonService personService;
     private final PdlOrdreService pdlOrdreService;
     private final ArtifactDeleteService artifactDeleteService;
+    private final ArtifactGjeldendeService artifactGjeldendeService;
 
     @ResponseBody
     @GetMapping
@@ -93,6 +95,7 @@ public class PersonController {
                                              @Parameter(description = "Angir om TPS er master, true == hovedperson skal ikke slettes i PDL")
                                              @RequestParam(required = false) Boolean isTpsMaster) {
 
+        artifactGjeldendeService.setGjeldene(ident);
         return pdlOrdreService.send(ident, isTpsMaster);
     }
 

@@ -15,21 +15,23 @@ import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ClientCredentialExchangeCommand implements ExchangeCommand {
+public class RefreshAccessTokenCommand implements ExchangeCommand {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final String scope;
+    private final String refreshToken;
 
     @Override
     public Mono<AccessToken> call() {
-        log.trace("Henter OAuth2 access token fra client credential...");
+        log.trace("Henter OAuth2 access token fra refresh token...");
         var body = BodyInserters
-                .fromFormData("scope", scope)
+                .fromFormData("scope", "openid")
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
-                .with("grant_type", "client_credentials");
+                .with("refresh_token", refreshToken)
+                .with("grant_type", "refresh_token");
 
-        log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
+        log.trace("Access token opprettet for OAuth 2.0. ved bruk av refresh token");
         return webClient.post()
                 .body(body)
                 .retrieve()
