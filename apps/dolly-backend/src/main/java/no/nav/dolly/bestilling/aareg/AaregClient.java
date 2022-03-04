@@ -130,7 +130,6 @@ public class AaregClient implements ClientRegister {
             List<OrganisasjonDTO> organisasjoner = organisasjonServiceConsumer.getOrganisasjoner(orgnumre, env);
             bestilling.getAareg().get(0).getAmelding().forEach(amelding -> {
 
-
                 Map<String, String> opplysningspliktig = new HashMap<>();
                 orgnumre.forEach(orgnummer -> opplysningspliktig.put(orgnummer,
                         organisasjoner.stream()
@@ -149,7 +148,7 @@ public class AaregClient implements ClientRegister {
             });
 
             Flux<Map<String, ResponseEntity<Void>>> response = ameldingConsumer.sendOrders(createOrder(dtoMaanedMap.values().stream().toList(), env));
-            response.map(stringStringMap -> stringStringMap.entrySet().stream().map(entrySet -> {
+            response.map(dtoMaaned -> dtoMaaned.entrySet().stream().map(entrySet -> {
                 if (entrySet.getValue().getStatusCode().is2xxSuccessful()) {
                     saveTransaksjonId(entrySet.getValue(), entrySet.getKey(), dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
                 }
@@ -160,7 +159,7 @@ public class AaregClient implements ClientRegister {
                                         : entrySet.getValue().getStatusCode().getReasonPhrase()),
                         "1",
                         result);
-            }));
+            })).blockLast();
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
             appendResult(Maps.immutableEntry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
