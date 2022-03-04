@@ -40,30 +40,35 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 	//@ts-ignore
 	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
 
+	const ansvarlig = 'ansvarlig'
+	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
+	const nyAnsvarlig = 'nyAnsvarlig'
+	const typeAnsvarlig = 'typeAnsvarlig'
+
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
 		const foreldreansvar = _get(formikBag.values, path)
 		const foreldreansvarClone = _cloneDeep(foreldreansvar)
 
-		_set(foreldreansvarClone, 'typeAnsvarlig', target?.value || null)
+		_set(foreldreansvarClone, typeAnsvarlig, target?.value || null)
 		if (!target) {
-			_set(foreldreansvarClone, 'ansvarlig', undefined)
-			_set(foreldreansvarClone, 'ansvarligUtenIdentifikator', undefined)
-			_set(foreldreansvarClone, 'nyAnsvarlig', undefined)
+			_set(foreldreansvarClone, ansvarlig, undefined)
+			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 		if (target?.value === 'EKSISTERENDE') {
-			_set(foreldreansvarClone, 'ansvarlig', null)
-			_set(foreldreansvarClone, 'ansvarligUtenIdentifikator', undefined)
-			_set(foreldreansvarClone, 'nyAnsvarlig', undefined)
+			_set(foreldreansvarClone, ansvarlig, null)
+			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 		if (target?.value === 'UTEN_ID') {
-			_set(foreldreansvarClone, 'ansvarlig', undefined)
-			_set(foreldreansvarClone, 'ansvarligUtenIdentifikator', initialPdlBiPerson)
-			_set(foreldreansvarClone, 'nyAnsvarlig', undefined)
+			_set(foreldreansvarClone, ansvarlig, undefined)
+			_set(foreldreansvarClone, ansvarligUtenIdentifikator, initialPdlBiPerson)
+			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 		if (target?.value === 'NY') {
-			_set(foreldreansvarClone, 'ansvarlig', undefined)
-			_set(foreldreansvarClone, 'ansvarligUtenIdentifikator', undefined)
-			_set(foreldreansvarClone, 'nyAnsvarlig', initialPdlPerson)
+			_set(foreldreansvarClone, ansvarlig, undefined)
+			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_set(foreldreansvarClone, nyAnsvarlig, initialPdlPerson)
 		}
 
 		formikBag.setFieldValue(path, foreldreansvarClone)
@@ -75,10 +80,10 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 
 		_set(foreldreansvarClone, 'ansvar', target?.value || null)
 		if (target?.value !== 'ANDRE') {
-			_set(foreldreansvarClone, 'typeAnsvarlig', undefined)
-			_set(foreldreansvarClone, 'ansvarlig', undefined)
-			_set(foreldreansvarClone, 'ansvarligUtenIdentifikator', undefined)
-			_set(foreldreansvarClone, 'nyAnsvarlig', undefined)
+			_set(foreldreansvarClone, typeAnsvarlig, undefined)
+			_set(foreldreansvarClone, ansvarlig, undefined)
+			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 
 		formikBag.setFieldValue(path, foreldreansvarClone)
