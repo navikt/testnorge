@@ -24,9 +24,8 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers(
-                        "/swagger-ui.html",
-                        "/swagger-ui/**",
                         "/swagger",
+                        "/swagger-ui/**",
                         "/webjars/**",
                         "/v3/api-docs/**",
                         "/internal/isReady",
@@ -38,5 +37,7 @@ public class SecurityConfig {
                 .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
                 .and().build();
     }
+
 }
+
 
