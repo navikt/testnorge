@@ -12,7 +12,7 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 interface PdlPersonValues {
 	path: string
 	formikBag: FormikProps<{}>
-	erNyIdent: boolean
+	erNyIdent?: boolean
 }
 
 export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonValues) => {

@@ -30,6 +30,7 @@ export const SelectOptionsOppslag = {
 		})
 		if (gruppe?.length < 1) return null
 		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
+			if (gruppe.length < 1) return null
 			const personListe: Array<{ value: string; label: string }> = []
 			response.data.forEach((id: Person) => {
 				personListe.push({

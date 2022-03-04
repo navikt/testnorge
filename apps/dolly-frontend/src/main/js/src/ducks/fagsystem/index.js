@@ -448,8 +448,8 @@ const getTpsfIdentInfo = (ident, state, tpsfIdent) => {
 const getPdlfIdentInfo = (ident, state, pdlIdent) => {
 	if (!pdlIdent) return null
 
-	const pdlMellomnavn = pdlIdent?.person?.navn?.[0]?.mellomnavn
-		? `${pdlIdent?.person?.navn?.[0]?.mellomnavn.charAt(0)}.`
+	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
+		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
 		: ''
 
 	const pdlAlder = (foedselsdato) => {

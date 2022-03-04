@@ -2,6 +2,7 @@ import React from 'react'
 import {
 	DoedfoedtBarn,
 	FoedselData,
+	Foreldreansvar,
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
@@ -38,6 +39,7 @@ export type HentPerson = {
 	sivilstand: Array<Sivilstand>
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
+	foreldreansvar: Array<Foreldreansvar>
 	kontaktinformasjonForDoedsbo: Array<{}>
 	utenlandskIdentifikasjonsnummer: Array<{}>
 	falskIdentitet: FalskIdentitet
@@ -272,14 +274,4 @@ export type UtvandringValues = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
-}
-
-export type Kodeverk = {
-	values: Array<Array<KodeverkValues>>
-}
-
-export type KodeverkValues = {
-	data: string
-	label: string
-	value: string
 }

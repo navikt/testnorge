@@ -68,7 +68,7 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }
 							<>
 								<FormikSelect
 									name={`${path}.minRolleForPerson`}
-									label="Rolle for barn"
+									label="Forelders rolle for barn"
 									options={Options('foreldreTypePDL')}
 									isClearable={false}
 								/>

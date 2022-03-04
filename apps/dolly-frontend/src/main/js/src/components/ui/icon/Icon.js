@@ -163,6 +163,7 @@ export const icons = {
 	linkBroken: LinkBroken,
 	telephone: Telephone,
 	foedsel: Infants,
+	foreldreansvar: Group2,
 }
 
 const px = (v) => `${v}px`

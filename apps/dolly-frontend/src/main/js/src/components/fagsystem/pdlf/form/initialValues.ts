@@ -12,6 +12,17 @@ export const initialPdlPerson = {
 	gradering: null as string,
 }
 
+export const initialPdlBiPerson = {
+	foedselsdato: null as string,
+	kjoenn: null as string,
+	navn: {
+		fornavn: null as string,
+		mellomnavn: null as string,
+		etternavn: null as string,
+	},
+	statsborgerskap: null as string,
+}
+
 export const initialKontaktadresse = {
 	adressetype: null as string,
 	gyldigFraOgMed: null as string,
@@ -254,6 +265,15 @@ export const initialBarn = {
 
 export const initialDoedfoedtBarn = {
 	dato: new Date(),
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialForeldreansvar = {
+	typeAnsvarlig: null as string,
+	ansvar: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

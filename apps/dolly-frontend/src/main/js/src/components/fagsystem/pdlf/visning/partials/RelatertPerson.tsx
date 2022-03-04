@@ -58,6 +58,17 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 					title="Gradering"
 					value={Formatters.showLabel('gradering', data.adressebeskyttelse?.[0].gradering)}
 				/>
+				{data.foreldreansvar?.[0].ansvarlig && (
+					<TitleValue
+						title="Foreldreansvar"
+						value={`${Formatters.allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
+							data.foreldreansvar?.[0].ansvarlig
+						}`}
+					/>
+				)}
+				{data.foreldreansvar?.[0].ansvarligUtenIdentifikator && (
+					<TitleValue title="Foreldreansvar" value="Ansvarlig uten identifikator" />
+				)}
 			</div>
 			{relatertPersonPdl?.data?.hentPerson && (
 				<StyledPdlData>

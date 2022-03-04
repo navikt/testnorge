@@ -20,6 +20,7 @@ export type PersonData = {
 	adressebeskyttelse?: Array<Adressebeskyttelse>
 	sivilstand?: Array<Sivilstand>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
+	foreldreansvar?: Array<Foreldreansvar>
 }
 
 type Navn = {
@@ -82,6 +83,19 @@ export type ForeldreBarnRelasjon = {
 export type DoedfoedtBarn = {
 	id?: number
 	dato: Date
+}
+
+export type Foreldreansvar = {
+	ansvar: string
+	ansvarlig: string
+	ansvarligUtenIdentifikator: ForeldreansvarUtenId
+}
+
+export type ForeldreansvarUtenId = {
+	foedselsdato: string
+	kjoenn: string
+	navn: Navn
+	statsborgerskap: string
 }
 
 export type Vergemaal = {

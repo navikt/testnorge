@@ -27,14 +27,14 @@ const selectOptions: SelectOptions = {
 	],
 
 	foreldreTypePDL: [
-		{ value: 'FORELDER', label: 'Begge' },
+		{ value: 'FORELDER', label: 'Forelder' },
 		{ value: 'MOR', label: 'Mor' },
 		{ value: 'MEDMOR', label: 'Medmor' },
 		{ value: 'FAR', label: 'Far' },
 	],
 
 	pdlRelasjonTyper: [
-		{ value: 'FORELDER', label: 'Begge' },
+		{ value: 'FORELDER', label: 'Forelder' },
 		{ value: 'MOR', label: 'Mor' },
 		{ value: 'MEDMOR', label: 'Medmor' },
 		{ value: 'FAR', label: 'Far' },
@@ -187,6 +187,22 @@ const selectOptions: SelectOptions = {
 		{ value: 'SEPARERT_PARTNER', label: 'Separtert partner' },
 		{ value: 'SKILT_PARTNER', label: 'Skilt partner' },
 		{ value: 'GJENLEVENDE_PARTNER', label: 'Gjenlevende partner' },
+	],
+
+	// PDL - foreldreansvar
+	foreldreansvar: [
+		{ value: 'FELLES', label: 'Felles' },
+		{ value: 'MOR', label: 'Mor' },
+		{ value: 'FAR', label: 'Far' },
+		{ value: 'MEDMOR', label: 'Medmor' },
+		{ value: 'ANDRE', label: 'Andre' },
+		{ value: 'UKJENT', label: 'Ukjent' },
+	],
+
+	typeAnsvarlig: [
+		{ value: 'EKSISTERENDE', label: 'Eksisterende person' },
+		{ value: 'NY', label: 'Ny person' },
+		{ value: 'UTEN_ID', label: 'Person uten identifikator' },
 	],
 
 	// Arena

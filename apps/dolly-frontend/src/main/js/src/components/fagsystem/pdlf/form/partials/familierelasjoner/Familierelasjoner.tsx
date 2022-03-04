@@ -10,11 +10,13 @@ import { DoedfoedtBarn } from '~/components/fagsystem/pdlf/form/partials/familie
 import { ForelderBarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { Sivilstand } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
+import { Foreldreansvar } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
 import { useBoolean } from 'react-use'
 
 const relasjonerAttributter = [
 	'pdldata.person.sivilstand',
 	'pdldata.person.forelderBarnRelasjon',
+	'pdldata.person.foreldreansvar',
 	'pdldata.person.doedfoedtBarn',
 ]
 
@@ -56,6 +58,13 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 				</Kategori>
 				<Kategori title="Barn/foreldre" vis="pdldata.person.forelderBarnRelasjon">
 					<ForelderBarnRelasjon
+						formikBag={formikBag}
+						identOptions={identOptions}
+						loadingOptions={loadingIdentOptions}
+					/>
+				</Kategori>
+				<Kategori title="Foreldreansvar" vis="pdldata.person.foreldreansvar">
+					<Foreldreansvar
 						formikBag={formikBag}
 						identOptions={identOptions}
 						loadingOptions={loadingIdentOptions}

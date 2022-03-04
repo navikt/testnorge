@@ -4,6 +4,7 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	initialBarn,
 	initialDoedfoedtBarn,
+	initialForeldreansvar,
 	initialSivilstand,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
@@ -22,6 +23,7 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre">
 				<Attributt attr={sm.attrs.barnForeldre} />
+				<Attributt attr={sm.attrs.foreldreansvar} />
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn">
 				<Attributt attr={sm.attrs.doedfoedtBarn} />
@@ -51,6 +53,16 @@ FamilierelasjonPanel.initialValues = ({ set, del, has }) => ({
 		},
 		remove() {
 			del('pdldata.person.forelderBarnRelasjon')
+		},
+	},
+	foreldreansvar: {
+		label: 'Har foreldreansvar',
+		checked: has('pdldata.person.foreldreansvar'),
+		add() {
+			set('pdldata.person.foreldreansvar', [initialForeldreansvar])
+		},
+		remove() {
+			del('pdldata.person.foreldreansvar')
 		},
 	},
 	doedfoedtBarn: {
