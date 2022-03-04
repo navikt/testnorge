@@ -28,7 +28,7 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 						<div style={{ minWidth: '350px' }}>
 							<FormikSelect
 								name={`${path}.ident`}
-								label="Fnr/dnr/bost"
+								label="Fnr/dnr/npid"
 								options={valgbareIdenter}
 								isClearable={false}
 								size="grow"

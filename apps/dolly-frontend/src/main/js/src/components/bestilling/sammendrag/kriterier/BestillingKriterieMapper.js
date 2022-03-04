@@ -1500,7 +1500,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 			obj('Arbeidsgiver (orgnr)', inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer),
 			obj(
-				'Arbeidsgiver (fnr/dnr/bost)',
+				'Arbeidsgiver (fnr/dnr/npid)',
 				inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
 			),
 			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),

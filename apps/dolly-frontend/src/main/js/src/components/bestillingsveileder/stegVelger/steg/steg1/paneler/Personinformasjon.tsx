@@ -48,7 +48,9 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 					attr={sm.attrs.utvandretTilLand}
 					disabled={!harFnr}
 					title={
-						'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
+						!harFnr
+							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
+							: ''
 					}
 				/>
 			</AttributtKategori>

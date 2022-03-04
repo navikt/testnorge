@@ -32,7 +32,7 @@ const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
 		return 'DNR'
 	} else if (parseInt(ident.charAt(2)) % 4 >= 2) {
-		return 'BOST'
+		return 'NPID'
 	} else {
 		return 'FNR'
 	}

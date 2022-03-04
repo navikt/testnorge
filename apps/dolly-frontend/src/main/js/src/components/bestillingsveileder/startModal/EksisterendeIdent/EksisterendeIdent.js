@@ -34,13 +34,13 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 				<React.Fragment>
 					<Textarea
 						label="Identer"
-						placeholder="fnr/dnr/bost"
+						placeholder="fnr/dnr/npid"
 						value={text}
 						onChange={(e) => setText(e.target.value)}
 					/>
 
 					<Alertstripe type="info">
-						Skriv inn fnr/dnr/bost. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
+						Skriv inn fnr/dnr/npid. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
 						fra før.
 					</Alertstripe>
 					<NavButton type="hoved" onClick={() => fetch()} disabled={!text.length}>

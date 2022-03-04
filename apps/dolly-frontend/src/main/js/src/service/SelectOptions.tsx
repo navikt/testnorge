@@ -6,13 +6,7 @@ const selectOptions: SelectOptions = {
 	identtype: [
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'DNR', label: 'DNR' },
-		{ value: 'BOST', label: 'BOST' },
-	],
-	identtypeBarn: [
-		{ value: 'FNR', label: 'FNR' },
-		{ value: 'DNR', label: 'DNR' },
-		{ value: 'BOST', label: 'BOST' },
-		{ value: 'FDAT', label: 'FDAT (dødfødt)' },
+		{ value: 'NPID', label: 'NPID' },
 	],
 
 	kjonnBarn: [

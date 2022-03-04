@@ -21,7 +21,7 @@ export const FalskIdentitet = ({ data }) => {
 			<div className="person-visning_content" key={id}>
 				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'UKJENT'} />}
 
-				<TitleValue title="Rett fnr/dnr/bost" value={rettIdentitetVedIdentifikasjonsnummer} />
+				<TitleValue title="Rett fnr/dnr/npid" value={rettIdentitetVedIdentifikasjonsnummer} />
 
 				{rettIdentitetVedOpplysninger && (
 					<Fragment>

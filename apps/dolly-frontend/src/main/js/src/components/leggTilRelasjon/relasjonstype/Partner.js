@@ -30,7 +30,7 @@ export const Partner = ({ lagOptions, identInfo, hovedIdent, formikBag }) => {
 					<React.Fragment key={idx}>
 						<FormikSelect
 							name={`${path}.ident`}
-							label="Fnr/dnr/bost"
+							label="Fnr/dnr/npid"
 							options={valgbareIdenter}
 							isClearable={false}
 							size="large"
