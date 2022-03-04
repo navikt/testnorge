@@ -22,7 +22,7 @@ const ListItem = styled.li`
 const identPath = 'personinformasjon.ident.ident'
 const identerPath = 'personinformasjon.identer'
 
-export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
+export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchProps) => {
 	const [identer, setIdenter] = useState(_get(formikBag.values, identerPath))
 	const [ident, setIdent] = useState(_get(formikBag.values, identPath))
 	const [error, setError] = useState(null)
@@ -74,8 +74,8 @@ export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
 					<ul>
 						{identer.map((element: string, idx: number) => (
 							<ListItem key={idx}>
-								<div className="flexbox" style={{ lineHeight: '1em' }}>
-									<p>{element}</p>
+								<div className="flexbox--align-center" style={{ lineHeight: '1em' }}>
+									{element}
 									<Button
 										onClick={() => removeIdent(element)}
 										kind="trashcan"
@@ -97,9 +97,10 @@ export const IdentSearch = ({ formikBag }: IdentSearchProps) => {
 						feilmelding: error,
 					}
 				}
+				size="medium"
 			/>
 			{ident && !ident.isEmpty && !error && (
-				<Button onClick={addIdent} kind="add-circle">
+				<Button onClick={addIdent} kind="add-circle" style={{ marginBottom: '10px' }}>
 					Legg til flere
 				</Button>
 			)}

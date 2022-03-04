@@ -1,8 +1,8 @@
 export const initialValues = {
 	personinformasjon: {
 		alder: {
-			fra: '18',
-			til: '70',
+			fra: '',
+			til: '',
 			foedselsdato: {
 				fom: '',
 				tom: '',

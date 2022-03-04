@@ -1,97 +1,96 @@
 import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { IdentSearch } from '~/pages/testnorgePage/search/IdentSearch'
 import { FormikProps } from 'formik'
+import { OptionsSection } from './options/OptionsSection'
+import {
+	IdentNummer,
+	IdentPaths,
+	Alder,
+	AlderPaths,
+	Statsborgerskap,
+	StatsborgerskapPaths,
+	Sivilstand,
+	SivilstandPaths,
+	Barn,
+	BarnPaths,
+	Identitet,
+	IdentitetPaths,
+	Diverse,
+	DiversePaths,
+} from './options/Options'
+import _get from 'lodash/get'
 
-type SearchOptionsProps = {
+export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
 }
 
-export const SearchOptions = (props: SearchOptionsProps) => (
-	<>
-		<h2>Personinformasjon</h2>
-		<section>
-			<h3>Fødsels- eller D-nummer</h3>
-			<IdentSearch formikBag={props.formikBag} />
-		</section>
-		<section>
-			<h3>Alder</h3>
-			<FormikTextInput
-				name="personinformasjon.alder.fra"
-				label="Alder fra"
-				visHvisAvhuket={false}
+export const getCount = (values: Record<string, string>, formikBag: FormikProps<{}>) => {
+	let count = 0
+	for (let key in values) {
+		const value = _get(formikBag.values, key)
+		const valueType = values[key]
+		if (valueType === 'string' && value && value !== '') {
+			count++
+		} else if (valueType === 'list' && value) {
+			count += value.length
+		} else if (valueType === 'ident' && value && value.match(/^\d{11}$/) != null) {
+			count++
+		} else if (value) {
+			count++
+		}
+	}
+	return count
+}
+
+const getSelectionColor = (formikBag: FormikProps<{}>) => {
+	return getCount(IdentPaths, formikBag) > 0 ? 'grey' : 'blue'
+}
+
+export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
+	return (
+		<>
+			<h2>Personinformasjon</h2>
+			<OptionsSection
+				heading={'Fødsels- eller D-nummer'}
+				options={<IdentNummer formikBag={props.formikBag} />}
+				startOpen={true}
+				numSelected={getCount(IdentPaths, props.formikBag)}
 			/>
-			<FormikTextInput
-				name="personinformasjon.alder.til"
-				label="Alder til"
-				visHvisAvhuket={false}
+			<OptionsSection
+				heading={'Alder'}
+				options={<Alder />}
+				numSelected={getCount(AlderPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
-			<FormikDatepicker
-				name="personinformasjon.alder.foedselsdato.fom"
-				label="Fødselsdato fom"
-				visHvisAvhuket={false}
+			<OptionsSection
+				heading={'Statsborgerskap'}
+				options={<Statsborgerskap />}
+				numSelected={getCount(StatsborgerskapPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
-			<FormikDatepicker
-				name="personinformasjon.alder.foedselsdato.tom"
-				label="Fødselsdato tom"
-				visHvisAvhuket={false}
+			<OptionsSection
+				heading={'Sivilstand'}
+				options={<Sivilstand />}
+				numSelected={getCount(SivilstandPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
-		</section>
-		<section>
-			<h3>Statsborgerskap</h3>
-			<FormikSelect
-				name="personinformasjon.statsborgerskap.land"
-				label="Statsborgerskap"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				optionHeight={50}
+			<OptionsSection
+				heading={'Barn'}
+				options={<Barn />}
+				numSelected={getCount(BarnPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
-		</section>
-		<section>
-			<h3>Sivilstand</h3>
-			<FormikSelect
-				name="personinformasjon.sivilstand.type"
-				label="Sivilstand"
-				options={[
-					{ value: 'GIFT', label: 'Gift' },
-					{ value: 'UGIFT', label: 'Ugift' },
-				]}
+			<OptionsSection
+				heading={'Identitet'}
+				options={<Identitet />}
+				numSelected={getCount(IdentitetPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
-		</section>
-		<section>
-			<h3>Barn</h3>
-			<FormikCheckbox name="personinformasjon.barn.barn" label="Har barn" />
-			<FormikCheckbox name="personinformasjon.barn.doedfoedtBarn" label="Har dødfødt barn" />
-		</section>
-		<section>
-			<h3>Identitet</h3>
-			<FormikCheckbox
-				name="personinformasjon.identitet.falskIdentitet"
-				label="Har falsk identitet"
+			<OptionsSection
+				heading={'Diverse'}
+				options={<Diverse />}
+				numSelected={getCount(DiversePaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
-			<FormikCheckbox
-				name="personinformasjon.identitet.utenlandskIdentitet"
-				label="Har utenlandsk identitet"
-			/>
-		</section>
-		<section>
-			<h3>Diverse</h3>
-			<FormikSelect
-				name="personinformasjon.diverse.kjoenn"
-				label="Kjønn"
-				options={[
-					{ value: 'KVINNE', label: 'Kvinne' },
-					{ value: 'MANN', label: 'Mann' },
-				]}
-			/>
-			<FormikCheckbox
-				name="personinformasjon.diverse.innflyttet"
-				label="Har innflyttet til Norge"
-			/>
-			<FormikCheckbox name="personinformasjon.diverse.utflyttet" label="Har utflyttet fra Norge" />
-		</section>
-	</>
-)
+		</>
+	)
+}
