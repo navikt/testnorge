@@ -17,16 +17,16 @@ public class GetAuthenticatedToken extends JwtResolver implements Callable<Token
         var jwt = getJwtAuthenticationToken();
         return switch (getAuthenticatedResourceServerType.call()) {
             case AZURE_AD -> Token.builder()
-                    .value(jwt.getToken().getTokenValue())
+                    .accessTokenValue(jwt.getToken().getTokenValue())
                     .userId(jwt.getTokenAttributes().get("oid").toString())
                     .clientCredentials(jwt.getTokenAttributes().get("oid").equals(jwt.getTokenAttributes().get("sub")))
-                    .expiredAt(jwt.getToken().getExpiresAt())
+                    .expiresAt(jwt.getToken().getExpiresAt())
                     .build();
             case TOKEN_X -> Token.builder()
-                    .value(jwt.getToken().getTokenValue())
+                    .accessTokenValue(jwt.getToken().getTokenValue())
                     .userId(jwt.getTokenAttributes().get("pid").toString())
                     .clientCredentials(false)
-                    .expiredAt(jwt.getToken().getExpiresAt())
+                    .expiresAt(jwt.getToken().getExpiresAt())
                     .build();
         };
     }
