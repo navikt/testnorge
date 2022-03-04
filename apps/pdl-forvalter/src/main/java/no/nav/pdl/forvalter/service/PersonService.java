@@ -70,7 +70,6 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
-    private final GjeldendeArtifactService gjeldendeArtifactService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -94,8 +93,6 @@ public class PersonService {
         dbPerson.setMellomnavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
         dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
-
-        gjeldendeArtifactService.setGjeldene(dbPerson);
 
         return personRepository.save(dbPerson).getIdent();
     }

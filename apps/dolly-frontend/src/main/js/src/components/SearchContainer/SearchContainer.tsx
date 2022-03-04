@@ -19,11 +19,6 @@ const Button = styled(NavButton)`
 	margin-top: 20px;
 `
 
-const Options = styled.div`
-	overflow-y: scroll;
-	height: 700px;
-`
-
 type Props = {
 	left: React.ReactNode
 	right: React.ReactNode
@@ -34,7 +29,7 @@ type Props = {
 export default ({ left, right, buttonLabel = 'Søk', onSubmit }: Props) => (
 	<Container>
 		<Left>
-			<Options>{left}</Options>
+			{left}
 			<Button onClick={() => onSubmit()}>{buttonLabel}</Button>
 		</Left>
 		<Right>{right}</Right>

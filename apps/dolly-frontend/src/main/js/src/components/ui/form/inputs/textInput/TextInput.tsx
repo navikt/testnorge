@@ -35,10 +35,12 @@ export const DollyTextInput = (props: {
 	label?: string
 	feil?: any
 	value: any
+	size?: string
 	onBlur?: Function
 	onSubmit?: Function
 	onChange?: Function
 	onPaste?: Function
+	onKeyPress?: Function
 }) => (
 	<InputWrapper {...props}>
 		{/*@ts-ignore*/}
