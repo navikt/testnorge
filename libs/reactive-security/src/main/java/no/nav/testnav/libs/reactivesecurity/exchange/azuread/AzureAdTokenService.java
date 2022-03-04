@@ -74,7 +74,7 @@ public class AzureAdTokenService implements TokenService {
                 .flatMap(token -> {
                     if (isNull(token) || token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
                         log.warn("AccessToken har utløpt eller utløper innen kort tid!");
-                        return Mono.error(new AccessDeniedException("Access token har utløpt eller utloeper innen kort tid"));
+                        return Mono.error(new AccessDeniedException("Access token har utløpt eller utløper innen kort tid"));
                     }
                     if (token.isClientCredentials()) {
                         return generateClientCredentialAccessToken(serverProperties);
