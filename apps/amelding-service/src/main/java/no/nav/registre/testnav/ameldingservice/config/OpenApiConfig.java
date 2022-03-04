@@ -16,25 +16,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 
 @Configuration
-public class OpenApiConfig {
+public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
-        final String bearerAuth = "bearer-jwt";
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes(
-                        bearerAuth,
-                        new SecurityScheme()
-                                .description("Legg inn token kun, uten \"Bearer \"")
-                                .name(bearerAuth)
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT"))
-                )
+                .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization")
+                ))
                 .addSecurityItem(
-                        new SecurityRequirement()
-                                .addList(bearerAuth, Arrays.asList("read", "write"))
-                )
+                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
                 .info(new Info()
                         .title(applicationProperties.getName())
                         .version(applicationProperties.getVersion())
@@ -50,5 +45,10 @@ public class OpenApiConfig {
                                 .url("https://opensource.org/licenses/MIT")
                         )
                 );
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }
