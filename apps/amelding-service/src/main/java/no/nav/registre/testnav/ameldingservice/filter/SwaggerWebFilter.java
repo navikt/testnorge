@@ -14,7 +14,7 @@ public class SwaggerWebFilter implements WebFilter {
             return chain
                     .filter(exchange.mutate()
                             .request(exchange.getRequest()
-                                    .mutate().path("/swagger-ui/index.html").build())
+                                    .mutate().path("/swagger-ui.html").build())
                             .build());
         }
 
