@@ -1,15 +1,6 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import no.nav.pdl.forvalter.config.credentials.IdentPoolProperties;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolGetCommand;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
@@ -20,6 +11,14 @@ import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,7 +50,7 @@ public class IdentPoolConsumer {
                         token.getTokenValue()).call()));
     }
 
-    public Flux<List<IdentDTO>> releaseIdents(List<String> identer) {
+    public Flux<List<IdentDTO>> releaseIdents(Set<String> identer) {
 
         return Flux.from(tokenExchange.exchange(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,

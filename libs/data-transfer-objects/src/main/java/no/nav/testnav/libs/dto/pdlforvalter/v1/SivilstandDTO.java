@@ -43,7 +43,6 @@ public class SivilstandDTO extends DbVersjonDTO {
 
     private Boolean eksisterendePerson;
 
-    @JsonIgnore
     public boolean isEksisterendePerson() {
 
         return isTrue(eksisterendePerson);

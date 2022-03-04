@@ -26,7 +26,6 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
 
     private Boolean eksisterendePerson;
 
-    @JsonIgnore
     public boolean isEksisterendePerson() {
 
         return isTrue(eksisterendePerson);

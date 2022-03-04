@@ -18,6 +18,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -46,6 +47,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -109,16 +111,23 @@ public class PersonService {
 
         unhookEksternePersonerService.unhook(dbPerson);
 
-        var personer = Stream.of(List.of(dbPerson),
-                        dbPerson.getRelasjoner().stream()
-                                .map(DbRelasjon::getRelatertPerson)
-                                .toList())
+        var identer = Stream.of(List.of(dbPerson.getIdent()),
+                dbPerson.getRelasjoner().stream()
+                        .map(DbRelasjon::getRelatertPerson)
+                        .map(DbPerson::getPerson)
+                        .map(PersonDTO::getIdent)
+                        .toList(),
+                dbPerson.getRelasjoner().stream()
+                        .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
+                        .map(DbRelasjon::getRelatertPerson)
+                        .map(DbPerson::getPerson)
+                        .map(PersonDTO::getForeldreansvar)
+                        .flatMap(Collection::stream)
+                        .filter(ansvar -> !ansvar.isEksisterendePerson())
+                        .map(ForeldreansvarDTO::getAnsvarlig)
+                        .toList())
                 .flatMap(Collection::stream)
-                .toList();
-
-        var identer = personer.stream()
-                .map(DbPerson::getIdent)
-                .toList();
+                .collect(Collectors.toSet());
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),

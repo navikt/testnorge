@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -81,7 +80,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
 
         private Boolean eksisterendePerson;
 
-        @JsonIgnore
         public boolean isEksisterendePerson() {
 
             return isTrue(eksisterendePerson);

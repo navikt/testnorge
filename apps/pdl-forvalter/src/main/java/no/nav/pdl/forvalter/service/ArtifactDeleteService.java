@@ -169,8 +169,8 @@ public class ArtifactDeleteService {
                         isNotBlank(type.getAnsvarlig()) &&
                         Ansvar.ANDRE == type.getAnsvar())
                 .forEach(type -> {
-                    deleteRelasjon(dbPerson, type.getAnsvarlig(), RelasjonType.FORELDREANSVAR);
-                    deleteRelasjon(fetchPerson(type.getAnsvarlig()), dbPerson.getIdent(), RelasjonType.FORELDREANSVAR);
+                    deleteRelasjon(dbPerson, type.getAnsvarlig(), RelasjonType.FORELDREANSVAR_FORELDER);
+                    deleteRelasjon(fetchPerson(type.getAnsvarlig()), dbPerson.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
 
                     if (isNotTrue(type.getEksisterendePerson())) {
                         personService.deletePerson(type.getAnsvarlig());
@@ -394,7 +394,6 @@ public class ArtifactDeleteService {
             var thisRelasjon = relasjonIterator.next();
             if (thisRelasjon.getRelasjonType() == type && thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent)) {
                 relasjonIterator.remove();
-                break;
             }
         }
     }
