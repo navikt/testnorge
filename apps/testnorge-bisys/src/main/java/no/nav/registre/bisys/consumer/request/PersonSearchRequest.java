@@ -13,9 +13,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class PersonSearchRequest {
-    private final String tag = "TESTNORGE";
+    private static final String tag = "TESTNORGE";
     private final List<String> excludeTags = Collections.singletonList("DOLLY");
-    private final Boolean kunLevende = true;
+    private static final Boolean kunLevende = true;
 
     private Integer page;
     private Integer pageSize;

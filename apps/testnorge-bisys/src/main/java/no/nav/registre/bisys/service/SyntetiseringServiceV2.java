@@ -36,7 +36,7 @@ public class SyntetiseringServiceV2 {
 
     private static final LocalDate MIN_MOTTATT_DATO = LocalDate.of(2007, 1, 1);
 
-    public List<SyntetisertBidragsmelding> generateBidragsmeldinger(int antallIdenter, String miljoe) {
+    public List<SyntetisertBidragsmelding> generateBidragsmeldinger(int antallIdenter) {
         //TODO feilmelding håndtering hvis feil i synt
         var bidragsmeldinger = syntBisysConsumer.getSyntetiserteBidragsmeldinger(antallIdenter);
 
@@ -78,7 +78,7 @@ public class SyntetiseringServiceV2 {
     private LocalDate getRandomizedMottattdatoInValidRange(String baFnr, LocalDate minMottattdato) {
         int minAge = getAgeInMonths(baFnr, minMottattdato);
         int maxAge = 17 * 12 + 6;
-        int newAge = minAge + (int) (rand.nextFloat() * (maxAge - minAge + 1));
+        int newAge = minAge + (rand.nextInt() * (maxAge - minAge + 1));
         return getBirthdate(baFnr).plusMonths(newAge);
     }
 
@@ -110,7 +110,7 @@ public class SyntetiseringServiceV2 {
             bidragsmelding.setSoktFra(Integer.toString(ageInMonthsAtMottattdato));
         } else if (ageInMonthsAtMottattdato - soktFra > 18 * 12 - 1) {
             int monthsAbove18 = ageInMonthsAtMottattdato - 18 * 12;
-            int randomizedSoktFra = monthsAbove18 + (int) (rand.nextFloat() * 24 + 1);
+            int randomizedSoktFra = monthsAbove18 + (rand.nextInt() * 24 + 1);
             bidragsmelding.setSoktFra(Integer.toString(randomizedSoktFra));
         }
     }

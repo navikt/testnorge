@@ -4,22 +4,23 @@ import lombok.AllArgsConstructor;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 @AllArgsConstructor
-public class GetSyntBisysMeldingerCommand implements Callable<List<SyntetisertBidragsmelding>> {
+public class GetSyntBisysMeldingerCommand implements Callable<Mono<List<SyntetisertBidragsmelding>>> {
 
     private final Integer antallMeldinger;
     private final String token;
     private final WebClient webClient;
 
-    private static final ParameterizedTypeReference<List<SyntetisertBidragsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<List<SyntetisertBidragsmelding>>() {
+    private static final ParameterizedTypeReference<List<SyntetisertBidragsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Override
-    public List<SyntetisertBidragsmelding> call() {
+    public Mono<List<SyntetisertBidragsmelding>> call() {
         return webClient.get()
                 .uri(builder ->
                         builder.path("/api/v1/generate/bisys/{numToGenerate}")
@@ -27,8 +28,6 @@ public class GetSyntBisysMeldingerCommand implements Callable<List<SyntetisertBi
                 )
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToMono(RESPONSE_TYPE)
-                .block();
+                .bodyToMono(RESPONSE_TYPE);
     }
-
 }

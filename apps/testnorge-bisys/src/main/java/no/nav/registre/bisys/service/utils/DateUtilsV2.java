@@ -17,7 +17,7 @@ public class DateUtilsV2 {
 
     public static LocalDate getBirthdate(String fnr) {
         String birthdateStr = fnr.substring(0, 6);
-
+        //TODO trekke fra 80 på maaned
         return LocalDate.parse(birthdateStr, DateTimeFormatter.ofPattern("ddMMyy"));
     }
 
