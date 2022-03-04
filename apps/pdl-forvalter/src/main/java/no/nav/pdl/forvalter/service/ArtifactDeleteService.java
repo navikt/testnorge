@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ArtifactDeleteService {
 
@@ -45,7 +46,6 @@ public class ArtifactDeleteService {
         };
     }
 
-    @Transactional
     public void deleteFoedsel(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -56,7 +56,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteNavn(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -67,7 +66,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteKjoenn(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -78,7 +76,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteBostedsadresse(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -89,7 +86,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteKontaktadresse(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -100,7 +96,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteOppholdsadresse(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -111,7 +106,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteInnflytting(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -122,7 +116,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteUtflytting(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -133,7 +126,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteDeltBosted(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -144,7 +136,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteForelderBarnRelasjon(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -168,7 +159,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteForeldreansvar(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -192,7 +182,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
 
         var hovedPerson = fetchPerson(ident);
@@ -217,7 +206,6 @@ public class ArtifactDeleteService {
                         .toList());
     }
 
-    @Transactional
     public void deleteUtenlandskIdentifikasjonsnummer(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -228,7 +216,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteFalskIdentitet(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -239,7 +226,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteAdressebeskyttelse(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -250,7 +236,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteDoedsfall(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -261,7 +246,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteFolkeregisterPersonstatus(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -272,7 +256,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteSikkerhetstiltak(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -283,7 +266,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteTilrettelagtKommunikasjon(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -294,7 +276,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteStatsborgerskap(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -305,7 +286,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteOpphold(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -316,7 +296,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteSivilstand(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -339,7 +318,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteTelefonnummer(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
@@ -350,7 +328,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteFullmakt(String ident, Integer id) {
 
         var hovedPerson = fetchPerson(ident);
@@ -372,7 +349,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteVergemaal(String ident, Integer id) {
 
         var hovedPerson = fetchPerson(ident);
@@ -394,7 +370,6 @@ public class ArtifactDeleteService {
                 .toList());
     }
 
-    @Transactional
     public void deleteDoedfoedtBarn(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);
