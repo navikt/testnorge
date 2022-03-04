@@ -1,6 +1,5 @@
 package no.nav.registre.bisys.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -17,7 +16,7 @@ import no.nav.registre.bisys.consumer.SyntBisysConsumer;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.request.SyntetiserBisysRequest;
-import no.nav.registre.bisys.service.utils.Barn;
+import no.nav.registre.bisys.domain.Barn;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,21 +37,6 @@ public class SyntetiseringService {
 
     @Value("${USE_HISTORICAL_MOTTATTDATO}")
     private boolean useHistoricalMottattdato;
-//
-//    public List<SyntetisertBidragsmelding> generateBidragsmeldinger(int antallIdenter, String miljoe){
-//        var bidragsmeldinger = syntBisysConsumer.getSyntetiserteBidragsmeldinger(antallIdenter);
-//
-//        for (var melding: bidragsmeldinger){
-//            var barn = identService.getValidId(melding);
-//
-//        }
-//
-//        if (bidragsmeldinger.size() < antallIdenter){
-//            log.warn("Oppretter {} av {} bidragsmelding(er).", bidragsmeldinger.size(), antallIdenter);
-//        }
-//
-//        return Collections.emptyList();
-//    }
 
     public List<SyntetisertBidragsmelding> generateBidragsmeldinger(
             SyntetiserBisysRequest syntetiserBisysRequest) throws SyntetisertBidragsmeldingException {

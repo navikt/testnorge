@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.service.utils;
+package no.nav.registre.bisys.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
