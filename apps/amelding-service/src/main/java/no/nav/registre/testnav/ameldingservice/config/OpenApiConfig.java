@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 
 @Configuration
-public class OpenApiConfig implements WebMvcConfigurer {
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -50,10 +50,5 @@ public class OpenApiConfig implements WebMvcConfigurer {
                                 .url("https://opensource.org/licenses/MIT")
                         )
                 );
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }
