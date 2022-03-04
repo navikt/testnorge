@@ -21,6 +21,8 @@ import java.util.Objects;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
 
 @Service
 @RequiredArgsConstructor
@@ -67,9 +69,31 @@ public class UnhookEksternePersonerService {
             deleteFullmaktRelasjoner(hovedperson);
         }
 
+        if (hovedperson.getRelasjoner().stream()
+                .filter(relasjon -> FULLMAKTSGIVER == relasjon.getRelasjonType())
+                .map(DbRelasjon::getRelatertPerson)
+                .map(DbPerson::getPerson)
+                .map(PersonDTO::getFullmakt)
+                .flatMap(Collection::stream)
+                .anyMatch(FullmaktDTO::isEksisterendePerson)) {
+
+            deleteFullmaktAndreRelasjoner(hovedperson);
+        }
+
         if (hovedperson.getPerson().getVergemaal().stream().anyMatch(VergemaalDTO::isEksisterendePerson)) {
 
             deleteVergemaalRelasjoner(hovedperson);
+        }
+
+        if (hovedperson.getRelasjoner().stream()
+                .filter(relasjon -> VERGE_MOTTAKER == relasjon.getRelasjonType())
+                .map(DbRelasjon::getRelatertPerson)
+                .map(DbPerson::getPerson)
+                .map(PersonDTO::getVergemaal)
+                .flatMap(Collection::stream)
+                .anyMatch(VergemaalDTO::isEksisterendePerson)) {
+
+            deleteVergemaalAndreRelasjoner(hovedperson);
         }
 
         if (hovedperson.getPerson().getKontaktinformasjonForDoedsbo().stream()
@@ -159,6 +183,23 @@ public class UnhookEksternePersonerService {
         deleteRelasjoner(hovedperson, fullmektigere);
     }
 
+    private void deleteFullmaktAndreRelasjoner(DbPerson hovedperson) {
+
+        var fullmaktsgivere = hovedperson.getRelasjoner().stream()
+                .filter(relasjon -> FULLMAKTSGIVER == relasjon.getRelasjonType())
+                .map(DbRelasjon::getRelatertPerson)
+                .filter(person -> person.getPerson().getFullmakt().stream().anyMatch(FullmaktDTO::isEksisterendePerson))
+                .toList();
+
+        fullmaktsgivere.stream()
+                .map(DbPerson::getPerson)
+                .forEach(person -> person.setFullmakt(person.getFullmakt().stream()
+                        .filter(fullmakt -> !fullmakt.getMotpartsPersonident().equals(hovedperson.getIdent()))
+                        .toList()));
+
+        deleteRelasjoner(hovedperson, fullmaktsgivere);
+    }
+
     private void deleteVergemaalRelasjoner(DbPerson hovedperson) {
 
         var verger = personRepository.findByIdentIn(hovedperson.getPerson().getVergemaal().stream()
@@ -167,6 +208,23 @@ public class UnhookEksternePersonerService {
                 .toList(), Pageable.unpaged());
 
         deleteRelasjoner(hovedperson, verger);
+    }
+
+    private void deleteVergemaalAndreRelasjoner(DbPerson hovedperson) {
+
+        var vergemottagere = hovedperson.getRelasjoner().stream()
+                .filter(relasjon -> VERGE_MOTTAKER == relasjon.getRelasjonType())
+                .map(DbRelasjon::getPerson)
+                .filter(person -> person.getPerson().getVergemaal().stream().anyMatch(VergemaalDTO::isEksisterendePerson))
+                .toList();
+
+        vergemottagere.stream()
+                .map(DbPerson::getPerson)
+                .forEach(person -> person.setVergemaal(person.getVergemaal().stream()
+                        .filter(vergemaal -> !vergemaal.getVergeIdent().equals(hovedperson.getIdent()))
+                        .toList()));
+
+        deleteRelasjoner(hovedperson, vergemottagere);
     }
 
     private void deleteKontaktinformasjonForDoedsboeRelasjoner(DbPerson hovedperson) {
