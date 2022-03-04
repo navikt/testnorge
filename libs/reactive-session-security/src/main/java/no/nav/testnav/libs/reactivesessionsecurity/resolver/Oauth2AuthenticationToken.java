@@ -19,7 +19,7 @@ abstract class Oauth2AuthenticationToken {
                 })
                 .doOnSuccess(oAuth2AuthenticationToken -> {
                     if (!oAuth2AuthenticationToken.isAuthenticated()) {
-                        throw new CredentialsExpiredException("Token er utloept");
+                        throw new CredentialsExpiredException("Token er utløpt");
                     }
                 });
     }

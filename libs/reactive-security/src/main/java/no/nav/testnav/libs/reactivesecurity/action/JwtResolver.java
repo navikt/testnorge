@@ -25,7 +25,7 @@ abstract class JwtResolver {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
                     if (expiresAt == null || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                        throw new CredentialsExpiredException("Jwt er utloept");
+                        throw new CredentialsExpiredException("Jwt er utløpt eller utløper innen kort tid");
                     }
                 });
     }

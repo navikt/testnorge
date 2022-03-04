@@ -53,7 +53,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
                 .getToken(exchange)
                 .flatMap(token -> {
                     if (isNull(token) || token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                        return Mono.error(new AccessDeniedException("Access token har utloept"));
+                        return Mono.error(new AccessDeniedException("Access token har utløpt eller utløper innen kort tid"));
                     }
                     return new OnBehalfOfExchangeCommand(
                             webClient,
