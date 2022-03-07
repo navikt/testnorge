@@ -127,6 +127,12 @@ public class ArtifactUpdateService {
         };
     }
 
+    private static ForelderBarnRelasjonDTO getForeldreBarnRelasjon(Integer id, DbPerson person) {
+
+        return id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+                person.getPerson().getForelderBarnRelasjon().get(id - 1) : null;
+    }
+
     private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
                                                             Integer id, String navn) {
 
@@ -252,13 +258,15 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
-        var tidligereRelatert = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+        var isEksisterendeId = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size();
+
+        var tidligereRelatert = isEksisterendeId ?
                 person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson() : null;
-        var tidligereMinRolle = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+        var tidligereMinRolle = isEksisterendeId ?
                 person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() : null;
-        var tidligereRelatertRolle = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+        var tidligereRelatertRolle = isEksisterendeId ?
                 person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() : null;
-        var isEksisterendePerson = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
+        var isEksisterendePerson = isEksisterendeId ?
                 person.getPerson().getForelderBarnRelasjon().get(id - 1).getEksisterendePerson() : null;
 
         person.getPerson().setForelderBarnRelasjon(
@@ -267,7 +275,7 @@ public class ArtifactUpdateService {
         forelderBarnRelasjonService.validate(oppdatertRelasjon);
         forelderBarnRelasjonService.convert(person.getPerson());
 
-        if (nonNull(tidligereRelatert) &&
+        if (nonNull(tidligereRelatert) && nonNull(tidligereMinRolle) && nonNull(tidligereRelatertRolle) &&
                 (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
                         !tidligereMinRolle.equals(oppdatertRelasjon.getMinRolleForPerson()) ||
                         !tidligereRelatertRolle.equals(oppdatertRelasjon.getRelatertPersonsRolle()))) {
