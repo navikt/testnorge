@@ -9,7 +9,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingConsumer;
 import no.nav.dolly.bestilling.aareg.amelding.OrganisasjonServiceConsumer;
-import no.nav.dolly.bestilling.aareg.amelding.domain.Ordre;
+import no.nav.dolly.bestilling.aareg.amelding.domain.AmeldingRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AmeldingTransaksjon;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
@@ -30,7 +30,6 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import wiremock.com.google.common.collect.Maps;
 
 import java.time.LocalDateTime;
@@ -47,7 +46,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Order(5)
@@ -147,31 +145,29 @@ public class AaregClient implements ClientRegister {
                 dtoMaanedMap.put(amelding.getMaaned(), mapperFacade.map(amelding, AMeldingDTO.class, context));
             });
 
-            Flux<Map<String, ResponseEntity<Void>>> response = ameldingConsumer.sendOrders(createOrder(dtoMaanedMap.values().stream().toList(), env));
-            response.map(dtoMaaned -> dtoMaaned.entrySet().stream().map(entrySet -> {
+            Map<String, ResponseEntity<Void>> response = sendAmeldingOrders(dtoMaanedMap.values().stream().toList(), env);
+            response.entrySet().forEach(entrySet -> {
                 if (entrySet.getValue().getStatusCode().is2xxSuccessful()) {
                     saveTransaksjonId(entrySet.getValue(), entrySet.getKey(), dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
                 }
-                return appendResult(
+                appendResult(
                         Maps.immutableEntry(entrySet.getKey(),
                                 entrySet.getValue().getStatusCode().is2xxSuccessful()
                                         ? "OK"
                                         : entrySet.getValue().getStatusCode().getReasonPhrase()),
                         "1",
                         result);
-            })).blockLast();
+            });
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
             appendResult(Maps.immutableEntry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
         }
     }
 
-    private List<Ordre> createOrder(List<AMeldingDTO> ameldingList, String miljoe) {
-        String userJwt = getUserJwt();
-        return ameldingList
-                .stream()
-                .map(value -> (Ordre) accessToken -> ameldingConsumer.putAmeldingdata(value, miljoe, accessToken.getTokenValue(), userJwt))
-                .toList();
+    private Map<String, ResponseEntity<Void>> sendAmeldingOrders(List<AMeldingDTO> ameldingList, String miljoe) {
+        return ameldingConsumer.sendOrders(ameldingList.stream().map(aMeldingDTO -> new AmeldingRequest(aMeldingDTO, miljoe)).toList());
+
+
     }
 
     private void saveTransaksjonId(ResponseEntity<Void> response, String maaned, String ident, Long bestillingId, String miljoe) {
