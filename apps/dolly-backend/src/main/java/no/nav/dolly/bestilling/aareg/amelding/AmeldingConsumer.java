@@ -47,18 +47,19 @@ public class AmeldingConsumer {
         String userJwt = getUserJwt();
         List<Ordre> orders = ameldinger
                 .stream()
-                .map(aMelding -> (Ordre) accessToken -> putAmeldingdata(aMelding, miljo, accessToken, userJwt)
+                .map(aMelding -> (Ordre) accessToken -> putAmeldingdata(aMelding, miljo, accessToken.getTokenValue(), userJwt)
                         .map(response -> Map.of(response.getKey(), response.getValue())))
                 .toList();
         return sendOrder(orders);
     }
 
     public Flux<Map<String, ResponseEntity<Void>>> sendOrder(List<Ordre> orders) {
-        String accessToken = serviceProperties.getAccessToken(tokenService);
-        return Flux.concat(orders
-                .stream()
-                .map(order -> order.apply(accessToken))
-                .collect(Collectors.toList())
+        return tokenService.exchange(serviceProperties).flatMapMany(accessToken ->
+                Flux.concat(orders
+                        .stream()
+                        .map(order -> order.apply(accessToken))
+                        .collect(Collectors.toList()))
+
         );
     }
 
@@ -67,7 +68,7 @@ public class AmeldingConsumer {
 
         return webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/amelding").build())
-                .header(HttpHeaders.AUTHORIZATION, accessTokenValue)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenValue)
                 .header(UserConstant.USER_HEADER_JWT, userJwt)
                 .header("Nav-Call-Id", generateCallId())
                 .header("miljo", miljoe)

@@ -145,15 +145,15 @@ public class AaregClient implements ClientRegister {
             });
 
             Map<String, ResponseEntity<Void>> response = sendAmeldinger(dtoMaanedMap.values().stream().toList(), env);
-            response.entrySet().forEach(entrySet -> {
-                if (entrySet.getValue().getStatusCode().is2xxSuccessful()) {
-                    saveTransaksjonId(entrySet.getValue(), entrySet.getKey(), dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
+            response.forEach((key, value) -> {
+                if (value.getStatusCode().is2xxSuccessful()) {
+                    saveTransaksjonId(value, key, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
                 }
                 appendResult(
-                        Maps.immutableEntry(entrySet.getKey(),
-                                entrySet.getValue().getStatusCode().is2xxSuccessful()
+                        Maps.immutableEntry(key,
+                                value.getStatusCode().is2xxSuccessful()
                                         ? "OK"
-                                        : entrySet.getValue().getStatusCode().getReasonPhrase()),
+                                        : value.getStatusCode().getReasonPhrase()),
                         "1",
                         result);
             });
