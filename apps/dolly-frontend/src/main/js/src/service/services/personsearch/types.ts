@@ -8,7 +8,7 @@ export type Search = {
 	pageSize: number
 	terminateAfter: number
 	tag: string
-	excludeTag: string
+	excludeTags: Array<string>
 	kjoenn?: string
 	foedsel?: {
 		fom?: string
@@ -35,7 +35,7 @@ export type Search = {
 		falskIdentitet?: boolean
 		utenlandskIdentitet?: boolean
 	}
-	barn?: {
+	relasjoner?: {
 		barn?: boolean
 		doedfoedtBarn?: boolean
 	}

@@ -44,7 +44,7 @@ export const Search = () => {
 							<div className="search-field">
 								<SearchContainer
 									onSubmit={() => _onSubmit(formikBag.values)}
-									left={<SearchOptions />}
+									left={<SearchOptions formikBag={formikBag} />}
 									right={
 										<SearchResult
 											key={soekNummer}

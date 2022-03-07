@@ -1,8 +1,8 @@
 export const initialValues = {
 	personinformasjon: {
 		alder: {
-			fra: '18',
-			til: '70',
+			fra: '',
+			til: '',
 			foedselsdato: {
 				fom: '',
 				tom: '',
@@ -49,7 +49,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			terminateAfter: 100,
 			identer: identer,
 			tag: 'TESTNORGE',
-			excludeTag: 'DOLLY',
+			excludeTags: ['DOLLY'],
 		}
 	} else {
 		return {
@@ -77,7 +77,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
 				utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
 			},
-			barn: {
+			relasjoner: {
 				barn: values?.personinformasjon?.barn?.barn,
 				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
 			},
@@ -88,7 +88,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				innflytting: values?.personinformasjon?.diverse?.innflyttet,
 			},
 			tag: 'TESTNORGE',
-			excludeTag: 'DOLLY',
+			excludeTags: ['DOLLY'],
 		}
 	}
 }

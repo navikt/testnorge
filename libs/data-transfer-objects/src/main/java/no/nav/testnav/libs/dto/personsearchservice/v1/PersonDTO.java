@@ -24,4 +24,5 @@ public class PersonDTO {
     StatsborgerskapDTO statsborgerskap;
     UtfyttingFraNorgeDTO utfyttingFraNorge;
     InnflyttingTilNorgeDTO innfyttingTilNorge;
+    ForelderBarnRelasjonDTO forelderBarnRelasjoner;
 }
