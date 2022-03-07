@@ -3,6 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-amelding-service
+    version: application.version.todo
     description: Tjeneste for å sende inn amelding
   security:
     oauth2:

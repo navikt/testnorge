@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.aareg.amelding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.aareg.amelding.domain.Ordre;
 import no.nav.dolly.config.credentials.AmeldingServiceProperties;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -14,11 +14,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -40,39 +43,37 @@ public class AmeldingConsumer {
                 .build();
     }
 
-    public Map<String, ResponseEntity<Void>> putAmeldingList(Map<String, AMeldingDTO> ameldingList, String miljoe) {
+    public Flux<Map<String, ResponseEntity<Void>>> createOrder(List<AMeldingDTO> ameldinger, String miljo) {
+        String userJwt = getUserJwt();
+        List<Ordre> orders = ameldinger
+                .stream()
+                .map(aMelding -> (Ordre) accessToken -> putAmeldingdata(aMelding, miljo, accessToken.getTokenValue(), userJwt)
+                        .map(response -> Map.of(response.getKey(), response.getValue())))
+                .toList();
+        return sendOrder(orders);
+    }
 
-        String accessToken = serviceProperties.getAccessToken(tokenService);
-        Map<String, ResponseEntity<Void>> ameldingMap = new HashMap<>();
+    public Flux<Map<String, ResponseEntity<Void>>> sendOrder(List<Ordre> orders) {
+        return tokenService.exchange(serviceProperties).flatMapMany(accessToken ->
+                Flux.concat(orders
+                        .stream()
+                        .map(order -> order.apply(accessToken))
+                        .collect(Collectors.toList()))
 
-        if (nonNull(accessToken)) {
-            ameldingList.values().forEach(amelding ->
-            {
-                ResponseEntity<Void> response = putAmeldingdata(amelding, miljoe, accessToken);
-                ameldingMap.put(amelding.getKalendermaaned().toString(), response);
-            });
-            return ameldingMap;
-        } else
-            throw new DollyFunctionalException(String.format("Klarte ikke å hente accessToken for %s", serviceProperties.getName()));
+        );
     }
 
     @Timed(name = "providers", tags = { "operation", "amelding_put" })
-    public ResponseEntity<Void> putAmeldingdata(AMeldingDTO amelding, String miljoe, String accessTokenValue) {
+    public Mono<Entry<String, ResponseEntity<Void>>> putAmeldingdata(AMeldingDTO amelding, String miljoe, String accessTokenValue, String userJwt) {
 
-        ResponseEntity<Void> response = webClient.put()
+        return webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/amelding").build())
-                .header(HttpHeaders.AUTHORIZATION, accessTokenValue)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenValue)
+                .header(UserConstant.USER_HEADER_JWT, userJwt)
                 .header("Nav-Call-Id", generateCallId())
                 .header("miljo", miljoe)
                 .bodyValue(amelding)
-                .retrieve()
-                .toBodilessEntity().block();
-
-        if (nonNull(response)) {
-            return response;
-        } else
-            throw new DollyFunctionalException("Feil under innsending til Amelding-service");
+                .retrieve().toBodilessEntity().map(response -> Map.entry(miljoe, response));
     }
 
     public Map<String, String> checkAlive() {
