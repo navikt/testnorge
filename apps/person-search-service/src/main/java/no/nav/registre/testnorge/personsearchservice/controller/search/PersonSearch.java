@@ -14,7 +14,7 @@ public class PersonSearch {
     Integer pageSize;
     Integer terminateAfter;
     String tag;
-    String excludeTag;
+    List<String> excludeTags;
     String kjoenn;
     String randomSeed;
     Boolean kunLevende;
@@ -27,6 +27,6 @@ public class PersonSearch {
     UtflyttingFraNorgeSearch utflyttingFraNorge;
     InnflyttingTilNorgeSearch innflyttingTilNorge;
     IdentitetSearch identitet;
-    BarnSearch barn;
+    RelasjonSearch relasjoner;
     PersonstatusSearch personstatus;
 }
