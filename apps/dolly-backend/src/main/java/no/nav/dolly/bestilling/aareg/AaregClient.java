@@ -9,7 +9,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingConsumer;
 import no.nav.dolly.bestilling.aareg.amelding.OrganisasjonServiceConsumer;
-import no.nav.dolly.bestilling.aareg.amelding.domain.AmeldingRequest;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
 import no.nav.dolly.bestilling.aareg.domain.AmeldingTransaksjon;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
@@ -145,7 +144,7 @@ public class AaregClient implements ClientRegister {
                 dtoMaanedMap.put(amelding.getMaaned(), mapperFacade.map(amelding, AMeldingDTO.class, context));
             });
 
-            Map<String, ResponseEntity<Void>> response = sendAmeldingOrders(dtoMaanedMap.values().stream().toList(), env);
+            Map<String, ResponseEntity<Void>> response = sendAmeldinger(dtoMaanedMap.values().stream().toList(), env);
             response.entrySet().forEach(entrySet -> {
                 if (entrySet.getValue().getStatusCode().is2xxSuccessful()) {
                     saveTransaksjonId(entrySet.getValue(), entrySet.getKey(), dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
@@ -164,10 +163,8 @@ public class AaregClient implements ClientRegister {
         }
     }
 
-    private Map<String, ResponseEntity<Void>> sendAmeldingOrders(List<AMeldingDTO> ameldingList, String miljoe) {
-        return ameldingConsumer.sendOrders(ameldingList.stream().map(aMeldingDTO -> new AmeldingRequest(aMeldingDTO, miljoe)).toList());
-
-
+    private Map<String, ResponseEntity<Void>> sendAmeldinger(List<AMeldingDTO> ameldingList, String miljoe) {
+        return ameldingConsumer.createOrder(ameldingList, miljoe).blockLast();
     }
 
     private void saveTransaksjonId(ResponseEntity<Void> response, String maaned, String ident, Long bestillingId, String miljoe) {
