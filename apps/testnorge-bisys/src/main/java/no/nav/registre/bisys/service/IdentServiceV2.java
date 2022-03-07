@@ -97,19 +97,18 @@ public class IdentServiceV2 {
     }
 
     private Barn convertToBarn(PersonDTO ident) {
-        return Barn.builder().build();
-//        return Barn.builder()
-//                .fnr(ident.getIdent())
-//                .farFnr(ident.getRelasjoner().foreldre.stream()
-//                        .filter(forelder -> forelder.rolle == RELASJON_FAR)
-//                        .findFirst()
-//                        .getIdent()
-//                )
-//                .morFnr(ident.getRelasjoner().foreldre.stream()
-//                        .filter(forelder -> forelder.rolle == RELASJON_MOR)
-//                        .findFirst()
-//                        .getIdent())
-//                .build();
+        return Barn.builder()
+                .fnr(ident.getIdent())
+                .farFnr(ident.getRelasjoner().foreldre.stream()
+                        .filter(forelder -> forelder.rolle == RELASJON_FAR)
+                        .findFirst()
+                        .getIdent()
+                )
+                .morFnr(ident.getRelasjoner().foreldre.stream()
+                        .filter(forelder -> forelder.rolle == RELASJON_MOR)
+                        .findFirst()
+                        .getIdent())
+                .build();
     }
 
 }
