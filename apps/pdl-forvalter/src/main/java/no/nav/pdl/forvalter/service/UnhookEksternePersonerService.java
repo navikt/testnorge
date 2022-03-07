@@ -214,7 +214,7 @@ public class UnhookEksternePersonerService {
 
         var vergemottagere = hovedperson.getRelasjoner().stream()
                 .filter(relasjon -> VERGE_MOTTAKER == relasjon.getRelasjonType())
-                .map(DbRelasjon::getPerson)
+                .map(DbRelasjon::getRelatertPerson)
                 .filter(person -> person.getPerson().getVergemaal().stream().anyMatch(VergemaalDTO::isEksisterendePerson))
                 .toList();
 
