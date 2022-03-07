@@ -2,21 +2,18 @@ package no.nav.registre.aareg.testnorge;
 
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class ApplicationContextTest {
-
-    /**
-     * Used to test app runtime dependency and properties
-     */
+class ApplicationContextTest {
     @Test
-    public void load_app_context() {
+    @SuppressWarnings("java:S2699")
+    void load_app_context() {
     }
 }
+

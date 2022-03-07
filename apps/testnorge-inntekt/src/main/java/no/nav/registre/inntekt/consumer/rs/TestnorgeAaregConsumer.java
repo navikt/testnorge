@@ -60,7 +60,7 @@ public class TestnorgeAaregConsumer {
            var tmp = restTemplate.exchange(getRequest, new ParameterizedTypeReference<List<JsonNode>>() {
            }).getBody();
            assert tmp != null;
-           response = tmp.stream().map(ArbeidsforholdMappingUtil::mapToArbeidsforhold).collect(Collectors.toList());
+           response = tmp.stream().map(ArbeidsforholdMappingUtil::mapToArbeidsforhold).toList();
        } catch (HttpStatusCodeException e) {
            log.error("Kunne ikke hente arbeidsforhold til ident " + ident);
        } catch (Exception e) {

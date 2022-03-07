@@ -19,7 +19,7 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.service.AaregService;
 
 @ExtendWith(MockitoExtension.class)
-public class ArbeidsforholdControllerTest {
+class ArbeidsforholdControllerTest {
 
     @Mock
     private AaregService aaregService;
@@ -35,34 +35,34 @@ public class ArbeidsforholdControllerTest {
     private final String navCallId = "DOLLY";
 
     @Test
-    public void shouldOppretteArbeidsforhold() {
+    void shouldOppretteArbeidsforhold() {
         var opprettRequest = RsAaregOpprettRequest.builder().build();
         arbeidsforholdController.opprettArbeidsforhold(opprettRequest);
         verify(aaregService).opprettArbeidsforhold(opprettRequest);
     }
 
     @Test
-    public void shouldOppdatereArbeidsforhold() {
+    void shouldOppdatereArbeidsforhold() {
         var oppdaterRequest = new RsAaregOppdaterRequest();
         arbeidsforholdController.oppdaterArbeidsforhold(oppdaterRequest);
         verify(aaregService).oppdaterArbeidsforhold(oppdaterRequest);
     }
 
     @Test
-    public void shouldHenteArbeidsforhold() {
+    void shouldHenteArbeidsforhold() {
         arbeidsforholdController.hentArbeidsforhold(ident, miljoe);
         verify(aaregService).hentArbeidsforhold(ident, miljoe);
     }
 
     @Test
-    public void shouldSletteArbeidsforholdFraEttMiljoe() {
+    void shouldSletteArbeidsforholdFraEttMiljoe() {
         var miljoer = Collections.singletonList(miljoe);
         arbeidsforholdController.slettArbeidsforhold(ident, miljoer);
         verify(aaregService).slettArbeidsforhold(ident, miljoer, navCallId);
     }
 
     @Test
-    public void shouldSletteArbeidsforholdFraAlleMiljoer() {
+    void shouldSletteArbeidsforholdFraAlleMiljoer() {
         var miljoer = Arrays.asList("t0", "t1", "t2");
         var miljoerResponse = new MiljoerResponse();
         miljoerResponse.setEnvironments(miljoer);

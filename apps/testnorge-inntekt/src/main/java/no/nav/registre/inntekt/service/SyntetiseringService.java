@@ -24,8 +24,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import no.nav.registre.inntekt.consumer.rs.SyntInntektConsumer;
 import no.nav.registre.inntekt.consumer.rs.HodejegerenHistorikkConsumer;
-import no.nav.registre.inntekt.consumer.rs.InntektSyntConsumer;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.IdentMedData;
 import no.nav.registre.inntekt.domain.InntektSaveInHodejegerenRequest;
@@ -47,7 +47,7 @@ public class SyntetiseringService {
     private int andelNyeIdenter;
 
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final InntektSyntConsumer inntektSyntConsumer;
+    private final SyntInntektConsumer inntektSyntConsumer;
     private final InntektstubV2Consumer inntektstubV2Consumer;
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
     private final AaregService aaregService;
@@ -270,7 +270,7 @@ public class SyntetiseringService {
                 .inngaarIGrunnlagForTrekk(inntekt.isInngaarIGrunnlagForTrekk())
                 .utloeserArbeidsgiveravgift(inntekt.isUtloeserArbeidsgiveravgift())
                 .virksomhet(inntektsinformasjon.getVirksomhet())
-                .build()).collect(Collectors.toList());
+                .build()).toList();
     }
 
     private static List<Map<String, List<RsInntekt>>> paginerInntekter(SortedMap<String, List<RsInntekt>> map) {

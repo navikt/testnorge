@@ -38,7 +38,7 @@ import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekte
 @RestClientTest({InntektstubV2Consumer.class, ConsumerUtils.class})
 @ContextConfiguration(classes = {InntektstubV2Consumer.class, ConsumerUtils.class, RestTemplate.class})
 @ActiveProfiles("test")
-public class InntektstubV2ConsumerTest {
+class InntektstubV2ConsumerTest {
 
     @Autowired
     private InntektstubV2Consumer consumer;
@@ -57,7 +57,7 @@ public class InntektstubV2ConsumerTest {
     }
 
     @Test
-    public void shouldHenteEksisterendeIdenter() throws JsonProcessingException {
+    void shouldHenteEksisterendeIdenter() throws JsonProcessingException {
         var expectedUri = serverUrl + "/v2/personer";
         stubInntektstubHentEksisterendeIdenter(expectedUri);
 
@@ -69,7 +69,7 @@ public class InntektstubV2ConsumerTest {
     }
 
     @Test
-    public void shouldHenteEksisterendeInntekterPaaIdenter() throws JsonProcessingException {
+    void shouldHenteEksisterendeInntekterPaaIdenter() throws JsonProcessingException {
         var expectedUri = serverUrl + "/v2/inntektsinformasjon?historikk=false&norske-identer={fnr1},{fnr2}";
         stubInntektstubHentEksisterendeInntekter(expectedUri);
 
@@ -82,7 +82,7 @@ public class InntektstubV2ConsumerTest {
     }
 
     @Test
-    public void shouldLeggeInntekterIStub() throws JsonProcessingException {
+    void shouldLeggeInntekterIStub() throws JsonProcessingException {
         Map<String, List<RsInntekt>> identerMedInntekter = new HashMap<>();
         List<RsInntekt> inntekterIdent1 = Collections.singletonList(
                 RsInntekt.builder()

@@ -8,6 +8,7 @@ import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsfor
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.consumer.rs.SyntAaregConsumer;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 import no.nav.registre.aareg.IdentMedData;
-import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
 import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
@@ -57,7 +57,7 @@ public class SyntetiseringService {
 
     private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
+    private final SyntAaregConsumer aaregSyntetisererenConsumer;
     private final AaregService aaregService;
     private final KodeverkConsumer kodeverkConsumer;
     private final Random rand = new Random();
@@ -114,7 +114,7 @@ public class SyntetiseringService {
     ) {
         List<RsAaregResponse> aaregResponses = new ArrayList<>(arbeidsforhold.size());
         if (fyllUtArbeidsforhold) {
-            List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).collect(Collectors.toList());
+            List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
             var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(identer);
 
