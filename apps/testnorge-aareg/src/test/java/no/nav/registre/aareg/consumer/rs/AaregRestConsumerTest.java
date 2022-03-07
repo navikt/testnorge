@@ -21,7 +21,7 @@ import java.util.List;
 import no.nav.registre.aareg.security.sts.StsOidcService;
 
 @ExtendWith(MockitoExtension.class)
-public class AaregRestConsumerTest {
+class AaregRestConsumerTest {
 
     private static final String IDENT = "1111111111";
     private static final String ENV = "t0";
@@ -39,7 +39,7 @@ public class AaregRestConsumerTest {
     private AaregRestConsumer aaregRestConsumer;
 
     @Test
-    public void hentArbeidsforhold() {
+    void hentArbeidsforhold() {
         when(aaregArbeidsforholdFasitConsumer.getUrlForEnv(ENV)).thenReturn("baseurl");
 
         aaregRestConsumer.hentArbeidsforhold(IDENT, ENV);

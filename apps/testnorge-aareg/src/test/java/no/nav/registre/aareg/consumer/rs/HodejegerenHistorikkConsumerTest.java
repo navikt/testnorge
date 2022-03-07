@@ -39,7 +39,7 @@ import no.nav.registre.aareg.domain.RsPersonAareg;
 @RestClientTest(HodejegerenHistorikkConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
-public class HodejegerenHistorikkConsumerTest {
+class HodejegerenHistorikkConsumerTest {
 
     @Autowired
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
@@ -91,7 +91,7 @@ public class HodejegerenHistorikkConsumerTest {
     }
 
     @Test
-    public void shouldSendHistorikkToHodejegeren() throws JsonProcessingException {
+    void shouldSendHistorikkToHodejegeren() throws JsonProcessingException {
         var expectedUri = serverUrl + "/v1/historikk/";
         stubSaveInHodejegeren(expectedUri);
 
