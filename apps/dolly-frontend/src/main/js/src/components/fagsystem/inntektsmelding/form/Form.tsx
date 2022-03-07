@@ -229,13 +229,13 @@ InntektsmeldingForm.validation = {
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString
+						requiredString.nullable()
 					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString
+						requiredString.nullable()
 					),
 				}),
 				arbeidsforhold: Yup.object({

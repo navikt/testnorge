@@ -2,6 +2,11 @@ package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
+import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,15 +14,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
-import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 
 @Slf4j
 @RestController
@@ -36,14 +38,20 @@ public class InntektsmeldingController {
         log.info("Oppretter inntektsmelding for {} i {}.", request.getArbeidstakerFnr(), request.getMiljoe());
 
         validerInntektsmelding(request);
-        List<ProsessertInntektDokument> prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
 
-        var response = new InntektsmeldingResponse(
-                request.getArbeidstakerFnr(),
-                prosessertInntektDokuments.stream().map(ProsessertInntektDokument::toResponse).collect(Collectors.toList())
-        );
+        try {
+            List<ProsessertInntektDokument> prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
+            var response = new InntektsmeldingResponse(
+                    request.getArbeidstakerFnr(),
+                    prosessertInntektDokuments.stream().map(ProsessertInntektDokument::toResponse).collect(Collectors.toList())
+            );
+            return ResponseEntity.ok(response);
 
-        return ResponseEntity.ok(response);
+        } catch (WebClientResponseException.BadRequest ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
+
     }
 
     private void validerInntektsmelding(InntektsmeldingRequest dollyRequest) {
