@@ -1,9 +1,9 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer.command;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
+import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotResponse;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -11,8 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
-import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotResponse;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 
 @Slf4j
@@ -36,7 +35,7 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
-                                "Feil ved opprettelse av journalpost av med body: {}.",
+                                "Feil ved opprettelse av journalpost med body: {}.",
                                 ((WebClientResponseException) error).getResponseBodyAsString(),
                                 error
                         );

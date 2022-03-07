@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
@@ -49,11 +48,9 @@ public class InntektsmeldingController {
             return ResponseEntity.ok(response);
 
         } catch (WebClientResponseException.BadRequest ex) {
-            log.info("BadRequest ex: {}", Json.pretty(ex));
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+                    HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(), ex);
         }
-
     }
 
     private void validerInntektsmelding(InntektsmeldingRequest dollyRequest) {
