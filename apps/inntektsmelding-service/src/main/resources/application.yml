@@ -28,3 +28,6 @@ consumers:
     name: testnav-dokarkiv-proxy
     cluster: dev-fss
     namespace: dolly
+server:
+  error:
+    include-message: always
