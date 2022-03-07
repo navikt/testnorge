@@ -83,7 +83,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 			: TypeArbeidsgiver.VIRKSOMHET
 	)
 
-	const handleArbeidsgiverChange = (type: string) => {
+	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
 		_get(formikBag.values, 'inntektsmelding.inntekter').forEach((inntekt: Inntekt, idx: number) => {
@@ -125,7 +125,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 						{ value: TypeArbeidsgiver.VIRKSOMHET, label: 'Virksomhet' },
 						{ value: TypeArbeidsgiver.PRIVATPERSON, label: 'Privatperson' },
 					]}
-					onChange={(type) => handleArbeidsgiverChange(type.value)}
+					onChange={(type: { value: TypeArbeidsgiver }) => handleArbeidsgiverChange(type.value)}
 					value={typeArbeidsgiver}
 					isClearable={false}
 				/>
@@ -225,7 +225,7 @@ InntektsmeldingForm.validation = {
 	inntektsmelding: Yup.object({
 		inntekter: Yup.array().of(
 			Yup.object({
-				aarsakTilInnsending: requiredString,
+				aarsakTilInnsending: requiredString.nullable(),
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
@@ -235,7 +235,9 @@ InntektsmeldingForm.validation = {
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString.nullable()
+						requiredString
+							.nullable()
+							.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11)
 					),
 				}),
 				arbeidsforhold: Yup.object({
