@@ -77,7 +77,7 @@ public class OrganisasjonController {
 
     @GetMapping("/alle")
     @Operation(description = "Hent organisasjoner for brukerid fra database (org-forvalter)")
-    public List<RsOrganisasjon> getOrganisasjoner(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
+    public List<RsOrganisasjon> getAlleOrganisasjoner(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
         var id = getAuthenticatedId.call();
         return organisasjonService.getOrganisasjoner(nonNull(brukerid) ? brukerid : id);
     }
