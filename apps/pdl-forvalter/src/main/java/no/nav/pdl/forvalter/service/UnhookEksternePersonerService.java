@@ -18,6 +18,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
@@ -102,6 +105,19 @@ public class UnhookEksternePersonerService {
                 .anyMatch(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)) {
 
             deleteKontaktinformasjonForDoedsboeRelasjoner(hovedperson);
+        }
+
+        if (hovedperson.getRelasjoner().stream()
+                .filter(relasjon -> AVDOEDD_FOR_KONTAKT == relasjon.getRelasjonType())
+                .map(DbRelasjon::getRelatertPerson)
+                .map(DbPerson::getPerson)
+                .map(PersonDTO::getKontaktinformasjonForDoedsbo)
+                .flatMap(Collection::stream)
+                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                .filter(Objects::nonNull)
+                .anyMatch(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)) {
+
+            deleteKontaktinformasjonForDoedsboeAndreRelasjoner(hovedperson);
         }
     }
 
@@ -237,6 +253,26 @@ public class UnhookEksternePersonerService {
                 .toList(), Pageable.unpaged());
 
         deleteRelasjoner(hovedperson, kontaktpersoner);
+    }
+
+    private void deleteKontaktinformasjonForDoedsboeAndreRelasjoner(DbPerson hovedperson) {
+
+        var avdoeddeMedKontaktperson = hovedperson.getRelasjoner().stream()
+                .filter(relasjon -> AVDOEDD_FOR_KONTAKT == relasjon.getRelasjonType())
+                .map(DbRelasjon::getRelatertPerson)
+                .filter(person -> person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                        .anyMatch(kontakt -> nonNull(kontakt.getPersonSomKontakt()) &&
+                                kontakt.getPersonSomKontakt().isEksisterendePerson()))
+                .toList();
+
+        avdoeddeMedKontaktperson.stream()
+                .map(DbPerson::getPerson)
+                .forEach(person -> person.setKontaktinformasjonForDoedsbo(person.getKontaktinformasjonForDoedsbo().stream()
+                        .filter(kontakt -> isNull(kontakt.getPersonSomKontakt()) ||
+                                !hovedperson.getIdent().equals(kontakt.getPersonSomKontakt().getIdentifikasjonsnummer()))
+                        .toList()));
+
+        deleteRelasjoner(hovedperson, avdoeddeMedKontaktperson);
     }
 
     private void deleteRelasjoner(DbPerson hovedPerson, List<DbPerson> relasjoner) {
