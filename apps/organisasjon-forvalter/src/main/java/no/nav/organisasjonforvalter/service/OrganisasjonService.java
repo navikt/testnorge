@@ -19,4 +19,8 @@ public class OrganisasjonService {
 
         return mapperFacade.mapAsList(organisasjonRepository.findAllByOrganisasjonsnummerIn(orgnumre), RsOrganisasjon.class);
     }
+
+    public List<RsOrganisasjon> getOrganisasjoner(String brukerid) {
+        return mapperFacade.mapAsList(organisasjonRepository.findOrganisasjonerByBrukerId(brukerid), RsOrganisasjon.class);
+    }
 }
