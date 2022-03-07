@@ -100,6 +100,7 @@ public class IdentServiceV2 {
     private Barn convertToBarn(PersonDTO ident) {
         return Barn.builder()
                 .fnr(ident.getIdent())
+                .foedselsdato(ident.getFoedsel().getFoedselsdato())
                 .farFnr(ident.getForelderBarnRelasjoner().getForeldre().stream()
                         .filter(forelder -> forelder.getRolle().equals(RELASJON_FAR))
                         .map(ForelderDTO::getIdent)

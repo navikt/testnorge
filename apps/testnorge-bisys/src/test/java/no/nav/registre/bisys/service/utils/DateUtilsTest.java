@@ -7,7 +7,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 
-import static no.nav.registre.bisys.service.utils.DateUtilsV2.getBirthdate;
 import static no.nav.registre.bisys.service.utils.DateUtilsV2.getMonthsBetween;
 import static no.nav.registre.bisys.service.utils.DateUtilsV2.getAgeInMonths;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,17 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(MockitoJUnitRunner.class)
 public class DateUtilsTest {
 
-    private static final String BIRTHDAY_1 = "01810150000";
-
-    @Test
-    public void shouldGetCorrectBirthdays(){
-        var birthday2 = "01870100000";
-        var birthday3 = "01920150000";
-
-        assertThat(getBirthdate(BIRTHDAY_1)).isEqualTo(LocalDate.of(2001,1,1));
-        assertThat(getBirthdate(birthday2)).isEqualTo(LocalDate.of(1901,7,1));
-        assertThat(getBirthdate(birthday3)).isEqualTo(LocalDate.of(2001,12,1));
-    }
+    private static final LocalDate BIRTHDAY_1 = LocalDate.of(2001, 1, 1);
 
     @Test
     public void shouldGetNumberOfMonthsBetweenDates(){

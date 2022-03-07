@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import static no.nav.registre.bisys.service.utils.DateUtilsV2.getAgeInMonths;
-import static no.nav.registre.bisys.service.utils.DateUtilsV2.getBirthdate;
 import static no.nav.registre.bisys.service.utils.DateUtilsV2.getMonthsBetween;
 import static no.nav.registre.bisys.service.utils.BidragUtils.isSoktOm18;
 import static no.nav.registre.bisys.service.utils.BidragUtils.parseSoktFra;
@@ -56,8 +55,8 @@ public class SyntetiseringServiceV2 {
     private void finalizeBidragsmelding(Barn barn, SyntetisertBidragsmelding bidragsmelding) {
         var mottattdato = useHistoricalMottattdato ? getHistoricalMottattdato(bidragsmelding, barn) : LocalDate.now();
 
-        alignBaAlderWithMottattdato(bidragsmelding, getBirthdate(barn.getFnr()), mottattdato);
-        adjustSoktFra(bidragsmelding, getBirthdate(barn.getFnr()), mottattdato);
+        alignBaAlderWithMottattdato(bidragsmelding, barn.getFoedselsdato(), mottattdato);
+        adjustSoktFra(bidragsmelding, barn.getFoedselsdato(), mottattdato);
 
         bidragsmelding.setBarn(barn.getFnr());
         //TODO sjekke om mor alltid skal være bidragsmottaker
@@ -67,19 +66,19 @@ public class SyntetiseringServiceV2 {
     }
 
     private LocalDate getHistoricalMottattdato(SyntetisertBidragsmelding bidragsmelding, Barn barn) {
-        LocalDate mottattdato = getBirthdate(barn.getFnr()).plusMonths(bidragsmelding.getBarnAlderIMnd());
+        LocalDate mottattdato = barn.getFoedselsdato().plusMonths(bidragsmelding.getBarnAlderIMnd());
         mottattdato = mottattdato.isAfter(LocalDate.now()) ? LocalDate.now() : mottattdato;
         mottattdato = mottattdato.isBefore(MIN_MOTTATT_DATO)
-                ? getRandomizedMottattdatoInValidRange(barn.getFnr(), MIN_MOTTATT_DATO)
+                ? getRandomizedMottattdatoInValidRange(barn.getFoedselsdato(), MIN_MOTTATT_DATO)
                 : mottattdato;
         return mottattdato;
     }
 
-    private LocalDate getRandomizedMottattdatoInValidRange(String baFnr, LocalDate minMottattdato) {
-        int minAge = getAgeInMonths(baFnr, minMottattdato);
+    private LocalDate getRandomizedMottattdatoInValidRange(LocalDate foedselsdato, LocalDate minMottattdato) {
+        int minAge = getAgeInMonths(foedselsdato, minMottattdato);
         int maxAge = 17 * 12 + 6;
         int newAge = minAge + (rand.nextInt() * (maxAge - minAge + 1));
-        return getBirthdate(baFnr).plusMonths(newAge);
+        return foedselsdato.plusMonths(newAge);
     }
 
     private void alignBaAlderWithMottattdato(SyntetisertBidragsmelding bidragsmelding, LocalDate fodselsdato, LocalDate mottattdato) {
