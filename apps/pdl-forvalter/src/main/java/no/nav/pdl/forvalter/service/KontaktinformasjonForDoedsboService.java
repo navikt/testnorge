@@ -148,7 +148,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
             if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
+                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt());
                 kontaktinfo.setAdresse(mapperFacade.map(
                         personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
                                 .getPerson().getBostedsadresse().stream().findFirst().get(),
@@ -307,7 +307,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                                 .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
     }
 
-    private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
+    private void leggTilNyAddressat(KontaktpersonDTO kontakt) {
 
         if (isNull(kontakt.getNyKontaktperson())) {
             kontakt.setNyKontaktperson(new PersonRequestDTO());

@@ -51,7 +51,7 @@ public class RelasjonService {
 
     private void createRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjon) {
 
-        if (relasjonRepository.findByPerson_Ident(person1.getIdent()).stream().noneMatch(relasjon1 ->
+        if (relasjonRepository.findByPersonIdent(person1.getIdent()).stream().noneMatch(relasjon1 ->
                 person1.getPerson().getIdent().equals(relasjon1.getPerson().getIdent()) &&
                 person2.getPerson().getIdent().equals(relasjon1.getRelatertPerson().getIdent()) &&
                 relasjon.equals(relasjon1.getRelasjonType()))) {

@@ -127,12 +127,6 @@ public class ArtifactUpdateService {
         };
     }
 
-    private static ForelderBarnRelasjonDTO getForeldreBarnRelasjon(Integer id, DbPerson person) {
-
-        return id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() ?
-                person.getPerson().getForelderBarnRelasjon().get(id - 1) : null;
-    }
-
     private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,
                                                             Integer id, String navn) {
 
@@ -418,9 +412,11 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
-        var tidligereRelatert = id > 0 && id <= person.getPerson().getSivilstand().size() ?
+        var isEksisterendeId = id > 0 && id <= person.getPerson().getSivilstand().size();
+
+        var tidligereRelatert =  isEksisterendeId ?
                 person.getPerson().getSivilstand().get(id - 1).getRelatertVedSivilstand() : null;
-        var isEksisterendePerson = id > 0 && id <= person.getPerson().getSivilstand().size() ?
+        var isEksisterendePerson = isEksisterendeId ?
                 person.getPerson().getSivilstand().get(id - 1).getEksisterendePerson() : null;
 
         person.getPerson().setSivilstand(
@@ -459,9 +455,11 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
-        var tidligereRelatert = id > 0 && id <= person.getPerson().getFullmakt().size() ?
+        var isEksistrendeId = id > 0 && id <= person.getPerson().getFullmakt().size();
+
+        var tidligereRelatert = isEksistrendeId ?
                 person.getPerson().getFullmakt().get(id - 1).getMotpartsPersonident() : null;
-        var isEksisterendePerson = id > 0 && id <= person.getPerson().getFullmakt().size() ?
+        var isEksisterendePerson = isEksistrendeId ?
                 person.getPerson().getFullmakt().get(id - 1).getEksisterendePerson() : null;
 
         person.getPerson().setFullmakt(
@@ -482,9 +480,11 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
-        var tidligereRelatert = id > 0 && id <= person.getPerson().getVergemaal().size() ?
+        var isEksisterendeId = id > 0 && id <= person.getPerson().getVergemaal().size();
+
+        var tidligereRelatert = isEksisterendeId ?
                 person.getPerson().getVergemaal().get(id - 1).getVergeIdent() : null;
-        var isEksisterendePerson = id > 0 && id <= person.getPerson().getVergemaal().size() ?
+        var isEksisterendePerson = isEksisterendeId ?
                 person.getPerson().getVergemaal().get(id - 1).getEksisterendePerson() : null;
 
         person.getPerson().setVergemaal(
