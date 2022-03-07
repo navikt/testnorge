@@ -9,6 +9,7 @@ import no.nav.registre.bisys.consumer.request.RelasjonSearch;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.domain.Barn;
 
+import no.nav.testnav.libs.dto.personsearchservice.v1.ForelderDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -99,15 +100,16 @@ public class IdentServiceV2 {
     private Barn convertToBarn(PersonDTO ident) {
         return Barn.builder()
                 .fnr(ident.getIdent())
-                .farFnr(ident.getRelasjoner().foreldre.stream()
-                        .filter(forelder -> forelder.rolle == RELASJON_FAR)
+                .farFnr(ident.getForelderBarnRelasjoner().getForeldre().stream()
+                        .filter(forelder -> forelder.getRolle().equals(RELASJON_FAR))
+                        .map(ForelderDTO::getIdent)
                         .findFirst()
-                        .getIdent()
-                )
-                .morFnr(ident.getRelasjoner().foreldre.stream()
-                        .filter(forelder -> forelder.rolle == RELASJON_MOR)
+                        .orElse(null))
+                .morFnr(ident.getForelderBarnRelasjoner().getForeldre().stream()
+                        .filter(forelder -> forelder.getRolle().equals(RELASJON_MOR))
+                        .map(ForelderDTO::getIdent)
                         .findFirst()
-                        .getIdent())
+                        .orElse(null))
                 .build();
     }
 
