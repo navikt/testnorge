@@ -79,6 +79,7 @@ public class IdentServiceV2 {
     }
 
     private Barn getBarnInValidAgeRange(LocalDate bornFom, LocalDate bornTom) {
+        //TODO sjekk om det trengs norsk statsborgerskap eller foedt Norge
         var searchRequest = PersonSearchRequest.builder()
                 .page(1)
                 .pageSize(10)

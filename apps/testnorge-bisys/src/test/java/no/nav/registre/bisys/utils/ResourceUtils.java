@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.testutils;
+package no.nav.registre.bisys.utils;
 
 import wiremock.com.google.common.io.Resources;
 

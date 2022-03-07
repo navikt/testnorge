@@ -1,0 +1,40 @@
+[
+  {
+    "fornavn": "TEST",
+    "mellomnavn": null,
+    "etternavn": "PERSON",
+    "kjoenn": "KVINNE",
+    "ident": "01810050000",
+    "aktorId": "1234567891011",
+    "tags": [
+      "DOLLY",
+      "TESTNORGE"
+    ],
+    "foedsel": {
+      "foedselsdato": "2000-01-01"
+    },
+    "sivilstand": {
+      "type": "UGIFT"
+    },
+    "statsborgerskap": {
+      "land": [
+        "NOR"
+      ]
+    },
+    "utfyttingFraNorge": null,
+    "innfyttingTilNorge": null,
+    "forelderBarnRelasjoner": {
+      "barn": [],
+      "foreldre": [
+        {
+          "ident": "22345678910",
+          "rolle": "MOR"
+        },
+        {
+          "ident": "33345678910",
+          "rolle": "FAR"
+        }
+      ]
+    }
+  }
+]

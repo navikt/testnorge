@@ -1,6 +1,9 @@
 package no.nav.registre.bisys.consumer;
 
 import no.nav.registre.bisys.consumer.credential.PersonSearchProperties;
+import no.nav.registre.bisys.consumer.request.FoedselSearch;
+import no.nav.registre.bisys.consumer.request.PersonSearchRequest;
+import no.nav.registre.bisys.consumer.request.RelasjonSearch;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
@@ -10,11 +13,16 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
+import static no.nav.registre.bisys.utils.ResourceUtils.getResourceFileContent;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
+import java.time.LocalDate;
 
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
@@ -31,7 +39,7 @@ public class PersonSearchConsumerTest {
 //        Dispatcher dispatcher = getDispatcher();
 //        mockWebServer.setDispatcher(dispatcher);
 //
-//        var personSearchProperties = (PersonSearchProperties) PersonSearchProperties.builder()
+//        var personSearchProperties = PersonSearchProperties.builder()
 //                .cluster("dummy")
 //                .namespace("dummy")
 //                .name("person-search-service")
@@ -44,12 +52,32 @@ public class PersonSearchConsumerTest {
 //        ));
 //
 //        this.personSearchConsumer = new PersonSearchConsumer(
-//                personSearchProperties,
+//                (PersonSearchProperties) personSearchProperties,
 //                tokenExchange
 //                );
 //    }
 //
-//    private void getDispatcher() {
+//    @Test
+//    public void shouldGetPersonResponse(){
+//        var searchRequest = PersonSearchRequest.builder()
+//                .page(1)
+//                .pageSize(10)
+//                .randomSeed("test")
+//                .foedsel(FoedselSearch.builder()
+//                        .fom(LocalDate.now().minusYears(20))
+//                        .tom(LocalDate.now())
+//                        .build())
+//                .relasjoner(RelasjonSearch.builder()
+//                        .mor(true)
+//                        .far(true)
+//                        .build())
+//                .build();
+//        var response = personSearchConsumer.search(searchRequest);
+//
+//        assertThat(response.getNumberOfItems()).isEqualTo(1);
+//    }
+//
+//    private Dispatcher getDispatcher() {
 //        return new Dispatcher() {
 //            @Override
 //            public MockResponse dispatch(RecordedRequest request) {
@@ -57,11 +85,12 @@ public class PersonSearchConsumerTest {
 //                    case "/token/oauth2/v2.0/token":
 //                        return new MockResponse().setResponseCode(200)
 //                                .addHeader("Content-Type", "application/json; charset=utf-8")
-//                                .setBody(new AccessToken());
-//                    case "/v1/tiltakspenger":
+//                                .setBody(new AccessToken("dummy").toString());
+//                    case "/person-search/api/v1/person":
 //                        return new MockResponse().setResponseCode(200)
 //                                .addHeader("Content-Type", "application/json; charset=utf-8")
-//                                .setBody(getResourceFileContent("files/tiltak/tiltakspenger_forvalter_response.json"));
+//                                .addHeader("NUMBER_OF_ITEMS", "1")
+//                                .setBody(getResourceFileContent("files/searchResultOnePerson.json"));
 //                }
 //                return new MockResponse().setResponseCode(404);
 //            }
