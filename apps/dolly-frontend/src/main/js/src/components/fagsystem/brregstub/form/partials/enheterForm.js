@@ -6,6 +6,7 @@ import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Se
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { PersonrollerForm } from './personrollerForm'
+import { OrgnrToggle } from '~/components/fagsystem/brregstub/form/partials/OrgnrToggle'
 
 const initialValues = {
 	rolle: '',
@@ -22,26 +23,34 @@ export const EnheterForm = ({ formikBag }) => {
 	const rollerOptions = SelectOptionsOppslag.formatOptions('roller', roller)
 
 	const setEnhetsinfo = (org, path) => {
-		formikBag.setFieldValue(`${path}.orgNr`, org.value)
-		formikBag.setFieldValue(`${path}.foretaksNavn.navn1`, org.navn)
+		const currentValues = _get(formikBag.values, path)
+		currentValues['orgNr'] = org.value
+		currentValues['foretaksNavn'] = { navn1: org.navn }
 		if (org.forretningsAdresse) {
-			formikBag.setFieldValue(`${path}.forretningsAdresse`, {
+			currentValues['forretningsAdresse'] = {
 				adresse1: org.forretningsAdresse.adresse,
 				kommunenr: org.forretningsAdresse.kommunenr,
 				landKode: org.forretningsAdresse.landkode,
 				postnr: org.forretningsAdresse.postnr,
 				poststed: org.forretningsAdresse.poststed,
-			})
+			}
+		} else if (currentValues.hasOwnProperty('forretningsAdresse')) {
+			delete currentValues['forretningsAdresse']
 		}
+
 		if (org.postadresse) {
-			formikBag.setFieldValue(`${path}.postAdresse`, {
+			currentValues['postAdresse'] = {
 				adresse1: org.forretningsAdresse.adresse,
 				kommunenr: org.forretningsAdresse.kommunenr,
 				landKode: org.forretningsAdresse.landkode,
 				postnr: org.forretningsAdresse.postnr,
 				poststed: org.forretningsAdresse.poststed,
-			})
+			}
+		} else if (currentValues.hasOwnProperty('postAdresse')) {
+			delete currentValues['postAdresse']
 		}
+
+		formikBag.setFieldValue(path, currentValues)
 	}
 
 	return (
@@ -63,24 +72,7 @@ export const EnheterForm = ({ formikBag }) => {
 						fastfield={false}
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
-					<OrganisasjonLoader
-						render={(data) => (
-							<DollySelect
-								name={`${path}.orgNr`}
-								label="Organisasjonsnummer"
-								options={data}
-								size="xlarge"
-								onChange={(org) => setEnhetsinfo(org, path)}
-								value={_get(formikBag.values, `${path}.orgNr`)}
-								feil={
-									_get(formikBag.values, `${path}.orgNr`) === '' && {
-										feilmelding: 'Feltet er påkrevd',
-									}
-								}
-								isClearable={false}
-							/>
-						)}
-					/>
+					<OrgnrToggle path={path} formikBag={formikBag} setEnhetsinfo={setEnhetsinfo} />
 					<PersonrollerForm formikBag={formikBag} path={path} />
 				</>
 			)}
