@@ -28,7 +28,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
     private static final String VALIDATION_GYLDIG_FOM_ERROR = "Fullmakt med gyldigFom må angis";
     private static final String VALIDATION_GYLDIG_TOM_ERROR = "Fullmakt med gyldigTom må angis";
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
-    private static final String VALIDATION_OMRAADER_ERROR = "Omraader for fullmakt må angis";
+    private static final String VALIDATION_OMRAADER_ERROR = "Områder for fullmakt må angis";
     private static final String VALIDATION_FULLMEKTIG_ERROR = "Fullmektig: person %s ikke funnet i database";
 
     private final PersonRepository personRepository;
@@ -73,6 +73,8 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
     private void handle(FullmaktDTO fullmakt, String ident) {
 
+        fullmakt.setEksisterendePerson(isNotBlank(fullmakt.getMotpartsPersonident()));
+
         if (isBlank(fullmakt.getMotpartsPersonident())) {
 
             if (isNull(fullmakt.getNyFullmektig())) {
@@ -92,13 +94,9 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             }
 
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
-            relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
-                    fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
-
-        } else {
-
-            fullmakt.setIsIdentExternal(true);
         }
+        relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
+                fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
 
         fullmakt.setMaster(Master.PDL);
     }

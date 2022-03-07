@@ -142,18 +142,21 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     .block();
 
         } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
-                if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-                    leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
-                    kontaktinfo.setAdresse(mapperFacade.map(
-                            personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
-                                    .getPerson().getBostedsadresse().stream().findFirst().get(),
-                            KontaktinformasjonForDoedsboAdresse.class));
-                    kontaktinfo.getPersonSomKontakt().setNavn(null);
+            kontaktinfo.getPersonSomKontakt().setEksisterendePerson(
+                    isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
 
-                } else {
-                    kontaktinfo.getPersonSomKontakt().setIsIdentExternal(true);
-                }
+            if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+
+                leggTilNyAddressat(kontaktinfo.getPersonSomKontakt());
+                kontaktinfo.setAdresse(mapperFacade.map(
+                        personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
+                                .getPerson().getBostedsadresse().stream().findFirst().get(),
+                        KontaktinformasjonForDoedsboAdresse.class));
+                kontaktinfo.getPersonSomKontakt().setNavn(null);
+            }
+            relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                    kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
 
         } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
 
@@ -304,7 +307,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                                 .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
     }
 
-    private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
+    private void leggTilNyAddressat(KontaktpersonDTO kontakt) {
 
         if (isNull(kontakt.getNyKontaktperson())) {
             kontakt.setNyKontaktperson(new PersonRequestDTO());
@@ -320,7 +323,5 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         kontakt.setIdentifikasjonsnummer(
                 createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());
-        relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
-                kontakt.getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
     }
 }

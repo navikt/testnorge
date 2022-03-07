@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface PersonRepository extends PagingAndSortingRepository<DbPerson, Long> {
@@ -22,7 +23,7 @@ public interface PersonRepository extends PagingAndSortingRepository<DbPerson, L
     List<DbPerson> findByIdIn(List<Long> identer);
 
     @Modifying
-    int deleteByIdentIn(List<String> ident);
+    int deleteByIdentIn(Set<String> ident);
 
     @Modifying
     int deleteByIdent(String ident);

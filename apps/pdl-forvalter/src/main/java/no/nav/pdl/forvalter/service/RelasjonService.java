@@ -46,16 +46,22 @@ public class RelasjonService {
 
     public void setRelasjon(String ident, String identRelasjon, RelasjonType relasjon) {
 
-       setRelasjoner(identRelasjon, relasjon, ident, null);
+        setRelasjoner(identRelasjon, relasjon, ident, null);
     }
 
     private void createRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjon) {
 
-        relasjonRepository.save(DbRelasjon.builder()
-                .person(person1)
-                .relatertPerson(person2)
-                .relasjonType(relasjon)
-                .sistOppdatert(LocalDateTime.now())
-                .build());
+        if (relasjonRepository.findByPersonIdent(person1.getIdent()).stream().noneMatch(relasjon1 ->
+                person1.getPerson().getIdent().equals(relasjon1.getPerson().getIdent()) &&
+                person2.getPerson().getIdent().equals(relasjon1.getRelatertPerson().getIdent()) &&
+                relasjon.equals(relasjon1.getRelasjonType()))) {
+
+            relasjonRepository.save(DbRelasjon.builder()
+                    .person(person1)
+                    .relatertPerson(person2)
+                    .relasjonType(relasjon)
+                    .sistOppdatert(LocalDateTime.now())
+                    .build());
+        }
     }
 }

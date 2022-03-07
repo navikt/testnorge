@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -26,5 +28,10 @@ public class VergemaalDTO extends DbVersjonDTO {
     private String vergeIdent;
     private VergemaalMandattype mandatType;
 
-    private Boolean isIdentExternal;
+    private Boolean eksisterendePerson;
+
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
 }

@@ -38,7 +38,8 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Ro
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MEDMOR;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MOR;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -230,6 +231,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             setRelasjoner(barnFellesRelasjoner, foreldreansvar);
 
         } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
+
+            foreldreansvar.setEksisterendePerson(isNotBlank(foreldreansvar.getAnsvarlig()));
+
             if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
                 makeAnsvarligUtenIdentifier(foreldreansvar, hovedperson);
@@ -316,6 +320,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                     .add(0, ForeldreansvarDTO.builder()
                             .ansvar(foreldreansvar.getAnsvar())
                             .ansvarlig(relasjon.getAnsvarlig())
+                            .eksisterendePerson(foreldreansvar.getEksisterendePerson())
                             .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
                             .kilde(foreldreansvar.getKilde())
                             .master(foreldreansvar.getMaster())
@@ -325,7 +330,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                             .build());
 
             if (nonNull(relasjon.getAnsvarlig())) {
-                relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getAnsvarlig(), FORELDREANSVAR);
+                relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getAnsvarlig(), FORELDREANSVAR_FORELDER);
+                relasjonService.setRelasjon(relasjon.getAnsvarlig(), relasjon.getBarn().getIdent(), FORELDREANSVAR_BARN);
             }
         });
     }

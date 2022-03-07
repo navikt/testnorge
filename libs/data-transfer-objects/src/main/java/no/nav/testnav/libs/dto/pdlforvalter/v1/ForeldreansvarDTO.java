@@ -12,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -26,7 +28,15 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     private RelatertBiPersonDTO ansvarligUtenIdentifikator;
     private LocalDateTime gyldigFraOgMed;
     private LocalDateTime gyldigTilOgMed;
+
+    private Boolean eksisterendePerson;
+
     public enum Ansvar {FELLES, MOR, FAR, MEDMOR, ANDRE, UKJENT}
+
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
 
     @Data
     @Builder
