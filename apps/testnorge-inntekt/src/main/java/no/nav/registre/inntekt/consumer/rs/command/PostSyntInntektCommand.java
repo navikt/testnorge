@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,6 @@ public class PostSyntInntektCommand implements Callable<SortedMap<String, List<R
     private final Map<String, List<RsInntekt>> fnrInntektMap;
     private final WebClient webClient;
 
-    private static final ParameterizedTypeReference<Map<String, List<RsInntekt>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
-    };
     private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
@@ -32,7 +30,7 @@ public class PostSyntInntektCommand implements Callable<SortedMap<String, List<R
                     .uri(uriBuilder -> uriBuilder
                             .path("/api/v1/generate/inntekt")
                             .build())
-                    .body(Mono.just(fnrInntektMap), REQUEST_TYPE)
+                    .body(BodyInserters.fromValue(fnrInntektMap))
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE)
                     .block();

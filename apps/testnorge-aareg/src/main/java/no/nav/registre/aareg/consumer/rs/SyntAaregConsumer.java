@@ -38,8 +38,8 @@ public class SyntAaregConsumer {
         List<RsAaregSyntetiseringsRequest> syntetiserteMeldinger = new ArrayList<>();
 
         if (identer.size() > pageSize) {
-            for (int i = 0; i * pageSize < identer.size(); i++) {
-                int endIndex = pageSize * (i + 1);
+            for (var i = 0; i * pageSize < identer.size(); i++) {
+                var endIndex = pageSize * (i + 1);
                 if (endIndex > identer.size()) {
                     endIndex = identer.size();
                 }
