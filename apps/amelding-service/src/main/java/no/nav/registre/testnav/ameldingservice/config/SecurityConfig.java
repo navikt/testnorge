@@ -36,7 +36,4 @@ public class SecurityConfig {
                 .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
                 .and().build();
     }
-
 }
-
-
