@@ -70,14 +70,14 @@ public class PersonController {
                                                          @RequestParam
                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                                                  LocalDate fraOgMed,
-                                                         @RequestParam List<String> miljoer) {
+                                                         @RequestParam (required = false) List<String> miljoer) {
 
         return convert(egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer));
     }
 
     @DeleteMapping("/{ident}/egenansatt")
     public List<TpsMeldingResponseDTO> opphoerEgenansatt(@PathVariable String ident,
-                                                         @RequestParam List<String> miljoer) {
+                                                         @RequestParam (required = false) List<String> miljoer) {
 
         return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
     }
@@ -85,7 +85,7 @@ public class PersonController {
     @PostMapping("/{ident}/spraakkode")
     public List<TpsMeldingResponseDTO> endreSpraakkode(@PathVariable String ident,
                                                        @RequestBody SpraakDTO spraak,
-                                                       @RequestParam List<String> miljoer) {
+                                                       @RequestParam (required = false) List<String> miljoer) {
 
         return convert(spraakService.sendSpraakkode(ident, spraak, miljoer));
     }
@@ -93,7 +93,7 @@ public class PersonController {
     @PostMapping("/{ident}/bankkonto-norsk")
     public List<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
                                                            @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
-                                                           @RequestParam List<String> miljoer) {
+                                                           @RequestParam (required = false) List<String> miljoer) {
 
         return convert(bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer));
     }
@@ -101,7 +101,7 @@ public class PersonController {
     @PostMapping("/{ident}/bankkonto-utenlandsk")
     public List<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
                                                                 @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
-                                                                @RequestParam List<String> miljoer) {
+                                                                @RequestParam (required = false) List<String> miljoer) {
 
         return convert(bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer));
     }
@@ -109,7 +109,7 @@ public class PersonController {
     @PostMapping("/{ident}/telefonnumre")
     public List<TpsMeldingResponseDTO> endreTelefonnummer(@PathVariable String ident,
                                                           @RequestBody List<TelefonnummerDTO> telefonnumre,
-                                                          @RequestParam List<String> miljoer) {
+                                                          @RequestParam (required = false) List<String> miljoer) {
 
         return convert(telefonnummerService.endreTelefonnummer(ident, telefonnumre, miljoer));
     }
@@ -117,7 +117,7 @@ public class PersonController {
     @DeleteMapping("/{ident}/telefonnumre")
     public List<TpsMeldingResponseDTO> opphoerTelefonnummer(@PathVariable String ident,
                                                             @RequestParam List<TelefonnummerDTO.TypeTelefon> telefontyper,
-                                                            @RequestParam List<String> miljoer) {
+                                                            @RequestParam (required = false) List<String> miljoer) {
 
         return convert(telefonnummerService.opphoerTelefonnummer(ident, telefontyper, miljoer));
     }
@@ -125,14 +125,14 @@ public class PersonController {
     @PostMapping("/{ident}/sikkerhetstiltak")
     public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
                                                              @RequestBody SikkerhetstiltakDTO sikkerhetstiltak,
-                                                             @RequestParam List<String> miljoer) {
+                                                             @RequestParam (required = false) List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.endreSikkerhetstiltak(ident, sikkerhetstiltak, miljoer));
     }
 
     @DeleteMapping("/{ident}/sikkerhetstiltak")
     public List<TpsMeldingResponseDTO> opphoerSikkerhetstiltak(@PathVariable String ident,
-                                                             @RequestParam List<String> miljoer) {
+                                                             @RequestParam (required = false) List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
     }

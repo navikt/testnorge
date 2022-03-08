@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getResponseStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.marshallToXML;
@@ -32,10 +34,14 @@ public class EgenansattService {
     private final EndringsmeldingConsumer endringsmeldingConsumer;
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
-    public EgenansattService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
+    public EgenansattService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer,
+                             TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+
         this.mapperFacade = mapperFacade;
         this.endringsmeldingConsumer = endringsmeldingConsumer;
+        this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
 
         this.requestContext = JAXBContext.newInstance(EgenansattRequest.class);
         this.responseContext = JAXBContext.newInstance(EgenansattResponse.class);
@@ -64,6 +70,8 @@ public class EgenansattService {
     }
 
     private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
+
+        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", ident);
