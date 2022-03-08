@@ -28,15 +28,6 @@ public class ErrorStatusDecoder {
 
     private final ObjectMapper objectMapper;
 
-    public static String encodeStatus(String toBeEncoded) {
-        return Objects.nonNull(toBeEncoded) ?
-                toBeEncoded.replaceAll("\\[\\s", "")
-                        .replace("[", "")
-                        .replace("]", "")
-                        .replace(',', ';')
-                        .replace(':', '=') : "";
-    }
-
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
         StringBuilder builder = new StringBuilder()
@@ -104,10 +95,18 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
+    public static String encodeStatus(String toBeEncoded) {
+        return Objects.nonNull(toBeEncoded) ?
+                toBeEncoded.replaceAll("\\[\\s", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(',', ';')
+                        .replace(':', '=') : "";
+    }
+
     private void appendStatusMessage(String responseBody, StringBuilder builder) {
 
         if (responseBody.contains("{")) {
-            log.info("AvsenderMottaker.idType er FNR logg 1: {}", responseBody);
             try {
                 Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
