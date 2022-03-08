@@ -28,7 +28,7 @@ public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
 
-    @PostMapping(produces = "application/json;charset=UTF-8")
+    @PostMapping
     @ResponseBody
     public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
