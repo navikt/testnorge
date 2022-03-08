@@ -17,8 +17,7 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const resp = await MiljoeApi.getAktiveMiljoer()
-			setAktiveMiljoer(resp.data)
+			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
 		}
 		fetchData()
 	}, [])

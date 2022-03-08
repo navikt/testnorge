@@ -25,6 +25,15 @@ const mapAdresse = (adresse: OrgInfoAdresse) => {
 	}
 }
 
+const sortMiljoer = (miljoer: string[]) => {
+	return miljoer.sort((a, b) =>
+		a.localeCompare(b, undefined, {
+			numeric: true,
+			sensitivity: 'base',
+		})
+	)
+}
+
 export const OrganisasjonTextSelect = ({
 	path,
 	aktiveMiljoer,
@@ -43,14 +52,14 @@ export const OrganisasjonTextSelect = ({
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljoe)
 			.then((response: OrgInfoResponse) => {
-				const org = {
+				const orgInfo = {
 					value: response.data.orgnummer,
 					orgnr: response.data.orgnummer,
 					navn: response.data.navn,
 					forretningsAdresse: mapAdresse(response.data.forretningsadresser),
 					postAdresse: mapAdresse(response.data.postadresse),
 				}
-				setEnhetsinfo(org, path)
+				setEnhetsinfo(orgInfo, path)
 				setSuccess(true)
 			})
 			.catch(() => setError('Fant ikke organisasjonen i ' + miljoe))
@@ -62,17 +71,10 @@ export const OrganisasjonTextSelect = ({
 			environment={environment}
 			miljoeOptions={
 				aktiveMiljoer &&
-				aktiveMiljoer
-					.sort((a, b) =>
-						a.localeCompare(b, undefined, {
-							numeric: true,
-							sensitivity: 'base',
-						})
-					)
-					.map((value) => ({
-						value: value,
-						label: value.toUpperCase(),
-					}))
+				sortMiljoer(aktiveMiljoer).map((value) => ({
+					value: value,
+					label: value.toUpperCase(),
+				}))
 			}
 			error={error}
 			success={success}

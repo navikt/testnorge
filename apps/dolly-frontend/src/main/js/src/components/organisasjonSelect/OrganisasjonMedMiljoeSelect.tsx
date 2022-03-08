@@ -2,7 +2,6 @@ import React from 'react'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Icon from '~/components/ui/icon/Icon'
-import { FormikProps } from 'formik'
 
 interface OrgProps {
 	path: string
@@ -11,7 +10,7 @@ interface OrgProps {
 	error: string
 	success: boolean
 	onTextBlur: (event: React.ChangeEvent<any>) => void
-	onMiljoeChange: (event: React.ChangeEvent<any>) => void
+	onMiljoeChange: (event: any) => void
 }
 
 export const OrganisasjonMedMiljoeSelect = ({
@@ -27,7 +26,7 @@ export const OrganisasjonMedMiljoeSelect = ({
 		<div className={'flexbox--align-start'}>
 			<DollyTextInput
 				name={path}
-				type={'number'}
+				type="number"
 				size="xlarge"
 				label={'Organisasjonsnummer'}
 				onBlur={onTextBlur}

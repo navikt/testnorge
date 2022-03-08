@@ -22,8 +22,7 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const resp = await MiljoeApi.getAktiveMiljoer()
-			setAktiveMiljoer(resp.data)
+			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
 		}
 		fetchData()
 	}, [])
