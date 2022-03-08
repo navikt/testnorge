@@ -17,7 +17,7 @@ interface OrgnrToggleProps {
 const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
 export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps) => {
-	const [inputType, setInputType] = useState(inputValg.fraEgenListe)
+	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 
 	useEffect(() => {
@@ -50,18 +50,18 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 		<div className="toggle--wrapper">
 			<ToggleGruppe onChange={handleToggleChange} name={path}>
 				<ToggleKnapp
-					key={inputValg.fraEgenListe}
-					value={inputValg.fraEgenListe}
-					checked={inputType === inputValg.fraEgenListe}
-				>
-					Egen organisasjon
-				</ToggleKnapp>
-				<ToggleKnapp
 					key={inputValg.fraFellesListe}
 					value={inputValg.fraFellesListe}
 					checked={inputType === inputValg.fraFellesListe}
 				>
 					Felles organisasjoner
+				</ToggleKnapp>
+				<ToggleKnapp
+					key={inputValg.fraEgenListe}
+					value={inputValg.fraEgenListe}
+					checked={inputType === inputValg.fraEgenListe}
+				>
+					Egen organisasjon
 				</ToggleKnapp>
 				<ToggleKnapp
 					key={inputValg.skrivSelv}
@@ -71,9 +71,6 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 					Skriv inn org.nr.
 				</ToggleKnapp>
 			</ToggleGruppe>
-			{inputType === inputValg.fraEgenListe && (
-				<EgneOrganisasjoner path={path} formikBag={formikBag} handleChange={handleChange} />
-			)}
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonLoader
 					render={(data) => (
@@ -93,6 +90,9 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 						/>
 					)}
 				/>
+			)}
+			{inputType === inputValg.fraEgenListe && (
+				<EgneOrganisasjoner path={path} formikBag={formikBag} handleChange={handleChange} />
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonTextSelect
