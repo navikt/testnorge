@@ -7,7 +7,6 @@ import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -31,7 +30,7 @@ public class InntektsmeldingController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<InntektsmeldingResponse> genererMeldingForIdent(
+    public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
     ) {
@@ -41,11 +40,10 @@ public class InntektsmeldingController {
 
         try {
             List<ProsessertInntektDokument> prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
-            var response = new InntektsmeldingResponse(
+            return new InntektsmeldingResponse(
                     request.getArbeidstakerFnr(),
                     prosessertInntektDokuments.stream().map(ProsessertInntektDokument::toResponse).collect(Collectors.toList())
             );
-            return ResponseEntity.ok(response);
 
         } catch (WebClientResponseException.BadRequest ex) {
             throw new ResponseStatusException(

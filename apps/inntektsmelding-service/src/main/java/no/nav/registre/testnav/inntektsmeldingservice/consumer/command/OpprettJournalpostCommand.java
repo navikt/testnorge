@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -29,6 +30,7 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
                 .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(miljo))
                 .header("Nav-Call-Id", navCallId)
                 .header(AUTHORIZATION, "Bearer " + token)
+                .acceptCharset(StandardCharsets.UTF_8)
                 .body(BodyInserters.fromPublisher(Mono.just(request), DokmotRequest.class))
                 .retrieve()
                 .bodyToMono(DokmotResponse.class)
