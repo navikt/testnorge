@@ -49,7 +49,7 @@ public class InntektsmeldingController {
 
         } catch (WebClientResponseException.BadRequest ex) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, Arrays.toString(ex.getResponseBodyAsString().getBytes(StandardCharsets.UTF_8)), ex);
+                    HttpStatus.BAD_REQUEST, String.valueOf(ex.getResponseBodyAsString().getBytes(StandardCharsets.UTF_8)), ex);
         }
     }
 
