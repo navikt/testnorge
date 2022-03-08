@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/inntektsmelding")
+@RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=UTF-8")
 @RequiredArgsConstructor
 public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
 
-    @PostMapping
+    @PostMapping(produces = "application/json;charset=UTF-8")
     @ResponseBody
     public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
