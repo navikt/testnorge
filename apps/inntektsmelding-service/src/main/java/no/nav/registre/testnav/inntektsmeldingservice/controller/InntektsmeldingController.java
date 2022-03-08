@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=utf-8")
 @RequiredArgsConstructor
 public class InntektsmeldingController {
 
@@ -47,6 +47,10 @@ public class InntektsmeldingController {
             );
 
         } catch (WebClientResponseException.BadRequest ex) {
+            log.error("Feil fra joark: {}", ex.getResponseBodyAsString());
+            log.error("Feil fra joark utf-8: {}", ex.getResponseBodyAsString(StandardCharsets.UTF_8));
+            log.error("Feil fra joark utf-16: {}", ex.getResponseBodyAsString(StandardCharsets.UTF_16));
+            log.error("Feil fra joark iso: {}", ex.getResponseBodyAsString(StandardCharsets.ISO_8859_1));
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
         }
