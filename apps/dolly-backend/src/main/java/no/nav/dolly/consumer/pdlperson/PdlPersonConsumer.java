@@ -55,19 +55,7 @@ public class PdlPersonConsumer {
                 .build();
     }
 
-    private static String getQueryFromFile(String pathResource) {
-
-        val resource = new ClassPathResource(pathResource);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-
-        } catch (IOException e) {
-            log.error("Lesing av query ressurs {} feilet", pathResource, e);
-            return null;
-        }
-    }
-
-    @Timed(name = "providers", tags = {"operation", "pdl_getPerson"})
+    @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
     public JsonNode getPdlPerson(String ident) {
 
         return webClient
@@ -88,7 +76,7 @@ public class PdlPersonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
+    @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
     public PdlPersonBolk getPdlPersoner(List<String> identer) {
 
         return webClient
@@ -115,6 +103,18 @@ public class PdlPersonConsumer {
         } catch (SecurityException | WebClientResponseException ex) {
             log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
             return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
+        }
+    }
+
+    private static String getQueryFromFile(String pathResource) {
+
+        val resource = new ClassPathResource(pathResource);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+
+        } catch (IOException e) {
+            log.error("Lesing av query ressurs {} feilet", pathResource, e);
+            return null;
         }
     }
 }
