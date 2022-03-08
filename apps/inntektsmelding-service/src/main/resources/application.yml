@@ -31,3 +31,6 @@ consumers:
 server:
   error:
     include-message: always
+  servlet:
+    encoding:
+      charset: UTF-8

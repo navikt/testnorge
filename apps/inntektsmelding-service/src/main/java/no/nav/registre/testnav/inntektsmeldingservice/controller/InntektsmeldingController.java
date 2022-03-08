@@ -29,7 +29,7 @@ public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
 
-    @PostMapping
+    @PostMapping(produces = "application/json;charset=utf-8")
     @ResponseBody
     public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
@@ -47,10 +47,6 @@ public class InntektsmeldingController {
             );
 
         } catch (WebClientResponseException.BadRequest ex) {
-            log.error("Feil fra joark: {}", ex.getResponseBodyAsString());
-            log.error("Feil fra joark utf-8: {}", ex.getResponseBodyAsString(StandardCharsets.UTF_8));
-            log.error("Feil fra joark utf-16: {}", ex.getResponseBodyAsString(StandardCharsets.UTF_16));
-            log.error("Feil fra joark iso: {}", ex.getResponseBodyAsString(StandardCharsets.ISO_8859_1));
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
         }
