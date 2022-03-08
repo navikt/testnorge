@@ -18,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ValidationException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class InntektsmeldingController {
 
         } catch (WebClientResponseException.BadRequest ex) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, String.valueOf(ex.getResponseBodyAsString().getBytes(StandardCharsets.UTF_8)), ex);
+                    HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(StandardCharsets.UTF_8), ex);
         }
     }
 
