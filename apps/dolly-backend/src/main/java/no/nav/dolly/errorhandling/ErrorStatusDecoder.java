@@ -107,6 +107,7 @@ public class ErrorStatusDecoder {
     private void appendStatusMessage(String responseBody, StringBuilder builder) {
 
         if (responseBody.contains("{")) {
+            log.info("AvsenderMottaker.idType er FNR logg 1: {}", responseBody);
             try {
                 Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
