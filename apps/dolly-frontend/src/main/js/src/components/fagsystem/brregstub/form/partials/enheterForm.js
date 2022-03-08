@@ -28,7 +28,7 @@ export const EnheterForm = ({ formikBag }) => {
 		currentValues['foretaksNavn'] = { navn1: org.navn }
 		if (org.forretningsAdresse) {
 			currentValues['forretningsAdresse'] = {
-				adresse1: org.forretningsAdresse.adresse,
+				adresse1: org.forretningsAdresse.adresselinje1,
 				kommunenr: org.forretningsAdresse.kommunenr,
 				landKode: org.forretningsAdresse.landkode,
 				postnr: org.forretningsAdresse.postnr,
@@ -40,11 +40,11 @@ export const EnheterForm = ({ formikBag }) => {
 
 		if (org.postadresse) {
 			currentValues['postAdresse'] = {
-				adresse1: org.forretningsAdresse.adresse,
-				kommunenr: org.forretningsAdresse.kommunenr,
-				landKode: org.forretningsAdresse.landkode,
-				postnr: org.forretningsAdresse.postnr,
-				poststed: org.forretningsAdresse.poststed,
+				adresse1: org.postadresse.adresselinje1,
+				kommunenr: org.postadresse.kommunenr,
+				landKode: org.postadresse.landkode,
+				postnr: org.postadresse.postnr,
+				poststed: org.postadresse.poststed,
 			}
 		} else if (currentValues.hasOwnProperty('postAdresse')) {
 			delete currentValues['postAdresse']

@@ -5,7 +5,7 @@ import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { Organisasjon } from '~/components/fagsystem/brregstub/form/partials/types'
+import { Organisasjon, Adresse } from '~/components/fagsystem/brregstub/form/partials/types'
 
 interface OrgProps {
 	path: string
@@ -15,6 +15,18 @@ interface OrgProps {
 
 const formatLabel = (response: Organisasjon) =>
 	`${response.organisasjonsnummer} (${response.enhetstype}) - ${response.organisasjonsnavn}`
+
+const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: string) => {
+	return adresser
+		.filter((adr) => adr.adressetype === adressetype)
+		.map((adr) => ({
+			adresselinje1: adr.adresselinjer.length > 0 ? adr.adresselinjer[0] : '',
+			kommunenr: adr.kommunenr,
+			landkode: adr.landkode,
+			postnr: adr.postnr,
+			poststed: adr.poststed,
+		}))
+}
 
 export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) => {
 	const [egneOrganisasjoner, setEgneOrganisasjoenr] = useState([])
@@ -30,20 +42,16 @@ export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) 
 				.then((response: Organisasjon[]) => {
 					setError(false)
 					return response.map((org: Organisasjon) => {
-						const adresser = org.adresser.map((adr) => ({
-							adresse: adr.adresselinjer,
-							kommunenr: adr.kommunenr,
-							landkode: adr.landkode,
-							postnr: adr.postnr,
-							poststed: adr.poststed,
-						}))
-						const adresse = adresser.length > 0 ? adresser[0] : null
+						const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
+						const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
+
 						return {
 							value: org.organisasjonsnummer,
 							label: formatLabel(org),
 							orgnr: org.organisasjonsnummer,
 							navn: org.organisasjonsnavn,
-							forretningsAdresse: adresse,
+							forretningsAdresse: fAdresser.length > 0 ? fAdresser[0] : null,
+							postAdresse: pAdresser.length > 0 ? pAdresser[0] : null,
 						}
 					})
 				})

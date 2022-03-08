@@ -15,9 +15,9 @@ export type Organisasjon = {
 	underenheter?: Organisasjon[]
 }
 
-type Adresse = {
+export type Adresse = {
 	id: string
-	adressetype?: string
+	adressetype: string
 	adresselinjer?: string[]
 	postnr?: string
 	poststed?: string
