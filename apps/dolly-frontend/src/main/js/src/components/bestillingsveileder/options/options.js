@@ -92,7 +92,6 @@ export const BVOptions = (
 
 	if (opprettFraIdenter) {
 		bestType = TYPE.OPPRETT_FRA_IDENTER
-		// initialValues.antall = opprettFraIdenter.length
 		initialValues = initialValuesOpprettFraIdenter
 	}
 
