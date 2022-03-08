@@ -71,6 +71,8 @@ public class VergemaalService implements Validation<VergemaalDTO> {
 
     private void handle(VergemaalDTO fullmakt, String ident) {
 
+        fullmakt.setEksisterendePerson(isNotBlank(fullmakt.getVergeIdent()));
+
         if (isBlank(fullmakt.getVergeIdent())) {
 
             if (isNull(fullmakt.getNyVergeIdent())) {
@@ -90,10 +92,6 @@ public class VergemaalService implements Validation<VergemaalDTO> {
             }
 
             fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()).getIdent());
-
-        } else {
-
-            fullmakt.setIsIdentExternal(true);
         }
 
         relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,

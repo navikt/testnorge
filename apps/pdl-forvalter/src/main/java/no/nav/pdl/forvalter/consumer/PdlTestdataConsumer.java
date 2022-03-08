@@ -23,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -61,7 +62,7 @@ public class PdlTestdataConsumer {
                 ));
     }
 
-    public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(List<String> identer) {
+    public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
 
         return Flux.from(tokenExchange
                 .exchange(properties)

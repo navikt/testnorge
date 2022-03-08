@@ -47,8 +47,8 @@ dependencies {
     implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
-    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -57,7 +57,7 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.4'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.6'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
