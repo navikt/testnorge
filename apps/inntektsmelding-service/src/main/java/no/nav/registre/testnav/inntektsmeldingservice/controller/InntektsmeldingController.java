@@ -17,6 +17,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ValidationException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,7 @@ public class InntektsmeldingController {
 
         } catch (WebClientResponseException.BadRequest ex) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, ex.getResponseBodyAsString(), ex);
+                    HttpStatus.BAD_REQUEST, Arrays.toString(ex.getResponseBodyAsString().getBytes(StandardCharsets.UTF_8)), ex);
         }
     }
 
