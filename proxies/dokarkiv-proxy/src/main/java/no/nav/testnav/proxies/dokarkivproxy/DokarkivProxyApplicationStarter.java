@@ -78,6 +78,7 @@ public class DokarkivProxyApplicationStarter {
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/rest/journalpostapi/${segment}")
+                        .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
                         .filter(filter)
                 ).uri("https://dokarkiv-" + miljo + ".dev.adeo.no");
     }
