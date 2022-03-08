@@ -42,7 +42,7 @@ public class TpsMessagingClient implements ClientRegister {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSpraakkodeRequest(
                                 dollyPerson.getHovedperson(),
-                                bestilling.getEnvironments(),
+                                null,
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
                         "SprakKode_opprett"
@@ -52,7 +52,7 @@ public class TpsMessagingClient implements ClientRegister {
             if (!bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
                 var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
                         dollyPerson.getHovedperson(),
-                        bestilling.getEnvironments());
+                        null);
 
                 if (sikkerhetstiltakStatus.stream()
                         .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))) {
@@ -66,7 +66,7 @@ public class TpsMessagingClient implements ClientRegister {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSikkerhetstiltakRequest(
                                 dollyPerson.getHovedperson(),
-                                bestilling.getEnvironments(),
+                                null,
                                 bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
                         status,
                         "Sikkerhetstiltak_opprett"
@@ -77,7 +77,7 @@ public class TpsMessagingClient implements ClientRegister {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendEgenansattRequest(
                                 dollyPerson.getHovedperson(),
-                                bestilling.getEnvironments(),
+                                null,
                                 bestilling.getTpsMessaging().getEgenAnsattDatoFom()),
                         status,
                         "Egenansatt_opprett"
@@ -88,7 +88,7 @@ public class TpsMessagingClient implements ClientRegister {
                 appendResponseStatus(
                         tpsMessagingConsumer.deleteEgenansattRequest(
                                 dollyPerson.getHovedperson(),
-                                bestilling.getEnvironments()),
+                                null),
                         status,
                         "Egenansatt_slett"
                 );
@@ -97,7 +97,7 @@ public class TpsMessagingClient implements ClientRegister {
             if (!bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
-                        bestilling.getEnvironments());
+                        null);
 
                 if (tlfStatus.stream()
                         .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))) {
@@ -112,7 +112,7 @@ public class TpsMessagingClient implements ClientRegister {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
-                                bestilling.getEnvironments(),
+                                null,
                                 bestilling.getTpsMessaging().getTelefonnummer()),
                         status,
                         "Telefonnummer_opprett"
@@ -139,7 +139,7 @@ public class TpsMessagingClient implements ClientRegister {
 
             appendResponseStatus(tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                             dollyPerson.getHovedperson(),
-                            bestilling.getEnvironments(),
+                            null,
                             bestilling.getTpsMessaging().getUtenlandskBankkonto()),
                     status, "UtenlandskBankkonto");
         }
@@ -148,7 +148,7 @@ public class TpsMessagingClient implements ClientRegister {
 
             appendResponseStatus(tpsMessagingConsumer.sendNorskBankkontoRequest(
                             dollyPerson.getHovedperson(),
-                            bestilling.getEnvironments(),
+                            null,
                             bestilling.getTpsMessaging().getNorskBankkonto()),
                     status, "NorskBankkonto");
         }
