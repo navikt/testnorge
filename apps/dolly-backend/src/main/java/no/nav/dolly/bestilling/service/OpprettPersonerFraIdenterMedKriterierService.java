@@ -25,18 +25,17 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
 
-    private BestillingService bestillingService;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private MapperFacade mapperFacade;
-    private TpsfService tpsfService;
-    private ExecutorService dollyForkJoinPool;
-    private PdlDataConsumer pdlDataConsumer;
-    private IdentService identService;
+    private final BestillingService bestillingService;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
+    private final TpsfService tpsfService;
+    private final ExecutorService dollyForkJoinPool;
+    private final PdlDataConsumer pdlDataConsumer;
+    private final IdentService identService;
 
     public OpprettPersonerFraIdenterMedKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
                                                         DollyPersonCache dollyPersonCache, IdentService identService,
@@ -87,7 +86,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
                                     } else {
                                         identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
-                                                PDL, bestKriterier.getBeskrivelse());
+                                                identStatus.getMaster(), bestKriterier.getBeskrivelse());
                                     }
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
