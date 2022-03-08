@@ -207,3 +207,7 @@ management:
     heapdump.enabled: true
   metrics.export:
     prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
