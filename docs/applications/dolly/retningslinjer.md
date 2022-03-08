@@ -147,4 +147,3 @@ Avvik, dvs hendelser som bryter regler for bruk av testdata eller sikkerhetstilt
 
 ---
 
-[Se fullstendig oversikt over retningslinjer på Confluence](https://confluence.adeo.no/x/4cXzFg)

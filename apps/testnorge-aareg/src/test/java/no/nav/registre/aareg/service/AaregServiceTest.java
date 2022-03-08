@@ -32,7 +32,7 @@ import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Periode;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
 
 @ExtendWith(MockitoExtension.class)
-public class AaregServiceTest {
+class AaregServiceTest {
 
     @Mock
     private AaregWsConsumer aaregWsConsumer;
@@ -56,25 +56,25 @@ public class AaregServiceTest {
     }
 
     @Test
-    public void shouldOppretteArbeidsforhold() {
+    void shouldOppretteArbeidsforhold() {
         aaregService.opprettArbeidsforhold(rsAaregOpprettRequest);
         verify(aaregWsConsumer).opprettArbeidsforhold(rsAaregOpprettRequest);
     }
 
     @Test
-    public void shouldOppdatereArbeidsforhold() {
+    void shouldOppdatereArbeidsforhold() {
         aaregService.oppdaterArbeidsforhold(rsAaregOppdaterRequest);
         verify(aaregWsConsumer).oppdaterArbeidsforhold(rsAaregOppdaterRequest);
     }
 
     @Test
-    public void shouldHenteArbeidsforhold() {
+    void shouldHenteArbeidsforhold() {
         aaregService.hentArbeidsforhold(ident, miljoe);
         verify(aaregRestConsumer).hentArbeidsforhold(ident, miljoe);
     }
 
     @Test
-    public void shouldSletteArbeidsforhold() {
+    void shouldSletteArbeidsforhold() {
         var arbeidsforhold = buildArbeidsforhold();
         Map<String, String> status = new HashMap<>();
         status.put(miljoe, STATUS_OK);

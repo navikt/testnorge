@@ -39,6 +39,10 @@ public class PersonSearchAdapter {
     private final ObjectMapper objectMapper;
     private final RestHighLevelClient client;
 
+    private static final String FORELDER_BARN_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
+    private static final String RELATERT_PERSONS_ROLLE_PATH = FORELDER_BARN_RELASJON_PATH + ".relatertPersonsRolle";
+
+
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
             try {
@@ -66,7 +70,7 @@ public class PersonSearchAdapter {
         addUtflyttingQuery(queryBuilder, search);
         addInnflyttingQuery(queryBuilder, search);
         addIdentitetQueries(queryBuilder, search);
-        addBarnQueries(queryBuilder, search);
+        addRelasjonQueries(queryBuilder, search);
         addPersonstatusQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
@@ -119,7 +123,7 @@ public class PersonSearchAdapter {
     private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRandomSeed())
                 .ifPresent(value -> {
-                    if (!value.isEmpty()){
+                    if (!value.isEmpty()) {
                         queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(value)));
                     }
                 });
@@ -128,8 +132,12 @@ public class PersonSearchAdapter {
     private void addTagsQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         queryBuilder.must(QueryBuilders.matchQuery("tags", search.getTag()));
 
-        Optional.ofNullable(search.getExcludeTag())
-                .ifPresent(value -> queryBuilder.mustNot(QueryBuilders.matchQuery("tags", value)));
+        Optional.ofNullable(search.getExcludeTags())
+                .ifPresent(values -> {
+                    if (!values.isEmpty()) {
+                        queryBuilder.mustNot(QueryBuilders.termsQuery("tags", values));
+                    }
+                });
     }
 
     private void addKjoennQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -242,21 +250,34 @@ public class PersonSearchAdapter {
                 });
     }
 
-    private void addBarnQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getBarn())
+    private void addRelasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getRelasjoner())
                 .ifPresent(value -> {
                     if (value.getBarn() != null && value.getBarn()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.forelderBarnRelasjon",
-                                QueryBuilders.matchQuery("hentPerson.forelderBarnRelasjon.relatertPersonsRolle", "BARN"),
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "BARN"),
                                 ScoreMode.Avg
                         )).must();
                     }
-
                     if (value.getDoedfoedtBarn() != null && value.getDoedfoedtBarn()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.doedfoedtBarn",
                                 QueryBuilders.existsQuery("hentPerson.doedfoedtBarn.metadata"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                    if (value.getFar() != null && value.getFar()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "FAR"),
+                                ScoreMode.Avg
+                        )).must();
+                    }
+                    if (value.getMor() != null && value.getMor()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "MOR"),
                                 ScoreMode.Avg
                         )).must();
                     }

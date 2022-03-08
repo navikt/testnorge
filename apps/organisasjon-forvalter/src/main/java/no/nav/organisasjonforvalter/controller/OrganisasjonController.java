@@ -75,6 +75,13 @@ public class OrganisasjonController {
         return organisasjonService.getOrganisasjoner(orgnumre);
     }
 
+    @GetMapping("/alle")
+    @Operation(description = "Hent organisasjoner for brukerid fra database (org-forvalter)")
+    public List<RsOrganisasjon> getAlleOrganisasjoner(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
+        var id = getAuthenticatedId.call();
+        return organisasjonService.getOrganisasjoner(nonNull(brukerid) ? brukerid : id);
+    }
+
     @GetMapping("/framiljoe")
     @Operation(description = "Hent organisasjon fra EREG")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,

@@ -22,10 +22,16 @@ Det er viktig at begge branchene oppdateres ved videreutvikling av applikasjonen
 så lenge Dolly har en U2-instans.
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
 ``` 
+-Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[vault-token]
 ```
+
+og legg til i VM options:
+``` 
+--add-opens java.base/java.lang=ALL-UNNAMED
+``` 
 
 ### Utviklerimage
 For øyeblikket er det problemer med å få kjørt testnorge-aareg lokalt i utviklerimage, 

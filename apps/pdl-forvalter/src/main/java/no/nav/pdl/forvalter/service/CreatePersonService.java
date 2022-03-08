@@ -16,6 +16,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Slf4j
 @Service
@@ -69,6 +73,17 @@ public class CreatePersonService {
                 .build();
     }
 
+    private static SivilstandDTO getUgift() {
+
+        return SivilstandDTO.builder()
+                .type(Sivilstand.UGIFT)
+                .isNew(true)
+                .id(1)
+                .master(FREG)
+                .kilde("Dolly")
+                .build();
+    }
+
     public PersonDTO execute(PersonRequestDTO request) {
 
         var startTime = currentTimeMillis();
@@ -99,6 +114,10 @@ public class CreatePersonService {
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();
+
+        if (isMyndig(mergedPerson.getIdent())) {
+            mergedPerson.getSivilstand().add(getUgift());
+        }
 
         folkeregisterPersonstatusService.convert(mergedPerson);
 

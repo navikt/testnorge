@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import no.nav.registre.aareg.consumer.rs.SyntAaregConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
 import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
@@ -44,7 +43,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @ExtendWith(MockitoExtension.class)
-public class SyntetiseringServiceTest {
+class SyntetiseringServiceTest {
 
     private static final int MINIMUM_ALDER = 13;
 
@@ -52,7 +51,7 @@ public class SyntetiseringServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
-    private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
+    private SyntAaregConsumer aaregSyntetisererenConsumer;
 
     @Mock
     private AaregService aaregService;
@@ -96,7 +95,7 @@ public class SyntetiseringServiceTest {
     }
 
     @Test
-    public void shouldOppretteArbeidshistorikk() {
+    void shouldOppretteArbeidshistorikk() {
         when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(identer);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
         Map<String, String> status = new HashMap<>();
@@ -115,7 +114,7 @@ public class SyntetiseringServiceTest {
     }
 
     @Test
-    public void shouldHenteIdenterMedArbeidsforhold() {
+    void shouldHenteIdenterMedArbeidsforhold() {
         when(hodejegerenConsumer.get(avspillergruppeId)).thenReturn(identer);
         when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().body(new ArrayList<>(Collections.singletonList(new Arbeidsforhold()))));
 

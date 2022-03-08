@@ -21,6 +21,7 @@ public class Person {
     private final Statsborgerskap statsborgerskap;
     private final UtfyttingFraNorge utfyttingFraNorge;
     private final InnflyttingTilNorge innflyttingTilNorge;
+    private final ForelderBarnRelasjon forelderBarnRelasjon;
 
     public Person(Response response) {
         this.response = response;
@@ -30,6 +31,8 @@ public class Person {
         this.utfyttingFraNorge = utfytting != null ? new UtfyttingFraNorge(utfytting) : null;
         var innflytting = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
         this.innflyttingTilNorge = innflytting != null ? new InnflyttingTilNorge(innflytting) : null;
+        var relasjoner = response.getHentPerson().getForelderBarnRelasjon();
+        this.forelderBarnRelasjon = relasjoner != null ? new ForelderBarnRelasjon(relasjoner) : null;
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
@@ -122,6 +125,7 @@ public class Person {
                 .statsborgerskap(toDTO(statsborgerskap))
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
                 .innfyttingTilNorge(toDTO(innflyttingTilNorge))
+                .forelderBarnRelasjoner(toDTO(forelderBarnRelasjon))
                 .build();
     }
 }

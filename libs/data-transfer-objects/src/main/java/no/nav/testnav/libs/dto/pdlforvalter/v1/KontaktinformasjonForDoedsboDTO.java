@@ -12,6 +12,8 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -76,7 +78,12 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private LocalDateTime foedselsdato;
         private PersonNavnDTO navn;
 
-        private Boolean isIdentExternal;
+        private Boolean eksisterendePerson;
+
+        public boolean isEksisterendePerson() {
+
+            return isTrue(eksisterendePerson);
+        }
     }
 
     @Data
