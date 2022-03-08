@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
@@ -87,7 +86,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
                                     } else {
                                         identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
-                                                PDL, bestKriterier.getBeskrivelse());
+                                                identStatus.getMaster(), bestKriterier.getBeskrivelse());
                                     }
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
