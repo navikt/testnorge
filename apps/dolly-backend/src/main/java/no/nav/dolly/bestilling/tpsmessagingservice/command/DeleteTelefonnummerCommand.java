@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
@@ -36,7 +37,7 @@ public class DeleteTelefonnummerCommand implements Callable<List<TpsMeldingRespo
                 .uri(uriBuilder -> uriBuilder
                         .path(urlPath)
                         .queryParam(TELEFONTYPER_PARAM, telefontyper)
-                        .queryParam(MILJOER_PARAM, miljoer)
+                        .queryParamIfPresent(MILJOER_PARAM, nonNull(miljoer) ? Optional.of(miljoer) : Optional.empty())
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .retrieve()
