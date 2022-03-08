@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/inntektsmelding-fnr' }}
     with:
       resource: 'apps/inntektsmelding-service/config.yml'
       app-name: 'inntektsmelding-service'

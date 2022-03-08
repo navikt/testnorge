@@ -56,7 +56,6 @@ public class TpsBackportingClient implements ClientRegister {
         }
 
         if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
-                !getNonPdlTpsCreateEnv(bestilling.getEnvironments()).isEmpty() &&
                 nonNull(bestilling.getPdldata()) && bestilling.getPdldata().isTpsdataPresent()) {
 
             var pdldata = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
