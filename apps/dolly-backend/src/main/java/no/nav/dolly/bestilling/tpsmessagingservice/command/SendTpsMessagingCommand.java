@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
@@ -35,7 +36,7 @@ public class SendTpsMessagingCommand implements Callable<List<TpsMeldingResponse
         var response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(urlPath)
-                        .queryParam(MILJOER_PARAM, miljoer)
+                        .queryParamIfPresent(MILJOER_PARAM, nonNull(miljoer) ? Optional.of(miljoer) : Optional.empty())
                         .build(ident))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, token)

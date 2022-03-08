@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tpsmessagingservice.service;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getResponseStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.marshallToXML;
@@ -29,12 +31,17 @@ public class TelefonnummerService {
 
     private final MapperFacade mapperFacade;
     private final EndringsmeldingConsumer endringsmeldingConsumer;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
+
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
 
-    public TelefonnummerService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
+    public TelefonnummerService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer,
+                                TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+
         this.mapperFacade = mapperFacade;
         this.endringsmeldingConsumer = endringsmeldingConsumer;
+        this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
 
         this.requestContext = JAXBContext.newInstance(KontaktopplysningerRequest.class);
         this.responseContext = JAXBContext.newInstance(KontaktopplysningerResponse.class);
@@ -71,6 +78,8 @@ public class TelefonnummerService {
     }
 
     private Map<String, TpsMeldingResponse> endreTelefonnummer(KontaktopplysningerRequest request, List<String> miljoer) {
+
+        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 
         var requestXml = marshallToXML(requestContext, request);
 
