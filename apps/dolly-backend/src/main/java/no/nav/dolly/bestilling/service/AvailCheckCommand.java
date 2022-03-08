@@ -37,7 +37,7 @@ public class AvailCheckCommand implements Callable<List<AvailCheckCommand.AvailS
                             .ident(status.getIdent())
                             .available(isTrue(status.getAvailable()))
                             .message(status.getStatus())
-                            .master(Master.PDLF)
+                            .master(Master.PDL)
                             .build())
                     .collect(Collectors.toList());
 
