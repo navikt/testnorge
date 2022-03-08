@@ -4,7 +4,7 @@ import { Textarea } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
 import Alertstripe from 'nav-frontend-alertstriper'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { TpsfApi } from '~/service/Api'
+import { PdlforvalterApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Icon from '~/components/ui/icon/Icon'
@@ -15,8 +15,8 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 	const [text, setText] = useState('')
 	const [state, fetch] = useAsyncFn(async () => {
 		const identListe = text.trim().split(/[\W\s]+/)
-		const { data } = await TpsfApi.checkpersoner(identListe)
-		return data.statuser
+		const { data } = await PdlforvalterApi.getEksistens(identListe)
+		return data
 	}, [text])
 
 	const _onSubmit = () =>
