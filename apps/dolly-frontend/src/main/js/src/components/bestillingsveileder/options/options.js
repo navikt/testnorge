@@ -45,6 +45,13 @@ export const BVOptions = (
 		},
 	}
 
+	let initialValuesOpprettFraIdenter = {
+		pdldata: {
+			opprettNyPerson: {},
+		},
+		opprettFraIdenter: opprettFraIdenter,
+	}
+
 	let initialValuesOrganisasjon = {
 		organisasjon: {
 			enhetstype: '',
@@ -85,7 +92,8 @@ export const BVOptions = (
 
 	if (opprettFraIdenter) {
 		bestType = TYPE.OPPRETT_FRA_IDENTER
-		initialValues.antall = opprettFraIdenter.length
+		// initialValues.antall = opprettFraIdenter.length
+		initialValues = initialValuesOpprettFraIdenter
 	}
 
 	if (personFoerLeggTil) {

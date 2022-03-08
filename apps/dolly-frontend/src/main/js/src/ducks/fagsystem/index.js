@@ -478,6 +478,8 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 	if (!pdlData) return null
 
 	const person = pdlData.hentPerson
+	if (!person) return null
+
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
@@ -498,10 +500,8 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 }
 
 export const getPdlIdent = (identer) => {
-	for (let ident of identer) {
-		if (ident.gruppe === 'FOLKEREGISTERIDENT') return ident.ident
-	}
-	return 'undefined'
+	const pdlIdent = identer?.find((ident) => ident.gruppe === 'FOLKEREGISTERIDENT')
+	return pdlIdent?.ident || 'undefined'
 }
 
 const getKjoenn = (kjoenn) => {
