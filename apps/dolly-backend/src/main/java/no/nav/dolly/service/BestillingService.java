@@ -334,6 +334,7 @@ public class BestillingService {
         return toJson(BestilteKriterier.builder()
                 .aareg(request.getAareg())
                 .krrstub(request.getKrrstub())
+                .nomData(request.getNomData())
                 .udistub(request.getUdistub())
                 .sigrunstub(request.getSigrunstub())
                 .arenaforvalter(request.getArenaforvalter())

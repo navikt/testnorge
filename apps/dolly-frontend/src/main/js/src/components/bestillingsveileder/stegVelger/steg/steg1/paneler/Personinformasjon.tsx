@@ -390,7 +390,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			remove: () => del('tpsMessaging.utenlandskBankkonto'),
 		},
 		nomData: {
-			label: 'NAV Organisasjonsmaster',
+			label: 'NAV ident',
 			checked: has('nomData'),
 			add: () =>
 				set('nomData', {

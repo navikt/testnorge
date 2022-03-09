@@ -37,7 +37,7 @@ export const NomVisning = ({ data, loading }: NomVisningProps) => {
 	return (
 		<ErrorBoundary>
 			<div>
-				<SubOverskrift label="NAV Organisasjonsmaster" iconKind="krr" />
+				<SubOverskrift label="NAV Organisasjonsmaster" iconKind="organisasjon" />
 				<div className="person-visning_content">
 					<Historikk component={Visning} data={sortedData} />
 				</div>

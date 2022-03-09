@@ -66,7 +66,7 @@ export const erForste = (values, attributt) => {
 		'pdlforvalter.kontaktinformasjonForDoedsbo',
 		'instdata',
 		'krrstub',
-		'nom',
+		'nomData',
 		'arenaforvalter',
 		'udistub',
 		'pensjonforvalter',

@@ -12,7 +12,7 @@ export const rootPaths = [
 	'inntektstub',
 	'instdata',
 	'krrstub',
-	'nom',
+	'nomData',
 	'arenaforvalter',
 	'udistub',
 	'inntektsmelding',
