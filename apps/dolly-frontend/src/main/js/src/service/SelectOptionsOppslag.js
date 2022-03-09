@@ -73,12 +73,6 @@ export const SelectOptionsOppslag = {
 		})
 	},
 
-	hentOrganisasjonerFraOrgforvalter: () => {
-		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v2/organisasjoner/alle`, {
-			method: 'GET',
-		})
-	},
-
 	formatOptions: (type, data) => {
 		if (type === 'personnavn') {
 			const persondata = data.value && data.value.data ? data.value.data : []

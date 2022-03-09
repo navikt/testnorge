@@ -1,4 +1,6 @@
 import Request from '~/service/services/Request'
+import Api from '~/api'
+import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 
 const orgForvalterUrl = '/testnav-organisasjon-forvalter/api/v2/organisasjoner'
 
@@ -24,6 +26,13 @@ export default {
 		const endpoint = orgForvalterUrl + '/virksomheter'
 		return Request.get(endpoint + '?brukerid=' + brukerid).then((response) => {
 			if (response != null) return response
+		})
+	},
+
+	getAlleOrganisasjonerPaaBruker(): Promise<Organisasjon[]> {
+		const endpoint = orgForvalterUrl + '/alle'
+		return Api.fetchJson(endpoint, {
+			method: 'GET',
 		})
 	},
 }

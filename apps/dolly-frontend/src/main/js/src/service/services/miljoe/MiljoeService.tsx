@@ -7,7 +7,7 @@ type MiljoeResponse = {
 }
 
 export default {
-	getAktiveMiljoer(): Promise<any[]> {
+	getAktiveMiljoer(): Promise<string[]> {
 		const endpoint = miljoeUrl + '/miljoer'
 		return Request.get(endpoint).then((response: MiljoeResponse) => {
 			return response.data

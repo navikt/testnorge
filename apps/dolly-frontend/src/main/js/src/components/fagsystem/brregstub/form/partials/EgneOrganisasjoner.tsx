@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Loading from '~/components/ui/loading/Loading'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { Organisasjon, Adresse } from '~/components/fagsystem/brregstub/form/partials/types'
+import { Organisasjon, Adresse } from '~/service/services/organisasjonforvalter/types'
+import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
 
 interface OrgProps {
 	path: string
@@ -29,7 +29,7 @@ const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: string) => 
 }
 
 export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) => {
-	const [egneOrganisasjoner, setEgneOrganisasjoenr] = useState([])
+	const [egneOrganisasjoner, setEgneOrganisasjoner] = useState([])
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(false)
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
@@ -38,9 +38,10 @@ export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) 
 		setLoading(true)
 		setError(false)
 		const orgData = async () => {
-			const resp = await SelectOptionsOppslag.hentOrganisasjonerFraOrgforvalter()
+			const resp = await OrganisasjonForvalterService.getAlleOrganisasjonerPaaBruker()
 				.then((response: Organisasjon[]) => {
 					setError(false)
+					if (response.length === 0) return []
 					return response.map((org: Organisasjon) => {
 						const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
 						const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
@@ -59,7 +60,7 @@ export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) 
 					setError(true)
 					return []
 				})
-			setEgneOrganisasjoenr(resp)
+			setEgneOrganisasjoner(resp)
 			setLoading(false)
 		}
 		orgData()
