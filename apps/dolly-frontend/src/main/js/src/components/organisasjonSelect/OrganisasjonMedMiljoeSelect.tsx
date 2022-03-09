@@ -15,6 +15,14 @@ interface OrgProps {
 	onMiljoeChange: (event: any) => void
 }
 
+const sortMiljoe = (miljoe: string[]) =>
+	miljoe.sort((a, b) =>
+		a.localeCompare(b, undefined, {
+			numeric: true,
+			sensitivity: 'base',
+		})
+	)
+
 export const OrganisasjonMedMiljoeSelect = ({
 	path,
 	environment,
@@ -27,17 +35,10 @@ export const OrganisasjonMedMiljoeSelect = ({
 }: OrgProps) => {
 	const options =
 		miljoeOptions &&
-		miljoeOptions
-			.sort((a, b) =>
-				a.localeCompare(b, undefined, {
-					numeric: true,
-					sensitivity: 'base',
-				})
-			)
-			.map((value) => ({
-				value: value,
-				label: value.toUpperCase(),
-			}))
+		sortMiljoe(miljoeOptions).map((value) => ({
+			value: value,
+			label: value.toUpperCase(),
+		}))
 
 	return (
 		<div className={'flexbox--align-start'}>
