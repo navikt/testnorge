@@ -11,6 +11,7 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 	const [inputType, setInputType] = useState(inputValg.fraListe)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
+	const [loading, setLoading] = useBoolean(false)
 	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
@@ -34,11 +35,13 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 	}
 
 	const handleManualOrgChange = (org, miljo) => {
-		if (!orgnummer) return
+		if (!org || !miljo) return
 		setError(null)
+		setLoading(true)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljo)
 			.then((response) => {
+				setLoading(false)
 				if (
 					!response.data.enhetType.includes('BEDR') &&
 					!response.data.enhetType.includes('AAFY')
@@ -51,7 +54,10 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
 				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
 			})
-			.catch(() => setError('Fant ikke organisasjonen i ' + miljo))
+			.catch(() => {
+				setLoading(false)
+				setError('Fant ikke organisasjonen i ' + miljo)
+			})
 	}
 
 	return (
@@ -83,21 +89,9 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 				<OrganisasjonMedMiljoeSelect
 					path={path}
 					environment={environment}
-					miljoeOptions={
-						aktiveMiljoer &&
-						aktiveMiljoer
-							.sort((a, b) =>
-								a.localeCompare(b, undefined, {
-									numeric: true,
-									sensitivity: 'base',
-								})
-							)
-							.map((value) => ({
-								value: value,
-								label: value.toUpperCase(),
-							}))
-					}
+					miljoeOptions={aktiveMiljoer}
 					error={error}
+					loading={loading}
 					success={success}
 					onTextBlur={(event) => {
 						const org = event.target.value

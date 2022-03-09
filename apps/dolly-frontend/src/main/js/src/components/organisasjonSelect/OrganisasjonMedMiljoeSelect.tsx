@@ -2,13 +2,15 @@ import React from 'react'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Icon from '~/components/ui/icon/Icon'
+import Loading from '~/components/ui/loading/Loading'
 
 interface OrgProps {
 	path: string
 	environment: string
-	miljoeOptions: any
+	miljoeOptions: string[]
 	error: string
 	success: boolean
+	loading?: boolean
 	onTextBlur: (event: React.ChangeEvent<any>) => void
 	onMiljoeChange: (event: any) => void
 }
@@ -19,9 +21,24 @@ export const OrganisasjonMedMiljoeSelect = ({
 	miljoeOptions,
 	error,
 	success,
+	loading = false,
 	onTextBlur,
 	onMiljoeChange,
 }: OrgProps) => {
+	const options =
+		miljoeOptions &&
+		miljoeOptions
+			.sort((a, b) =>
+				a.localeCompare(b, undefined, {
+					numeric: true,
+					sensitivity: 'base',
+				})
+			)
+			.map((value) => ({
+				value: value,
+				label: value.toUpperCase(),
+			}))
+
 	return (
 		<div className={'flexbox--align-start'}>
 			<DollyTextInput
@@ -42,7 +59,7 @@ export const OrganisasjonMedMiljoeSelect = ({
 				isClearable={false}
 				fastfield={false}
 				label={'Organisasjon Miljø'}
-				options={miljoeOptions}
+				options={options}
 				value={environment}
 				onChange={onMiljoeChange}
 				feil={
@@ -51,7 +68,12 @@ export const OrganisasjonMedMiljoeSelect = ({
 					}
 				}
 			/>
-			{success && (
+			{loading && (
+				<div className={'flexbox--align-center'} style={{ marginTop: '20px' }}>
+					<Loading label="Leter etter organisasjon" />
+				</div>
+			)}
+			{success && !loading && (
 				<div className={'flexbox--align-center'} style={{ marginTop: '30px' }}>
 					<Icon kind="feedback-check-circle" style={{ marginRight: '5px' }} /> Organisasjon funnet
 				</div>

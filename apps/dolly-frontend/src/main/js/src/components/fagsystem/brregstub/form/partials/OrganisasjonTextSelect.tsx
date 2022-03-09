@@ -22,15 +22,6 @@ const mapAdresse = (adresse: OrgInfoAdresse) => {
 	}
 }
 
-const sortMiljoer = (miljoer: string[]) => {
-	return miljoer.sort((a, b) =>
-		a.localeCompare(b, undefined, {
-			numeric: true,
-			sensitivity: 'base',
-		})
-	)
-}
-
 export const OrganisasjonTextSelect = ({
 	path,
 	aktiveMiljoer,
@@ -39,6 +30,7 @@ export const OrganisasjonTextSelect = ({
 }: OrgnanisasjonTextSelectProps) => {
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
+	const [loading, setLoading] = useBoolean(false)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
 
@@ -46,6 +38,7 @@ export const OrganisasjonTextSelect = ({
 		if (!org || !miljoe) return
 		clearEnhetsinfo()
 		setError(null)
+		setLoading(true)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljoe)
 			.then((response) => {
@@ -57,24 +50,23 @@ export const OrganisasjonTextSelect = ({
 					postAdresse: mapAdresse(response.data.postadresse),
 				}
 				setEnhetsinfo(orgInfo, path)
+				setLoading(false)
 				setSuccess(true)
 			})
-			.catch(() => setError('Fant ikke organisasjonen i ' + miljoe))
+			.catch(() => {
+				setLoading(false)
+				setError('Fant ikke organisasjonen i ' + miljoe)
+			})
 	}
 
 	return (
 		<OrganisasjonMedMiljoeSelect
 			path={path}
 			environment={environment}
-			miljoeOptions={
-				aktiveMiljoer &&
-				sortMiljoer(aktiveMiljoer).map((value) => ({
-					value: value,
-					label: value.toUpperCase(),
-				}))
-			}
+			miljoeOptions={aktiveMiljoer}
 			error={error}
 			success={success}
+			loading={loading}
 			onTextBlur={(event) => {
 				setOrgnummer(event.target.value)
 				handleChange(event.target.value, environment)
