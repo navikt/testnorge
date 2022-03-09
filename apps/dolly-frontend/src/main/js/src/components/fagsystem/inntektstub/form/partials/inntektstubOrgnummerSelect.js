@@ -4,15 +4,10 @@ import { OrgnummerToggle } from '~/components/fagsystem/inntektstub/form/partial
 
 export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	return (
-		<OrganisasjonLoader
-			kanHaArbeidsforhold={true}
-			render={() => (
-				<OrgnummerToggle
-					formikBag={formikBag}
-					path={`${path}.virksomhet`}
-					opplysningspliktigPath={`${path}.opplysningspliktig`}
-				/>
-			)}
+		<OrgnummerToggle
+			formikBag={formikBag}
+			path={`${path}.virksomhet`}
+			opplysningspliktigPath={`${path}.opplysningspliktig`}
 		/>
 	)
 }
