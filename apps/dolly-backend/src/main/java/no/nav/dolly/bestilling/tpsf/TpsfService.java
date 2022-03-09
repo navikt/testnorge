@@ -246,16 +246,17 @@ public class TpsfService {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
+
                     if (throwable instanceof WebClientResponseException webClientResponseException) {
                         if (HttpStatus.BAD_REQUEST == webClientResponseException.getStatusCode()) {
                             return Mono.error(throwable);
-                        }
-                        if (webClientResponseException.getStatusCode() == HttpStatus.NOT_FOUND) {
+                        } else if (HttpStatus.NOT_FOUND == webClientResponseException.getStatusCode()) {
                             return Mono.error(new NotFoundException(TPSF + getMessage(throwable)));
                         } else {
                             return Mono.error(new TpsfException(TPSF + getMessage(throwable)));
                         }
                     } else {
+
                         return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, TPSF + throwable.getMessage(),
                                 throwable.getCause()));
                     }
