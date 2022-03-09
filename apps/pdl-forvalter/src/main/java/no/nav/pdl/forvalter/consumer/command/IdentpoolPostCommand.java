@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -36,8 +35,8 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
 
     protected static String getMessage(Throwable error) {
 
-        return error instanceof WebClientResponseException ?
-                ((WebClientResponseException) error).getResponseBodyAsString() :
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
     }
 

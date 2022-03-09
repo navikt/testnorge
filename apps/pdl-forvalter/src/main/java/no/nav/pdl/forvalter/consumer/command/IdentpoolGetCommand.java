@@ -31,8 +31,8 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
 
     protected static String getMessage(Throwable error) {
 
-        return error instanceof WebClientResponseException ?
-                ((WebClientResponseException) error).getResponseBodyAsString() :
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
     }
 

@@ -60,6 +60,7 @@ public class TpsfService {
     private static final String TPSF_IMPORTER_PERSON = TPSF_BASE_URL + "/import/lagre";
 
     private static final String TPSF_IDENT_QUERY = "ident";
+    private static final String TPSF = "TPSF: ";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -78,8 +79,8 @@ public class TpsfService {
 
     protected static String getMessage(Throwable error) {
 
-        return error instanceof WebClientResponseException ?
-                ((WebClientResponseException) error).getResponseBodyAsString() :
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
     }
 
@@ -249,13 +250,13 @@ public class TpsfService {
                         if (HttpStatus.BAD_REQUEST == webClientResponseException.getStatusCode()) {
                             return Mono.error(throwable);
                         }
-                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
-                            return Mono.error(new NotFoundException("TPSF: " + getMessage(throwable)));
+                        if (webClientResponseException.getStatusCode() == HttpStatus.NOT_FOUND) {
+                            return Mono.error(new NotFoundException(TPSF + getMessage(throwable)));
                         } else {
-                            return Mono.error(new TpsfException("TPSF: " + getMessage(throwable)));
+                            return Mono.error(new TpsfException(TPSF + getMessage(throwable)));
                         }
                     } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "TPSF: " + throwable.getMessage(),
+                        return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, TPSF + throwable.getMessage(),
                                 throwable.getCause()));
                     }
                 })
