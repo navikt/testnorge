@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
 @Getter
@@ -128,5 +129,11 @@ public class BestillingProgress {
     @JsonIgnore
     public boolean isPdl() {
         return getMaster() == Master.PDL;
+    }
+
+    @JsonIgnore
+    public boolean isIdentGyldig() {
+
+        return isNotBlank(getIdent()) && getIdent().length() == 11;
     }
 }

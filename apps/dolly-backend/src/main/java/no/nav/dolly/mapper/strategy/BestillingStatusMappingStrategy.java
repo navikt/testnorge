@@ -7,6 +7,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
@@ -57,7 +58,9 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
-                        bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
+                        bestillingStatus.setAntallLevert(bestilling.getProgresser().stream()
+                                .filter(BestillingProgress::isIdentGyldig)
+                                .toList().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildTpsfStatusMap(bestilling.getProgresser()));
