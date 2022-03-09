@@ -5,7 +5,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { PersonrollerForm } from './personrollerForm'
-import { OrgnrToggle } from '~/components/fagsystem/brregstub/form/partials/OrgnrToggle'
+import { OrgnrToggle } from '~/components/fagsystem/brregstub/form/partials/orgnrToggle'
 
 const initialValues = {
 	rolle: '',

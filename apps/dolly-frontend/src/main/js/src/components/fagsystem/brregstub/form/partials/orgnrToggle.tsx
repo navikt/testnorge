@@ -4,9 +4,9 @@ import { FormikProps } from 'formik'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/egneOrganisasjoner'
+import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { MiljoeApi } from '~/service/Api'
-import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/OrganisasjonTextSelect'
 
 interface OrgnrToggleProps {
 	path: string

@@ -30,7 +30,7 @@ import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
-import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/OrgnrToogle'
+import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
