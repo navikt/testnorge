@@ -1,13 +1,16 @@
 package no.nav.dolly.consumer.profil.command;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -33,6 +36,8 @@ public record GetProfilCommand(WebClient webClient,
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
-                .toEntity(ProfilDTO.class);
+                .toEntity(ProfilDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

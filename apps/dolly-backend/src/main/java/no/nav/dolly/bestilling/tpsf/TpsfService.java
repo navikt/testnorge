@@ -17,12 +17,15 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +79,8 @@ public class TpsfService {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(EnvironmentsResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -89,6 +94,8 @@ public class TpsfService {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(Object.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -102,6 +109,8 @@ public class TpsfService {
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(RsAliasResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -152,6 +161,8 @@ public class TpsfService {
                     .bodyValue(tpsfBestilling)
                     .retrieve()
                     .bodyToMono(RsOppdaterPersonResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
         if (isNull(response)) {
@@ -172,6 +183,8 @@ public class TpsfService {
                 .bodyValue(tpsfBestilling)
                 .retrieve()
                 .bodyToMono(String[].class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (isNull(response)) {
@@ -191,6 +204,8 @@ public class TpsfService {
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(Person.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (isNull(response)) {
@@ -214,6 +229,8 @@ public class TpsfService {
                     .bodyValue(request)
                     .retrieve()
                     .bodyToMono(Object.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
     }
 

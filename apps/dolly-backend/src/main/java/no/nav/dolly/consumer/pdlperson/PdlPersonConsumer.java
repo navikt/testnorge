@@ -8,6 +8,7 @@ import no.nav.dolly.config.credentials.PdlProxyProperties;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
@@ -15,10 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -73,6 +76,8 @@ public class PdlPersonConsumer {
                                 Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 

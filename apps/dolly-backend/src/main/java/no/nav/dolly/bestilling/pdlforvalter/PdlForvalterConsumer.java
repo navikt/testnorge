@@ -37,12 +37,15 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.IdentTypeUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -119,6 +122,8 @@ public class PdlForvalterConsumer {
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve().toEntity(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -358,7 +363,10 @@ public class PdlForvalterConsumer {
                             .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                             .header(HEADER_NAV_PERSON_IDENT, ident)
                             .bodyValue(body)
-                            .retrieve().toEntity(JsonNode.class)
+                            .retrieve()
+                            .toEntity(JsonNode.class)
+                            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                    .filter(WebClientFilter::is5xxException))
                             .block();
 
         } catch (RuntimeException e) {
@@ -382,7 +390,10 @@ public class PdlForvalterConsumer {
                             .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                             .header(HEADER_NAV_PERSON_IDENT, ident)
                             .bodyValue(body)
-                            .retrieve().toEntity(JsonNode.class)
+                            .retrieve()
+                            .toEntity(JsonNode.class)
+                            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                    .filter(WebClientFilter::is5xxException))
                             .block();
 
         } catch (RuntimeException e) {
@@ -403,7 +414,10 @@ public class PdlForvalterConsumer {
                         .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                         .header(HEADER_NAV_PERSON_IDENT, ident)
                         .bodyValue(body)
-                        .retrieve().toEntity(JsonNode.class)
+                        .retrieve()
+                        .toEntity(JsonNode.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException))
                         .block();
     }
 }
