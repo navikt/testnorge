@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -48,6 +47,8 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
                 .header(IDENT, ident)
                 .retrieve()
                 .bodyToMono(IdentpoolStatusDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException) {
@@ -59,8 +60,6 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
                     } else {
                         return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
                     }
-                })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                });
     }
 }

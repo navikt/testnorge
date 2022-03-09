@@ -10,6 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -68,7 +69,8 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .bodyToMono(MatrikkeladresseDTO[].class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
+                                Exceptions.isRetryExhausted(throwable),
                         throwable -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}));
     }
 

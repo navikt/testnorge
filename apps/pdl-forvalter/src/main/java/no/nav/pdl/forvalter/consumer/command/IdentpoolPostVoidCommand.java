@@ -47,6 +47,8 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Void.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException) {
@@ -58,8 +60,6 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
                     } else {
                         return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
                     }
-                })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                });
     }
 }

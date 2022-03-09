@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class TpsfServiceTest {
 
         stubPostTpsfDataForFlereThrowExpection();
 
-        Assertions.assertThrows(WebClientResponseException.InternalServerError.class, () ->
+        Assertions.assertThrows(ResponseStatusException.class, () ->
                 tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1));
     }
 

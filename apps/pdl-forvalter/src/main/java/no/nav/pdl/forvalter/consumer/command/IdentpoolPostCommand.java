@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -42,7 +43,6 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
 
     @Override
     public Mono<List<IdentDTO>> call() {
-
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).query(query).build())
@@ -57,6 +57,10 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                                 .build())
                         .map(IdentDTO.class::cast)
                         .collect(Collectors.toList())))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException)
+                        .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) ->
+                                new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException) {
@@ -68,8 +72,6 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                     } else {
                         return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
                     }
-                })
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                });
     }
 }
