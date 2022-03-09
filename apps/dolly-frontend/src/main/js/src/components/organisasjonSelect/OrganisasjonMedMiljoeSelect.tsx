@@ -15,13 +15,14 @@ interface OrgProps {
 	onMiljoeChange: (event: any) => void
 }
 
-const sortMiljoe = (miljoe: string[]) =>
-	miljoe.sort((a, b) =>
+const sortMiljoe = (miljoe: string[]) => {
+	return miljoe.sort((a, b) =>
 		a.localeCompare(b, undefined, {
 			numeric: true,
 			sensitivity: 'base',
 		})
 	)
+}
 
 export const OrganisasjonMedMiljoeSelect = ({
 	path,
