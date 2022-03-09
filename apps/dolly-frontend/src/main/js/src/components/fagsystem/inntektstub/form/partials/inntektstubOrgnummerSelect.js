@@ -1,6 +1,6 @@
 import React from 'react'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
-import { OrgnummerToggle } from '~/components/fagsystem/aareg/form/partials/orgnummerToggle'
+import { OrgnummerToggle } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	return (
