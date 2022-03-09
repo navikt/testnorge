@@ -5,7 +5,7 @@ import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSe
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
-import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
+import { OrgforvalterApi } from '~/service/Api'
 
 interface OrgnrToggleProps {
 	path: string
@@ -23,7 +23,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 
 	useEffect(() => {
 		const fetchEgneOrg = async () => {
-			const resp = await OrganisasjonForvalterService.getAlleOrganisasjonerPaaBruker()
+			const resp = await OrgforvalterApi.getAlleOrganisasjonerPaaBruker()
 				.then((response: Organisasjon[]) => {
 					if (response.length === 0) return []
 					return response.map((org: Organisasjon) => {

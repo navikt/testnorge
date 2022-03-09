@@ -2,10 +2,7 @@ import React, { useState } from 'react'
 import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
 import { OrgserviceApi } from '~/service/Api'
-import {
-	OrgInfoResponse,
-	OrgInfoAdresse,
-} from '~/components/fagsystem/brregstub/form/partials/types'
+import { OrgInfoAdresse } from '~/service/services/organisasjonservice/types'
 
 interface OrgnanisasjonTextSelectProps {
 	path: string
@@ -51,7 +48,7 @@ export const OrganisasjonTextSelect = ({
 		setError(null)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljoe)
-			.then((response: OrgInfoResponse) => {
+			.then((response) => {
 				const orgInfo = {
 					value: response.data.orgnummer,
 					orgnr: response.data.orgnummer,

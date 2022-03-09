@@ -5,7 +5,7 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Organisasjon, Adresse } from '~/service/services/organisasjonforvalter/types'
-import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
+import { OrgforvalterApi } from '~/service/Api'
 
 interface OrgProps {
 	path: string
@@ -38,11 +38,11 @@ export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) 
 		setLoading(true)
 		setError(false)
 		const orgData = async () => {
-			const resp = await OrganisasjonForvalterService.getAlleOrganisasjonerPaaBruker()
-				.then((response: Organisasjon[]) => {
+			const resp = await OrgforvalterApi.getAlleOrganisasjonerPaaBruker()
+				.then((response) => {
 					setError(false)
 					if (response.length === 0) return []
-					return response.map((org: Organisasjon) => {
+					return response.map((org) => {
 						const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
 						const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
 
