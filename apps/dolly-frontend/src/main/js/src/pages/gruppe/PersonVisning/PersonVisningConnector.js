@@ -9,6 +9,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
+const loadingSelectorNom = createLoadingSelector(actions.getNom)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorAareg = createLoadingSelector(actions.getAareg)
@@ -26,6 +27,7 @@ const loadingSelector = createSelector(
 	(loading) => {
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
+			nom: loadingSelectorNom({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			aareg: loadingSelectorAareg({ loading }),

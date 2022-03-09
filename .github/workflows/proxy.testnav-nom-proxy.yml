@@ -1,4 +1,4 @@
-name: Proxy nom-proxy
+name: Proxy testnav-nom-proxy
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - proxies/nom-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
-      - .github/workflows/proxy.nom-proxy.yml
+      - .github/workflows/proxy.testnav-nom-proxy.yml
 
 jobs:
   scan:
@@ -22,7 +22,7 @@ jobs:
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
     with:
       working-directory: 'proxies/nom-proxy/'
-      app-name: 'nom-proxy'
+      app-name: 'testnav-nom-proxy'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
@@ -32,7 +32,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/nom-nav-ident'}}
     with:
       resource: 'proxies/nom-proxy/config.yml'
-      app-name: 'nom-proxy'
+      app-name: 'testnav-nom-proxy'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

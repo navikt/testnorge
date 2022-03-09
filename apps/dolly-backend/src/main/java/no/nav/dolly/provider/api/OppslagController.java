@@ -19,6 +19,7 @@ import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
+import no.nav.dolly.consumer.nom.NomConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
@@ -64,6 +65,7 @@ public class OppslagController {
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
+    private final NomConsumer nomConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
@@ -119,6 +121,12 @@ public class OppslagController {
     @Operation(description = "Hent skjerming på ident")
     public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
         return skjermingsRegisterConsumer.getSkjerming(ident);
+    }
+
+    @GetMapping("/nom/{ident}")
+    @Operation(description = "Hent nom data på ident")
+    public JsonNode getNomPersondata(@PathVariable String ident) {
+        return nomConsumer.getNomPersonMedPersonIdent(ident);
     }
 
     @GetMapping("/helsepersonell")

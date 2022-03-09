@@ -27,6 +27,7 @@ import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasj
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import { NomVisning } from '~/components/fagsystem/nom/visning/NomVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -106,6 +107,7 @@ export const PersonVisning = ({
 			<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
+			<NomVisning data={data.nom} loading={loading.nom} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning
 				data={data.arenaforvalteren}

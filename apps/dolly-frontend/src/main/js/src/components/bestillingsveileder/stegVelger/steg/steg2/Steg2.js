@@ -18,6 +18,7 @@ import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
 import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
+import { NomForm } from '~/components/fagsystem/nom/form/Form'
 
 const getEmptyMessage = (leggTil, importTestnorge) => {
 	if (leggTil) {
@@ -53,6 +54,7 @@ export const Steg2 = ({ formikBag }) => {
 			<BrregstubForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
+			<NomForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 			<DokarkivForm formikBag={formikBag} />
