@@ -235,23 +235,13 @@ InntektsmeldingForm.validation = {
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString
-							.nullable()
-							.matches(/^\d*$/, 'Orgnummer må være et tall med 9 siffer')
-							.test(
-								'len',
-								'Orgnummer må være et tall med 9 siffer',
-								(val) => val && val.length === 9
-							)
+						requiredString.nullable().matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer')
 					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString
-							.nullable()
-							.matches(/^\d*$/, 'Ident må være et tall med 11 siffer')
-							.test('len', 'Ident må være et tall med 11 siffer', (val) => val && val.length === 11)
+						requiredString.nullable().matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer')
 					),
 				}),
 				arbeidsforhold: Yup.object({
