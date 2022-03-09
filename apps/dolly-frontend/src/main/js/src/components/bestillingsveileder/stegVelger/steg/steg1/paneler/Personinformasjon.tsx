@@ -63,6 +63,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+				<Attributt attr={sm.attrs.nomData} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -387,6 +388,15 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					bankAdresse3: '',
 				}),
 			remove: () => del('tpsMessaging.utenlandskBankkonto'),
+		},
+		nomData: {
+			label: 'NAV Organisasjonsmaster',
+			checked: has('nomData'),
+			add: () =>
+				set('nomData', {
+					opprettNavIdent: true,
+				}),
+			remove: () => del('nomData'),
 		},
 		norskBankkonto: {
 			label: 'Norsk bank',

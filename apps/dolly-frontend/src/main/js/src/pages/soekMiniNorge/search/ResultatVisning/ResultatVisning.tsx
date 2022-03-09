@@ -39,14 +39,14 @@ interface ResultatVisningProps {
 }
 
 export const ResultatVisning = ({
-	fetchDataFraFagsystemerForSoek,
-	data,
-	dataFraMiniNorge,
-	loading,
-}: ResultatVisningProps) => {
+																	fetchDataFraFagsystemerForSoek,
+																	data,
+																	dataFraMiniNorge,
+																	loading,
+																}: ResultatVisningProps) => {
 	useMount(fetchDataFraFagsystemerForSoek)
 	return (
-		<div className="resultat-visning">
+		<div className='resultat-visning'>
 			{dataFraMiniNorge && <MiniNorgeVisning data={dataFraMiniNorge} />}
 			{data.pdlforvalter && (
 				//@ts-ignore
@@ -77,7 +77,7 @@ export const ResultatVisning = ({
 			)}
 			{data.sigrunstub && data.sigrunstub.length > 0 && (
 				//@ts-ignore
-				<Panel heading="Skatteoppgjør (Sigrun)" iconType={'sigrun'}>
+				<Panel heading='Skatteoppgjør (Sigrun)' iconType={'sigrun'}>
 					{
 						//@ts-ignore
 						<SigrunstubVisning

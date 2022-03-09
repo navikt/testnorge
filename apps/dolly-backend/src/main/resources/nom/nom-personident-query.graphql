@@ -1,0 +1,14 @@
+# Query som henter ressurser med personIdent som parameter:
+query HentRessursMedPersonIdent($personIdent: String!){
+    ressurs(where: {personIdent: $personIdent}) {
+        navIdent
+        personIdent
+        person{
+            navn{
+                fornavn
+                mellomnavn
+                etternavn
+            }
+        }
+    }
+}

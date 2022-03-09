@@ -1,0 +1,15 @@
+{
+  "name": "nom-api",
+  "schemaPath": "nom-api-schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "NOM GraphQL Endpoint": {
+        "url": "https://testnav-nom-proxy.dev.intern.nav.no/graphql",
+        "headers": {
+          "user-agent": ""
+        },
+        "introspect": false
+      }
+    }
+  }
+}

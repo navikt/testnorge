@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-nom-proxy
-    desciption: Proxy for nom som legger på sikkerhet.
+    desciption: Proxy for nom som legger på Trygdeetaten token.
   security:
     oauth2:
       resourceserver:
@@ -22,8 +22,8 @@ spring:
 
 
 consumers:
-  nom: #TODO FIKS
-    name: digdir-nom
-    namespace: team-rocket
-    url: https://digdir-nom.dev.intern.nav.no
+  nom:
+    name: nom-api
+    namespace: nom
+    url: https://nom-api.dev.intern.nav.no
     cluster: dev-gcp

@@ -14,6 +14,7 @@ public enum SystemTyper {
     TPSF("Tjenestebasert personsystem (TPS)"),
     INST2("Institusjonsopphold (INST2)"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
+    NOM("NAV Organisasjonsmaster (NOM)"),
     SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),
     ARENA("Arena fagsystem"),
     PDL_FORVALTER("Persondataløsningen (PDL)"),

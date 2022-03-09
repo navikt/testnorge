@@ -36,6 +36,11 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/krrstub
     cluster: dev-fss
+  testnav-nom-proxy:
+    name: nom-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/krrstub
+    cluster: dev-fss
   testnav-inst-proxy:
     name: inst-mock
     namespace: dolly

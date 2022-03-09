@@ -16,6 +16,7 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.nom.RsNomData;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
@@ -88,6 +89,7 @@ public class RsBestillingStatus {
 
         private RsPdldata pdlforvalter;
         private RsDigitalKontaktdata krrstub;
+        private RsNomData nomData;
         private List<RsInstdata> instdata;
         private List<RsAareg> aareg;
         private List<OpprettSkattegrunnlag> sigrunstub;

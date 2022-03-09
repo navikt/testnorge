@@ -1121,6 +1121,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(krrStub)
 	}
 
+	const nomKriterier = bestillingData.nomData
+
+	if (nomKriterier) {
+		const nom = {
+			header: 'NAV Organisasjonsmaster',
+			items: [obj('Registrert i NOM', nomKriterier.opprettNavIdent ? 'JA' : 'NEI')],
+		}
+
+		data.push(nom)
+	}
+
 	const arenaKriterier = bestillingData.arenaforvalter
 
 	if (arenaKriterier) {

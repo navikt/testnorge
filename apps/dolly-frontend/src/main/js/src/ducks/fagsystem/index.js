@@ -150,6 +150,7 @@ const initialState = {
 	sigrunstub: {},
 	inntektstub: {},
 	krrstub: {},
+	nomData: {},
 	arenaforvalteren: {},
 	aareg: {},
 	pdl: {},

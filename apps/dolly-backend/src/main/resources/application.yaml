@@ -74,6 +74,12 @@ consumers:
     #url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
     url: https://testnav-krrstub-proxy.dev.intern.nav.no
     cluster: dev-fss
+  testnav-nom-proxy:
+    name: testnav-nom-proxy
+    namespace: dolly
+    #url: https://testnav-nom-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
+    url: https://testnav-nom-proxy.dev.intern.nav.no
+    cluster: dev-fss
   testnav-inntektstub-proxy:
     name: testnav-inntektstub-proxy
     namespace: dolly
