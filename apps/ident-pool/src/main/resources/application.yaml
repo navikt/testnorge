@@ -38,3 +38,12 @@ spring:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
         showSql: true
+
+consumers:
+  tps:
+    messaging:
+      service:
+        url: https://testnav-miljoer-service.dev.intern.nav.no
+        cluster: dev-gcp
+        namespace: dolly
+        name: testnav-miljoer-service
