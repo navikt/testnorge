@@ -81,7 +81,13 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 	)
 }
 
-export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }) => {
+export const Personinfo = ({
+	data,
+	visTittel = true,
+	tpsMessagingData,
+	skjermingsregister,
+	pdlData,
+}) => {
 	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
 	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
 
@@ -159,7 +165,14 @@ export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 					size="medium"
 				/>
-				{hentSkjermingData(tpsMessagingData?.egenAnsattDatoFom ? tpsMessagingData : data)}
+				{hentSkjermingData(
+					skjermingsregister?.skjermetFra
+						? {
+								egenAnsattDatoFom: skjermingsregister.skjermetFra,
+								egenAnsattDatoTom: skjermingsregister.skjermetTil,
+						  }
+						: tpsMessagingData
+				)}
 				{hentSikkerhetstiltakData(
 					tpsMessagingData?.sikkerhetstiltak
 						? tpsMessagingData.sikkerhetstiltak

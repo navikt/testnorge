@@ -20,7 +20,7 @@ import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/Pd
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 
-export const TpsfVisning = ({ data, pdlData, environments }) => {
+export const TpsfVisning = ({ data, pdlData, skjermingsregister, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
@@ -42,7 +42,12 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 		<div>
 			<>
 				{hasTpsfData ? (
-					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
+					<Personinfo
+						data={data}
+						tpsMessagingData={tpsMessagingData}
+						skjermingsregister={skjermingsregister}
+						pdlData={pdlData}
+					/>
 				) : (
 					<PdlPersonInfo data={pdlData} />
 				)}

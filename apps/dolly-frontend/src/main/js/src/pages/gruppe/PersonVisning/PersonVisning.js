@@ -89,6 +89,7 @@ export const PersonVisning = ({
 				<TpsfVisning
 					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 					pdlData={data.pdlforvalter?.person}
+					skjermingsregister={data.skjermingsregister}
 					environments={bestilling?.environments}
 				/>
 			)}
