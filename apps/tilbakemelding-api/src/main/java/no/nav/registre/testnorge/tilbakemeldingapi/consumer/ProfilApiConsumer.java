@@ -1,13 +1,16 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServiceProperties;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
-import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServiceProperties;
-import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import java.time.Duration;
 
 @Slf4j
 @Component
@@ -36,6 +39,8 @@ public class ProfilApiConsumer {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                         .retrieve()
                         .bodyToMono(ProfilDTO.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException))
                 ).block();
     }
 }

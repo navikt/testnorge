@@ -2,17 +2,19 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +36,8 @@ public class GenerateStartArbeidsforholdCommand implements Callable<Arbeidsforho
                     .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
                     .retrieve()
                     .bodyToMono(ArbeidsforholdResponse[].class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
             if (array == null || array.length < 1) {

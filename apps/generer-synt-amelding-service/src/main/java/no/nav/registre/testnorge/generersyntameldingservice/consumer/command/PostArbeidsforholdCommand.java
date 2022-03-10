@@ -1,15 +1,18 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer.command;
 
-import java.util.concurrent.Callable;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
-import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @Slf4j
 public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
@@ -41,6 +44,8 @@ public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
                     .body(body)
                     .retrieve()
                     .bodyToMono(Arbeidsforhold.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Unexpected Rest Client Exception: " + e.getMessage());

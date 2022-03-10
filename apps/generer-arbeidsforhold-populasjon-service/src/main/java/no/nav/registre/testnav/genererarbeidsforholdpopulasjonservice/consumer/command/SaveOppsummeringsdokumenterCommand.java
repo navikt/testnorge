@@ -2,15 +2,17 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +41,8 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Mono<String>
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OppsummeringsdokumentDTO.class))
                 .exchange()
                 .flatMap(response -> response.toEntity(String.class))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .map(response -> {
 
 

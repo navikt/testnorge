@@ -1,10 +1,13 @@
 package no.nav.registre.syntrest.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -32,6 +35,8 @@ public class GetSyntMeldekortMedArbeidstimerCommand implements Callable<List<Str
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

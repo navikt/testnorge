@@ -3,6 +3,8 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -12,8 +14,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +40,8 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
                 .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(
                         new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ikke arbeidsforhold")))
                 .bodyToMono(ArbeidsforholdDTO.class)
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

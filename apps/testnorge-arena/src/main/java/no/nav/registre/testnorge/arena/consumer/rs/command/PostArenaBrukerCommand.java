@@ -3,25 +3,26 @@ package no.nav.registre.testnorge.arena.consumer.rs.command;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.EIER;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.EIER;
 
 @Slf4j
 public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
@@ -53,6 +54,8 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
                     .body(BodyInserters.fromPublisher(Mono.just(nyeBrukere), REQUEST_TYPE))
                     .retrieve()
                     .bodyToMono(NyeBrukereResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);

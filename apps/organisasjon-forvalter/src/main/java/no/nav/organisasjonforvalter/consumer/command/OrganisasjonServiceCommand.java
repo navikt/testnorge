@@ -2,10 +2,13 @@ package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -27,6 +30,8 @@ public class OrganisasjonServiceCommand implements Callable<Mono<OrganisasjonDTO
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(MILJOE, environment)
                 .retrieve()
-                .bodyToMono(OrganisasjonDTO.class);
+                .bodyToMono(OrganisasjonDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

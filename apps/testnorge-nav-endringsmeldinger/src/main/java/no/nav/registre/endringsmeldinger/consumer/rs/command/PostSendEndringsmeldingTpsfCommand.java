@@ -3,10 +3,13 @@ package no.nav.registre.endringsmeldinger.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ public class PostSendEndringsmeldingTpsfCommand implements Callable<RsPureXmlMes
 
     @Override
     public RsPureXmlMessageResponse call() {
+
         return webClient
                 .post()
                 .uri("/api/v1/xmlmelding")
@@ -26,6 +30,8 @@ public class PostSendEndringsmeldingTpsfCommand implements Callable<RsPureXmlMes
                 .body(BodyInserters.fromPublisher(Mono.just(sendTilTpsRequest), SendTilTpsRequest.class))
                 .retrieve()
                 .bodyToMono(RsPureXmlMessageResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

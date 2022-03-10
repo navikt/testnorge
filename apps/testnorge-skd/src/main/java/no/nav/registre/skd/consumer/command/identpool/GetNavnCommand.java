@@ -1,14 +1,16 @@
 package no.nav.registre.skd.consumer.command.identpool;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.response.Navn;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @Slf4j
 @AllArgsConstructor
@@ -21,6 +23,7 @@ public class GetNavnCommand implements Callable<List<Navn>> {
 
     @Override
     public List<Navn> call() {
+
         try {
             return webClient.get()
                     .uri(builder ->
@@ -30,7 +33,10 @@ public class GetNavnCommand implements Callable<List<Navn>> {
                     )
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
+
         } catch (Exception e) {
             log.error("Klarte ikke å hente navn fra Ident-pool.", e);
             return null;

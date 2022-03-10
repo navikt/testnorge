@@ -1,14 +1,16 @@
 package no.nav.registre.skd.consumer.command.tpsf;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-
+import lombok.AllArgsConstructor;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @AllArgsConstructor
 public class PostHentMeldingsIdsCommand implements Callable<List<Long>> {
@@ -32,6 +34,8 @@ public class PostHentMeldingsIdsCommand implements Callable<List<Long>> {
                 .body(BodyInserters.fromPublisher(Mono.just(identer), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

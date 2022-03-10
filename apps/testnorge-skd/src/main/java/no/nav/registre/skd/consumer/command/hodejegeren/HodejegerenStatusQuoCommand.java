@@ -2,10 +2,12 @@ package no.nav.registre.skd.consumer.command.hodejegeren;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -31,6 +33,8 @@ public class HodejegerenStatusQuoCommand implements Callable<Map<String, String>
                         .build())
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

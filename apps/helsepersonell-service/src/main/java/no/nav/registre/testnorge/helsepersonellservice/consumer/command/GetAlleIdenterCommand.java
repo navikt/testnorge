@@ -2,9 +2,12 @@ package no.nav.registre.testnorge.helsepersonellservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +28,11 @@ public class GetAlleIdenterCommand implements Callable<Set<String>> {
             log.info("Henter alle identer fra avspillergruppe {}", avspillergruppeId);
             String[] identer = webClient.get().uri(builder -> builder.path("/api/v1/alle-identer/{avspillergruppeId}").build(avspillergruppeId))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve().bodyToMono(String[].class).block();
+                    .retrieve()
+                    .bodyToMono(String[].class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
+                    .block();
 
             if (identer == null || identer.length == 0) {
                 log.warn("Fant ingen identer for avspillergruppe {}", avspillergruppeId);

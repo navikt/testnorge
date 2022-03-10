@@ -1,16 +1,16 @@
 package no.nav.testnav.apps.importfratpsfservice.consumer.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.importfratpsfservice.utils.ErrorhandlerUtils;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -33,6 +33,8 @@ public class PdlForvalterOrdreCommand implements Callable<Mono<JsonNode>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> ErrorhandlerUtils.handleError(throwable, PDL_FORVALTER));
     }
 }

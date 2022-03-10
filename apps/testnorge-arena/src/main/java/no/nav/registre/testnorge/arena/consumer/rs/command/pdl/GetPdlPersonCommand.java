@@ -1,15 +1,17 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command.pdl;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pdl.GraphQLRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pdl.PdlPerson;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.AUTHORIZATION;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
@@ -42,7 +44,7 @@ public class GetPdlPersonCommand implements Callable<PdlPerson> {
                     .uri(uriBuilder -> uriBuilder.path(GRAPHQL_URL).build())
                     .header(AUTHORIZATION, "Bearer " + token)
                     .header(CONSUMER_TOKEN, "Bearer " + token)
-                    .header(CALL_ID, "Dolly: " + UUID.randomUUID().toString())
+                    .header(CALL_ID, "Dolly: " + UUID.randomUUID())
                     .header(TEMA, TEMA_GENERELL)
                     .body(BodyInserters.fromValue(GraphQLRequest.builder()
                             .query(query)
@@ -50,6 +52,8 @@ public class GetPdlPersonCommand implements Callable<PdlPerson> {
                             .build()))
                     .retrieve()
                     .bodyToMono(PdlPerson.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke hente pdlperson.", e);

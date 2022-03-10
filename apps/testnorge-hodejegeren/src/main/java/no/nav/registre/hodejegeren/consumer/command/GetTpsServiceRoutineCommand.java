@@ -2,13 +2,13 @@ package no.nav.registre.hodejegeren.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +32,8 @@ public class GetTpsServiceRoutineCommand implements Callable<ServiceRoutineDTO> 
                 )
                 .retrieve()
                 .bodyToMono(ServiceRoutineDTO.class)
-                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(3)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
     }

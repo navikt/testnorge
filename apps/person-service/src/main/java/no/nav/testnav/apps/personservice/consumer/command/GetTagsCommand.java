@@ -2,15 +2,17 @@ package no.nav.testnav.apps.personservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,6 +35,8 @@ public class GetTagsCommand implements Callable<Set<String>> {
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

@@ -1,9 +1,12 @@
 package no.nav.registre.endringsmeldinger.consumer.rs.command;
 
 import lombok.AllArgsConstructor;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -25,6 +28,8 @@ public class GetLevendeIdenterCommand implements Callable<List<String>> {
                     )
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
     }
 }

@@ -1,12 +1,15 @@
 package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
+import java.time.Duration;
 
 @RequiredArgsConstructor
 public class UpdateOrganisasjonBestillingCommand implements Runnable {
@@ -25,6 +28,8 @@ public class UpdateOrganisasjonBestillingCommand implements Runnable {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Void.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

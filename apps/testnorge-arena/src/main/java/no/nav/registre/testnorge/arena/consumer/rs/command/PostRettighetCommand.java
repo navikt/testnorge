@@ -3,14 +3,15 @@ package no.nav.registre.testnorge.arena.consumer.rs.command;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
@@ -43,6 +44,8 @@ public class PostRettighetCommand implements Callable<NyttVedtakResponse> {
                     .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
                     .retrieve()
                     .bodyToMono(NyttVedtakResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);

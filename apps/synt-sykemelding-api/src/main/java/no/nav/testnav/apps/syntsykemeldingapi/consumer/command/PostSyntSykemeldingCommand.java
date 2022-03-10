@@ -3,11 +3,14 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer.command;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -36,6 +39,8 @@ public class PostSyntSykemeldingCommand implements Callable<HashMap<String, Synt
                     .body(BodyInserters.fromPublisher(Mono.just(request), REQUEST_TYPE))
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å hente data fra synthdata-elsam.", e);

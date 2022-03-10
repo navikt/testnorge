@@ -6,10 +6,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +54,8 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
                     .header(NavHeaders.NAV_CALL_ID, getNavCallId())
                     .retrieve()
                     .bodyToMono(ArbeidsforholdDTO[].class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
             log.info("Hentet arbeidsforhold fra Aareg: " + Arrays.toString(arbeidsforhold));

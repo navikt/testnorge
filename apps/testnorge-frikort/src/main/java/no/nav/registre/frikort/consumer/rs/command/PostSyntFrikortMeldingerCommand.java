@@ -2,12 +2,15 @@ package no.nav.registre.frikort.consumer.rs.command;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.apache.http.HttpHeaders;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -37,6 +40,8 @@ public class PostSyntFrikortMeldingerCommand implements Callable<Map<String, Lis
                 .body(BodyInserters.fromPublisher(Mono.just(request), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

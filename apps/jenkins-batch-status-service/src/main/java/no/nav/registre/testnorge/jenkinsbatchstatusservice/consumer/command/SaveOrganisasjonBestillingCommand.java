@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -24,7 +25,8 @@ public class SaveOrganisasjonBestillingCommand implements Callable<Long> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(Long.class)
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

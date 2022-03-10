@@ -1,9 +1,12 @@
 package no.nav.registre.skd.consumer.command.tpsf;
 
-import java.util.concurrent.Callable;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.AllArgsConstructor;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @AllArgsConstructor
 public class DeleteIdenterFraTpsCommand implements Callable<Void> {
@@ -23,6 +26,8 @@ public class DeleteIdenterFraTpsCommand implements Callable<Void> {
                 )
                 .retrieve()
                 .bodyToMono(Void.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

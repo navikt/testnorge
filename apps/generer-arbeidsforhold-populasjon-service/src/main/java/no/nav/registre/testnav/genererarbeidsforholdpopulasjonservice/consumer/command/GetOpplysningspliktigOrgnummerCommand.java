@@ -2,15 +2,16 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-import java.util.Arrays;
+import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +30,8 @@ public class GetOpplysningspliktigOrgnummerCommand implements Callable<Mono<Set<
                 .header("miljo", miljo)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
-                });
+                })
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

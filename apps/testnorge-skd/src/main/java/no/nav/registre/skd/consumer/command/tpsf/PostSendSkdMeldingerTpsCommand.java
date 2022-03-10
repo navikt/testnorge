@@ -1,14 +1,16 @@
 package no.nav.registre.skd.consumer.command.tpsf;
 
-import java.util.concurrent.Callable;
-
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.AllArgsConstructor;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
+import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @AllArgsConstructor
 public class PostSendSkdMeldingerTpsCommand implements Callable<SkdMeldingerTilTpsRespons> {
@@ -27,6 +29,8 @@ public class PostSendSkdMeldingerTpsCommand implements Callable<SkdMeldingerTilT
                 .body(BodyInserters.fromPublisher(Mono.just(sendToTpsRequest), SendToTpsRequest.class))
                 .retrieve()
                 .bodyToMono(SkdMeldingerTilTpsRespons.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }
