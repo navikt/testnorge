@@ -34,8 +34,9 @@ export const DollyTextInput = (props: {
 	name: string
 	label?: string
 	feil?: any
-	value: any
+	value?: any
 	size?: string
+	type?: string
 	onBlur?: Function
 	onSubmit?: Function
 	onChange?: Function
