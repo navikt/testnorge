@@ -1,7 +1,7 @@
 package no.nav.registre.skd.consumer.command;
 
 import lombok.AllArgsConstructor;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,12 +17,11 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class PostTpIdenterCommand implements Callable<List<String>> {
 
+    private static final ParameterizedTypeReference<List<String>> LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final List<String> identer;
     private final String miljoe;
     private final WebClient webClient;
-
-    private static final ParameterizedTypeReference<List<String>> LIST_TYPE = new ParameterizedTypeReference<>() {
-    };
 
     @Override
     public List<String> call() {

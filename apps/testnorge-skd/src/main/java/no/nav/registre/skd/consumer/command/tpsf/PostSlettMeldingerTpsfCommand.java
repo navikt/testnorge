@@ -2,7 +2,7 @@ package no.nav.registre.skd.consumer.command.tpsf;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;

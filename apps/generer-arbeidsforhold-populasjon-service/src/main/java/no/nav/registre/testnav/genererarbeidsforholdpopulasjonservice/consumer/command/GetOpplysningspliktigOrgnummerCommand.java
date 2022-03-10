@@ -2,7 +2,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;

@@ -2,7 +2,7 @@ package no.nav.testnav.apps.organisasjonbestillingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.BuildDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

@@ -2,9 +2,9 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

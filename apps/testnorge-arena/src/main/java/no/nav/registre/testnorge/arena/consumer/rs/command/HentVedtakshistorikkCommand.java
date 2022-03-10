@@ -2,8 +2,8 @@ package no.nav.registre.testnorge.arena.consumer.rs.command;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,14 +19,13 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistorikk>> {
 
-    private final WebClient webClient;
-    private final List<String> oppstartsdatoer;
-    private final String token;
-
     private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<List<Vedtakshistorikk>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final WebClient webClient;
+    private final List<String> oppstartsdatoer;
+    private final String token;
 
     @Override
     public List<Vedtakshistorikk> call() {

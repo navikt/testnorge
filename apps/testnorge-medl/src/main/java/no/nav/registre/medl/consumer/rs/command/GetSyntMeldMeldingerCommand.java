@@ -3,7 +3,7 @@ package no.nav.registre.medl.consumer.rs.command;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.medl.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -17,12 +17,11 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class GetSyntMeldMeldingerCommand implements Callable<List<MedlSyntResponse>> {
 
+    private static final ParameterizedTypeReference<List<MedlSyntResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final Integer antallMeldinger;
     private final String token;
     private final WebClient webClient;
-
-    private static final ParameterizedTypeReference<List<MedlSyntResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
 
     @Override
     public List<MedlSyntResponse> call() {

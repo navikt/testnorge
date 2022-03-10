@@ -2,9 +2,9 @@ package no.nav.registre.testnav.inntektsmeldingservice.consumer.command;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.inntektsmeldingservice.util.WebClientFilter;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

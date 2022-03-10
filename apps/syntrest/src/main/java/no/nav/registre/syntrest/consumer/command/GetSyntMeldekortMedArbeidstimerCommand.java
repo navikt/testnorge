@@ -1,7 +1,7 @@
 package no.nav.registre.syntrest.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.syntrest.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,14 +14,13 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class GetSyntMeldekortMedArbeidstimerCommand implements Callable<List<String>> {
 
+    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final int antall;
     private final String meldegruppe;
     private final String arbeidstimer;
     private final String token;
     private final WebClient webClient;
-
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
 
     @Override
     public List<String> call() {

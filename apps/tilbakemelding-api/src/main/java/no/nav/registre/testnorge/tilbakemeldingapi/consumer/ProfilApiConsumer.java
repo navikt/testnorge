@@ -2,8 +2,8 @@ package no.nav.registre.testnorge.tilbakemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServiceProperties;
+import no.nav.registre.testnorge.tilbakemeldingapi.util.WebClientFilter;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;

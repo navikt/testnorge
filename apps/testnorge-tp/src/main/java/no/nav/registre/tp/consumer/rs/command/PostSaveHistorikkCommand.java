@@ -2,7 +2,7 @@ package no.nav.registre.tp.consumer.rs.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.tp.domain.TpSaveInHodejegerenRequest;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.tp.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,11 +16,10 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class PostSaveHistorikkCommand implements Callable<List<String>> {
 
-    private final TpSaveInHodejegerenRequest request;
-    private final WebClient webClient;
-
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final TpSaveInHodejegerenRequest request;
+    private final WebClient webClient;
 
     @Override
     public List<String> call() {

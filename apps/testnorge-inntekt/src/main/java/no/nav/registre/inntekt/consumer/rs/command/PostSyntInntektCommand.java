@@ -3,7 +3,7 @@ package no.nav.registre.inntekt.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.inntekt.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -20,11 +20,10 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class PostSyntInntektCommand implements Callable<SortedMap<String, List<RsInntekt>>> {
 
-    private final Map<String, List<RsInntekt>> fnrInntektMap;
-    private final WebClient webClient;
-
     private static final ParameterizedTypeReference<SortedMap<String, List<RsInntekt>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final Map<String, List<RsInntekt>> fnrInntektMap;
+    private final WebClient webClient;
 
     @Override
     public SortedMap<String, List<RsInntekt>> call() {

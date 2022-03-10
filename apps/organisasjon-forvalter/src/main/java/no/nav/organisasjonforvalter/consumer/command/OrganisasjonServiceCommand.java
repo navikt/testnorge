@@ -1,8 +1,8 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

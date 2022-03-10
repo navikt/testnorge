@@ -1,7 +1,7 @@
 package no.nav.testnav.joarkdokumentservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.joarkdokumentservice.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;

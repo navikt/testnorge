@@ -3,7 +3,7 @@ package no.nav.registre.tp.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.tp.database.models.TYtelse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.tp.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -17,12 +17,11 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class GetSyntTpYtelserCommand implements Callable<List<TYtelse>> {
 
+    private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final int antall;
     private final String token;
     private final WebClient webClient;
-
-    private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
 
     @Override
     public List<TYtelse> call() {

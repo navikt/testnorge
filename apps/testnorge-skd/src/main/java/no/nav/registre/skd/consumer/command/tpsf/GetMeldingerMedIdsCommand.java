@@ -2,7 +2,7 @@ package no.nav.registre.skd.consumer.command.tpsf;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -14,11 +14,10 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class GetMeldingerMedIdsCommand implements Callable<List<RsMeldingstype>> {
 
-    private final String ids;
-    private final WebClient webClient;
-
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final String ids;
+    private final WebClient webClient;
 
     @Override
     public List<RsMeldingstype> call() {

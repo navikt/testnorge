@@ -1,9 +1,9 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer.command;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.generersyntameldingservice.util.WebClientFilter;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;

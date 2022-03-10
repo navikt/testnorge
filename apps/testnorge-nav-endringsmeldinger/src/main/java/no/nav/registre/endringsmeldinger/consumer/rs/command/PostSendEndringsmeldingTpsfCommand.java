@@ -3,7 +3,7 @@ package no.nav.registre.endringsmeldinger.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.endringsmeldinger.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

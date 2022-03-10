@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.personexportapi.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.GruppeDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.testnorge.personexportapi.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 

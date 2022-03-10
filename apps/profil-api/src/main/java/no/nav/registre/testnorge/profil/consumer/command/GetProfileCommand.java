@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.profil.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.testnorge.profil.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

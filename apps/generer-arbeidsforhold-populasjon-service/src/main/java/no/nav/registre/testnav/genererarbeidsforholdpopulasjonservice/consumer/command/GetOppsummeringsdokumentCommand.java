@@ -3,8 +3,8 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

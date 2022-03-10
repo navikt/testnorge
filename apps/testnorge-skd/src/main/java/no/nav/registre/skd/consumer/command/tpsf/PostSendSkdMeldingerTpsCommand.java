@@ -3,7 +3,7 @@ package no.nav.registre.skd.consumer.command.tpsf;
 import lombok.AllArgsConstructor;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

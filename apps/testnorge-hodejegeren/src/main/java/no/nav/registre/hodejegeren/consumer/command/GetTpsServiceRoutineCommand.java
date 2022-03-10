@@ -3,7 +3,7 @@ package no.nav.registre.hodejegeren.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.hodejegeren.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 

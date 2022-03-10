@@ -6,7 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.inst.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;

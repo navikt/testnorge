@@ -3,7 +3,7 @@ package no.nav.registre.sigrun.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sigrun.domain.PoppSyntetisererenResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.sigrun.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,14 +20,13 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class PostSyntPoppMeldingerCommand implements Callable<List<PoppSyntetisererenResponse>> {
 
-    private final List<String> fnrs;
-    private final String token;
-    private final WebClient webClient;
-
     private static final ParameterizedTypeReference<List<PoppSyntetisererenResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final List<String> fnrs;
+    private final String token;
+    private final WebClient webClient;
 
     @Override
     public List<PoppSyntetisererenResponse> call() {

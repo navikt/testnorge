@@ -2,8 +2,8 @@ package no.nav.registre.testnav.inntektsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.inntektsmeldingservice.util.WebClientFilter;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;

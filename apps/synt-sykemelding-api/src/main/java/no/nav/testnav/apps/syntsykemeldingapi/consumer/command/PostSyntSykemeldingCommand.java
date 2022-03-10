@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer.command;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,14 +19,13 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class PostSyntSykemeldingCommand implements Callable<HashMap<String, SyntSykemeldingHistorikkDTO>> {
 
-    private final Map<String, String> request;
-    private final String token;
-    private final WebClient webClient;
-
     private static final ParameterizedTypeReference<HashMap<String, SyntSykemeldingHistorikkDTO>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<Map<String, String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final Map<String, String> request;
+    private final String token;
+    private final WebClient webClient;
 
     @Override
     public HashMap<String, SyntSykemeldingHistorikkDTO> call() {

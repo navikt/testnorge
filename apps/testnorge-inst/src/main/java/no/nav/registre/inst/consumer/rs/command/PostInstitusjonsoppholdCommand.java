@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.domain.Institusjonsopphold;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.inst.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

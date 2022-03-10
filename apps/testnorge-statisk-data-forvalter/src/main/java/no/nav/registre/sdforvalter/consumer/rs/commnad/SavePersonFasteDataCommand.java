@@ -2,9 +2,9 @@ package no.nav.registre.sdforvalter.consumer.rs.commnad;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;

@@ -2,9 +2,9 @@ package no.nav.registre.inntekt.consumer.rs.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntekt.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,12 +25,12 @@ public class SaveInntektsmeldingCommand implements Callable<Mono<Inntektsmelding
 
 
     @Override
-    public Mono<InntektsmeldingResponse> call(){
+    public Mono<InntektsmeldingResponse> call() {
         return webClient
                 .post()
                 .uri("/api/v1/inntektsmelding")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header("Nav-Call-Id",  navCallId)
+                .header("Nav-Call-Id", navCallId)
                 .body(BodyInserters.fromPublisher(Mono.just(request), InntektsmeldingRequest.class))
                 .retrieve()
                 .bodyToMono(InntektsmeldingResponse.class)

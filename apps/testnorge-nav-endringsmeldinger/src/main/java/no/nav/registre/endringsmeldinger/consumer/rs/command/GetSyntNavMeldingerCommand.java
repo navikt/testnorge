@@ -2,7 +2,7 @@ package no.nav.registre.endringsmeldinger.consumer.rs.command;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsException;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.endringsmeldinger.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.w3c.dom.Document;
@@ -15,13 +15,12 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class GetSyntNavMeldingerCommand implements Callable<List<Document>> {
 
+    private static final ParameterizedTypeReference<List<Document>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final String endringskode;
     private final Integer antallMeldinger;
     private final String token;
     private final WebClient webClient;
-
-    private static final ParameterizedTypeReference<List<Document>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
 
     @Override
     public List<Document> call() {

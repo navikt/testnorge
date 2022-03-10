@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;

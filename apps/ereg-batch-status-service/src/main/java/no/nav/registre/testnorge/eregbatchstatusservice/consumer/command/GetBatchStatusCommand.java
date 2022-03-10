@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.eregbatchstatusservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.testnorge.eregbatchstatusservice.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 

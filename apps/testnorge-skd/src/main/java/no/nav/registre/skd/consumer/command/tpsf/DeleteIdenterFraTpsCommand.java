@@ -1,7 +1,7 @@
 package no.nav.registre.skd.consumer.command.tpsf;
 
 import lombok.AllArgsConstructor;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 

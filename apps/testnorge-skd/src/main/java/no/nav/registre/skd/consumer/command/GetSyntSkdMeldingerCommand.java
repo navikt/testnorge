@@ -2,7 +2,7 @@ package no.nav.registre.skd.consumer.command;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

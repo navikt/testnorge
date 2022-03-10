@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;

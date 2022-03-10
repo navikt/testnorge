@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.provider.rs.responses.SupportedEnvironmentsResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.inst.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;

@@ -3,7 +3,7 @@ package no.nav.registre.skd.consumer.command.identpool;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.response.Navn;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -16,10 +16,9 @@ import java.util.concurrent.Callable;
 @AllArgsConstructor
 public class GetNavnCommand implements Callable<List<Navn>> {
 
-    private final WebClient webClient;
-
     private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
+    private final WebClient webClient;
 
     @Override
     public List<Navn> call() {

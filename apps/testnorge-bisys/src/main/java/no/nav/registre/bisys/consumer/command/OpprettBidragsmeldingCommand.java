@@ -3,7 +3,7 @@ package no.nav.registre.bisys.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.bisys.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

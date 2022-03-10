@@ -6,7 +6,7 @@ import no.nav.testnav.apps.adresseservice.dto.GraphQLRequest;
 import no.nav.testnav.apps.adresseservice.dto.PdlAdresseResponse;
 import no.nav.testnav.apps.adresseservice.exception.BadRequestException;
 import no.nav.testnav.apps.adresseservice.exception.NotFoundException;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.apps.adresseservice.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;

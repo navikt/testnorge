@@ -2,8 +2,8 @@ package no.nav.registre.testnorge.arena.consumer.rs.command;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;

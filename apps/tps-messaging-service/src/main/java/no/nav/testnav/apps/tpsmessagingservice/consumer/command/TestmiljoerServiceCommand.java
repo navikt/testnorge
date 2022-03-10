@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.testnav.apps.tpsmessagingservice.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

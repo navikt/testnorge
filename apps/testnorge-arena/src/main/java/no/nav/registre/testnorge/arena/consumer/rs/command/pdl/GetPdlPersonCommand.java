@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.arena.consumer.rs.command.pdl;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pdl.GraphQLRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pdl.PdlPerson;
-import no.nav.testnav.libs.servletcore.util.WebClientFilter;
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;

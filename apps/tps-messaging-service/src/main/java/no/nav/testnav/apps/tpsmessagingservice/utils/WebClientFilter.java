@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.servletcore.util;
+package no.nav.testnav.apps.tpsmessagingservice.utils;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
