@@ -2,13 +2,16 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -42,6 +45,8 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(FullPersonDTO[].class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }

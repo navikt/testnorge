@@ -3,14 +3,15 @@ package no.nav.registre.testnorge.arena.consumer.rs.command.pensjon;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataPerson;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataResponse;
-
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
@@ -48,6 +49,8 @@ public class PostPensjonTestdataPersonCommand implements Callable<PensjonTestdat
                     .body(BodyInserters.fromPublisher(Mono.just(person), PensjonTestdataPerson.class))
                     .retrieve()
                     .bodyToMono(PensjonTestdataResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å opprette pensjon testdata person.", e);

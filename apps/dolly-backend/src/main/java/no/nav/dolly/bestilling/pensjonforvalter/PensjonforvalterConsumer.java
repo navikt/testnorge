@@ -11,12 +11,15 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -93,7 +96,10 @@ public class PensjonforvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(opprettPersonRequest)
-                .retrieve().toEntity(PensjonforvalterResponse.class)
+                .retrieve()
+                .toEntity(PensjonforvalterResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
@@ -117,7 +123,10 @@ public class PensjonforvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(lagreInntektRequest)
-                .retrieve().toEntity(PensjonforvalterResponse.class)
+                .retrieve()
+                .toEntity(PensjonforvalterResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
@@ -142,7 +151,10 @@ public class PensjonforvalterConsumer {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve().toEntity(JsonNode.class)
+                .retrieve()
+                .toEntity(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
