@@ -461,7 +461,7 @@ const getPdlfIdentInfo = (ident, state, pdlIdent) => {
 	return {
 		ident,
 		identNr: pdlIdent.ident,
-		bestillingId: ident.bestillingId,
+		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
 		kilde: 'PDL',
 		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.navn?.[0]?.etternavn}`,
@@ -470,7 +470,7 @@ const getPdlfIdentInfo = (ident, state, pdlIdent) => {
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			pdlIdent?.doedsfall?.[0]?.doedsdato
 		),
-		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
 	}
 }
 

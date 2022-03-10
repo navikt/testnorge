@@ -1,5 +1,5 @@
 server:
-  port: 8020
+  port: 8030
 
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}

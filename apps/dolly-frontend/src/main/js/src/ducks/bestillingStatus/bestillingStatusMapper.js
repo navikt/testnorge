@@ -32,7 +32,8 @@ const antallIdenterOpprettetPaaBestilling = (status) => {
 		const addOpprettedeIdenter = (system) => {
 			system.statuser.forEach((stat) => {
 				if (system.id === 'PDL_FORVALTER') {
-					identerOpprettet = identerOpprettet.concat(stat.identer)
+					const gyldigeIdenter = stat.identer.filter((a) => a !== '?')
+					identerOpprettet = identerOpprettet.concat(gyldigeIdenter)
 				} else {
 					stat.detaljert?.forEach((miljo) => {
 						identerOpprettet = identerOpprettet.concat(miljo.identer)

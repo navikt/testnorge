@@ -16,7 +16,8 @@ export default function FagsystemStatus({ statusrapportListe }) {
 
 	const getIconType = (status) => {
 		const melding = status.melding
-		return melding && !melding.includes('OK')
+		const miljo = status.miljo
+		return (melding && !melding.includes('OK')) || miljo?.includes('FEIL')
 			? problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
 				? 'report-problem-circle'
 				: 'report-problem-triangle'
