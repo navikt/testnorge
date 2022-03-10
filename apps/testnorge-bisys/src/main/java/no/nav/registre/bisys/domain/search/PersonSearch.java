@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.request;
+package no.nav.registre.bisys.domain.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PersonSearchRequest {
+public class PersonSearch {
     private final String tag = "TESTNORGE";
     private final List<String> excludeTags = Collections.singletonList("DOLLY");
     private final Boolean kunLevende = true;

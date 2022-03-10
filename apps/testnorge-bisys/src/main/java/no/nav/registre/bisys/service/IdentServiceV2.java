@@ -2,15 +2,14 @@ package no.nav.registre.bisys.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.bisys.consumer.PersonSearchConsumer;
-import no.nav.registre.bisys.consumer.request.FoedselSearch;
-import no.nav.registre.bisys.consumer.request.PersonSearchRequest;
-import no.nav.registre.bisys.consumer.request.RelasjonSearch;
+import no.nav.registre.bisys.adapter.PersonSearchAdapter;
+import no.nav.registre.bisys.adapter.model.Response;
+import no.nav.registre.bisys.domain.search.FoedselSearch;
+import no.nav.registre.bisys.domain.search.PersonSearch;
+import no.nav.registre.bisys.domain.search.RelasjonSearch;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.domain.Barn;
 
-import no.nav.testnav.libs.dto.personsearchservice.v1.ForelderDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class IdentServiceV2 {
     private static final LocalDate MIN_MOTTATT_DATO = LocalDate.of(2007, 1, 1);
 
     private final Random rand = new Random();
-    private final PersonSearchConsumer personSearchConsumer;
+    private final PersonSearchAdapter personSearchAdapter;
 
     @Value("${USE_HISTORICAL_MOTTATTDATO}")
     private boolean useHistoricalMottattdato;
@@ -80,7 +79,7 @@ public class IdentServiceV2 {
 
     private Barn getBarnInValidAgeRange(LocalDate bornFom, LocalDate bornTom) {
         //TODO sjekk om det trengs norsk statsborgerskap eller foedt Norge
-        var searchRequest = PersonSearchRequest.builder()
+        var searchRequest = PersonSearch.builder()
                 .page(1)
                 .pageSize(10)
                 .randomSeed(rand.nextFloat() + "")
@@ -94,25 +93,58 @@ public class IdentServiceV2 {
                         .build())
                 .build();
 
-        //TODO feilhåndtering hvis response er tom
-        return convertToBarn(personSearchConsumer.search(searchRequest).getItems().get(0));
+        var response = personSearchAdapter.search(searchRequest);
+        if (response.isEmpty()){
+            return null;
+        } else{
+            return convert(response.get(0));
+        }
     }
 
-    private Barn convertToBarn(PersonDTO ident) {
-        return Barn.builder()
-                .fnr(ident.getIdent())
-                .foedselsdato(ident.getFoedsel().getFoedselsdato())
-                .farFnr(ident.getForelderBarnRelasjoner().getForeldre().stream()
-                        .filter(forelder -> forelder.getRolle().equals(RELASJON_FAR))
-                        .map(ForelderDTO::getIdent)
-                        .findFirst()
-                        .orElse(null))
-                .morFnr(ident.getForelderBarnRelasjoner().getForeldre().stream()
-                        .filter(forelder -> forelder.getRolle().equals(RELASJON_MOR))
-                        .map(ForelderDTO::getIdent)
-                        .findFirst()
-                        .orElse(null))
-                .build();
+    private Barn convert(Response response) {
+        try {
+            return Barn.builder()
+                    .fnr(getIdent(response))
+                    .foedselsdato(getFoedselsdato(response))
+                    .farFnr(getForelder(response, RELASJON_FAR))
+                    .morFnr(getForelder(response, RELASJON_MOR))
+                    .build();
+        } catch (Exception e) {
+            log.error("Feil i konvertering av søke resultat");
+            return null;
+        }
+    }
+
+    private String getIdent(Response response) {
+        return response
+                .getHentIdenter()
+                .getIdenter()
+                .stream()
+                .filter(identer -> identer.getGruppe().equals("FOLKEREGISTERIDENT"))
+                .findFirst()
+                .orElseThrow()
+                .getIdent();
+    }
+
+    private LocalDate getFoedselsdato(Response response) {
+        return response
+                .getHentPerson()
+                .getFoedsel()
+                .stream().filter(foedsel -> !foedsel.getMetadata().getHistorisk())
+                .findFirst()
+                .orElseThrow()
+                .getFoedselsdato();
+    }
+
+    private String getForelder(Response response, String forelder) {
+        return response
+                .getHentPerson()
+                .getForelderBarnRelasjon()
+                .stream()
+                .filter(relasjon -> relasjon.getRelatertPersonsRolle().equals(forelder))
+                .findFirst()
+                .orElseThrow()
+                .getRelatertPersonsIdent();
     }
 
 }

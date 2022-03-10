@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.request;
+package no.nav.registre.bisys.domain.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +10,6 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class RelasjonSearch {
-    Boolean barn;
-    Boolean doedfoedtBarn;
     Boolean mor;
     Boolean far;
 }

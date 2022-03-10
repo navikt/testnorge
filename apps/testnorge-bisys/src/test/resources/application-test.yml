@@ -8,3 +8,20 @@ azure:
     client:
       id: dummy
       secret: dummy
+
+
+consumers:
+  bidragsmelding:
+    url: dummy
+  synt-bisys:
+    url: http://localhost:${wiremock.server.port:0}/synt-bisys
+    cluster: dummt
+    namespace: dummy
+    name: synthdata-bisys
+  person-search-service:
+    url: http://localhost:${wiremock.server.port:0}/person-search
+    cluster: dummy
+    namespace: dummy
+    name: person-search-service
+
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
