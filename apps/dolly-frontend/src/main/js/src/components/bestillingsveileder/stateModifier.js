@@ -13,8 +13,6 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 
 		// Ingen tomme objekter guard
 		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
-		console.log('rootPath: ', rootPath) //TODO - SLETT MEG
-		console.log('path: ', path) //TODO - SLETT MEG
 		if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
 			rootPath = 'pdldata.person'
 		if (_isEmpty(_get(newObj, rootPath))) newObj = _omit(newObj, rootPath)
