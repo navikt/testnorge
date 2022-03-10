@@ -1,0 +1,18 @@
+plugins {
+    id "com.gradle.enterprise" version "3.7.2"
+}
+
+rootProject.name = 'synthdata-meledkort-proxy'
+
+
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-proxy'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/reactive-security'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
