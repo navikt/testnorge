@@ -27,7 +27,7 @@ const loadingSelector = createSelector(
 	(loading) => {
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
-			nom: loadingSelectorNom({ loading }),
+			nomData: loadingSelectorNom({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			aareg: loadingSelectorAareg({ loading }),

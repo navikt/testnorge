@@ -54,7 +54,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.harMellomnavn} />
 				<Attributt attr={sm.attrs.harNyttNavn} vis={leggTil} />
 				<Attributt attr={sm.attrs.sprakKode} />
-				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
@@ -63,7 +62,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
-				<Attributt attr={sm.attrs.nomData} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -193,37 +191,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('tpsf.sprakKode') || has('tpsMessaging.spraakKode'),
 			add: () => set('tpsMessaging.spraakKode', ''),
 			remove: () => del(['tpsMessaging.spraakKode', 'tpsf.spraakKode']),
-		},
-		egenAnsattDatoFom: {
-			label: 'Skjerming',
-			checked: has('tpsf.egenAnsattDatoFom') || has('tpsMessaging.egenAnsattDatoFom'),
-			add() {
-				setMulti(
-					[
-						'tpsMessaging.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
-							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
-							new Date(),
-					],
-					['tpsMessaging.egenAnsattDatoTom', undefined],
-					[
-						'skjerming.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
-							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
-							new Date(),
-					],
-					['skjerming.egenAnsattDatoTom', undefined]
-				)
-			},
-			remove() {
-				del([
-					'tpsMessaging.egenAnsattDatoFom',
-					'tpsMessaging.egenAnsattDatoTom',
-					'tpsf.egenAnsattDatoFom',
-					'tpsf.egenAnsattDatoTom',
-					'skjerming',
-				])
-			},
 		},
 		erForsvunnet: {
 			label: 'Forsvunnet',
@@ -388,15 +355,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					bankAdresse3: '',
 				}),
 			remove: () => del('tpsMessaging.utenlandskBankkonto'),
-		},
-		nomData: {
-			label: 'NAV ident',
-			checked: has('nomData'),
-			add: () =>
-				set('nomData', {
-					opprettNavIdent: true,
-				}),
-			remove: () => del('nomData'),
 		},
 		norskBankkonto: {
 			label: 'Norsk bank',

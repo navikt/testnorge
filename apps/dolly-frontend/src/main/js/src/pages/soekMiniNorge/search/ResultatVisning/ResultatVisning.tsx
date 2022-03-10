@@ -16,6 +16,7 @@ import {
 	MiniNorgeVisning,
 } from '~/pages/soekMiniNorge/search/ResultatVisning/partials'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
+import { NomVisning } from '~/components/fagsystem/nom/visning/NomVisning'
 
 type Loading = {
 	pdlforvalter: boolean
@@ -39,14 +40,14 @@ interface ResultatVisningProps {
 }
 
 export const ResultatVisning = ({
-																	fetchDataFraFagsystemerForSoek,
-																	data,
-																	dataFraMiniNorge,
-																	loading,
-																}: ResultatVisningProps) => {
+	fetchDataFraFagsystemerForSoek,
+	data,
+	dataFraMiniNorge,
+	loading,
+}: ResultatVisningProps) => {
 	useMount(fetchDataFraFagsystemerForSoek)
 	return (
-		<div className='resultat-visning'>
+		<div className="resultat-visning">
 			{dataFraMiniNorge && <MiniNorgeVisning data={dataFraMiniNorge} />}
 			{data.pdlforvalter && (
 				//@ts-ignore
@@ -67,6 +68,10 @@ export const ResultatVisning = ({
 				//@ts-ignore
 				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 			)}
+			{data.nomData && data.nomData.length > 0 && (
+				//@ts-ignore
+				<NomVisning data={data.nomData} loading={loading.nomData} />
+			)}
 			{data.instdata && data.instdata.length > 0 && (
 				//@ts-ignore
 				<InstVisning data={data.instdata} loading={loading.instdata} />
@@ -77,7 +82,7 @@ export const ResultatVisning = ({
 			)}
 			{data.sigrunstub && data.sigrunstub.length > 0 && (
 				//@ts-ignore
-				<Panel heading='Skatteoppgjør (Sigrun)' iconType={'sigrun'}>
+				<Panel heading="Skatteoppgjør (Sigrun)" iconType={'sigrun'}>
 					{
 						//@ts-ignore
 						<SigrunstubVisning

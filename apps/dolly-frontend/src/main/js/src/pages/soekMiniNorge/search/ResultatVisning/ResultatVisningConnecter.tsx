@@ -8,6 +8,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 import { ResultatVisning } from './ResultatVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
+const loadingSelectorNom = createLoadingSelector(actions.getNom)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorAareg = createLoadingSelector(actions.getAareg)
@@ -20,9 +21,10 @@ const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 const loadingSelector = createSelector(
 	// @ts-ignore
 	(state) => state.loading,
-	(loading) => {
+	(loading: Object) => {
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
+			nomData: loadingSelectorNom({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			aareg: loadingSelectorAareg({ loading }),
