@@ -1,16 +1,19 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer.command;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.generersyntameldingservice.util.WebClientFilter;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +39,8 @@ public class PostHistorikkCommand implements Callable<List<Arbeidsforhold>> {
                     .body(body)
                     .retrieve()
                     .bodyToFlux(Arbeidsforhold.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .collectList()
                     .block();
         } catch (Exception e) {

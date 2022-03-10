@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,7 +21,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +69,11 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve().toEntity(ArenaArbeidssokerBruker.class).block();
+                .retrieve()
+                .toEntity(ArenaArbeidssokerBruker.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .block();
 
         if (nonNull(response) && response.hasBody()) {
             log.info("Hentet bruker fra arena: {}", Json.pretty(response.getBody()));
@@ -89,6 +96,8 @@ public class ArenaForvalterConsumer {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .toEntity(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -106,6 +115,8 @@ public class ArenaForvalterConsumer {
                 .bodyValue(arenaNyeBrukere)
                 .retrieve()
                 .toEntity(ArenaNyeBrukereResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -123,6 +134,8 @@ public class ArenaForvalterConsumer {
                 .bodyValue(arenaDagpenger)
                 .retrieve()
                 .toEntity(ArenaNyeDagpengerResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -138,8 +151,9 @@ public class ArenaForvalterConsumer {
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<String>>() {
-                })
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 

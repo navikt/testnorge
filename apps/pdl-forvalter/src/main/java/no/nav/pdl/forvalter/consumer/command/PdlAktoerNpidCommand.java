@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import org.springframework.boot.web.server.WebServerException;
@@ -10,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +39,8 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
                                 .status(PdlStatus.OK)
                                 .build()))
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(error -> Mono.just(errorHandling(error, null)));
     }
 }

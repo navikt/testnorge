@@ -1,13 +1,15 @@
 package no.nav.testnav.apps.oversiktfrontend.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.oversiktfrontend.consumer.dto.OrganisasjonDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.apps.oversiktfrontend.consumer.dto.OrganisasjonDTO;
 
 @RequiredArgsConstructor
 public class GetPersonOrganisasjonTilgangCommand implements Callable<Mono<OrganisasjonDTO>> {
@@ -22,6 +24,8 @@ public class GetPersonOrganisasjonTilgangCommand implements Callable<Mono<Organi
                 .uri(builder -> builder.path("/api/v1/person/organisasjoner/{organisasjonsnummer}").build(organisasjonsnummer))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(OrganisasjonDTO.class);
+                .bodyToMono(OrganisasjonDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

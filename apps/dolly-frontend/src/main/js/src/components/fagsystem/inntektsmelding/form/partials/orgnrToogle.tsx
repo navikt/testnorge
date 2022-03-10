@@ -4,18 +4,20 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
-import { OrgforvalterApi } from '~/service/Api'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 }
 
-const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
+type Virksomhet = {
+	enhetstype: string
+	orgnavn: string
+	orgnummer: string
+}
 
-const formatLabel = (response: Organisasjon) =>
-	`${response.organisasjonsnummer} (${response.enhetstype}) - ${response.organisasjonsnavn}`
+const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
 export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
@@ -23,15 +25,13 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 
 	useEffect(() => {
 		const fetchEgneOrg = async () => {
-			const resp = await OrgforvalterApi.getAlleOrganisasjonerPaaBruker()
-				.then((response: Organisasjon[]) => {
-					if (response.length === 0) return []
-					return response.map((org: Organisasjon) => {
-						return {
-							value: org.organisasjonsnummer,
-							label: formatLabel(org),
-						}
-					})
+			const resp = await SelectOptionsOppslag.hentVirksomheterFraOrgforvalter()
+				.then((response) => {
+					if (!response || response.length === 0) return []
+					return response.map((virksomhet: Virksomhet) => ({
+						value: virksomhet.orgnummer,
+						label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`,
+					}))
 				})
 				.catch((e: Error) => {
 					return []
