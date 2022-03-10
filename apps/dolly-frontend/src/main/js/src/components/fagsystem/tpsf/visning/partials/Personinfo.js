@@ -159,7 +159,6 @@ export const Personinfo = ({
 						{(value) => `${Formatters.gtTypeLabel(data.gtType)} - ${value.label}`}
 					</TitleValue>
 				)}
-
 				<TitleValue
 					title="TK-nummer"
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
