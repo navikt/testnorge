@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: ident-pool
+  name: testnav-ident-pool
   namespace: dolly
   labels:
     team: dolly
@@ -35,5 +35,23 @@ spec:
     requests:
       cpu: 1000m
       memory: 4096Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
+        - application: tps-forvalteren-dev
+          cluster: dev-fss
+        - application: tps-forvalteren
+          cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-tps-messaging-service
+          cluster: dev-gcp
   vault:
     enabled: true

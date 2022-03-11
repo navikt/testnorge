@@ -1,7 +1,6 @@
 package no.nav.identpool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.identpool.consumers.TpsfConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;

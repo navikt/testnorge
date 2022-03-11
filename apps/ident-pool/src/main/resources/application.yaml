@@ -43,7 +43,7 @@ consumers:
   tps:
     messaging:
       service:
-        url: https://testnav-miljoer-service.dev.intern.nav.no
+        url: https://testnav-tps-messaging-service.dev.intern.nav.no
         cluster: dev-gcp
         namespace: dolly
-        name: testnav-miljoer-service
+        name: testnav-tps-messaging-service

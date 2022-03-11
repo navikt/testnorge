@@ -62,15 +62,13 @@ spec:
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
+        - application: testnav-ident-pool
+          cluster: dev-fss
         - application: synthdata-tps-gcp
           cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: dolly-backend
-          cluster: dev-fss
     outbound:
       rules:
         - application: testnav-miljoer-service

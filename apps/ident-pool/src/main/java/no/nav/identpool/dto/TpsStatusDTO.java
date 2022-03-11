@@ -1,4 +1,4 @@
-package no.nav.identpool.domain;
+package no.nav.identpool.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TpsStatus {
+public class TpsStatusDTO {
 
     private String ident;
     private boolean inUse;
