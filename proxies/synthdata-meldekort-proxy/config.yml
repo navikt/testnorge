@@ -14,11 +14,11 @@ spec:
       enabled: true
       tenant: nav.no
   env:
-    - name: AZURE_NAV_APP_CLIENT_ID
+    - name: AZURE_NAV_MELDEKORT_PROXY_CLIENT_ID
       valueFrom:
         fieldRef:
           fieldPath: azure.app.client.id
-    - name: AZURE_NAV_APP_CLIENT_SECRET
+    - name: AZURE_NAV_MELDEKORT_PROXY_CLIENT_SECRET
       valueFrom:
         fieldRef:
           fieldPath: azure.app.client.secret
