@@ -48,8 +48,6 @@ const _getTpsfBestillingData = (data) => {
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
 		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
 		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
-		obj('Skjerming fra', Formatters.formatDate(data.egenAnsattDatoFom)),
-		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom)),
 		obj(
 			'Type sikkerhetstiltak',
 			data.beskrSikkerhetTiltak === 'Opphørt'
@@ -708,18 +706,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (
 		tpsMessaging?.spraakKode ||
-		tpsMessaging?.egenAnsattDatoFom ||
-		tpsMessaging?.egenAnsattDatoTom ||
 		tpsMessaging?.norskBankkonto ||
 		tpsMessaging?.utenlandskBankkonto
 	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
-			items: [
-				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
-				obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
-				obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
-			],
+			items: [obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak)],
 		}
 		data.push(tpsMessagingData)
 
@@ -1123,13 +1115,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const nomKriterier = bestillingData.nomData
 
-	if (nomKriterier) {
-		const nom = {
-			header: 'NAV ansatt',
-			items: [obj('Har NAV ident', nomKriterier.opprettNavIdent ? 'JA' : 'NEI')],
+	if (nomKriterier || tpsMessaging?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoTom) {
+		if (nomKriterier) {
+			const nom = {
+				header: 'NAV ansatt',
+				items: [nomKriterier && obj('Har NAV ident', nomKriterier?.opprettNavIdent ? 'JA' : 'NEI')],
+			}
+			data.push(nom)
 		}
 
-		data.push(nom)
+		if (tpsMessaging?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoTom) {
+			const skjerming = {
+				header: 'NAV skjerming',
+				items: [
+					obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
+					obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
+				],
+			}
+			data.push(skjerming)
+		}
 	}
 
 	const arenaKriterier = bestillingData.arenaforvalter

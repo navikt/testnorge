@@ -33,8 +33,6 @@ const diversePaths = [
 	'tpsf.harNyttNavn',
 	'tpsf.sivilstand',
 	'tpsf.sprakKode',
-	'tpsf.egenAnsattDatoFom',
-	'tpsf.egenAnsattDatoTom',
 	'tpsf.spesreg',
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
@@ -42,8 +40,6 @@ const diversePaths = [
 	'tpsMessaging.norskBankkonto',
 	'tpsMessaging.sikkerhetstiltak',
 	'tpsMessaging.spraakKode',
-	'tpsMessaging.egenAnsattDatoFom',
-	'tpsMessaging.egenAnsattDatoTom',
 ]
 
 const telefonnummerPath = ['pdldata.person.telefonnummer']
