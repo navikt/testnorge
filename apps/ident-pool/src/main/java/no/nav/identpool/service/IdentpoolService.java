@@ -51,7 +51,7 @@ public class IdentpoolService {
 
         var ident = identRepository.findTopByPersonidentifikator(personidentifikator);
 
-        if (nonNull(ident)) {
+        if (isNull(ident)) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG);
 
         } else {
@@ -104,7 +104,7 @@ public class IdentpoolService {
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
 
-            if (isNull(null)) {
+            if (isNull(ident)) {
                 identerSomSkalSjekkes.add(id);
 
             } else if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
