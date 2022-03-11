@@ -35,6 +35,10 @@ spec:
     requests:
       cpu: 1000m
       memory: 4096Mi
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
