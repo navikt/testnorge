@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class OppslagController {
 
     @GetMapping("/nom")
     @Operation(description = "Hent alle nom ressurser")
-    public JsonNode getalleNomRessurser() {
+    public Flux<JsonNode> getalleNomRessurser() {
         return nomConsumer.hentAlleNomRessurser();
     }
 

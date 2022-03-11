@@ -14,6 +14,7 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -68,7 +69,7 @@ public class NomConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "nom_getKomplettPerson" })
-    public JsonNode hentAlleNomRessurser() {
+    public Flux<JsonNode> hentAlleNomRessurser() {
 
         return webClient
                 .post()
@@ -79,12 +80,12 @@ public class NomConsumer {
                 .body(BodyInserters
                         .fromValue(new GraphQLRequest(getQueryFromFile(PERSON_HENT_ALLE_QUERY), null)))
                 .retrieve()
-                .bodyToMono(JsonNode.class)
+                .bodyToFlux(JsonNode.class)
                 .doOnError(throwable -> {
                     throw new DollyFunctionalException("Klarte ikke å hente komplett nom ident fra nom-api", throwable);
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException)).block();
+                        .filter(WebClientFilter::is5xxException));
     }
 
     @Timed(name = "providers", tags = { "operation", "nom_opprettPerson" })
