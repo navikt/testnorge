@@ -3,7 +3,6 @@ package no.nav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.identpool.consumers.TpsMessagingConsumer;
-import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.identpool.providers.v1.support.HentIdenterRequest;
