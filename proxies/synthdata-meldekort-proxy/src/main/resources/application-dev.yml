@@ -1,2 +1,5 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+azure:
+  app:
+    client:
+      id: ${client_id}
+      secret: ${client_secret}

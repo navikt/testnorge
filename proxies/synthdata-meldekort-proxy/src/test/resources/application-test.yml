@@ -1,0 +1,5 @@
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy

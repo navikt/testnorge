@@ -1,5 +1,11 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
+azure:
+  app:
+    client:
+      id: ${AZURE_NAV_APP_CLIENT_ID}
+      secret: ${AZURE_NAV_APP_CLIENT_SECRET}
+
 spring:
   application:
     name: testnav-synthdata-meldekort-proxy
