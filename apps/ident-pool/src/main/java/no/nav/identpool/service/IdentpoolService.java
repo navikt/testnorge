@@ -51,7 +51,7 @@ public class IdentpoolService {
 
         var ident = identRepository.findTopByPersonidentifikator(personidentifikator);
 
-        if (isNull(ident)) {
+        if (nonNull(ident)) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG);
 
         } else {
@@ -68,7 +68,7 @@ public class IdentpoolService {
 
         var ident = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
 
-        if (nonNull(ident)) {
+        if (isNull(ident)) {
             String personidentifikator = markerBruktRequest.getPersonidentifikator();
 
             var newIdent = Ident.builder()
