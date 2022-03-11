@@ -2,7 +2,6 @@ package no.nav.identpool.consumers;
 
 import no.nav.identpool.config.credentials.TpsMessagingServiceProperties;
 import no.nav.identpool.consumers.command.TpsMessagingGetCommand;
-import no.nav.identpool.dto.TpsIdentStatusDTO;
 import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;

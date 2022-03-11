@@ -1,6 +1,5 @@
 package no.nav.identpool.ajourhold;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.consumers.TpsMessagingConsumer;
@@ -77,7 +76,7 @@ public class AjourholdService {
                 numberOfMissingIdents -= generateForYear(year, type, numberOfMissingIdents, syntetiskIdent);
             } else {
                 log.info("Ajourhold: år {} {} {} identer har tilstrekkelig antall",
-                        year, type, syntetiskIdent ? NAV_SYNTETISKE: VANLIGE);
+                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE);
                 break;
             }
             runs++;
@@ -128,15 +127,15 @@ public class AjourholdService {
         return antall;
     }
 
-    private int adjustForYear(
-            int year,
-            int antallPerDag) {
+    private int adjustForYear(int year, int antallPerDag) {
 
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
             antallPerDag = MIN_ANTALL_IDENTER_PER_DAG;
         }
+
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR) {
-            LocalDate dateOfYear = LocalDate.of(year, 1, 1);
+            var dateOfYear = LocalDate.of(year, 1, 1);
+
             if (dateOfYear.isBefore(LocalDate.now()) && ChronoUnit.YEARS.between(dateOfYear, LocalDate.now()) <= 3) {
                 return MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR;
             }
@@ -144,11 +143,7 @@ public class AjourholdService {
         return antallPerDag;
     }
 
-    private int filterIdents(
-            int identsPerDay,
-            Map<LocalDate, List<String>> pinMap,
-            int numberOfIdents,
-            boolean syntetiskIdent) {
+    private int filterIdents(int identsPerDay, Map<LocalDate, List<String>> pinMap, int numberOfIdents, boolean syntetiskIdent) {
 
         var identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
         List<String> ledig = new ArrayList<>();
@@ -181,9 +176,7 @@ public class AjourholdService {
         return lagredeIdenter.size();
     }
 
-    private Set<String> filterAgainstDatabase(
-            int antallPerDag,
-            Map<LocalDate, List<String>> pinMap) {
+    private Set<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
 
         return pinMap.entrySet().stream()
                 .map(entry -> entry.getValue().stream()
@@ -215,9 +208,9 @@ public class AjourholdService {
                 .antall(MAX_SIZE_TPS_QUEUE)
                 .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
-        Page<Ident> firstPage = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
-        List<String> usedIdents = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
+
+        var firstPage = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
+        var usedIdents = new ArrayList<String>();
 
         if (firstPage.getTotalPages() > 0) {
             for (int i = 0; i < firstPage.getTotalPages(); i++) {

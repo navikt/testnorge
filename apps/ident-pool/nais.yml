@@ -46,6 +46,8 @@ spec:
           cluster: dev-fss
         - application: tps-forvalteren
           cluster: dev-fss
+        - application: testnorge-skd
+          cluster: dev-fss
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp

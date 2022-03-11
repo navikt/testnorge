@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
@@ -41,10 +40,10 @@ public class DatabaseService {
         if (totalPages > 0) {
             List<String> usedIdents = new ArrayList<>();
             SecureRandom rand = new SecureRandom();
-            for (int i = 0; i < request.getAntall(); i++) {
-                int randomPageNumber = rand.nextInt(totalPages);
+            for (var i = 0; i < request.getAntall(); i++) {
+                var randomPageNumber = rand.nextInt(totalPages);
                 pageCache.computeIfAbsent(randomPageNumber, k ->
-                    findPage(availableIdentsRequest, LEDIG, randomPageNumber));
+                        findPage(availableIdentsRequest, LEDIG, randomPageNumber));
 
                 List<Ident> content = pageCache.get(randomPageNumber).getContent();
                 for (Ident ident : content) {

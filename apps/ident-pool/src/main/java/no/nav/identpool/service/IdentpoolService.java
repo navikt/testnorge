@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
@@ -83,28 +84,30 @@ public class IdentpoolService {
             identRepository.save(newIdent);
             return;
 
-        } else if (ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG)) {
+        } else if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
             ident.setRekvireringsstatus(I_BRUK);
             ident.setRekvirertAv(markerBruktRequest.getBruker());
             identRepository.save(ident);
             return;
+
         } else if (ident.getRekvireringsstatus().equals(I_BRUK)) {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.");
         }
         throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken er markert som i bruk eller ledig.");
     }
 
-    public List<String> markerBruktFlere(
-            String rekvirertAv,
-            List<String> identer
-    ) {
-        List<String> identerMarkertSomIBruk = new ArrayList<>(identer.size());
-        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
+    public List<String> markerBruktFlere(String rekvirertAv, List<String> identer) {
+
+        var identerMarkertSomIBruk = new ArrayList<String>(identer.size());
+        var identerSomSkalSjekkes = new HashSet<String>(identer.size());
+
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (ident == null) {
+
+            if (isNull(null)) {
                 identerSomSkalSjekkes.add(id);
-            } else if (LEDIG.equals(ident.getRekvireringsstatus())) {
+
+            } else if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                 ident.setRekvireringsstatus(I_BRUK);
                 ident.setRekvirertAv(rekvirertAv);
                 identRepository.save(ident);
@@ -142,8 +145,8 @@ public class IdentpoolService {
 
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (ident != null) {
-                if (LEDIG.equals(ident.getRekvireringsstatus())) {
+            if (nonNull(ident)) {
+                if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                     ledigeIdenter.add(id);
                 } else if (!ident.isFinnesHosSkatt() && rekvirertAv.equals(ident.getRekvirertAv())) {
                     fnrMedIdent.put(id, ident);
@@ -164,8 +167,8 @@ public class IdentpoolService {
 
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (ident != null) {
-                if (LEDIG.equals(ident.getRekvireringsstatus())) {
+            if (nonNull(ident)) {
+                if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                     ledigeIdenter.add(id);
                 } else if (!ident.isFinnesHosSkatt()) {
                     fnrMedIdent.put(id, ident);
