@@ -33,8 +33,8 @@ public class DatabaseService {
 
         HentIdenterRequest availableIdentsRequest = mapperFacade.map(request, HentIdenterRequest.class);
 
-        Page<Ident> firstPage = findPage(availableIdentsRequest, LEDIG, 0);
-        Map<Integer, Page<Ident>> pageCache = new HashMap<>();
+        var firstPage = findPage(availableIdentsRequest, LEDIG, 0);
+        var pageCache = new HashMap<Integer, Page<Ident>>();
         pageCache.put(0, firstPage);
 
         int totalPages = firstPage.getTotalPages();
@@ -60,6 +60,7 @@ public class DatabaseService {
     }
 
     private Page<Ident> findPage(HentIdenterRequest request, Rekvireringsstatus rekvireringsstatus, int page) {
+
         return identRepository.findAll(
                 rekvireringsstatus, request.getIdenttype(), request.getKjoenn(), request.getFoedtFoer(),
                 request.getFoedtEtter(), isTrue(request.getSyntetisk()), PageRequest.of(page, request.getAntall()));

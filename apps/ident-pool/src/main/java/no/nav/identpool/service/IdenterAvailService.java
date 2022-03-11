@@ -37,10 +37,10 @@ public class IdenterAvailService {
         while (i < MAX_TPS_CALL_ATTEMPTS &&
                 tpsStatuserDTO.stream().filter(status -> !status.isInUse()).count() < request.getAntall()) {
 
-            Set<String> genererteIdenter = genererIdenter(oppdatertRequest);
-            Set<Ident> identerFinnesIdb = identRepository.findByPersonidentifikatorIn(genererteIdenter);
+            var genererteIdenter = genererIdenter(oppdatertRequest);
+            var identerFinnesIdb = identRepository.findByPersonidentifikatorIn(genererteIdenter);
 
-            Set<String> identerAaSjekke = genererteIdenter.stream()
+            var identerAaSjekke = genererteIdenter.stream()
                     .filter(ident -> identerFinnesIdb.stream()
                             .noneMatch(dbIdent -> dbIdent.getPersonidentifikator().equals(ident)))
                     .collect(Collectors.toSet());
