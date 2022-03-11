@@ -1,43 +1,9 @@
 import React from 'react'
-import { addDays, isBefore } from 'date-fns'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import _has from 'lodash/has'
-
-function hentSkjermingData(skjermingPath) {
-	if (!skjermingPath) {
-		return null
-	}
-	return (
-		<>
-			{skjermingPath.egenAnsattDatoFom && (
-				<>
-					<TitleValue
-						title="Har skjerming"
-						value={
-							skjermingPath.egenAnsattDatoTom &&
-							isBefore(new Date(skjermingPath.egenAnsattDatoTom), addDays(new Date(), -1))
-								? 'NEI'
-								: 'JA'
-						}
-					/>
-					<TitleValue
-						title="Skjerming fra"
-						value={Formatters.formatDate(skjermingPath.egenAnsattDatoFom)}
-					/>
-					{skjermingPath.egenAnsattDatoTom && (
-						<TitleValue
-							title="Skjerming til"
-							value={Formatters.formatDate(skjermingPath.egenAnsattDatoTom)}
-						/>
-					)}
-				</>
-			)}
-		</>
-	)
-}
 
 function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 	if (!sikkerhetstiltakPath) {
@@ -81,13 +47,7 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 	)
 }
 
-export const Personinfo = ({
-	data,
-	visTittel = true,
-	tpsMessagingData,
-	skjermingsregister,
-	pdlData,
-}) => {
+export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }) => {
 	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
 	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
 
@@ -164,14 +124,6 @@ export const Personinfo = ({
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 					size="medium"
 				/>
-				{hentSkjermingData(
-					skjermingsregister?.skjermetFra
-						? {
-								egenAnsattDatoFom: skjermingsregister.skjermetFra,
-								egenAnsattDatoTom: skjermingsregister.skjermetTil,
-						  }
-						: tpsMessagingData
-				)}
 				{hentSikkerhetstiltakData(
 					tpsMessagingData?.sikkerhetstiltak
 						? tpsMessagingData.sikkerhetstiltak

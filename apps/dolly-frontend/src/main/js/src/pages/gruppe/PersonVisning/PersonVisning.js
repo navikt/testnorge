@@ -89,7 +89,6 @@ export const PersonVisning = ({
 				<TpsfVisning
 					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 					pdlData={data.pdlforvalter?.person}
-					skjermingsregister={data.skjermingsregister}
 					environments={bestilling?.environments}
 				/>
 			)}
@@ -97,6 +96,11 @@ export const PersonVisning = ({
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
+			<NomVisning
+				data={data.nomData}
+				skjermingsregister={data.skjermingsregister}
+				loading={loading.nomData}
+			/>
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
@@ -108,7 +112,6 @@ export const PersonVisning = ({
 			<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
 			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-			<NomVisning data={data.nom} loading={loading.nom} />
 			<InstVisning data={data.instdata} loading={loading.instdata} />
 			<ArenaVisning
 				data={data.arenaforvalteren}

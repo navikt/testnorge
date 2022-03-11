@@ -1125,8 +1125,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (nomKriterier) {
 		const nom = {
-			header: 'NAV Organisasjonsmaster',
-			items: [obj('Registrert i NOM', nomKriterier.opprettNavIdent ? 'JA' : 'NEI')],
+			header: 'NAV ansatt',
+			items: [obj('Har nav ident', nomKriterier.opprettNavIdent ? 'JA' : 'NEI')],
 		}
 
 		data.push(nom)

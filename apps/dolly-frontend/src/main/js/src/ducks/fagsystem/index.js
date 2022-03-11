@@ -204,7 +204,7 @@ export default handleActions(
 			state.krrstub[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getNom)](state, action) {
-			state.nomData[action.meta.ident] = action.payload.data
+			state.nomData[action.meta.ident] = action.payload.data?.data
 		},
 		[onSuccess(actions.getArena)](state, action) {
 			state.arenaforvalteren[action.meta.ident] = action.payload.data
@@ -538,5 +538,6 @@ export const selectDataForIdent = (state, ident) => {
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
 		brregstub: state.fagsystem.brregstub[ident],
 		skjermingsregister: state.fagsystem.skjermingsregister[ident],
+		nomData: state.fagsystem.nomData[ident],
 	}
 }
