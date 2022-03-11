@@ -20,7 +20,6 @@ spring:
       httpclient:
         response-timeout: 600s
 
-
 consumers:
   nom:
     name: nom-api

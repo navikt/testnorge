@@ -58,7 +58,7 @@ public class MultipleIssuersJwtDecoder implements JwtDecoder {
                 token.getAudience().stream().anyMatch(audience -> properties.getAcceptedAudience().contains(audience)) ?
                         OAuth2TokenValidatorResult.success() :
                         OAuth2TokenValidatorResult.failure(createError(
-                                String.format("Fant ikke påkreved audience %s i tokenet.", properties.getAcceptedAudience())
+                                String.format("Fant ikke påkrevd audience %s i tokenet.", properties.getAcceptedAudience())
                         ));
         return new DelegatingOAuth2TokenValidator<>(issuerValidator, audienceValidator);
     }

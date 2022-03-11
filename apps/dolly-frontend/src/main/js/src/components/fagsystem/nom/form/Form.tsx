@@ -23,7 +23,7 @@ export const NomForm = ({ formikBag }: NomFormProps) => (
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					name="nomData.opprettNavIdent"
-					label="Har nav ident"
+					label="Har NAV ident"
 					options={Options('boolean')}
 				/>
 			</div>

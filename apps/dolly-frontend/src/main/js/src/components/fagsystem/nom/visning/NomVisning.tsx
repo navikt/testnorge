@@ -30,7 +30,7 @@ type Data = {
 
 export const Visning = ({ data, skjermingsregister }: VisningProps) => (
 	<>
-		<TitleValue title="Nav ident" value={data?.ressurs?.navIdent} />
+		<TitleValue title="NAV ident" value={data?.ressurs?.navIdent} />
 		{skjermingsregister && (
 			<>
 				<TitleValue
