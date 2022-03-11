@@ -3,4 +3,4 @@
 ------------------------------
 
 alter table bestilling_progress
-add column nom_status text;
+    add column nom_status varchar(500);
