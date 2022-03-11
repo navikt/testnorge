@@ -98,6 +98,27 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 					</p>
 				</>
 			)
+		//TODO: Legg inn denne varslingen i varslinger-service
+		case 'PDL_SOM_MASTER':
+			return (
+				<>
+					<h1>PDL som master for bestillinger</h1>
+
+					<p>
+						Vi har siden sist gjort en større endring på bestilling av testpersoner i Dolly: Vi har
+						endret master for bestillinger fra TPS til PDL. Alle testpersoner som bestilles vil fra
+						nå derfor opprettes i PDL istedenfor TPS. Den observante Dolly-bruker vil også se en del
+						endringer i bestillingsskjemaet, som er gjort for å tilpasses persondata i PDL.
+					</p>
+					<p>
+						Denne endringen vil få noen sideeffekter. Om du bruker maler som har TPS-attributter vil
+						ikke disse fungere som de skal. Vi anbefaler derfor at du lager en ny mal dersom du får
+						varsel om at malen din er ugyldig. Det vil heller ikke være mulig å gjøre endringer på
+						opprettede personer som har TPS som master.
+					</p>
+					<p>Kontakt oss gjerne på {dollySlack} dersom du har noen spørsmål eller kommentarer.</p>
+				</>
+			)
 		default:
 			return null
 	}

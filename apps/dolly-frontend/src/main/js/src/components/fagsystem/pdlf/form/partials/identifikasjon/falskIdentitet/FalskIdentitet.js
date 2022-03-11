@@ -4,7 +4,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { setNavn } from '../../utils'
+import { getPlaceholder, setNavn } from '../../utils'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import _has from 'lodash/has'
@@ -97,7 +97,11 @@ export const FalskIdentitet = ({ formikBag, identOptions, loadingOptions }) => {
 										name={`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`}
 										label="Navn"
 										options={navnOptions}
-										size="large"
+										size="xlarge"
+										placeholder={getPlaceholder(
+											formikBag.values,
+											`${path}.rettIdentitetVedOpplysninger.personnavn`
+										)}
 										isLoading={navnInfo.loading}
 										onChange={(navn) =>
 											setNavn(
