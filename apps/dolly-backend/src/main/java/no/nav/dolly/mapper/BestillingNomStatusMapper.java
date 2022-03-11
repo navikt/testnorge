@@ -8,7 +8,6 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -39,7 +38,7 @@ public final class BestillingNomStatusMapper {
                                         .melding(entry.getKey())
                                         .identer(entry.getValue())
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build());
     }
 }
