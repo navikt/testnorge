@@ -126,7 +126,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 							</InputDiv>
 							{erTpsfMal && (
 								<Alertstripe type={'advarsel'} style={{ width: '97%' }}>
-									Denne malen utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
+									Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
 									master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
 									ny mal og sletter denne malen.
 								</Alertstripe>

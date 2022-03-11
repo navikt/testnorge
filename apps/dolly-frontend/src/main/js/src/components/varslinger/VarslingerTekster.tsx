@@ -6,7 +6,6 @@ type VarslingId = {
 }
 
 export const VarslingerTekster = ({ varslingId }: VarslingId) => {
-	console.log('varslingId: ', varslingId) //TODO - SLETT MEG
 	if (!varslingId) return null
 
 	const brukerveiledning = (
