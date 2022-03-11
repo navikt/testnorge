@@ -41,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
+import static no.nav.dolly.config.CachingConfig.CACHE_NOMDATA;
 
 @RestController
 @RequiredArgsConstructor
@@ -124,15 +124,17 @@ public class OppslagController {
         return skjermingsRegisterConsumer.getSkjerming(ident);
     }
 
+    @Cacheable(CACHE_NOMDATA)
     @GetMapping("/nom/{ident}")
     @Operation(description = "Hent nom data på ident")
     public JsonNode getNomPersondata(@PathVariable String ident) {
         return nomConsumer.getNomPersonMedPersonIdent(ident);
     }
 
+    @Cacheable(CACHE_NOMDATA)
     @GetMapping("/nom")
     @Operation(description = "Hent alle nom ressurser")
-    public Mono<JsonNode> getalleNomRessurser() {
+    public JsonNode getalleNomRessurser() {
         return nomConsumer.hentAlleNomRessurser();
     }
 

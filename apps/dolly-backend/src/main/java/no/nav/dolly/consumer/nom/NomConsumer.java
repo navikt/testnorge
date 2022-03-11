@@ -14,7 +14,6 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -69,7 +68,7 @@ public class NomConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "nom_getAlleNomRessurser" })
-    public Mono<JsonNode> hentAlleNomRessurser() {
+    public JsonNode hentAlleNomRessurser() {
 
         return webClient
                 .post()
@@ -79,13 +78,12 @@ public class NomConsumer {
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .body(BodyInserters
                         .fromValue(new GraphQLRequest(getQueryFromFile(PERSON_HENT_ALLE_QUERY), null)))
-                .retrieve()
-                .bodyToMono(JsonNode.class)
+                .retrieve().bodyToMono(JsonNode.class)
                 .doOnError(throwable -> {
                     throw new DollyFunctionalException("Klarte ikke å hente komplett nom ident fra nom-api", throwable);
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException)).block(Duration.ofSeconds(10));
     }
 
     @Timed(name = "providers", tags = { "operation", "nom_opprettPerson" })
