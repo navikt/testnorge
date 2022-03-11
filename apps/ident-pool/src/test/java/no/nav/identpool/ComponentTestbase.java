@@ -1,6 +1,7 @@
 package no.nav.identpool;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
@@ -49,7 +50,8 @@ public abstract class ComponentTestbase {
     protected ObjectMapper objectMapper;
 
     @MockBean
-    protected TpsfConsumer tpsfConsumer;
+    protected TpsMessagingConsumer tpsMessagingConsumer;
+
     private HttpEntityBuilder httpEntityBuilder;
 
     @BeforeEach

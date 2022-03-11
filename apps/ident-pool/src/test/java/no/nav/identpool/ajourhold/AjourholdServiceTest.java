@@ -1,5 +1,6 @@
 package no.nav.identpool.ajourhold;
 
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
@@ -23,7 +24,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,17 +34,16 @@ class AjourholdServiceTest {
 
     private final List<Ident> entities = new ArrayList<>();
     @Mock
-    private TpsMessagingService tpsMessagingService;
+    private TpsMessagingConsumer tpsMessagingConsumer;
     @Mock
     private IdentRepository identRepository;
-    @Mock
-    private TpsfConsumer tpsfConsumer;
+
     private AjourholdService ajourholdService;
 
     @BeforeEach
     void init() {
         entities.clear();
-        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), tpsMessagingService, tpsfConsumer));
+        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), tpsMessagingConsumer));
 
         when(identRepository.save(any(Ident.class))).thenAnswer((Answer<Void>) invocationOnMock -> {
             Ident ident = invocationOnMock.getArgument(0);
@@ -55,7 +54,7 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorIngenErLedige() {
-        when(tpsMessagingService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
             Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatusDTO(p, false)).collect(Collectors.toSet());
         });
@@ -69,7 +68,7 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedige() {
-        when(tpsMessagingService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
             Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatusDTO(p, true)).collect(Collectors.toSet());
         });
@@ -83,7 +82,7 @@ class AjourholdServiceTest {
 
     @Test
     void genererIdenterForAarHvorAlleErLedigeBOST() {
-        when(tpsMessagingService.checkIdentsInTps(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenAnswer((Answer<Set<TpsStatusDTO>>) invocationOnMock -> {
             Set<String> pins = invocationOnMock.getArgument(0);
             return pins.stream().map(p -> new TpsStatusDTO(p, true)).collect(Collectors.toSet());
         });

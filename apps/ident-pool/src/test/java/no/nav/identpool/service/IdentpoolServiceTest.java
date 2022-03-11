@@ -1,5 +1,6 @@
 package no.nav.identpool.service;
 
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
@@ -37,7 +38,7 @@ class IdentpoolServiceTest {
     private IdentRepository repository;
 
     @Mock
-    private TpsMessagingService tpsMessagingService;
+    private TpsMessagingConsumer tpsMessagingConsumer;
 
     @InjectMocks
     private IdentpoolService identpoolService;
@@ -61,12 +62,12 @@ class IdentpoolServiceTest {
         statusSet.add(tpsStatusDTO);
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
-        when(tpsMessagingService.checkIdentsInTps(anySet())).thenReturn(statusSet);
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(statusSet);
 
         List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
         verify(repository).findTopByPersonidentifikator(fnr1);
-        verify(tpsMessagingService).checkIdentsInTps(anySet());
+        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
         verify(repository).save(ident);
 
         assertEquals(fnr1, frigjorteIdenter.get(0));
@@ -89,13 +90,13 @@ class IdentpoolServiceTest {
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident1);
         when(repository.findTopByPersonidentifikator(fnr2)).thenReturn(null);
-        when(tpsMessagingService.checkIdentsInTps(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatusDTO)));
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatusDTO)));
 
         List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);
 
         assertThat(identerMarkertSomIBruk, containsInAnyOrder(fnr1, fnr2));
 
-        verify(tpsMessagingService).checkIdentsInTps(anySet());
+        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
 
     }
 
