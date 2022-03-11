@@ -2,11 +2,14 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +48,8 @@ public class SendEgenansattCommand implements Callable<List<TpsMeldingResponseDT
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .retrieve()
                 .bodyToMono(TpsMeldingResponseDTO[].class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (log.isTraceEnabled() && nonNull(response)) {

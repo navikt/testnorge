@@ -1,10 +1,13 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command.tpsf;
 
-import java.util.concurrent.Callable;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.response.tpsf.PersonstatusOgAdresse;
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
 
 @Slf4j
 public class GetPersonstatusOgAdresseCommand implements Callable<PersonstatusOgAdresse> {
@@ -33,6 +36,8 @@ public class GetPersonstatusOgAdresseCommand implements Callable<PersonstatusOgA
                     )
                     .retrieve()
                     .bodyToMono(PersonstatusOgAdresse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å hente personstatus og adresse i TPS for ident: " + ident, e);

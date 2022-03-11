@@ -1,8 +1,12 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
 
 @RequiredArgsConstructor
 public class RegisterEregBestillingCommand implements Runnable {
@@ -22,6 +26,8 @@ public class RegisterEregBestillingCommand implements Runnable {
                 .header("uuid", uuid)
                 .retrieve()
                 .bodyToMono(Void.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

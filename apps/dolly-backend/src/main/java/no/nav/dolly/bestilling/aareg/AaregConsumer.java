@@ -10,6 +10,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -70,6 +73,8 @@ public class AaregConsumer {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(request)
                 .retrieve().toEntity(AaregResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
@@ -92,6 +97,8 @@ public class AaregConsumer {
                     .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                     .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .retrieve().toEntityList(ArbeidsforholdResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
             if (nonNull(response) && !response.hasBody()) {
@@ -111,14 +118,17 @@ public class AaregConsumer {
     @Timed(name = "providers", tags = { "operation", "aareg_deleteArbeidsforhold" })
     public AaregResponse slettArbeidsforholdFraAlleMiljoer(String ident) {
 
-        ResponseEntity<AaregResponse> response = webClient.delete().uri(uriBuilder -> uriBuilder.path(AAREGDATA_URL)
+        var response = webClient.delete().uri(uriBuilder -> uriBuilder.path(AAREGDATA_URL)
                         .queryParam(IDENT_QUERY, ident)
                         .build())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve().toEntity(AaregResponse.class)
+                .retrieve()
+                .toEntity(AaregResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {

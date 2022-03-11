@@ -3,17 +3,16 @@ package no.nav.testnav.apps.importfratpsfservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmelding;
-import no.nav.testnav.apps.importfratpsfservice.exception.BadRequestException;
-import no.nav.testnav.apps.importfratpsfservice.exception.NotFoundException;
 import no.nav.testnav.apps.importfratpsfservice.utils.ErrorhandlerUtils;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -30,8 +29,8 @@ public class TpsfGetSkdMeldingerCommand implements Callable<Flux<SkdEndringsmeld
 
     protected static String getMessage(Throwable error) {
 
-        return error instanceof WebClientResponseException ?
-                ((WebClientResponseException) error).getResponseBodyAsString() :
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
     }
 
@@ -45,6 +44,8 @@ public class TpsfGetSkdMeldingerCommand implements Callable<Flux<SkdEndringsmeld
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(SkdEndringsmelding.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> ErrorhandlerUtils.handleError(throwable, IMPORT_FRA_TPSF));
     }
 }

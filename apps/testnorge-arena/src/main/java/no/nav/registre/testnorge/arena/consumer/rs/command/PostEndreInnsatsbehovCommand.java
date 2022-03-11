@@ -1,17 +1,18 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command;
 
-import java.util.concurrent.Callable;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.response.EndreInnsatsbehovResponse;
-
+import no.nav.registre.testnorge.arena.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
+import java.util.concurrent.Callable;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
@@ -43,6 +44,8 @@ public class PostEndreInnsatsbehovCommand implements Callable<EndreInnsatsbehovR
                     .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
                     .retrieve()
                     .bodyToMono(EndreInnsatsbehovResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (Exception e) {
             log.error("Kunne ikke endre innsatsbehov i arena forvalteren.", e);

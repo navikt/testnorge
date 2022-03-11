@@ -4,6 +4,10 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
+import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
+import no.nav.registre.aareg.util.WebClientFilter;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,12 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
-
-import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
-import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 @Slf4j
@@ -57,6 +59,8 @@ public class MiljoerConsumer {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
                 })
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (response == null) {

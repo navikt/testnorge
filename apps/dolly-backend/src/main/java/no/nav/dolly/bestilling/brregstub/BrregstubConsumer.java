@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.config.credentials.BrregstubProxyProperties;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Map;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
@@ -50,9 +53,11 @@ public class BrregstubConsumer {
                             .header(HEADER_NAV_PERSON_IDENT, ident)
                             .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                             .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                            .retrieve().toEntity(RolleoversiktTo.class)
-                            .block()
-                            .getBody();
+                            .retrieve()
+                            .bodyToMono(RolleoversiktTo.class)
+                            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                    .filter(WebClientFilter::is5xxException))
+                            .block();
 
         } catch (WebClientResponseException e) {
             if (HttpStatus.NOT_FOUND != e.getStatusCode()) {
@@ -72,7 +77,10 @@ public class BrregstubConsumer {
                         .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                         .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                         .bodyValue(rolleoversiktTo)
-                        .retrieve().toEntity(RolleoversiktTo.class)
+                        .retrieve()
+                        .toEntity(RolleoversiktTo.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException))
                         .block();
     }
 
@@ -83,7 +91,10 @@ public class BrregstubConsumer {
                     .header(HEADER_NAV_PERSON_IDENT, ident)
                     .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                     .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                    .retrieve().toEntity(String.class)
+                    .retrieve()
+                    .toEntity(String.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
         } catch (RuntimeException e) {

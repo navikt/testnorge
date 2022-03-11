@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { InntektstubOrgnummerSelect } from './inntektstubOrgnummerSelect'
+import { OrgnummerToggle } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 type InntektstubVirksomhetToggleProps = {
 	formikBag: FormikProps<{}>
@@ -57,7 +57,11 @@ export const InntektstubVirksomhetToggle = ({
 			</ToggleGruppe>
 
 			{inputType === ToggleValg.ORGANISASJON ? (
-				<InntektstubOrgnummerSelect path={path} formikBag={formikBag} />
+				<OrgnummerToggle
+					formikBag={formikBag}
+					path={`${path}.virksomhet`}
+					opplysningspliktigPath={`${path}.opplysningspliktig`}
+				/>
 			) : (
 				<div className="flexbox--flex-wrap">
 					<FormikTextInput name={virksomhetPath} label="Virksomhet (fnr/dnr/npid)" size="medium" />

@@ -77,14 +77,16 @@ public class TpsBackportingClient implements ClientRegister {
                             .map(ident -> tpsfService.endreLeggTilPaaPerson(ident, tpsfBestilling))
                             .toList();
 
-                    tpsfService.sendIdenterTilTpsFraTPSF(Stream.of(List.of(response), familieResponse)
-                                    .flatMap(Collection::stream)
-                                    .map(RsOppdaterPersonResponse::getIdentTupler)
-                                    .flatMap(Collection::stream)
-                                    .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                                    .collect(Collectors.toSet())
-                                    .stream().toList(),
-                            getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+                    if (!getNonPdlTpsCreateEnv(bestilling.getEnvironments()).isEmpty()) {
+                        tpsfService.sendIdenterTilTpsFraTPSF(Stream.of(List.of(response), familieResponse)
+                                        .flatMap(Collection::stream)
+                                        .map(RsOppdaterPersonResponse::getIdentTupler)
+                                        .flatMap(Collection::stream)
+                                        .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                                        .collect(Collectors.toSet())
+                                        .stream().toList(),
+                                getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+                    }
 
                     // Force reload
                     dollyPerson.setPersondetaljer(null);

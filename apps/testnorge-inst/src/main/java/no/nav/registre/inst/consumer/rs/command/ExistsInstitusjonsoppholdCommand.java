@@ -4,11 +4,14 @@ package no.nav.registre.inst.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.util.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriTemplate;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
@@ -40,6 +43,8 @@ public class ExistsInstitusjonsoppholdCommand implements Callable<HttpStatus> {
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .retrieve()
                     .toBodilessEntity()
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
             return nonNull(response) ? response.getStatusCode() : HttpStatus.NOT_FOUND;
