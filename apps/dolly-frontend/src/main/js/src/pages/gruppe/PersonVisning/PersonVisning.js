@@ -60,7 +60,7 @@ export const PersonVisning = ({
 				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
 				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
 		  }
-	console.log('ident.master: ', ident.master) //TODO - SLETT MEG
+
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
