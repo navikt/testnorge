@@ -8,20 +8,11 @@ metadata:
     team: dolly
 spec:
   secretName: azure-nav-testnav-synthdata-meldekort-proxy-nav
-  secretKeyPrefix: "AZURE_NAV_SYNT_MELDEKORT_PROXY"
+  secretKeyPrefix: "AZURE_NAV"
   azure:
     application:
       enabled: true
       tenant: nav.no
-  env:
-    - name: AZURE_NAV_SYNT_MELDEKORT_PROXY_CLIENT_ID
-      valueFrom:
-        fieldRef:
-          fieldPath: azure.app.client.id
-    - name: AZURE_NAV_SYNT_MELDEKORT_PROXY_CLIENT_SECRET
-      valueFrom:
-        fieldRef:
-          fieldPath: azure.app.client.secret
 ---
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
