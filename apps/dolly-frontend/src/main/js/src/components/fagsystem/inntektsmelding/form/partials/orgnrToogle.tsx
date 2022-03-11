@@ -88,7 +88,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
-				<FormikTextInput name={path} label="Arbeidsgiver (orgnr)" size="xlarge" />
+				<FormikTextInput type="number" name={path} label="Arbeidsgiver (orgnr)" size="xlarge" />
 			)}
 		</div>
 	)
