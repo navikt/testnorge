@@ -5,20 +5,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,12 +41,10 @@ public class GenererArbeidsforholdHistorikkCommand implements Callable<Mono<List
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<List<ArbeidsforholdResponse>>>() {
-                }).retryWhen(Retry.max(1)
-                        .filter(throwable -> !(
-                                throwable instanceof WebClientResponseException.NotFound
-                                        || throwable instanceof WebClientResponseException.BadRequest
-                        ))
-                ).doOnError(error -> {
+                })
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .doOnError(error -> {
                     try {
                         log.error("Feil ved opprettelse av historikk med body: {}.", objectMapper.writeValueAsString(body), error);
                     } catch (JsonProcessingException e) {

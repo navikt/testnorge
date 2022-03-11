@@ -21,7 +21,7 @@ spec:
           cluster: dev-fss
     outbound:
       rules:
-        - application: synthdata-bisys
+        - application: synthdata-arena-meldekort
           cluster: dev-gcp
   azure:
     application:

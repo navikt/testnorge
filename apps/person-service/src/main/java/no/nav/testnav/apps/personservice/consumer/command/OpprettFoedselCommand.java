@@ -1,17 +1,19 @@
 package no.nav.testnav.apps.personservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.FoedselDTO;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.HendelseDTO;
+import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.FoedselDTO;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.HendelseDTO;
-import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
 
 @RequiredArgsConstructor
 public class OpprettFoedselCommand implements Callable<Mono<HendelseDTO>> {
@@ -29,6 +31,8 @@ public class OpprettFoedselCommand implements Callable<Mono<HendelseDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(dto), FoedselDTO.class))
                 .retrieve()
-                .bodyToMono(HendelseDTO.class);
+                .bodyToMono(HendelseDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

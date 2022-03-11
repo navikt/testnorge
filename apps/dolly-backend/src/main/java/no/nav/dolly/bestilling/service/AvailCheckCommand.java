@@ -37,7 +37,7 @@ public class AvailCheckCommand implements Callable<List<AvailCheckCommand.AvailS
                             .ident(status.getIdent())
                             .available(isTrue(status.getAvailable()))
                             .message(status.getStatus())
-                            .master(Master.PDL)
+                            .master(Master.PDLF)
                             .build())
                     .collect(Collectors.toList());
 
@@ -71,8 +71,8 @@ public class AvailCheckCommand implements Callable<List<AvailCheckCommand.AvailS
         }
 
         @JsonIgnore
-        public boolean isPdl() {
-            return getMaster() == Master.PDL;
+        public boolean isPdlf() {
+            return getMaster() == Master.PDLF;
         }
     }
 }

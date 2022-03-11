@@ -28,9 +28,9 @@ import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
+import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
@@ -153,29 +153,35 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 										kodeverk={Kodeverk.Ytelse}
 										formikBag={formikBag}
 									/>
-									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
-										<FormikTextInput
-											name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
-											label="Arbeidsgiver (fnr/dnr/npid)"
-										/>
-									)}
 									<FormikDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
 										label="Innsendingstidspunkt"
 									/>
-									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
-										<OrganisasjonMedArbeidsforholdSelect
-											path={`${path}.arbeidsgiver.virksomhetsnummer`}
-											label="Arbeidsgiver (orgnr)"
-											//@ts-ignore
-											isClearable={false}
-										/>
+									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
+										<>
+											<FormikTextInput
+												name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
+												label="Arbeidsgiver (fnr/dnr/npid)"
+											/>
+											<FormikCheckbox
+												name={`${path}.naerRelasjon`}
+												label="Nær relasjon"
+												checkboxMargin
+											/>
+										</>
 									)}
-									<FormikCheckbox
-										name={`${path}.naerRelasjon`}
-										label="Nær relasjon"
-										checkboxMargin
-									/>
+
+									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
+										<div className={'flexbox'}>
+											<OrgnrToggle
+												path={`${path}.arbeidsgiver.virksomhetsnummer`}
+												formikBag={formikBag}
+											/>
+											<div style={{ margin: '70px 0 0 30px' }}>
+												<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
+											</div>
+										</div>
+									)}
 								</div>
 								<ArbeidsforholdForm path={`${path}.arbeidsforhold`} ytelse={ytelse} />
 								<Kategori title="Refusjon">
@@ -229,15 +235,13 @@ InntektsmeldingForm.validation = {
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString.nullable()
+						requiredString.nullable().matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer')
 					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString
-							.nullable()
-							.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11)
+						requiredString.nullable().matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer')
 					),
 				}),
 				arbeidsforhold: Yup.object({

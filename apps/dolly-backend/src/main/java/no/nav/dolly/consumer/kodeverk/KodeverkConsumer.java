@@ -7,6 +7,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -95,7 +98,11 @@ public class KodeverkConsumer {
                     .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header(HEADER_NAV_CALL_ID, generateCallId())
-                    .retrieve().toEntity(KodeverkBetydningerResponse.class).block();
+                    .retrieve()
+                    .toEntity(KodeverkBetydningerResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
+                    .block();
 
         } catch (WebClientResponseException e) {
             throw new DollyFunctionalException(e.getMessage(), e);

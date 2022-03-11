@@ -6,13 +6,16 @@ import no.nav.dolly.config.credentials.StatiskDataForvalterProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Map;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -46,7 +49,10 @@ public class FasteDatasettConsumer {
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve().toEntity(JsonNode.class)
+                .retrieve()
+                .toEntity(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 

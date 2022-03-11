@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aareg.amelding.command;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +33,9 @@ public record GetOrganisasjonCommand(WebClient webClient,
                     .header("miljo", this.miljo)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
-                    .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(3))
-                            .filter(throwable -> !(throwable instanceof WebClientResponseException.NotFound))
-                    ).block();
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
+                    .block();
             log.info("Organisasjon {} hentet fra {}", orgnummer, miljo);
             return organiasjon;
         } catch (WebClientResponseException.NotFound e) {

@@ -14,15 +14,24 @@ import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +60,7 @@ public class TpsfService {
     private static final String TPSF_IMPORTER_PERSON = TPSF_BASE_URL + "/import/lagre";
 
     private static final String TPSF_IDENT_QUERY = "ident";
+    private static final String TPSF = "TPSF: ";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -67,6 +77,13 @@ public class TpsfService {
                 .build();
     }
 
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
+                error.getMessage();
+    }
+
     @Timed(name = "providers", tags = {"operation", "tpsf_getEnvironments"})
     public EnvironmentsResponse getEnvironments() {
 
@@ -76,6 +93,8 @@ public class TpsfService {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(EnvironmentsResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -89,6 +108,8 @@ public class TpsfService {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(Object.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -102,6 +123,8 @@ public class TpsfService {
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(RsAliasResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -143,16 +166,18 @@ public class TpsfService {
     @Timed(name = "providers", tags = {"operation", "tpsf_leggTIlPaaPerson"})
     public RsOppdaterPersonResponse endreLeggTilPaaPerson(String ident, TpsfBestilling tpsfBestilling) {
 
-            var response = webClient.post().uri(uriBuilder -> uriBuilder
-                            .path(TPSF_UPDATE_PERSON_URL)
-                            .queryParam(TPSF_IDENT_QUERY, ident).build())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                    .bodyValue(tpsfBestilling)
-                    .retrieve()
-                    .bodyToMono(RsOppdaterPersonResponse.class)
-                    .block();
+        var response = webClient.post().uri(uriBuilder -> uriBuilder
+                        .path(TPSF_UPDATE_PERSON_URL)
+                        .queryParam(TPSF_IDENT_QUERY, ident).build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(tpsfBestilling)
+                .retrieve()
+                .bodyToMono(RsOppdaterPersonResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .block();
 
         if (isNull(response)) {
             throw new DollyFunctionalException(String.format("Klarte ikke å legge til på ident %s i TPS-Forvalteren", ident));
@@ -163,7 +188,7 @@ public class TpsfService {
     @Timed(name = "providers", tags = {"operation", "tpsf_relasjonPerson"})
     public List<String> relasjonPerson(String ident, TpsfRelasjonRequest tpsfBestilling) {
 
-        var response= webClient.post().uri(uriBuilder -> uriBuilder
+        var response = webClient.post().uri(uriBuilder -> uriBuilder
                         .path(TPSF_PERSON_RELASJON)
                         .queryParam(TPSF_IDENT_QUERY, ident).build())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -172,6 +197,8 @@ public class TpsfService {
                 .bodyValue(tpsfBestilling)
                 .retrieve()
                 .bodyToMono(String[].class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (isNull(response)) {
@@ -191,6 +218,8 @@ public class TpsfService {
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(Person.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (isNull(response)) {
@@ -205,16 +234,34 @@ public class TpsfService {
 
     private Object postToTpsf(String addtionalUrl, Object request) {
 
-            return webClient.post().uri(uriBuilder -> uriBuilder
-                            .path(TPSF_BASE_URL)
-                            .pathSegment(addtionalUrl).build())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                    .bodyValue(request)
-                    .retrieve()
-                    .bodyToMono(Object.class)
-                    .block();
+        return webClient.post().uri(uriBuilder -> uriBuilder
+                        .path(TPSF_BASE_URL)
+                        .pathSegment(addtionalUrl).build())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(Object.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> {
+
+                    if (throwable instanceof WebClientResponseException webClientResponseException) {
+                        if (HttpStatus.BAD_REQUEST == webClientResponseException.getStatusCode()) {
+                            return Mono.error(throwable);
+                        } else if (HttpStatus.NOT_FOUND == webClientResponseException.getStatusCode()) {
+                            return Mono.error(new NotFoundException(TPSF + getMessage(throwable)));
+                        } else {
+                            return Mono.error(new TpsfException(TPSF + getMessage(throwable)));
+                        }
+                    } else {
+
+                        return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, TPSF + throwable.getMessage(),
+                                throwable.getCause()));
+                    }
+                })
+                .block();
     }
 
     private void validateEnvironments(List<String> environments) {

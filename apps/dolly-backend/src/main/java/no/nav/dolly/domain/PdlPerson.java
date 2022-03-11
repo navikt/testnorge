@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.deserialization.PersonStatusEnumDeserializer;
@@ -509,6 +510,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Kontaktadresse extends AdresseDTO {

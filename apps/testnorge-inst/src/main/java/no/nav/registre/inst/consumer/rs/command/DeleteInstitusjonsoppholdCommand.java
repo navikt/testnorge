@@ -4,11 +4,14 @@ package no.nav.registre.inst.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
@@ -48,6 +51,8 @@ public class DeleteInstitusjonsoppholdCommand implements Callable<ResponseEntity
                     .header(NORSKIDENT, ident)
                     .retrieve()
                     .toEntity(RESPONSE_TYPE_OBJECT)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
             return nonNull(response)

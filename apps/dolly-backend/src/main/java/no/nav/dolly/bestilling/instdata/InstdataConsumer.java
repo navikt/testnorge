@@ -8,13 +8,16 @@ import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +122,10 @@ public class InstdataConsumer {
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                             .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                            .retrieve().toEntityList(InstdataResponse.class)
+                            .retrieve()
+                            .toEntityList(InstdataResponse.class)
+                            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                    .filter(WebClientFilter::is5xxException))
                             .block();
 
             if (nonNull(response) && response.hasBody() && !response.getBody().isEmpty() &&
@@ -147,7 +153,10 @@ public class InstdataConsumer {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve().toEntityList(InstdataResponse.class)
+                .retrieve()
+                .toEntityList(InstdataResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 

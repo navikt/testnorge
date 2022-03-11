@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -9,8 +10,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +67,10 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(MatrikkeladresseDTO[].class)
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
+                                Exceptions.isRetryExhausted(throwable),
                         throwable -> Mono.just(new MatrikkeladresseDTO[]{defaultAdresse()}));
     }
 

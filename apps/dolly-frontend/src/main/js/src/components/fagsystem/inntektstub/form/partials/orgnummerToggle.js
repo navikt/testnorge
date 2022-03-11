@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { MiljoeApi, OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
-import Icon from '~/components/ui/icon/Icon'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 
 const inputValg = { fraListe: 'velg', skrivSelv: 'skriv' }
 
@@ -13,14 +11,14 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 	const [inputType, setInputType] = useState(inputValg.fraListe)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
+	const [loading, setLoading] = useBoolean(false)
 	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const resp = await MiljoeApi.getAktiveMiljoer()
-			setAktiveMiljoer(resp.data)
+			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
 		}
 		fetchData()
 	}, [])
@@ -37,11 +35,14 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 	}
 
 	const handleManualOrgChange = (org, miljo) => {
-		if (!orgnummer) return
+		if (!org || !miljo) return
+		formikBag.setFieldValue(path, '')
 		setError(null)
+		setLoading(true)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljo)
 			.then((response) => {
+				setLoading(false)
 				if (
 					!response.data.enhetType.includes('BEDR') &&
 					!response.data.enhetType.includes('AAFY')
@@ -54,7 +55,10 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
 				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
 			})
-			.catch(() => setError('Fant ikke organisasjonen i ' + (miljo ? miljo : 'q1')))
+			.catch(() => {
+				setLoading(false)
+				setError('Fant ikke organisasjonen i ' + miljo)
+			})
 	}
 
 	return (
@@ -83,60 +87,23 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 					label={'Organisasjonsnummer'}
 				/>
 			) : (
-				<div className={'flexbox--align-start'}>
-					<DollyTextInput
-						name={path}
-						type={'number'}
-						size="xlarge"
-						label={'Organisasjonsnummer'}
-						onBlur={(event) => {
-							const org = event.target.value
-							setOrgnummer(org)
-							handleManualOrgChange(org, environment)
-						}}
-						feil={
-							error && {
-								feilmelding: error,
-							}
-						}
-					/>
-					<DollySelect
-						name={path}
-						size={'small'}
-						isClearable={false}
-						fastfield={false}
-						label={'Organisasjon Miljø'}
-						options={
-							aktiveMiljoer &&
-							aktiveMiljoer
-								.sort((a, b) =>
-									a.localeCompare(b, undefined, {
-										numeric: true,
-										sensitivity: 'base',
-									})
-								)
-								.map((value) => ({
-									value: value,
-									label: value.toUpperCase(),
-								}))
-						}
-						value={environment}
-						onChange={(event) => {
-							setEnvironment(event.value)
-							handleManualOrgChange(orgnummer, event.value)
-						}}
-						feil={
-							!environment && {
-								feilmelding: 'Må velge miljø',
-							}
-						}
-					/>
-					{success && (
-						<>
-							<Icon kind="feedback-check-circle" /> Organisasjon funnet
-						</>
-					)}
-				</div>
+				<OrganisasjonMedMiljoeSelect
+					path={path}
+					environment={environment}
+					miljoeOptions={aktiveMiljoer}
+					error={error}
+					loading={loading}
+					success={success}
+					onTextBlur={(event) => {
+						const org = event.target.value
+						setOrgnummer(org)
+						handleManualOrgChange(org, environment)
+					}}
+					onMiljoeChange={(event) => {
+						setEnvironment(event.value)
+						handleManualOrgChange(orgnummer, event.value)
+					}}
+				/>
 			)}
 		</div>
 	)

@@ -5,16 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
 import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -66,6 +69,8 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .retrieve()
                 .bodyToMono(PdlPerson.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
