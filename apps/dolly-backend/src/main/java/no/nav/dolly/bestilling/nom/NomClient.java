@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.nom;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -11,7 +10,6 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +31,8 @@ public class NomClient implements ClientRegister {
         if (nonNull(bestilling.getNomData())) {
             if (bestilling.getNomData().isOpprettNavIdent()) {
                 try {
-                    ResponseEntity<JsonNode> nomResponse = nomConsumer.opprettNomPerson(dollyPerson.getHovedperson());
-                    progress.setNomStatus(nomResponse.getStatusCode().is2xxSuccessful() ? "OK" : nomResponse.getStatusCode().getReasonPhrase());
+                    nomConsumer.opprettNomPerson(dollyPerson.getHovedperson());
+                    progress.setNomStatus("OK");
 
                 } catch (RuntimeException e) {
 

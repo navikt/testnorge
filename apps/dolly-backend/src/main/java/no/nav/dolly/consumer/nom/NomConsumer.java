@@ -11,7 +11,6 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -61,7 +60,7 @@ public class NomConsumer {
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(throwable -> {
-                    throw new DollyFunctionalException("Klarte ikke å hente nom ident fra nom-api");
+                    throw new DollyFunctionalException("Klarte ikke å hente nom ident fra nom-api", throwable);
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
@@ -82,14 +81,17 @@ public class NomConsumer {
                                 Map.of("navIdent", navIdent))))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .doOnError(throwable -> {
+                    throw new DollyFunctionalException("Klarte ikke å hente komplett nom ident fra nom-api", throwable);
+                })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException)).block();
     }
 
     @Timed(name = "providers", tags = { "operation", "nom_opprettPerson" })
-    public ResponseEntity<JsonNode> opprettNomPerson(String ident) {
+    public void opprettNomPerson(String ident) {
 
-        return webClient
+        webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(GRAPHQL_URL)
@@ -99,7 +101,10 @@ public class NomConsumer {
                         .fromValue(new GraphQLRequest(getQueryFromFile(NOM_OPPRETT_MUTATION),
                                 Map.of("personIdent", ident))))
                 .retrieve()
-                .toEntity(JsonNode.class)
+                .bodyToMono(JsonNode.class)
+                .doOnError(throwable -> {
+                    throw new DollyFunctionalException("Klarte ikke å opprette nom ident i nom-api", throwable);
+                })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException)).block();
     }
