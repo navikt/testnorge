@@ -30,11 +30,11 @@ spec:
     max: 1
   resources:
     limits:
-      cpu: 1200m
-      memory: 8192Mi
-    requests:
-      cpu: 1000m
+      cpu: 5000m
       memory: 4096Mi
+    requests:
+      cpu: 3000m
+      memory: 2048Mi
   azure:
     application:
       enabled: true

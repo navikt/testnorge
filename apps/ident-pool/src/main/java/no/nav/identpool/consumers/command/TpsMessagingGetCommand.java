@@ -12,6 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -29,7 +30,7 @@ public class TpsMessagingGetCommand implements Callable<Flux<TpsIdentStatusDTO>>
 
     private final WebClient webClient;
     private final String token;
-    private final Set<String> idents;
+    private final List<String> idents;
     private final Set<String> envs;
     private final boolean includeProd;
 
