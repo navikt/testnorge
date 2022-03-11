@@ -129,6 +129,12 @@ public class OppslagController {
         return nomConsumer.getNomPersonMedPersonIdent(ident);
     }
 
+    @GetMapping("/nom")
+    @Operation(description = "Hent alle nom ressurser")
+    public JsonNode getalleNomRessurser() {
+        return nomConsumer.hentAlleNomRessurser();
+    }
+
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
     public HelsepersonellListeDTO getHelsepersonell() {

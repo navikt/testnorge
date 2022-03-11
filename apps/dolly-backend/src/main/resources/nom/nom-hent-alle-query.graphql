@@ -1,0 +1,11 @@
+# Query som henter alle ressurser:
+query HentAlleRessurser{
+    ressurser {
+        id
+        ressurs{
+            navIdent
+            personIdent
+        }
+        code
+    }
+}

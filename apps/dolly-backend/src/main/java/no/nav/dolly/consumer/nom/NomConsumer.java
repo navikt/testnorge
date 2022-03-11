@@ -29,7 +29,7 @@ public class NomConsumer {
 
     private static final String GRAPHQL_URL = "/graphql";
     private static final String PERSON_IDENT_QUERY = "nom/nom-personident-query.graphql";
-    private static final String PERSON_NAVIDENT_QUERY = "nom/nom-navident-query.graphql";
+    private static final String PERSON_HENT_ALLE_QUERY = "nom/nom-hent-alle-query.graphql";
     private static final String NOM_OPPRETT_MUTATION = "nom/nom-opprett-mutation.graphql";
 
     private final WebClient webClient;
@@ -68,7 +68,7 @@ public class NomConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "nom_getKomplettPerson" })
-    public JsonNode getKomplettNomPersonMedNavIdent(String navIdent) {
+    public JsonNode hentAlleNomRessurser() {
 
         return webClient
                 .post()
@@ -77,8 +77,7 @@ public class NomConsumer {
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .body(BodyInserters
-                        .fromValue(new GraphQLRequest(getQueryFromFile(PERSON_NAVIDENT_QUERY),
-                                Map.of("navIdent", navIdent))))
+                        .fromValue(new GraphQLRequest(getQueryFromFile(PERSON_HENT_ALLE_QUERY), null)))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(throwable -> {
