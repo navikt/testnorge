@@ -35,6 +35,7 @@ export default function PersonListe({
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
+	setVisning,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)

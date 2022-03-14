@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import { getBestillinger, sokSelector } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import BestillingListe from './BestillingListe'
+import { NAVIGER_BESTILLING_ID } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 
 const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
 

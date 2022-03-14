@@ -9,6 +9,7 @@ import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { NAVIGER_BESTILLING_ID } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -23,6 +24,7 @@ export default function BestillingListe({
 	isFetchingBestillinger,
 	iLaastGruppe,
 	brukertype,
+	navigerBestillingId,
 }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
@@ -35,6 +37,10 @@ export default function BestillingListe({
 				'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
 
 		return <ContentContainer>{infoTekst}</ContentContainer>
+	}
+
+	if (sessionStorage.getItem(NAVIGER_BESTILLING_ID)) {
+		sessionStorage.removeItem(NAVIGER_BESTILLING_ID)
 	}
 
 	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
@@ -81,6 +87,7 @@ export default function BestillingListe({
 				data={sortedBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
+				visBestilling={navigerBestillingId}
 				onExpand={(bestilling) => (
 					<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
 				)}

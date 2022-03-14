@@ -57,7 +57,9 @@ export default function Gruppe({
 		return null
 	}
 
-	const byttVisning = (event) => setVisning(event.target.value)
+	const byttVisning = (event) => {
+		setVisning(typeof event === 'string' ? event : event.target.value)
+	}
 
 	const identArray = Object.values(identer).filter(
 		(ident) => ident.bestillingId != null && ident.bestillingId.length > 0
