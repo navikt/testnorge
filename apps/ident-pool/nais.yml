@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: testnav-ident-pool
+  name: ident-pool
   namespace: dolly
   labels:
     team: dolly
