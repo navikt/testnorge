@@ -18,8 +18,8 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	const personSivilstand = getSortedSivilstand(data?.sivilstand)?.[0]
 	const personFoedsel = data?.foedsel?.[0]
 	const sikkerhetstiltak = data?.sikkerhetstiltak?.[0]
-	const personstatus = data?.folkeregisterPersonstatus?.[0]
-	console.log('personstatus: ', personstatus) //TODO - SLETT MEG
+	const personstatus = data?.folkeregisterPersonstatus?.[0] || data?.folkeregisterpersonstatus?.[0]
+
 	return (
 		<ErrorBoundary>
 			<div>
