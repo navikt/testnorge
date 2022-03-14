@@ -81,6 +81,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 var opprettPersonRequest =
                         mapperFacade.map(person, OpprettPersonRequest.class);
                 opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
+                log.info("Persondata til pensjon: " + opprettPersonRequest.toString());
                 var response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
                 if (dollyPerson.getHovedperson().equals(person.getIdent())) {
                     decodeStatus(response, status);
