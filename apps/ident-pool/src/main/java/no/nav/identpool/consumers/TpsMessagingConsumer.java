@@ -48,7 +48,7 @@ public class TpsMessagingConsumer {
 
     private List<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, boolean includeProd) {
 
-        var start_tid = System.currentTimeMillis();
+        var startTid = System.currentTimeMillis();
 
         var response = tokenExchange.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / PAGESIZE + 1)
@@ -62,7 +62,7 @@ public class TpsMessagingConsumer {
                 .collectList()
                 .block();
 
-        log.info("Kall til TPS med {} identer tok {} sekunder", identer.size(), (System.currentTimeMillis() - start_tid) / 1000);
+        log.info("Kall til TPS med {} identer tok {} sekunder", identer.size(), (System.currentTimeMillis() - startTid) / 1000);
 
         return response;
     }
