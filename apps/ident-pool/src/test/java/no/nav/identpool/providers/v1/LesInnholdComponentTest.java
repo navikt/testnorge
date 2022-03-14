@@ -29,9 +29,7 @@ class LesInnholdComponentTest extends ComponentTestbase {
     void populerDatabaseMedTestidenter() {
         Ident ident = createIdentEntity(Identtype.FNR, PERSONIDENTIFIKATOR, REKVIRERINGSSTATUS, 10);
         ident.setRekvirertAv(REKVIRERT_AV);
-        identRepository.save(
-                ident
-        );
+        identRepository.save(ident);
     }
 
     @Test

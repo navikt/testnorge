@@ -1,10 +1,11 @@
 package no.nav.identpool.service;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
-import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ public class IdenterAvailServiceTest {
     private IdentRepository identRepository;
 
     @Mock
-    private TpsfService tpsfService;
+    private TpsMessagingConsumer tpsMessagingConsumer;
 
     @InjectMocks
     private IdenterAvailService identerAvailService;
@@ -54,8 +55,8 @@ public class IdenterAvailServiceTest {
 
     private HentIdenterRequest request;
 
-    private static TpsStatus getTpsStatus(String ident, boolean inUse) {
-        return TpsStatus.builder()
+    private static TpsStatusDTO getTpsStatus(String ident, boolean inUse) {
+        return TpsStatusDTO.builder()
                 .ident(ident)
                 .inUse(inUse)
                 .build();
@@ -87,10 +88,10 @@ public class IdenterAvailServiceTest {
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
                 .thenReturn(Set.of(getIdent(IDENT_2)));
-        when(tpsfService.checkAvailStatus(argumentCaptor.capture(), eq(false)))
+        when(tpsMessagingConsumer.getIdenterStatuser(argumentCaptor.capture()))
                 .thenReturn(Set.of(getTpsStatus(IDENT_1, false)));
 
-        Set<TpsStatus> target = identerAvailService.generateAndCheckIdenter(request, 10);
+        Set<TpsStatusDTO> target = identerAvailService.generateAndCheckIdenter(request, 10);
         assertThat(target, containsInAnyOrder(
                 getTpsStatus(IDENT_1, false)));
 

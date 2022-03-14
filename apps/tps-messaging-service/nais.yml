@@ -30,10 +30,10 @@ spec:
     max: 1
   resources:
     limits:
-      cpu: 3000m
+      cpu: 4000m
       memory: 2048Mi
     requests:
-      cpu: 2000m
+      cpu: 2500m
       memory: 1024Mi
   envFrom:
     - secret: testnav-tps-messaging-service
@@ -62,15 +62,13 @@ spec:
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
+        - application: testnav-ident-pool
+          cluster: dev-fss
         - application: synthdata-tps-gcp
           cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: dolly-backend
-          cluster: dev-fss
     outbound:
       rules:
         - application: testnav-miljoer-service
