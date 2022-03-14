@@ -1,25 +1,21 @@
 package no.nav.identpool.ajourhold;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.identpool.consumers.TpsfConsumer;
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.repository.IdentRepository;
 import no.nav.identpool.service.IdentGeneratorService;
-import no.nav.identpool.service.TpsfService;
 import no.nav.identpool.util.IdentGeneratorUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -32,8 +28,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfYear;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 
 @Slf4j
@@ -50,8 +44,7 @@ public class AjourholdService {
 
     private final IdentRepository identRepository;
     private final IdentGeneratorService identGeneratorService;
-    private final TpsfService tpsfService;
-    private final TpsfConsumer tpsfConsumer;
+    private final TpsMessagingConsumer tpsMessagingConsumer;
 
     public void checkCriticalAndGenerate() {
 
@@ -83,7 +76,7 @@ public class AjourholdService {
                 numberOfMissingIdents -= generateForYear(year, type, numberOfMissingIdents, syntetiskIdent);
             } else {
                 log.info("Ajourhold: år {} {} {} identer har tilstrekkelig antall",
-                        year, type, syntetiskIdent ? NAV_SYNTETISKE: VANLIGE);
+                        year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE);
                 break;
             }
             runs++;
@@ -134,15 +127,15 @@ public class AjourholdService {
         return antall;
     }
 
-    private int adjustForYear(
-            int year,
-            int antallPerDag) {
+    private int adjustForYear(int year, int antallPerDag) {
 
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG) {
             antallPerDag = MIN_ANTALL_IDENTER_PER_DAG;
         }
+
         if (antallPerDag < MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR) {
-            LocalDate dateOfYear = LocalDate.of(year, 1, 1);
+            var dateOfYear = LocalDate.of(year, 1, 1);
+
             if (dateOfYear.isBefore(LocalDate.now()) && ChronoUnit.YEARS.between(dateOfYear, LocalDate.now()) <= 3) {
                 return MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR;
             }
@@ -150,29 +143,25 @@ public class AjourholdService {
         return antallPerDag;
     }
 
-    private int filterIdents(
-            int identsPerDay,
-            Map<LocalDate, List<String>> pinMap,
-            int numberOfIdents,
-            boolean syntetiskIdent) {
+    private int filterIdents(int identsPerDay, Map<LocalDate, List<String>> pinMap, int numberOfIdents, boolean syntetiskIdent) {
 
         var identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
         List<String> ledig = new ArrayList<>();
 
         if (!syntetiskIdent) {
-            Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identsNotInDatabase);
+            var tpsStatus = tpsMessagingConsumer.getIdenterStatuser(identsNotInDatabase);
 
-            List<String> rekvirert = tpsStatuses.stream()
-                    .filter(TpsStatus::isInUse)
-                    .map(TpsStatus::getIdent)
-                    .collect(Collectors.toList());
+            var rekvirert = tpsStatus.stream()
+                    .filter(TpsStatusDTO::isInUse)
+                    .map(TpsStatusDTO::getIdent)
+                    .toList();
 
             saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
 
-            ledig.addAll(tpsStatuses.stream()
+            ledig.addAll(tpsStatus.stream()
                     .filter(i -> !i.isInUse())
-                    .map(TpsStatus::getIdent)
-                    .collect(Collectors.toList()));
+                    .map(TpsStatusDTO::getIdent)
+                    .toList());
         } else {
             ledig.addAll(identsNotInDatabase.stream()
                     .toList());
@@ -187,9 +176,7 @@ public class AjourholdService {
         return lagredeIdenter.size();
     }
 
-    private Set<String> filterAgainstDatabase(
-            int antallPerDag,
-            Map<LocalDate, List<String>> pinMap) {
+    private Set<String> filterAgainstDatabase(int antallPerDag, Map<LocalDate, List<String>> pinMap) {
 
         return pinMap.entrySet().stream()
                 .map(entry -> entry.getValue().stream()
@@ -209,7 +196,7 @@ public class AjourholdService {
 
         return idents.stream()
                 .map(ident -> identRepository.save(IdentGeneratorUtil.createIdent(ident, status, rekvirertAv)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -221,25 +208,26 @@ public class AjourholdService {
                 .antall(MAX_SIZE_TPS_QUEUE)
                 .foedtEtter(LocalDate.of(1850, 1, 1))
                 .build();
-        Page<Ident> firstPage = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
-        List<String> usedIdents = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
+
+        var firstPage = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(0, MAX_SIZE_TPS_QUEUE));
+        var usedIdents = new ArrayList<String>();
 
         if (firstPage.getTotalPages() > 0) {
             for (int i = 0; i < firstPage.getTotalPages(); i++) {
                 Page<Ident> page = identRepository.findAll(LEDIG, request.getFoedtEtter(), PageRequest.of(i, MAX_SIZE_TPS_QUEUE));
 
-                List<String> idents = page.getContent().stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
+                var idents = page.getContent().stream()
+                        .map(Ident::getPersonidentifikator)
+                        .collect(Collectors.toSet());
+
                 try {
-                    JsonNode statusFromTps = tpsfConsumer.getProdStatusFromTps(idents).findValue("EFnr");
-                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<>() {
-                    });
-                    usedIdents.addAll(nonNull(identStatus) ? identStatus.stream()
-                            .filter(status -> !status.containsKey("svarStatus"))
-                            .map(status -> String.valueOf(status.get("fnr")))
-                            .collect(Collectors.toList()) : emptyList()
-                    );
-                } catch (IOException e) {
+                    var identStatus = tpsMessagingConsumer.getIdenterProdStatus(idents);
+                    usedIdents.addAll(identStatus.stream()
+                            .filter(TpsStatusDTO::isInUse)
+                            .map(TpsStatusDTO::getIdent)
+                            .toList());
+
+                } catch (ResponseStatusException e) {
                     log.error("Kunne ikke hente status fra TPS", e);
                 }
             }

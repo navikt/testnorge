@@ -1,10 +1,11 @@
 package no.nav.identpool.service;
 
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.identpool.repository.IdentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +38,7 @@ class IdentpoolServiceTest {
     private IdentRepository repository;
 
     @Mock
-    private TpsfService tpsfService;
+    private TpsMessagingConsumer tpsMessagingConsumer;
 
     @InjectMocks
     private IdentpoolService identpoolService;
@@ -53,20 +54,20 @@ class IdentpoolServiceTest {
                 .syntetisk(isSyntetisk(fnr1))
                 .build();
 
-        TpsStatus tpsStatus = new TpsStatus();
-        tpsStatus.setIdent(fnr1);
-        tpsStatus.setInUse(false);
+        TpsStatusDTO tpsStatusDTO = new TpsStatusDTO();
+        tpsStatusDTO.setIdent(fnr1);
+        tpsStatusDTO.setInUse(false);
 
-        Set<TpsStatus> statusSet = new HashSet<>();
-        statusSet.add(tpsStatus);
+        Set<TpsStatusDTO> statusSet = new HashSet<>();
+        statusSet.add(tpsStatusDTO);
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
-        when(tpsfService.checkIdentsInTps(anySet())).thenReturn(statusSet);
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(statusSet);
 
         List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
         verify(repository).findTopByPersonidentifikator(fnr1);
-        verify(tpsfService).checkIdentsInTps(anySet());
+        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
         verify(repository).save(ident);
 
         assertEquals(fnr1, frigjorteIdenter.get(0));
@@ -83,19 +84,19 @@ class IdentpoolServiceTest {
                 .rekvireringsstatus(LEDIG)
                 .syntetisk(isSyntetisk(fnr1))
                 .build();
-        TpsStatus tpsStatus = new TpsStatus();
-        tpsStatus.setIdent(fnr2);
-        tpsStatus.setInUse(false);
+        TpsStatusDTO tpsStatusDTO = new TpsStatusDTO();
+        tpsStatusDTO.setIdent(fnr2);
+        tpsStatusDTO.setInUse(false);
 
         when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident1);
         when(repository.findTopByPersonidentifikator(fnr2)).thenReturn(null);
-        when(tpsfService.checkIdentsInTps(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatus)));
+        when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatusDTO)));
 
         List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);
 
         assertThat(identerMarkertSomIBruk, containsInAnyOrder(fnr1, fnr2));
 
-        verify(tpsfService).checkIdentsInTps(anySet());
+        verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
 
     }
 
