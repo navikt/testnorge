@@ -1,5 +1,6 @@
 azure:
-  app:
-    client:
-      id: ${client_id}
-      secret: ${client_secret}
+  nav:
+    app:
+      client:
+        id: ${client_id}
+        secret: ${client_secret}

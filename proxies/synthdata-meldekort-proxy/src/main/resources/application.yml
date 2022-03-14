@@ -1,22 +1,7 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
-azure:
-  app:
-    client:
-      id: ${AZURE_NAV_APP_CLIENT_ID}
-      secret: ${AZURE_NAV_APP_CLIENT_SECRET}
-
 spring:
   application:
     name: testnav-synthdata-meldekort-proxy
     desciption: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 consumers:
   synt-meldekort:
@@ -24,3 +9,14 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-meldekort
+
+azure:
+  trygdeetaten:
+    app:
+      client:
+        id: ${azure.app.client.id}
+        secret: ${azure.app.client.secret}
+    openid:
+      config:
+        token:
+          endpoint: ${azure.openid.config.token.endpoint}
