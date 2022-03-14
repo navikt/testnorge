@@ -2,6 +2,13 @@ spring:
   application:
     name: testnav-synthdata-meldekort-proxy
     desciption: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${azure.openid.config.issuer}
+          jwk-set-uri: ${azure.openid.config.jwk.uri}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 consumers:
   synt-meldekort:
