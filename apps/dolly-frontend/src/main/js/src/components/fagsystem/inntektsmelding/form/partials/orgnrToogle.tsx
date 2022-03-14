@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { FormikProps } from 'formik'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import {
+	OrganisasjonToogleGruppe,
+	inputValg,
+} from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 
 interface OrgnrToggleProps {
 	path: string
@@ -16,8 +19,6 @@ type Virksomhet = {
 	orgnavn: string
 	orgnummer: string
 }
-
-const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
 export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
@@ -48,29 +49,11 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGruppe onChange={handleToggleChange} name={path}>
-				<ToggleKnapp
-					key={inputValg.fraFellesListe}
-					value={inputValg.fraFellesListe}
-					checked={inputType === inputValg.fraFellesListe}
-				>
-					Felles organisasjoner
-				</ToggleKnapp>
-				<ToggleKnapp
-					key={inputValg.fraEgenListe}
-					value={inputValg.fraEgenListe}
-					checked={inputType === inputValg.fraEgenListe}
-				>
-					Egen organisasjon
-				</ToggleKnapp>
-				<ToggleKnapp
-					key={inputValg.skrivSelv}
-					value={inputValg.skrivSelv}
-					checked={inputType === inputValg.skrivSelv}
-				>
-					Skriv inn org.nr.
-				</ToggleKnapp>
-			</ToggleGruppe>
+			<OrganisasjonToogleGruppe
+				path={path}
+				inputType={inputType}
+				handleToggleChange={handleToggleChange}
+			/>
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonMedArbeidsforholdSelect
 					path={path}
