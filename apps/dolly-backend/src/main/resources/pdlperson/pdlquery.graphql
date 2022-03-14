@@ -508,6 +508,7 @@ query($ident: ID!, $historikk: Boolean!) {
         utflyttingFraNorge {
             tilflyttingsland,
             tilflyttingsstedIUtlandet,
+            utflyttingsdato,
             folkeregistermetadata {
                 ...folkeregistermetadataDetails
             },
