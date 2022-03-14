@@ -35,6 +35,9 @@ spec:
         - application: arena-forvalteren
           namespace: teamarenanais
           cluster: dev-fss
+        - application: ida
+          namespace: traktor
+          cluster: prod-fss
     outbound:
       rules:
         - application: synthdata-arena-meldekort
