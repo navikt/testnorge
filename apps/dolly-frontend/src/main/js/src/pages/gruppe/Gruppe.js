@@ -43,19 +43,11 @@ export default function Gruppe({
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 
 	useEffect(() => {
-		getBestillinger()
-	}, [])
-
-	useEffect(() => {
 		getGruppe(sidetall, sideStoerrelse)
+		getBestillinger()
 	}, [sidetall, sideStoerrelse])
 
-	if (isFetching && !gruppe) return <Loading label="Laster personer" panel />
-	if (!gruppe) {
-		getGruppe(sidetall, sideStoerrelse)
-		getBestillinger()
-		return null
-	}
+	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
 
 	const byttVisning = (event) => {
 		setVisning(typeof event === 'string' ? event : event.target.value)

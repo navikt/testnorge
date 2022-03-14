@@ -7,9 +7,13 @@ import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterO
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
 
 import './BestillingResultat.less'
+import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
+import useBoolean from '~/utils/hooks/useBoolean'
 
 export default function BestillingResultat(props) {
 	const { bestilling, onCloseButton, brukerBilde } = props
+	const brukerId = bestilling?.bruker?.brukerId
+	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
 	const antall = antallIdenterOpprettet(bestilling)
 
@@ -33,7 +37,20 @@ export default function BestillingResultat(props) {
 			/>
 			<div className="flexbox--all-center">
 				<BestillingSammendragModal bestilling={bestilling} />
+				<Button onClick={openGjenopprettModal} kind="synchronize">
+					GJENOPPRETT
+				</Button>
 			</div>
+			{isGjenopprettModalOpen && (
+				<GjenopprettConnector
+					bestilling={bestilling}
+					brukerId={brukerId && brukerId}
+					closeModal={() => {
+						closeGjenoprettModal()
+						window.location.reload()
+					}}
+				/>
+			)}
 		</div>
 	)
 }
