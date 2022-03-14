@@ -5,9 +5,9 @@ spring:
   security:
     oauth2:
       resourceserver:
-        aad:
+        trygdeetaten:
           issuer-uri: ${azure.openid.config.issuer}
-          jwk-set-uri: ${azure.openid.config.jwk.uri}
+          jwk-set-uri: ${azure.openid.config.jwks.uri}
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 consumers:
