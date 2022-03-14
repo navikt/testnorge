@@ -8,17 +8,19 @@ import {
 	inputValg,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-// const getJuridiskEnhet = (orgnr, organisasjoner) => {
-// 	for (const org in organisasjoner) {
-// 		for (const underenhet in org.underenheter) {
-// 			if (underenhet.organisasjonsnummer === orgnr) {
-// 				return org.organisasjonsnummer
-// 			}
-// 		}
-// 	}
-// 	return ''
-// }
+const getJuridiskEnhet = (orgnr, enheter) => {
+	for (let enhet of enheter) {
+		if (enhet.underenheter && enhet.underenheter.length > 0) {
+			for (let underenhet of enhet.underenheter) {
+				if (underenhet.organisasjonsnummer === orgnr) return enhet.organisasjonsnummer
+			}
+		}
+	}
+	return ''
+}
 
 const validEnhetstyper = ['BEDR', 'AAFY']
 
@@ -30,33 +32,12 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
-	const [egneOrganisasjoner, setEgneOrganisasjoner] = useState([])
 
 	useEffect(() => {
 		const fetchData = async () => {
 			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
 		}
-		// const fetchEgneOrg = async () => {
-		// 	const resp = await OrgforvalterApi.getAlleOrganisasjonerPaaBruker()
-		// 		.then((response) => {
-		// 			if (!response || response.length === 0) return []
-		// 			console.log('response: ', response) //TODO - SLETT MEG
-		// 			return response
-		// 				.filter((virksomhet) => validEnhetstyper.includes(virksomhet.enhetstype))
-		// 				.map((virksomhet) => ({
-		// 					value: virksomhet.organisasjonsnummer,
-		// 					label: `${virksomhet.organisasjonsnummer} (${virksomhet.enhetstype}) - ${virksomhet.organisasjonsnavn}`,
-		// 					orgnr: virksomhet.organisasjonsnummer,
-		// 					juridiskEnhet: getJuridiskEnhet(virksomhet.organisasjonsnummer, response),
-		// 				}))
-		// 		})
-		// 		.catch((e) => {
-		// 			return []
-		// 		})
-		// 	setEgneOrganisasjoner(resp)
-		// }
 		fetchData()
-		// fetchEgneOrg()
 	}, [])
 
 	const handleToggleChange = (event) => {
@@ -109,12 +90,32 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<FormikSelect
-					name={path}
-					label="Organisasjonsnummer"
-					size="xlarge"
-					options={egneOrganisasjoner}
-				/>
+				<ErrorBoundary>
+					<LoadableComponent
+						onFetch={() =>
+							OrgforvalterApi.getAlleOrganisasjonerPaaBruker().then((response) => {
+								if (!response || response.length === 0) return []
+								return response
+									.filter((virksomhet) => validEnhetstyper.includes(virksomhet.enhetstype))
+									.map((virksomhet) => ({
+										value: virksomhet.organisasjonsnummer,
+										label: `${virksomhet.organisasjonsnummer} (${virksomhet.enhetstype}) - ${virksomhet.organisasjonsnavn}`,
+										orgnr: virksomhet.organisasjonsnummer,
+										juridiskEnhet: getJuridiskEnhet(virksomhet.organisasjonsnummer, response),
+									}))
+							})
+						}
+						render={(data) => (
+							<FormikSelect
+								name={path}
+								label="Organisasjonsnummer"
+								size="xlarge"
+								options={data}
+								afterChange={handleChange}
+							/>
+						)}
+					/>
+				</ErrorBoundary>
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonMedMiljoeSelect
