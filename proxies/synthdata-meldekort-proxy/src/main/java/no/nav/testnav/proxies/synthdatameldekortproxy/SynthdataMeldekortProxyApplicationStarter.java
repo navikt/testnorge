@@ -4,7 +4,7 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.synthdatameldekortproxy.config.VaultConfig;
 import no.nav.testnav.proxies.synthdatameldekortproxy.config.credentials.SyntMeldekortProperties;
@@ -29,7 +29,7 @@ public class SynthdataMeldekortProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, AzureAdTokenService tokenService, SyntMeldekortProperties properties) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, NavAzureAdTokenService tokenService, SyntMeldekortProperties properties) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
