@@ -40,10 +40,10 @@ public class SikkerhetstiltakDTO extends DbVersjonDTO {
     @AllArgsConstructor
     public static class Kontaktperson implements Serializable {
 
-        @Schema(description = "NAV ident, (bokstav + 6 sifre", required = true, example = "Z9999999")
+        @Schema(description = "NAV-ident, (bokstav + 6 sifre", required = true, example = "Z9999999")
         private String personident;
 
-        @Schema(description = "NAV enhet (4 sifre)", required = true)
+        @Schema(description = "NAV-enhet (4 sifre)", required = true)
         private String enhet;
     }
 }

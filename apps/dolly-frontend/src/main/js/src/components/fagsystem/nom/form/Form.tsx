@@ -45,15 +45,15 @@ export const NomForm = ({ formikBag }: NomFormProps) => {
 	return (
 		<Vis attributt={navAnsattPaths}>
 			<Panel
-				heading="NAV ansatt"
-				iconType="organisasjon"
+				heading="NAV-ansatt"
+				iconType="logo"
 				//@ts-ignore
 				startOpen={() => erForste(formikBag.values, navAnsattPaths)}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect
 						name="nomData.opprettNavIdent"
-						label="Har NAV ident"
+						label="Har NAV-ident"
 						options={Options('boolean')}
 						visHvisAvhuket
 					/>

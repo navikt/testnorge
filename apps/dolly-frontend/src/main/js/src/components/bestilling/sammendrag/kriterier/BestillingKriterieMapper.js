@@ -1116,24 +1116,15 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const nomKriterier = bestillingData.nomData
 
 	if (nomKriterier || tpsMessaging?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoTom) {
-		if (nomKriterier) {
-			const nom = {
-				header: 'NAV ansatt',
-				items: [nomKriterier && obj('Har NAV ident', nomKriterier?.opprettNavIdent ? 'JA' : 'NEI')],
-			}
-			data.push(nom)
+		const nom = {
+			header: 'NAV-ansatt',
+			items: [
+				obj('Har NAV-ident', nomKriterier?.opprettNavIdent ? 'JA' : 'NEI'),
+				obj('Skjerming fra', Formatters.formatDate(tpsMessaging?.egenAnsattDatoFom)),
+				obj('Skjerming til', Formatters.formatDate(tpsMessaging?.egenAnsattDatoTom)),
+			],
 		}
-
-		if (tpsMessaging?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoTom) {
-			const skjerming = {
-				header: 'NAV skjerming',
-				items: [
-					obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
-					obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
-				],
-			}
-			data.push(skjerming)
-		}
+		data.push(nom)
 	}
 
 	const arenaKriterier = bestillingData.arenaforvalter

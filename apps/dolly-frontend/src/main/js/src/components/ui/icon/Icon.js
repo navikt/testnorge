@@ -60,6 +60,7 @@ import PiggyBank from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/pi
 import Plaster from '~/assets/icons/nav-ikoner/line/SVG/40-health/first-aid-plaster.svg'
 import Link from '~/assets/icons/nav-ikoner/filled/SVG/01-edition/link-2.svg'
 import LinkBroken from '~/assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg'
+import Logo from '~/assets/icons/nav-ikoner/line/SVG/01-edition/nav-logo.svg'
 
 import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
 import Details from '~/assets/icons/custom/Details.svg'
@@ -107,6 +108,7 @@ export const icons = {
 	ThumbsDown: ThumbsDown,
 	lock: Lock_Black,
 	logout: Logout,
+	logo: Logo,
 
 	man: Man,
 	manLight: ManLight,

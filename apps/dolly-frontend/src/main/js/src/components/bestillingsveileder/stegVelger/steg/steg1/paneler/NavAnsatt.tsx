@@ -11,7 +11,7 @@ export const NavAnsattPanel = ({ stateModifier }: any) => {
 			heading={NavAnsattPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="organisasjon"
+			iconType="logo"
 		>
 			<AttributtKategori title={null}>
 				<Attributt attr={sm.attrs.navIdent} />
@@ -21,13 +21,13 @@ export const NavAnsattPanel = ({ stateModifier }: any) => {
 	)
 }
 
-NavAnsattPanel.heading = 'NAV ansatt'
+NavAnsattPanel.heading = 'NAV-ansatt'
 
 NavAnsattPanel.initialValues = ({ set, setMulti, del, has, opts }: any) => {
 	const { personFoerLeggTil } = opts
 	return {
 		navIdent: {
-			label: 'NAV ident',
+			label: 'Har NAV-ident',
 			checked: has('nomData'),
 			add: () =>
 				set('nomData', {
@@ -36,7 +36,7 @@ NavAnsattPanel.initialValues = ({ set, setMulti, del, has, opts }: any) => {
 			remove: () => del('nomData'),
 		},
 		egenAnsattDatoFom: {
-			label: 'Skjerming',
+			label: 'Har skjerming',
 			checked: has('tpsf.egenAnsattDatoFom') || has('tpsMessaging.egenAnsattDatoFom'),
 			add() {
 				setMulti(
