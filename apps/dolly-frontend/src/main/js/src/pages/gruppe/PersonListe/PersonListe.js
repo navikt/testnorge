@@ -226,6 +226,7 @@ export default function PersonListe({
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
+						setVisning={setVisning}
 					/>
 				)}
 			/>

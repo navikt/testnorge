@@ -146,6 +146,7 @@ export default function Gruppe({
 					setSidetall={setSidetall}
 					setSideStoerrelse={setSideStoerrelse}
 					brukertype={brukertype}
+					setVisning={byttVisning}
 				/>
 			)}
 			{visning === VISNING_BESTILLING && (

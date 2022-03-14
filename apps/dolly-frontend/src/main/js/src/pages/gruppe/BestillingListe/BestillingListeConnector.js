@@ -10,6 +10,7 @@ const mapStateToProps = (state, ownProps) => ({
 	searchActive: Boolean(state.search),
 	isFetchingBestillinger: loadingBestillingerSelector(state),
 	bestillinger: sokSelector(state, state.search),
+	navigerBestillingId: sessionStorage.getItem(NAVIGER_BESTILLING_ID),
 })
 
 export default connect(mapStateToProps)(BestillingListe)
