@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.apps.tpsmessagingservice.service.AdresseService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
@@ -12,6 +13,7 @@ import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
@@ -45,6 +47,7 @@ public class PersonController {
     private final BankkontoNorskService bankkontoNorskService;
     private final TelefonnummerService telefonnummerService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
+    private final AdresseService adresseService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
@@ -135,6 +138,14 @@ public class PersonController {
                                                              @RequestParam (required = false) List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
+    }
+
+    @PostMapping("/{ident}/adresse")
+    public List<TpsMeldingResponseDTO> endreAdresse(@PathVariable String ident,
+                                                             @RequestBody PostadresseUtlandDTO postadresse,
+                                                             @RequestParam (required = false) List<String> miljoer) {
+
+        return convert(adresseService.endreAdresse(ident, postadresse, miljoer));
     }
 }
 
