@@ -15,7 +15,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.tps.ctg.s610.domain.EnkelBoAdresseType;
 import no.nav.tps.ctg.s610.domain.S610BrukerType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
@@ -223,10 +223,10 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                                 mapperFacade.map(tpsPerson.getBruker().getBankkontoUtland(), BankkontonrUtlandDTO.class) : null;
                     }
 
-                    private List<TelefonnummerDTO> getTelefonnumre(S610PersonType tpsPerson) {
+                    private List<TelefonTypeNummerDTO> getTelefonnumre(S610PersonType tpsPerson) {
                         return nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getTelefoner()) &&
                                 !tpsPerson.getBruker().getTelefoner().getTelefon().isEmpty() ?
-                                mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonnummerDTO.class) : null;
+                                mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonTypeNummerDTO.class) : null;
                     }
 
                     private SikkerhetstiltakDTO getSikkerhetstiltak(S610PersonType tpsPerson) {

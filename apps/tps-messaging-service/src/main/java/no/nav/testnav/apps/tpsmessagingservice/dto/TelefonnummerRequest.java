@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -53,6 +53,6 @@ public class TelefonnummerRequest extends EndringsmeldingRequest {
     public static class BrukertypeIdentifikasjon {
 
         private String offentligIdent;
-        private TelefonnummerDTO.TypeTelefon typeTelefon;
+        private TelefonTypeNummerDTO.TypeTelefon typeTelefon;
     }
 }

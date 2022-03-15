@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class TelefonnummerDTO {
+public class TelefonTypeNummerDTO {
 
     public enum TypeTelefon {ARBT, HJET, MOBI}
 

@@ -9,7 +9,7 @@ import lombok.Setter;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class RsTpsMessaging {
     private BankkontonrUtlandDTO utenlandskBankkonto;
     private List<SikkerhetstiltakDTO> sikkerhetstiltak;
     private BankkontonrNorskDTO norskBankkonto;
-    private List<TelefonnummerDTO> telefonnummer;
+    private List<TelefonTypeNummerDTO> telefonnummer;
 
     public List<SikkerhetstiltakDTO> getSikkerhetstiltak() {
         if (isNull(sikkerhetstiltak)) {
@@ -40,7 +40,7 @@ public class RsTpsMessaging {
         return sikkerhetstiltak;
     }
 
-    public List<TelefonnummerDTO> getTelefonnummer() {
+    public List<TelefonTypeNummerDTO> getTelefonnummer() {
         if (isNull(telefonnummer)) {
             telefonnummer = new ArrayList<>();
         }

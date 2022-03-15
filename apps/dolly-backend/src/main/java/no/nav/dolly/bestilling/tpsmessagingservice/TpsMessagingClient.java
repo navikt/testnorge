@@ -4,17 +4,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -28,17 +35,15 @@ public class TpsMessagingClient implements ClientRegister {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
+    private final PdlDataConsumer pdlDataConsumer;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (isNull(bestilling.getTpsMessaging())) {
-            return;
-        }
         StringBuilder status = new StringBuilder();
 
         try {
-            if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
+            if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSpraakkodeRequest(
                                 dollyPerson.getHovedperson(),
@@ -49,7 +54,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (!bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
+            if (nonNull(bestilling.getTpsMessaging()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
                 var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
                         dollyPerson.getHovedperson(),
                         null);
@@ -73,7 +78,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom())) {
+            if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendEgenansattRequest(
                                 dollyPerson.getHovedperson(),
@@ -83,7 +88,7 @@ public class TpsMessagingClient implements ClientRegister {
                         "Egenansatt_opprett"
                 );
             }
-            if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
+            if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
                     !bestilling.getTpsMessaging().getEgenAnsattDatoTom().isAfter(LocalDate.now())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.deleteEgenansattRequest(
@@ -94,7 +99,15 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (!bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
+            if (dollyPerson.isTpsfMaster() && isNull(dollyPerson.getPdlfPerson())) {
+
+                var personer = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
+                if (!personer.isEmpty()) {
+                    dollyPerson.setPdlfPerson(personer.stream().findFirst().get());
+                }
+            }
+
+            if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
                         null);
@@ -113,10 +126,31 @@ public class TpsMessagingClient implements ClientRegister {
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
                                 null,
-                                bestilling.getTpsMessaging().getTelefonnummer()),
+                                mapperFacade.mapAsList(dollyPerson.getPdlfPerson().getPerson().getTelefonnummer(), TelefonTypeNummerDTO.class)),
                         status,
                         "Telefonnummer_opprett"
                 );
+            }
+
+            if (nonNull(dollyPerson.getPdlfPerson())) {
+
+                var responser =
+                        Stream.of(List.of(dollyPerson.getPdlfPerson().getPerson()),
+                                        dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                                .toList())
+                                .flatMap(Collection::stream)
+                                .filter(person -> person.getBostedsadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
+                                .map(person ->
+                                        tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
+                                                mapperFacade.map(person.getBostedsadresse().stream()
+                                                        .filter(AdresseDTO::isAdresseUtland)
+                                                        .findFirst().get(), AdresseUtlandDTO.class)))
+                                .toList();
+
+                if (!responser.isEmpty()) {
+                    appendResponseStatus(responser.stream().findFirst().get(), status, "AdresseUtland_opprett");
+                }
             }
 
             sendBankkontoer(bestilling, dollyPerson, status);
@@ -135,7 +169,7 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
     private void sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
-        if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
+        if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
 
             appendResponseStatus(tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                             dollyPerson.getHovedperson(),
@@ -144,7 +178,7 @@ public class TpsMessagingClient implements ClientRegister {
                     status, "UtenlandskBankkonto");
         }
 
-        if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
+        if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
 
             appendResponseStatus(tpsMessagingConsumer.sendNorskBankkontoRequest(
                             dollyPerson.getHovedperson(),
