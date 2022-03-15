@@ -1,5 +1,3 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-
 spring:
   application:
     name: testnav-synthdata-meldekort-proxy
@@ -11,14 +9,6 @@ spring:
           issuer-uri: ${azure.openid.config.issuer}
           jwk-set-uri: ${azure.openid.config.jwks.uri}
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
-consumers:
-  synt-meldekort:
-    url: https://synthdata-arena-meldekort.dev.intern.nav.no
-    cluster: dev-gcp
-    namespace: dolly
-    name: synthdata-arena-meldekort
-
 azure:
   trygdeetaten:
     app:
@@ -29,3 +19,10 @@ azure:
       config:
         token:
           endpoint: ${azure.openid.config.token.endpoint}
+
+consumers:
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-meldekort
