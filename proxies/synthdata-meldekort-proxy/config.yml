@@ -13,6 +13,11 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+  accessPolicy:
+    outbound:
+      rules:
+        - application: synthdata-arena-meldekort
+          cluster: dev-gcp
 ---
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
