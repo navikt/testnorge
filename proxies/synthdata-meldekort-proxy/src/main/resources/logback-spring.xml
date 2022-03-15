@@ -35,8 +35,4 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-
-    <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">
-        <level value="TRACE"/>
-    </logger>
 </configuration>
