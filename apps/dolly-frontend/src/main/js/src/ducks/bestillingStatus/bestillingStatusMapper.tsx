@@ -12,23 +12,57 @@
 
 import Formatters from '~/utils/DataFormatter'
 
-const finnesDetAvvikForBestillinger = (status) => {
+type Bestilling = {
+	id: number
+	antallIdenter: number
+	antallLevert: number
+	ferdig: boolean
+	sistOppdatert: Date
+	bruker: {
+		brukerId: string
+		brukernavn: string
+		brukertype: string
+		epost: string
+	}
+	gruppeId: number
+	stoppet: boolean
+	environments: [string]
+	status: [Status]
+}
+
+type Status = {
+	id: string
+	navn: string
+	statuser: [
+		{
+			melding: string
+			detaljert: [
+				{
+					miljo: string
+					identer: [string]
+				}
+			]
+		}
+	]
+}
+
+const finnesDetAvvikForBestillinger = (status: [Status]) => {
 	if (!status) return false
 	return status.some((source) => {
 		return source.statuser.some((status) => status.melding !== 'OK')
 	})
 }
 
-const antallIdenterOpprettetPaaBestilling = (status) => {
+const antallIdenterOpprettetPaaBestilling = (status: [Status]) => {
 	if (!status) return 0
 	if (status.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
-	let identerOpprettet = []
+	let identerOpprettet: string[] = []
 	if (status.length) {
 		const tpsf = status.find((f) => f.id === 'TPSF')
 		const importFraTps = status.find((f) => f.id === 'TPSIMPORT')
 		const importFraPdl = status.find((f) => f.id === 'PDLIMPORT')
 
-		const addOpprettedeIdenter = (system) => {
+		const addOpprettedeIdenter = (system: Status) => {
 			system.statuser.forEach((stat) => {
 				stat.detaljert.forEach((miljo) => {
 					identerOpprettet = identerOpprettet.concat(miljo.identer)
@@ -48,7 +82,11 @@ const antallIdenterOpprettetPaaBestilling = (status) => {
 }
 
 // Setter bestillingstatus
-const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprettet) => {
+const extractBestillingstatusKode = (
+	bestilling: Bestilling,
+	harAvvik: boolean,
+	antallIdenterOpprettet: number
+) => {
 	return bestilling.stoppet
 		? 'Stoppet'
 		: !bestilling.ferdig
@@ -64,24 +102,36 @@ const extractBestillingstatusKode = (bestilling, harAvvik, antallIdenterOpprette
  * Lager et String[] med verdier som vises i bestillingsliste
  * slik at man kan enkelt søke i verdier og samtidig liste de ut
  */
-const extractValuesForBestillingListe = (data, statusKode) => {
+const extractValuesForBestillingListe = (
+	data: Bestilling,
+	identer: string[],
+	statusKode: string
+) => {
 	const values = {
 		id: data.id.toString(),
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
 		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
 		statusKode,
+		identer: Formatters.arrayToString(identer),
 	}
 
 	return Object.values(values)
 }
 
-export default function bestillingStatusMapper(data) {
-	return data.map((bestilling) => {
+export default function bestillingStatusMapper(data: [Object]) {
+	return data.map((bestilling: Bestilling) => {
+		const alleIdenter = [
+			...new Set(
+				bestilling.status.flatMap(
+					(status: Status) => status?.statuser?.[0]?.detaljert?.[0]?.identer
+				)
+			),
+		]?.filter((ident) => ident !== undefined)
 		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
 		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
 		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
-		const listedata = extractValuesForBestillingListe(bestilling, statusKode)
+		const listedata = extractValuesForBestillingListe(bestilling, alleIdenter, statusKode)
 		return {
 			...bestilling,
 			antallIdenterOpprettet,

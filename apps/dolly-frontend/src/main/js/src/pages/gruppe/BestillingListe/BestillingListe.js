@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import _orderBy from 'lodash/orderBy'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
@@ -9,7 +9,11 @@ import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { NAVIGER_BESTILLING_ID } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
+import { SEARCH_IDENT } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
+import { useDispatch } from 'react-redux'
+import { resetSearch, setSearchText } from '~/ducks/search'
+import Button from '~/components/ui/button/Button'
+import styled from 'styled-components'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -17,6 +21,20 @@ const ikonTypeMap = {
 	Feilet: 'report-problem-triangle',
 	Stoppet: 'report-problem-triangle',
 }
+
+const FjernFilterButton = styled(Button)`
+	margin-bottom: 10px;
+	margin-top: -10px;
+	color: #890606;
+
+	:hover {
+		border-color: #890606;
+	}
+
+	svg * {
+		fill: #890606;
+	}
+`
 
 export default function BestillingListe({
 	bestillinger,
@@ -29,6 +47,9 @@ export default function BestillingListe({
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
 
+	const searchIdent = sessionStorage.getItem(SEARCH_IDENT)
+	const searchInfo = `Søket er filtrert etter ident ${searchIdent}, trykk for å fjerne filtreringen`
+
 	if (bestillinger.length === 0) {
 		let infoTekst = 'Trykk på opprett personer-knappen for å starte en bestilling.'
 		if (searchActive) infoTekst = 'Søket gav ingen resultater.'
@@ -39,9 +60,13 @@ export default function BestillingListe({
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
-	if (sessionStorage.getItem(NAVIGER_BESTILLING_ID)) {
-		sessionStorage.removeItem(NAVIGER_BESTILLING_ID)
-	}
+	const dispatch = useDispatch()
+
+	useEffect(() => {
+		if (searchIdent) {
+			dispatch(setSearchText(searchIdent))
+		}
+	}, [])
 
 	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
 
@@ -83,6 +108,17 @@ export default function BestillingListe({
 
 	return (
 		<ErrorBoundary>
+			{searchIdent && (
+				<div className={'flexbox--justify-center'}>
+					<FjernFilterButton
+						kind="kryss"
+						onClick={() => dispatch(resetSearch())}
+						title={searchInfo}
+					>
+						FJERN FILTRERING
+					</FjernFilterButton>
+				</div>
+			)}
 			<DollyTable
 				data={sortedBestillinger}
 				columns={columns}

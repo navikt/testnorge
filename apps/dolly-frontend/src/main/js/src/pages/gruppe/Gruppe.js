@@ -11,6 +11,8 @@ import { BestillingsveilederModal } from '~/components/bestillingsveileder/start
 import Icon from '~/components/ui/icon/Icon'
 import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
 import { Redirect } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { resetSearch } from '~/ducks/search'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -42,6 +44,8 @@ export default function Gruppe({
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 
+	const dispatch = useDispatch()
+
 	useEffect(() => {
 		getGruppe(sidetall, sideStoerrelse)
 		getBestillinger()
@@ -50,6 +54,9 @@ export default function Gruppe({
 	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
 
 	const byttVisning = (event) => {
+		if (event?.target?.value === 'personer') {
+			dispatch(resetSearch())
+		}
 		setVisning(typeof event === 'string' ? event : event.target.value)
 	}
 
