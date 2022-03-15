@@ -44,7 +44,7 @@ export default function BestillingResultat(props) {
 			{isGjenopprettModalOpen && (
 				<GjenopprettConnector
 					bestilling={bestilling}
-					brukerId={brukerId && brukerId}
+					brukerId={brukerId}
 					closeModal={() => {
 						closeGjenoprettModal()
 						window.location.reload()
