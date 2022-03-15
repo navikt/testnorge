@@ -10,11 +10,6 @@ spec:
   secretName: azure-nav-testnav-synthdata-meldekort-proxy-nav
   secretKeyPrefix: "AZURE_NAV"
   tenant: nav.no
-  accessPolicy:
-    outbound:
-      rules:
-        - application: synthdata-arena-meldekort
-          cluster: dev-gcp
 ---
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
