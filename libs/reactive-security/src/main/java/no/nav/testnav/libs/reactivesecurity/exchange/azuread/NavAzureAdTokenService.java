@@ -29,14 +29,13 @@ public class NavAzureAdTokenService implements ExchangeToken {
 
     public NavAzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
             AzureNavProxyClientCredential azureNavProxyClientCredential
     ) {
         this.clientCredential = azureNavProxyClientCredential;
         log.info("Init AzureAd Nav token service.");
         WebClient.Builder builder = WebClient
                 .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .baseUrl(azureNavProxyClientCredential.getTokenEndpoint())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
