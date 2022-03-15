@@ -46,21 +46,21 @@ type Status = {
 	]
 }
 
-const finnesDetAvvikForBestillinger = (status: [Status]) => {
-	if (!status) return false
-	return status.some((source) => {
+const finnesDetAvvikForBestillinger = (statusListe: [Status]) => {
+	if (!statusListe) return false
+	return statusListe.some((source) => {
 		return source.statuser.some((status) => status.melding !== 'OK')
 	})
 }
 
-const antallIdenterOpprettetPaaBestilling = (status: [Status]) => {
-	if (!status) return 0
-	if (status.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
+const antallIdenterOpprettetPaaBestilling = (statusListe: [Status]) => {
+	if (!statusListe) return 0
+	if (statusListe.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
 	let identerOpprettet: string[] = []
-	if (status.length) {
-		const tpsf = status.find((f) => f.id === 'TPSF')
-		const importFraTps = status.find((f) => f.id === 'TPSIMPORT')
-		const importFraPdl = status.find((f) => f.id === 'PDLIMPORT')
+	if (statusListe.length) {
+		const tpsf = statusListe.find((f) => f.id === 'TPSF')
+		const importFraTps = statusListe.find((f) => f.id === 'TPSIMPORT')
+		const importFraPdl = statusListe.find((f) => f.id === 'PDLIMPORT')
 
 		const addOpprettedeIdenter = (system: Status) => {
 			system.statuser.forEach((stat) => {
@@ -87,15 +87,10 @@ const extractBestillingstatusKode = (
 	harAvvik: boolean,
 	antallIdenterOpprettet: number
 ) => {
-	return bestilling.stoppet
-		? 'Stoppet'
-		: !bestilling.ferdig
-		? 'Pågår'
-		: antallIdenterOpprettet === 0
-		? 'Feilet'
-		: harAvvik
-		? 'Avvik'
-		: 'Ferdig'
+	if (bestilling.stoppet) return 'Stoppet'
+	if (!bestilling.ferdig) return 'Pågår'
+	if (antallIdenterOpprettet === 0) return 'Feilet'
+	return harAvvik ? 'Avvik' : 'Ferdig'
 }
 
 /**
