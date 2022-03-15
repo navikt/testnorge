@@ -50,7 +50,7 @@ public class SyntetiseringServiceV2 {
                 .toList();
 
         if (oppdaterteBidragsmeldinger.size() < antallIdenter) {
-            log.warn("Oppretter {} av {} bidragsmelding(er).", bidragsmeldinger.size(), antallIdenter);
+            log.warn("Oppretter {} av {} bidragsmelding(er).", oppdaterteBidragsmeldinger.size(), antallIdenter);
         }
 
         return oppdaterteBidragsmeldinger;
