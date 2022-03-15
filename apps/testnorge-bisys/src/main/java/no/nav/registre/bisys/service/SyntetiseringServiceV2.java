@@ -36,20 +36,24 @@ public class SyntetiseringServiceV2 {
     private static final LocalDate MIN_MOTTATT_DATO = LocalDate.of(2007, 1, 1);
 
     public List<SyntetisertBidragsmelding> generateBidragsmeldinger(int antallIdenter) {
-        //TODO feilmelding håndtering hvis feil i synt
         var bidragsmeldinger = syntBisysConsumer.getSyntetiserteBidragsmeldinger(antallIdenter);
 
         for (var melding : bidragsmeldinger) {
             var barn = identServiceV2.getValidId(melding);
-            //TODO feilmeldinghåndtering hvis feil med barn
-            finalizeBidragsmelding(barn, melding);
+            if (barn != null) {
+                finalizeBidragsmelding(barn, melding);
+            }
         }
 
-        if (bidragsmeldinger.size() < antallIdenter) {
+        var oppdaterteBidragsmeldinger = bidragsmeldinger.stream()
+                .filter(bidragsmelding -> bidragsmelding.getBarn() != null && !bidragsmelding.getBarn().equals(""))
+                .toList();
+
+        if (oppdaterteBidragsmeldinger.size() < antallIdenter) {
             log.warn("Oppretter {} av {} bidragsmelding(er).", bidragsmeldinger.size(), antallIdenter);
         }
 
-        return bidragsmeldinger;
+        return oppdaterteBidragsmeldinger;
     }
 
     private void finalizeBidragsmelding(Barn barn, SyntetisertBidragsmelding bidragsmelding) {
