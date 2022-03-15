@@ -9,7 +9,7 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingComman
 import no.nav.testnav.apps.tpsmessagingservice.dto.PostadresseRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.PostadresseResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseUtlandDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
@@ -44,7 +44,7 @@ public class AdresseService {
         this.responseContext = JAXBContext.newInstance(PostadresseResponse.class);
     }
 
-    public Map<String, TpsMeldingResponse> endreAdresse(String ident, PostadresseUtlandDTO postadresseUtland, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> endreAdresseUtland(String ident, AdresseUtlandDTO postadresseUtland, List<String> miljoer) {
 
         miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 

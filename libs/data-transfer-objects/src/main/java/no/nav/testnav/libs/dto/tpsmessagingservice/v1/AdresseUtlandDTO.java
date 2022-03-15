@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PostadresseUtlandDTO {
+public class AdresseUtlandDTO {
 
     private LocalDateTime datoAdresse;
     private String adresse1;

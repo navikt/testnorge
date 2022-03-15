@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.PostadresseRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseUtlandDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -20,10 +20,10 @@ public class PostadresseUtlandMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(PostadresseUtlandDTO.class, PostadresseRequest.class)
+        factory.classMap(AdresseUtlandDTO.class, PostadresseRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PostadresseUtlandDTO source, PostadresseRequest target, MappingContext context) {
+                    public void mapAtoB(AdresseUtlandDTO source, PostadresseRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(PostadresseRequest.SfeAjourforing.builder()
                                 .systemInfo(TpsSystemInfo.getDefault())
@@ -33,10 +33,10 @@ public class PostadresseUtlandMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(PostadresseUtlandDTO.class, PostadresseRequest.PostAdresse.class)
+        factory.classMap(AdresseUtlandDTO.class, PostadresseRequest.PostAdresse.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PostadresseUtlandDTO source, PostadresseRequest.PostAdresse target, MappingContext context) {
+                    public void mapAtoB(AdresseUtlandDTO source, PostadresseRequest.PostAdresse target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
                         target.setTypeAdresse(ADRESSE_UTLAND);

@@ -10,10 +10,10 @@ import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
@@ -140,12 +140,12 @@ public class PersonController {
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
     }
 
-    @PostMapping("/{ident}/adresse")
-    public List<TpsMeldingResponseDTO> endreAdresse(@PathVariable String ident,
-                                                             @RequestBody PostadresseUtlandDTO postadresse,
+    @PostMapping("/{ident}/adresse-utland")
+    public List<TpsMeldingResponseDTO> endreAdresseUtland(@PathVariable String ident,
+                                                             @RequestBody AdresseUtlandDTO postadresse,
                                                              @RequestParam (required = false) List<String> miljoer) {
 
-        return convert(adresseService.endreAdresse(ident, postadresse, miljoer));
+        return convert(adresseService.endreAdresseUtland(ident, postadresse, miljoer));
     }
 }
 
