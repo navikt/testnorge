@@ -2,7 +2,6 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlPersonConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchServiceConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.AlderSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.BarnSearch;
@@ -26,7 +25,6 @@ import java.util.Random;
 public class IdentService {
 
     private final PersonSearchServiceConsumer personSearchServiceConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
@@ -89,14 +87,14 @@ public class IdentService {
     }
 
     private boolean validBosattdato(PersonDTO person, LocalDate tidligsteDatoBosatt) {
-        var personData = pdlPersonConsumer.getPdlPerson(person.getIdent());
-        var gyldigeBosattstatuser = personData.getData().getHentPerson()
-                .getFolkeregisterpersonstatus().stream()
-                .filter(status -> status.getStatus().equals(BOSATT_STATUS) && !status.getMetadata().isHistorisk())
-                .map(status -> status.getFolkeregistermetadata().getGyldighetstidspunkt())
-                .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
-                .toList();
-        return !gyldigeBosattstatuser.isEmpty();
+        // TODO bruk kommentert ut kode når person search er oppdatert
+//        var gyldigeBosattstatuser = person.getFolkeregisterpersonstatus().stream()
+//                .filter(status -> status.getStatus().equals(BOSATT_STATUS))
+//                .map(status -> status.getGyldighetstidspunkt())
+//                .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
+//                .toList();
+//        return !gyldigeBosattstatuser.isEmpty();
+        return true;
     }
 
     private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
