@@ -40,7 +40,7 @@ public class TpsMessagingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        StringBuilder status = new StringBuilder();
+        var status = new StringBuilder();
 
         try {
             if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
@@ -51,6 +51,30 @@ public class TpsMessagingClient implements ClientRegister {
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
                         "SprakKode_opprett"
+                );
+            }
+
+            sendBankkontoer(bestilling, dollyPerson, status);
+
+            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendEgenansattRequest(
+                                dollyPerson.getHovedperson(),
+                                null,
+                                bestilling.getSkjerming().getEgenAnsattDatoFom().toLocalDate()),
+                        status,
+                        "Egenansatt_opprett"
+                );
+            }
+            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom()) &&
+                    !bestilling.getSkjerming().getEgenAnsattDatoTom().isAfter(LocalDateTime.now())) {
+
+                appendResponseStatus(
+                        tpsMessagingConsumer.deleteEgenansattRequest(
+                                dollyPerson.getHovedperson(),
+                                null),
+                        status,
+                        "Egenansatt_slett"
                 );
             }
 
@@ -77,28 +101,6 @@ public class TpsMessagingClient implements ClientRegister {
                                         .findFirst().get()),
                         status,
                         "Sikkerhetstiltak_opprett"
-                );
-            }
-
-            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
-                appendResponseStatus(
-                        tpsMessagingConsumer.sendEgenansattRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                bestilling.getSkjerming().getEgenAnsattDatoFom().toLocalDate()),
-                        status,
-                        "Egenansatt_opprett"
-                );
-            }
-            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom()) &&
-                    !bestilling.getSkjerming().getEgenAnsattDatoTom().isAfter(LocalDateTime.now())) {
-
-                appendResponseStatus(
-                        tpsMessagingConsumer.deleteEgenansattRequest(
-                                dollyPerson.getHovedperson(),
-                                null),
-                        status,
-                        "Egenansatt_slett"
                 );
             }
 
@@ -138,8 +140,6 @@ public class TpsMessagingClient implements ClientRegister {
                     appendResponseStatus(responser.stream().findFirst().get(), status, "AdresseUtland_opprett");
                 }
             }
-
-            sendBankkontoer(bestilling, dollyPerson, status);
 
         } catch (RuntimeException e) {
             progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
