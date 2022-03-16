@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandMod
 import no.nav.registre.testnorge.personsearchservice.adapter.model.StatsborgerskapModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
 
@@ -103,13 +103,13 @@ public class Person {
                 .getIdent();
     }
 
-    private List<FolkeregisterPersonstatusDTO> getPersonstatus() {
+    private List<FolkeregisterpersonstatusDTO> getPersonstatus() {
         return response
                 .getHentPerson()
                 .getFolkeregisterpersonstatus()
                 .stream()
                 .filter(personstatus ->  !personstatus.getMetadata().getHistorisk())
-                .map(personstatus -> FolkeregisterPersonstatusDTO.builder()
+                .map(personstatus -> FolkeregisterpersonstatusDTO.builder()
                         .status(personstatus.getStatus())
                         .gyldighetstidspunkt(personstatus.getFolkeregistermetadata().getGyldighetstidspunkt())
                         .build()
@@ -141,7 +141,7 @@ public class Person {
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
                 .innfyttingTilNorge(toDTO(innflyttingTilNorge))
                 .forelderBarnRelasjoner(toDTO(forelderBarnRelasjon))
-                .folkeregisterPersonstatus(getPersonstatus())
+                .folkeregisterpersonstatus(getPersonstatus())
                 .build();
     }
 }

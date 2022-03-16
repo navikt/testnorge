@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class FolkeregisterPersonstatusDTO {
+public class FolkeregisterpersonstatusDTO {
     String status;
     LocalDate gyldighetstidspunkt;
 }
