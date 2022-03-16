@@ -9,16 +9,6 @@ spring:
           issuer-uri: ${azure.openid.config.issuer}
           jwk-set-uri: ${azure.openid.config.jwks.uri}
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-azure:
-  trygdeetaten:
-    app:
-      client:
-        id: ${azure.app.client.id}
-        secret: ${azure.app.client.secret}
-    openid:
-      config:
-        token:
-          endpoint: ${azure.openid.config.token.endpoint}
 
 consumers:
   synt-meldekort:
