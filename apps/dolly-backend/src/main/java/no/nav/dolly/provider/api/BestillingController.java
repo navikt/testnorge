@@ -84,7 +84,7 @@ public class BestillingController {
 
     @GetMapping("/malbestilling/{malNavn}")
     @Operation(description = "Hent mal-bestilling basert på navn")
-    public List<Bestilling> getMalbestillingByNavn(String malNavn) {
+    public List<Bestilling> getMalbestillingByNavn(@PathVariable("malNavn") String malNavn) {
 
         return malBestillingService.getMalbestillingByNavn(malNavn);
     }
