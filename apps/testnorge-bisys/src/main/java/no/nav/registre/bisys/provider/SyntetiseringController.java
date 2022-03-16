@@ -29,7 +29,9 @@ public class SyntetiseringController {
     public void genererOgLagreBidragsmeldinger(
             @RequestBody SyntetiserBisysRequest syntetiserBisysRequest
     ) throws SyntetisertBidragsmeldingException {
-        List<SyntetisertBidragsmelding> syntetisertBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
-        bidragsmeldingConsumer.opprett(syntetisertBidragsmeldinger);
+        var syntetisertBidragsmeldinger = syntetiseringService.generateBidragsmeldinger(syntetiserBisysRequest);
+        if (!syntetisertBidragsmeldinger.isEmpty()){
+            bidragsmeldingConsumer.opprett(syntetisertBidragsmeldinger);
+        }
     }
 }
