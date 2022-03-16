@@ -9,7 +9,6 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSe
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonstatusSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PdlPerson;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import org.springframework.stereotype.Service;
@@ -101,11 +100,7 @@ public class IdentService {
     }
 
     private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
-        var personData = pdlPersonConsumer.getPdlPerson(person.getIdent());
-        var barnIdenter = personData.getData().getHentPerson().getForelderBarnRelasjon()
-                .stream()
-                .filter(relasjon -> relasjon.getRelatertPersonsRolle().equals("BARN"))
-                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+        var barnIdenter = person.getForelderBarnRelasjoner().getBarn().stream()
                 .filter(ident -> under18VedTidspunkt(ident, tidligsteDatoBarnetillegg))
                 .toList();
 
@@ -125,7 +120,7 @@ public class IdentService {
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
             int antall
     ) {
-        // TODO: hente tilfeldige identer og opprett konto på de
+        // TODO: hente tilfeldige identer og opprett konto på de eller hente fra gruppe i dolly
         return Collections.emptyList();
     }
 
