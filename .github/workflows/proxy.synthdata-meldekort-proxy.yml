@@ -6,6 +6,7 @@ on:
       - proxies/synthdata-meldekort-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+      - libs/reactive-security/**
       - .github/workflows/proxy.synthdata-meldekort-proxy.yml
 
 jobs:
