@@ -8,7 +8,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +45,7 @@ public class NomClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        throw new NotImplementedException("Release ikke støttet enda");
+        log.warn("Release ikke støttet enda");
     }
 
     private void deleteIdent(String ident) {
