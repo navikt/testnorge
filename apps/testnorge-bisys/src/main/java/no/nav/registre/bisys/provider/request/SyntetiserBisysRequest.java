@@ -8,8 +8,6 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class SyntetiserBisysRequest {
 
-    @JsonProperty("avspillergruppeId")
-    private Long avspillergruppeId;
     @JsonProperty("miljoe")
     private String miljoe;
     @JsonProperty("antallNyeIdenter")

@@ -27,7 +27,7 @@ public class BidragsmeldingConsumer {
                 .build();
     }
 
-    public void opprett(List<SyntetisertBidragsmelding> list) {
+    public void opprett(List<SyntetisertBidragsmelding> list, String miljoe) {
         list.forEach(item -> new OpprettBidragsmeldingCommand(webClient, item).run());
     }
 }

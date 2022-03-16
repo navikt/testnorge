@@ -7,8 +7,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 
-import static no.nav.registre.bisys.service.utils.DateUtilsV2.getMonthsBetween;
-import static no.nav.registre.bisys.service.utils.DateUtilsV2.getAgeInMonths;
+import static no.nav.registre.bisys.service.utils.DateUtils.getMonthsBetween;
+import static no.nav.registre.bisys.service.utils.DateUtils.getAgeInMonths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)

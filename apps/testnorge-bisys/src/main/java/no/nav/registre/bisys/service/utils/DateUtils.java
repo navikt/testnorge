@@ -1,10 +1,12 @@
 package no.nav.registre.bisys.service.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.LocalDate;
-import org.joda.time.Months;
-import org.joda.time.format.DateTimeFormat;
+
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 
 @Slf4j
 @Service
@@ -13,14 +15,11 @@ public class DateUtils {
     private DateUtils() {
     }
 
-    public static LocalDate getBirthdate(String fnr) {
-        String birthdateStr = fnr.substring(0, 6);
-        return LocalDate.parse(birthdateStr, DateTimeFormat.forPattern("ddMMyy"));
+    public static int getMonthsBetween(LocalDate firstDate, LocalDate secondDate) {
+        return (int) ChronoUnit.MONTHS.between(firstDate, secondDate);
     }
 
-    public static int getAgeInMonths(String fnr, LocalDate dateMeasured) {
-        LocalDate fodselsdato = getBirthdate(fnr);
-
-        return Months.monthsBetween(fodselsdato.dayOfMonth().withMinimumValue(), dateMeasured.dayOfMonth().withMinimumValue()).getMonths();
+    public static int getAgeInMonths(LocalDate foedselsdato, LocalDate dateMeasured) {
+        return getMonthsBetween(foedselsdato.withDayOfMonth(1), dateMeasured.withDayOfMonth(1));
     }
 }
