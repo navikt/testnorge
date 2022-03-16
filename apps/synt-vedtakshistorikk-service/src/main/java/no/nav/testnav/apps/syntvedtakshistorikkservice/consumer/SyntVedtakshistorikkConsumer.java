@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.HentVedtakshistorikkCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.HentVedtakshistorikkCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import org.springframework.stereotype.Component;

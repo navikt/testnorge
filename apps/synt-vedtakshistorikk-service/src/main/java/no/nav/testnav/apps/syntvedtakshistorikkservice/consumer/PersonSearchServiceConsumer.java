@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.PersonSearchCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search.PersonSearchCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PersonSearchServiceProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PersonSearchResponse;

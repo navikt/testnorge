@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
