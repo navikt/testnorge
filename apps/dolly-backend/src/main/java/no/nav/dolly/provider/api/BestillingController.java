@@ -82,6 +82,13 @@ public class BestillingController {
         return malBestillingService.getMalBestillinger();
     }
 
+    @GetMapping("/malbestilling/{malNavn}")
+    @Operation(description = "Hent mal-bestilling basert på navn")
+    public List<Bestilling> getMalbestillingByNavn(String malNavn) {
+
+        return malBestillingService.getMalbestillingByNavn(malNavn);
+    }
+
     @DeleteMapping("/malbestilling/{id}")
     @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {

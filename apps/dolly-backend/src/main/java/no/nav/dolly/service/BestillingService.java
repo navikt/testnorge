@@ -68,6 +68,10 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
+    public Optional<List<Bestilling>> getMalbestillingByNavn(String malNavn) {
+        return bestillingRepository.findBestillingsByMalBestillingNavnContains(malNavn);
+    }
+
     @Transactional
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
         try {

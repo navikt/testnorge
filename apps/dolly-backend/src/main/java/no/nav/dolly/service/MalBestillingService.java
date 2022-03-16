@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -53,6 +54,10 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
+    public List<Bestilling> getMalbestillingByNavn(String malNavn) {
+        return bestillingService.getMalbestillingByNavn(malNavn).orElse(Collections.emptyList());
+    }
+
     private static String getUserId(Bruker bruker) {
 
         return nonNull(bruker) ? resolveId(bruker) : COMMON;
@@ -62,10 +67,8 @@ public class MalBestillingService {
 
         if (nonNull(bruker.getEidAv())) {
             return bruker.getEidAv().getBrukernavn();
-
         } else if (isNotBlank(bruker.getBrukernavn())) {
             return bruker.getBrukernavn();
-
         } else {
             return bruker.getNavIdent();
         }

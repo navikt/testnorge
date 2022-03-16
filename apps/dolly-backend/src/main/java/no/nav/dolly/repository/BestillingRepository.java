@@ -16,6 +16,9 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     Bestilling save(Bestilling bestilling);
 
+    @Query(value = "from Bestilling b where b.malBestillingNavn = :malNavn")
+    Optional<List<Bestilling>> findBestillingsByMalBestillingNavnContains(String malNavn);
+
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();
 
