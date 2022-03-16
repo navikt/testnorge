@@ -16,6 +16,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.NavigasjonService;
+import no.nav.dolly.service.OrdreService;
 import no.nav.dolly.service.PersonService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,7 @@ public class TestpersonController {
     private final IdentService identService;
     private final PersonService personService;
     private final NavigasjonService navigasjonService;
+    private final OrdreService ordreService;
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
@@ -114,5 +116,13 @@ public class TestpersonController {
     public RsWhereAmI navigerTilTestident(@PathVariable String ident) {
 
         return navigasjonService.navigerTilIdent(ident);
+    }
+
+    @Operation(description = "Naviger til ønsket testperson")
+    @Transactional
+    @GetMapping("/ident/{ident}/ordre")
+    public RsWhereAmI sendOrdre(@PathVariable String ident) {
+
+        return ordreService.sendOrdre(ident);
     }
 }
