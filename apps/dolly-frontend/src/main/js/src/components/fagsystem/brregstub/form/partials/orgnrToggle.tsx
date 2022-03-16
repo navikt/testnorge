@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/egneOrganisasjoner'
 import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { MiljoeApi } from '~/service/Api'
+import {
+	OrganisasjonToogleGruppe,
+	inputValg,
+} from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
 }
-
-const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
 export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
@@ -47,29 +48,11 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGruppe onChange={handleToggleChange} name={path}>
-				<ToggleKnapp
-					key={inputValg.fraFellesListe}
-					value={inputValg.fraFellesListe}
-					checked={inputType === inputValg.fraFellesListe}
-				>
-					Felles organisasjoner
-				</ToggleKnapp>
-				<ToggleKnapp
-					key={inputValg.fraEgenListe}
-					value={inputValg.fraEgenListe}
-					checked={inputType === inputValg.fraEgenListe}
-				>
-					Egen organisasjon
-				</ToggleKnapp>
-				<ToggleKnapp
-					key={inputValg.skrivSelv}
-					value={inputValg.skrivSelv}
-					checked={inputType === inputValg.skrivSelv}
-				>
-					Skriv inn org.nr.
-				</ToggleKnapp>
-			</ToggleGruppe>
+			<OrganisasjonToogleGruppe
+				path={path}
+				inputType={inputType}
+				handleToggleChange={handleToggleChange}
+			/>
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonLoader
 					render={(data) => (
