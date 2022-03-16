@@ -1,12 +1,14 @@
 package no.nav.testnav.libs.reactivesecurity.domain;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Objects;
-
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
+@Getter
+@EqualsAndHashCode(callSuper = false)
 @Configuration
 public class AzureNavProxyClientCredential extends ClientCredential {
     private final String tokenEndpoint;
@@ -18,24 +20,5 @@ public class AzureNavProxyClientCredential extends ClientCredential {
     ) {
         super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;
-    }
-
-    public String getTokenEndpoint() {
-        return tokenEndpoint;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        AzureNavProxyClientCredential that = (AzureNavProxyClientCredential) o;
-        return Objects.equals(tokenEndpoint, that.tokenEndpoint);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), tokenEndpoint);
     }
 }
