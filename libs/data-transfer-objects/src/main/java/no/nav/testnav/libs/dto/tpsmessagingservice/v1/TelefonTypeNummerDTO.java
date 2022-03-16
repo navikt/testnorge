@@ -6,17 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class SikkerhetstiltakDTO {
+public class TelefonTypeNummerDTO {
 
-    private String tiltakstype;
-    private String beskrivelse;
-    private LocalDateTime gyldigFraOgMed;
-    private LocalDateTime gyldigTilOgMed;
+    public enum TypeTelefon {ARBT, HJET, MOBI}
+
+    private String telefonnummer;
+    private String landkode;
+    private TypeTelefon telefontype;
 }

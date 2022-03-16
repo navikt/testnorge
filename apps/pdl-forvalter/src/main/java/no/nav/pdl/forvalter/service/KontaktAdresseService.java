@@ -119,7 +119,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
                 kontaktadresse.getUtenlandskAdresse().isEmpty()) {
 
-            kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
+            kontaktadresse.setMaster(DbVersjonDTO.Master.FREG);
             kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 

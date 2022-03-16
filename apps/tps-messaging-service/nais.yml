@@ -62,7 +62,7 @@ spec:
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
-        - application: testnav-ident-pool
+        - application: ident-pool
           cluster: dev-fss
         - application: synthdata-tps-gcp
           cluster: dev-gcp

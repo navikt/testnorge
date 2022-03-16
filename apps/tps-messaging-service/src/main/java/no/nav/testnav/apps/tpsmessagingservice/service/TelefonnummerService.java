@@ -9,7 +9,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
@@ -47,7 +47,7 @@ public class TelefonnummerService {
         this.responseContext = JAXBContext.newInstance(KontaktopplysningerResponse.class);
     }
 
-    public Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, List<TelefonnummerDTO> telefonnummer, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, List<TelefonTypeNummerDTO> telefonnummer, List<String> miljoer) {
 
         return endreTelefonnummer(KontaktopplysningerRequest.builder()
                 .sfeAjourforing(KontaktopplysningerRequest.SfeAjourforing.builder()
@@ -62,7 +62,7 @@ public class TelefonnummerService {
                 .build(), miljoer);
     }
 
-    public Map<String, TpsMeldingResponse> opphoerTelefonnummer(String ident, List<TelefonnummerDTO.TypeTelefon> typer, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerTelefonnummer(String ident, List<TelefonTypeNummerDTO.TypeTelefon> typer, List<String> miljoer) {
 
         return endreTelefonnummer(KontaktopplysningerRequest.builder()
                 .sfeAjourforing(KontaktopplysningerRequest.SfeAjourforing.builder()
