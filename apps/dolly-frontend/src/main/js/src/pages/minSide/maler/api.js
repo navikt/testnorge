@@ -18,6 +18,29 @@ export const api = {
 				console.error(error)
 				throw error
 			}),
+	hentMalerForBrukerMedOptionalNavn: (brukerId, malNavn) =>
+		fetch(
+			`${dollyBackend}/bestilling/malbestilling/bruker/${brukerId}` + malNavn
+				? `?malNavn=${malNavn}`
+				: '',
+			{
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			}
+		)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.then((response) => response.json())
+			.catch((error) => {
+				console.error(error)
+				throw error
+			}),
 	slettMal: (malId) =>
 		fetch(`${dollyBackend}/bestilling/malbestilling/${malId}`, {
 			method: 'DELETE',

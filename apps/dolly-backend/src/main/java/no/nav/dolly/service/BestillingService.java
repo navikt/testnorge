@@ -68,8 +68,12 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
-    public Optional<List<Bestilling>> getMalbestillingByNavn(String malNavn) {
-        return bestillingRepository.findBestillingsByMalBestillingNavnContains(malNavn);
+    public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        var bestillinger = nonNull(malNavn)
+                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
+                : bestillingRepository.findMalBestillingByUser(bruker);
+        return bestillinger.orElse(emptyList());
     }
 
     @Transactional

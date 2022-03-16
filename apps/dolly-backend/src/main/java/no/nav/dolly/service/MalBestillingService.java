@@ -8,7 +8,6 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -54,8 +53,26 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
-    public List<Bestilling> getMalbestillingByNavn(String malNavn) {
-        return bestillingService.getMalbestillingByNavn(malNavn).orElse(Collections.emptyList());
+    public RsMalBestillingWrapper getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+        RsMalBestillingWrapper malBestillingWrapper = new RsMalBestillingWrapper();
+
+        List<Bestilling> bestillinger = bestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
+        bestillinger.forEach(bestilling -> {
+
+            RsMalBestillingWrapper.RsMalBestilling malBestilling = RsMalBestillingWrapper.RsMalBestilling.builder()
+                    .malNavn(bestilling.getMalBestillingNavn())
+                    .bruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class))
+                    .id(bestilling.getId())
+                    .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
+                    .build();
+
+            malBestillingWrapper.getMalbestillinger().putIfAbsent(getUserId(bestilling.getBruker()),
+                    new TreeSet<>(Comparator.comparing(RsMalBestillingWrapper.RsMalBestilling::getMalNavn)
+                            .thenComparing(RsMalBestillingWrapper.RsMalBestilling::getId)));
+            malBestillingWrapper.getMalbestillinger().get(getUserId(bestilling.getBruker())).add(malBestilling);
+        });
+
+        return malBestillingWrapper;
     }
 
     private static String getUserId(Bruker bruker) {

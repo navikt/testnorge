@@ -82,11 +82,11 @@ public class BestillingController {
         return malBestillingService.getMalBestillinger();
     }
 
-    @GetMapping("/malbestilling/{malNavn}")
-    @Operation(description = "Hent mal-bestilling basert på navn")
-    public List<Bestilling> getMalbestillingByNavn(@PathVariable("malNavn") String malNavn) {
+    @GetMapping("/malbestilling/bruker/{brukerId}")
+    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
+    public RsMalBestillingWrapper getMalbestillingByNavn(@PathVariable(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
 
-        return malBestillingService.getMalbestillingByNavn(malNavn);
+        return malBestillingService.getMalbestillingByNavnAndUser(brukerId, malNavn);
     }
 
     @DeleteMapping("/malbestilling/{id}")
