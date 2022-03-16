@@ -8,8 +8,8 @@ plugins {
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "testnav-krrstub-proxy"
-        property "sonar.projectName", "testnav-krrstub-proxy"
+        property "sonar.projectKey", "testnav-synthdata-meldekort-proxy"
+        property "sonar.projectName", "testnav-synthdata-meldekort-proxy"
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
