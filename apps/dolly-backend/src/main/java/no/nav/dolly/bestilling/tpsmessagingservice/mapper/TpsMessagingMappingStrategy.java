@@ -71,6 +71,7 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
                             default -> TypeTelefon.HJET;
                         });
                     }
-                });
+                })
+                .register();
     }
 }

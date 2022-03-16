@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class SikkerhetstiltakDTO {
+public class SikkerhetTiltakDTO {
 
     private String tiltakstype;
     private String beskrivelse;

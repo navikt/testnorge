@@ -12,7 +12,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
@@ -229,11 +229,11 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                                 mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonTypeNummerDTO.class) : null;
                     }
 
-                    private SikkerhetstiltakDTO getSikkerhetstiltak(S610PersonType tpsPerson) {
+                    private SikkerhetTiltakDTO getSikkerhetstiltak(S610PersonType tpsPerson) {
                         return nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getSikkerhetsTiltak()) &&
                                 isNotBlank(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak()) ?
                                 mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak(),
-                                        SikkerhetstiltakDTO.class) : null;
+                                        SikkerhetTiltakDTO.class) : null;
                     }
 
                     private PostadresseDTO getPostadresse(S610PersonType tpsPerson) {

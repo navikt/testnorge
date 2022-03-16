@@ -47,7 +47,7 @@ public class PersonDTO {
 
     private LocalDateTime egenAnsattDatoTom;
 
-    private SikkerhetstiltakDTO sikkerhetstiltak;
+    private SikkerhetTiltakDTO sikkerhetstiltak;
 
     private AdresseDTO boadresse;
 

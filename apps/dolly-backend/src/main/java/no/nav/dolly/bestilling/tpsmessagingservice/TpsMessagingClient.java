@@ -18,7 +18,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
@@ -54,42 +54,45 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
-                var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
-                        dollyPerson.getHovedperson(),
-                        null);
+            if (dollyPerson.isTpsfMaster() && isNull(dollyPerson.getPdlfPerson())) {
 
-                if (sikkerhetstiltakStatus.stream()
-                        .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))) {
-                    appendResponseStatus(sikkerhetstiltakStatus.stream()
-                                    .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
-                                    .toList(),
-                            status,
-                            "Sikkerhetstiltak_slett"
-                    );
+                var personer = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
+                if (!personer.isEmpty()) {
+                    dollyPerson.setPdlfPerson(personer.stream().findFirst().get());
                 }
+            }
+
+            if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().isEmpty()) {
+
+                appendResponseStatus(tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                                dollyPerson.getHovedperson(), null),
+                        status,
+                        "Sikkerhetstiltak_slett");
+
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSikkerhetstiltakRequest(
                                 dollyPerson.getHovedperson(),
                                 null,
-                                bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
+                                dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().stream()
+                                        .findFirst().get()),
                         status,
                         "Sikkerhetstiltak_opprett"
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom())) {
+            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendEgenansattRequest(
                                 dollyPerson.getHovedperson(),
                                 null,
-                                bestilling.getTpsMessaging().getEgenAnsattDatoFom()),
+                                bestilling.getSkjerming().getEgenAnsattDatoFom().toLocalDate()),
                         status,
                         "Egenansatt_opprett"
                 );
             }
-            if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
-                    !bestilling.getTpsMessaging().getEgenAnsattDatoTom().isAfter(LocalDate.now())) {
+            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom()) &&
+                    !bestilling.getSkjerming().getEgenAnsattDatoTom().isAfter(LocalDateTime.now())) {
+
                 appendResponseStatus(
                         tpsMessagingConsumer.deleteEgenansattRequest(
                                 dollyPerson.getHovedperson(),
@@ -99,29 +102,12 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (dollyPerson.isTpsfMaster() && isNull(dollyPerson.getPdlfPerson())) {
-
-                var personer = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
-                if (!personer.isEmpty()) {
-                    dollyPerson.setPdlfPerson(personer.stream().findFirst().get());
-                }
-            }
-
             if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty()) {
-                var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
-                        dollyPerson.getHovedperson(),
-                        null);
 
-                if (tlfStatus.stream()
-                        .anyMatch(resultat -> !resultat.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))) {
+                appendResponseStatus(tpsMessagingConsumer.deleteTelefonnummerRequest(
+                                dollyPerson.getHovedperson(), null),
+                        status, "Telefonnummer_slett");
 
-                    appendResponseStatus(tlfStatus.stream()
-                                    .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
-                                    .toList(),
-                            status,
-                            "Telefonnummer_slett"
-                    );
-                }
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
