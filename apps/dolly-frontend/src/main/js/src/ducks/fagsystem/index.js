@@ -116,6 +116,7 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		editPdlAttributt: PdlforvalterApi.putPerson,
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type

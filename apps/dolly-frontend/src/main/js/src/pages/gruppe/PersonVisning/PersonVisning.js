@@ -48,6 +48,8 @@ export const PersonVisning = ({
 	loading,
 	slettPerson,
 	leggTilPaaPerson,
+	editPdlAttributt,
+	getPdlForvalter,
 	iLaastGruppe,
 }) => {
 	useMount(fetchDataFraFagsystemer)
@@ -98,7 +100,12 @@ export const PersonVisning = ({
 				/>
 			)}
 			{ident.master !== 'PDL' && (
-				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+				<PdlfVisning
+					data={data.pdlforvalter}
+					loading={loading.pdlforvalter}
+					put={editPdlAttributt}
+					fetch={getPdlForvalter}
+				/>
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />

@@ -18,7 +18,7 @@ import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 
-export const PdlfVisning = ({ data, loading }) => {
+export const PdlfVisning = ({ data, loading, put, fetch }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data) return null
 
@@ -43,7 +43,7 @@ export const PdlfVisning = ({ data, loading }) => {
 	return (
 		<ErrorBoundary>
 			<div>
-				<Foedsel data={foedsel} />
+				<Foedsel data={foedsel} put={put} fetch={fetch} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

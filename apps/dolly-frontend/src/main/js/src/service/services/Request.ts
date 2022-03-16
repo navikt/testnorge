@@ -33,7 +33,7 @@ export default class Request {
 	}
 
 	static putWithoutResponse(url: string, data?: object) {
-		return api.fetch(url, { method: 'PUT' }, data)
+		return api.fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' } }, data)
 	}
 
 	static delete(url: string, headers: Record<string, string> = {}) {

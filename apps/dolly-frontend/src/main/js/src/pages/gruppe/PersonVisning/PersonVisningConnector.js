@@ -62,6 +62,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 			})
 		)
 	},
+	editPdlAttributt: (attributt, id, data) =>
+		dispatch(actions.editPdlAttributt(ownProps.personId, attributt, id, data)),
+	getPdlForvalter: () => dispatch(actions.getPdlForvalter(ownProps.personId)),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PersonVisning))
