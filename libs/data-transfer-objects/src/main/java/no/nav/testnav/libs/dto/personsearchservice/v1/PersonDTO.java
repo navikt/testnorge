@@ -25,4 +25,5 @@ public class PersonDTO {
     UtfyttingFraNorgeDTO utfyttingFraNorge;
     InnflyttingTilNorgeDTO innfyttingTilNorge;
     ForelderBarnRelasjonDTO forelderBarnRelasjoner;
+    List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
 }
