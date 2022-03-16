@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -37,109 +38,37 @@ public class TpsMessagingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final PdlDataConsumer pdlDataConsumer;
 
+    private static void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String melding) {
+
+        status.append('$')
+                .append(melding)
+                .append('#');
+        responseList.forEach(response -> {
+            status.append(response.getMiljoe());
+            status.append(':');
+            status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
+            status.append(',');
+        });
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var status = new StringBuilder();
 
         try {
-            if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
-                appendResponseStatus(
-                        tpsMessagingConsumer.sendSpraakkodeRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
-                        status,
-                        "SprakKode_opprett"
-                );
-            }
-
-            sendBankkontoer(bestilling, dollyPerson, status);
-
-            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
-                appendResponseStatus(
-                        tpsMessagingConsumer.sendEgenansattRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                bestilling.getSkjerming().getEgenAnsattDatoFom().toLocalDate()),
-                        status,
-                        "Egenansatt_opprett"
-                );
-            }
-            if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom()) &&
-                    !bestilling.getSkjerming().getEgenAnsattDatoTom().isAfter(LocalDateTime.now())) {
-
-                appendResponseStatus(
-                        tpsMessagingConsumer.deleteEgenansattRequest(
-                                dollyPerson.getHovedperson(),
-                                null),
-                        status,
-                        "Egenansatt_slett"
-                );
-            }
-
             if (dollyPerson.isTpsfMaster() && isNull(dollyPerson.getPdlfPerson())) {
 
-                var personer = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
-                if (!personer.isEmpty()) {
-                    dollyPerson.setPdlfPerson(personer.stream().findFirst().get());
-                }
+                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                        .stream().findFirst().orElse(null));
             }
 
-            if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().isEmpty()) {
-
-                appendResponseStatus(tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
-                                dollyPerson.getHovedperson(), null),
-                        status,
-                        "Sikkerhetstiltak_slett");
-
-                appendResponseStatus(
-                        tpsMessagingConsumer.sendSikkerhetstiltakRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().stream()
-                                        .findFirst().get()),
-                        status,
-                        "Sikkerhetstiltak_opprett"
-                );
-            }
-
-            if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty()) {
-
-                appendResponseStatus(tpsMessagingConsumer.deleteTelefonnummerRequest(
-                                dollyPerson.getHovedperson(), null),
-                        status, "Telefonnummer_slett");
-
-                appendResponseStatus(
-                        tpsMessagingConsumer.sendTelefonnummerRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                mapperFacade.mapAsList(dollyPerson.getPdlfPerson().getPerson().getTelefonnummer(), TelefonTypeNummerDTO.class)),
-                        status,
-                        "Telefonnummer_opprett"
-                );
-            }
-
-            if (nonNull(dollyPerson.getPdlfPerson())) {
-
-                var responser =
-                        Stream.of(List.of(dollyPerson.getPdlfPerson().getPerson()),
-                                        dollyPerson.getPdlfPerson().getRelasjoner().stream()
-                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
-                                                .toList())
-                                .flatMap(Collection::stream)
-                                .filter(person -> person.getBostedsadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
-                                .map(person ->
-                                        tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
-                                                mapperFacade.map(person.getBostedsadresse().stream()
-                                                        .filter(AdresseDTO::isAdresseUtland)
-                                                        .findFirst().get(), AdresseUtlandDTO.class)))
-                                .toList();
-
-                if (!responser.isEmpty()) {
-                    appendResponseStatus(responser.stream().findFirst().get(), status, "AdresseUtland_opprett");
-                }
-            }
+            sendSpraakkode(bestilling, dollyPerson, status);
+            sendBankkontoer(bestilling, dollyPerson, status);
+            sendEgenansatt(bestilling, dollyPerson, status);
+            sendSikkerhetstiltak(dollyPerson, status);
+            sendTelefonnumre(dollyPerson, status);
+            sendAdresseUtland(dollyPerson, status);
 
         } catch (RuntimeException e) {
             progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
@@ -152,6 +81,107 @@ public class TpsMessagingClient implements ClientRegister {
     public void release(List<String> identer) {
 
         // TpsMessaging har ikke sletting
+    }
+
+    private void sendAdresseUtland(DollyPerson dollyPerson, StringBuilder status) {
+        if (nonNull(dollyPerson.getPdlfPerson())) {
+
+            var responser =
+                    Stream.of(List.of(dollyPerson.getPdlfPerson().getPerson()),
+                                    dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                            .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                            .toList())
+                            .flatMap(Collection::stream)
+                            .filter(person -> person.getBostedsadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
+                            .map(person ->
+                                    tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
+                                            mapperFacade.map(person.getBostedsadresse().stream()
+                                                    .filter(AdresseDTO::isAdresseUtland)
+                                                    .findFirst().get(), AdresseUtlandDTO.class)))
+                            .toList();
+
+            appendResponseStatus(responser.stream().findFirst().orElse(emptyList()), status, "AdresseUtland_opprett");
+        }
+    }
+
+    private void sendTelefonnumre(DollyPerson dollyPerson, StringBuilder status) {
+        if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty()) {
+
+            appendResponseStatus(tpsMessagingConsumer.deleteTelefonnummerRequest(
+                            dollyPerson.getHovedperson(), null),
+                    status, "Telefonnummer_slett");
+
+            appendResponseStatus(
+                    tpsMessagingConsumer.sendTelefonnummerRequest(
+                            dollyPerson.getHovedperson(),
+                            null,
+                            mapperFacade.mapAsList(dollyPerson.getPdlfPerson().getPerson().getTelefonnummer(), TelefonTypeNummerDTO.class)),
+                    status,
+                    "Telefonnummer_opprett"
+            );
+        }
+    }
+
+    private void sendSikkerhetstiltak(DollyPerson dollyPerson, StringBuilder status) {
+        if (nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().isEmpty()) {
+
+            appendResponseStatus(tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                            dollyPerson.getHovedperson(), null),
+                    status,
+                    "Sikkerhetstiltak_slett");
+
+            var sikkerhetstiltak = dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak()
+                    .stream().findFirst();
+
+            if (sikkerhetstiltak.isPresent()) {
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendSikkerhetstiltakRequest(
+                                dollyPerson.getHovedperson(),
+                                null,
+                                sikkerhetstiltak.get()),
+                        status,
+                        "Sikkerhetstiltak_opprett"
+                );
+            }
+        }
+    }
+
+    private void sendSpraakkode(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
+        if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
+            appendResponseStatus(
+                    tpsMessagingConsumer.sendSpraakkodeRequest(
+                            dollyPerson.getHovedperson(),
+                            null,
+                            mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
+                    status,
+                    "SprakKode_opprett"
+            );
+        }
+    }
+
+    private void sendEgenansatt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
+
+        if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
+            appendResponseStatus(
+                    tpsMessagingConsumer.sendEgenansattRequest(
+                            dollyPerson.getHovedperson(),
+                            null,
+                            bestilling.getSkjerming().getEgenAnsattDatoFom().toLocalDate()),
+                    status,
+                    "Egenansatt_opprett"
+            );
+        }
+        if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom()) &&
+                !bestilling.getSkjerming().getEgenAnsattDatoTom().isAfter(LocalDateTime.now())) {
+
+            appendResponseStatus(
+                    tpsMessagingConsumer.deleteEgenansattRequest(
+                            dollyPerson.getHovedperson(),
+                            null),
+                    status,
+                    "Egenansatt_slett"
+            );
+        }
     }
 
     private void sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
@@ -172,18 +202,5 @@ public class TpsMessagingClient implements ClientRegister {
                             bestilling.getTpsMessaging().getNorskBankkonto()),
                     status, "NorskBankkonto");
         }
-    }
-
-    private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String melding) {
-
-        status.append('$')
-                .append(melding)
-                .append('#');
-        responseList.forEach(response -> {
-            status.append(response.getMiljoe());
-            status.append(':');
-            status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
-            status.append(',');
-        });
     }
 }
