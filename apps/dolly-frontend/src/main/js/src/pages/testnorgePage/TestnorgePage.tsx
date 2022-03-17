@@ -9,6 +9,7 @@ import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnecto
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import { Exception } from 'sass'
+import '../gruppe/PersonVisning/PersonVisning.less'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
