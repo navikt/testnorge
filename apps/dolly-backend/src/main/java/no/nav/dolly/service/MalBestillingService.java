@@ -59,9 +59,7 @@ public class MalBestillingService {
         List<Bestilling> bestillinger = bestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
         return bestillinger.stream().map(bestilling -> RsMalBestilling.builder()
                 .malNavn(bestilling.getMalBestillingNavn())
-                .bruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class))
                 .id(bestilling.getId())
-                .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
                 .build()).toList();
     }
 

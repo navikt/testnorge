@@ -14,9 +14,20 @@ export const MalForm = ({ formikBag, brukerId }) => {
 		ENDRE = 'ENDRE',
 	}
 
+	const [malOptions, setMalOptions] = useState([])
+
+	const getMalOptions = (malbestillinger) => {
+		if (!malbestillinger) return []
+		console.log('malbestillinger: ', malbestillinger) //TODO - SLETT MEG
+		return malbestillinger.map((mal) => ({
+			value: mal.malNavn,
+			label: mal.malNavn,
+		}))
+	}
+
 	useEffect(() => {
 		malerApi.hentMalerForBrukerMedOptionalNavn(brukerId, null).then((response) => {
-			console.log('response: ', response) //TODO - SLETT MEG
+			setMalOptions(getMalOptions(response))
 		})
 	}, [])
 
@@ -64,7 +75,13 @@ export const MalForm = ({ formikBag, brukerId }) => {
 				</div>
 			</div>
 			{typeMal === MalTyper.ENDRE ? (
-				<FormikSelect name={'malBestillingNavn'} label="Malnavn" options={null} />
+				<FormikSelect
+					name={'malBestillingNavn'}
+					size={'xlarge'}
+					label="Malnavn"
+					options={malOptions}
+					fastfield={false}
+				/>
 			) : (
 				<FormikTextInput name="malBestillingNavn" label="Malnavn" />
 			)}
