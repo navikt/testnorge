@@ -79,6 +79,7 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
         try {
+            overskrivDuplikateMalbestillinger(bestilling);
             return bestillingRepository.save(bestilling);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
@@ -321,6 +322,16 @@ public class BestillingService {
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
         bestillingRepository.swapIdent(oldIdent, newIdent);
+    }
+
+    private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
+        List<Bestilling> gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
+        if (!gamleMalBestillinger.isEmpty()) {
+            gamleMalBestillinger.forEach(malBestilling -> {
+                malBestilling.setMalBestillingNavn(null);
+                saveBestillingToDB(malBestilling);
+            });
+        }
     }
 
     private Bruker fetchOrCreateBruker() {

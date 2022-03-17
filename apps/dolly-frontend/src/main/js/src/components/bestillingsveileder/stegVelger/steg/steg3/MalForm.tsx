@@ -7,7 +7,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { malerApi } from '~/pages/minSide/maler/MalerApi'
 
 // @ts-ignore
-export const MalForm = ({ formikBag, brukerId }) => {
+export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 	enum MalTyper {
 		INGEN = 'EGEN',
 		OPPRETT = 'OPPRETT',
@@ -16,9 +16,8 @@ export const MalForm = ({ formikBag, brukerId }) => {
 
 	const [malOptions, setMalOptions] = useState([])
 
-	const getMalOptions = (malbestillinger) => {
+	const getMalOptions = (malbestillinger: [{ malNavn: string; malId: number }]) => {
 		if (!malbestillinger) return []
-		console.log('malbestillinger: ', malbestillinger) //TODO - SLETT MEG
 		return malbestillinger.map((mal) => ({
 			value: mal.malNavn,
 			label: mal.malNavn,
@@ -42,7 +41,7 @@ export const MalForm = ({ formikBag, brukerId }) => {
 		},
 		{
 			value: MalTyper.ENDRE,
-			label: 'Endre eksisterende mal',
+			label: 'Overskriv eksisterende mal',
 		},
 	]
 	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
@@ -51,8 +50,10 @@ export const MalForm = ({ formikBag, brukerId }) => {
 		setTypeMal(value)
 		if (value === MalTyper.INGEN) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
-		} else if (value === MalTyper.OPPRETT || value === MalTyper.ENDRE) {
+		} else if (value === MalTyper.OPPRETT) {
 			formikBag.setFieldValue('malBestillingNavn', '')
+		} else if (value === MalTyper.ENDRE) {
+			formikBag.setFieldValue('malBestillingNavn', opprettetFraMal ? opprettetFraMal : '')
 		}
 	}
 
@@ -83,7 +84,7 @@ export const MalForm = ({ formikBag, brukerId }) => {
 					fastfield={false}
 				/>
 			) : (
-				<FormikTextInput name="malBestillingNavn" label="Malnavn" />
+				<FormikTextInput name="malBestillingNavn" size={'xlarge'} label="Malnavn" />
 			)}
 		</div>
 	)

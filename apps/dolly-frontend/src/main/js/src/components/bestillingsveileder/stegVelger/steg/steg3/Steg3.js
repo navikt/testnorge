@@ -55,7 +55,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 				/>
 			)}
 			{importTestnorge && <VelgGruppe formikBag={formikBag} />}
-			{!erOrganisasjon && !importTestnorge && <MalForm formikBag={formikBag} brukerId={brukerId} />}
+			{!erOrganisasjon && !importTestnorge && (
+				<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+			)}
 			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>
 	)
