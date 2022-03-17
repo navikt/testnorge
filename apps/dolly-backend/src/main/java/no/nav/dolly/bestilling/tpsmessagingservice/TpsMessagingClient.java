@@ -40,15 +40,17 @@ public class TpsMessagingClient implements ClientRegister {
 
     private static void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String melding) {
 
-        status.append('$')
-                .append(melding)
-                .append('#');
-        responseList.forEach(response -> {
-            status.append(response.getMiljoe());
-            status.append(':');
-            status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
-            status.append(',');
-        });
+        if (!responseList.isEmpty()) {
+            status.append('$')
+                    .append(melding)
+                    .append('#');
+            responseList.forEach(response -> {
+                status.append(response.getMiljoe());
+                status.append(':');
+                status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
+                status.append(',');
+            });
+        }
     }
 
     @Override
@@ -114,7 +116,7 @@ public class TpsMessagingClient implements ClientRegister {
                                             .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
                                             .toList())
                             .flatMap(Collection::stream)
-                            .filter(person -> person.getBostedsadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
+                            .filter(person -> person.getKontaktadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
                             .map(person ->
                                     tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
                                             mapperFacade.map(person.getKontaktadresse().stream()
