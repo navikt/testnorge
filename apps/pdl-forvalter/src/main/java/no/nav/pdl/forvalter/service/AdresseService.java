@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -54,9 +53,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
     }
 
-    private static LocalDate getDateOrNow(LocalDateTime dateTime) {
+    private static LocalDateTime getDateOrNow(LocalDateTime dateTime) {
 
-        return nonNull(dateTime) ? dateTime.toLocalDate() : LocalDate.now();
+        return nonNull(dateTime) ? dateTime : LocalDateTime.now();
     }
 
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
@@ -132,12 +131,38 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                     isNull(adresser.get(i + 1).getGyldigTilOgMed())
                     && nonNull(adresser.get(i).getGyldigFraOgMed())) {
 
-                adresser.get(i + 1).setGyldigTilOgMed(
-                        adresser.get(i).getGyldigFraOgMed().toLocalDate()
-                                .isEqual(adresser.get(i + 1).getGyldigFraOgMed().toLocalDate()) ?
-                                adresser.get(i).getGyldigFraOgMed() :
-                                adresser.get(i).getGyldigFraOgMed().minusDays(1));
+                if (adresser.get(i + 1).getGyldigFraOgMed().toLocalDate().isEqual(
+                        adresser.get(i).getGyldigFraOgMed().toLocalDate())) {
+
+                    var time = LocalDateTime.now();
+                    adresser.get(i).setGyldigFraOgMed(adresser.get(i).getGyldigFraOgMed().toLocalDate()
+                            .atTime(time.getHour(), time.getMinute(), time.getSecond()));
+                }
+
+                adresser.get(i + 1).setGyldigTilOgMed(getGyldigTilDato(adresser.get(i + 1), adresser.get(i)));
             }
+        }
+    }
+
+    private LocalDateTime getGyldigTilDato(AdresseDTO adresse1, AdresseDTO adresse2) {
+
+        if (adresse1.getGyldigFraOgMed().toLocalDate()
+                .isEqual(adresse2.getGyldigFraOgMed().toLocalDate()) ||
+                adresse1.getGyldigFraOgMed().toLocalDate()
+                        .isEqual(adresse2.getGyldigFraOgMed().toLocalDate().minusDays(1))) {
+
+            var time = adresse2.getGyldigFraOgMed().minusSeconds(1);
+            return adresse2.getGyldigFraOgMed().toLocalDate()
+                    .atTime(time.getHour(), time.getMinute(), time.getSecond());
+
+        } else if (adresse1.getGyldigFraOgMed().toLocalDate()
+                .isBefore(adresse2.getGyldigFraOgMed().toLocalDate())) {
+
+            return adresse2.getGyldigFraOgMed().minusDays(1).toLocalDate().atStartOfDay();
+
+        } else {
+
+            throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
     }
 
@@ -147,11 +172,11 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         for (var i = 0; i < adresser.size(); i++) {
             for (var j = 0; j < adresser.size(); j++) {
                 if (i != j &&
-                        (adresser.get(i).getGyldigFraOgMed().toLocalDate()
-                                .isEqual(adresser.get(j).getGyldigFraOgMed().toLocalDate()) ||
-                        getDateOrNow(adresser.get(i).getGyldigTilOgMed())
-                                .isEqual(getDateOrNow(adresser.get(j).getGyldigTilOgMed())) ||
-                        isAdresseOverlapp(adresser.get(i), adresser.get(j)))) {
+                        (adresser.get(i).getGyldigFraOgMed()
+                                .isEqual(adresser.get(j).getGyldigFraOgMed()) ||
+                                getDateOrNow(adresser.get(i).getGyldigTilOgMed())
+                                        .isEqual(getDateOrNow(adresser.get(j).getGyldigTilOgMed())) ||
+                                isAdresseOverlapp(adresser.get(i), adresser.get(j)))) {
                     throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
             }
@@ -169,15 +194,15 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
         //        |<---- Intervall A ----->|
         //             |<---- Intervall B ----->|
-        return getDateOrNow(adresse1.getGyldigFraOgMed()).isBefore(adresse2.getGyldigFraOgMed().toLocalDate()) &&
-                adresse2.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
+        return getDateOrNow(adresse1.getGyldigFraOgMed()).isBefore(adresse2.getGyldigFraOgMed()) &&
+                adresse2.getGyldigFraOgMed().isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
     }
 
     private boolean isOverlappTilfelle2(T adresse1, T adresse2) {
 
         //             |<---- Intervall A ----->|
         //        |<---- Intervall B ----->|
-        return adresse1.getGyldigFraOgMed().toLocalDate().isBefore(getDateOrNow(adresse2.getGyldigTilOgMed())) &&
+        return adresse1.getGyldigFraOgMed().isBefore(getDateOrNow(adresse2.getGyldigTilOgMed())) &&
                 getDateOrNow(adresse2.getGyldigTilOgMed()).isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
     }
 
@@ -185,7 +210,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
         //          |<--- Intervall A --->|
         //      |<-------- Intervall B ------->|
-        return adresse2.getGyldigFraOgMed().toLocalDate().isBefore(adresse1.getGyldigFraOgMed().toLocalDate()) &&
+        return adresse2.getGyldigFraOgMed().isBefore(adresse1.getGyldigFraOgMed()) &&
                 getDateOrNow(adresse2.getGyldigTilOgMed()).isAfter(getDateOrNow(adresse1.getGyldigTilOgMed()));
     }
 

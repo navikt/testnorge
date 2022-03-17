@@ -6,7 +6,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO.TypeTelefon;
@@ -40,21 +42,41 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BostedadresseDTO kilde, AdresseUtlandDTO destinasjon, MappingContext context) {
 
-                        destinasjon.setAdresse1(isNotBlank(kilde.getUtenlandskAdresse().getAdressenavnNummer()) ?
-                                kilde.getUtenlandskAdresse().getAdressenavnNummer() :
-                                kilde.getUtenlandskAdresse().getPostboksNummerNavn());
-                        destinasjon.setAdresse2(Stream.of(kilde.getUtenlandskAdresse().getBySted(),
-                                        kilde.getUtenlandskAdresse().getPostkode())
-                                .filter(StringUtils::isNotBlank)
-                                .collect(Collectors.joining(" ")));
-                        destinasjon.setAdresse3(Stream.of(kilde.getUtenlandskAdresse().getRegion(),
-                                        kilde.getUtenlandskAdresse().getRegionDistriktOmraade(),
-                                        kilde.getUtenlandskAdresse().getDistriktsnavn())
-                                .filter(StringUtils::isNotBlank)
-                                .collect(Collectors.joining(" ")));
-                        destinasjon.setKodeLand(kilde.getUtenlandskAdresse().getLandkode());
-
+                        mapperFacade.map(kilde.getUtenlandskAdresse(), destinasjon);
                         destinasjon.setDatoAdresse(kilde.getAngittFlyttedato());
+                    }
+                })
+                .register();
+
+        factory.classMap(KontaktadresseDTO.class, AdresseUtlandDTO.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(KontaktadresseDTO kilde, AdresseUtlandDTO destinasjon, MappingContext context) {
+
+                        mapperFacade.map(kilde.getUtenlandskAdresse(), destinasjon);
+                        destinasjon.setDatoAdresse(kilde.getGyldigFraOgMed());
+                    }
+                })
+                .register();
+
+        factory.classMap(UtenlandskAdresseDTO.class, AdresseUtlandDTO.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(UtenlandskAdresseDTO kilde, AdresseUtlandDTO destinasjon, MappingContext context) {
+
+                        destinasjon.setAdresse1(isNotBlank(kilde.getAdressenavnNummer()) ?
+                                kilde.getAdressenavnNummer() :
+                                kilde.getPostboksNummerNavn());
+                        destinasjon.setAdresse2(Stream.of(kilde.getBySted(),
+                                        kilde.getPostkode())
+                                .filter(StringUtils::isNotBlank)
+                                .collect(Collectors.joining(" ")));
+                        destinasjon.setAdresse3(Stream.of(kilde.getRegion(),
+                                        kilde.getRegionDistriktOmraade(),
+                                        kilde.getDistriktsnavn())
+                                .filter(StringUtils::isNotBlank)
+                                .collect(Collectors.joining(" ")));
+                        destinasjon.setKodeLand(kilde.getLandkode());
                     }
                 })
                 .register();

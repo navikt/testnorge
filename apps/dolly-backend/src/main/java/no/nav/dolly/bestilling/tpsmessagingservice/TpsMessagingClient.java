@@ -40,15 +40,17 @@ public class TpsMessagingClient implements ClientRegister {
 
     private static void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String melding) {
 
-        status.append('$')
-                .append(melding)
-                .append('#');
-        responseList.forEach(response -> {
-            status.append(response.getMiljoe());
-            status.append(':');
-            status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
-            status.append(',');
-        });
+        if (!responseList.isEmpty()) {
+            status.append('$')
+                    .append(melding)
+                    .append('#');
+            responseList.forEach(response -> {
+                status.append(response.getMiljoe());
+                status.append(':');
+                status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
+                status.append(',');
+            });
+        }
     }
 
     @Override
@@ -68,7 +70,8 @@ public class TpsMessagingClient implements ClientRegister {
             sendEgenansatt(bestilling, dollyPerson, status);
             sendSikkerhetstiltak(dollyPerson, status);
             sendTelefonnumre(dollyPerson, status);
-            sendAdresseUtland(dollyPerson, status);
+            sendBostedsadresseUtland(dollyPerson, status);
+            sendKontaktadresseUtland(dollyPerson, status);
 
         } catch (RuntimeException e) {
             progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
@@ -83,7 +86,7 @@ public class TpsMessagingClient implements ClientRegister {
         // TpsMessaging har ikke sletting
     }
 
-    private void sendAdresseUtland(DollyPerson dollyPerson, StringBuilder status) {
+    private void sendBostedsadresseUtland(DollyPerson dollyPerson, StringBuilder status) {
         if (nonNull(dollyPerson.getPdlfPerson())) {
 
             var responser =
@@ -96,6 +99,27 @@ public class TpsMessagingClient implements ClientRegister {
                             .map(person ->
                                     tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
                                             mapperFacade.map(person.getBostedsadresse().stream()
+                                                    .filter(AdresseDTO::isAdresseUtland)
+                                                    .findFirst().get(), AdresseUtlandDTO.class)))
+                            .toList();
+
+            appendResponseStatus(responser.stream().findFirst().orElse(emptyList()), status, "AdresseUtland_opprett");
+        }
+    }
+
+    private void sendKontaktadresseUtland(DollyPerson dollyPerson, StringBuilder status) {
+        if (nonNull(dollyPerson.getPdlfPerson())) {
+
+            var responser =
+                    Stream.of(List.of(dollyPerson.getPdlfPerson().getPerson()),
+                                    dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                            .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                            .toList())
+                            .flatMap(Collection::stream)
+                            .filter(person -> person.getKontaktadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
+                            .map(person ->
+                                    tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
+                                            mapperFacade.map(person.getKontaktadresse().stream()
                                                     .filter(AdresseDTO::isAdresseUtland)
                                                     .findFirst().get(), AdresseUtlandDTO.class)))
                             .toList();

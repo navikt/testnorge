@@ -49,6 +49,8 @@ public final class BestillingTpsMessagingStatusMapper {
                                                             .contains("person ikke funnet i tps"))
                                                     .filter(status -> !status.toLowerCase()
                                                             .contains("dette er data som allerede er registrert i tps"))
+                                                    .filter(status -> !status.toLowerCase()
+                                                            .contains("Det finnes allerede en lik PUTL-adresse"))
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
                                                             .melding(cleanOK(String.format("%s %s", melding.split("#")[0],
