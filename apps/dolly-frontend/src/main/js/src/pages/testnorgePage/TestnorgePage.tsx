@@ -53,14 +53,15 @@ export default () => {
 				at personer fødes, dør, får barn, osv. Hele Testnorge er tilgjengelig i PDL.
 				<br />
 				<br />
-				I søket nedenfor kan du søke opp Testnorge-identer, velge de du ønsker og så importere dem
-				til en gruppe i Dolly. Søket returnerer maks 100 tilfeldige Testnorge-identer som passer
+				I søket nedenfor kan man søke opp Testnorge-identer, velge identer man ønsker å ta i bruk,
+				velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket
+				gruppe i Dolly. Søket returnerer maks 100 tilfeldige Testnorge-identer som passer
 				søkekriteriene og som ikke allerede er importert til en gruppe i Dolly.
 				<br />
 				<br />
-				For å finne mer spesifikke identer kan Skatteetaten sin søkeløsning {tenor} brukes. Tenor er
-				ikke koblet opp mot Dolly, men du kan søke opp identer du fant i Tenor her i Dolly og så
-				importere dem.
+				For å finne mer spesifikke identer kan Skatteetaten sin testdatasøkeløsning {tenor} brukes.
+				Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp identer man fant i Tenor her
+				i Dolly og så importere dem.
 			</p>
 
 			<Formik initialValues={initialValues} onSubmit={onSubmit}>
