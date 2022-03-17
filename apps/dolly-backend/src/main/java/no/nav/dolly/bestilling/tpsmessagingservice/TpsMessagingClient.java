@@ -59,7 +59,7 @@ public class TpsMessagingClient implements ClientRegister {
         var status = new StringBuilder();
 
         try {
-            if (dollyPerson.isTpsfMaster() && isNull(dollyPerson.getPdlfPerson())) {
+            if (isNull(dollyPerson.getPdlfPerson())) {
 
                 dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
                         .stream().findFirst().orElse(null));

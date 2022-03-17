@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -119,9 +120,9 @@ public class TestpersonController {
         return navigasjonService.navigerTilIdent(ident);
     }
 
-    @Operation(description = "Naviger til ønsket testperson")
+    @Operation(description = "Send ønsket testperson til miljø")
     @Transactional
-    @GetMapping("/ident/{ident}/ordre")
+    @PostMapping("/ident/{ident}/ordre")
     public RsOrdreStatus sendOrdre(@PathVariable String ident) {
 
         return ordreService.sendOrdre(ident);
