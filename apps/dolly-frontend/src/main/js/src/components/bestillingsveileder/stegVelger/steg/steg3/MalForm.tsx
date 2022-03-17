@@ -13,7 +13,6 @@ export const MalForm = ({ formikBag, brukerId }) => {
 		OPPRETT = 'OPPRETT',
 		ENDRE = 'ENDRE',
 	}
-	console.log('brukerId: ', brukerId) //TODO - SLETT MEG
 
 	useEffect(() => {
 		malerApi.hentMalerForBrukerMedOptionalNavn(brukerId, null).then((response) => {

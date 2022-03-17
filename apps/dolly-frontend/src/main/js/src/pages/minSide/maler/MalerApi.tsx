@@ -20,9 +20,7 @@ export const malerApi = {
 			}),
 	hentMalerForBrukerMedOptionalNavn: (brukerId: string, malNavn: string) =>
 		fetch(
-			`${dollyBackend}/bestilling/malbestilling/bruker/${brukerId}` + malNavn
-				? `?malNavn=${malNavn}`
-				: '',
+			`${dollyBackend}/bestilling/malbestilling/bruker?brukerId=${brukerId}&malNavn=${malNavn}`,
 			{
 				credentials: 'include',
 				headers: {

@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,11 @@ public class MalBestillingService {
 
         List<Bestilling> bestillinger = bestillingService.fetchMalBestillinger();
         malBestillingWrapper.getMalbestillinger().putIfAbsent(ALLE,
-                new TreeSet<>(Comparator.comparing(RsMalBestillingWrapper.RsMalBestilling::getMalNavn)
-                        .thenComparing(RsMalBestillingWrapper.RsMalBestilling::getId)));
+                new TreeSet<>(Comparator.comparing(RsMalBestilling::getMalNavn)
+                        .thenComparing(RsMalBestilling::getId)));
         bestillinger.forEach(bestilling -> {
 
-            RsMalBestillingWrapper.RsMalBestilling malBestilling = RsMalBestillingWrapper.RsMalBestilling.builder()
+            RsMalBestilling malBestilling = RsMalBestilling.builder()
                     .malNavn(bestilling.getMalBestillingNavn())
                     .bruker(mapperFacade.map(nonNull(bestilling.getBruker()) ? bestilling.getBruker() :
                             Bruker.builder().brukerId(COMMON).brukernavn(COMMON).build(), RsBrukerUtenFavoritter.class))
@@ -44,8 +45,8 @@ public class MalBestillingService {
                     .build();
 
             malBestillingWrapper.getMalbestillinger().putIfAbsent(getUserId(bestilling.getBruker()),
-                    new TreeSet<>(Comparator.comparing(RsMalBestillingWrapper.RsMalBestilling::getMalNavn)
-                            .thenComparing(RsMalBestillingWrapper.RsMalBestilling::getId)));
+                    new TreeSet<>(Comparator.comparing(RsMalBestilling::getMalNavn)
+                            .thenComparing(RsMalBestilling::getId)));
             malBestillingWrapper.getMalbestillinger().get(getUserId(bestilling.getBruker())).add(malBestilling);
             malBestillingWrapper.getMalbestillinger().get(ALLE).add(malBestilling);
         });
@@ -53,26 +54,15 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
-    public RsMalBestillingWrapper getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
-        RsMalBestillingWrapper malBestillingWrapper = new RsMalBestillingWrapper();
+    public List<RsMalBestilling> getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
 
         List<Bestilling> bestillinger = bestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
-        bestillinger.forEach(bestilling -> {
-
-            RsMalBestillingWrapper.RsMalBestilling malBestilling = RsMalBestillingWrapper.RsMalBestilling.builder()
-                    .malNavn(bestilling.getMalBestillingNavn())
-                    .bruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class))
-                    .id(bestilling.getId())
-                    .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
-                    .build();
-
-            malBestillingWrapper.getMalbestillinger().putIfAbsent(getUserId(bestilling.getBruker()),
-                    new TreeSet<>(Comparator.comparing(RsMalBestillingWrapper.RsMalBestilling::getMalNavn)
-                            .thenComparing(RsMalBestillingWrapper.RsMalBestilling::getId)));
-            malBestillingWrapper.getMalbestillinger().get(getUserId(bestilling.getBruker())).add(malBestilling);
-        });
-
-        return malBestillingWrapper;
+        return bestillinger.stream().map(bestilling -> RsMalBestilling.builder()
+                .malNavn(bestilling.getMalBestillingNavn())
+                .bruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class))
+                .id(bestilling.getId())
+                .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
+                .build()).toList();
     }
 
     private static String getUserId(Bruker bruker) {
