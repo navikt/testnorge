@@ -11,7 +11,7 @@ Hele Testnorge populasjoen er tilgjengelig i PDL.
 
 ## Søk og import
 Under "Testnorge" fanen i Dolly er mulig å søke opp Testnorge identer i Dolly, velge identer man ønsker å ta i bruk, 
-velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket gruppe i Dolly. 
+velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket gruppe i Dolly.
 
 
 For å finne mer spesifikke identer kan Skatteetaten sin testdatasøkeløsning [Tenor](https://www.skatteetaten.no/skjema/testdata) 
