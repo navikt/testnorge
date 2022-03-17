@@ -40,19 +40,21 @@ export default () => {
 
 	return (
 		<div>
-			<Title title="Søk i Testnorge" />
+			<Title title="Søk og importer fra Testnorge" />
 			<p>
 				Testnorge er en felles offentlig testdatapopulasjon, som ble laget i forbindelse med nytt
 				folkeregister. Populasjonen er levende, og endrer seg fortløpende ved at personer fødes,
-				dør, får barn, osv. Pr. i dag støttes kun personer, men fremover vil det også komme støtte
-				for organisasjoner og arbeidsforhold.
+				dør, får barn, osv. Hele Testnorge er tilgjengelig i PDL.
 				<br />
 				<br />
-				Testnorge er tilgjengelig i PDL.
+				I søket nedenfor kan du søke opp Testnorge-identer, velge de du ønsker og så importere dem
+				til en gruppe i Dolly. Søket returnerer maks 100 tilfeldige Testnorge-identer som passer
+				søkekriteriene og som ikke allerede er importert til en gruppe i Dolly.
 				<br />
 				<br />
-				Søket returnerer maks 100 tilfeldige Testnorge-identer som passer søkekriteriene og som ikke
-				allerede er importert til en gruppe i Dolly.
+				For å finne mer spesifikke identer kan skatteetaten sin søkeløsning Tenor brukes. Tenor er
+				ikke koblet opp mot Dolly, men du kan søke opp identer du fant i Tenor her i Dolly og så
+				importere dem.
 			</p>
 
 			<Formik initialValues={initialValues} onSubmit={onSubmit}>
