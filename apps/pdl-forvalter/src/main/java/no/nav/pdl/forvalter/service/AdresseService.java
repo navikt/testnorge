@@ -146,17 +146,19 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     private LocalDateTime getGyldigTilDato(AdresseDTO adresse1, AdresseDTO adresse2) {
 
-        if (adresse1.getGyldigFraOgMed().toLocalDate().isEqual(adresse2.getGyldigFraOgMed().toLocalDate())) {
+        if (adresse1.getGyldigFraOgMed().toLocalDate()
+                .isEqual(adresse2.getGyldigFraOgMed().toLocalDate()) ||
+                adresse1.getGyldigFraOgMed().toLocalDate()
+                        .isEqual(adresse2.getGyldigFraOgMed().toLocalDate().minusDays(1))) {
 
             var time = adresse2.getGyldigFraOgMed().minusSeconds(1);
             return adresse2.getGyldigFraOgMed().toLocalDate()
                     .atTime(time.getHour(), time.getMinute(), time.getSecond());
 
-        } else if (adresse2.getGyldigFraOgMed().toLocalDate().isAfter(adresse2.getGyldigFraOgMed().toLocalDate())) {
+        } else if (adresse1.getGyldigFraOgMed().toLocalDate()
+                .isBefore(adresse2.getGyldigFraOgMed().toLocalDate())) {
 
-            var time = LocalDateTime.now();
-            return adresse2.getGyldigFraOgMed().minusDays(1).toLocalDate()
-                    .atTime(time.getHour(), time.getMinute(), time.getSecond());
+            return adresse2.getGyldigFraOgMed().minusDays(1).toLocalDate().atStartOfDay();
 
         } else {
 

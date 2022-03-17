@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +140,7 @@ class OppholdsadresseServiceTest {
     }
 
     @Test
-    void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
+    void whenPartialDayBetweenDates_AcceptInput() {
 
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
@@ -150,20 +151,19 @@ class OppholdsadresseServiceTest {
                 .ident(FNR_IDENT)
                 .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
                                 .vegadresse(new VegadresseDTO())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atTime(15, 0, 0))
                                 .isNew(true)
                                 .build(),
                         OppholdsadresseDTO.builder()
                                 .matrikkeladresse(new MatrikkeladresseDTO())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atTime(16, 0, 0))
                                 .isNew(true)
                                 .build())))
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+        var response = oppholdsadresseService.convert(request);
 
-        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
+        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2020, 1, 2, 14, 59, 59))));
     }
 
     @Test
