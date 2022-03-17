@@ -57,7 +57,6 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		}
 	}
 
-	//TODO: Sjekke om malnavn allerede finnes
 	return (
 		<div className="input-oppsummering">
 			<h2>Lagre som mal</h2>
@@ -91,5 +90,5 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 }
 
 MalForm.validation = {
-	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString),
+	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString.nullable()),
 }

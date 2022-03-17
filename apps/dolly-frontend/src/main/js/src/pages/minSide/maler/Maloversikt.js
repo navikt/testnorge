@@ -46,7 +46,7 @@ export default ({ brukerId }) => {
 		},
 		{
 			text: 'Rediger malnavn',
-			width: '10',
+			width: '13',
 			formatter: (cell, row) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
@@ -54,7 +54,7 @@ export default ({ brukerId }) => {
 					</Button>
 				) : (
 					<Button kind="edit" onClick={() => setUnderRedigering(underRedigering.concat([row.id]))}>
-						ENDRE
+						ENDRE NAVN
 					</Button>
 				)
 			},
