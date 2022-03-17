@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchServiceConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.AlderSearch;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.BarnSearch;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.RelasjonSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonstatusSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
@@ -25,6 +25,7 @@ import java.util.Random;
 public class IdentService {
 
     private final PersonSearchServiceConsumer personSearchServiceConsumer;
+    private final ArenaForvalterService arenaForvalterService;
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
@@ -47,7 +48,7 @@ public class IdentService {
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
-                if (validBosattdato(person, tidligsteDatoBosatt)) utvalgteIdenter.add(person.getIdent());
+                if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent()) && validBosattdato(person, tidligsteDatoBosatt)) utvalgteIdenter.add(person.getIdent());
                 if (utvalgteIdenter.size() >= antallNyeIdenter) break;
             }
 
@@ -147,7 +148,7 @@ public class IdentService {
         }
 
         if (harBarn != null && harBarn) {
-            request.setBarn(BarnSearch.builder()
+            request.setRelasjoner(RelasjonSearch.builder()
                     .barn(Boolean.TRUE)
                     .build());
         }

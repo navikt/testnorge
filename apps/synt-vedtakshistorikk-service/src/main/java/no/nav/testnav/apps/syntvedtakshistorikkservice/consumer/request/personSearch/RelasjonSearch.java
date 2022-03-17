@@ -9,7 +9,6 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class BarnSearch {
+public class RelasjonSearch {
     Boolean barn;
-    Boolean doedfoedtBarn;
 }

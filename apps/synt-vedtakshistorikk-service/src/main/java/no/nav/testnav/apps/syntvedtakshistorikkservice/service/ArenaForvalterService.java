@@ -79,7 +79,7 @@ public class ArenaForvalterService {
         return sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, MED_OPPFOELGING, null);
     }
 
-    private boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
+    public boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
         var identerIArena = hentIdentListe(arenaForvalterConsumer.hentArbeidsoeker(personident, null, null));
         return !identerIArena.contains(personident);
     }
