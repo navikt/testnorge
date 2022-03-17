@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -121,7 +122,7 @@ public class TestpersonController {
     @Operation(description = "Naviger til ønsket testperson")
     @Transactional
     @GetMapping("/ident/{ident}/ordre")
-    public RsWhereAmI sendOrdre(@PathVariable String ident) {
+    public RsOrdreStatus sendOrdre(@PathVariable String ident) {
 
         return ordreService.sendOrdre(ident);
     }
