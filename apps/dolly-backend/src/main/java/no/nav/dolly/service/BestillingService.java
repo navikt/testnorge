@@ -46,6 +46,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Slf4j
@@ -325,6 +326,9 @@ public class BestillingService {
     }
 
     private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
+        if (isBlank(bestilling.getMalBestillingNavn())) {
+            return;
+        }
         List<Bestilling> gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
         if (!gamleMalBestillinger.isEmpty()) {
             gamleMalBestillinger.forEach(malBestilling -> {
