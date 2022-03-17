@@ -48,9 +48,9 @@ export default () => {
 		<div>
 			<Title title="Søk og importer fra Testnorge" />
 			<p>
-				Testnorge er en felles offentlig testdatapopulasjon, som ble laget i forbindelse med nytt
-				folkeregister. Populasjonen er levende, og endrer seg fortløpende ved at personer fødes,
-				dør, får barn, osv. Hele Testnorge er tilgjengelig i PDL.
+				Testnorge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
+				forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
+				at personer fødes, dør, får barn, osv. Hele Testnorge er tilgjengelig i PDL.
 				<br />
 				<br />
 				I søket nedenfor kan du søke opp Testnorge-identer, velge de du ønsker og så importere dem
@@ -58,7 +58,7 @@ export default () => {
 				søkekriteriene og som ikke allerede er importert til en gruppe i Dolly.
 				<br />
 				<br />
-				For å finne mer spesifikke identer kan skatteetaten sin søkeløsning {tenor} brukes. Tenor er
+				For å finne mer spesifikke identer kan Skatteetaten sin søkeløsning {tenor} brukes. Tenor er
 				ikke koblet opp mot Dolly, men du kan søke opp identer du fant i Tenor her i Dolly og så
 				importere dem.
 			</p>
