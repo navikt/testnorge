@@ -38,6 +38,12 @@ export default () => {
 		setValgtePersoner([])
 	}
 
+	const tenor = (
+		<a href="https://www.skatteetaten.no/skjema/testdata" target="_blank">
+			Tenor
+		</a>
+	)
+
 	return (
 		<div>
 			<Title title="Søk og importer fra Testnorge" />
@@ -52,7 +58,7 @@ export default () => {
 				søkekriteriene og som ikke allerede er importert til en gruppe i Dolly.
 				<br />
 				<br />
-				For å finne mer spesifikke identer kan skatteetaten sin søkeløsning Tenor brukes. Tenor er
+				For å finne mer spesifikke identer kan skatteetaten sin søkeløsning {tenor} brukes. Tenor er
 				ikke koblet opp mot Dolly, men du kan søke opp identer du fant i Tenor her i Dolly og så
 				importere dem.
 			</p>
