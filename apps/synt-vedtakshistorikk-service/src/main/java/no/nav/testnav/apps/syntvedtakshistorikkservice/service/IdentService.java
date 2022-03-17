@@ -88,14 +88,12 @@ public class IdentService {
     }
 
     private boolean validBosattdato(PersonDTO person, LocalDate tidligsteDatoBosatt) {
-        // TODO bruk kommentert ut kode når person search er oppdatert
-//        var gyldigeBosattstatuser = person.getFolkeregisterpersonstatus().stream()
-//                .filter(status -> status.getStatus().equals(BOSATT_STATUS))
-//                .map(status -> status.getGyldighetstidspunkt())
-//                .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
-//                .toList();
-//        return !gyldigeBosattstatuser.isEmpty();
-        return true;
+        var gyldigeBosattstatuser = person.getFolkeregisterpersonstatus().stream()
+                .filter(status -> status.getStatus().equals(BOSATT_STATUS))
+                .map(status -> status.getGyldighetstidspunkt())
+                .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
+                .toList();
+        return !gyldigeBosattstatuser.isEmpty();
     }
 
     private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
