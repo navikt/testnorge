@@ -1,17 +1,25 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { ToggleGruppe } from 'nav-frontend-skjema'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { malerApi } from '~/pages/minSide/maler/MalerApi'
 
 // @ts-ignore
-export const MalForm = ({ formikBag }) => {
-	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
+export const MalForm = ({ formikBag, brukerId }) => {
 	enum MalTyper {
 		INGEN = 'EGEN',
 		OPPRETT = 'OPPRETT',
 		ENDRE = 'ENDRE',
 	}
+	console.log('brukerId: ', brukerId) //TODO - SLETT MEG
+
+	useEffect(() => {
+		malerApi.hentMalerForBrukerMedOptionalNavn(brukerId, null).then((response) => {
+			console.log('response: ', response) //TODO - SLETT MEG
+		})
+	}, [])
 
 	const toggleValues = [
 		{
@@ -33,9 +41,7 @@ export const MalForm = ({ formikBag }) => {
 		setTypeMal(value)
 		if (value === MalTyper.INGEN) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
-		} else if (value === MalTyper.OPPRETT) {
-			formikBag.setFieldValue('malBestillingNavn', '')
-		} else if (value === MalTyper.ENDRE) {
+		} else if (value === MalTyper.OPPRETT || value === MalTyper.ENDRE) {
 			formikBag.setFieldValue('malBestillingNavn', '')
 		}
 	}
@@ -58,7 +64,11 @@ export const MalForm = ({ formikBag }) => {
 					</ToggleGruppe>
 				</div>
 			</div>
-			<FormikTextInput name="malBestillingNavn" label="Malnavn" />
+			{typeMal === MalTyper.ENDRE ? (
+				<FormikSelect name={'malBestillingNavn'} label="Malnavn" options={null} />
+			) : (
+				<FormikTextInput name="malBestillingNavn" label="Malnavn" />
+			)}
 		</div>
 	)
 }

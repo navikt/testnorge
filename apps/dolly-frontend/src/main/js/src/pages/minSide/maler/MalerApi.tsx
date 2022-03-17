@@ -1,5 +1,5 @@
 const dollyBackend = '/dolly-backend/api/v1'
-export const api = {
+export const malerApi = {
 	hentMaler: () =>
 		fetch(`${dollyBackend}/bestilling/malbestilling`, {
 			credentials: 'include',
@@ -18,7 +18,7 @@ export const api = {
 				console.error(error)
 				throw error
 			}),
-	hentMalerForBrukerMedOptionalNavn: (brukerId, malNavn) =>
+	hentMalerForBrukerMedOptionalNavn: (brukerId: string, malNavn: string) =>
 		fetch(
 			`${dollyBackend}/bestilling/malbestilling/bruker/${brukerId}` + malNavn
 				? `?malNavn=${malNavn}`
@@ -41,7 +41,7 @@ export const api = {
 				console.error(error)
 				throw error
 			}),
-	slettMal: (malId) =>
+	slettMal: (malId: string) =>
 		fetch(`${dollyBackend}/bestilling/malbestilling/${malId}`, {
 			method: 'DELETE',
 			credentials: 'include',
@@ -59,7 +59,7 @@ export const api = {
 				console.error(error)
 				throw error
 			}),
-	endreMalNavn: (malId, malNavn) =>
+	endreMalNavn: (malId: string, malNavn: string) =>
 		fetch(`${dollyBackend}/bestilling/malbestilling/${malId}`, {
 			method: 'PUT',
 			credentials: 'include',

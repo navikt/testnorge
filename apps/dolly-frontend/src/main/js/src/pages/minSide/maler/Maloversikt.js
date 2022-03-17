@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { api } from './api'
+import { malerApi } from './MalerApi'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
@@ -18,7 +18,7 @@ export default ({ brukerId }) => {
 	const [underRedigering, setUnderRedigering] = useState([])
 
 	useEffect(() => {
-		api
+		malerApi
 			.hentMaler()
 			.then((data) => {
 				setMaler(data.malbestillinger[`${brukerId}`] || [])
