@@ -92,12 +92,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		getPDL: [
-			DollyApi.getPersonFraPdl,
-			(ident) => ({
-				ident,
-			}),
-		],
 		getPDLPersoner: [
 			DollyApi.getPersonerFraPdl,
 			(identer) => ({
@@ -220,6 +214,8 @@ export default handleActions(
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
 				if (ident.person?.navn?.length > 0) {
 					state.pdl[ident.ident] = ident
+				} else {
+					delete state.pdl[ident.ident]
 				}
 			})
 		},
@@ -227,11 +223,6 @@ export default handleActions(
 			action.payload?.data?.forEach((ident) => {
 				state.pdlforvalter[ident.person.ident] = ident
 			})
-		},
-		[onSuccess(actions.getPDL)](state, action) {
-			if (action.payload.data?.hentPerson?.navn?.length > 0) {
-				state.pdl[action.meta.ident] = action.payload.data
-			}
 		},
 		[onSuccess(actions.getInst)](state, action) {
 			state.instdata[action.meta.ident] = action.payload.data
@@ -313,8 +304,6 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getTpsMessaging(personId))
 			case 'ARENA':
 				return dispatch(actions.getArena(personId))
-			case 'PDL':
-				return dispatch(actions.getPDL(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'AAREG':
@@ -356,8 +345,6 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 				return dispatch(actions.getInntektstub(personId))
 			case 'ARENA':
 				return dispatch(actions.getArena(personId))
-			case 'PDL':
-				return dispatch(actions.getPDL(personId))
 			case 'PDL_FORVALTER':
 				return dispatch(actions.getPdlForvalter(personId))
 			case 'INST2':
