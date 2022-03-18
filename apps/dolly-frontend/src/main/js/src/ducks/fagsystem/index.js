@@ -219,13 +219,20 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
-				state.pdl[ident.ident] = ident.person
+				if (ident.person?.navn?.length > 0) {
+					state.pdl[ident.ident] = ident
+				}
 			})
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
 			action.payload?.data?.forEach((ident) => {
 				state.pdlforvalter[ident.person.ident] = ident
 			})
+		},
+		[onSuccess(actions.getPDL)](state, action) {
+			if (action.payload.data?.hentPerson?.navn?.length > 0) {
+				state.pdl[action.meta.ident] = action.payload.data
+			}
 		},
 		[onSuccess(actions.getInst)](state, action) {
 			state.instdata[action.meta.ident] = action.payload.data

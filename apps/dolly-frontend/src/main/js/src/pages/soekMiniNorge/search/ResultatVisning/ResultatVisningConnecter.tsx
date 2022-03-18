@@ -20,7 +20,7 @@ const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 const loadingSelector = createSelector(
 	// @ts-ignore
 	(state) => state.loading,
-	(loading) => {
+	(loading: any) => {
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),

@@ -216,7 +216,7 @@ export default function PersonListe({
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}
-						identer={identer}
+						identer={identListe}
 						bestillingId={bruker.ident.bestillingId[0]}
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}
