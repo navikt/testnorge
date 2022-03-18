@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-public class PersonSearchConsumerTest {
+class PersonSearchConsumerTest {
 
     @MockBean
     private JwtDecoder jwtDecoder;
@@ -46,7 +46,7 @@ public class PersonSearchConsumerTest {
 
 
     @Test
-    public void shouldGetSearchResult() {
+    void shouldGetSearchResult() {
         stubPostPersonSearch();
         var request = PersonSearchRequest.builder()
                 .randomSeed("seed")
@@ -58,7 +58,9 @@ public class PersonSearchConsumerTest {
                                 .build())
                 .build();
         var response = personSearchConsumer.search(request);
-        assertThat(response.getItems().size()).isEqualTo(1);
+        assertThat(response.getItems()).hasSize(1);
+        assertThat(response.getNumberOfItems()).isEqualTo(1);
+        assertThat(response.getItems().get(0).getIdent()).isEqualTo("11866850000");
     }
 
 
