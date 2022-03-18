@@ -2,7 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchServiceConsumer;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.AlderSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.RelasjonSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
@@ -24,7 +24,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class IdentService {
 
-    private final PersonSearchServiceConsumer personSearchServiceConsumer;
+    private final PersonSearchConsumer personSearchConsumer;
     private final ArenaForvalterService arenaForvalterService;
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
@@ -44,7 +44,7 @@ public class IdentService {
         var page = 1;
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, null);
-            var response = personSearchServiceConsumer.search(request);
+            var response = personSearchConsumer.search(request);
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
@@ -72,7 +72,7 @@ public class IdentService {
         var page = 1;
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, true);
-            var response = personSearchServiceConsumer.search(request);
+            var response = personSearchConsumer.search(request);
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {

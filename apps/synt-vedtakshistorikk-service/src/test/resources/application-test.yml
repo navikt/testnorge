@@ -1,0 +1,35 @@
+spring:
+  cloud:
+    vault:
+      token: dummy
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+consumers:
+  synt-vedtakshistorikk:
+    url: http://localhost:${wiremock.server.port:0}/synt
+    cluster: dummy
+    namespace: dolly
+    name: synthdata-arena-vedtakshistorikk
+  testnav-arena-forvalteren-proxy:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-arena-forvalteren-proxy
+    url: http://localhost:${wiremock.server.port:0}/arena
+  testnav-pensjon-testdata-facade-proxy:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-pensjon-testdata-facade-proxy
+    url: http://localhost:${wiremock.server.port:0}/pensjon
+  person-search-service:
+    cluster: dummy
+    namespace: dolly
+    name: person-search-service
+    url: http://localhost:${wiremock.server.port:0}/search
+
+
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
