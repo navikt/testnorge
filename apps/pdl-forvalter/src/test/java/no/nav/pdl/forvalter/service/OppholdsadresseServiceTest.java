@@ -167,7 +167,7 @@ class OppholdsadresseServiceTest {
     }
 
     @Test
-    void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
+    void whenOverlappingGyldigTil_thenFixIt() {
 
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
@@ -187,10 +187,9 @@ class OppholdsadresseServiceTest {
                                 .build())))
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+        var response = oppholdsadresseService.convert(request);
 
-        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
+        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 2).atStartOfDay())));
     }
 
     @Test

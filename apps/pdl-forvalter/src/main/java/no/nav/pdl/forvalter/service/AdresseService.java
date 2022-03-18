@@ -118,9 +118,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     protected void enforceIntegrity(List<T> adresser) {
 
+        sortAdresser(adresser);
         setPendingTilOgMedDato(adresser);
         checkOverlappendeDatoer(adresser);
-        sortAdresser(adresser);
     }
 
     private void setPendingTilOgMedDato(List<T> adresser) {
