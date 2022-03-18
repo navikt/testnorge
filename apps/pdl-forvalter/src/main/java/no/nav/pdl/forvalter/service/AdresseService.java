@@ -128,8 +128,10 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         for (var i = 0; i < adresser.size(); i++) {
 
             if (i + 1 < adresser.size() &&
-                    isNull(adresser.get(i + 1).getGyldigTilOgMed())
-                    && nonNull(adresser.get(i).getGyldigFraOgMed())) {
+                    (isNull(adresser.get(i + 1).getGyldigTilOgMed()) &&
+                            nonNull(adresser.get(i).getGyldigFraOgMed()) ||
+                            adresser.get(i + 1).getGyldigTilOgMed()
+                                    .isAfter(adresser.get(i).getGyldigFraOgMed()))) {
 
                 if (adresser.get(i + 1).getGyldigFraOgMed().toLocalDate().isEqual(
                         adresser.get(i).getGyldigFraOgMed().toLocalDate())) {
