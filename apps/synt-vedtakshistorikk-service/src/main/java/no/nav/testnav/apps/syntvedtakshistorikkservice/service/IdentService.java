@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlPersonConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.AlderSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.RelasjonSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonstatusSearch;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
@@ -33,6 +35,7 @@ public class IdentService {
 
     private final PersonSearchConsumer personSearchConsumer;
     private final ArenaForvalterService arenaForvalterService;
+    private final PdlPersonConsumer pdlPersonConsumer;
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
@@ -139,8 +142,29 @@ public class IdentService {
     }
 
     public Kontoinfo getIdentMedKontoinformasjon() {
-//        return IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
-        return null;
+        var ident = IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
+        var pdlPerson = pdlPersonConsumer.getPdlPersoner(ident.getIdent());
+        if (pdlPerson == null) return null;
+        var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
+        var boadresseInfo = pdlPerson.getData().getHentPerson().getBoadresse();
+
+        return Kontoinfo.builder()
+                .fnr(ident.getIdent())
+                .fornavn(navnInfo.isEmpty() ? "" : navnInfo.get(0).getFornavn())
+                .mellomnavn(navnInfo.isEmpty() ? "" : navnInfo.get(0).getMellomnavn())
+                .etternavn(navnInfo.isEmpty() || navnInfo.get(0).getMellomnavn() == null ? "" : navnInfo.get(0).getEtternavn())
+                .kontonummer(ident.getKontonummer())
+                .adresseLinje1(getAdresseLinje(boadresseInfo))
+                .postnr(boadresseInfo.isEmpty() ? "" : boadresseInfo.get(0).getVegadresse().getPostnummer())
+                .landkode("NO")
+                .build();
+    }
+
+    private String getAdresseLinje(List<PdlPerson.Boadresse> boadresse){
+        if (boadresse.isEmpty() || boadresse.get(0).getVegadresse() == null) return "";
+        var vegadresse = boadresse.get(0).getVegadresse();
+        var husbokstav = vegadresse.getHusbokstav() == null ? "" : vegadresse.getHusbokstav();
+        return vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer() + husbokstav;
     }
 
     private PersonSearchRequest getSearchRequest(

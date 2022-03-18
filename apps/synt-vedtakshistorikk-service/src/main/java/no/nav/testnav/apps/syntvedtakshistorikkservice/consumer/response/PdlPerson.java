@@ -17,45 +17,75 @@ public class PdlPerson {
 
     private Data data;
 
+    public enum Gruppe {AKTORID, FOLKEREGISTERIDENT, NPID}
+
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Data {
+
+        private HentIdenter hentIdenter;
         private HentPerson hentPerson;
     }
 
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class HentIdenter {
+
+        private List<Identer> identer;
+
+        public List<Identer> getIdenter() {
+            if (isNull(identer)) {
+                identer = new ArrayList<>();
+            }
+            return identer;
+        }
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Identer {
+
+        private String ident;
+        private boolean historisk;
+        private Gruppe gruppe;
+    }
 
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HentPerson {
 
-        private List<Folkeregisterpersonstatus> folkeregisterpersonstatus;
-        private List<ForelderBarnRelasjon> forelderBarnRelasjon;
+        private List<Boadresse> boadresse;
+        private List<Navn> navn;
 
-        public List<Folkeregisterpersonstatus> getFolkeregisterpersonstatus() {
-            if (isNull(folkeregisterpersonstatus)) {
-                folkeregisterpersonstatus = new ArrayList<>();
+        public List<Boadresse> getBoadresse() {
+            if (isNull(boadresse)) {
+                boadresse = new ArrayList<>();
             }
-            return folkeregisterpersonstatus;
+            return boadresse;
         }
 
-        public List<ForelderBarnRelasjon> getForelderBarnRelasjon() {
-            if (isNull(forelderBarnRelasjon)) {
-                forelderBarnRelasjon = new ArrayList<>();
+        public List<Navn> getNavn() {
+            if (isNull(navn)) {
+                navn = new ArrayList<>();
             }
-            return forelderBarnRelasjon;
+            return navn;
         }
     }
 
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Folkeregisterpersonstatus {
+    public static class Boadresse {
 
-        private String identifikasjonsnummer;
-        private String status;
-        private String forenkletStatus;
+        private LocalDate angittFlyttedato;
+        private String coAdressenavn;
+        private LocalDate gyldigFraOgMed;
+        private LocalDate gyldigTilOgMed;
+        private Vegadresse vegadresse;
         private Folkeregistermetadata folkeregistermetadata;
         private Metadata metadata;
     }
@@ -63,10 +93,29 @@ public class PdlPerson {
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ForelderBarnRelasjon {
-        private String relatertPersonsIdent;
-        private String relatertPersonsRolle;
-        private String minRolleForPerson;
+    public static class Vegadresse {
+
+        private Long matrikkelId;
+        private String husbokstav;
+        private String husnummer;
+        private String adressenavn;
+        private String bruktsenhetsnummer;
+        private String tilleggsnavn;
+        private String postnummer;
+        private String kommunenummer;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Navn{
+
+        private String fornavn;
+        private String mellomnavn;
+        private String etternavn;
+        private String forkortetNavn;
+        private String originaltNavn;
+        private LocalDate gyldigFraOgMed;
         private Folkeregistermetadata folkeregistermetadata;
         private Metadata metadata;
     }

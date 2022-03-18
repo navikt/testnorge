@@ -110,10 +110,12 @@ public class ArenaAapService {
         var tvungenForvaltning = historikk.getTvungenForvaltning();
         if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
             for (var vedtak : tvungenForvaltning) {
+                var kontoinfo = identService.getIdentMedKontoinformasjon();
+                if (kontoinfo == null) break;
                 var rettighetRequest = getRettighetTvungenForvaltningRequest(
                         personident,
                         miljoe,
-                        identService.getIdentMedKontoinformasjon(),
+                        kontoinfo,
                         vedtak);
                 rettigheter.add(rettighetRequest);
             }

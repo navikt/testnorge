@@ -30,6 +30,11 @@ consumers:
     namespace: dolly
     name: person-search-service
     url: http://localhost:${wiremock.server.port:0}/search
+  pdl-api-proxy:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-pdl-proxy
+    url: http://localhost:${wiremock.server.port:0}/pdl
 
 
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
