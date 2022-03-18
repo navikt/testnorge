@@ -118,7 +118,7 @@ export default function bestillingStatusMapper(data: [Object]) {
 	return data.map((bestilling: Bestilling) => {
 		const alleIdenter = [
 			...new Set(
-				bestilling.status.flatMap(
+				bestilling.status?.flatMap(
 					(status: Status) => status?.statuser?.[0]?.detaljert?.[0]?.identer
 				)
 			),
