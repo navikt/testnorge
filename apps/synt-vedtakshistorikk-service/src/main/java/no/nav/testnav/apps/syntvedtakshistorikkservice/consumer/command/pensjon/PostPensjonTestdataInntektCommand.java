@@ -3,12 +3,15 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pensjon
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
@@ -44,7 +47,9 @@ public class PostPensjonTestdataInntektCommand implements Callable<Mono<PensjonT
                     .header(AUTHORIZATION, "Bearer " + idToken)
                     .body(BodyInserters.fromPublisher(Mono.just(inntekt), PensjonTestdataInntekt.class))
                     .retrieve()
-                    .bodyToMono(PensjonTestdataResponse.class);
+                    .bodyToMono(PensjonTestdataResponse.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException));
         } catch (Exception e) {
             log.error("Klarte ikke å opprette pensjon testdata inntekt.", e);
             return Mono.just(PensjonTestdataResponse.builder().status(Collections.emptyList()).build());

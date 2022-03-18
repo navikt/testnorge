@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PersonSearchResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,7 +47,9 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                         var headers = entity.getHeaders().get(NUMBER_OF_ITEMS_HEADER);
                         var numberOfItems = headers != null && !headers.isEmpty() ? headers.get(0) : "0";
                         return Mono.just(new PersonSearchResponse(Integer.parseInt(numberOfItems), entity.getBody()));
-                    });
+                    })
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException));
         } catch (Exception e) {
             log.error("Feil oppsto i henting av søkeresultat.", e);
             return Mono.just(new PersonSearchResponse(0, Collections.emptyList()));
