@@ -1,11 +1,5 @@
 import { connect } from 'react-redux'
-import {
-	actions as actionList,
-	fetchPdlPersoner,
-	fetchTpsfPersoner,
-	selectPersonListe,
-	sokSelector,
-} from '~/ducks/fagsystem'
+import { actions as actionList, fetchPdlPersoner, fetchTpsfPersoner } from '~/ducks/fagsystem'
 import { actions } from '~/ducks/gruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
@@ -19,7 +13,9 @@ const loadingSelector = createLoadingSelector([
 ])
 
 const mapStateToProps = (state, ownProps) => ({
-	personListe: sokSelector(selectPersonListe(state), state.search),
+	search: state.search,
+	bestillingStatuser: state.bestillingStatuser,
+	fagsystem: state.fagsystem,
 	gruppeInfo: state.gruppe.gruppeInfo,
 	identer: state.gruppe.ident,
 	isFetching: loadingSelector(state),

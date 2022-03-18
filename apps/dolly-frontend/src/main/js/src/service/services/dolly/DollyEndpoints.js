@@ -1,3 +1,5 @@
+import Formatters from '~/utils/DataFormatter'
+
 const uri = `/dolly-backend/api/v1`
 
 const groupBase = `${uri}/gruppe`
@@ -159,6 +161,13 @@ export default class DollyEndpoints {
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
+	}
+
+	static personoppslagMange(identer) {
+		return `${personoppslagBase}/identer?identer=${Formatters.arrayToString(identer).replaceAll(
+			' ',
+			''
+		)}`
 	}
 
 	static gruppeExcelFil(gruppeId) {
