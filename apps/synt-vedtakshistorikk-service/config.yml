@@ -33,6 +33,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: orkestratoren
           cluster: dev-fss
     outbound:
