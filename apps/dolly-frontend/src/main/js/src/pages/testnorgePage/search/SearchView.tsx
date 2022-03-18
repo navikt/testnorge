@@ -1,11 +1,10 @@
 import React from 'react'
-import Pagination from 'paginering'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import styled from 'styled-components'
 import { PersonView } from '~/pages/testnorgePage/search/PersonView'
-import { Pageing, Person } from '~/service/services/personsearch/types'
+import { Person } from '~/service/services/personsearch/types'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
@@ -56,8 +55,21 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 		},
 		{
 			text: 'Kjønn',
-			width: '20',
-			dataField: 'kjoenn',
+			width: '10',
+			formatter: (cell: any, row: Person) => {
+				return <>{row.kjoenn.substring(0, 1)}</>
+			},
+		},
+		{
+			text: 'Alder',
+			width: '10',
+			formatter: (cell: any, row: Person) => {
+				const foedselsdato = new Date(row.foedsel.foedselsdato)
+				const diff_ms = Date.now() - foedselsdato.getTime()
+				const age_dt = new Date(diff_ms)
+				const alder = Math.abs(age_dt.getUTCFullYear() - 1970)
+				return <>{alder}</>
+			},
 		},
 		{
 			text: 'Velg alle',

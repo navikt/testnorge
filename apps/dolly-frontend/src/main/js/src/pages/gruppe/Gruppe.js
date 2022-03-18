@@ -11,6 +11,8 @@ import { BestillingsveilederModal } from '~/components/bestillingsveileder/start
 import Icon from '~/components/ui/icon/Icon'
 import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
 import { Redirect } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { resetSearch } from '~/ducks/search'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -42,22 +44,21 @@ export default function Gruppe({
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 
-	useEffect(() => {
-		getBestillinger()
-	}, [])
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		getGruppe(sidetall, sideStoerrelse)
+		getBestillinger()
 	}, [sidetall, sideStoerrelse])
 
-	if (isFetching && !gruppe) return <Loading label="Laster personer" panel />
-	if (!gruppe) {
-		getGruppe(sidetall, sideStoerrelse)
-		getBestillinger()
-		return null
-	}
+	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
 
-	const byttVisning = (event) => setVisning(event.target.value)
+	const byttVisning = (event) => {
+		if (event?.target?.value === 'personer') {
+			dispatch(resetSearch())
+		}
+		setVisning(typeof event === 'string' ? event : event.target.value)
+	}
 
 	const identArray = Object.values(identer).filter(
 		(ident) => ident.bestillingId != null && ident.bestillingId.length > 0
@@ -144,6 +145,7 @@ export default function Gruppe({
 					setSidetall={setSidetall}
 					setSideStoerrelse={setSideStoerrelse}
 					brukertype={brukertype}
+					setVisning={byttVisning}
 				/>
 			)}
 			{visning === VISNING_BESTILLING && (

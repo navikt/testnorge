@@ -53,9 +53,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
     }
 
-    private static LocalDateTime getDateOrNow(LocalDateTime dateTime) {
+    private static LocalDateTime getDateOrFuture(LocalDateTime dateTime) {
 
-        return nonNull(dateTime) ? dateTime : LocalDateTime.now();
+        return nonNull(dateTime) ? dateTime : LocalDateTime.now().plusYears(100);
     }
 
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
@@ -118,9 +118,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     protected void enforceIntegrity(List<T> adresser) {
 
+        sortAdresser(adresser);
         setPendingTilOgMedDato(adresser);
         checkOverlappendeDatoer(adresser);
-        sortAdresser(adresser);
     }
 
     private void setPendingTilOgMedDato(List<T> adresser) {
@@ -128,8 +128,10 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         for (var i = 0; i < adresser.size(); i++) {
 
             if (i + 1 < adresser.size() &&
-                    isNull(adresser.get(i + 1).getGyldigTilOgMed())
-                    && nonNull(adresser.get(i).getGyldigFraOgMed())) {
+                    (isNull(adresser.get(i + 1).getGyldigTilOgMed()) &&
+                            nonNull(adresser.get(i).getGyldigFraOgMed()) ||
+                            adresser.get(i + 1).getGyldigTilOgMed()
+                                    .isAfter(adresser.get(i).getGyldigFraOgMed()))) {
 
                 if (adresser.get(i + 1).getGyldigFraOgMed().toLocalDate().isEqual(
                         adresser.get(i).getGyldigFraOgMed().toLocalDate())) {
@@ -146,17 +148,19 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     private LocalDateTime getGyldigTilDato(AdresseDTO adresse1, AdresseDTO adresse2) {
 
-        if (adresse1.getGyldigFraOgMed().toLocalDate().isEqual(adresse2.getGyldigFraOgMed().toLocalDate())) {
+        if (adresse1.getGyldigFraOgMed().toLocalDate()
+                .isEqual(adresse2.getGyldigFraOgMed().toLocalDate()) ||
+                adresse1.getGyldigFraOgMed().toLocalDate()
+                        .isEqual(adresse2.getGyldigFraOgMed().toLocalDate().minusDays(1))) {
 
             var time = adresse2.getGyldigFraOgMed().minusSeconds(1);
             return adresse2.getGyldigFraOgMed().toLocalDate()
                     .atTime(time.getHour(), time.getMinute(), time.getSecond());
 
-        } else if (adresse2.getGyldigFraOgMed().toLocalDate().isAfter(adresse2.getGyldigFraOgMed().toLocalDate())) {
+        } else if (adresse1.getGyldigFraOgMed().toLocalDate()
+                .isBefore(adresse2.getGyldigFraOgMed().toLocalDate())) {
 
-            var time = LocalDateTime.now();
-            return adresse2.getGyldigFraOgMed().minusDays(1).toLocalDate()
-                    .atTime(time.getHour(), time.getMinute(), time.getSecond());
+            return adresse2.getGyldigFraOgMed().minusDays(1).toLocalDate().atStartOfDay();
 
         } else {
 
@@ -172,8 +176,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 if (i != j &&
                         (adresser.get(i).getGyldigFraOgMed()
                                 .isEqual(adresser.get(j).getGyldigFraOgMed()) ||
-                                getDateOrNow(adresser.get(i).getGyldigTilOgMed())
-                                        .isEqual(getDateOrNow(adresser.get(j).getGyldigTilOgMed())) ||
+                                getDateOrFuture(adresser.get(i).getGyldigTilOgMed())
+                                        .isEqual(getDateOrFuture(adresser.get(j).getGyldigTilOgMed())) ||
                                 isAdresseOverlapp(adresser.get(i), adresser.get(j)))) {
                     throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
@@ -192,16 +196,16 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
         //        |<---- Intervall A ----->|
         //             |<---- Intervall B ----->|
-        return getDateOrNow(adresse1.getGyldigFraOgMed()).isBefore(adresse2.getGyldigFraOgMed()) &&
-                adresse2.getGyldigFraOgMed().isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
+        return getDateOrFuture(adresse1.getGyldigFraOgMed()).isBefore(adresse2.getGyldigFraOgMed()) &&
+                adresse2.getGyldigFraOgMed().isBefore(getDateOrFuture(adresse1.getGyldigTilOgMed()));
     }
 
     private boolean isOverlappTilfelle2(T adresse1, T adresse2) {
 
         //             |<---- Intervall A ----->|
         //        |<---- Intervall B ----->|
-        return adresse1.getGyldigFraOgMed().isBefore(getDateOrNow(adresse2.getGyldigTilOgMed())) &&
-                getDateOrNow(adresse2.getGyldigTilOgMed()).isBefore(getDateOrNow(adresse1.getGyldigTilOgMed()));
+        return adresse1.getGyldigFraOgMed().isBefore(getDateOrFuture(adresse2.getGyldigTilOgMed())) &&
+                getDateOrFuture(adresse2.getGyldigTilOgMed()).isBefore(getDateOrFuture(adresse1.getGyldigTilOgMed()));
     }
 
     private boolean isOverlappTilfelle3(T adresse1, T adresse2) {
@@ -209,7 +213,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         //          |<--- Intervall A --->|
         //      |<-------- Intervall B ------->|
         return adresse2.getGyldigFraOgMed().isBefore(adresse1.getGyldigFraOgMed()) &&
-                getDateOrNow(adresse2.getGyldigTilOgMed()).isAfter(getDateOrNow(adresse1.getGyldigTilOgMed()));
+                getDateOrFuture(adresse2.getGyldigTilOgMed()).isAfter(getDateOrFuture(adresse1.getGyldigTilOgMed()));
     }
 
     private void sortAdresser(List<T> adresser) {

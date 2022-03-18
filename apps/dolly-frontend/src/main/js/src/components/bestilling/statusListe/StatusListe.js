@@ -4,21 +4,19 @@ import Loading from '~/components/ui/loading/Loading'
 import BestillingProgresjon from './BestillingProgresjon/BestillingProgresjon'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
 
-export default function StatusListe(props) {
-	const {
-		isFetchingBestillinger,
-		isFetchingOrgBestillinger,
-		nyeBestillinger,
-		isCanceling,
-		brukerBilde,
-		brukerId,
-		getGruppe,
-		getOrganisasjoner,
-		getBestillinger,
-		removeNyBestillingStatus,
-		cancelBestilling,
-	} = props
-
+export default function StatusListe({
+	brukerBilde,
+	brukerId,
+	cancelBestilling,
+	getBestillinger,
+	getGruppe,
+	getOrganisasjoner,
+	isCanceling,
+	isFetchingBestillinger,
+	isFetchingOrgBestillinger,
+	nyeBestillinger,
+	removeNyBestillingStatus,
+}) {
 	const _onCloseBestillingResultat = (bestillingId) => {
 		removeNyBestillingStatus(bestillingId)
 		getBestillinger()

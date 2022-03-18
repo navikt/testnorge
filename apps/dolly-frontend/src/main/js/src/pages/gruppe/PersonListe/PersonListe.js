@@ -39,6 +39,7 @@ export default function PersonListe({
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
+	setVisning,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -222,6 +223,7 @@ export default function PersonListe({
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
+						setVisning={setVisning}
 					/>
 				)}
 			/>
