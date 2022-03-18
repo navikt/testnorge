@@ -15,7 +15,7 @@ velge ekstra informasjon man ønsker lagt til på identene og importere dem inn 
 hvordan dette kan gjøres.
 
 
-https://user-images.githubusercontent.com/58416744/158974273-c3343258-b133-41bc-b1c5-33f7f4e97870.mov
+![Testnorge søk og import Demo](https://user-images.githubusercontent.com/58416744/158974273-c3343258-b133-41bc-b1c5-33f7f4e97870.mov)
 
 
 
