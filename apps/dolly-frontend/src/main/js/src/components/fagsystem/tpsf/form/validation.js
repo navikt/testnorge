@@ -382,14 +382,13 @@ export const validation = {
 			egenAnsattDatoTom: ifPresent(
 				'$tpsMessaging.egenAnsattDatoTom',
 				Yup.string().test(
-					'is-after-dato-fom',
-					'Dato må være etter fra-dato og senest dagens dato',
+					'is-after-or-equal-dato-fom',
+					'Dato kan være f.o.m. fra-dato og t.o.m. dagens dato',
 					function validDate(dato) {
 						const values = this.options.context
-						return (
-							isAfter(new Date(dato), new Date(_get(values, 'tpsMessaging.egenAnsattDatoFom'))) &&
-							!isAfter(new Date(dato), new Date())
-						)
+						const earliestDate = new Date(_get(values, 'tpsMessaging.egenAnsattDatoFom'))
+						earliestDate.setDate(earliestDate.getDate() - 1)
+						return isAfter(new Date(dato), earliestDate) && !isAfter(new Date(dato), new Date())
 					}
 				)
 			),
