@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KontoinfoResponse {
+public class Kontoinfo {
 
     private String fnr;
     private String kortnavn;

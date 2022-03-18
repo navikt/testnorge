@@ -1,5 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchConsumer;
@@ -7,15 +10,19 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSe
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.RelasjonSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonstatusSearch;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -30,6 +37,21 @@ public class IdentService {
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
     private static final String BOSATT_STATUS = "bosatt";
+    private static final List<IdentMedKontonr> IDENTER_MED_KONTONR;
+
+    static {
+        ObjectMapper objectMapper = new ObjectMapper();
+        URL resourceIdenterMedKontonr = Resources.getResource("files/identer_med_kontonr.json");
+        IDENTER_MED_KONTONR = new ArrayList<>();
+        try {
+            Collection<IdentMedKontonr> identCollection = objectMapper.readValue(resourceIdenterMedKontonr, new TypeReference<>() {
+            });
+            IDENTER_MED_KONTONR.addAll(identCollection);
+
+        } catch (IOException e) {
+            log.error("Kunne ikke laste inn identer med kontonr.", e);
+        }
+    }
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             int antallNyeIdenter,
@@ -48,7 +70,9 @@ public class IdentService {
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
-                if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent()) && validBosattdato(person, tidligsteDatoBosatt)) utvalgteIdenter.add(person.getIdent());
+                //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
+                if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent()))
+                    utvalgteIdenter.add(person.getIdent());
                 if (utvalgteIdenter.size() >= antallNyeIdenter) break;
             }
 
@@ -76,7 +100,8 @@ public class IdentService {
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
-                if (validBosattdato(person, tidligsteDatoBosatt) && validBarn(person, tidligsteDatoBarnetillegg)) utvalgteIdenter.add(person.getIdent());
+                //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
+                if (validBarn(person, tidligsteDatoBarnetillegg)) utvalgteIdenter.add(person.getIdent());
                 if (utvalgteIdenter.size() >= antallNyeIdenter) break;
             }
 
@@ -90,7 +115,7 @@ public class IdentService {
     private boolean validBosattdato(PersonDTO person, LocalDate tidligsteDatoBosatt) {
         var gyldigeBosattstatuser = person.getFolkeregisterpersonstatus().stream()
                 .filter(status -> status.getStatus().equals(BOSATT_STATUS))
-                .map(status -> status.getGyldighetstidspunkt())
+                .map(FolkeregisterpersonstatusDTO::getGyldighetstidspunkt)
                 .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
                 .toList();
         return !gyldigeBosattstatuser.isEmpty();
@@ -104,21 +129,18 @@ public class IdentService {
         return !barnIdenter.isEmpty();
     }
 
-    private boolean under18VedTidspunkt(String ident, LocalDate tidspunkt){
-        var month = Integer.parseInt(ident.substring(2,4)) - 80;
-        var oppdatertFnr = ident.substring(0,2) + month + ident.substring(4);
+    private boolean under18VedTidspunkt(String ident, LocalDate tidspunkt) {
+        var month = Integer.parseInt(ident.substring(2, 4)) - 80;
+        var oppdatertFnr = ident.substring(0, 2) + month + ident.substring(4);
         var foedselsdato = IdentUtil.getFoedselsdatoFraIdent(oppdatertFnr);
 
         var alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
         return alder > -1 && alder < 18;
     }
 
-
-    public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
-            int antall
-    ) {
-        // TODO: hente tilfeldige identer og opprett konto på de eller hente fra gruppe i dolly
-        return Collections.emptyList();
+    public Kontoinfo getIdentMedKontoinformasjon() {
+//        return IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
+        return null;
     }
 
     private PersonSearchRequest getSearchRequest(

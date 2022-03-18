@@ -18,7 +18,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighe
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetTiltakspengerRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetTvungenForvaltningRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetUngUfoerRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
@@ -129,7 +129,7 @@ public class RequestUtils {
     public static RettighetTvungenForvaltningRequest getRettighetTvungenForvaltningRequest(
             String personident,
             String miljoe,
-            KontoinfoResponse identMedKontonummer,
+            Kontoinfo identMedKontonummer,
             NyttVedtakAap vedtak
     ) {
         vedtak.setBegrunnelse(BEGRUNNELSE);
@@ -279,7 +279,7 @@ public class RequestUtils {
         return rettighetRequest;
     }
 
-    private static Forvalter buildForvalter(KontoinfoResponse identMedKontoinfo) {
+    private static Forvalter buildForvalter(Kontoinfo identMedKontoinfo) {
         var konto = Konto.builder()
                 .kontonr(identMedKontoinfo.getKontonummer())
                 .build();
@@ -289,7 +289,7 @@ public class RequestUtils {
                 .adresseLinje3(identMedKontoinfo.getAdresseLinje3())
                 .fodselsnr(identMedKontoinfo.getFnr())
                 .landkode(identMedKontoinfo.getLandkode())
-                .navn(identMedKontoinfo.getLandkode())
+                .navn(identMedKontoinfo.getNavn())
                 .postnr(identMedKontoinfo.getPostnr())
                 .build();
         return Forvalter.builder()

@@ -3,7 +3,6 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
@@ -29,6 +28,8 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 @Service
 @RequiredArgsConstructor
 public class ArenaAapService {
+
+    private final IdentService identService;
 
     public List<NyttVedtakAap> getIkkeAvsluttendeVedtakAap115(
             List<NyttVedtakAap> aap115
@@ -104,8 +105,7 @@ public class ArenaAapService {
             Vedtakshistorikk historikk,
             String personident,
             String miljoe,
-            List<RettighetRequest> rettigheter,
-            List<KontoinfoResponse> identerMedKontonummer
+            List<RettighetRequest> rettigheter
     ) {
         var tvungenForvaltning = historikk.getTvungenForvaltning();
         if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
@@ -113,7 +113,7 @@ public class ArenaAapService {
                 var rettighetRequest = getRettighetTvungenForvaltningRequest(
                         personident,
                         miljoe,
-                        identerMedKontonummer.remove(identerMedKontonummer.size() - 1),
+                        identService.getIdentMedKontoinformasjon(),
                         vedtak);
                 rettigheter.add(rettighetRequest);
             }

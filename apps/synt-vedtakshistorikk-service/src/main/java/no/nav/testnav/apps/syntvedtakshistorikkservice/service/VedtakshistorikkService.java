@@ -18,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntVedtakshistorikkConsumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.KontoinfoResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -155,12 +154,6 @@ public class VedtakshistorikkService {
             Vedtakshistorikk vedtakshistorikk,
             LocalDate tidligsteDato
     ) {
-        List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
-        if (vedtakshistorikk.getTvungenForvaltning() != null && !vedtakshistorikk.getTvungenForvaltning().isEmpty()) {
-            var antallTvungenForvaltning = vedtakshistorikk.getTvungenForvaltning().size();
-            identerMedKontonummer = identService.getIdenterMedKontoinformasjon(antallTvungenForvaltning);
-        }
-
         List<RettighetRequest> rettigheter = new ArrayList<>();
         List<NyttVedtakTiltak> tiltak = new ArrayList<>();
 
@@ -177,7 +170,7 @@ public class VedtakshistorikkService {
         arenaAapService.opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakAap115(avsluttendeAap115, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
-        arenaAapService.opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
+        arenaAapService.opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaTiltakService.oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak, senesteVedtak, tidligsteDato);
         arenaTiltakService.opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
