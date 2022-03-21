@@ -1,11 +1,12 @@
+# Testnav-synt-vedtakshistorikk-service
+Applikasjon for å registrere Testnorge identer som brukere i Arena forvalteren og hente og registrere vedtakshistorikk 
+på dem. 
 
-# Synt-vedtakshistorikk-service
-
-
-## lokal kjøring
+## Lokal kjøring
 
 Start `SyntVedtakshistorikkServiceApplicationStarter` med følgenede props:
 
 ```
--Dspring.profiles.active=dev -Dspring.cloud.vault.token=<<VAULT_TOKEN>>
+-Dspring.profiles.active=dev 
+-Dspring.cloud.vault.token=<<VAULT_TOKEN>>
 ```

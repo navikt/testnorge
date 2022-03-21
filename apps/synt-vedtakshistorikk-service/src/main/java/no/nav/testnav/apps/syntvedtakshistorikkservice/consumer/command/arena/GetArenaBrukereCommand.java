@@ -26,21 +26,16 @@ public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>
 
     @Override
     public Mono<NyeBrukereResponse> call() {
-        try {
-            return webClient.get()
-                    .uri(builder ->
-                            builder.path("/api/v1/bruker")
-                                    .queryParams(queryParams)
-                                    .build()
-                    )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .bodyToMono(NyeBrukereResponse.class);
-        } catch (Exception e) {
-            log.error("Klarte ikke å hente arbeidssoekere fra Arena-forvalteren.", e);
-            return Mono.empty();
-        }
+        return webClient.get()
+                .uri(builder ->
+                        builder.path("/api/v1/bruker")
+                                .queryParams(queryParams)
+                                .build()
+                )
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(AUTHORIZATION, "Bearer " + token)
+                .retrieve()
+                .bodyToMono(NyeBrukereResponse.class);
     }
 }

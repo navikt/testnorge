@@ -80,7 +80,7 @@ public class ArenaForvalterService {
     }
 
     public boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
-        var identerIArena = hentIdentListe(arenaForvalterConsumer.hentArbeidsoeker(personident, null, null));
+        var identerIArena = hentIdentListe(arenaForvalterConsumer.hentArbeidsoekere(personident, null, null));
         return !identerIArena.contains(personident);
     }
 

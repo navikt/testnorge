@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -64,7 +65,7 @@ public class ArenaForvalterConsumer {
                     responses.put(rettighet.getPersonident(), new ArrayList<>(Collections.singletonList(response)));
                 }
             }
-            if (response == null || (response.getFeiledeRettigheter() != null && !response.getFeiledeRettigheter().isEmpty())) {
+            if (isNull(response) || (!isNull(response.getFeiledeRettigheter()) && !response.getFeiledeRettigheter().isEmpty())) {
                 log.info("Innsendt rettighet feilet. Stopper videre innsending av historikk for ident: "
                         + rettighet.getPersonident());
                 break;
@@ -75,31 +76,37 @@ public class ArenaForvalterConsumer {
 
     public NyttVedtakResponse finnTiltak(FinnTiltakRequest rettighet) {
         return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet,accessToken.getTokenValue(), webClient).call())
+                .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet, accessToken.getTokenValue(), webClient).call())
                 .block();
     }
 
     public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
-        var response =  tokenExchange.exchange(serviceProperties)
+        var response = tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new PostEndreInnsatsbehovCommand(endreRequest, accessToken.getTokenValue(), webClient).call())
                 .block();
 
-        if (response == null || (response.getNyeEndreInnsatsbehovFeilList() != null &&
+        if (isNull(response) || (!isNull(response.getNyeEndreInnsatsbehovFeilList()) &&
                 !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
             log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
         }
     }
 
-    public List<Arbeidsoeker> hentArbeidsoeker(
+    public List<Arbeidsoeker> hentArbeidsoekere(
             String personident,
             String eier,
             String miljoe
     ) {
-        var response = tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new GetArenaBrukereCommand(
-                        getQueryParams(personident, eier, miljoe, null), accessToken.getTokenValue(), webClient).call())
-                .block();
-        if (response != null) {
+        var queryParams = getQueryParams(personident, eier, miljoe, null);
+        NyeBrukereResponse response = null;
+        try {
+            response = tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new GetArenaBrukereCommand(queryParams, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Fant ikke arbeidssoeker i Arena.", e);
+        }
+
+        if (!isNull(response)) {
             return gaaGjennomSider(personident, eier, miljoe, response.getAntallSider(), response.getArbeidsoekerList().size());
         } else {
             return new ArrayList<>();
@@ -139,10 +146,16 @@ public class ArenaForvalterConsumer {
 
         for (var page = 0; page < antallSider; page++) {
             var queryParams = getQueryParams(personident, eier, miljoe, page + "");
-            var response = tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new GetArenaBrukereCommand(queryParams, accessToken.getTokenValue(), webClient).call())
-                    .block();
-            if (response != null) {
+            NyeBrukereResponse response = null;
+            try {
+                response = tokenExchange.exchange(serviceProperties)
+                        .flatMap(accessToken -> new GetArenaBrukereCommand(queryParams, accessToken.getTokenValue(), webClient).call())
+                        .block();
+            } catch (Exception e) {
+                log.error("Fant ikke arbeidssoeker i Arena.", e);
+            }
+
+            if (!isNull(response)) {
                 arbeidssoekere.addAll(response.getArbeidsoekerList());
             }
         }
