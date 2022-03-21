@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;

@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PersonSearchProperties;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.AlderSearch;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.AlderSearch;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonSearchRequest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

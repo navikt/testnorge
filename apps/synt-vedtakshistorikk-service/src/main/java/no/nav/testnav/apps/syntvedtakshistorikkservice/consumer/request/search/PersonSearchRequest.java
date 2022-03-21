@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

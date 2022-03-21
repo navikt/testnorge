@@ -6,7 +6,7 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.FinnTiltakRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetAap115Request;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetAapRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetEndreDeltakerstatusRequest;

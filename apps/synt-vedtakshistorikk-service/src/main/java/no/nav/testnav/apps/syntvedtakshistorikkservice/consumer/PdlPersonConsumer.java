@@ -3,13 +3,12 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.GetPdlPersonCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PdlApiProxyProperties;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PdlPerson;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.IOException;

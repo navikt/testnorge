@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pdl;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

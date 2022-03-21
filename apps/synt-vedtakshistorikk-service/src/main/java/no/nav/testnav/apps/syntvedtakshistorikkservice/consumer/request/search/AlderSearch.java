@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class RelasjonSearch {
-    Boolean barn;
+public class AlderSearch {
+    Short fra;
+    Short til;
 }

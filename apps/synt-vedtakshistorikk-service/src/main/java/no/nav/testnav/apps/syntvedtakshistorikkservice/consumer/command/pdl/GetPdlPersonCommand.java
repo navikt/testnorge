@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.GraphQLRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PdlPerson;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pdl.GraphQLRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;

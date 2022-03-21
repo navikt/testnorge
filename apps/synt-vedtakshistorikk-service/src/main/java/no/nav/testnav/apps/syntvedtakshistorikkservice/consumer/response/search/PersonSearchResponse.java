@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

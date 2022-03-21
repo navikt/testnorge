@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search;
 
 import lombok.AllArgsConstructor;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.PersonSearchResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonSearchRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.PersonSearchResponse;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.core.ParameterizedTypeReference;
