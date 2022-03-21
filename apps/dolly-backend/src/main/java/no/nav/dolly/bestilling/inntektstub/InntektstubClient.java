@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -41,7 +42,8 @@ public class InntektstubClient implements ClientRegister {
                     .forEach(inntekter ->
                             inntekter.getInntektsliste()
                                     .forEach(inntekt ->
-                                            inntekt.setTilleggsinformasjon(inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                            inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
+                                                    inntekt.getTilleggsinformasjon().isEmpty() ? null :
                                                     inntekt.getTilleggsinformasjon())));
 
             try {
