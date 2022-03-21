@@ -10,10 +10,7 @@ type PdlDataVisningProps = {
 }
 
 export const PdlDataVisning = ({ pdlData }: PdlDataVisningProps) => {
-	console.log('pdlData: ', pdlData) //TODO - SLETT MEG
 	if (!pdlData || !pdlData.hentPerson) {
-		// const data = pdlData?.data
-		// if (!data || !data.hentPerson) {
 		return null
 	}
 
