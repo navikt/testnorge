@@ -11,7 +11,6 @@ import AaregService from './services/aareg/AaregService'
 import InntektstubService from './services/inntektstub/InntektstubService'
 import Norg2Service from './services/norg2/Norg2Service'
 import BrregstubService from './services/brregstub/BrregstubService'
-import HodejegerenService from '~/service/services/hodejegeren/HodejegerenService'
 import VarslingerService from './services/varslinger/VarslingerService'
 import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
 import OrganisasjonService from '~/service/services/organisasjonservice/OrganisasjonService'
@@ -36,7 +35,6 @@ export const AaregApi = AaregService
 export const InntektstubApi = InntektstubService
 export const Norg2Api = Norg2Service
 export const BrregstubApi = BrregstubService
-export const HodejegerenApi = HodejegerenService
 export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
 export const OrgserviceApi = OrganisasjonService
@@ -59,7 +57,6 @@ export default {
 	AaregApi: AaregService,
 	InntektstubApi: InntektstubService,
 	Norg2Api: Norg2Service,
-	HodejegerenApi: HodejegerenService,
 	BrregstubApi: BrregstubService,
 	VarslingerApi: VarslingerService,
 	OrgforvalterApi: OrganisasjonForvalterService,

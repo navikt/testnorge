@@ -1,5 +1,5 @@
-import React from 'react'
-import { useMount } from 'react-use'
+import React, { useEffect, useState } from 'react'
+import { useBoolean, useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -27,6 +27,7 @@ import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasj
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import { DollyApi } from '~/service/Api'
 import { NomVisning } from '~/components/fagsystem/nom/visning/NomVisning'
 
 const getIdenttype = (ident) => {
@@ -50,8 +51,23 @@ export const PersonVisning = ({
 	slettPerson,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	setVisning,
 }) => {
 	useMount(fetchDataFraFagsystemer)
+
+	const [pdlData, setPdlData] = useState(null)
+	const [pdlLoading, setPdlLoading] = useBoolean(true)
+
+	useEffect(() => {
+		DollyApi.getPersonFraPdl(ident.ident)
+			.then((response) => {
+				setPdlData(response.data?.data)
+				setPdlLoading(false)
+			})
+			.catch((e) => {
+				setPdlLoading(false)
+			})
+	}, [])
 
 	const personInfo = data.tpsf
 		? data.tpsf
@@ -95,7 +111,7 @@ export const PersonVisning = ({
 			{ident.master !== 'PDL' && (
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
-			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
+			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
 			<NomVisning
 				data={data.nomData}
 				skjermingsregister={data.skjermingsregister}
@@ -124,8 +140,8 @@ export const PersonVisning = ({
 			/>
 			<DokarkivVisning ident={ident.ident} />
 			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
-			<TidligereBestillinger ids={ident.bestillingId} />
+			<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
+			<TidligereBestillinger ids={ident.bestillingId} setVisning={setVisning} ident={ident.ident} />
 			<BeskrivelseConnector ident={ident} />
 		</div>
 	)

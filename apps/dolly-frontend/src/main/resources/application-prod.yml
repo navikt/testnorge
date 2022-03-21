@@ -1,6 +1,6 @@
 spring:
   session:
-    timeout: 5m
+    timeout: 10m
   redis:
     host: ${REDIS_HOST}
     port: 6379

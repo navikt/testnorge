@@ -18,6 +18,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -99,6 +100,8 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
     private void prepareUtflytting(TpsfBestilling tpsfBestilling) {
 
         if (!bestillingRequest.getPdldata().getPerson().getUtflytting().isEmpty() &&
+                bestillingRequest.getPdldata().getPerson().getUtflytting().stream()
+                        .anyMatch(UtflyttingDTO::isVelkjentLand) &&
                 !bestillingRequest.getPdldata().isPdlAdresse()) {
             tpsfBestilling.setHarIngenAdresse(true);
             bestillingRequest.getPdldata().getPerson().setKontaktadresse(List.of(

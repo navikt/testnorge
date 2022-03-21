@@ -32,6 +32,7 @@ import Copy from '~/assets/icons/nav-ikoner/line/SVG/17-files/copy-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
+import Kryss from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/kryss.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
 import Logout from '~/assets/icons/nav-ikoner/line/SVG/19-interface/logout.svg'
@@ -95,6 +96,7 @@ export const icons = {
 	'arrow-right': ArrowRight,
 	details: Details,
 	synchronize: Synchronize,
+	kryss: Kryss,
 	'report-problem-circle': ReportProblemCircle,
 	'feedback-check-circle': CheckCircle,
 	'report-problem-triangle': ProblemTriangle,

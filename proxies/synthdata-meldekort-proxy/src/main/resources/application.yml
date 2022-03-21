@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: testnav-synthdata-meldekort-proxy
+    desciption: Proxy for synthdata-arena-meldekort som legger på sikkerhet.
+  security:
+    oauth2:
+      resourceserver:
+        trygdeetaten:
+          issuer-uri: ${azure.openid.config.issuer}
+          jwk-set-uri: ${azure.openid.config.jwks.uri}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+consumers:
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-meldekort

@@ -148,9 +148,12 @@ export type UtenlandskAdresseData = {
 }
 
 export type TelefonData = {
-	landskode: string
-	nummer: string
-	prioritet: number
+	landskode?: string
+	landkode?: string
+	nummer?: string
+	telefonnummer?: string
+	prioritet?: number
+	telefontype?: string
 }
 
 export type TilrettelagtKommunikasjonData = {
@@ -236,11 +239,15 @@ export type InnflyttingTilNorge = {
 	fraflyttingsland: string
 	fraflyttingsstedIUtlandet: string
 	metadata: Metadata
+	folkeregistermetadata?: {
+		gyldighetstidspunkt: string
+	}
 }
 
 export type UtflyttingFraNorge = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
+	utflyttingsdato: string
 	metadata: Metadata
 }
 

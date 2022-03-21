@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Tooltip from 'rc-tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
@@ -13,6 +13,8 @@ import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { KommentarModal } from '~/pages/gruppe/PersonListe/modal/KommentarModal'
+import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
+import { isEqual } from 'lodash'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -23,10 +25,13 @@ const ikonTypeMap = {
 
 export default function PersonListe({
 	isFetching,
-	personListe,
+	search,
+	fagsystem,
+	bestillingStatuser,
 	gruppeInfo,
 	identer,
 	sidetall,
+	slettedeIdenter,
 	setSidetall,
 	sideStoerrelse,
 	setSideStoerrelse,
@@ -35,39 +40,34 @@ export default function PersonListe({
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
+	setVisning,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
+	const [identListe, setIdentListe] = useState([])
 
-	const previousValues = useRef(identer)
-	const previousIdenter = Object.values(previousValues.current)
-
-	const gruppeEndret = () => {
-		if (!previousValues) return true
-		previousValues.current = identer
-		const prevIbruk = previousIdenter.map((ident) => ({
-			ident: ident.ident,
-			ibruk: ident.ibruk,
-		}))
-
-		const iBrukEndret = prevIbruk.some((id) => {
-			if (id.ibruk !== identer?.[id.ident]?.ibruk) {
-				return true
-			}
-		})
-
-		const identerEndret = previousIdenter.filter((prevIdent) => !identer[prevIdent.ident])
-
-		return !iBrukEndret || identerEndret.length > 0
-	}
+	const personListe = useMemo(
+		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
+		[identer, search, fagsystem]
+	)
 
 	useEffect(() => {
-		if (gruppeEndret()) {
-			fetchTpsfPersoner()
-			fetchPdlPersoner()
-			previousValues.current = identer
+		const idents = Object.values(identer)
+			.filter((ident) => !slettedeIdenter?.[0]?.includes(ident.ident))
+			.map((ident) => {
+				if (ident) {
+					return { ident: ident.ident, master: ident.master }
+				}
+			})
+		if (!isEqual(idents, identListe)) {
+			setIdentListe(idents)
 		}
-	}, [identer])
+	}, [identer, slettedeIdenter[0]])
+
+	useEffect(() => {
+		fetchTpsfPersoner(identListe)
+		fetchPdlPersoner(identListe)
+	}, [identListe, sidetall, sideStoerrelse])
 
 	if (isFetching) return <Loading label="Laster personer" panel />
 
@@ -220,11 +220,13 @@ export default function PersonListe({
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}
+						slettedeIdenter={slettedeIdenter}
 						bestillingId={bruker.ident.bestillingId[0]}
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
+						setVisning={setVisning}
 					/>
 				)}
 			/>

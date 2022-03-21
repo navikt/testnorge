@@ -9,7 +9,7 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingComman
 import no.nav.testnav.apps.tpsmessagingservice.dto.SikkerhetstiltakRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SikkerhetstiltakResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
@@ -58,17 +58,17 @@ public class SikkerhetstiltakService {
         return request;
     }
 
-    public Map<String, TpsMeldingResponse> endreSikkerhetstiltak(String ident, SikkerhetstiltakDTO sikkerhetstiltak, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> endreSikkerhetstiltak(String ident, SikkerhetTiltakDTO sikkerhetstiltak, List<String> miljoer) {
 
         return endreSikkerhetstiltak(true, ident, sikkerhetstiltak, miljoer);
     }
 
     public Map<String, TpsMeldingResponse> opphoerSikkerhetstiltak(String ident, List<String> miljoer) {
 
-        return endreSikkerhetstiltak(false, ident, new SikkerhetstiltakDTO(), miljoer);
+        return endreSikkerhetstiltak(false, ident, new SikkerhetTiltakDTO(), miljoer);
     }
 
-    private Map<String, TpsMeldingResponse> endreSikkerhetstiltak(boolean isEndre, String ident, SikkerhetstiltakDTO sikkerhetstiltak, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> endreSikkerhetstiltak(boolean isEndre, String ident, SikkerhetTiltakDTO sikkerhetstiltak, List<String> miljoer) {
 
         miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 

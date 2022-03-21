@@ -13,6 +13,7 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandMod
 import no.nav.registre.testnorge.personsearchservice.adapter.model.StatsborgerskapModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
 
@@ -102,6 +103,20 @@ public class Person {
                 .getIdent();
     }
 
+    private List<FolkeregisterpersonstatusDTO> getPersonstatus() {
+        return response
+                .getHentPerson()
+                .getFolkeregisterpersonstatus()
+                .stream()
+                .filter(personstatus ->  !personstatus.getMetadata().getHistorisk())
+                .map(personstatus -> FolkeregisterpersonstatusDTO.builder()
+                        .status(personstatus.getStatus())
+                        .gyldighetstidspunkt(personstatus.getFolkeregistermetadata().getGyldighetstidspunkt())
+                        .build()
+                )
+                .toList();
+    }
+
     private List<String> getTags() {
         return response.getTags();
     }
@@ -126,6 +141,7 @@ public class Person {
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
                 .innfyttingTilNorge(toDTO(innflyttingTilNorge))
                 .forelderBarnRelasjoner(toDTO(forelderBarnRelasjon))
+                .folkeregisterpersonstatus(getPersonstatus())
                 .build();
     }
 }
