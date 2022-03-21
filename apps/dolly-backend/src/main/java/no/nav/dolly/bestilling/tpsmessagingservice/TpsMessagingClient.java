@@ -97,6 +97,7 @@ public class TpsMessagingClient implements ClientRegister {
                         } catch (InterruptedException | ExecutionException | TimeoutException e) {
 
                             log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
                             throw new DollyFunctionalException(e.getMessage());
                         }
                     });

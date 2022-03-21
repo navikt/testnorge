@@ -70,6 +70,7 @@ public class OrdreService {
                         }
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         log.error("Future task exception {}", e.getMessage(), e);
+                        Thread.currentThread().interrupt();
                         throw new ResponseStatusException(INTERNAL_SERVER_ERROR, e.getMessage(), e);
                     }
                 });
