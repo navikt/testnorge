@@ -18,10 +18,15 @@ export const Telefonnummer = ({ data }: DataListe) => {
 	if (!data || data.length === 0) return null
 
 	const TelefonnummerVisning = ({ item, idx }: Data) => {
+		const telefonnummer = item.nummer || item.telefonnummer
+		const landkode = item.landskode || item.landkode
+		const prioritet =
+			item.prioritet || (item.telefontype === 'MOBI' && 1) || (item.telefontype === 'HJET' && 2)
+
 		return (
 			<div className="person-visning_content" key={idx}>
-				<TitleValue title="Telefonnummer" value={`${item.landskode} ${item.nummer}`} />
-				<TitleValue title="Prioritet" value={item.prioritet} />
+				<TitleValue title="Telefonnummer" value={`${landkode} ${telefonnummer}`} />
+				<TitleValue title="Prioritet" value={prioritet} />
 			</div>
 		)
 	}

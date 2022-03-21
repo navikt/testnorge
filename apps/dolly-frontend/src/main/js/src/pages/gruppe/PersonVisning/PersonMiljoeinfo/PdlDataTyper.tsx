@@ -148,9 +148,12 @@ export type UtenlandskAdresseData = {
 }
 
 export type TelefonData = {
-	landskode: string
-	nummer: string
-	prioritet: number
+	landskode?: string
+	landkode?: string
+	nummer?: string
+	telefonnummer?: string
+	prioritet?: number
+	telefontype?: string
 }
 
 export type TilrettelagtKommunikasjonData = {
