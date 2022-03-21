@@ -31,6 +31,7 @@ export default function PersonListe({
 	gruppeInfo,
 	identer,
 	sidetall,
+	slettedeIdenter,
 	setSidetall,
 	sideStoerrelse,
 	setSideStoerrelse,
@@ -51,15 +52,17 @@ export default function PersonListe({
 	)
 
 	useEffect(() => {
-		const idents = Object.values(identer).map((ident) => {
-			if (ident) {
-				return { ident: ident.ident, master: ident.master }
-			}
-		})
+		const idents = Object.values(identer)
+			.filter((ident) => !slettedeIdenter?.[0]?.includes(ident.ident))
+			.map((ident) => {
+				if (ident) {
+					return { ident: ident.ident, master: ident.master }
+				}
+			})
 		if (!isEqual(idents, identListe)) {
 			setIdentListe(idents)
 		}
-	}, [identer])
+	}, [identer, slettedeIdenter[0]])
 
 	useEffect(() => {
 		fetchTpsfPersoner(identListe)
@@ -217,7 +220,7 @@ export default function PersonListe({
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}
-						identer={identListe}
+						slettedeIdenter={slettedeIdenter}
 						bestillingId={bruker.ident.bestillingId[0]}
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}

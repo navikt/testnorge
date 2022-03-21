@@ -51,6 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 		slettPerson: () => {
+			ownProps.slettedeIdenter?.[1]?.([...ownProps.slettedeIdenter[0], ownProps.personId])
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type) => {

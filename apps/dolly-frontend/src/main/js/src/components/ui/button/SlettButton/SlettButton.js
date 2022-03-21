@@ -8,13 +8,19 @@ import Loading from '~/components/ui/loading/Loading'
 
 import './SlettModal.less'
 
-export const SlettButton = ({ action, loading, children }) => {
+export const SlettButton = ({ action, loading, children, disabled = false }) => {
 	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="trashcan">
+			<Button
+				onClick={openModal}
+				disabled={disabled}
+				title={disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
+				kind="trashcan"
+			>
+				{/*TODO: ENABLE SLETTING NÅR TPS STØTTER DETTE IGJEN*/}
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
