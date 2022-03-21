@@ -60,7 +60,7 @@ public class NomConsumer {
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(throwable -> {
-                    throw new DollyFunctionalException("Klarte ikke å hente nom ident fra nom-api", throwable);
+                    throw new DollyFunctionalException("Klarte ikke å hente nom-ident fra nom-api", throwable);
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
@@ -80,7 +80,7 @@ public class NomConsumer {
                         .fromValue(new GraphQLRequest(getQueryFromFile(PERSON_HENT_ALLE_QUERY), null)))
                 .retrieve().bodyToMono(JsonNode.class)
                 .doOnError(throwable -> {
-                    throw new DollyFunctionalException("Klarte ikke å hente komplett nom ident fra nom-api", throwable);
+                    throw new DollyFunctionalException("Klarte ikke å hente komplett nom-ident fra nom-api", throwable);
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException)).block(Duration.ofSeconds(10));
@@ -101,7 +101,7 @@ public class NomConsumer {
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(throwable -> {
-                    throw new DollyFunctionalException("Klarte ikke å opprette nom ident i nom-api", throwable);
+                    throw new DollyFunctionalException("Klarte ikke å opprette nom-ident i nom-api", throwable);
                 })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException)).block();
