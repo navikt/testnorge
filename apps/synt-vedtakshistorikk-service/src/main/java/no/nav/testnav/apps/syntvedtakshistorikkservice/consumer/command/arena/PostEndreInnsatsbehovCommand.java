@@ -28,22 +28,17 @@ public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsb
 
     @Override
     public Mono<EndreInnsatsbehovResponse> call() {
-        try {
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/endreInnsatsbehov")
-                                    .build()
-                    )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
-                    .retrieve()
-                    .bodyToMono(EndreInnsatsbehovResponse.class);
-        } catch (Exception e) {
-            log.error("Kunne ikke endre innsatsbehov i arena forvalteren.", e);
-            return Mono.empty();
-        }
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/endreInnsatsbehov")
+                                .build()
+                )
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromPublisher(Mono.just(request), EndreInnsatsbehovRequest.class))
+                .retrieve()
+                .bodyToMono(EndreInnsatsbehovResponse.class);
     }
 }

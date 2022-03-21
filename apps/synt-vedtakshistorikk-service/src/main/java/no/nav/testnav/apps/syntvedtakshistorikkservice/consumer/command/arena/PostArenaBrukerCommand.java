@@ -33,7 +33,7 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
     private static final ParameterizedTypeReference<Map<String, List<NyBruker>>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public PostArenaBrukerCommand(List<NyBruker> nyeBrukere, String token,  WebClient webClient) {
+    public PostArenaBrukerCommand(List<NyBruker> nyeBrukere, String token, WebClient webClient) {
         this.webClient = webClient;
         this.nyeBrukere = Collections.singletonMap("nyeBrukere", nyeBrukere);
         this.token = token;
@@ -41,24 +41,19 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
 
     @Override
     public Mono<NyeBrukereResponse> call() {
-        try {
-            log.info("Sender inn ny(e) bruker(e) til Arena-forvalteren.");
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/bruker")
-                                    .queryParam("eier", EIER)
-                                    .build()
-                    )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .body(BodyInserters.fromPublisher(Mono.just(nyeBrukere), REQUEST_TYPE))
-                    .retrieve()
-                    .bodyToMono(NyeBrukereResponse.class);
-        } catch (Exception e) {
-            log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
-            throw e;
-        }
+        log.info("Sender inn ny(e) bruker(e) til Arena-forvalteren.");
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/bruker")
+                                .queryParam("eier", EIER)
+                                .build()
+                )
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(BodyInserters.fromPublisher(Mono.just(nyeBrukere), REQUEST_TYPE))
+                .retrieve()
+                .bodyToMono(NyeBrukereResponse.class);
     }
 }

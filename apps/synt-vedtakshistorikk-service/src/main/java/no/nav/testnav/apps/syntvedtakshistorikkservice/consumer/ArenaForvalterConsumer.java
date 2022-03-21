@@ -6,6 +6,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.Arena
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.EndreInnsatsbehovResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
@@ -46,26 +48,36 @@ public class ArenaForvalterConsumer {
     public NyeBrukereResponse sendBrukereTilArenaForvalter(
             List<NyBruker> nyeBrukere
     ) {
-        return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
-                .block();
+        try {
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
+            throw e;
+        }
     }
 
     public Map<String, List<NyttVedtakResponse>> opprettRettighet(List<RettighetRequest> rettigheter) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         for (var rettighet : rettigheter) {
-            var response = tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new PostRettighetCommand(rettighet, accessToken.getTokenValue(), webClient).call())
-                    .block();
+            NyttVedtakResponse response = null;
+            try {
+                response = tokenExchange.exchange(serviceProperties)
+                        .flatMap(accessToken -> new PostRettighetCommand(rettighet, accessToken.getTokenValue(), webClient).call())
+                        .block();
+            } catch (Exception e) {
+                log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
+            }
 
-            if (response != null) {
+            if (nonNull(response)) {
                 if (responses.containsKey(rettighet.getPersonident())) {
                     responses.get(rettighet.getPersonident()).add(response);
                 } else {
                     responses.put(rettighet.getPersonident(), new ArrayList<>(Collections.singletonList(response)));
                 }
             }
-            if (isNull(response) || (!isNull(response.getFeiledeRettigheter()) && !response.getFeiledeRettigheter().isEmpty())) {
+            if (isNull(response) || (nonNull(response.getFeiledeRettigheter()) && !response.getFeiledeRettigheter().isEmpty())) {
                 log.info("Innsendt rettighet feilet. Stopper videre innsending av historikk for ident: "
                         + rettighet.getPersonident());
                 break;
@@ -75,17 +87,27 @@ public class ArenaForvalterConsumer {
     }
 
     public NyttVedtakResponse finnTiltak(FinnTiltakRequest rettighet) {
-        return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet, accessToken.getTokenValue(), webClient).call())
-                .block();
+        try {
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Klarte ikke hente tiltak for ident {} i miljø {}", rettighet.getPersonident(), rettighet.getMiljoe(), e);
+            return null;
+        }
     }
 
     public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
-        var response = tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new PostEndreInnsatsbehovCommand(endreRequest, accessToken.getTokenValue(), webClient).call())
-                .block();
+        EndreInnsatsbehovResponse response = null;
+        try {
+            response = tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new PostEndreInnsatsbehovCommand(endreRequest, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Kunne ikke endre innsatsbehov i arena forvalteren.", e);
+        }
 
-        if (isNull(response) || (!isNull(response.getNyeEndreInnsatsbehovFeilList()) &&
+        if (isNull(response) || (nonNull(response.getNyeEndreInnsatsbehovFeilList()) &&
                 !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
             log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
         }
@@ -106,7 +128,7 @@ public class ArenaForvalterConsumer {
             log.error("Fant ikke arbeidssoeker i Arena.", e);
         }
 
-        if (!isNull(response)) {
+        if (nonNull(response)) {
             return gaaGjennomSider(personident, eier, miljoe, response.getAntallSider(), response.getArbeidsoekerList().size());
         } else {
             return new ArrayList<>();
@@ -155,7 +177,7 @@ public class ArenaForvalterConsumer {
                 log.error("Fant ikke arbeidssoeker i Arena.", e);
             }
 
-            if (!isNull(response)) {
+            if (nonNull(response)) {
                 arbeidssoekere.addAll(response.getArbeidsoekerList());
             }
         }

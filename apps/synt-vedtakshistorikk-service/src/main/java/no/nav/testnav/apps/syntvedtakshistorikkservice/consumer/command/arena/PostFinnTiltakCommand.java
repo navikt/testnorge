@@ -37,24 +37,20 @@ public class PostFinnTiltakCommand implements Callable<Mono<NyttVedtakResponse>>
 
     @Override
     public Mono<NyttVedtakResponse> call() {
-        try {
-            log.info("Henter tiltak for ident {} i miljø {}", ident, miljoe);
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/finntiltak")
-                                    .build()
-                    )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .body(BodyInserters.fromPublisher(Mono.just(rettighet), FinnTiltakRequest.class))
-                    .retrieve()
-                    .bodyToMono(NyttVedtakResponse.class);
-        } catch (Exception e) {
-            log.error("Klarte ikke hente tiltak for ident {} i miljø {}", ident, miljoe, e);
-            return Mono.empty();
-        }
+        log.info("Henter tiltak for ident {} i miljø {}", ident, miljoe);
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/finntiltak")
+                                .build()
+                )
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(BodyInserters.fromPublisher(Mono.just(rettighet), FinnTiltakRequest.class))
+                .retrieve()
+                .bodyToMono(NyttVedtakResponse.class);
+
     }
 }
 

@@ -28,22 +28,18 @@ public class PostRettighetCommand implements Callable<Mono<NyttVedtakResponse>> 
 
     @Override
     public Mono<NyttVedtakResponse> call() {
-        try {
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path(rettighet.getArenaForvalterUrlPath())
-                                    .build()
-                    )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
-                    .retrieve()
-                    .bodyToMono(NyttVedtakResponse.class);
-        } catch (Exception e) {
-            log.error("Kunne ikke opprette rettighet i arena-forvalteren.", e);
-            return Mono.empty();
-        }
+        return webClient.post()
+                .uri(builder ->
+                        builder.path(rettighet.getArenaForvalterUrlPath())
+                                .build()
+                )
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(BodyInserters.fromPublisher(Mono.just(rettighet), RettighetRequest.class))
+                .retrieve()
+                .bodyToMono(NyttVedtakResponse.class);
+
     }
 }
