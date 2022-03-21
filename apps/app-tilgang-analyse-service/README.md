@@ -12,7 +12,7 @@ parent: Applikasjoner
 Appen brukes for å finne avehingheter mellom apper basert på `inbound` og `outbound` regler i nias. 
  
 ## Swagger
-Swagger finnes under [/api](https://https://testnav-app-tilgang-analyse-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnav-app-tilgang-analyse-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

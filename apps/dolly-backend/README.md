@@ -4,9 +4,14 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_dolly-backend&metric=ncloc)](https://sonarcloud.io/dashboard?id=navikt_dolly-backend)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=navikt_dolly-backend&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=navikt_dolly-backend)
 
-# dolly-backend
+# Dolly-backend
 
-## Avhenighetsanalyse
+Backend for Dolly som behandler bestillinger og requests fra frontenden og sender disse videre inn i de diverse
+systemene testidenter skal ha tilegnet informasjon.
+
+Applikasjonen legger også ved default verdier som kreves i API vi er knyttet mot, men som ikke brukerene trenger å ha
+noe forhold til under utfylling av bestilling. Noe data blir persistert i postgres db, som f.eks brukerne av Dolly,
+utførte bestillinger, hvem som har sendt de inn og status på disse.
 
 ## Utenfor utviklerimage
 
@@ -32,4 +37,3 @@ Deretter kan DollyBackendApplicationStarter startes med disse VM options:
 ![Deploy dev t1](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20t1/badge.svg)
 ![Deploy dev t2](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20t2/badge.svg)
 ![Deploy dev u2](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20u2/badge.svg)
-![Deploy dev default](https://github.com/navikt/dolly-backend/workflows/Deploy%20dev%20default/badge.svg)
