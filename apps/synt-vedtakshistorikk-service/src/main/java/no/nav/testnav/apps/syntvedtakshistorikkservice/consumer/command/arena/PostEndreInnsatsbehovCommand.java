@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.EndreInnsatsbehovResponse;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +17,6 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Head
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
-@Slf4j
 @AllArgsConstructor
 public class PostEndreInnsatsbehovCommand implements Callable<Mono<EndreInnsatsbehovResponse>> {
 

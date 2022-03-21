@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,8 +14,6 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Head
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CALL_ID;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.NAV_CONSUMER_ID;
 
-
-@Slf4j
 @AllArgsConstructor
 public class GetArenaBrukereCommand implements Callable<Mono<NyeBrukereResponse>> {
 

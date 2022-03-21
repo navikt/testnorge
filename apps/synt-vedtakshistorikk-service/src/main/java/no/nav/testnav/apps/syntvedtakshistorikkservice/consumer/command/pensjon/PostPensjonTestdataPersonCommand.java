@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
@@ -36,24 +35,19 @@ public class PostPensjonTestdataPersonCommand implements Callable<Mono<PensjonTe
 
     @Override
     public Mono<PensjonTestdataResponse> call() {
-        try {
-            log.info("Oppretter ny pensjon testdata person.");
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/person").build()
-                    )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(AUTHORIZATION, "Bearer " + idToken)
-                    .body(BodyInserters.fromPublisher(Mono.just(person), PensjonTestdataPerson.class))
-                    .retrieve()
-                    .bodyToMono(PensjonTestdataResponse.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException));
-        } catch (Exception e) {
-            log.error("Klarte ikke å opprette pensjon testdata person.", e);
-            return Mono.just(PensjonTestdataResponse.builder().status(Collections.emptyList()).build());
-        }
+        log.info("Oppretter ny pensjon testdata person.");
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/person").build()
+                )
+                .header(CALL_ID, NAV_CALL_ID)
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(AUTHORIZATION, "Bearer " + idToken)
+                .body(BodyInserters.fromPublisher(Mono.just(person), PensjonTestdataPerson.class))
+                .retrieve()
+                .bodyToMono(PensjonTestdataResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

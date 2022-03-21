@@ -39,25 +39,21 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
 
     @Override
     public Mono<PdlPerson> call() {
-        try {
-            return webClient
-                    .post()
-                    .uri(uriBuilder -> uriBuilder.path(GRAPHQL_URL).build())
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .header(CONSUMER_TOKEN, "Bearer " + token)
-                    .header(CALL_ID, "Dolly: " + UUID.randomUUID())
-                    .header(TEMA, TEMA_GENERELL)
-                    .body(BodyInserters.fromValue(GraphQLRequest.builder()
-                            .query(query)
-                            .variables(Map.of("ident", ident, "historikk", true))
-                            .build()))
-                    .retrieve()
-                    .bodyToMono(PdlPerson.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException));
-        } catch (Exception e) {
-            log.error("Klarte ikke hente pdlperson.", e);
-            return Mono.empty();
-        }
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path(GRAPHQL_URL).build())
+                .header(AUTHORIZATION, "Bearer " + token)
+                .header(CONSUMER_TOKEN, "Bearer " + token)
+                .header(CALL_ID, "Dolly: " + UUID.randomUUID())
+                .header(TEMA, TEMA_GENERELL)
+                .body(BodyInserters.fromValue(GraphQLRequest.builder()
+                        .query(query)
+                        .variables(Map.of("ident", ident, "historikk", true))
+                        .build()))
+                .retrieve()
+                .bodyToMono(PdlPerson.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
+
     }
 }

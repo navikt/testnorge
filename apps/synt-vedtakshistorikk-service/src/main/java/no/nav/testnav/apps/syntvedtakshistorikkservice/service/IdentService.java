@@ -70,6 +70,7 @@ public class IdentService {
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, null);
             var response = personSearchConsumer.search(request);
+            //TODO feilhåntering hvis response er null eller tom.
             int numberOfPages = response.getNumberOfItems() / 10;
 
             for (PersonDTO person : response.getItems()) {
@@ -143,7 +144,7 @@ public class IdentService {
 
     public Kontoinfo getIdentMedKontoinformasjon() {
         var ident = IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
-        var pdlPerson = pdlPersonConsumer.getPdlPersoner(ident.getIdent());
+        var pdlPerson = pdlPersonConsumer.getPdlPerson(ident.getIdent());
         if (pdlPerson == null) return null;
         var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
         var boadresseInfo = pdlPerson.getData().getHentPerson().getBoadresse();

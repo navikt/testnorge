@@ -13,6 +13,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
 
 @Slf4j
@@ -30,23 +31,17 @@ public class HentVedtakshistorikkCommand implements Callable<Mono<List<Vedtakshi
 
     @Override
     public Mono<List<Vedtakshistorikk>> call() {
-        try {
-            log.info("Henter vedtakshistorikk.");
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/vedtakshistorikk")
-                                    .build()
-                    )
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
-                    .retrieve()
-                    .bodyToMono(RESPONSE_TYPE)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException));
-        } catch (Exception e) {
-            log.error("Klarte ikke hente vedtakshistorikk.", e);
-            return Mono.empty();
-        }
+        log.info("Henter vedtakshistorikk.");
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/vedtakshistorikk")
+                                .build()
+                )
+                .header(AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
+                .retrieve()
+                .bodyToMono(RESPONSE_TYPE)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
-
 }

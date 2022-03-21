@@ -9,6 +9,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,11 +36,17 @@ public class PdlPersonConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public PdlPerson getPdlPersoner(String ident) {
+    public PdlPerson getPdlPerson(String ident) {
         var query = getSinglePersonQueryFromFile();
-        return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
-                .block();
+        try {
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Klarte ikke hente pdlperson.", e);
+            return null;
+        }
+
     }
 
     private static String getSinglePersonQueryFromFile() {

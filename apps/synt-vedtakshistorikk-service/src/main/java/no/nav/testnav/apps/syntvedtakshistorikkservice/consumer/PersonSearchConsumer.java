@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search.PersonSearchCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PersonSearchProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.personSearch.PersonSearchRequest;
@@ -9,6 +10,8 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+
+@Slf4j
 @Component
 public class PersonSearchConsumer {
 
@@ -25,9 +28,14 @@ public class PersonSearchConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public PersonSearchResponse search(PersonSearchRequest request){
-        return tokenExchange.exchange(serviceProperties)
-                .flatMap(accessToken -> new PersonSearchCommand(request, accessToken.getTokenValue(), webClient).call())
-                .block();
+    public PersonSearchResponse search(PersonSearchRequest request) {
+        try {
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new PersonSearchCommand(request, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Feil oppsto i henting av søkeresultat.", e);
+            return null;
+        }
     }
 }
