@@ -212,11 +212,7 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
-				if (ident.person?.navn?.length > 0) {
-					state.pdl[ident.ident] = ident
-				} else {
-					delete state.pdl[ident.ident]
-				}
+				state.pdl[ident.ident] = ident
 			})
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
@@ -246,7 +242,7 @@ export default handleActions(
 )
 
 // Thunk
-export const fetchTpsfPersoner = (identer) => (dispatch, getState) => {
+export const fetchTpsfPersoner = (identer) => (dispatch) => {
 	const tpsIdenter = identer.map((person) => {
 		if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
 			return person.ident
@@ -256,7 +252,7 @@ export const fetchTpsfPersoner = (identer) => (dispatch, getState) => {
 	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
 }
 
-export const fetchPdlPersoner = (identer) => (dispatch, getState) => {
+export const fetchPdlPersoner = (identer) => (dispatch) => {
 	const pdlIdenter = identer.map((person) => {
 		return person.ident
 	})
@@ -415,7 +411,7 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, bestillingStatuser, pdlfIdent)
 		} else if (ident.master === 'PDL') {
-			const pdlData = fagsystem.pdl[ident.ident]?.data
+			const pdlData = fagsystem.pdl[ident.ident]
 			return getPdlIdentInfo(ident, bestillingStatuser, pdlData)
 		} else {
 			return null
@@ -462,7 +458,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	if (!pdlData) return null
 
-	const person = pdlData.hentPerson
+	const person = pdlData.person
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
@@ -470,11 +466,11 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 
 	return {
 		ident,
-		identNr: getPdlIdent(pdlData.hentIdenter?.identer),
+		identNr: pdlData?.ident,
 		bestillingId: ident.bestillingId,
 		kilde: 'TESTNORGE',
 		importFra: 'Testnorge',
-		identtype: person.folkeregisteridentifikator[0]?.type,
+		identtype: person?.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useMount } from 'react-use'
+import { useBoolean, useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -55,12 +55,12 @@ export const PersonVisning = ({
 	useMount(fetchDataFraFagsystemer)
 
 	const [pdlData, setPdlData] = useState(null)
-	const [pdlLoading, setPdlLoading] = useState(null)
+	const [pdlLoading, setPdlLoading] = useBoolean(true)
 
 	useEffect(() => {
 		DollyApi.getPersonFraPdl(ident.ident)
 			.then((response) => {
-				setPdlData(response.data)
+				setPdlData(response.data?.data)
 				setPdlLoading(false)
 			})
 			.catch((e) => {

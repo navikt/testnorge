@@ -8,6 +8,7 @@ import personListe from './PersonListe'
 const loadingSelector = createLoadingSelector([
 	actions.getById,
 	actionList.getTpsf,
+	actionList.getPDLPersoner,
 	actionList.getPdlForvalter,
 	getBestillinger,
 ])
