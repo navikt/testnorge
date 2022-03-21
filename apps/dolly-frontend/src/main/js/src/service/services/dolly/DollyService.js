@@ -155,6 +155,9 @@ export default {
 	getPersonFraPdl(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
+	getPersonerFraPdl(identer) {
+		return Request.get(Endpoints.personoppslagMange(identer))
+	},
 
 	getArbeidsforhold(ident, miljoe) {
 		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))

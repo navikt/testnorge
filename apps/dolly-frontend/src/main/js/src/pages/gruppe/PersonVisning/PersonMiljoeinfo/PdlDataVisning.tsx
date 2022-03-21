@@ -2,16 +2,18 @@ import React from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
-import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
 
 type PdlDataVisningProps = {
-	pdlData: PdlDataWrapper
+	pdlData: PdlData
 }
 
 export const PdlDataVisning = ({ pdlData }: PdlDataVisningProps) => {
-	const data = pdlData?.data
-	if (!data || !data.hentPerson) {
+	console.log('pdlData: ', pdlData) //TODO - SLETT MEG
+	if (!pdlData || !pdlData.hentPerson) {
+		// const data = pdlData?.data
+		// if (!data || !data.hentPerson) {
 		return null
 	}
 

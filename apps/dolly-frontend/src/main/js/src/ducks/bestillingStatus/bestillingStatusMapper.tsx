@@ -66,7 +66,6 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [Status]) => {
 
 		const addOpprettedeIdenter = (system: Status) => {
 			system.statuser.forEach((stat) => {
-				console.log('stat: ', stat) //TODO - SLETT MEG
 				if (system.id === 'PDL_FORVALTER') {
 					const gyldigeIdenter = stat.identer.filter((a) => a !== '?')
 					identerOpprettet = identerOpprettet.concat(gyldigeIdenter)
