@@ -1,13 +1,10 @@
 ---
-layout: default title: Frontend parent: Endringsmelding grand_parent: Applikasjoner
+layout: default title: dolly-frontend-redirect parent: Applikasjoner
 ---
 
-# Endringsmelding Frontend
+# Dolly-frontend-redirect
 
-Frontend for endringsmeldinger. For å bruke denne appen må brukeren være logget inn med en bruker registrert på
-azure-applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
-
-https://endringsmelding.dev.intern.nav.no
+App som redirecter fra de utdaterte dolly ingressene til de nye støttede versjonene.
 
 ## Lokal kjøring
 
@@ -23,3 +20,4 @@ Run -> Edit Configurations -> VM Options
 -Dspring.cloud.vault.token=(Copy token fra Vault)
 -Dspring.profiles.active=dev
 ```
+
