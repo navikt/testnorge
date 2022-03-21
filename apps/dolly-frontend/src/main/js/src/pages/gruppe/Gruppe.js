@@ -43,6 +43,7 @@ export default function Gruppe({
 	const [sidetall, setSidetall] = useState(0)
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
+	const slettedeIdenter = useState([])
 
 	const dispatch = useDispatch()
 
@@ -142,6 +143,7 @@ export default function Gruppe({
 					iLaastGruppe={erLaast}
 					sidetall={sidetall}
 					sideStoerrelse={sideStoerrelse}
+					slettedeIdenter={slettedeIdenter}
 					setSidetall={setSidetall}
 					setSideStoerrelse={setSideStoerrelse}
 					brukertype={brukertype}
