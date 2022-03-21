@@ -60,7 +60,7 @@ class PersonSearchConsumerTest {
         var response = personSearchConsumer.search(request);
         assertThat(response.getItems()).hasSize(1);
         assertThat(response.getNumberOfItems()).isEqualTo(1);
-        assertThat(response.getItems().get(0).getIdent()).isEqualTo("11866850000");
+        assertThat(response.getItems().get(0).getIdent()).isEqualTo("11866800000");
     }
 
 
