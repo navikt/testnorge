@@ -61,7 +61,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 						<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 					</>
 				)}
-				{!hasTpsfData && <Telefonnummer data={pdlData?.telefonnummer} />}
+				<Telefonnummer data={hasTpsfData ? data.telefonnumre : pdlData?.telefonnummer} />
 				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData?.sikkerhetstiltak} />}
 			</>
 			<UtenlandskBankkonto
