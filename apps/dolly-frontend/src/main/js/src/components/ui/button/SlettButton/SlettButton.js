@@ -20,7 +20,6 @@ export const SlettButton = ({ action, loading, children, disabled = false }) => 
 				title={disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
 				kind="trashcan"
 			>
-				{/*TODO: ENABLE SLETTING NÅR TPS STØTTER DETTE IGJEN*/}
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">

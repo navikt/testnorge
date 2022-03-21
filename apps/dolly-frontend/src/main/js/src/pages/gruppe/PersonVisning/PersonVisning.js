@@ -95,7 +95,7 @@ export const PersonVisning = ({
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (
-					<SlettButton action={slettPerson} disabled={true} loading={loading.slettPerson}>
+					<SlettButton action={slettPerson} loading={loading.slettPerson}>
 						Er du sikker på at du vil slette denne personen?
 					</SlettButton>
 				)}
