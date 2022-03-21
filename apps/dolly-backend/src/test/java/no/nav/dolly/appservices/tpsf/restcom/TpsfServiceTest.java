@@ -24,26 +24,20 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -56,8 +50,6 @@ public class TpsfServiceTest {
 
     private static final TpsfBestilling STANDARD_TPSF_BESTILLING = TpsfBestilling.builder().identtype(FNR).build();
     private static final String STANDARD_IDENT = "123";
-    private static final List<String> STANDARD_IDENTER = new ArrayList<>(singleton(STANDARD_IDENT));
-    private static final List<String> STANDARD_MILJOER_U1_T1 = Arrays.asList("u1", "t1");
 
     @MockBean
     private JwtDecoder jwtDecoder;
@@ -102,45 +94,6 @@ public class TpsfServiceTest {
 
         Assertions.assertThrows(WebClientResponseException.BadRequest.class, () ->
                 tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING));
-    }
-
-    @Test
-    void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesInternalException() {
-
-        stubPostTpsfDataForFlereThrowExpection();
-
-        Assertions.assertThrows(ResponseStatusException.class, () ->
-                tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1));
-    }
-
-    @Test
-    void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
-        List<String> tomListe = new ArrayList<>();
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-                tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, tomListe));
-    }
-
-    @Test
-    void sendTilTpsFraTPSF_happyPath() throws JsonProcessingException {
-
-        RsSkdMeldingResponse meldingResponse = RsSkdMeldingResponse.builder().gruppeid(1L).build();
-
-        stubPostTpsfDataForFlereReturnsOk(meldingResponse);
-
-        when(objectMapper.convertValue(anyMap(), eq(RsSkdMeldingResponse.class))).thenReturn(meldingResponse);
-
-        RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1);
-
-        assertThat(response.getGruppeid(), is(meldingResponse.getGruppeid()));
-    }
-
-    private void stubPostTpsfDataForFlereThrowExpection() {
-
-        stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/tilTpsFlere"))
-                .willReturn(serverError()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(String.valueOf(List.of(STANDARD_IDENT)))
-                ));
     }
 
     private void stubPostTpsfDataForFlereReturnsOk(RsSkdMeldingResponse meldingResponse) throws JsonProcessingException {

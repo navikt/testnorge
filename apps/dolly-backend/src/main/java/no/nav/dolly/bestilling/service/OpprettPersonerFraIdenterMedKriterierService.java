@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -37,7 +36,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     private PdlDataConsumer pdlDataConsumer;
     private IdentService identService;
 
-    public OpprettPersonerFraIdenterMedKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+    public OpprettPersonerFraIdenterMedKriterierService(TpsfService tpsfService,
                                                         DollyPersonCache dollyPersonCache, IdentService identService,
                                                         BestillingProgressService bestillingProgressService,
                                                         BestillingService bestillingService, MapperFacade mapperFacade,
@@ -45,7 +44,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer, pdlDataConsumer);
 
         this.bestillingService = bestillingService;
@@ -80,14 +79,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                     var leverteIdenter = new OpprettCommand(identStatus, bestKriterier, tpsfService,
                                             pdlDataConsumer, mapperFacade).call();
 
-                                    if (identStatus.isTpsf()) {
-                                        sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(",")),
-                                                leverteIdenter, bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
-
-                                    } else {
-                                        identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
-                                                identStatus.getMaster(), bestKriterier.getBeskrivelse());
-                                    }
+                                    identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
+                                            identStatus.getMaster(), bestKriterier.getBeskrivelse());
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
                                             .hovedperson(leverteIdenter.get(0))
