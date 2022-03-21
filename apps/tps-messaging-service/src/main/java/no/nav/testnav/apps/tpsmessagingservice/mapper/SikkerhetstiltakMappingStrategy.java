@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SikkerhetstiltakRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import no.nav.tps.ctg.s610.domain.TsikkerhetsTiltakS610;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +20,10 @@ public class SikkerhetstiltakMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(SikkerhetstiltakDTO.class, SikkerhetstiltakRequest.class)
+        factory.classMap(SikkerhetTiltakDTO.class, SikkerhetstiltakRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(SikkerhetstiltakDTO source, SikkerhetstiltakRequest target, MappingContext context) {
+                    public void mapAtoB(SikkerhetTiltakDTO source, SikkerhetstiltakRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(SikkerhetstiltakRequest.SfeAjourforing.builder()
                                 .systemInfo(TpsSystemInfo.getDefault())
@@ -34,10 +34,10 @@ public class SikkerhetstiltakMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(SikkerhetstiltakDTO.class, SikkerhetstiltakRequest.Sikkerhetstiltak.class)
+        factory.classMap(SikkerhetTiltakDTO.class, SikkerhetstiltakRequest.Sikkerhetstiltak.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(SikkerhetstiltakDTO source, SikkerhetstiltakRequest.Sikkerhetstiltak target, MappingContext context) {
+                    public void mapAtoB(SikkerhetTiltakDTO source, SikkerhetstiltakRequest.Sikkerhetstiltak target, MappingContext context) {
 
                         target.setTypeSikkerhetsTiltak(source.getTiltakstype());
                         target.setBeskrSikkerhetsTiltak(source.getBeskrivelse());
@@ -47,20 +47,20 @@ public class SikkerhetstiltakMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(SikkerhetstiltakDTO.class, SikkerhetstiltakRequest.BrukerIdentifikasjon.class)
+        factory.classMap(SikkerhetTiltakDTO.class, SikkerhetstiltakRequest.BrukerIdentifikasjon.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(SikkerhetstiltakDTO source, SikkerhetstiltakRequest.BrukerIdentifikasjon target, MappingContext context) {
+                    public void mapAtoB(SikkerhetTiltakDTO source, SikkerhetstiltakRequest.BrukerIdentifikasjon target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
                     }
                 })
                 .register();
 
-        factory.classMap(TsikkerhetsTiltakS610.class, SikkerhetstiltakDTO.class)
+        factory.classMap(TsikkerhetsTiltakS610.class, SikkerhetTiltakDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TsikkerhetsTiltakS610 source, SikkerhetstiltakDTO target, MappingContext context) {
+                    public void mapAtoB(TsikkerhetsTiltakS610 source, SikkerhetTiltakDTO target, MappingContext context) {
 
                         target.setTiltakstype(source.getTypeSikkerhetsTiltak());
                         target.setBeskrivelse(source.getBeskrSikkerhetsTiltak());

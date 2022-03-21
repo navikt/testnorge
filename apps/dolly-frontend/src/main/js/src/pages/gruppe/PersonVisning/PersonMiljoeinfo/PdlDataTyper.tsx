@@ -242,11 +242,15 @@ export type InnflyttingTilNorge = {
 	fraflyttingsland: string
 	fraflyttingsstedIUtlandet: string
 	metadata: Metadata
+	folkeregistermetadata?: {
+		gyldighetstidspunkt: string
+	}
 }
 
 export type UtflyttingFraNorge = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
+	utflyttingsdato: string
 	metadata: Metadata
 }
 

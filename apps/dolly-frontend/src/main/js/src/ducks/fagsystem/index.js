@@ -21,7 +21,6 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
-import { getAlder } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/utils'
 
 export const actions = createActions(
 	{
@@ -497,6 +496,14 @@ const getPdlIdentInfo = (ident, state, pdlData) => {
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
 	}
+}
+
+const getAlder = (datoFoedt) => {
+	const foedselsdato = new Date(datoFoedt)
+	const diff_ms = Date.now() - foedselsdato.getTime()
+	const age_dt = new Date(diff_ms)
+
+	return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
 
 export const getPdlIdent = (identer) => {

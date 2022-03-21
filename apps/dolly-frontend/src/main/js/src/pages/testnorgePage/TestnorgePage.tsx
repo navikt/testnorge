@@ -9,6 +9,7 @@ import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnecto
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import { Exception } from 'sass'
+import '../gruppe/PersonVisning/PersonVisning.less'
 
 export default () => {
 	const [items, setItems] = useState<Person[]>([])
@@ -38,21 +39,30 @@ export default () => {
 		setValgtePersoner([])
 	}
 
+	const tenor = (
+		<a href="https://www.skatteetaten.no/skjema/testdata" target="_blank">
+			Tenor
+		</a>
+	)
+
 	return (
 		<div>
-			<Title title="Søk i Testnorge" />
+			<Title title="Søk og importer fra Testnorge" />
 			<p>
-				Testnorge er en felles offentlig testdatapopulasjon, som ble laget i forbindelse med nytt
-				folkeregister. Populasjonen er levende, og endrer seg fortløpende ved at personer fødes,
-				dør, får barn, osv. Pr. i dag støttes kun personer, men fremover vil det også komme støtte
-				for organisasjoner og arbeidsforhold.
+				Testnorge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
+				forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
+				at personer fødes, dør, får barn, osv. Hele Testnorge er tilgjengelig i PDL.
 				<br />
 				<br />
-				Testnorge er tilgjengelig i PDL.
+				I søket nedenfor kan man søke opp Testnorge-identer, velge identer man ønsker å ta i bruk,
+				velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket
+				gruppe i Dolly. Søket returnerer maks 100 tilfeldige Testnorge-identer som passer
+				søkekriteriene og som ikke allerede er importert til en gruppe i Dolly.
 				<br />
 				<br />
-				Søket returnerer maks 100 tilfeldige Testnorge-identer som passer søkekriteriene og som ikke
-				allerede er importert til en gruppe i Dolly.
+				For å finne mer spesifikke identer kan Skatteetaten sin testdatasøkeløsning {tenor} brukes.
+				Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp identer man fant i Tenor her
+				i Dolly og så importere dem.
 			</p>
 
 			<Formik initialValues={initialValues} onSubmit={onSubmit}>

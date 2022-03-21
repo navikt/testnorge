@@ -7,7 +7,6 @@ import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavHodejegerenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
 import no.nav.dolly.web.credentials.TestnavKrrstubProxyProperties;
@@ -72,7 +71,6 @@ public class DollyFrontendApplicationStarter {
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
-    private final TestnavHodejegerenProxyProperties testnavHodejegerenProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavTestnorgeAaregProxyProperties testnavTestnorgeAaregProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
@@ -108,7 +106,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
                 .route(createRoute(testnavPensjonTestdataFacadeProxyProperties))
                 .route(createRoute(testnavInntektstubProxyProperties))
-                .route(createRoute(testnavHodejegerenProxyProperties))
                 .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
                 .route(createRoute(testnavBrregstubProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))

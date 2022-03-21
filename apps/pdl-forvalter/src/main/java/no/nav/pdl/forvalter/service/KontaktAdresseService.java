@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
@@ -120,6 +121,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                 kontaktadresse.getUtenlandskAdresse().isEmpty()) {
 
             kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
+            kontaktadresse.setGyldigFraOgMed(now());
+            kontaktadresse.setGyldigTilOgMed(now().plusYears(1));
             kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 

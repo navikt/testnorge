@@ -47,7 +47,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				>
 					Endringsmelding
 				</a>
-				<NavLink to="/soek">Søk</NavLink>
+				<NavLink to="/testnorge">Testnorge</NavLink>
 				<a
 					href="https://navikt.github.io/testnorge/applications/dolly/"
 					target="_blank"

@@ -37,6 +37,13 @@ public class InntektstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
+            bestilling.getInntektstub().getInntektsinformasjon()
+                    .forEach(inntekter ->
+                            inntekter.getInntektsliste()
+                                    .forEach(inntekt ->
+                                            inntekt.setTilleggsinformasjon(inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                                    inntekt.getTilleggsinformasjon())));
+
             try {
                 InntektsinformasjonWrapper inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(), InntektsinformasjonWrapper.class);
                 inntektsinformasjonWrapper.getInntektsinformasjon().forEach(info -> info.setNorskIdent(dollyPerson.getHovedperson()));

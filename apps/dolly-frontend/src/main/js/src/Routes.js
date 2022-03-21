@@ -8,7 +8,7 @@ const BestillingsveilederConnector = lazy(() =>
 )
 const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
 const UI = lazy(() => import('./pages/ui/index'))
-const SearchPage = lazy(() => import('./pages/searchPage/SearchPageConnector'))
+const TestnorgePage = lazy(() => import('./pages/testnorgePage/TestnorgePage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match.params.gruppeId}</span>
 
@@ -41,7 +41,7 @@ const routes = [
 	},
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
 	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI },
-	{ path: '/soek', exact: true, breadcrumb: 'Søk', component: SearchPage },
+	{ path: '/testnorge', exact: true, breadcrumb: 'Testnorge', component: TestnorgePage },
 	{
 		path: '/importer',
 		exact: true,

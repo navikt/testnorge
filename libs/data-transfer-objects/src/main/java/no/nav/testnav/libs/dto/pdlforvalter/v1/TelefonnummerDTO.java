@@ -15,7 +15,6 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TelefonnummerDTO extends DbVersjonDTO {
 
-    private String kilde;
     private String landskode;
     private String nummer;
     private Integer prioritet;

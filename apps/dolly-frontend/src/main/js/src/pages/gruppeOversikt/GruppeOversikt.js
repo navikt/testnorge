@@ -31,7 +31,9 @@ export default function GruppeOversikt({
 		visning === 'mine' ? fetchMineGrupper() : getGrupper(sidetall, sideStoerrelse)
 	}, [visning, sidetall, sideStoerrelse])
 
-	const byttVisning = (event) => setVisning(event.target.value)
+	const byttVisning = (event) => {
+		setVisning(event.target.value)
+	}
 
 	if (importerteZIdenter !== importerte) {
 		fetchMineGrupper()
