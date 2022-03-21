@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

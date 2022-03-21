@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -23,8 +22,9 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArenaAapService {
@@ -111,7 +111,7 @@ public class ArenaAapService {
         if (tvungenForvaltning != null && !tvungenForvaltning.isEmpty()) {
             for (var vedtak : tvungenForvaltning) {
                 var kontoinfo = identService.getIdentMedKontoinformasjon();
-                if (kontoinfo == null) break;
+                if (isNull(kontoinfo)) break;
                 var rettighetRequest = getRettighetTvungenForvaltningRequest(
                         personident,
                         miljoe,
@@ -129,7 +129,7 @@ public class ArenaAapService {
             List<RettighetRequest> rettigheter
     ) {
         var fritakMeldekort = historikk.getFritakMeldekort();
-        if (fritakMeldekort != null && !fritakMeldekort.isEmpty()) {
+        if (nonNull(fritakMeldekort) && !fritakMeldekort.isEmpty()) {
             for (var vedtak : fritakMeldekort) {
                 rettigheter.add(getRettighetFritakMeldekortRequest(personident, miljoe, vedtak));
             }
@@ -138,12 +138,12 @@ public class ArenaAapService {
 
 
     public void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
-        if (aapVedtak != null) {
+        if (nonNull(aapVedtak)) {
             var antallDagerEndret = 0;
             for (var vedtak : aapVedtak) {
-                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && vedtak.getFraDato() != null) {
+                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && nonNull(vedtak.getFraDato())) {
                     vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
-                    if (vedtak.getTilDato() == null) {
+                    if (isNull(vedtak.getTilDato())) {
                         vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
                     } else {
                         vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
@@ -162,7 +162,7 @@ public class ArenaAapService {
 
     public List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
         List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
-        if (ungUfoer != null) {
+        if (nonNull(ungUfoer)) {
             nyUngUfoer = ungUfoer.stream().filter(vedtak ->
                             !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
                     .collect(Collectors.toList());

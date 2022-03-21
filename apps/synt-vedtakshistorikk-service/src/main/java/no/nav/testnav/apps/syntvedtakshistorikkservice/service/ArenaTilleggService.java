@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetTiltaksaktivitetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
@@ -22,7 +21,9 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Reque
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTilleggSekvenser;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.datoErInnenforPeriode;
 
-@Slf4j
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class ArenaTilleggService {
@@ -42,7 +43,7 @@ public class ArenaTilleggService {
     ) {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
-        if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
+        if (nonNull(tillegg) && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
             var tilleggSekvenser = getTilleggSekvenser(tillegg);
 
             for (var sekvens : tilleggSekvenser) {
@@ -60,14 +61,14 @@ public class ArenaTilleggService {
     private List<NyttVedtakTillegg> oppdaterVedtakTillegg(Vedtakshistorikk historikk) {
         var tillegg = historikk.getAlleTilleggVedtak();
 
-        if (historikk.getAap() == null || historikk.getAap().isEmpty()) {
+        if (isNull(historikk.getAap()) || historikk.getAap().isEmpty()) {
             tillegg = filtrerBortTilleggMedUoensketMaalgruppekode(tillegg, MAALGRUPPEKODE_TILKNYTTET_AAP);
         } else {
             tillegg = filtrerBortTilleggUtenGyldigTilknyttetVedtak(tillegg, historikk.getAap(),
                     MAALGRUPPEKODE_TILKNYTTET_AAP);
         }
 
-        if (historikk.getTiltakspenger() == null || historikk.getTiltakspenger().isEmpty()) {
+        if (isNull(historikk.getTiltakspenger()) || historikk.getTiltakspenger().isEmpty()) {
             tillegg = filtrerBortTilleggMedUoensketMaalgruppekode(tillegg, MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER);
         } else {
             tillegg = filtrerBortTilleggUtenGyldigTilknyttetVedtak(tillegg, historikk.getTiltakspenger(),
@@ -93,7 +94,7 @@ public class ArenaTilleggService {
 
         for (var vedtak : tiltak) {
             if (datoErInnenforPeriode(vedtaksperiode.getFom(), vedtak.getFraDato(), vedtak.getTilDato()) &&
-                    (vedtaksperiode.getTom() == null || datoErInnenforPeriode(vedtaksperiode.getTom(), vedtak.getFraDato(), vedtak.getTilDato()))) {
+                    (isNull(vedtaksperiode.getTom()) || datoErInnenforPeriode(vedtaksperiode.getTom(), vedtak.getFraDato(), vedtak.getTilDato()))) {
                 return false;
             }
         }
@@ -114,7 +115,7 @@ public class ArenaTilleggService {
             String maalgruppekode
     ) {
         var filterteVedtak = vedtak;
-        if (vedtak != null && !vedtak.isEmpty()) {
+        if (nonNull(vedtak) && !vedtak.isEmpty()) {
             filterteVedtak = vedtak.stream().filter(tillegg -> !tillegg.getMaalgruppeKode()
                     .equals(maalgruppekode)).collect(Collectors.toList());
         }
@@ -127,7 +128,7 @@ public class ArenaTilleggService {
             String maalgruppekode
     ) {
         var filterteVedtak = vedtak;
-        if (vedtak != null && !vedtak.isEmpty()) {
+        if (nonNull(vedtak) && !vedtak.isEmpty()) {
             filterteVedtak = vedtak.stream().filter(tillegg -> !tillegg.getMaalgruppeKode()
                             .equals(maalgruppekode) || (tillegg.getMaalgruppeKode()
                             .equals(maalgruppekode) && harGyldigTilknyttetVedtak(tillegg, tilknyttetVedtak)))
@@ -137,12 +138,12 @@ public class ArenaTilleggService {
     }
 
     private boolean harGyldigTilknyttetVedtak(NyttVedtakTillegg vedtak, List<? extends NyttVedtak> vedtaksliste) {
-        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
             return false;
         }
         var fraDato = vedtak.getVedtaksperiode().getFom();
 
-        if (fraDato == null) {
+        if (isNull(fraDato)) {
             return false;
         }
 
@@ -159,7 +160,7 @@ public class ArenaTilleggService {
 
     public List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
         List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
-        if (tilsynFamiliemedlemmer != null) {
+        if (nonNull(tilsynFamiliemedlemmer)) {
             nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
                             !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
                     .collect(Collectors.toList());

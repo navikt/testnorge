@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service.util;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -15,7 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
+import static java.util.Objects.isNull;
+
 @Service
 public class VedtakUtils {
 
@@ -45,7 +45,7 @@ public class VedtakUtils {
     }
 
     public static List<Vedtaksperiode> getVedtakperioderForAapSekvenser(List<NyttVedtakAap> aapVedtak) {
-        if (aapVedtak == null || aapVedtak.isEmpty()) {
+        if (isNull(aapVedtak) || aapVedtak.isEmpty()) {
             return Collections.emptyList();
         }
 

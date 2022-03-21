@@ -13,8 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -52,10 +58,10 @@ public class ArenaBrukerUtils {
     }
 
     public static void checkNyeBrukereResponse(NyeBrukereResponse nyeBrukereResponse, String personident) {
-        if (nyeBrukereResponse == null) {
+        if (isNull(nyeBrukereResponse)) {
             log.error("Kunne ikke opprette ny bruker med fnr {} i Arena: {}", personident, "Ukjent feil.");
             throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
-        } else if (nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+        } else if (nonNull(nyeBrukereResponse.getNyBrukerFeilList()) && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
             log.error("Kunne ikke opprette ny bruker med fnr {} i Arena: {}", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
             throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
         }

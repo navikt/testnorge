@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.checkNyeBrukereResponse;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -128,7 +130,7 @@ public class ArenaForvalterService {
             String aktivitetsfase,
             LocalDate aktiveringsDato
     ) {
-        if (aktivitetsfase == null || aktivitetsfase.isBlank()) {
+        if (isNull(aktivitetsfase) || aktivitetsfase.isBlank()) {
             opprettArbeidssoeker(personident, miljoe, Kvalifiseringsgrupper.BATT, aktiveringsDato);
         } else {
             var formidlingsgruppe = arenaBrukerUtils.velgFormidlingsgruppeBasertPaaAktivitetsfase(aktivitetsfase);

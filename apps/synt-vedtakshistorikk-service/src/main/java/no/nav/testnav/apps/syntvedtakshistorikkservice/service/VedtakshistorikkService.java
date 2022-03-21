@@ -32,6 +32,9 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MIN_ALDER_AAP;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -88,7 +91,7 @@ public class VedtakshistorikkService {
             LocalDate tidligsteDato = finnTidligsteDato(vedtakshistorikk);
             LocalDate tidligsteDatoBarnetillegg = finnTidligeDatoBarnetillegg(vedtakshistorikk.getBarnetillegg());
 
-            if (tidligsteDato == null) {
+            if (isNull(tidligsteDato)) {
                 return;
             }
 
@@ -99,7 +102,7 @@ public class VedtakshistorikkService {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
                 var utvalgtIdent = getUtvalgtIdentIAldersgruppe(vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
-                if (utvalgtIdent != null) {
+                if (nonNull(utvalgtIdent)) {
                     responses.putAll(opprettHistorikkOgSendTilArena(utvalgtIdent, miljoe, vedtakshistorikk, tidligsteDato));
                 }
             }
@@ -116,7 +119,7 @@ public class VedtakshistorikkService {
         }
 
         var ungUfoer = historikk.getUngUfoer();
-        if (ungUfoer != null && !ungUfoer.isEmpty()) {
+        if (nonNull(ungUfoer) && !ungUfoer.isEmpty()) {
             maksimumAlder = MAX_ALDER_UNG_UFOER;
         }
         return maksimumAlder;
@@ -130,11 +133,11 @@ public class VedtakshistorikkService {
     ) {
         try {
             var aapVedtak = vedtakshistorikk.getAlleAapVedtak();
-            var maaVaereBosatt = aapVedtak != null && !aapVedtak.isEmpty();
+            var maaVaereBosatt = nonNull(aapVedtak) && !aapVedtak.isEmpty();
             LocalDate tidligsteDatoBosatt = maaVaereBosatt ? finnTidligsteDatoAap(aapVedtak) : null;
 
             List<String> identer;
-            if (tidligsteDatoBarnetillegg != null) {
+            if (nonNull(tidligsteDatoBarnetillegg)) {
                 identer = identService.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(1, minimumAlder, maksimumAlder, tidligsteDatoBosatt, tidligsteDatoBarnetillegg);
             } else {
                 identer = identService.getUtvalgteIdenterIAldersgruppe(1, minimumAlder, maksimumAlder, tidligsteDatoBosatt);
@@ -200,9 +203,9 @@ public class VedtakshistorikkService {
     ) {
         var aap = historikk.getAap();
         var aap115 = historikk.getAap115();
-        if (aap != null && !aap.isEmpty()) {
+        if (nonNull(aap) && !aap.isEmpty()) {
             return pensjonService.opprettetPersonOgInntektIPopp(personident, miljoe, aap.get(0).getFraDato());
-        } else if (aap115 != null && !aap115.isEmpty()) {
+        } else if (nonNull(aap115) && !aap115.isEmpty()) {
             return pensjonService.opprettetPersonOgInntektIPopp(personident, miljoe, aap115.get(0).getFraDato());
         }
         return true;

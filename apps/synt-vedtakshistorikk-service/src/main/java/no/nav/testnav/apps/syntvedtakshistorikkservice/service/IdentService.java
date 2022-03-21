@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -70,8 +73,8 @@ public class IdentService {
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, null);
             var response = personSearchConsumer.search(request);
-            //TODO feilhåntering hvis response er null eller tom.
-            int numberOfPages = response.getNumberOfItems() / 10;
+            if (isNull(response)) break;
+            int numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
 
             for (PersonDTO person : response.getItems()) {
                 //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
@@ -101,7 +104,8 @@ public class IdentService {
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, true);
             var response = personSearchConsumer.search(request);
-            int numberOfPages = response.getNumberOfItems() / 10;
+            if (isNull(response)) break;
+            int numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
 
             for (PersonDTO person : response.getItems()) {
                 //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
@@ -145,7 +149,7 @@ public class IdentService {
     public Kontoinfo getIdentMedKontoinformasjon() {
         var ident = IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
         var pdlPerson = pdlPersonConsumer.getPdlPerson(ident.getIdent());
-        if (pdlPerson == null) return null;
+        if (isNull(pdlPerson)) return null;
         var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
         var boadresseInfo = pdlPerson.getData().getHentPerson().getBoadresse();
 
@@ -153,7 +157,7 @@ public class IdentService {
                 .fnr(ident.getIdent())
                 .fornavn(navnInfo.isEmpty() ? "" : navnInfo.get(0).getFornavn())
                 .mellomnavn(navnInfo.isEmpty() ? "" : navnInfo.get(0).getMellomnavn())
-                .etternavn(navnInfo.isEmpty() || navnInfo.get(0).getMellomnavn() == null ? "" : navnInfo.get(0).getEtternavn())
+                .etternavn(navnInfo.isEmpty() || isNull(navnInfo.get(0).getMellomnavn()) ? "" : navnInfo.get(0).getEtternavn())
                 .kontonummer(ident.getKontonummer())
                 .adresseLinje1(getAdresseLinje(boadresseInfo))
                 .postnr(boadresseInfo.isEmpty() ? "" : boadresseInfo.get(0).getVegadresse().getPostnummer())
@@ -161,10 +165,10 @@ public class IdentService {
                 .build();
     }
 
-    private String getAdresseLinje(List<PdlPerson.Boadresse> boadresse){
-        if (boadresse.isEmpty() || boadresse.get(0).getVegadresse() == null) return "";
+    private String getAdresseLinje(List<PdlPerson.Boadresse> boadresse) {
+        if (boadresse.isEmpty() || isNull(boadresse.get(0).getVegadresse())) return "";
         var vegadresse = boadresse.get(0).getVegadresse();
-        var husbokstav = vegadresse.getHusbokstav() == null ? "" : vegadresse.getHusbokstav();
+        var husbokstav = isNull(vegadresse.getHusbokstav()) ? "" : vegadresse.getHusbokstav();
         return vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer() + husbokstav;
     }
 
@@ -186,13 +190,13 @@ public class IdentService {
                         .build())
                 .build();
 
-        if (personstatus != null && !personstatus.isEmpty()) {
+        if (nonNull(personstatus) && !personstatus.isEmpty()) {
             request.setPersonstatus(PersonstatusSearch.builder()
                     .status(personstatus)
                     .build());
         }
 
-        if (harBarn != null && harBarn) {
+        if (nonNull(harBarn) && harBarn) {
             request.setRelasjoner(RelasjonSearch.builder()
                     .barn(Boolean.TRUE)
                     .build());

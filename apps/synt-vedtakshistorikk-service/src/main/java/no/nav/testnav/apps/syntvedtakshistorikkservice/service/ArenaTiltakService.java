@@ -46,6 +46,9 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Reque
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTiltaksdeltakelseRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTiltakspengerRequest;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -94,7 +97,7 @@ public class ArenaTiltakService {
             LocalDate tidligsteDato
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+        if (nonNull(tiltaksdeltakelser) && !tiltaksdeltakelser.isEmpty()) {
             Kvalifiseringsgrupper kvalifiseringsgruppe;
             try {
                 kvalifiseringsgruppe = arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak.getRettighetType(), tidligsteDato);
@@ -113,7 +116,7 @@ public class ArenaTiltakService {
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = finnTiltak(personident, miljoe, deltakelse);
 
-                if (tiltak != null) {
+                if (nonNull(tiltak)) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
                     deltakelse.setTiltakProsentDeltid(tiltak.getTiltakProsentDeltid());
                     deltakelse.setFraDato(tiltak.getFraDato());
@@ -124,7 +127,7 @@ public class ArenaTiltakService {
             });
 
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
-                    .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
+                    .filter(deltakelse -> nonNull(deltakelse.getTiltakId())).collect(Collectors.toList());
 
             nyeTiltaksdeltakelser = removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
@@ -135,7 +138,7 @@ public class ArenaTiltakService {
 
     public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
         var response = arenaForvalterConsumer.finnTiltak(getFinnTiltakRequest(personident, miljoe, tiltaksdeltakelse));
-        if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
+        if (nonNull(response) && !response.getNyeRettigheterTiltak().isEmpty()) {
             return response.getNyeRettigheterTiltak().get(0);
         } else {
             log.info("Fant ikke tiltak for tiltakdeltakelse.");
@@ -150,7 +153,7 @@ public class ArenaTiltakService {
             List<RettighetRequest> rettigheter
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+        if (nonNull(tiltaksdeltakelser) && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
                 rettigheter.add(getRettighetTiltaksdeltakelseRequest(personident, miljoe, deltakelse));
             }
@@ -167,7 +170,7 @@ public class ArenaTiltakService {
 
         var nyeTiltaksedeltakelser = new ArrayList<NyttVedtakTiltak>();
 
-        if (tiltaksdeltakelser == null || tiltaksdeltakelser.isEmpty()) {
+        if (isNull(tiltaksdeltakelser) || tiltaksdeltakelser.isEmpty()) {
             return;
         }
         for (var deltakelse : tiltaksdeltakelser) {
@@ -199,7 +202,7 @@ public class ArenaTiltakService {
             List<NyttVedtakTiltak> tiltak
     ) {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+        if (nonNull(tiltaksdeltakelser) && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
                 if (canSetDeltakelseTilFinished(deltakelse, tiltak)) {
                     var deltakerstatuskode = getAvsluttendeDeltakerstatus(deltakelse, tiltak).toString();
@@ -219,7 +222,7 @@ public class ArenaTiltakService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var tiltakspenger = historikk.getTiltakspenger() != null ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
+        var tiltakspenger = nonNull(historikk.getTiltakspenger()) ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
         List<NyttVedtakTiltak> nyeTiltakspenger = oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
@@ -227,7 +230,7 @@ public class ArenaTiltakService {
 
         nyeTiltakspenger = removeOverlappingTiltakSequences(nyeTiltakspenger);
 
-        if (nyeTiltakspenger != null && !nyeTiltakspenger.isEmpty()) {
+        if (nonNull(nyeTiltakspenger) && !nyeTiltakspenger.isEmpty()) {
             for (var vedtak : nyeTiltakspenger) {
                 rettigheter.add(getRettighetTiltakspengerRequest(personident, miljoe, vedtak));
             }
@@ -241,8 +244,8 @@ public class ArenaTiltakService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var barnetillegg = historikk.getBarnetillegg() != null ? historikk.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
-        var tiltakspenger = historikk.getTiltakspenger() != null ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
+        var barnetillegg = nonNull(historikk.getBarnetillegg()) ? historikk.getBarnetillegg() : new ArrayList<NyttVedtakTiltak>();
+        var tiltakspenger = nonNull(historikk.getTiltakspenger()) ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
         List<NyttVedtakTiltak> nyeBarnetillegg = new ArrayList<>();
@@ -252,7 +255,7 @@ public class ArenaTiltakService {
 
             nyeBarnetillegg = removeOverlappingTiltakSequences(nyeBarnetillegg);
 
-            if (nyeBarnetillegg != null && !nyeBarnetillegg.isEmpty()) {
+            if (nonNull(nyeBarnetillegg) && !nyeBarnetillegg.isEmpty()) {
                 for (var vedtak : nyeBarnetillegg) {
                     rettigheter.add(getRettighetTilleggsytelseRequest(personident, miljoe, vedtak));
                 }
@@ -266,11 +269,11 @@ public class ArenaTiltakService {
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakTiltak> tiltaksdeltakelser
     ) {
-        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
 
-        var deltakelser = tiltaksdeltakelser.stream().filter(t -> t.getTiltakYtelse() != null && t.getTiltakYtelse().equals("J")).collect(Collectors.toList());
+        var deltakelser = tiltaksdeltakelser.stream().filter(t -> nonNull(t.getTiltakYtelse()) && t.getTiltakYtelse().equals("J")).collect(Collectors.toList());
 
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
@@ -281,7 +284,7 @@ public class ArenaTiltakService {
             var initialFraDato = sequence.get(0).getFraDato();
 
             var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(deltakelser, brukteIndices);
-            if (deltakelseIndex != null) {
+            if (nonNull(deltakelseIndex)) {
                 brukteIndices.add(deltakelseIndex);
                 var deltakelse = deltakelser.get(deltakelseIndex);
                 for (var vedtak : sequence) {
@@ -300,11 +303,11 @@ public class ArenaTiltakService {
             LocalDate initialFraDato
     ) {
         var newFraDato = deltakelse.getFraDato();
-        if (!vedtak.getVedtaktype().equals("O") && initialFraDato != null && vedtak.getFraDato() != null) {
+        if (!vedtak.getVedtaktype().equals("O") && nonNull(initialFraDato) && nonNull(vedtak.getFraDato())) {
             var initialShift = DAYS.between(initialFraDato, vedtak.getFraDato());
             newFraDato = deltakelse.getFraDato().plusDays(initialShift);
 
-            if (deltakelse.getTilDato() != null && newFraDato.isAfter(deltakelse.getTilDato())) {
+            if (nonNull(deltakelse.getTilDato()) && newFraDato.isAfter(deltakelse.getTilDato())) {
                 newFraDato = deltakelse.getTilDato().minusDays(1);
             }
         }
@@ -315,7 +318,7 @@ public class ArenaTiltakService {
     }
 
     private Integer finnNoedvendigTiltaksdeltakelse(List<NyttVedtakTiltak> tiltaksdeltakelser, List<Integer> brukteIndices) {
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
+        if (nonNull(tiltaksdeltakelser) && !tiltaksdeltakelser.isEmpty()) {
             for (var i = 0; i < tiltaksdeltakelser.size(); i++) {
                 if (!brukteIndices.contains(i)) {
                     return i;
@@ -329,7 +332,7 @@ public class ArenaTiltakService {
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakAap> aapVedtak
     ) {
-        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
 
@@ -349,7 +352,7 @@ public class ArenaTiltakService {
     }
 
     private List<NyttVedtakTiltak> removeOverlappingTiltakSequences(List<NyttVedtakTiltak> vedtaksliste) {
-        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
 
@@ -394,14 +397,14 @@ public class ArenaTiltakService {
 
     private boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse) {
         var fraDato = tiltaksdeltakelse.getFraDato();
-        return (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1)));
+        return (nonNull(fraDato) && fraDato.isBefore(LocalDate.now().plusDays(1)));
     }
 
     private boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
         var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
-        if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
+        if (!tilknyttetTiltak.isEmpty() && nonNull(tilknyttetTiltak.get(0))) {
             var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
-            if (status != null && AVBRUTT_TILTAK_STATUSER.contains(status)) {
+            if (nonNull(status) && AVBRUTT_TILTAK_STATUSER.contains(status)) {
                 return true;
             }
         }
@@ -409,7 +412,7 @@ public class ArenaTiltakService {
         var fraDato = tiltaksdeltakelse.getFraDato();
         var tilDato = tiltaksdeltakelse.getTilDato();
 
-        if (fraDato == null || tilDato == null) {
+        if (isNull(fraDato) || isNull(tilDato)) {
             return false;
         }
         return fraDato.isBefore(LocalDate.now().plusDays(1)) && tilDato.isBefore(LocalDate.now().plusDays(1));
