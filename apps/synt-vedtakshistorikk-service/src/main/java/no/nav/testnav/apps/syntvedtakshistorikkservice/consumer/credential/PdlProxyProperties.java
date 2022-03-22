@@ -6,5 +6,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.pdl-api-proxy")
-public class PdlApiProxyProperties extends ServerProperties{
+public class PdlProxyProperties extends ServerProperties{
 }

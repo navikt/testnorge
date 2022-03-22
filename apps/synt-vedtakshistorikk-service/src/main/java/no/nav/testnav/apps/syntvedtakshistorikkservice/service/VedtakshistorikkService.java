@@ -15,9 +15,11 @@ import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntVedtakshistorikkConsumer;
 
+import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -48,6 +50,7 @@ public class VedtakshistorikkService {
     private final ArenaAapService arenaAapService;
     private final ArenaTiltakService arenaTiltakService;
     private final ArenaTilleggService arenaTilleggService;
+    private final PdlProxyConsumer pdlProxyConsumer;
 
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
@@ -71,6 +74,7 @@ public class VedtakshistorikkService {
         } finally {
             forkJoinPool.shutdown();
         }
+        opprettTagPaaIdenter(responses);
         return responses;
     }
 
@@ -209,6 +213,13 @@ public class VedtakshistorikkService {
             return pensjonService.opprettetPersonOgInntektIPopp(personident, miljoe, aap115.get(0).getFraDato());
         }
         return true;
+    }
+
+    private void opprettTagPaaIdenter(Map<String, List<NyttVedtakResponse>> responses) {
+        if (!responses.isEmpty()) {
+            List<String> identer = new ArrayList<>(responses.keySet());
+            pdlProxyConsumer.createSyntTags(identer);
+        }
     }
 
 }

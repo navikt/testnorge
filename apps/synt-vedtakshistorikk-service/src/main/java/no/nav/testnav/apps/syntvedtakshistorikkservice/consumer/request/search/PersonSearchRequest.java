@@ -2,6 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search;
 
 import lombok.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PersonSearchRequest {
     private final String tag = "TESTNORGE";
-    private final List<String> excludeTags = Collections.singletonList("DOLLY");
+    private final List<String> excludeTags = Arrays.asList("DOLLY", "ARENASYNT");
     private final Boolean kunLevende = true;
 
     private Integer page;

@@ -17,7 +17,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -29,7 +33,7 @@ import reactor.core.publisher.Mono;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-public class ArenaForvalterConsumerTest {
+class ArenaForvalterConsumerTest {
 
     @MockBean
     private JwtDecoder jwtDecoder;
@@ -53,7 +57,7 @@ public class ArenaForvalterConsumerTest {
 //    }
 
     @Test
-    public void hentBrukereTest() {
+    void hentBrukereTest() {
         stubHentBrukere();
 
         List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("", "", "");
@@ -85,7 +89,7 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test
-    public void getBrukereFilterTest() {
+    void getBrukereFilterTest() {
         stubHentBrukereFilter();
         List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", miljoe);
 
@@ -117,7 +121,7 @@ public class ArenaForvalterConsumerTest {
     }
 
     @Test
-    public void getEmptyResponse() {
+    void getEmptyResponse() {
         stubEmptyResponse();
         List<Arbeidsoeker> response = arenaForvalterConsumer.hentArbeidsoekere("10101010101", "", miljoe);
         assertThat(response).isEmpty();

@@ -1,0 +1,385 @@
+{
+  "data": {
+    "hentIdenter": {
+      "identer": [
+        {
+          "ident": "12345678910",
+          "historisk": false,
+          "gruppe": "FOLKEREGISTERIDENT"
+        },
+        {
+          "ident": "1234567891011",
+          "historisk": false,
+          "gruppe": "AKTORID"
+        }
+      ]
+    },
+    "hentGeografiskTilknytning": {
+      "gtType": "KOMMUNE",
+      "gtLand": null,
+      "gtKommune": "5405",
+      "gtBydel": null,
+      "regel": "2"
+    },
+    "hentPerson": {
+      "falskIdentitet": null,
+      "bostedsadresse": [
+        {
+          "angittFlyttedato": "2022-03-18",
+          "coAdressenavn": null,
+          "gyldigFraOgMed": "2022-03-18T00:00",
+          "gyldigTilOgMed": null,
+          "vegadresse": {
+            "matrikkelId": 96635066,
+            "husbokstav": null,
+            "husnummer": "20",
+            "adressenavn": "Oscarsgate",
+            "bruksenhetsnummer": "H0204",
+            "tilleggsnavn": null,
+            "postnummer": "9800",
+            "kommunenummer": "5405",
+            "koordinater": {
+              "x": 604963.910119,
+              "y": 7776614.085165,
+              "z": null,
+              "kvalitet": null
+            }
+          },
+          "matrikkeladresse": null,
+          "ukjentBosted": null,
+          "utenlandskAdresse": null,
+          "folkeregistermetadata": {
+            "aarsak": "Flytting innenlands",
+            "ajourholdstidspunkt": "2022-03-18T11:48:44",
+            "gyldighetstidspunkt": "2022-03-18T00:00",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-18T11:48:51",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "d1512c4a-7fea-4dd7-9ec1-1b0cc3ef7190"
+          }
+        }
+      ],
+      "oppholdsadresse": [],
+      "deltBosted": [],
+      "forelderBarnRelasjon": [
+        {
+          "relatertPersonsIdent": "04817699907",
+          "relatertPersonsRolle": "BARN",
+          "minRolleForPerson": "MOR",
+          "folkeregistermetadata": {
+            "aarsak": "Patch",
+            "ajourholdstidspunkt": "2022-03-04T09:20:13",
+            "gyldighetstidspunkt": "1976-01-04T00:00",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "DP051_korr_famfrel",
+                "registrert": "2021-04-09T07:45:19",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              },
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-04T09:20:26",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "9296cd95-062f-45bd-a0f1-1e285e973c21"
+          }
+        },
+        {
+          "relatertPersonsIdent": "29837997613",
+          "relatertPersonsRolle": "BARN",
+          "minRolleForPerson": "MOR",
+          "folkeregistermetadata": {
+            "aarsak": "Patch",
+            "ajourholdstidspunkt": "2022-03-02T09:35:36",
+            "gyldighetstidspunkt": "1979-03-29T00:00",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "DP051_korr_famfrel",
+                "registrert": "2021-04-09T07:45:19",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              },
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-02T09:35:43",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "555b1311-8abb-4e74-909d-152874d98a59"
+          }
+        }
+      ],
+      "kontaktadresse": [],
+      "kontaktinformasjonForDoedsbo": [],
+      "utenlandskIdentifikasjonsnummer": [],
+      "adressebeskyttelse": [],
+      "foedsel": [
+        {
+          "foedselsaar": 1952,
+          "foedselsdato": "1952-01-01",
+          "foedeland": "NOR",
+          "foedested": null,
+          "foedekommune": "3024",
+          "folkeregistermetadata": {
+            "aarsak": null,
+            "ajourholdstidspunkt": "2022-03-02T09:35:36",
+            "gyldighetstidspunkt": "1952-01-01T09:35:36",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "KILDE_DSF",
+                "registrert": "2021-02-22T14:54:54",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              },
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-02T09:35:43",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "f4c4b00c-c694-49ec-931d-07bb0f232cbb"
+          }
+        }
+      ],
+      "doedfoedtBarn": [],
+      "doedsfall": [],
+      "kjoenn": [
+        {
+          "kjoenn": "KVINNE",
+          "folkeregistermetadata": {
+            "aarsak": null,
+            "ajourholdstidspunkt": null,
+            "gyldighetstidspunkt": null,
+            "kilde": "KILDE_DSF",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "KILDE_DSF",
+                "registrert": "2021-02-22T14:54:54",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "904f5c5d-7661-4786-8556-0eb9de2a3db3"
+          }
+        }
+      ],
+      "navn": [
+        {
+          "fornavn": "VIRTUELL",
+          "mellomnavn": null,
+          "etternavn": "PUMPE",
+          "forkortetNavn": null,
+          "originaltNavn": null,
+          "gyldigFraOgMed": "2022-03-02",
+          "folkeregistermetadata": {
+            "aarsak": "Patch",
+            "ajourholdstidspunkt": "2022-03-02T09:35:36",
+            "gyldighetstidspunkt": "2022-03-02T09:35:36",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-02T09:35:43",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "1f6f79f1-6cb1-4e57-87a4-2081029cd7ae"
+          }
+        }
+      ],
+      "folkeregisterpersonstatus": [
+        {
+          "status": "bosatt",
+          "forenkletStatus": "bosattEtterFolkeregisterloven",
+          "folkeregistermetadata": {
+            "aarsak": null,
+            "ajourholdstidspunkt": "2020-12-22T17:08",
+            "gyldighetstidspunkt": "2020-12-22T17:08",
+            "kilde": "KILDE_DSF",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "KILDE_DSF",
+                "registrert": "2021-02-22T14:54:54",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              },
+              {
+                "kilde": "KILDE_DSF",
+                "registrert": "2021-10-05T18:24:59",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "KORRIGER"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "0ea13065-1cee-4bb7-b628-33c56d0a06e6"
+          }
+        }
+      ],
+      "identitetsgrunnlag": [],
+      "tilrettelagtKommunikasjon": [],
+      "fullmakt": [],
+      "folkeregisteridentifikator": [
+        {
+          "identifikasjonsnummer": "01815299031",
+          "status": "I_BRUK",
+          "type": "FNR",
+          "folkeregistermetadata": {
+            "aarsak": null,
+            "ajourholdstidspunkt": "2020-12-22T17:08",
+            "gyldighetstidspunkt": null,
+            "kilde": "KILDE_DSF",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "KILDE_DSF",
+                "registrert": "2021-02-22T14:54:54",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "cdc66af4-3006-4ee9-8d2c-1481f94a3772"
+          }
+        }
+      ],
+      "statsborgerskap": [
+        {
+          "land": "NOR",
+          "gyldigFraOgMed": "1952-01-01",
+          "gyldigTilOgMed": null,
+          "folkeregistermetadata": {
+            "aarsak": "Fødsel",
+            "ajourholdstidspunkt": "2022-03-02T09:35:36",
+            "gyldighetstidspunkt": "1952-01-01T09:35:36",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-02T09:35:43",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "d37f644d-4be2-4ce9-886e-9bce5e030ba5"
+          }
+        }
+      ],
+      "sikkerhetstiltak": [],
+      "opphold": [],
+      "sivilstand": [
+        {
+          "type": "GIFT",
+          "gyldigFraOgMed": "2019-08-04",
+          "relatertVedSivilstand": "03815398741",
+          "bekreftelsesdato": null,
+          "folkeregistermetadata": {
+            "aarsak": "Patch",
+            "ajourholdstidspunkt": "2022-03-18T11:48:44",
+            "gyldighetstidspunkt": "2019-08-04T12:48:44",
+            "kilde": "Synutopia",
+            "opphoerstidspunkt": null,
+            "sekvens": null
+          },
+          "metadata": {
+            "endringer": [
+              {
+                "kilde": "Synutopia",
+                "registrert": "2022-03-18T11:48:51",
+                "registrertAv": "Folkeregisteret",
+                "systemkilde": "FREG",
+                "type": "OPPRETT"
+              }
+            ],
+            "historisk": false,
+            "master": "FREG",
+            "opplysningsId": "ad562def-5667-4002-aac6-f556dccdc965"
+          }
+        }
+      ],
+      "telefonnummer": [],
+      "innflyttingTilNorge": [],
+      "utflyttingFraNorge": [],
+      "vergemaalEllerFremtidsfullmakt": [],
+      "foreldreansvar": []
+    }
+  }
+}

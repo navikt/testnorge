@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlPersonConsumer;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.AlderSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.RelasjonSearch;
@@ -38,7 +38,7 @@ public class IdentService {
 
     private final PersonSearchConsumer personSearchConsumer;
     private final ArenaForvalterService arenaForvalterService;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PdlProxyConsumer pdlProxyConsumer;
     private final Random rand = new Random();
     private static final int MAX_SEARCH_REQUESTS = 20;
     private static final int PAGE_SIZE = 10;
@@ -148,10 +148,10 @@ public class IdentService {
 
     public Kontoinfo getIdentMedKontoinformasjon() {
         var ident = IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
-        var pdlPerson = pdlPersonConsumer.getPdlPerson(ident.getIdent());
+        var pdlPerson = pdlProxyConsumer.getPdlPerson(ident.getIdent());
         if (isNull(pdlPerson)) return null;
         var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
-        var boadresseInfo = pdlPerson.getData().getHentPerson().getBoadresse();
+        var boadresseInfo = pdlPerson.getData().getHentPerson().getBostedsadresse();
 
         return Kontoinfo.builder()
                 .fnr(ident.getIdent())

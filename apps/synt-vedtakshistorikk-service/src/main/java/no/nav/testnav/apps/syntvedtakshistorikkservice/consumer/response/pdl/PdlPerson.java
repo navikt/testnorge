@@ -58,14 +58,14 @@ public class PdlPerson {
     @AllArgsConstructor
     public static class HentPerson {
 
-        private List<Boadresse> boadresse;
+        private List<Boadresse> bostedsadresse;
         private List<Navn> navn;
 
-        public List<Boadresse> getBoadresse() {
-            if (isNull(boadresse)) {
-                boadresse = new ArrayList<>();
+        public List<Boadresse> getBostedsadresse() {
+            if (isNull(bostedsadresse)) {
+                bostedsadresse = new ArrayList<>();
             }
-            return boadresse;
+            return bostedsadresse;
         }
 
         public List<Navn> getNavn() {
