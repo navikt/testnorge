@@ -218,7 +218,7 @@ public class DollyBestillingService {
     }
 
 
-    protected Optional<DollyPerson> prepareDollyPersonTpsf(BestillingProgress progress) throws JsonProcessingException {
+    protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
 
         DollyPerson dollyPerson = null;
         if (progress.isTpsf()) {

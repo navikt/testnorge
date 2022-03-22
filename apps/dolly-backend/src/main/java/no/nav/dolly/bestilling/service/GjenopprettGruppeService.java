@@ -78,7 +78,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                                     testident.getMaster());
                             try {
-                                Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);
+                                Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                                 if (dollyPerson.isPresent()) {
                                     gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
