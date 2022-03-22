@@ -18,9 +18,12 @@ import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 
-export const PdlfVisning = ({ data, loading, put, fetch }) => {
+export const PdlfVisning = ({ data, loading, put, tmpPersoner, getPdlForvalter }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data) return null
+	console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('tmpPersoner: ', tmpPersoner) //TODO - SLETT MEG
+	// console.log('getPdlForvalter: ', getPdlForvalter) //TODO - SLETT MEG
 
 	const {
 		foedsel,
@@ -38,12 +41,19 @@ export const PdlfVisning = ({ data, loading, put, fetch }) => {
 		kontaktinformasjonForDoedsbo,
 		forelderBarnRelasjon,
 		doedfoedtBarn,
+		ident,
 	} = data.person
 
 	return (
 		<ErrorBoundary>
 			<div>
-				<Foedsel data={foedsel} put={put} fetch={fetch} />
+				<Foedsel
+					data={foedsel}
+					put={put}
+					fetch={getPdlForvalter}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+				/>
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

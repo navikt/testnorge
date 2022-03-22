@@ -27,6 +27,7 @@ import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasj
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -100,11 +101,17 @@ export const PersonVisning = ({
 				/>
 			)}
 			{ident.master !== 'PDL' && (
-				<PdlfVisning
+				// <PdlfVisning
+				// 	data={data.pdlforvalter}
+				// 	loading={loading.pdlforvalter}
+				// 	put={editPdlAttributt}
+				// 	fetch={getPdlForvalter}
+				// />
+				<PdlfVisningConnector
 					data={data.pdlforvalter}
 					loading={loading.pdlforvalter}
 					put={editPdlAttributt}
-					fetch={getPdlForvalter}
+					// fetch={getPdlForvalter}
 				/>
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}

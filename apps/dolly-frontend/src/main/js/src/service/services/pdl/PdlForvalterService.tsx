@@ -21,6 +21,6 @@ export default {
 	putPerson(ident: string, attributt: string, id: number, data: any) {
 		if (!ident) return
 		const endpoint = `${getPdlUrl()}/personer/${ident}/${attributt}/${id}`
-		Request.putWithoutResponse(endpoint, data)
+		return Request.putWithoutResponse(endpoint, data)
 	},
 }
