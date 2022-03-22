@@ -1,6 +1,14 @@
 package no.nav.testnav.apps.organisasjontilgangfrontend;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.organisasjontilgangfrontend.credentials.TestnavOrganisasjonTilgangServiceProperties;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -13,15 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
-
-import no.nav.testnav.apps.organisasjontilgangfrontend.credentials.TestnavOrganisasjonTilgangServiceProperties;
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Import({
         CoreConfig.class,
@@ -53,18 +52,17 @@ public class OrganisasjonTilgangFrontendApplicationStarter {
         return builder
                 .routes()
                 .route(createRoute(
-                        "organisasjon-tilgang-service",
                         testnavOrganisasjonTilgangServiceProperties.getUrl(),
                         addAuthenticationHeaderFilterFrom(testnavOrganisasjonTilgangServiceProperties)
                 ))
                 .build();
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String host, GatewayFilter filter) {
         return spec -> spec
-                .path("/" + segment + "/**")
+                .path("/organisasjon-tilgang-service/**")
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
+                        .rewritePath("/" + "organisasjon-tilgang-service" + "/(?<segment>.*)", "/${segment}")
                         .filter(filter)
                 ).uri(host);
     }
