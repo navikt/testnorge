@@ -55,8 +55,6 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
-import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.util.IdentTypeUtil.getIdentType;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
@@ -80,34 +78,47 @@ public class PdlForvalterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final PdlDataConsumer pdlDataConsumer;
 
+    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
+        builder.append('$')
+                .append(utenlandsIdentifikasjonsnummer);
+    }
+
+    private static boolean hasNoPdldataAdresse(PersonDTO person) {
+
+        return isNull(person) ||
+                (person.getBostedsadresse().isEmpty() &&
+                        person.getKontaktadresse().isEmpty() &&
+                        person.getOppholdsadresse().isEmpty());
+    }
+
+    private static void appendOkStatus(StringBuilder builder) {
+        builder.append("&OK");
+    }
+
+    private PersonDTO getPdldataHovedIdent(String ident) {
+
+        var personer = pdlDataConsumer.getPersoner(List.of(ident));
+        return personer.isEmpty() ? null :
+                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (progress.isTpsf() && (containsSynthEnv(bestilling.getEnvironments()) || nonNull(bestilling.getPdlforvalter())) &&
+        if (progress.isTpsf() &&
                 (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getOpprettNyPerson()))) {
 
             var status = new StringBuilder();
 
-            if (containsSynthEnv(bestilling.getEnvironments())) {
+            hentPersondetaljer(dollyPerson);
+            sendDeleteIdent(dollyPerson);
+            sendPdlPersondetaljer(bestilling, dollyPerson, status);
 
-                hentPersondetaljer(dollyPerson);
-                sendDeleteIdent(dollyPerson);
-                sendPdlPersondetaljer(bestilling, dollyPerson, status);
-
-                if (nonNull(bestilling.getPdlforvalter())) {
-                    Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
-                    sendUtenlandsid(pdldata, dollyPerson.getHovedperson(), status);
-                    sendDoedsbo(pdldata, dollyPerson.getHovedperson(), status);
-                    sendFalskIdentitet(pdldata, dollyPerson.getHovedperson(), status);
-                }
-
-            } else {
-
-                status.append('$')
-                        .append(PDL_FORVALTER)
-                        .append("&Feil: Bestilling ble ikke sendt til Persondataløsningen (PDL) da ingen av miljøene '")
-                        .append(getSynthEnv())
-                        .append("' er valgt");
+            if (nonNull(bestilling.getPdlforvalter())) {
+                Pdldata pdldata = mapperFacade.map(bestilling.getPdlforvalter(), Pdldata.class);
+                sendUtenlandsid(pdldata, dollyPerson.getHovedperson(), status);
+                sendDoedsbo(pdldata, dollyPerson.getHovedperson(), status);
+                sendFalskIdentitet(pdldata, dollyPerson.getHovedperson(), status);
             }
 
             if (status.length() > 1) {
