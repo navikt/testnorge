@@ -14,7 +14,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	const personKjoenn = data?.kjoenn?.[0]
 	const personSivilstand = getSortedSivilstand(data?.sivilstand)?.[0]
 	const personFoedsel = data?.foedsel?.[0]
-	const sikkerhetstiltak = data?.sikkerhetstiltak?.[0]
 	const personstatus = data?.folkeregisterPersonstatus?.[0] || data?.folkeregisterpersonstatus?.[0]
 
 	return (
@@ -36,25 +35,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 						title="Personstatus"
 						value={Formatters.allCapsToCapitalized(personstatus?.status)}
 					/>
-					{sikkerhetstiltak && (
-						<div className="person-visning_content">
-							<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
-							<div className="person-visning_content">
-								<TitleValue
-									title="Type sikkerhetstiltak"
-									value={`${sikkerhetstiltak.tiltakstype} - ${sikkerhetstiltak.beskrivelse}`}
-								/>
-								<TitleValue
-									title="Sikkerhetstiltak starter"
-									value={Formatters.formatDate(sikkerhetstiltak.gyldigFraOgMed)}
-								/>
-								<TitleValue
-									title="Sikkerhetstiltak opphører"
-									value={Formatters.formatDate(sikkerhetstiltak.gyldigTilOgMed)}
-								/>
-							</div>
-						</div>
-					)}
 				</div>
 			</div>
 		</ErrorBoundary>
