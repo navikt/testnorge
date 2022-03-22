@@ -32,8 +32,6 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
-        - application: testnav-synt-vedtakshistorikk-service
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: app-1
