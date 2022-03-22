@@ -1,7 +1,3 @@
----
-layout: default title: Personsøk Service parent: Applikasjoner
----
-
 # person-search-service
 
 Service som forvalter søking på personer basert på innsendte kriterier

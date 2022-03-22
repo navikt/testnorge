@@ -1,9 +1,3 @@
----
-layout: default
-title: Arbeidsforhold Export API
-parent: Applikasjoner
----
-
 # Arbeidsforhold-export-api
 Api for å eksportere arbeidsforhold fra database.
 

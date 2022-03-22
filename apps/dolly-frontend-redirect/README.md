@@ -1,7 +1,3 @@
----
-layout: default title: dolly-frontend-redirect parent: Applikasjoner
----
-
 # Dolly-frontend-redirect
 
 App som redirecter fra de utdaterte dolly ingressene til de nye støttede versjonene.

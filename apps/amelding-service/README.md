@@ -1,8 +1,3 @@
----
-layout: default
-title: amelding-service
-parent: Applikasjoner
----
 # Amelding-service
 Service for å sende syntetiske arbeidsmeldinger videre til oppsummerings-dokument-service.
 

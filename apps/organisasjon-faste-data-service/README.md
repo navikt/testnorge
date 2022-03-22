@@ -1,7 +1,3 @@
----
-layout: default title: Faste Data Service parent: Organisasjon grand_parent: Applikasjoner
----
-
 # Organisasjon Faste data service
 
 Service som utfører CRUD funksjonalitet for organisasjoner mot EREG. Ofte benyttet etter prod laster mot miljøer for å

@@ -1,9 +1,3 @@
----
-layout: default
-title: TPS Messaging Service
-parent: Applikasjoner
----
-
 # TPS-messaging-service
 TPS-messaging-service gir mulighet å sende og motta XML-meldinger mot TPS MQ-køer, samt lese XML-innhold fra TPS servicerutiner over CICS.
  

@@ -1,7 +1,3 @@
----
-layout: default title: Person organisasjon tilgang service parent: Applikasjoner
----
-
 # Person Organisasjon Tilgang Service
 
 Service som henter organisasjoner fra Altinn og hvilke tilganger de har

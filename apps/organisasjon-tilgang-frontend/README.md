@@ -1,7 +1,3 @@
----
-layout: default title: Organisasjon tilgang frontend parent: Organisasjon grand_parent: Applikasjoner
----
-
 ## organisajon-tilgang-frontend
 
 App som forvalter tilgangsstyring for organisasjoner som har tilgang til Dolly gjennom bankid og legger på sikkerhet.

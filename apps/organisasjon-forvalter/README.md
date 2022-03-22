@@ -1,7 +1,3 @@
----
-layout: default title: Forvalter parent: Organisasjon grand_parent: Applikasjoner
----
-
 # Organisasjon Forvalter
 
 Forvalter som oppretter og deretter deployer organisasjoner basert på innsendte kriterier. Håndterer også status per

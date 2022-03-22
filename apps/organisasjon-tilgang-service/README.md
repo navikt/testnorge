@@ -1,7 +1,3 @@
----
-layout: default title: Organisasjon tilgang service parent: Organisasjon grand_parent: Applikasjoner
----
-
 ## organisajon-tilgang-service
 
 Service som godkjenner tilganger for en spesifisert organisasjoner mot Dolly ved bruk av bankid.

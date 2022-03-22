@@ -1,7 +1,3 @@
----
-layout: default title: Organisasjon mottak service parent: Organisasjon grand_parent: Applikasjoner
----
-
 ## organisajon-mottak-service
 
 App for å opprette organisasjoner i EREG som lytter fra en kafka kø.

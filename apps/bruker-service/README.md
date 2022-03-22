@@ -1,7 +1,3 @@
----
-layout: default title: amelding-service parent: Applikasjoner
----
-
 # Bruker-service
 
 Service som henter og validerer en ansatt fra en reell organisasjon og brukes for autensiering ved bruk av våre

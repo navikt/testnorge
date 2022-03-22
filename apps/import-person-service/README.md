@@ -1,7 +1,3 @@
----
-layout: default title: Import person service parent: Applikasjoner
----
-
 # Testnav-generer-organisasjon-populasjon-service
 
 Service for å opprette liste med identer i pdl forvalter.

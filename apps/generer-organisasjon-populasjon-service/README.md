@@ -1,9 +1,3 @@
----
-layout: default
-title: Generer Organisasjon Populasjon Service
-parent: Organisasjon grand_parent: Applikasjoner
----
-
 # Testnav-generer-organisasjon-populasjon-service
 
 Genererer og henter opplysningspliktige organisasjoner i valgt miljø.

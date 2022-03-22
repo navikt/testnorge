@@ -1,7 +1,3 @@
----
-layout: default title: Person Faste Data Service parent: Applikasjoner
----
-
 # Person Faste Data Service
 
 Service som administrerer de faste data personene som er i bruk i Dolly.

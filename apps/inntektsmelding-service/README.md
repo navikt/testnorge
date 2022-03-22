@@ -1,7 +1,3 @@
----
-layout: default title: Inntektsmelding service parent: Applikasjoner
----
-
 # Testnav-inntektsmelding-service
 
 Service for å opprette og validere inntektsmeldinger som sendes inn på testpersoner.
