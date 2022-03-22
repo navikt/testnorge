@@ -4,7 +4,7 @@ Service som administrerer de faste data personene som er i bruk i Dolly.
 
 ## Swagger
 
-Swagger finnes under [/swagger-ui](https://testnav-person-faste-data-service.dev.intern.nav.no/swagger-ui.html)
+Swagger finnes under [/swagger-ui.html](https://testnav-person-faste-data-service.dev.intern.nav.no/swagger-ui.html)
 -endepunktet til applikasjonen.
 
 ## Lokal kjøring
