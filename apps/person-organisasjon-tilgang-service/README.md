@@ -1,17 +1,9 @@
 # Person Organisasjon Tilgang Service
 
-Service som henter organisasjoner fra Altinn og hvilke tilganger de har
+Service som henter organisasjoner fra Altinn og hvilke tilganger de har.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no/swagger)
+Swagger finnes
+under [/swagger-ui](https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no/swagger-ui.html)
 -endepunktet til applikasjonen.
-
-## Lokal kjøring
-
-Ha naisdevice kjørende og kjør PersonOrganisasjonTilgangServiceApplicationStarter med følgende argumenter:
-
-``` 
--Dspring.profiles.active=local
--Dspring.cloud.vault.token=[vault-token]
-```

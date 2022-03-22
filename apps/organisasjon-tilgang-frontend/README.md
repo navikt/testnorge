@@ -11,6 +11,6 @@ Tjenesten kan nås på [Organisasjon tilgang](https://testnav-organisasjon-tilga
 Ha naisdevice kjørende og kjør OrganisasjonTilgangFrontendApplicationStarter med følgende argumenter:
 
 ``` 
--Dspring.profiles.active=dev
+-Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[vault-token]
 ```

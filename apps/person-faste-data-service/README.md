@@ -4,14 +4,14 @@ Service som administrerer de faste data personene som er i bruk i Dolly.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-person-faste-data-service.dev.intern.nav.no/swagger) -endepunktet til
-applikasjonen.
+Swagger finnes under [/swagger-ui](https://testnav-person-faste-data-service.dev.intern.nav.no/swagger-ui.html)
+-endepunktet til applikasjonen.
 
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør PersonFasteDataServiceApplicationStarter med følgende argumenter:
 
 ``` 
--Dspring.profiles.active=local
+-Dspring.profiles.active=dev
 -Dspring.cloud.vault.token=[vault-token]
 ```

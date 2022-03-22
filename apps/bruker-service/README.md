@@ -1,11 +1,12 @@
 # Bruker-service
 
 Service som henter og validerer en ansatt fra en reell organisasjon og brukes for autensiering ved bruk av våre
-applikasjoner.
+applikasjoner som har bankId innlogging.
 
 ## Swagger
 
-Swagger finnes under [/api](https://testnav-bruker-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-bruker-service.dev.intern.nav.no/swagger) -endepunktet til
+applikasjonen.
 
 ## Lokal kjøring
 
@@ -19,6 +20,6 @@ Run -> Edit Configurations -> VM Options
 
 ```
 -Dspring.cloud.vault.token=(Copy token fra Vault)
--Dspring.profiles.active=dev
+-Dspring.profiles.active=local
 ```
 

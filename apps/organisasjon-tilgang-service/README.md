@@ -4,8 +4,8 @@ Service som godkjenner tilganger for en spesifisert organisasjoner mot Dolly ved
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-organisasjon-tilgang-service.dev.intern.nav.no/swagger) -endepunktet til
-applikasjonen.
+Swagger finnes under [/swagger-ui](https://testnav-organisasjon-tilgang-service.dev.intern.nav.no/swagger-ui.html)
+-endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

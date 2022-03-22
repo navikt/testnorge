@@ -2,7 +2,8 @@
 Service for å sende syntetiske arbeidsmeldinger videre til oppsummerings-dokument-service.
 
 ## Swagger
-Swagger finnes under [/api](https://testnav-amelding-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-amelding-service.dev.intern.nav.no/swagger) -endepunktet til
+applikasjonen.
 
 ## Lokal kjøring
 For å kjøre lokalt (AMeldingServiceApplicationStarter) må active profile settes til `dev`. I tillegg, må cloud vault token
