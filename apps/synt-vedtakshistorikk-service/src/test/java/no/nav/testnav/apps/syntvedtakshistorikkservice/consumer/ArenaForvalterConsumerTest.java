@@ -17,14 +17,13 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
@@ -51,10 +50,20 @@ class ArenaForvalterConsumerTest {
         when(tokenExchange.exchange(ArgumentMatchers.any(ArenaForvalterenProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
-//    @Test(expected = Exception.class)
-//    public void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
-//       arenaForvalterConsumer.sendBrukereTilArenaForvalter(null);
-//    }
+    @Test
+    public void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
+        stubOpprettErrorResponse();
+        assertThrows(Exception.class, () -> {
+            arenaForvalterConsumer.sendBrukereTilArenaForvalter(null);
+        });
+
+    }
+
+    private void stubOpprettErrorResponse() {
+        stubFor(post(urlPathMatching("(.*)/arena/api/v1/bruker"))
+                .willReturn(aResponse().withStatus(500))
+        );
+    }
 
     @Test
     void hentBrukereTest() {
