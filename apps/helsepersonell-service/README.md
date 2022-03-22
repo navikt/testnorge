@@ -1,9 +1,3 @@
----
-layout: default
-title: Helsepersonell Service
-parent: Applikasjoner
----
-
 # Helsepersonell-service
 API for helsepersonell. Finner helsepersonell via Hodejegeren og Samhandlerregisteret.
 

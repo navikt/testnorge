@@ -3,22 +3,6 @@ package no.nav.registre.testnorge.organisasjonmottak.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.context.annotation.Profile;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.avro.organisasjon.v1.Endringsdokument;
-import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
-import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
-import no.nav.testnav.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.JenkinsConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte;
 import no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn;
@@ -36,12 +20,27 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.Sektorkode;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Stiftelsesdato;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Telefon;
 import no.nav.registre.testnorge.organisasjonmottak.domain.ToLine;
+import no.nav.testnav.libs.avro.organisasjon.v1.Endringsdokument;
+import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
+import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
+import no.nav.testnav.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Profile("prod")
 @Component
 @RequiredArgsConstructor
-public class OrganaisjonMottakListener {
+public class OrganisasjonMottakListener {
     private final JenkinsConsumer jenkinsConsumer;
 
 
