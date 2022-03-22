@@ -47,7 +47,7 @@ public final class BestillingTpsMessagingStatusMapper {
                                                     .filter(status -> status.contains(":"))
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
-                                                            .melding(cleanOK(String.format("%s %s", melding.split("#")[0],
+                                                            .melding(getStatus(String.format("%s %s", melding.split("#")[0],
                                                                     status.split(":")[1]).replace("=", ":")))
                                                             .miljoe(status.split(":")[0])
                                                             .build())
@@ -98,14 +98,19 @@ public final class BestillingTpsMessagingStatusMapper {
         }
     }
 
-    private static String cleanOK(String status) {
+    private static String getStatus(String status) {
 
-        return status.contains(OKEY) ||
-                status.toLowerCase().contains("person ikke funnet i tps") ||
-                status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
-                status.toLowerCase().contains("det finnes allerede en lik putl-adresse")
-                ? OKEY
-                : status;
+        if (status.equals("Ingen svarstatus mottatt fra TPS")) {
+            return "Status ukjent (tidsavbrudd)";
+
+        } else {
+            return status.contains(OKEY) ||
+                    status.toLowerCase().contains("person ikke funnet i tps") ||
+                    status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
+                    status.toLowerCase().contains("det finnes allerede en lik putl-adresse")
+                    ? OKEY
+                    : status;
+        }
     }
 
     @Data
