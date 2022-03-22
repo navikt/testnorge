@@ -68,7 +68,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                             bestKriterier.setTags(bestilling.getTags());
 
                             try {
-                                Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);
+                                Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(progress);
 
                                 if (dollyPerson.isPresent()) {
 

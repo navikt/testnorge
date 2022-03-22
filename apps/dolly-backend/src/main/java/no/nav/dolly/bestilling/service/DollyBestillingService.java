@@ -53,7 +53,6 @@ public class DollyBestillingService {
 
     protected static final String SUCCESS = "OK";
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
-    private static final String OUT_FMT = "%s: %s";
 
     private final TpsfService tpsfService;
     private final DollyPersonCache dollyPersonCache;
@@ -219,8 +218,7 @@ public class DollyBestillingService {
     }
 
 
-    protected Optional<DollyPerson> prepareDollyPersonTpsf(Bestilling bestilling,
-                                                           BestillingProgress progress) throws JsonProcessingException {
+    protected Optional<DollyPerson> prepareDollyPersonTpsf(BestillingProgress progress) throws JsonProcessingException {
 
         DollyPerson dollyPerson = null;
         if (progress.isTpsf()) {

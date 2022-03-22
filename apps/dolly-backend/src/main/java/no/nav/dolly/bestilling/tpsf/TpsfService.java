@@ -35,7 +35,6 @@ import java.util.Map;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -234,12 +233,5 @@ public class TpsfService {
                     }
                 })
                 .block();
-    }
-
-    private void validateEnvironments(List<String> environments) {
-
-        if (nonNull(environments) && environments.isEmpty()) {
-            throw new IllegalArgumentException("Ingen TPS-miljøer er spesifisert for sending av testdata");
-        }
     }
 }

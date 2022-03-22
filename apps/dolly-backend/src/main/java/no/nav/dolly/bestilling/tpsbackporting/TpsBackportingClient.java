@@ -67,12 +67,11 @@ public class TpsBackportingClient implements ClientRegister {
                 dollyPersonCache.fetchIfEmpty(dollyPerson);
 
                 try {
-                    var response = tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
+                    tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
                     tpsfBestilling.setDoedsdato(null);
-                    var familieResponse = Stream.of(dollyPerson.getPartnere(), dollyPerson.getBarn())
+                    Stream.of(dollyPerson.getPartnere(), dollyPerson.getBarn())
                             .flatMap(Collection::stream)
-                            .map(ident -> tpsfService.endreLeggTilPaaPerson(ident, tpsfBestilling))
-                            .toList();
+                            .forEach(ident -> tpsfService.endreLeggTilPaaPerson(ident, tpsfBestilling));
 
                     // Force reload
                     dollyPerson.setPersondetaljer(null);
