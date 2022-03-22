@@ -35,7 +35,7 @@ public class ArenaAapService {
             List<NyttVedtakAap> aap115
     ) {
         List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
-        if (aap115 != null && !aap115.isEmpty()) {
+        if (nonNull(aap115) && !aap115.isEmpty()) {
             vedtaksliste = aap115.stream().filter(vedtak -> !vedtak.getVedtaktype().equals("S"))
                     .collect(Collectors.toList());
         }
@@ -46,7 +46,7 @@ public class ArenaAapService {
             List<NyttVedtakAap> aap115
     ) {
         List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
-        if (aap115 != null && !aap115.isEmpty()) {
+        if (nonNull(aap115) && !aap115.isEmpty()) {
             vedtaksliste = aap115.stream().filter(vedtak -> vedtak.getVedtaktype().equals("S"))
                     .collect(Collectors.toList());
         }
@@ -59,7 +59,7 @@ public class ArenaAapService {
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        if (aap115 != null && !aap115.isEmpty()) {
+        if (nonNull(aap115) && !aap115.isEmpty()) {
             for (var vedtak : aap115) {
                 rettigheter.add(getRettighetAap115Request(personident, miljoe, vedtak));
             }
@@ -73,7 +73,7 @@ public class ArenaAapService {
             List<RettighetRequest> rettigheter
     ) {
         var aap = historikk.getAap();
-        if (aap != null && !aap.isEmpty()) {
+        if (nonNull(aap) && !aap.isEmpty()) {
             for (var vedtak : aap) {
                 rettigheter.add(getRettighetAapRequest(personident, miljoe, vedtak));
             }
@@ -89,7 +89,7 @@ public class ArenaAapService {
     ) {
         var foedselsdato = IdentUtil.getFoedselsdatoFraIdent(personident);
         var ungUfoer = historikk.getUngUfoer();
-        if (ungUfoer != null && !ungUfoer.isEmpty()) {
+        if (nonNull(ungUfoer) && !ungUfoer.isEmpty()) {
             for (var vedtak : ungUfoer) {
                 var rettighetRequest = getRettighetUngUfoerRequest(personident, miljoe, foedselsdato, vedtak);
 
@@ -163,9 +163,9 @@ public class ArenaAapService {
     public List<NyttVedtakAap> fjernAapUngUfoerMedUgyldigeDatoer(List<NyttVedtakAap> ungUfoer) {
         List<NyttVedtakAap> nyUngUfoer = new ArrayList<>();
         if (nonNull(ungUfoer)) {
-            nyUngUfoer = ungUfoer.stream().filter(vedtak ->
-                            !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
-                    .collect(Collectors.toList());
+            nyUngUfoer = ungUfoer.stream()
+                    .filter(vedtak -> !vedtak.getFraDato().isAfter(ARENA_AAP_UNG_UFOER_DATE_LIMIT))
+                    .toList();
         }
 
         return nyUngUfoer.isEmpty() ? null : nyUngUfoer;
