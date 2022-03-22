@@ -18,10 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +38,16 @@ class PersonSearchConsumerTest {
     @Autowired
     private PersonSearchConsumer personSearchConsumer;
 
+    private static final PersonSearchRequest REQUEST = PersonSearchRequest.builder()
+            .randomSeed("seed")
+            .page(1)
+            .pageSize(10)
+            .alder(AlderSearch.builder()
+                    .fra((short) 17)
+                    .til((short) 66)
+                    .build())
+            .build();
+
 
     @BeforeEach
     public void setup() {
@@ -51,21 +58,12 @@ class PersonSearchConsumerTest {
     @Test
     void shouldGetSearchResult() {
         stubPostPersonSearch();
-        var request = PersonSearchRequest.builder()
-                .randomSeed("seed")
-                .page(1)
-                .pageSize(10)
-                .alder(AlderSearch.builder()
-                                .fra((short) 17)
-                                .til((short) 66)
-                                .build())
-                .build();
-        var response = personSearchConsumer.search(request);
+
+        var response = personSearchConsumer.search(REQUEST);
         assertThat(response.getItems()).hasSize(1);
         assertThat(response.getNumberOfItems()).isEqualTo(1);
         assertThat(response.getItems().get(0).getIdent()).isEqualTo("11866800000");
     }
-
 
     private void stubPostPersonSearch() {
         stubFor(post(urlPathMatching("(.*)/search/api/v1/person"))
@@ -74,6 +72,38 @@ class PersonSearchConsumerTest {
                         .withHeader("NUMBER_OF_ITEMS", "1")
                         .withBody(getResourceFileContent("files/single_search_response.json"))
                 )
+        );
+    }
+
+    @Test
+    void shouldGetEmptySearchResult() {
+        stubPostEmptyPersonSearch();
+
+        var response = personSearchConsumer.search(REQUEST);
+        assertThat(response.getItems()).hasSize(0);
+        assertThat(response.getNumberOfItems()).isEqualTo(0);
+    }
+
+    private void stubPostEmptyPersonSearch() {
+        stubFor(post(urlPathMatching("(.*)/search/api/v1/person"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withHeader("NUMBER_OF_ITEMS", "0")
+                        .withBody("[]")
+                )
+        );
+    }
+
+    @Test
+    void shouldHandleErrorResponse(){
+        stubPdlPersonErrorResponse();
+        var response = personSearchConsumer.search(REQUEST);
+        assertThat(response).isNull();
+    }
+
+    private void stubPdlPersonErrorResponse() {
+        stubFor(post(urlPathMatching("(.*)/search/api/v1/person"))
+                .willReturn(aResponse().withStatus(500))
         );
     }
 
