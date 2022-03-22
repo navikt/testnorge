@@ -45,12 +45,6 @@ public final class BestillingTpsMessagingStatusMapper {
                                     .map(melding ->
                                             Stream.of(melding.split("#")[1].split(","))
                                                     .filter(status -> status.contains(":"))
-                                                    .filter(status -> !status.toLowerCase()
-                                                            .contains("person ikke funnet i tps"))
-                                                    .filter(status -> !status.toLowerCase()
-                                                            .contains("dette er data som allerede er registrert i tps"))
-                                                    .filter(status -> !status.toLowerCase()
-                                                            .contains("Det finnes allerede en lik PUTL-adresse"))
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
                                                             .melding(cleanOK(String.format("%s %s", melding.split("#")[0],
@@ -64,11 +58,10 @@ public final class BestillingTpsMessagingStatusMapper {
                     .toList();
 
             intermediateStatus.stream()
-                    .filter(status -> OKEY.equals(status.getMelding()) && intermediateStatus.stream()
+                    .filter(status -> !OKEY.equals(status.getMelding()) || intermediateStatus.stream()
                             .noneMatch(status2 -> !OKEY.equals(status2.getMelding()) &&
                                     status.getMiljoe().equals(status2.getMiljoe()) &&
-                                    status.getIdent().equals(status2.getIdent())) ||
-                            !OKEY.equals(status.getMelding()))
+                                    status.getIdent().equals(status2.getIdent())))
                     .forEach(entry -> {
                         if (statusMap.containsKey(entry.getMelding())) {
                             if (statusMap.get(entry.getMelding()).containsKey(entry.getMiljoe())) {
@@ -107,7 +100,12 @@ public final class BestillingTpsMessagingStatusMapper {
 
     private static String cleanOK(String status) {
 
-        return status.contains(OKEY) ? OKEY : status;
+        return status.contains(OKEY) ||
+                status.toLowerCase().contains("person ikke funnet i tps") ||
+                status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
+                status.toLowerCase().contains("det finnes allerede en lik putl-adresse")
+                ? OKEY
+                : status;
     }
 
     @Data
