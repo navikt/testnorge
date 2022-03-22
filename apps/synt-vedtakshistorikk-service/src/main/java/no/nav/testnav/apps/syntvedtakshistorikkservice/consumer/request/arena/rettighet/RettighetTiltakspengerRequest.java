@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -16,21 +16,21 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RettighetFritakMeldekortRequest extends RettighetRequest {
+public class RettighetTiltakspengerRequest extends RettighetRequest {
 
-    private List<NyttVedtakAap> nyeFritak;
+    private List<NyttVedtakTiltak> nyeTiltakspenger;
 
     @Override public String getArenaForvalterUrlPath() {
-        return "/api/v1/aapfritakmeldekort";
+        return "/api/v1/tiltakspenger";
     }
 
-    @JsonProperty("nyeFritak")
     @Override public List<NyttVedtakAap> getVedtakAap() {
-        return nyeFritak;
+        return Collections.emptyList();
     }
 
+    @JsonProperty("nyeTiltakspenger")
     @Override public List<NyttVedtakTiltak> getVedtakTiltak() {
-        return Collections.emptyList();
+        return nyeTiltakspenger;
     }
 
     @Override public List<NyttVedtakTillegg> getVedtakTillegg() {

@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetTiltaksaktivitetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetTiltaksaktivitetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;

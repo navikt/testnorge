@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.ArenaForvalterConsumer;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.KodeMedSannsynlighet;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils;

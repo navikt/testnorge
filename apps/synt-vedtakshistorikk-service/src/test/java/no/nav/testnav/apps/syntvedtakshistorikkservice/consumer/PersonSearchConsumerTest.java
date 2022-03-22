@@ -70,7 +70,7 @@ class PersonSearchConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withHeader("NUMBER_OF_ITEMS", "1")
-                        .withBody(getResourceFileContent("files/single_search_response.json"))
+                        .withBody(getResourceFileContent("files/search/single_search_response.json"))
                 )
         );
     }
