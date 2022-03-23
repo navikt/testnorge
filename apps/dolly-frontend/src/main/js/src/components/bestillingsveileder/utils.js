@@ -1,5 +1,4 @@
 import _has from 'lodash/has'
-import { getPdlIdent } from '~/ducks/fagsystem'
 
 export const rootPaths = [
 	'tpsf',
@@ -27,6 +26,6 @@ export const harAvhukedeAttributter = (values) => {
 
 export const getLeggTilIdent = (personFoerLeggTil, identMaster) => {
 	if (identMaster === 'TPSF') return personFoerLeggTil.tpsf.ident
-	if (identMaster === 'PDL') return getPdlIdent(personFoerLeggTil.pdl.data.hentIdenter.identer)
+	if (identMaster === 'PDL') return personFoerLeggTil.pdl.ident
 	return undefined
 }
