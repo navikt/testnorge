@@ -2,6 +2,7 @@ package no.nav.registre.orkestratoren.batch.v1;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orkestratoren.consumer.rs.SyntVedtakshistorikkServiceConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
@@ -191,20 +192,17 @@ public class JobController {
      */
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
-        log.info("Innsending til Arena er midlertidig stanset pga prod-setting i Arena");
-//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-//            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
-//                    .avspillergruppeId(entry.getKey())
-//                    .miljoe(entry.getValue())
-//                    .antallVedtakshistorikker(arenaAntallNyeIdenter)
-//                    .build());
-//
-//            testnorgeArenaService.opprettArbeidssokereIArena(SyntetiserArenaRequest.builder()
-//                    .avspillergruppeId(entry.getKey())
-//                    .miljoe(entry.getValue())
-//                    .antallNyeIdenter(1)
-//                    .build(), true);
-//        }
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
+                    .miljoe(entry.getValue())
+                    .antallVedtakshistorikker(arenaAntallNyeIdenter)
+                    .build());
+
+            testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(SyntetiserArenaRequest.builder()
+                    .miljoe(entry.getValue())
+                    .antallNyeIdenter(1)
+                    .build());
+        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")

@@ -26,6 +26,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -136,18 +137,11 @@ public class SyntetiseringsController {
         return testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
     }
 
-    @PostMapping(value = "/arena/arbeidsoeker/generer")
-    public List<String> opprettArbeidssoekereIArena(
-            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
-    ) {
-        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, false);
-    }
-
     @PostMapping(value = "/arena/arbeidsoeker/generer/oppfoelging")
-    public List<String> opprettArbeidssoekereMedOppfoelgingIArena(
+    public Map<String, NyeBrukereResponse> opprettArbeidssoekereMedOppfoelgingIArena(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, true);
+        return testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")

@@ -19,3 +19,10 @@ testnorge-sam.rest.api.url: https://testnorge-sam.nais.preprod.local/api
 testnorge-sigrun.rest.api.url: https://testnorge-sigrun.nais.preprod.local/api
 testnorge-skd.rest.api.url: https://testnorge-skd.nais.preprod.local/api
 testnorge-tp.rest.api.url: https://testnorge-tp.nais.preprod.local/api
+
+consumers:
+  synt-vedtakshistorikk-service:
+    url: https://testnav-synt-vedtakshistorikk-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-synt-vedtakshistorikk-service

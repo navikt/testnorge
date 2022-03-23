@@ -24,7 +24,6 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
@@ -50,9 +49,6 @@ public class IdentServiceTest {
 
     @Mock
     private TestnorgeAaregConsumer testnorgeAaregConsumer;
-
-    @Mock
-    private TestnorgeArenaConsumer testnorgeArenaConsumer;
 
     @Mock
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;

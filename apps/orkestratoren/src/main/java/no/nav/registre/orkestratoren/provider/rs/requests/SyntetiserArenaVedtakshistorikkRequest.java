@@ -14,9 +14,6 @@ import lombok.Setter;
 @Builder
 public class SyntetiserArenaVedtakshistorikkRequest {
 
-    @JsonProperty("avspillergruppeId")
-    private Long avspillergruppeId;
-
     @JsonProperty("miljoe")
     private String miljoe;
 

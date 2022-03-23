@@ -1,21 +1,20 @@
 package no.nav.registre.orkestratoren.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hamcrest.collection.IsIterableContainingInOrder;
+import no.nav.registre.orkestratoren.consumer.rs.SyntVedtakshistorikkServiceConsumer;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
+
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,39 +22,30 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest
 public class TestnorgeArenaServiceTest {
 
     @Mock
-    private TestnorgeArenaConsumer testnorgeArenaConsumer;
+    private SyntVedtakshistorikkServiceConsumer syntVedtakshistorikkServiceConsumer;
 
     @InjectMocks
     private TestnorgeArenaService testnorgeArenaService;
 
-    private final Long avspillergruppeId = 123L;
     private final String miljoe = "t1";
     private final int antallNyeIdenter = 2;
     private final String fnr1 = "01010101010";
     private final String fnr2 = "02020202020";
-    private final List<String> expectedIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
-
-    @Test
-    public void shouldOppretteArbeidssokereIArena() {
-        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
-
-        when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest, false)).thenReturn(expectedIdenter);
-
-        var response = testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, false);
-
-        assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
-        verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest, false);
-    }
 
     @Test
     public void shouldOppretteArbeidssokereMedOppfoelgingIArena() {
-        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, antallNyeIdenter);
+        var syntetiserArenaRequest = new SyntetiserArenaRequest(miljoe, antallNyeIdenter);
+        Map<String, NyeBrukereResponse> expectedResponse = new HashMap<>();
+        expectedResponse.put(fnr1, NyeBrukereResponse.builder().build() );
+        expectedResponse.put(fnr2, NyeBrukereResponse.builder().build() );
 
-        when(testnorgeArenaConsumer.opprettArbeidsoekere(syntetiserArenaRequest, true)).thenReturn(expectedIdenter);
+        when(syntVedtakshistorikkServiceConsumer.opprettArbeidsoekereMedOppfoelging(syntetiserArenaRequest)).thenReturn(expectedResponse);
 
-        var response = testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, true);
+        var response = testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
 
-        assertThat(response, IsIterableContainingInOrder.contains(fnr1, fnr2));
-        verify(testnorgeArenaConsumer).opprettArbeidsoekere(syntetiserArenaRequest, true);
+        assertThat(response).hasSize(2);
+        assertThat(response).containsKey(fnr1);
+        assertThat(response).containsKey(fnr2);
+        verify(syntVedtakshistorikkServiceConsumer).opprettArbeidsoekereMedOppfoelging(syntetiserArenaRequest);
     }
 }
