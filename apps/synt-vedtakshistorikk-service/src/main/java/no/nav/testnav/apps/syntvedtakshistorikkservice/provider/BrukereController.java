@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
@@ -23,6 +24,7 @@ public class BrukereController {
 
     private final ArenaForvalterService arenaForvalterService;
     private final IdentService identService;
+    private final PdlProxyConsumer pdlProxyConsumer;
 
     @PostMapping("/bruker/oppfoelging")
 //    @ApiOperation(value = "Legg til identer med oppfoelging i Arena", notes = "Legger til oppgitt antall identer i Arena med oppfoelging.")
@@ -38,6 +40,8 @@ public class BrukereController {
         var response = arenaForvalterService.opprettArbeidssoekereUtenVedtak(
                 identer,
                 syntetiserArenaRequest.getMiljoe());
+
+        pdlProxyConsumer.createSyntTags(identer);
 
         return ResponseEntity.ok().body(response);
     }
