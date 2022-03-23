@@ -1,9 +1,3 @@
----
-layout: default
-title: Import fra TPSF service
-parent: Applikasjoner
----
-
 # Testnav-Import-fra-TPSF-service
 Testnav-Import-fra-TPSF-service leser SKD-meldinger fra gruppe i TPS-forvalteren og skriver til PDL-forvalteren + PDL
  

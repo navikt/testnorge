@@ -1,7 +1,3 @@
----
-layout: default title: testnav-joark-dokument-service parent: Applikasjoner
----
-
 # testnav-joark-dokument-service
 
 App for å hente ut joark dokumenter.

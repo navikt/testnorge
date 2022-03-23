@@ -52,7 +52,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<ArbeidInntektPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
-			{!testnorgeIdent && <ArenaPanel stateModifier={stateModifier} />}
+			<ArenaPanel stateModifier={stateModifier} />
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />
