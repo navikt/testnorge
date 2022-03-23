@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.checkNyeBrukereResponse;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
@@ -47,15 +46,15 @@ public class ArenaForvalterService {
             LocalDate aktiveringsDato
     ) {
         var nyeBrukere = identer.stream().map(ident ->
-                NyBruker.builder()
-                        .personident(ident)
-                        .miljoe(miljoe)
-                        .kvalifiseringsgruppe(kvalifiseringsgruppe)
-                        .automatiskInnsendingAvMeldekort(true)
-                        .oppfolging(oppfolging)
-                        .aktiveringsDato(aktiveringsDato)
-                        .build())
-                .collect(Collectors.toList());
+                        NyBruker.builder()
+                                .personident(ident)
+                                .miljoe(miljoe)
+                                .kvalifiseringsgruppe(kvalifiseringsgruppe)
+                                .automatiskInnsendingAvMeldekort(true)
+                                .oppfolging(oppfolging)
+                                .aktiveringsDato(aktiveringsDato)
+                                .build())
+                .toList();
 
         return arenaForvalterConsumer.sendBrukereTilArenaForvalter(nyeBrukere);
     }
@@ -184,7 +183,7 @@ public class ArenaForvalterService {
 
     public Map<String, List<NyttVedtakResponse>> opprettRettigheterIArena(
             List<RettighetRequest> rettigheter
-    ){
+    ) {
         return arenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 }

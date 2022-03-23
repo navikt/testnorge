@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.datoerOverlapper;
@@ -273,7 +272,8 @@ public class ArenaTiltakService {
             return vedtaksliste;
         }
 
-        var deltakelser = tiltaksdeltakelser.stream().filter(t -> nonNull(t.getTiltakYtelse()) && t.getTiltakYtelse().equals("J")).collect(Collectors.toList());
+        var deltakelser = tiltaksdeltakelser.stream()
+                .filter(t -> nonNull(t.getTiltakYtelse()) && t.getTiltakYtelse().equals("J")).toList();
 
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
@@ -401,7 +401,8 @@ public class ArenaTiltakService {
     }
 
     private boolean canSetDeltakelseTilFinished(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
-        var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
+        var tilknyttetTiltak = tiltak.stream()
+                .filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).toList();
         if (!tilknyttetTiltak.isEmpty() && nonNull(tilknyttetTiltak.get(0))) {
             var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
             if (nonNull(status) && AVBRUTT_TILTAK_STATUSER.contains(status)) {
@@ -436,7 +437,8 @@ public class ArenaTiltakService {
     }
 
     private Deltakerstatuser getAvsluttendeDeltakerstatus(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
-        var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
+        var tilknyttetTiltak = tiltak.stream()
+                .filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).toList();
         if (!tilknyttetTiltak.isEmpty() && AVBRUTT_TILTAK_STATUSER.contains(tilknyttetTiltak.get(0).getTiltakStatusKode())) {
             return Deltakerstatuser.DELAVB;
         }

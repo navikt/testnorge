@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetAap115Request;
@@ -37,8 +36,7 @@ public class ArenaAapService {
     ) {
         List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
         if (nonNull(aap115) && !aap115.isEmpty()) {
-            vedtaksliste = aap115.stream().filter(vedtak -> !vedtak.getVedtaktype().equals("S"))
-                    .collect(Collectors.toList());
+            vedtaksliste = aap115.stream().filter(vedtak -> !vedtak.getVedtaktype().equals("S")).toList();
         }
         return vedtaksliste;
     }
@@ -48,8 +46,7 @@ public class ArenaAapService {
     ) {
         List<NyttVedtakAap> vedtaksliste = new ArrayList<>();
         if (nonNull(aap115) && !aap115.isEmpty()) {
-            vedtaksliste = aap115.stream().filter(vedtak -> vedtak.getVedtaktype().equals("S"))
-                    .collect(Collectors.toList());
+            vedtaksliste = aap115.stream().filter(vedtak -> vedtak.getVedtaktype().equals("S")).toList();
         }
         return vedtaksliste;
     }

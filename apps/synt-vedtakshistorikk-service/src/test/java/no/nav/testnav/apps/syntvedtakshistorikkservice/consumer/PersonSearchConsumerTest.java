@@ -18,6 +18,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
@@ -39,6 +41,9 @@ class PersonSearchConsumerTest {
     private PersonSearchConsumer personSearchConsumer;
 
     private static final PersonSearchRequest REQUEST = PersonSearchRequest.builder()
+            .tag("TESTNORGE")
+            .excludeTags(Arrays.asList("DOLLY", "ARENASYNT"))
+            .kunLevende(true)
             .randomSeed("seed")
             .page(1)
             .pageSize(10)
@@ -80,8 +85,8 @@ class PersonSearchConsumerTest {
         stubPostEmptyPersonSearch();
 
         var response = personSearchConsumer.search(REQUEST);
-        assertThat(response.getItems()).hasSize(0);
-        assertThat(response.getNumberOfItems()).isEqualTo(0);
+        assertThat(response.getItems()).isEmpty();
+        assertThat(response.getNumberOfItems()).isZero();
     }
 
     private void stubPostEmptyPersonSearch() {

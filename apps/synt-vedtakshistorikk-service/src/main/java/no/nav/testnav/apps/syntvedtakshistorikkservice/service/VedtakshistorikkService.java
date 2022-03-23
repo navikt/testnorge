@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import lombok.RequiredArgsConstructor;
@@ -57,7 +56,7 @@ public class VedtakshistorikkService {
             int antallNyeIdenter
     ) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
-        var intStream = IntStream.range(0, antallNyeIdenter).boxed().collect(Collectors.toList());
+        var intStream = IntStream.range(0, antallNyeIdenter).boxed().toList();
         var forkJoinPool = new ForkJoinPool(10);
         try {
             forkJoinPool.submit(() ->

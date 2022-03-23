@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -101,6 +100,6 @@ public class ArenaBrukerUtils {
             return new ArrayList<>();
         }
 
-        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
+        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).toList();
     }
 }

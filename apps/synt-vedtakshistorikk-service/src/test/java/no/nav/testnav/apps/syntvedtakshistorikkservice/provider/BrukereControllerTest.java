@@ -66,7 +66,7 @@ public class BrukereControllerTest {
 
         ResponseEntity<Map<String, NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
         assertThat(result.getBody().keySet()).hasSize(1);
-        assertThat(result.getBody().keySet()).contains(fnr1);
+        assertThat(result.getBody()).containsKey(fnr1);
         assertThat(result.getBody().get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
         assertThat(result.getBody().get(fnr1).getArbeidsoekerList()).hasSize(1);
     }

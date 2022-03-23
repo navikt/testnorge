@@ -23,10 +23,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -181,6 +178,9 @@ public class IdentService {
             Boolean harBarn
     ) {
         var request = PersonSearchRequest.builder()
+                .tag("TESTNORGE")
+                .excludeTags(Arrays.asList("DOLLY", "ARENASYNT"))
+                .kunLevende(true)
                 .randomSeed(randomSeed)
                 .page(page)
                 .pageSize(PAGE_SIZE)

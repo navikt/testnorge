@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTilleggRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTilleggSekvenser;
@@ -102,7 +101,7 @@ public class ArenaTilleggService {
     }
 
     private Vedtaksperiode getVedtaksperiodeForTilleggSekvens(List<NyttVedtakTillegg> sekvens) {
-        var perioder = sekvens.stream().map(NyttVedtakTillegg::getVedtaksperiode).collect(Collectors.toList());
+        var perioder = sekvens.stream().map(NyttVedtakTillegg::getVedtaksperiode).toList();
 
         var startdato = perioder.stream().map(Vedtaksperiode::getFom).filter(Objects::nonNull).min(LocalDate::compareTo).orElse(null);
         var sluttdato = perioder.stream().map(Vedtaksperiode::getTom).filter(Objects::nonNull).max(LocalDate::compareTo).orElse(null);
@@ -116,8 +115,9 @@ public class ArenaTilleggService {
     ) {
         var filterteVedtak = vedtak;
         if (nonNull(vedtak) && !vedtak.isEmpty()) {
-            filterteVedtak = vedtak.stream().filter(tillegg -> !tillegg.getMaalgruppeKode()
-                    .equals(maalgruppekode)).collect(Collectors.toList());
+            filterteVedtak = vedtak.stream()
+                    .filter(tillegg -> !tillegg.getMaalgruppeKode().equals(maalgruppekode))
+                    .toList();
         }
         return filterteVedtak;
     }
@@ -132,7 +132,7 @@ public class ArenaTilleggService {
             filterteVedtak = vedtak.stream().filter(tillegg -> !tillegg.getMaalgruppeKode()
                             .equals(maalgruppekode) || (tillegg.getMaalgruppeKode()
                             .equals(maalgruppekode) && harGyldigTilknyttetVedtak(tillegg, tilknyttetVedtak)))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return filterteVedtak;
     }

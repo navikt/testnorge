@@ -2,8 +2,6 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search;
 
 import lombok.*;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -12,10 +10,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class PersonSearchRequest {
-    private final String tag = "TESTNORGE";
-    private final List<String> excludeTags = Arrays.asList("DOLLY", "ARENASYNT");
-    private final Boolean kunLevende = true;
-
+    private String tag;
+    private List<String> excludeTags;
+    private Boolean kunLevende;
     private Integer page;
     private Integer pageSize;
     private String randomSeed;
