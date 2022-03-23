@@ -42,8 +42,8 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 
 	const statusListe: Status[] = []
 
-	bestillingsinformasjonListe.map((bestillingStatus: Bestillingsinformasjon) => {
-		bestillingStatus.statuser.map((status: Status) => {
+	bestillingsinformasjonListe.forEach((bestillingStatus: Bestillingsinformasjon) => {
+		bestillingStatus.statuser.forEach((status: Status) => {
 			const systeminfo = {
 				navn: bestillingStatus.navn,
 				id: bestillingStatus.id,
@@ -67,7 +67,7 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 			}
 
 			if (status.detaljert) {
-				status.detaljert.map((detaljertStatus: Detaljert) => {
+				status.detaljert.forEach((detaljertStatus: Detaljert) => {
 					statusListe.push({
 						...systeminfo,
 						miljo: detaljertStatus.miljo.toUpperCase(),
@@ -78,8 +78,7 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 		})
 	})
 
-	const statusListeSorted = statusListe.sort(sortBestillingOnMiljoe)
-	return mergeIdentiskeStatusmeldinger(statusListeSorted)
+	return mergeIdentiskeStatusmeldinger([...statusListe].sort(sortBestillingOnMiljoe))
 }
 
 const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {
