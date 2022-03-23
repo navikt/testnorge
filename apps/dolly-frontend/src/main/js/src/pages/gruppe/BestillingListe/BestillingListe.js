@@ -125,7 +125,11 @@ export default function BestillingListe({
 				iconItem={<BestillingIconItem />}
 				visBestilling={navigerBestillingId}
 				onExpand={(bestilling) => (
-					<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
+					<BestillingDetaljer
+						bestilling={bestilling}
+						iLaastGruppe={iLaastGruppe}
+						brukertype={brukertype}
+					/>
 				)}
 				pagination
 			/>
