@@ -35,6 +35,7 @@ type Status = {
 	navn: string
 	statuser: [
 		{
+			identer: [string]
 			melding: string
 			detaljert: [
 				{
@@ -56,23 +57,28 @@ const finnesDetAvvikForBestillinger = (statusListe: [Status]) => {
 const antallIdenterOpprettetPaaBestilling = (statusListe: [Status]) => {
 	if (!statusListe) return 0
 	if (statusListe.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
+
 	let identerOpprettet: string[] = []
 	if (statusListe.length) {
 		const tpsf = statusListe.find((f) => f.id === 'TPSF')
 		const importFraTps = statusListe.find((f) => f.id === 'TPSIMPORT')
 		const importFraPdl = statusListe.find((f) => f.id === 'PDLIMPORT')
+		const importFraPdlforvalter = statusListe.find((f) => f.id === 'PDL_FORVALTER')
 
 		const addOpprettedeIdenter = (system: Status) => {
 			system.statuser.forEach((stat) => {
-				stat.detaljert.forEach((miljo) => {
-					identerOpprettet = identerOpprettet.concat(miljo.identer)
-				})
+				stat?.identer
+					? (identerOpprettet = identerOpprettet.concat(stat.identer))
+					: stat?.detaljert?.forEach((miljo) => {
+							identerOpprettet = identerOpprettet.concat(miljo.identer)
+					  })
 			})
 		}
 
 		if (tpsf) addOpprettedeIdenter(tpsf)
 		if (importFraTps) addOpprettedeIdenter(importFraTps)
 		if (importFraPdl) addOpprettedeIdenter(importFraPdl)
+		if (importFraPdlforvalter) addOpprettedeIdenter(importFraPdlforvalter)
 	}
 
 	// Kun unike identer

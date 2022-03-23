@@ -4,17 +4,15 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { fixNamesAndDuplicatesOfStatus } from '~/utils/BestillingStatusFormattering'
+import { Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
-export default function FagsystemStatus({ statusrapportListe }) {
-	if (statusrapportListe.length <= 0) return false
+export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
+	if (statusrapport.length <= 0) return null
 
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
 
-	const statusrapport = fixNamesAndDuplicatesOfStatus(statusrapportListe)
-
-	const getIconType = (status) => {
+	const getIconType = (status: Status) => {
 		const melding = status.melding
 		return melding && !melding.includes('OK')
 			? problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
