@@ -35,12 +35,12 @@ type Status = {
 	navn: string
 	statuser: [
 		{
-			identer: [string]
+			identer: string[]
 			melding: string
 			detaljert: [
 				{
 					miljo: string
-					identer: [string]
+					identer: string[]
 				}
 			]
 		}
