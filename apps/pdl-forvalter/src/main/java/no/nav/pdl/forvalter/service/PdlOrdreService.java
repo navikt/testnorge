@@ -141,7 +141,7 @@ public class PdlOrdreService {
                                         .collectList()
                                         .block())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 
