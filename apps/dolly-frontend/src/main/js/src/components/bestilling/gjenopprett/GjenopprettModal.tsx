@@ -14,6 +14,7 @@ type GjenopprettModalProps = {
 	submitFormik: any
 	closeModal: any
 	bestilling?: any
+	brukertype?: string
 }
 
 export const GjenopprettModal = ({
@@ -22,6 +23,7 @@ export const GjenopprettModal = ({
 	submitFormik,
 	closeModal,
 	bestilling,
+	brukertype,
 }: GjenopprettModalProps) => {
 	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
 
@@ -46,6 +48,8 @@ export const GjenopprettModal = ({
 								<MiljoVelger
 									bestillingsdata={bestilling ? bestilling.bestilling : null}
 									heading="Velg miljø å gjenopprette i"
+									bankIdBruker={brukertype && brukertype === 'BANKID'}
+									alleredeValgtMiljoe={[]}
 								/>
 
 								<div className="dollymodal_buttons">

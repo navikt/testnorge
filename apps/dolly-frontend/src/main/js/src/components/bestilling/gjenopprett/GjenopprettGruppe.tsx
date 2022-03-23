@@ -11,6 +11,7 @@ type GjenopprettGruppeProps = {
 	gruppenavn: string
 	bestillingStatuser: Record<string, BestillingStatus>
 	getBestillinger: any
+	brukertype: string
 }
 
 type Gruppe = {
@@ -28,6 +29,7 @@ export const GjenopprettGruppe = ({
 	gruppe,
 	bestillingStatuser,
 	getBestillinger,
+	brukertype,
 }: GjenopprettGruppeProps) => {
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()
@@ -75,6 +77,7 @@ export const GjenopprettGruppe = ({
 			submitFormik={submitFormik}
 			closeModal={onClose}
 			environments={bestilteMiljoer()}
+			brukertype={brukertype}
 		/>
 	)
 }
