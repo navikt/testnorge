@@ -127,7 +127,7 @@ public class ArenaTiltakService {
             });
 
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
-                    .filter(deltakelse -> nonNull(deltakelse.getTiltakId())).collect(Collectors.toList());
+                    .filter(deltakelse -> nonNull(deltakelse.getTiltakId())).toList();
 
             nyeTiltaksdeltakelser = removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
@@ -136,7 +136,7 @@ public class ArenaTiltakService {
     }
 
 
-    public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+    private NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
         var response = arenaForvalterConsumer.finnTiltak(getFinnTiltakRequest(personident, miljoe, tiltaksdeltakelse));
         if (nonNull(response) && !response.getNyeRettigheterTiltak().isEmpty()) {
             return response.getNyeRettigheterTiltak().get(0);

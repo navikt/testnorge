@@ -30,9 +30,9 @@ public class ArenaTilleggService {
 
     private final RequestUtils requestUtils;
 
-    private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
-    private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
-    private static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 2, 29);
+    public static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
+    public static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
+    public static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 2, 29);
 
     public void opprettVedtakTillegg(
             Vedtakshistorikk historikk,
@@ -161,9 +161,9 @@ public class ArenaTilleggService {
     public List<NyttVedtakTillegg> fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(List<NyttVedtakTillegg> tilsynFamiliemedlemmer) {
         List<NyttVedtakTillegg> nyTilsynFamiliemedlemmer = new ArrayList<>();
         if (nonNull(tilsynFamiliemedlemmer)) {
-            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream().filter(vedtak ->
-                            !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
-                    .collect(Collectors.toList());
+            nyTilsynFamiliemedlemmer = tilsynFamiliemedlemmer.stream()
+                    .filter(vedtak -> !vedtak.getFraDato().isAfter(ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT))
+                    .toList();
         }
 
         return nyTilsynFamiliemedlemmer.isEmpty() ? null : nyTilsynFamiliemedlemmer;

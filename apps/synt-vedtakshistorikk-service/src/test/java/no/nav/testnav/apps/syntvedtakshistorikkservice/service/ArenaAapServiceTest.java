@@ -157,8 +157,6 @@ public class ArenaAapServiceTest {
         arenaAapService.oppdaterAapSykepengeerstatningDatoer(historikk);
 
         var diff1 = ChronoUnit.DAYS.between(LocalDate.now().plusMonths(6), LocalDate.now().plusMonths(7));
-        var diff2 = ChronoUnit.DAYS.between(LocalDate.now().plusMonths(16).minusDays(diff1),
-                LocalDate.now().plusMonths(10).minusDays(diff1).plusMonths(6));
 
         assertThat(historikk.getAap()).hasSize(4);
         assertThat(historikk.getAap().get(0).getFraDato()).isEqualTo(LocalDate.now());
