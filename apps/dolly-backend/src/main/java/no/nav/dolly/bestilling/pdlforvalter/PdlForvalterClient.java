@@ -95,13 +95,6 @@ public class PdlForvalterClient implements ClientRegister {
         builder.append("&OK");
     }
 
-    private PersonDTO getPdldataHovedIdent(String ident) {
-
-        var personer = pdlDataConsumer.getPersoner(List.of(ident));
-        return personer.isEmpty() ? null :
-                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
-    }
-
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -504,22 +497,5 @@ public class PdlForvalterClient implements ClientRegister {
 
         builder.append('&')
                 .append(errorStatusDecoder.decodeRuntimeException(exception));
-    }
-
-    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
-        builder.append('$')
-                .append(utenlandsIdentifikasjonsnummer);
-    }
-
-    private static boolean hasNoPdldataAdresse(PersonDTO person) {
-
-        return isNull(person) ||
-                (person.getBostedsadresse().isEmpty() &&
-                        person.getKontaktadresse().isEmpty() &&
-                        person.getOppholdsadresse().isEmpty());
-    }
-
-    private static void appendOkStatus(StringBuilder builder) {
-        builder.append("&OK");
     }
 }
