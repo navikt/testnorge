@@ -144,29 +144,35 @@ public class ArenaAapService {
             for (var sekvens : aapSekvenser) {
                 var antallDagerEndret = 0;
                 for (var vedtak : sekvens) {
-                    if (nonNull(vedtak.getFraDato())) {
-                        vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
-                        if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())) {
-                            if (isNull(vedtak.getTilDato())) {
-                                vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
-                            } else {
-                                vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
-
-                                var originalTilDato = vedtak.getTilDato();
-                                setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
-                                var nyTilDato = vedtak.getTilDato();
-
-                                antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
-                            }
-                        } else if (nonNull(vedtak.getTilDato())) {
-                            vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
-                        }
-                    }
+                    var nyendring = oppdaterVedtakDatoBasertPaaAktivitetsfase(antallDagerEndret, vedtak);
+                    antallDagerEndret += nyendring;
                     oppdaterteVedtak.add(vedtak);
                 }
             }
             historikk.setAap(oppdaterteVedtak);
         }
+    }
+
+    private long oppdaterVedtakDatoBasertPaaAktivitetsfase(int antallDagerEndret, NyttVedtakAap vedtak){
+        if (nonNull(vedtak.getFraDato())) {
+            vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
+            if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())) {
+                if (isNull(vedtak.getTilDato())) {
+                    vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
+                } else {
+                    vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+
+                    var originalTilDato = vedtak.getTilDato();
+                    setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                    var nyTilDato = vedtak.getTilDato();
+
+                    return ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                }
+            } else if (nonNull(vedtak.getTilDato())) {
+                vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+            }
+        }
+        return 0;
     }
 
 

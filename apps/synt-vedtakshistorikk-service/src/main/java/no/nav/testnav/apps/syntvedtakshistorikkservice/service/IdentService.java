@@ -70,18 +70,21 @@ public class IdentService {
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, null);
             var response = personSearchConsumer.search(request);
-            if (isNull(response)) break;
-            int numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
 
-            for (PersonDTO person : response.getItems()) {
-                //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
-                if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent()))
-                    utvalgteIdenter.add(person.getIdent());
-                if (utvalgteIdenter.size() >= antallNyeIdenter) break;
+            var numberOfPages = 0;
+            if (nonNull(response)) {
+                numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
+                for (PersonDTO person : response.getItems()) {
+                    //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
+                    if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent())){
+                        utvalgteIdenter.add(person.getIdent());
+                        if (utvalgteIdenter.size() >= antallNyeIdenter) break;
+                    }
+                }
             }
 
             page++;
-            if (page > numberOfPages) break;
+            if (page > numberOfPages) page = MAX_SEARCH_REQUESTS;
         }
 
         return utvalgteIdenter;
@@ -101,17 +104,21 @@ public class IdentService {
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
             var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, true);
             var response = personSearchConsumer.search(request);
-            if (isNull(response)) break;
-            int numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
 
-            for (PersonDTO person : response.getItems()) {
-                //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
-                if (validBarn(person, tidligsteDatoBarnetillegg)) utvalgteIdenter.add(person.getIdent());
-                if (utvalgteIdenter.size() >= antallNyeIdenter) break;
+            var numberOfPages = 0;
+            if (nonNull(response)){
+                numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
+                for (PersonDTO person : response.getItems()) {
+                    //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
+                    if (validBarn(person, tidligsteDatoBarnetillegg)){
+                        utvalgteIdenter.add(person.getIdent());
+                        if (utvalgteIdenter.size() >= antallNyeIdenter) break;
+                    }
+                }
             }
 
             page++;
-            if (page > numberOfPages) break;
+            if (page > numberOfPages) page = MAX_SEARCH_REQUESTS;
         }
 
         return utvalgteIdenter;
@@ -196,7 +203,7 @@ public class IdentService {
                     .build());
         }
 
-        if (nonNull(harBarn) && harBarn) {
+        if (nonNull(harBarn) && Boolean.TRUE.equals(harBarn)) {
             request.setRelasjoner(RelasjonSearch.builder()
                     .barn(Boolean.TRUE)
                     .build());
