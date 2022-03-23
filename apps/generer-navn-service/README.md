@@ -1,7 +1,3 @@
----
-layout: default title: Generer Navn Service parent: Applikasjoner
----
-
 # Generer navn-service
 
 App for å generere fiktive navn. Navnene består av et adjektiv (som ofte brukes som fornavn), et ikke påkrevd adverb (mellomavn) og

@@ -10,7 +10,7 @@ import no.nav.testnav.apps.persontilgangservice.domain.Access;
 
 @Service
 @RequiredArgsConstructor
-public class PersonOrganisasjonSerivce {
+public class PersonOrganisasjonService {
 
     private final AltinnClient client;
 

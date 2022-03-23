@@ -37,6 +37,8 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+        - application: testnav-synt-vedtakshistorikk-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
