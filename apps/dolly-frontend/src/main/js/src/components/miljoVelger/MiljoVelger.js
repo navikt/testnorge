@@ -96,6 +96,25 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 MiljoVelger.validation = {
 	environments: ifPresent(
 		'$environments',
-		Yup.array().of(Yup.string().required('Velg et miljø')).min(1, 'Må velge minst et miljø')
+		Yup.array().test('har-miljoe-nar-pakrevd', 'Velg minst ett miljø', function miljoetest() {
+			const miljoeavhengig = [
+				'aareg',
+				'pensjonforvalter',
+				'inntektsmelding',
+				'arenaforvalter',
+				'sykemelding',
+				'instdata',
+				'dokarkiv',
+			]
+			const values = this.options.context
+			let miljoeNotRequired = true
+			miljoeavhengig.forEach((system) => {
+				if (values.hasOwnProperty(system)) {
+					miljoeNotRequired = false
+				}
+			})
+			const hasEnvironments = values.environments.length > 0
+			return miljoeNotRequired || hasEnvironments
+		})
 	),
 }

@@ -45,14 +45,14 @@ const mapStatusrapport = (bestillingstatus) => {
 						(status.melding === statusListe[statusIndex].melding ||
 							(status.melding === 'OK' && statusListe[statusIndex].melding === null))
 					) {
-						statusListe[statusIndex].miljo = statusListe[statusIndex].miljo.concat(
+						statusListe[statusIndex].miljo = statusListe[statusIndex].miljo?.concat(
 							', ',
-							miljoInfo.miljo.toUpperCase()
+							miljoInfo.miljo?.toUpperCase()
 						)
 					} else {
 						statusListe.push({
 							...systeminfo,
-							miljo: miljoInfo.miljo.toUpperCase(),
+							miljo: miljoInfo.miljo?.toUpperCase(),
 							identer: miljoInfo.identer,
 						})
 					}
