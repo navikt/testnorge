@@ -10,7 +10,7 @@ import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-export const Steg3 = ({ formikBag, brukertype }) => {
+export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
@@ -55,7 +55,9 @@ export const Steg3 = ({ formikBag, brukertype }) => {
 				/>
 			)}
 			{importTestnorge && <VelgGruppe formikBag={formikBag} />}
-			{!erOrganisasjon && !importTestnorge && <MalForm formikBag={formikBag} />}
+			{!erOrganisasjon && !importTestnorge && (
+				<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+			)}
 			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>
 	)
