@@ -40,8 +40,9 @@ public final class BestillingTpsMessagingStatusMapper {
                     .map(progress ->
                             Stream.of(progress.getTpsMessagingStatus().split("\\$"))
                                     .filter(Strings::isNotBlank)
-                                    .filter(melding -> !melding.contains("Telefonnummer_slett#"))
-                                    .filter(melding -> !melding.contains("Sikkerhetstiltak_slett#"))
+                                    .filter(melding -> !melding.contains("Telefonnummer_slett"))
+                                    .filter(melding -> !melding.contains("Sikkerhetstiltak_slett"))
+                                    .filter(melding -> melding.split("#").length > 1)
                                     .map(melding ->
                                             Stream.of(melding.split("#")[1].split(","))
                                                     .filter(status -> status.contains(":"))
