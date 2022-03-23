@@ -89,7 +89,7 @@ public class VedtakshistorikkService {
             vedtakshistorikk.setTilsynFamiliemedlemmer(arenaTilleggService
                     .fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikk.getTilsynFamiliemedlemmer()));
             vedtakshistorikk.setUngUfoer(arenaAapService.fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikk.getUngUfoer()));
-            arenaAapService.oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk.getAap());
+            arenaAapService.oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk);
 
             LocalDate tidligsteDato = finnTidligsteDato(vedtakshistorikk);
             LocalDate tidligsteDatoBarnetillegg = finnTidligeDatoBarnetillegg(vedtakshistorikk.getBarnetillegg());

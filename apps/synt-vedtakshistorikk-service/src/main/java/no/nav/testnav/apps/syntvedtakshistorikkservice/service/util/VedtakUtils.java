@@ -22,6 +22,17 @@ public class VedtakUtils {
     private VedtakUtils() {
     }
 
+    public static List<List<NyttVedtakAap>> getAapSekvenser(List<NyttVedtakAap> vedtak) {
+        List<List<NyttVedtakAap>> sekvenser = new ArrayList<>();
+        var indices = getIndicesForVedtakSekvenser(vedtak);
+
+        for (var i = 0; i < indices.size() - 1; i++) {
+            sekvenser.add(vedtak.subList(indices.get(i), indices.get(i + 1)));
+        }
+
+        return sekvenser;
+    }
+
     public static List<List<NyttVedtakTiltak>> getTiltakSekvenser(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> sekvenser = new ArrayList<>();
         var indices = getIndicesForVedtakSekvenser(vedtak);

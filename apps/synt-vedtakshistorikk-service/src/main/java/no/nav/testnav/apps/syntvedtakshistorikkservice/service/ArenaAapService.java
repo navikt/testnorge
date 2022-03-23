@@ -21,6 +21,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Reque
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getAapSekvenser;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -137,25 +138,37 @@ public class ArenaAapService {
     }
 
 
-    public void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
-        if (nonNull(aapVedtak)) {
-            var antallDagerEndret = 0;
-            for (var vedtak : aapVedtak) {
-                if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase()) && nonNull(vedtak.getFraDato())) {
-                    vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
-                    if (isNull(vedtak.getTilDato())) {
-                        vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
-                    } else {
-                        vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+    public void oppdaterAapSykepengeerstatningDatoer(Vedtakshistorikk historikk) {
+        var aapVedtak = historikk.getAap();
+        if (nonNull(aapVedtak) && !aapVedtak.isEmpty()) {
+            var oppdaterteVedtak = new ArrayList<NyttVedtakAap>(aapVedtak.size());
+            var aapSekvenser = getAapSekvenser(aapVedtak);
 
-                        var originalTilDato = vedtak.getTilDato();
-                        setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
-                        var nyTilDato = vedtak.getTilDato();
+            for (var sekvens : aapSekvenser) {
+                var antallDagerEndret = 0;
+                for (var vedtak : sekvens) {
+                    if (nonNull(vedtak.getFraDato())) {
+                        vedtak.setFraDato(vedtak.getFraDato().minusDays(antallDagerEndret));
+                        if (AKTIVITETSFASE_SYKEPENGEERSTATNING.equals(vedtak.getAktivitetsfase())) {
+                            if (isNull(vedtak.getTilDato())) {
+                                vedtak.setTilDato(vedtak.getFraDato().plusMonths(6));
+                            } else {
+                                vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
 
-                        antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                                var originalTilDato = vedtak.getTilDato();
+                                setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                                var nyTilDato = vedtak.getTilDato();
+
+                                antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
+                            }
+                        } else if (nonNull(vedtak.getTilDato())) {
+                            vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
+                        }
                     }
+                    oppdaterteVedtak.add(vedtak);
                 }
             }
+            historikk.setAap(oppdaterteVedtak);
         }
     }
 

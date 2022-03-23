@@ -130,19 +130,44 @@ public class ArenaAapServiceTest {
         aap1.setAktivitetsfase(AKTIVITETSFASE_SYKEPENGEERSTATNING);
         aap1.setFraDato(LocalDate.now());
         aap1.setTilDato(LocalDate.now().plusMonths(7));
+        aap1.setVedtaktype("O");
 
         var aap2 = NyttVedtakAap.builder().build();
-        aap2.setAktivitetsfase(AKTIVITETSFASE_SYKEPENGEERSTATNING);
+        aap2.setAktivitetsfase("TEST");
         aap2.setFraDato(LocalDate.now().plusMonths(7));
         aap2.setTilDato(LocalDate.now().plusMonths(10));
+        aap2.setVedtaktype("E");
 
-        var vedtak = Arrays.asList(aap1, aap2);
-        arenaAapService.oppdaterAapSykepengeerstatningDatoer(vedtak);
+        var aap3 = NyttVedtakAap.builder().build();
+        aap3.setAktivitetsfase(AKTIVITETSFASE_SYKEPENGEERSTATNING);
+        aap3.setFraDato(LocalDate.now().plusMonths(10));
+        aap3.setTilDato(LocalDate.now().plusMonths(17));
+        aap3.setVedtaktype("S");
 
-        var diff = ChronoUnit.DAYS.between(LocalDate.now().plusMonths(6), LocalDate.now().plusMonths(7));
-        assertThat(vedtak.get(0).getFraDato()).isEqualTo(LocalDate.now());
-        assertThat(vedtak.get(0).getTilDato()).isEqualTo(LocalDate.now().plusMonths(6));
-        assertThat(vedtak.get(1).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7).minusDays(diff));
-        assertThat(vedtak.get(1).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff));
+        var aap4 = NyttVedtakAap.builder().build();
+        aap4.setAktivitetsfase("TEST");
+        aap4.setFraDato(LocalDate.now().plusMonths(7));
+        aap4.setTilDato(LocalDate.now().plusMonths(10));
+        aap4.setVedtaktype("O");
+
+        var vedtak = Arrays.asList(aap1, aap2, aap3, aap4);
+        Vedtakshistorikk historikk = Vedtakshistorikk.builder()
+                .aap(vedtak)
+                .build();
+        arenaAapService.oppdaterAapSykepengeerstatningDatoer(historikk);
+
+        var diff1 = ChronoUnit.DAYS.between(LocalDate.now().plusMonths(6), LocalDate.now().plusMonths(7));
+        var diff2 = ChronoUnit.DAYS.between(LocalDate.now().plusMonths(16).minusDays(diff1),
+                LocalDate.now().plusMonths(10).minusDays(diff1).plusMonths(6));
+
+        assertThat(historikk.getAap()).hasSize(4);
+        assertThat(historikk.getAap().get(0).getFraDato()).isEqualTo(LocalDate.now());
+        assertThat(historikk.getAap().get(0).getTilDato()).isEqualTo(LocalDate.now().plusMonths(6));
+        assertThat(historikk.getAap().get(1).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7).minusDays(diff1));
+        assertThat(historikk.getAap().get(1).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1));
+        assertThat(historikk.getAap().get(2).getFraDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1));
+        assertThat(historikk.getAap().get(2).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10).minusDays(diff1).plusMonths(6));
+        assertThat(historikk.getAap().get(3).getFraDato()).isEqualTo(LocalDate.now().plusMonths(7));
+        assertThat(historikk.getAap().get(3).getTilDato()).isEqualTo(LocalDate.now().plusMonths(10));
     }
 }
