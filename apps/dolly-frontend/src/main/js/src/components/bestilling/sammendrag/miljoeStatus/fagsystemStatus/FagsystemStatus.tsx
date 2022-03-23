@@ -14,11 +14,13 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 
 	const getIconType = (status: Status) => {
 		const melding = status.melding
-		return melding && !melding.includes('OK')
-			? problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
+		if (melding && !melding.includes('OK')) {
+			return problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
 				? 'report-problem-circle'
 				: 'report-problem-triangle'
-			: 'feedback-check-circle'
+		} else {
+			return 'feedback-check-circle'
+		}
 	}
 
 	if (statusrapport && statusrapport.some((status) => status.id === 'ORGANISASJON_FORVALTER')) {
@@ -33,8 +35,8 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 						</tr>
 					</thead>
 					<tbody>
-						{statusrapport.map((status, idx) => (
-							<tr key={idx}>
+						{statusrapport.map((status, index) => (
+							<tr key={index}>
 								<td>
 									<div className="flexbox">
 										{status.melding !== 'Pågående' && status.melding !== 'Deployer' && (
@@ -67,8 +69,8 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 					</tr>
 				</thead>
 				<tbody>
-					{statusrapport.map((status, idx) => (
-						<tr key={idx}>
+					{statusrapport.map((status, index) => (
+						<tr key={index}>
 							<td>
 								<div className="flexbox">
 									<Icon size={16} kind={getIconType(status)} />

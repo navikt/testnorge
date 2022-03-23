@@ -34,7 +34,7 @@ export type Status = {
 }
 
 const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[]) => {
-	const sortBestilling = (first: Status, second: Status) => {
+	const sortBestillingOnMiljoe = (first: Status, second: Status) => {
 		if (first.navn === second.navn) {
 			return first.miljo > second.miljo ? 1 : -1
 		}
@@ -78,7 +78,8 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 		})
 	})
 
-	return mergeIdentiskeStatusmeldinger(statusListe.sort(sortBestilling))
+	const statusListeSorted = statusListe.sort(sortBestillingOnMiljoe)
+	return mergeIdentiskeStatusmeldinger(statusListeSorted)
 }
 
 const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {

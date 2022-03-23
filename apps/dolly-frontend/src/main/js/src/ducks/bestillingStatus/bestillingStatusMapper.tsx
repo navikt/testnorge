@@ -67,11 +67,13 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [Status]) => {
 
 		const addOpprettedeIdenter = (system: Status) => {
 			system.statuser.forEach((stat) => {
-				stat?.identer
-					? (identerOpprettet = identerOpprettet.concat(stat.identer))
-					: stat?.detaljert?.forEach((miljo) => {
-							identerOpprettet = identerOpprettet.concat(miljo.identer)
-					  })
+				if (stat?.identer) {
+					identerOpprettet = identerOpprettet.concat(stat.identer)
+				} else {
+					stat?.detaljert?.forEach((miljo) => {
+						identerOpprettet = identerOpprettet.concat(miljo.identer)
+					})
+				}
 			})
 		}
 
