@@ -53,7 +53,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							endepunkt={ArenaApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
-						{' (Testnorge identer er kun støttet i Q1)'}
+						{' (Testnorge identer er foreløpig kun støttet i Q1)'}
 					</li>
 				)}
 
