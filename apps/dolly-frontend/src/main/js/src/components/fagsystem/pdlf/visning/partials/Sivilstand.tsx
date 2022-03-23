@@ -47,7 +47,6 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 
 export const SivilstandVisning = ({ data, relasjoner }: SivilstandData) => {
 	if (!data || data.length < 1) return null
-
 	return (
 		<div>
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
