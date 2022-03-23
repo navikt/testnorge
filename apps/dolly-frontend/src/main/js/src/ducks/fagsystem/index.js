@@ -486,13 +486,6 @@ const getAlder = (datoFoedt) => {
 	return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
 
-export const getPdlIdent = (identer) => {
-	for (let ident of identer) {
-		if (ident.gruppe === 'FOLKEREGISTERIDENT') return ident.ident
-	}
-	return 'undefined'
-}
-
 const getKjoenn = (kjoenn) => {
 	switch (kjoenn) {
 		case 'KVINNE':
