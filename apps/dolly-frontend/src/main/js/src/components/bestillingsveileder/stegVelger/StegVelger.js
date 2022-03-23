@@ -14,7 +14,7 @@ import DisplayFormikState from '~/utils/DisplayFormikState'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
-export const StegVelger = ({ initialValues, onSubmit, brukertype, children }) => {
+export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, children }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
@@ -72,6 +72,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, children }) =>
 							formikBag={formikBag}
 							stateModifier={stateModifier}
 							brukertype={brukertype}
+							brukerId={brukerId}
 						/>
 
 						{devEnabled && <DisplayFormikState {...formikBag} />}

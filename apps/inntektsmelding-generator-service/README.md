@@ -1,10 +1,3 @@
----
-layout: default
-title: Inntektsmelding Generator Service
-parent: Applikasjoner
----
-
-
 # Inntektsmelding generator
 
 Microservice for å mappe inntektsmeldinger i JSON format til XML format basert på [kodeverk](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/).  

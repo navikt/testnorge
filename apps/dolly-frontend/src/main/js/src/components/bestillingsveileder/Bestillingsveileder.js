@@ -11,9 +11,9 @@ export const Bestillingsveileder = ({
 	error,
 	gruppeId,
 	brukertype,
+	brukerId,
 	location,
 	sendBestilling,
-	match,
 }) => {
 	const options = BVOptions(location.state, gruppeId)
 	const handleSubmit = (values, formikBag) => {
@@ -23,13 +23,24 @@ export const Bestillingsveileder = ({
 	if (error) {
 		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
 	}
-	return renderBestillingsVeileder(options.initialValues, options, brukertype, handleSubmit)
+	return renderBestillingsVeileder(
+		options.initialValues,
+		options,
+		brukertype,
+		brukerId,
+		handleSubmit
+	)
 }
-const renderBestillingsVeileder = (initialValues, options, brukertype, handleSubmit) => {
+const renderBestillingsVeileder = (initialValues, options, brukertype, brukerId, handleSubmit) => {
 	return (
 		<div className="bestillingsveileder">
 			<BestillingsveilederContext.Provider value={options}>
-				<StegVelger initialValues={initialValues} onSubmit={handleSubmit} brukertype={brukertype} />
+				<StegVelger
+					initialValues={initialValues}
+					onSubmit={handleSubmit}
+					brukertype={brukertype}
+					brukerId={brukerId}
+				/>
 			</BestillingsveilederContext.Provider>
 		</div>
 	)

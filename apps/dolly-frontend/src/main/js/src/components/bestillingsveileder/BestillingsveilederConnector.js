@@ -4,6 +4,7 @@ import { Bestillingsveileder } from './Bestillingsveileder'
 
 const mapStateToProps = (state, ownProps) => ({
 	brukertype: state.bruker.brukerData.brukertype,
+	brukerId: state.bruker.brukerData.brukerId,
 	error: state.bestveil.error,
 	gruppeId: ownProps?.match?.params?.gruppeId,
 })

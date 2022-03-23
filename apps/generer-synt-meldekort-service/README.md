@@ -1,9 +1,3 @@
----
-layout: default
-title: Generer Synt Meldekort Service
-parent: Applikasjoner
----
-
 # Testnav-generer-synt-meldkort-service
 App for å generere syntetiske meldekort for Arena.
 

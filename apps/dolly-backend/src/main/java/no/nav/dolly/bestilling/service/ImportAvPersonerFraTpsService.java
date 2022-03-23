@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfImportPersonRequest;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -27,9 +26,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 
 @Service
@@ -39,8 +36,9 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
     private DollyPersonCache dollyPersonCache;
     private ErrorStatusDecoder errorStatusDecoder;
     private ExecutorService dollyForkJoinPool;
+    private IdentService identService;
 
-    public ImportAvPersonerFraTpsService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+    public ImportAvPersonerFraTpsService(TpsfService tpsfService,
                                          DollyPersonCache dollyPersonCache, IdentService identService,
                                          BestillingProgressService bestillingProgressService,
                                          BestillingService bestillingService, MapperFacade mapperFacade,
@@ -48,13 +46,14 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                                          List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                          ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                          PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer, pdlDataConsumer);
 
         this.tpsfService = tpsfService;
         this.dollyPersonCache = dollyPersonCache;
         this.errorStatusDecoder = errorStatusDecoder;
         this.dollyForkJoinPool = dollyForkJoinPool;
+        this.identService = identService;
     }
 
     @Async
@@ -76,11 +75,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                                         .build());
 
                                 progress.setTpsImportStatus(SUCCESS);
-
-                                sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(","))
-                                        .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
-                                        .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress,
-                                        bestilling.getBeskrivelse());
+                                identService.saveIdentTilGruppe(person.getIdent(), bestilling.getGruppe(), TPSF, bestilling.getBeskrivelse());
 
                                 DollyPerson dollyPerson = dollyPersonCache.prepareTpsPersoner(person);
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
