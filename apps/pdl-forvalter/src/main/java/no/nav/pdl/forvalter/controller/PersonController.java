@@ -139,8 +139,8 @@ public class PersonController {
 
     @ResponseBody
     @DeleteMapping(value = "/utenom")
-    @Operation(description = "Slette personer som er opprettet utenom PDL-forfalteren")
-    public void deletePersonerUtenom(@Parameter(description = "Slett angitte testpersoner (uten) relasjoner")
+    @Operation(description = "Slette personer som er opprettet utenom PDL-forvalteren")
+    public void deletePersonerUtenom(@Parameter(description = "Slett angitte testpersoner")
                              @RequestParam Set<String> identer) {
 
         personService.deletePersonerUtenom(identer);
