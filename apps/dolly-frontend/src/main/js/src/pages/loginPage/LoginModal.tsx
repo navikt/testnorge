@@ -3,17 +3,24 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Alertstripe from 'nav-frontend-alertstriper'
 import NavHjelpeTekst from 'nav-frontend-hjelpetekst'
 
+const brukerveiledning = (
+	<a
+		href="https://navikt.github.io/testnorge/applications/dolly/brukerveiledning.html#feil-ved-innlogging"
+		target="_blank"
+	>
+		brukerveiledningen
+	</a>
+)
+
 const Advarsler = {
 	organisation_error:
-		'En feil oppsto og du ble logget ut. Sjekk om du er tilknyttet en organisasjon som har tilgang til Dolly. ' +
-		'Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller velg en annen innloggingsmetode. ' +
-		'Ta kontakt med Dolly hvis feilen vedvarer.',
-	unknown_error:
-		'Ukjent feil oppsto og du ble logget ut. Ta kontakt med Dolly hvis feilen vedvarer.',
-	miljoe_error:
-		'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. Ta kontakt med Dolly hvis feilen vedvarer.',
+		'En feil oppsto og du ble logget ut. Sjekk om du er tilknyttet en organisasjon som har tilgang ' +
+		'til Dolly. Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller ' +
+		'velg en annen innloggingsmetode. ',
+	unknown_error: 'Ukjent feil oppsto og du ble logget ut. ',
+	miljoe_error: 'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. ',
 	azure_error:
-		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. Ta kontakt med Dolly hvis feilen vedvarer.',
+		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. ',
 }
 
 const getAdvarsel: () => string = () => {
@@ -32,7 +39,7 @@ const getAdvarsel: () => string = () => {
 
 export default () => {
 	const advarsel = getAdvarsel()
-	const modalHeight = advarsel ? 400 + (advarsel.length / 88) * 20 : 350
+	const modalHeight = advarsel ? 400 + ((advarsel.length + 70) / 88) * 20 : 350
 
 	const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault()
@@ -48,7 +55,12 @@ export default () => {
 					opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre
 					testdataene i valgte testmiljøer.
 				</h3>
-				{advarsel && <Alertstripe type="advarsel">{advarsel}</Alertstripe>}
+				{advarsel && (
+					<Alertstripe type="advarsel">
+						{advarsel}
+						<>Sjekk {brukerveiledning} hvis feilen vedvarer eller ta kontakt med Dolly.</>
+					</Alertstripe>
+				)}
 				<NavButton
 					className="login-modal_button-nav"
 					type="hoved"
