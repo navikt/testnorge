@@ -1,3 +1,6 @@
-# Rename from vault name to AzureAd name
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+azure:
+  app:
+    client:
+      id: ${client_id}
+      secret: ${client_secret}
+
