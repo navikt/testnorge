@@ -175,7 +175,7 @@ Det vil fortsatt være mulig å sette andre brukeres testdatagrupper som “favo
 
 ![Tvungen utlogging](assets/logged_out_error.png)
 
-Dersom du har gjentatte problemer med å få logget inn (eller du blir konstant logget ut) kan det være det et problem med 
+Dersom du har gjentatte problemer med å få logget inn (eller du blir konstant logget ut) kan det være et problem med 
 cookies på nettsiden. Dette er noe vi prøver å finne en løsning for, men imens anbefaler vi våre brukere å prøve å 
 cleare cookies når dette skjer. Nedenfor finner du en demo-video for hvordan dette kan gjøres. 
 
