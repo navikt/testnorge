@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.Ordre;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -76,8 +78,8 @@ public class PdlTestdataConsumer {
         String body;
         try {
             var artifact = value.getBody();
-//            artifact.setMetadata(nonNull(artifact.getMetadata()) ? artifact.getMetadata() : new FolkeregistermetadataDTO());
-//            artifact.getMetadata().setGjeldende(nonNull(artifact.getMetadata().getGjeldende()) ? artifact.getMetadata().getGjeldende() : artifact.getGjeldende());
+            artifact.setMetadata(nonNull(artifact.getMetadata()) ? artifact.getMetadata() : new FolkeregistermetadataDTO());
+            artifact.getMetadata().setGjeldende(nonNull(artifact.getMetadata().getGjeldende()) ? artifact.getMetadata().getGjeldende() : artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(
