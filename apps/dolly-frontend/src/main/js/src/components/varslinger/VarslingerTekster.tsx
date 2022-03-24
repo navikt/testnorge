@@ -111,10 +111,16 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 						endringer i bestillingsskjemaet, som er gjort for å tilpasses persondata i PDL.
 					</p>
 					<p>
-						Denne endringen vil få noen sideeffekter. Om du bruker maler som har TPS-attributter vil
-						ikke disse fungere som de skal. Vi anbefaler derfor at du lager en ny mal dersom du får
-						varsel om at malen din er ugyldig. Det vil heller ikke være mulig å gjøre endringer på
-						opprettede personer som har TPS som master.
+						Blant annet er sammenknytning av relaterte personer endret, slik at du kan velge en
+						eksisterende person som f.eks. partner ved bestilling. Valg av identhistorikk er også
+						endret, nå vil du få opprettet en historikk ved valg av "Ny ident" som ligger under
+						"Identifikasjon".
+					</p>
+					<p>
+						Denne endringen vil også få noen sideeffekter. Om du bruker maler som har
+						TPS-attributter vil ikke disse fungere som de skal. Vi anbefaler derfor at du lager en
+						ny mal dersom du får varsel om at malen din er ugyldig. Det vil heller ikke være mulig å
+						gjøre endringer på opprettede personer som har TPS som master.
 					</p>
 					<p>Kontakt oss gjerne på {dollySlack} dersom du har noen spørsmål eller kommentarer.</p>
 				</>
