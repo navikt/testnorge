@@ -169,3 +169,17 @@ For at overgangen skal gå så smertefritt som mulig, vil følgende regler gjeld
 * Hver Z-bruker kan kun importeres av én personlig brukerkonto. Her er det førstemann til mølla-prinsippet som gjelder, dvs. at når du importerer en Z-bruker vil ingen andre kunne importere den samme.
 
 Det vil fortsatt være mulig å sette andre brukeres testdatagrupper som “favoritter”, slik at du har enkel tilgang til dem fra testdatagruppe-oversikten.
+
+
+## Feil ved innlogging
+
+![Tvungen utlogging](assets/logged_out_error.png)
+
+Dersom du har gjentatte problemer med å få logget inn (eller du blir konstant logget ut) kan det være et problem med 
+cookies på nettsiden. Dette er noe vi prøver å finne en løsning for, men imens anbefaler vi våre brukere å prøve å 
+cleare cookies når dette skjer. Nedenfor finner du en demo-video for hvordan dette kan gjøres. 
+
+<video src="https://user-images.githubusercontent.com/58416744/159910685-f4bcbe86-c856-459c-a220-b242c46a59cd.mov"
+       controls="controls" style="max-width: 730px;"/>
+
+

@@ -25,33 +25,33 @@ public class PersonDTO implements Serializable {
 
     private String ident;
 
-    private List<FoedselDTO> foedsel;
     private List<NavnDTO> navn;
-    private List<KjoennDTO> kjoenn;
+    private List<FoedselDTO> foedsel;
+    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
+    private List<SivilstandDTO> sivilstand;
+    private List<DoedsfallDTO> doedsfall;
     private List<BostedadresseDTO> bostedsadresse;
     private List<KontaktadresseDTO> kontaktadresse;
+    private List<KjoennDTO> kjoenn;
     private List<OppholdsadresseDTO> oppholdsadresse;
     private List<InnflyttingDTO> innflytting;
     private List<UtflyttingDTO> utflytting;
     private List<DeltBostedDTO> deltBosted;
-    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
     private List<ForeldreansvarDTO> foreldreansvar;
     private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
     private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
     private List<FalskIdentitetDTO> falskIdentitet;
     private List<AdressebeskyttelseDTO> adressebeskyttelse;
-    private List<DoedsfallDTO> doedsfall;
     private List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
     private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
     private List<StatsborgerskapDTO> statsborgerskap;
     private List<OppholdDTO> opphold;
-    private List<SivilstandDTO> sivilstand;
     private List<TelefonnummerDTO> telefonnummer;
     private List<FullmaktDTO> fullmakt;
     private List<VergemaalDTO> vergemaal;
     private List<SikkerhetstiltakDTO> sikkerhetstiltak;
-    private List<DoedfoedtBarnDTO> doedfoedtBarn;
     private List<IdentRequestDTO> nyident;
+    private List<DoedfoedtBarnDTO> doedfoedtBarn;
 
     public List<IdentRequestDTO> getNyident() {
         if (isNull(nyident)) {

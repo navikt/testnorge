@@ -13,4 +13,9 @@ export default {
 		const endpoint = `${getPdlUrl()}/identiteter?fragment=${fragment}`
 		return Request.get(endpoint)
 	},
+	getEksistens(identListe: [string]) {
+		if (!identListe) return
+		const endpoint = `${getPdlUrl()}/eksistens?identer=${identListe}`
+		return Request.get(endpoint)
+	},
 }

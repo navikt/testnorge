@@ -95,13 +95,6 @@ public class PdlForvalterClient implements ClientRegister {
         builder.append("&OK");
     }
 
-    private PersonDTO getPdldataHovedIdent(String ident) {
-
-        var personer = pdlDataConsumer.getPersoner(List.of(ident));
-        return personer.isEmpty() ? null :
-                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
-    }
-
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -139,6 +132,13 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    private PersonDTO getPdldataHovedIdent(String ident) {
+
+        var personer = pdlDataConsumer.getPersoner(List.of(ident));
+        return personer.isEmpty() ? null :
+                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
     }
 
     private void hentPersondetaljer(DollyPerson dollyPerson) {

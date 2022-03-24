@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
 import { FormikProps } from 'formik'
@@ -8,10 +8,27 @@ interface PdlPersonValues {
 	path: string
 	label: string
 	formikBag: FormikProps<{}>
+	kanSettePersondata?: boolean
+	erNyIdent?: boolean
+	isExpanded?: boolean
 }
 
-export const PdlPersonExpander = ({ path, label, formikBag }: PdlPersonValues) => {
-	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
+export const PdlPersonExpander = ({
+	path,
+	label,
+	formikBag,
+	kanSettePersondata = true,
+	erNyIdent = false,
+	isExpanded = false,
+}: PdlPersonValues) => {
+	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(isExpanded)
+	useEffect(() => {
+		if (isExpanded) {
+			setVisPersonValg()
+		} else {
+			setSkjulPersonValg()
+		}
+	}, [isExpanded])
 
 	return (
 		<div className="flexbox--full-width">
@@ -20,13 +37,13 @@ export const PdlPersonExpander = ({ path, label, formikBag }: PdlPersonValues) =
 					SKJUL VALG FOR {label}
 				</Button>
 			) : (
-				<Button onClick={setVisPersonValg} kind={'expand'}>
+				<Button onClick={setVisPersonValg} kind={'expand'} disabled={!kanSettePersondata}>
 					VIS VALG FOR {label}
 				</Button>
 			)}
 			{visPersonValg && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<PdlPersonForm path={path} formikBag={formikBag} />
+					<PdlPersonForm path={path} formikBag={formikBag} erNyIdent={erNyIdent} />
 				</div>
 			)}
 		</div>

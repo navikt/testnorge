@@ -1,10 +1,11 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { Sivilstand } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import { Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
+import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 type VisningProps = {
 	data: Sivilstand
@@ -39,11 +40,12 @@ export const PdlPartner = ({ data }: PdlPartnerProps) => {
 
 	return (
 		<div>
+			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
 			<ArrayHistorikk
 				component={Visning}
 				data={gjeldendePartnere}
 				historiskData={historiskePartnere}
-				header="Forhold"
+				header={''}
 			/>
 		</div>
 	)

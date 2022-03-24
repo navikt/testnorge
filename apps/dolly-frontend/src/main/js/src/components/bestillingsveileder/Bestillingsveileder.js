@@ -7,8 +7,15 @@ import './bestillingsveileder.less'
 
 export const BestillingsveilederContext = createContext()
 
-export const Bestillingsveileder = ({ error, brukertype, brukerId, location, sendBestilling }) => {
-	const options = BVOptions(location.state)
+export const Bestillingsveileder = ({
+	error,
+	gruppeId,
+	brukertype,
+	brukerId,
+	location,
+	sendBestilling,
+}) => {
+	const options = BVOptions(location.state, gruppeId)
 	const handleSubmit = (values, formikBag) => {
 		sendBestilling(values, options)
 	}

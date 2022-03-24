@@ -11,37 +11,57 @@ import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadress
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
+import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/Sivilstand'
+import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
+import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
+import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
+import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data) return null
 
 	const {
+		foedsel,
 		telefonnummer,
+		vergemaal,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
 		oppholdsadresse,
 		kontaktadresse,
 		adressebeskyttelse,
+		sivilstand,
 		fullmakt,
 		utenlandskIdentifikasjonsnummer,
 		falskIdentitet,
 		kontaktinformasjonForDoedsbo,
+		forelderBarnRelasjon,
+		doedfoedtBarn,
 	} = data.person
 
 	return (
 		<ErrorBoundary>
 			<div>
+				<Foedsel data={foedsel} />
 				<Telefonnummer data={telefonnummer} />
+				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
+				<SivilstandVisning data={sivilstand} relasjoner={data.relasjoner} />
+				<DoedfoedtBarnVisning data={doedfoedtBarn} />
+				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={data.relasjoner} />
 				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} />
+				<IdenthistorikkVisning relasjoner={data.relasjoner} />
+				<KontaktinformasjonForDoedsbo
+					data={kontaktinformasjonForDoedsbo}
+					relasjoner={data.relasjoner}
+				/>
 			</div>
 		</ErrorBoundary>
 	)

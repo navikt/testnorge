@@ -38,7 +38,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/fjerne_sending_til_tpsf' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/alle-pdl-attributter-i-dolly' }}
     with:
       resource: 'apps/dolly-frontend/config.dev.yml'
       app-name: 'testnav-dolly-frontend'

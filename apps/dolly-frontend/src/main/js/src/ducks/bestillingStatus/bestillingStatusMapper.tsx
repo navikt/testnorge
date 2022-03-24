@@ -36,7 +36,8 @@ type Status = {
 	statuser: [
 		{
 			melding: string
-			detaljert: [
+			identer?: [string]
+			detaljert?: [
 				{
 					miljo: string
 					identer: [string]
@@ -61,18 +62,25 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [Status]) => {
 		const tpsf = statusListe.find((f) => f.id === 'TPSF')
 		const importFraTps = statusListe.find((f) => f.id === 'TPSIMPORT')
 		const importFraPdl = statusListe.find((f) => f.id === 'PDLIMPORT')
+		const pdlf = statusListe.find((f) => f.id === 'PDL_FORVALTER')
 
 		const addOpprettedeIdenter = (system: Status) => {
 			system.statuser.forEach((stat) => {
-				stat.detaljert.forEach((miljo) => {
-					identerOpprettet = identerOpprettet.concat(miljo.identer)
-				})
+				if (system.id === 'PDL_FORVALTER') {
+					const gyldigeIdenter = stat.identer.filter((a) => a !== '?')
+					identerOpprettet = identerOpprettet.concat(gyldigeIdenter)
+				} else {
+					stat.detaljert?.forEach((miljo) => {
+						identerOpprettet = identerOpprettet.concat(miljo.identer)
+					})
+				}
 			})
 		}
 
 		if (tpsf) addOpprettedeIdenter(tpsf)
 		if (importFraTps) addOpprettedeIdenter(importFraTps)
 		if (importFraPdl) addOpprettedeIdenter(importFraPdl)
+		if (pdlf) addOpprettedeIdenter(pdlf)
 	}
 
 	// Kun unike identer

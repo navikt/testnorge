@@ -9,7 +9,7 @@ const getImportFra = (opts) => {
 	if (opts.is.leggTil) {
 		if (opts.identMaster === 'PDL') {
 			return 'Testnorge'
-		} else if (opts.personFoerLeggTil.tpsf.importFra) {
+		} else if (opts.personFoerLeggTil?.tpsf?.importFra) {
 			return opts.personFoerLeggTil.tpsf.importFra
 		}
 	}
