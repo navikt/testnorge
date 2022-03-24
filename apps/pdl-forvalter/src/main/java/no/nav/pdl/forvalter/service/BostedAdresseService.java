@@ -100,9 +100,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 .findFirst().orElse(new UtflyttingDTO()).isVelkjentLand()) {
 
             person.setBostedsadresse(person.getBostedsadresse().stream()
-                    .filter(adresse -> adresse.getId().equals(person.getBostedsadresse().stream()
-                            .findFirst().orElse(new BostedadresseDTO()).getId()))
+                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
                     .toList());
+
             return;
         }
 
