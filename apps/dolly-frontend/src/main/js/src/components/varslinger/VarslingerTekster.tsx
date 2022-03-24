@@ -105,7 +105,7 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 					<h1>PDL som master for bestillinger</h1>
 
 					<p>
-						Vi har siden sist gjort en større endring på bestilling av testpersoner i Dolly: Vi har
+						I dag er det gjort en større endring på bestilling av testpersoner i Dolly: Vi har
 						endret master for bestillinger fra TPS til PDL. Alle testpersoner som bestilles vil fra
 						nå derfor opprettes i PDL istedenfor TPS. Den observante Dolly-bruker vil også se en del
 						endringer i bestillingsskjemaet, som er gjort for å tilpasses persondata i PDL.

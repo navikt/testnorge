@@ -96,9 +96,6 @@ export const PersonVisning = ({
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && ident.master === 'TPSF' && (
-					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
-				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (
 					<SlettButton action={slettPerson} loading={loading.slettPerson}>
