@@ -14,9 +14,8 @@ const brukerveiledning = (
 
 const Advarsler = {
 	organisation_error:
-		'En feil oppsto og du ble logget ut. Sjekk om du er tilknyttet en organisasjon som har tilgang ' +
-		'til Dolly. Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller ' +
-		'velg en annen innloggingsmetode. ',
+		'En feil oppsto og du ble logget ut. Sjekk om du er tilknyttet en organisasjon som har tilgang til Dolly. ' +
+		'Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller velg en annen innloggingsmetode. ',
 	unknown_error: 'Ukjent feil oppsto og du ble logget ut. ',
 	miljoe_error: 'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. ',
 	azure_error:
