@@ -178,3 +178,8 @@ Det vil fortsatt være mulig å sette andre brukeres testdatagrupper som “favo
 Dersom du har gjentatte problemer med å få logget inn (eller du blir konstant logget ut) kan det være det et problem med 
 cookies på nettsiden. Dette er noe vi prøver å finne en løsning for, men imens anbefaler vi våre brukere å prøve å 
 cleare cookies når dette skjer. Nedenfor finner du en demo-video for hvordan dette kan gjøres. 
+
+<video src="https://user-images.githubusercontent.com/58416744/159910685-f4bcbe86-c856-459c-a220-b242c46a59cd.mov"
+       controls="controls" style="max-width: 730px;"/>
+
+
