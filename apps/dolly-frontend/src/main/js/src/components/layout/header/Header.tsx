@@ -20,7 +20,6 @@ type Props = {
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
 	const location = useLocation()
-
 	const logout = () => (window.location.href = '/logout')
 
 	return (
