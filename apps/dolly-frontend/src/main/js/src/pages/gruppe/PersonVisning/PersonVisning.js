@@ -22,7 +22,6 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
@@ -67,15 +66,6 @@ export const PersonVisning = ({
 				setPdlLoading(false)
 			})
 	}, [])
-
-	const personInfo = data.tpsf
-		? data.tpsf
-		: {
-				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
-				ident: data.pdlforvalter?.person?.ident,
-				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
-				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
-		  }
 
 	return (
 		<div className="person-visning">
