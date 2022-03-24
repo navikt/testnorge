@@ -7,6 +7,7 @@ const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
+const udiBase = `${uri}/udistub`
 const bestillingBase = `${uri}/bestilling`
 const openamBase = `${uri}/openam`
 const personoppslagBase = `${uri}/pdlperson`
@@ -172,6 +173,10 @@ export default class DollyEndpoints {
 
 	static gruppeExcelFil(gruppeId) {
 		return `${uri}/excel/gruppe/${gruppeId}`
+	}
+
+	static udiPerson(ident) {
+		return `${udiBase}/${ident}`
 	}
 
 	//TESTPERSON-CONTROLLER

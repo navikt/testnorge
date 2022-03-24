@@ -33,7 +33,7 @@ const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
 		return 'DNR'
 	} else if (parseInt(ident.charAt(2)) % 4 >= 2) {
-		return 'BOST'
+		return 'NPID'
 	} else {
 		return 'FNR'
 	}
@@ -80,18 +80,21 @@ export const PersonVisning = ({
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && ident.master !== 'PDLF' && (
+				{!iLaastGruppe && (
 					<Button
 						onClick={() =>
 							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
 						}
 						kind="add-circle"
+						disabled={ident.master === 'TPSF'}
+						title={
+							ident.master === 'TPSF'
+								? 'Det er dessverre ikke lenger mulig å gjøre endringer på denne testpersonen. Master for bestillinger er endret til PDL, men denne personen er opprettet med TPS som master.'
+								: null
+						}
 					>
 						LEGG TIL/ENDRE
 					</Button>
-				)}
-				{!iLaastGruppe && ident.master === 'TPSF' && (
-					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (

@@ -114,7 +114,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 oppdaterProgress(bestilling, progress);
                             }
                         });
-
                 oppdaterBestillingFerdig(bestilling);
             });
 

@@ -15,7 +15,6 @@ import {
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
-	UdiApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -81,7 +80,7 @@ export const actions = createActions(
 			}),
 		],
 		getUdi: [
-			UdiApi.getPerson,
+			DollyApi.getUdiPerson,
 			(ident) => ({
 				ident,
 			}),
@@ -422,7 +421,6 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 	if (!tpsfIdent) return null
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
-
 	return {
 		ident,
 		identNr: tpsfIdent.ident,
@@ -439,26 +437,38 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 	if (!pdlIdent) return null
+
+	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
+		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
+		: ''
+
+	const pdlAlder = (foedselsdato) => {
+		if (!foedselsdato) return null
+		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
+		return Math.abs(diff.getUTCFullYear() - 1970)
+	}
+
 	return {
 		ident,
 		identNr: pdlIdent.ident,
-		bestillingId: ident.bestillingId,
+		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
 		kilde: 'PDL',
-		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlIdent.navn?.[0]?.etternavn}`,
+		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.navn?.[0]?.etternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: Formatters.formatAlder(
-			new Date().getFullYear() - pdlIdent.foedsel?.[0]?.foedselsaar,
+			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			pdlIdent?.doedsfall?.[0]?.doedsdato
 		),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
 	}
 }
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	if (!pdlData) return null
-
 	const person = pdlData.person
+	if (!person) return null
+
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'

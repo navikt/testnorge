@@ -12,21 +12,15 @@ export const initialPdlPerson = {
 	gradering: null as string,
 }
 
-export const initialBostedsadresse = {
-	adressetype: null as string,
-	angittFlyttedato: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
-	kilde: 'Dolly',
-	master: 'FREG',
-}
-
-export const initialOppholdsadresse = {
-	adressetype: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
-	kilde: 'Dolly',
-	master: 'FREG',
+export const initialPdlBiPerson = {
+	foedselsdato: null as string,
+	kjoenn: null as string,
+	navn: {
+		fornavn: null as string,
+		mellomnavn: null as string,
+		etternavn: null as string,
+	},
+	statsborgerskap: null as string,
 }
 
 export const initialKontaktadresse = {
@@ -35,6 +29,15 @@ export const initialKontaktadresse = {
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
+}
+
+export const initialOppholdsadresse = {
+	...initialKontaktadresse,
+}
+
+export const initialBostedsadresse = {
+	...initialKontaktadresse,
+	angittFlyttedato: null as string,
 }
 
 export const initialAdressebeskyttelse = {
@@ -108,7 +111,7 @@ export const initialSikkerhetstiltak = {
 		enhet: '',
 	},
 	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
@@ -117,13 +120,13 @@ export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
 	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
+	gyldigTilOgMed: null as string,
 }
 
 export const initialStatsborgerskap = {
-	landkode: null,
-	gyldigFraOgMed: null,
-	gyldigTilOgMed: null,
+	landkode: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -141,6 +144,16 @@ export const initialDoedsfall = {
 	master: 'PDL',
 }
 
+export const initialFoedsel = {
+	fodekommune: null as string,
+	foedeland: null as string,
+	foedested: null as string,
+	foedselsaar: null as number,
+	foedselsdato: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as string,
 	organisasjonsnavn: null as string,
@@ -152,6 +165,7 @@ export const initialOrganisasjon = {
 }
 
 export const initialPerson = {
+	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
 	navn: {
 		fornavn: null as string,
@@ -192,4 +206,107 @@ export const initialUtvandring = {
 	utflyttingsdato: new Date(),
 	master: 'FREG',
 	kilde: 'Dolly',
+}
+
+export const initialSivilstand = {
+	type: null as string,
+	sivilstandsdato: null as string,
+	relatertVedSivilstand: null as string,
+	bekreftelsesdato: null as string,
+	borIkkeSammen: false,
+	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'PDL',
+}
+
+export const initialKjoenn = {
+	kjoenn: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialNavn = {
+	fornavn: null as string,
+	mellomnavn: null as string,
+	etternavn: null as string,
+	hasMellomnavn: false,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialVergemaal = {
+	vergemaalEmbete: null as string,
+	sakType: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	nyVergeIdent: initialPdlPerson,
+	vergeIdent: null as string,
+	mandatType: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialForelder = {
+	minRolleForPerson: 'BARN',
+	relatertPersonsRolle: 'FORELDER',
+	relatertPerson: null as string,
+	borIkkeSammen: false,
+	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialBarn = {
+	...initialForelder,
+	minRolleForPerson: 'FORELDER',
+	relatertPersonsRolle: 'BARN',
+	partnerErIkkeForelder: false,
+}
+
+export const initialDoedfoedtBarn = {
+	dato: new Date(),
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialForeldreansvar = {
+	typeAnsvarlig: null as string,
+	ansvar: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialNyIdent = {
+	eksisterendeIdent: null as string,
+	identtype: null as string,
+	kjoenn: null as string,
+	foedtEtter: null as string,
+	foedtFoer: null as string,
+	alder: '',
+	syntetisk: false,
+	nyttNavn: {
+		hasMellomnavn: false,
+	},
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialFullmakt = {
+	omraader: [],
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	motpartsPersonident: null as string,
+	nyFullmektig: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'PDL',
+}
+
+export const initialOpphold = {
+	oppholdFra: null as Date,
+	oppholdTil: null as Date,
+	type: 'OPPLYSNING_MANGLER',
+	kilde: 'Dolly',
+	master: 'FREG',
 }

@@ -1,7 +1,5 @@
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import _dropRight from 'lodash/dropRight'
-import _takeRight from 'lodash/takeRight'
 import _isEmpty from 'lodash/isEmpty'
 import Formatters from '~/utils/DataFormatter'
 import {
@@ -11,6 +9,7 @@ import {
 	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
+import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -21,6 +20,12 @@ const obj = (label, value, apiKodeverkId) => ({
 	label,
 	value,
 	...(apiKodeverkId && { apiKodeverkId }),
+})
+
+const expandable = (expandableHeader, vis, objects) => ({
+	expandableHeader,
+	vis,
+	objects,
 })
 
 const _getTpsfBestillingData = (data) => {
@@ -123,97 +128,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(identhistorikkData)
 		}
 
-		if (relasjoner) {
-			const partnere = relasjoner.partner || relasjoner.partnere
-			const barn = relasjoner.barn
-			const foreldre = relasjoner.foreldre
-
-			if (partnere) {
-				const partner = {
-					header: 'Partner',
-					itemRows: [],
-				}
-
-				partnere.forEach((item, j) => {
-					const sivilstander = _get(item, 'sivilstander', [])
-					const sisteSivilstand = _takeRight(sivilstander)
-
-					const tidligereSivilstander = _dropRight(sivilstander)
-						.reverse()
-						.map((s) => s.sivilstand)
-
-					partner.itemRows.push([
-						{
-							label: '',
-							value: `#${j + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('Bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj(
-							'Sivilstand',
-							sisteSivilstand.length > 0 && sisteSivilstand[0].sivilstand,
-							PersoninformasjonKodeverk.Sivilstander
-						),
-						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander)),
-					])
-				})
-
-				data.push(partner)
-			}
-
-			if (barn && barn.length > 0) {
-				const barn = {
-					header: 'Barn',
-					itemRows: [],
-				}
-
-				relasjoner.barn.forEach((item, i) => {
-					barn.itemRows.push([
-						{
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('Forelder 2', item.partnerIdent),
-						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
-						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
-						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
-					])
-				})
-
-				data.push(barn)
-			}
-			if (foreldre && foreldre.length > 0) {
-				const foreldreRows = {
-					header: 'Foreldre',
-					itemRows: [],
-				}
-
-				relasjoner.foreldre.forEach((item, i) => {
-					foreldreRows.itemRows.push([
-						{
-							label: '',
-							value: `#${i + 1}`,
-							width: 'x-small',
-						},
-						..._getTpsfBestillingData(item),
-						obj('Fnr/dnr/bost', item.ident),
-						obj('ForeldreType', Formatters.showLabel('foreldreType', item.foreldreType)),
-						obj('Foreldre bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
-						obj('Diskresjonskoder', item.spesreg !== 'UFB' && item.spesreg, 'Diskresjonskoder'),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
-					])
-				})
-
-				data.push(foreldreRows)
-			}
-		}
-
 		if (vergemaal) {
 			const vergemaalKriterier = {
 				header: 'Vergemål',
@@ -231,9 +145,26 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	const pdldataKriterier = bestillingData.pdldata?.person
+	const pdlNyPersonKriterier = bestillingData.pdldata?.opprettNyPerson
+
+	if (pdlNyPersonKriterier) {
+		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
+		const nyPersonData = {
+			header: 'Persondetaljer',
+			items: [
+				obj('Alder', alder),
+				obj('Født etter', Formatters.formatDate(foedtEtter)),
+				obj('Født før', Formatters.formatDate(foedtFoer)),
+			],
+		}
+		if (alder || foedtEtter || foedtFoer) data.push(nyPersonData)
+	}
 
 	if (pdldataKriterier) {
 		const {
+			foedsel,
+			kjoenn,
+			navn,
 			telefonnummer,
 			fullmakt,
 			bostedsadresse,
@@ -249,7 +180,59 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			statsborgerskap,
 			sikkerhetstiltak,
 			tilrettelagtKommunikasjon,
+			sivilstand,
+			vergemaal,
+			forelderBarnRelasjon,
+			doedfoedtBarn,
+			foreldreansvar,
+			nyident,
 		} = pdldataKriterier
+
+		const personRelatertTil = (personData, path) => {
+			if (!personData || !_get(personData, path)) return null
+			const {
+				identtype,
+				kjoenn,
+				foedtEtter,
+				foedtFoer,
+				alder,
+				statsborgerskapLandkode,
+				gradering,
+				syntetisk,
+				nyttNavn,
+			} = _get(personData, path)
+
+			return [
+				expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path)), [
+					obj('Identtype', identtype),
+					obj('Kjønn', kjoenn),
+					obj('Født etter', Formatters.formatDate(foedtEtter)),
+					obj('Født før', Formatters.formatDate(foedtFoer)),
+					obj('Alder', alder),
+					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
+					obj('Gradering', Formatters.showLabel('gradering', gradering)),
+					obj('Er syntetisk', syntetisk && 'JA'),
+					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
+				]),
+			]
+		}
+
+		if (foedsel) {
+			const foedselData = {
+				header: 'Fødsel',
+				itemRows: foedsel.map((item, idx) => {
+					return [
+						{ numberHeader: `Fødsel ${idx + 1}` },
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
+						obj('Fødselsår', item.foedselsaar),
+						obj('Fødested', item.foedested),
+						obj('Fødekommune', item.fodekommune, AdresseKodeverk.Kommunenummer),
+						obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
+					]
+				}),
+			}
+			data.push(foedselData)
+		}
 
 		if (innflytting) {
 			const innflyttingData = {
@@ -281,6 +264,35 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(utflyttingData)
 		}
 
+		if (kjoenn) {
+			const kjoennData = {
+				header: 'Kjønn',
+				itemRows: kjoenn.map((item, idx) => {
+					return [
+						{ numberHeader: `Kjønn ${idx + 1}` },
+						obj('Kjønn', Formatters.showLabel('kjoenn', item.kjoenn)),
+					]
+				}),
+			}
+			data.push(kjoennData)
+		}
+
+		if (navn) {
+			const navnData = {
+				header: 'Navn',
+				itemRows: navn.map((item, idx) => {
+					return [
+						{ numberHeader: `Navn ${idx + 1}` },
+						obj('Fornavn', item.fornavn),
+						obj('Mellomnavn', item.mellomnavn),
+						obj('Etternavn', item.etternavn),
+						obj('Har tilfeldig mellomnavn', Formatters.oversettBoolean(item.hasMellomnavn)),
+					]
+				}),
+			}
+			data.push(navnData)
+		}
+
 		if (telefonnummer) {
 			const telefonnummerData = {
 				header: 'Telefonnummer',
@@ -295,6 +307,25 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(telefonnummerData)
 		}
 
+		if (vergemaal) {
+			const vergemaalData = {
+				header: 'Vergemål',
+				itemRows: vergemaal.map((item, idx) => {
+					return [
+						{ numberHeader: `Vergemål ${idx + 1}` },
+						obj('Fylkesmannsembete', item.vergemaalEmbete, VergemaalKodeverk.Fylkesmannsembeter),
+						obj('Sakstype', item.sakType, VergemaalKodeverk.Sakstype),
+						obj('Mandattype', item.mandatType, VergemaalKodeverk.Mandattype),
+						obj('Gyldig f.o.m.', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig t.o.m.', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Verge', item.vergeIdent),
+						...personRelatertTil(item, 'nyVergeIdent'),
+					]
+				}),
+			}
+			data.push(vergemaalData)
+		}
+
 		if (fullmakt) {
 			const fullmaktData = {
 				header: 'Fullmakt',
@@ -304,14 +335,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Fullmektig', item.motpartsPersonident),
+						...personRelatertTil(item, 'nyFullmektig'),
 					]
 				}),
 			}
 			data.push(fullmaktData)
-		}
-
-		const isEmpty = (adresseData) => {
-			return adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
 		}
 
 		const vegadresse = (adresseData) => {
@@ -578,6 +607,114 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(sikkerhetstiltakData)
 		}
 
+		if (sivilstand) {
+			const sivilstandData = {
+				header: 'Sivilstand (partner)',
+				itemRows: sivilstand.map((item, idx) => {
+					return [
+						{ numberHeader: `Sivilstand ${idx + 1}` },
+						obj('Type sivilstand', Formatters.showLabel('sivilstandType', item.type)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.sivilstandsdato)),
+						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),
+						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+						obj('Person relatert til', item.relatertVedSivilstand),
+						...personRelatertTil(item, 'nyRelatertPerson'),
+					]
+				}),
+			}
+			data.push(sivilstandData)
+		}
+
+		if (forelderBarnRelasjon) {
+			const foreldreBarnData = {
+				header: 'Barn/foreldre',
+				itemRows: forelderBarnRelasjon.map((item, idx) => {
+					return [
+						{ numberHeader: `Relasjon ${idx + 1}` },
+						obj('Relasjon', Formatters.showLabel('pdlRelasjonTyper', item.relatertPersonsRolle)),
+						obj(
+							'Rolle for barn',
+							item.relatertPersonsRolle === 'BARN' &&
+								Formatters.showLabel('pdlRelasjonTyper', item.minRolleForPerson)
+						),
+						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
+						obj('Person relatert til', item.relatertPerson),
+						...personRelatertTil(item, 'nyRelatertPerson'),
+					]
+				}),
+			}
+			data.push(foreldreBarnData)
+		}
+
+		if (foreldreansvar) {
+			const foreldreansvarData = {
+				header: 'Foreldreansvar',
+				itemRows: foreldreansvar.map((item, idx) => {
+					return [
+						{ numberHeader: `Foreldreansvar ${idx + 1}` },
+						obj('Hvem har ansvaret', Formatters.showLabel('foreldreansvar', item.ansvar)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj(
+							'Type ansvarlig',
+							(item.ansvarlig && 'Eksisterende person') ||
+								(item.nyAnsvarlig && 'Ny person') ||
+								(item.ansvarligUtenIdentifikator && 'Person uten identifikator')
+						),
+						obj('Ansvarlig', Formatters.showLabel('foreldreansvar', item.ansvarlig)),
+						obj('Identtype', item.nyAnsvarlig?.identtype),
+						obj('Kjønn', item.nyAnsvarlig?.kjoenn),
+						obj('Født etter', Formatters.formatDate(item.nyAnsvarlig?.foedtEtter)),
+						obj('Født før', Formatters.formatDate(item.nyAnsvarlig?.foedtFoer)),
+						obj('Alder', item.nyAnsvarlig?.alder),
+						obj(
+							'Statsborgerskap',
+							item.nyAnsvarlig?.statsborgerskapLandkode,
+							AdresseKodeverk.StatsborgerskapLand
+						),
+						obj('Gradering', Formatters.showLabel('gradering', item.nyAnsvarlig?.gradering)),
+						obj('Syntetisk', item.nyAnsvarlig?.syntetisk && 'JA'),
+						obj('Har mellomnavn', item.nyAnsvarlig?.nyttNavn?.hasMellomnavn && 'JA'),
+						obj('Kjønn', item.ansvarligUtenIdentifikator?.kjoenn),
+						obj(
+							'Fødselsdato',
+							Formatters.formatDate(item.ansvarligUtenIdentifikator?.foedselsdato)
+						),
+						obj(
+							'Statsborgerskap',
+							item.ansvarligUtenIdentifikator?.statsborgerskap,
+							AdresseKodeverk.StatsborgerskapLand
+						),
+						obj('Fornavn', item.ansvarligUtenIdentifikator?.navn?.fornavn),
+						obj('Mellomnavn', item.ansvarligUtenIdentifikator?.navn?.mellomnavn),
+						obj('Etternavn', item.ansvarligUtenIdentifikator?.navn?.etternavn),
+					]
+				}),
+			}
+			data.push(foreldreansvarData)
+		}
+
+		if (doedfoedtBarn) {
+			const doedfoedtBarnData = {
+				header: 'Dødfødt barn',
+				itemRows: [],
+			}
+
+			doedfoedtBarn.forEach((item, i) => {
+				doedfoedtBarnData.itemRows.push([
+					{
+						label: '',
+						value: `#${i + 1}`,
+						width: 'x-small',
+					},
+					obj('Dødsdato', Formatters.formatDate(item.dato)),
+				])
+			})
+
+			data.push(doedfoedtBarnData)
+		}
+
 		const sjekkRettIdent = (item) => {
 			if (_has(item, 'rettIdentitetErUkjent')) {
 				return 'Ukjent'
@@ -625,6 +762,28 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(utenlandskIdentData)
+		}
+
+		if (nyident) {
+			const nyidentData = {
+				header: 'Ny identitet',
+				itemRows: nyident.map((item, idx) => {
+					return [
+						{
+							numberHeader: `Ny identitet ${idx + 1}`,
+						},
+						obj('Eksisterende ident', item.eksisterendeIdent),
+						obj('Identtype', item.identtype),
+						obj('Kjønn', item.kjoenn),
+						obj('Født etter', Formatters.formatDate(item.foedtEtter)),
+						obj('Født før', Formatters.formatDate(item.foedtFoer)),
+						obj('Alder', item.alder),
+						obj('Er syntetisk', item.syntetisk && 'JA'),
+						obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
+					]
+				}),
+			}
+			data.push(nyidentData)
 		}
 
 		if (kontaktinformasjonForDoedsbo) {
@@ -697,6 +856,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							(adresse?.postnummer || adresse?.poststedsnavn) &&
 								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 						),
+						{ ...personRelatertTil(item, 'personSomKontakt.nyKontaktperson') },
 					]
 				}),
 			}
@@ -939,7 +1099,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 					obj('År/måned', inntektsinfo.sisteAarMaaned),
-					obj('Rapporteringsdato', inntektsinfo.rapporteringsdato),
+					obj('Rapporteringstidspunkt', inntektsinfo.rapporteringsdato),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
@@ -1389,7 +1549,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 			obj('Arbeidsgiver (orgnr)', inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer),
 			obj(
-				'Arbeidsgiver (fnr/dnr/bost)',
+				'Arbeidsgiver (fnr/dnr/npid)',
 				inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
 			),
 			obj('Arbeidsforhold-ID', inntekt.arbeidsforhold.arbeidsforholdId),

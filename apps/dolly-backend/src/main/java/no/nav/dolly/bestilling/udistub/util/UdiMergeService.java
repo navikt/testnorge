@@ -34,7 +34,7 @@ public class UdiMergeService {
     private final MapperFacade mapperFacade;
 
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
-            boolean isLeggTil, DollyPerson dollyPerson) {
+                                  boolean isLeggTil, DollyPerson dollyPerson) {
 
         UdiPerson udiPerson = mapperFacade.map(nyUdiPerson, UdiPerson.class);
 
@@ -49,10 +49,9 @@ public class UdiMergeService {
 
         if (dollyPerson.isPdlMaster() && !dollyPerson.getIdenthistorikk().isEmpty()) {
             return dollyPerson.getIdenthistorikk().stream()
-                   .map(historikk -> UdiAlias.builder().fnr(historikk).build())
+                    .map(historikk -> UdiAlias.builder().fnr(historikk).build())
                     .collect(Collectors.toList());
-        }
-        else if (dollyPerson.isTpsfMaster() && nonNull(request)) {
+        } else if (dollyPerson.isTpsfMaster() && nonNull(request)) {
             request.setEnvironments(environments);
             var response = tpsfService.createAliases(request);
             return nonNull(response) ?
