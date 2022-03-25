@@ -120,7 +120,7 @@ Videoen nedenfor viser hvordan man kan opprett en person med ønsket verdier.
 controls="controls" style="max-width: 730px;" />
 
 #### Legg til/endre person
-Videoen nedenfor viser man kan legge til ekstra egenskaper på en person. 
+Videoen nedenfor viser hvordan man kan legge til ekstra egenskaper på en person. 
 
 <video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov"
 controls="controls" style="max-width: 730px;" />
