@@ -101,6 +101,32 @@ Velg miljø og trykk opprett
 
 Testdatagruppen har fått nye testpersoner og du kan jobbe med disse i relevante fagsystemer.  Trykk på pil ned til høyre på raden for å få opp detaljinformasjon om hver enkelt testperson.
 
+### Legg til / endre person
+Noen ganger er det ønskelig å legge til ekstra egenskaper på en person man allerede har opprettet. Dette kan gjøres
+ved å først åpne opp detaljinformasjonen for personen du ønsker å legge til på. Deretter trykker du på "LEGG TIL/ENDRE"-knappen
+og velg så hvilke ekstra egenskaper personen skal ha. 
+
+### Demo - opprette person
+
+#### Opprette personer med tilfeldige verdier
+Videoen nedenfor viser hvordan man kan opprette personer med tilfeldige verdier.
+
+<video src=""
+controls="controls" style="max-width: 730px;" />
+
+#### Opprette person med ønsket verdier
+Videoen nedenfor viser hvordan man kan opprett en person med ønsket verdier.
+
+<video src=""
+controls="controls" style="max-width: 730px;" />
+
+#### Legg til/endre person
+Videoen nedenfor viser man kan legge til ekstra egenskaper på en person. 
+
+<video src=""
+controls="controls" style="max-width: 730px;" />
+
+
 ---
 
 ## Opprette og bruke maler
@@ -116,6 +142,11 @@ For å bruke en mal, velger du dette i første steg når du oppretter personer. 
 ![Bruk mal](assets/bruk_mal.png)
 
 Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som utgangspunkt, men du har også muligheten til å endre på disse dersom du ønsker det.
+
+### Demo
+Nedenfor finner du en demo-video som viser hvordan man kan opprette og ta i bruk maler. 
+
+<video src="" controls="controls" style="max-width: 730px;" />
 
 ---
 
