@@ -11,6 +11,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
@@ -46,6 +47,10 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
     @Override
     public Originator call() {
 
+        if (isNull(bestillingRequest.getTpsf()) && nonNull(bestillingRequest.getPdldata()) &&
+                isNull((bestillingRequest.getPdldata().getOpprettNyPerson()))) {
+            bestillingRequest.getPdldata().setOpprettNyPerson(new PdlPersondata.PdlPerson());
+        }
         if (nonNull(testident) && testident.isPdlf() ||
                 nonNull(bestillingRequest.getPdldata()) && nonNull((bestillingRequest.getPdldata().getOpprettNyPerson()))) {
 

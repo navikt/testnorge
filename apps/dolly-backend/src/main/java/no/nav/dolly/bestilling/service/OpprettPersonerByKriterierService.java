@@ -11,7 +11,6 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -28,7 +27,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
@@ -84,10 +82,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            if (isNull(bestKriterier.getTpsf()) && nonNull(bestKriterier.getPdldata()) &&
-                    isNull((bestKriterier.getPdldata().getOpprettNyPerson()))) {
-                bestKriterier.getPdldata().setOpprettNyPerson(new PdlPersondata.PdlPerson());
-            }
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
             dollyForkJoinPool.submit(() -> {
