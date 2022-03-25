@@ -9,7 +9,6 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -64,10 +62,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
-            if (isNull(bestKriterier.getTpsf()) && nonNull(bestKriterier.getPdldata()) &&
-                    isNull((bestKriterier.getPdldata().getOpprettNyPerson()))) {
-                bestKriterier.getPdldata().setOpprettNyPerson(new PdlPersondata.PdlPerson());
-            }
 
             var tilgjengeligeIdenter = new AvailCheckCommand(bestilling.getOpprettFraIdenter(),
                     bestKriterier.getPdldata(), tpsfService, pdlDataConsumer).call();
