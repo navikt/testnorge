@@ -39,7 +39,7 @@ export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 					title={pensjonTitle}
 				/>
 			</AttributtKategori>
-			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
+			<AttributtKategori title="A-ordningen (Inntektsstub)">
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)">
