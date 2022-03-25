@@ -13,7 +13,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		.fetch(url, {
 			method: config.method,
 			redirect: config.redirect,
-			credentials: 'include',
+			credentials: 'same-origin',
 			headers: config.headers,
 			body: JSON.stringify(body),
 		})
