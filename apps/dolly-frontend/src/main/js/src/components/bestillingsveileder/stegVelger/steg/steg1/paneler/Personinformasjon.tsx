@@ -3,7 +3,6 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import {
 	initialDoedsfall,
