@@ -106,8 +106,7 @@ Noen ganger er det ønskelig å legge til ekstra egenskaper på en person man al
 ved å først åpne opp detaljinformasjonen for personen du ønsker å legge til på. Deretter trykker du på "LEGG TIL/ENDRE"-knappen
 og velg så hvilke ekstra egenskaper personen skal ha. 
 
-### Demo - opprette person
-
+### Demo
 #### Opprette personer med tilfeldige verdier
 Videoen nedenfor viser hvordan man kan opprette personer med tilfeldige verdier.
 
