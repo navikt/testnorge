@@ -8,6 +8,8 @@ metadata:
 spec:
   port: 8080
   webproxy: true
+  tokenx:
+    enabled: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
