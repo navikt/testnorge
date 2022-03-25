@@ -26,7 +26,7 @@ const getColumnHeader = (cell, data) => {
 // Fallback til row index
 const getRowKey = (row, columns) => {
 	const hasUnique = columns.find((c) => c.unique)
-	return hasUnique && _get(row, `${hasUnique.dataField}`).toString()
+	return hasUnique && _get(row, `${hasUnique.dataField}`)?.toString()
 }
 
 const getIconType = (iconItem, row) => {

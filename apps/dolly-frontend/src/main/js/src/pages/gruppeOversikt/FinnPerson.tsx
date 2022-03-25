@@ -11,14 +11,10 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 type FinnPersonProps = {
 	naviger: Function
-}
-
-type Option = {
-	value: string
-	label: string
 }
 
 type Person = {

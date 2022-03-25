@@ -18,7 +18,6 @@ import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials
 import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPersonInfo'
 import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/PdlNasjonalitet'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
@@ -32,9 +31,11 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 	if (!data) return null
 
 	const harPdlAdresse =
-		_has(pdlData, 'bostedsadresse') ||
-		_has(pdlData, 'oppholdsadresse') ||
-		_has(pdlData, 'kontaktadresse')
+		_has(pdlData, 'person.bostedsadresse') ||
+		_has(pdlData, 'person.oppholdsadresse') ||
+		_has(pdlData, 'person.kontaktadresse')
+
+	const harPdlFullmakt = pdlData && _has(pdlData, 'person.fullmakt')
 
 	const hasTpsfData = data.ident
 
@@ -52,11 +53,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 					<PdlNasjonalitet data={pdlData} />
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
-				{hasTpsfData ? (
-					<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
-				) : (
-					<PdlFullmakt data={pdlData.fullmakt} />
-				)}
+				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}
 				{!harPdlAdresse && (
 					<>
 						<Boadresse boadresse={data.boadresse} />
@@ -64,8 +61,8 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 						<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 					</>
 				)}
-				<Telefonnummer data={hasTpsfData ? data.telefonnumre : pdlData.telefonnummer} />
-				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData.sikkerhetstiltak} />}
+				<Telefonnummer data={hasTpsfData ? data.telefonnumre : pdlData?.telefonnummer} />
+				{!hasTpsfData && <PdlSikkerhetstiltak data={pdlData?.sikkerhetstiltak} />}
 			</>
 			<UtenlandskBankkonto
 				data={

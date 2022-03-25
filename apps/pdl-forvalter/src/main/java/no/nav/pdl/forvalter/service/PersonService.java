@@ -29,6 +29,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import reactor.core.publisher.Flux;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -138,6 +140,26 @@ public class PersonService {
                 .block();
 
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
+    }
+
+    @Transactional
+    public void deletePersonerUtenom(Set<String> identer) {
+
+        var startTime = currentTimeMillis();
+
+        var dbIdenter = personRepository.findByIdentIn(identer, Pageable.unpaged()).stream()
+                .map(DbPerson::getIdent)
+                .collect(Collectors.toSet());
+
+        Stream.of(
+                        pdlTestdataConsumer.delete(identer),
+                        identPoolConsumer.releaseIdents(identer),
+                        Flux.just(personRepository.deleteByIdentIn(dbIdenter)))
+                .reduce(Flux.empty(), Flux::merge)
+                .collectList()
+                .block();
+
+        log.info("Sletting av identer {} tok {} ms", identer.stream().collect(Collectors.joining(",")), currentTimeMillis() - startTime);
     }
 
     @Transactional(readOnly = true)

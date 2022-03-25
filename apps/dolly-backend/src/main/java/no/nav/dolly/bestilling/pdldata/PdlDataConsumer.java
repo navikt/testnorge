@@ -24,6 +24,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 public class PdlDataConsumer {
@@ -41,13 +43,13 @@ public class PdlDataConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
+    @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
     public String sendOrdre(String ident, boolean isTpsfMaster) {
 
         return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_delete" })
+    @Timed(name = "providers", tags = {"operation", "pdl_delete"})
     public void slettPdl(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
@@ -65,7 +67,9 @@ public class PdlDataConsumer {
 
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
-        return new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block();
+        return nonNull(request.getPerson()) ?
+                new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block()
+                : ident;
     }
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {
@@ -84,7 +88,7 @@ public class PdlDataConsumer {
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_dataforvalter_alive" })
+    @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }

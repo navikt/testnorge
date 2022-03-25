@@ -411,7 +411,7 @@ public class PdlPerson {
     public static class UtflyttingFraNorge {
 
         private String tilflyttingsland;
-        private Folkeregistermetadata folkeregistermetadata;
+        private LocalDateTime utflyttingsdato;
         private Metadata metadata;
     }
 

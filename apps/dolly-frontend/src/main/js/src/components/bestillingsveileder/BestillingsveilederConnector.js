@@ -2,9 +2,11 @@ import { connect } from 'react-redux'
 import { sendBestilling } from '~/ducks/bestilling'
 import { Bestillingsveileder } from './Bestillingsveileder'
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state, ownProps) => ({
 	brukertype: state.bruker.brukerData.brukertype,
+	brukerId: state.bruker.brukerData.brukerId,
 	error: state.bestveil.error,
+	gruppeId: ownProps?.match?.params?.gruppeId,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

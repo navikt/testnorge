@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
 import { Tema, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -16,12 +16,6 @@ interface InntektsmeldingSelect {
 	formikBag: FormikProps<{}>
 	kodeverk: string
 	size?: string
-}
-
-type Option = {
-	label: string
-	value: string
-	tema?: string
 }
 
 export default ({

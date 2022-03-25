@@ -2,6 +2,7 @@ import _has from 'lodash/has'
 import _set from 'lodash/fp/set'
 import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
+import _get from 'lodash/get'
 
 export const stateModifierFns = (initial, setInitial, options = null) => {
 	const opts = options
@@ -11,8 +12,10 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 		let newObj = _omit(initial, path)
 
 		// Ingen tomme objekter guard
-		const rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
-		if (_isEmpty(newObj[rootPath])) newObj = _omit(newObj, rootPath)
+		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
+		if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
+			rootPath = 'pdldata.person'
+		if (_isEmpty(_get(newObj, rootPath))) newObj = _omit(newObj, rootPath)
 
 		setInitial(newObj)
 	}

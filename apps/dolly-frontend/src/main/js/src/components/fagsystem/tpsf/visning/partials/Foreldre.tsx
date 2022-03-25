@@ -80,10 +80,10 @@ export const Foreldre = ({ person, type }: Data) => {
 					<TitleValue title="Barn" value={finnBarn(foreldreInfo[0].relasjoner).join(', ')} />
 				)}
 			</div>
-			{person.boadresse.length > 0 && (
+			{person.boadresse?.length > 0 && (
 				<Historikk component={Adressevisning} propName="boadresse" data={person.boadresse} />
 			)}
-			{person.postadresse.length > 0 && (
+			{person.postadresse?.length > 0 && (
 				<Historikk
 					component={PostadresseVisning}
 					propName="postadresse"

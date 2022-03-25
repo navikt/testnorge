@@ -1,4 +1,13 @@
 import React from 'react'
+import {
+	DoedfoedtBarn,
+	FoedselData,
+	Foreldreansvar,
+	ForeldreBarnRelasjon,
+	Metadata,
+	Sivilstand,
+	Vergemaal,
+} from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
 	data: PdlData
@@ -17,21 +26,27 @@ export type Ident = {
 }
 
 export type HentPerson = {
+	foedsel: [FoedselData]
 	bostedsadresse: Array<BostedData>
 	oppholdsadresse: Array<Oppholdsadresse>
 	kontaktadresse: Array<Kontaktadresse>
-	adressebeskyttelse: Array<{}>
+	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
+	vergemaalEllerFremtidsfullmakt: Array<Vergemaal>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
-	forelderBarnRelasjon: [ForelderBarnRelasjon]
-	sivilstand: [Sivilstand]
-	doedfoedtBarn: [DoedfoedtBarn]
+	sivilstand: Array<Sivilstand>
+	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
+	doedfoedtBarn: Array<DoedfoedtBarn>
+	foreldreansvar: Array<Foreldreansvar>
+	kontaktinformasjonForDoedsbo: Array<{}>
+	utenlandskIdentifikasjonsnummer: Array<{}>
+	falskIdentitet: FalskIdentitet
+	opphold: Array<OppholdData>
 	statsborgerskap: [Statsborgerskap]
 	innflyttingTilNorge: [InnflyttingTilNorge]
 	utflyttingFraNorge: [UtflyttingFraNorge]
-	foedsel: [Foedsel]
 	doedsfall: [Doedsfall]
 }
 
@@ -138,8 +153,18 @@ export type FullmaktData = {
 	gyldigFraOgMed: Date
 	gyldigTilOgMed: Date
 	motpartsPersonident: string
+	vergeEllerFullmektig?: {
+		motpartsPersonident: string
+	}
 	motpartsRolle: string
 	omraader: Array<string>
+	id: number
+}
+
+export type OppholdData = {
+	oppholdFra: Date
+	oppholdTil: Date
+	type: string
 	id: number
 }
 
@@ -191,31 +216,8 @@ export type Relasjon = {
 		}>
 	}
 }
-
-export type ForelderBarnRelasjon = {
-	relatertPersonsIdent: string
-	relatertPersonsRolle: Rolle
-	minRolleForPerson: Rolle
-}
-
-export enum Rolle {
-	BARN = 'BARN',
-	MOR = 'MOR',
-	FAR = 'FAR',
-	FORELDER = 'FORELDER',
-	MEDMOR = 'MEDMOR',
-}
-
-export type Sivilstand = {
-	type: string
-	gyldigFraOgMed: Date
-	relatertVedSivilstand: string
-	bekreftelsesdato: Date
-	metadata: Metadata
-}
-
-export type DoedfoedtBarn = {
-	dato: Date
+type AdressebeskyttelseData = {
+	gradering: string
 }
 
 export type Kodeverk = {
@@ -226,6 +228,10 @@ export type KodeverkValues = {
 	data: string
 	label: string
 	value: string
+}
+
+type FalskIdentitet = {
+	erFalsk: boolean
 }
 
 export type Statsborgerskap = {
@@ -251,7 +257,7 @@ export type UtflyttingFraNorge = {
 	metadata: Metadata
 }
 
-type Foedsel = {
+export type Foedsel = {
 	foedselsaar: string
 	foedselsdato: string
 	foedeland: string
@@ -263,10 +269,6 @@ type Foedsel = {
 type Doedsfall = {
 	doedsdato: string
 	metadata: Metadata
-}
-
-type Metadata = {
-	historisk: boolean
 }
 
 export type InnvandringValues = {

@@ -7,7 +7,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 export const FalskIdentitet = ({ data }) => {
-	if (!data) return false
+	if (!data) return null
 	const erListe = Array.isArray(data)
 
 	const FalskIdentVisning = ({ enhet, id }) => {
@@ -21,7 +21,7 @@ export const FalskIdentitet = ({ data }) => {
 			<div className="person-visning_content" key={id}>
 				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'UKJENT'} />}
 
-				<TitleValue title="Rett fnr/dnr/bost" value={rettIdentitetVedIdentifikasjonsnummer} />
+				<TitleValue title="Rett fnr/dnr/npid" value={rettIdentitetVedIdentifikasjonsnummer} />
 
 				{rettIdentitetVedOpplysninger && (
 					<Fragment>
