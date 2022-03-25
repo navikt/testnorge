@@ -91,7 +91,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				has('pdldata.opprettNyPerson.foedtFoer'),
 			add: () =>
 				setMulti(
-					['pdldata.opprettNyPerson.alder', Formatters.randomIntInRange(30, 60)],
+					['pdldata.opprettNyPerson.alder', null],
 					['pdldata.opprettNyPerson.foedtEtter', null],
 					['pdldata.opprettNyPerson.foedtFoer', null]
 				),

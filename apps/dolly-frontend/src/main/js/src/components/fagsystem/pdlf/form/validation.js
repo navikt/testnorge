@@ -497,13 +497,43 @@ const foreldreansvar = Yup.array().of(
 
 export const validation = {
 	pdldata: Yup.object({
-		opprettNyPerson: Yup.object({
-			alder: Yup.number()
-				.transform((i, j) => (j === '' ? null : i))
-				.nullable(),
-			foedtEtter: testFoedtEtter(Yup.date().nullable()),
-			foedtFoer: testFoedtFoer(Yup.date().nullable()),
-		}).nullable(),
+		opprettNyPerson: Yup.object()
+			.shape(
+				{
+					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
+						is: null,
+						then: requiredString.nullable(),
+					}),
+					// .transform((i, j) => (j === '' ? null : i))
+					// .nullable(),
+					foedtEtter: testFoedtEtter(
+						Yup.mixed().when(['alder', 'foedtFoer'], {
+							is: (alder, foedtFoer) =>
+								(alder === null || alder === '') && (foedtFoer === null || foedtFoer === ''),
+							// is: (value) => value === null || value === '',
+							// is: null,
+							then: requiredDate.nullable(),
+						})
+					),
+					// foedtEtter: testFoedtEtter(Yup.date().nullable()),
+					foedtFoer: testFoedtFoer(
+						Yup.mixed().when(['alder', 'foedtEtter'], {
+							is: (alder, foedtEtter) =>
+								(alder === null || alder === '') && (foedtEtter === null || foedtEtter === ''),
+							// is: null,
+							then: requiredDate.nullable(),
+						})
+					),
+
+					// foedtFoer: testFoedtFoer(Yup.date().nullable()),
+				},
+				[
+					['foedtEtter', 'foedtFoer'],
+					['alder', 'foedtFoer'],
+					['alder', 'foedtEtter'],
+				]
+			)
+			.nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
