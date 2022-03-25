@@ -80,9 +80,10 @@ public class SwopIdentsService {
 
         if (person1.getPerson().getSivilstand().isEmpty() && isMyndig(person1.getIdent())) {
             person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
+                    .id(1)
                     .type(Sivilstand.UGIFT)
                     .master(FREG)
-                    .id(1)
+                    .kilde("Dolly")
                     .build())));
         }
 
