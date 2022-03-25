@@ -45,10 +45,10 @@ spec:
         - application: synthdata-arena-vedtakshistorikk
           cluster: dev-gcp
       external:
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: person-search-service.dev-fss-pub.nais.io
-        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+        - host: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: https://person-search-service.dev-fss-pub.nais.io
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true
