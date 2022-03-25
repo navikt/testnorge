@@ -14,7 +14,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			method: config.method,
 			redirect: config.redirect,
 			credentials: 'include',
-			headers: { ...config.headers, 'selvbetjening-idtoken': undefined },
+			headers: config.headers,
 			body: JSON.stringify(body),
 		})
 		.then((response: Response) => {
