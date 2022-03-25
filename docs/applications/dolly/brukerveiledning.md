@@ -110,19 +110,19 @@ og velg så hvilke ekstra egenskaper personen skal ha.
 #### Opprette personer med tilfeldige verdier
 Videoen nedenfor viser hvordan man kan opprette personer med tilfeldige verdier.
 
-<video src=""
+<video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov"
 controls="controls" style="max-width: 730px;" />
 
 #### Opprette person med ønsket verdier
 Videoen nedenfor viser hvordan man kan opprett en person med ønsket verdier.
 
-<video src=""
+<video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov"
 controls="controls" style="max-width: 730px;" />
 
 #### Legg til/endre person
 Videoen nedenfor viser man kan legge til ekstra egenskaper på en person. 
 
-<video src=""
+<video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov"
 controls="controls" style="max-width: 730px;" />
 
 
@@ -143,9 +143,10 @@ For å bruke en mal, velger du dette i første steg når du oppretter personer. 
 Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som utgangspunkt, men du har også muligheten til å endre på disse dersom du ønsker det.
 
 ### Demo
-Nedenfor finner du en demo-video som viser hvordan man kan opprette og ta i bruk maler. 
+Videoen nedenfor viser hvordan man kan opprette og ta i bruk maler. 
 
-<video src="" controls="controls" style="max-width: 730px;" />
+<video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" 
+       controls="controls" style="max-width: 730px;" />
 
 ---
 
