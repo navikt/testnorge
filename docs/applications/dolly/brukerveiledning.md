@@ -107,7 +107,7 @@ Videoen nedenfor viser hvordan man kan opprette personer med tilfeldige verdier.
 controls="controls" style="max-width: 730px;" />
 
 #### Opprette person med ønsket verdier
-Videoen nedenfor viser hvordan man kan opprett en person med ønsket verdier.
+Videoen nedenfor viser hvordan man kan opprette en person med ønskede verdier.
 
 <video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov"
 controls="controls" style="max-width: 730px;" />
