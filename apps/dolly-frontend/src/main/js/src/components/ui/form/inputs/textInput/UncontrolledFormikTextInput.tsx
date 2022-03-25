@@ -8,14 +8,15 @@ import { FormikField } from '~/components/ui/form/FormikField'
 type Props = {
 	name: string
 	defaultValue?: any
+	useOnChange?: boolean
 }
 
-export default ({ name, defaultValue, ...props }: Props) => {
+export default ({ name, defaultValue, useOnChange = false, ...props }: Props) => {
 	const { errors, touched, setFieldTouched, setFieldValue, values } = useFormikContext()
 	return (
 		<FormikField name={name} fastfield={false}>
 			{({ field, form, meta }) => {
-				const handleBlur = (event) => {
+				const handleChanges = (event: { target: { value: any } }) => {
 					if (!_get(touched, field.name)) {
 						setFieldTouched(field.name, true)
 					}
@@ -31,7 +32,8 @@ export default ({ name, defaultValue, ...props }: Props) => {
 					<DollyTextInput
 						// @ts-ignore
 						defaultValue={defaultValue || _get(values, name)}
-						onBlur={handleBlur}
+						onBlur={useOnChange ? null : handleChanges}
+						onChange={useOnChange ? handleChanges : null}
 						name={name}
 						feil={fieldError({
 							touched: _get(touched, name),

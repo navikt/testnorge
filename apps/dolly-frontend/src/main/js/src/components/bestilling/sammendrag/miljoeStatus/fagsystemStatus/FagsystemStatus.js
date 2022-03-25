@@ -6,7 +6,7 @@ import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export default function FagsystemStatus({ statusrapport }) {
-	if (statusrapport.length <= 0) return false
+	if (statusrapport?.length <= 0) return false
 
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
