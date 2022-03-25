@@ -16,17 +16,10 @@ nav_order: 1
 
 ---
 
-Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske 
+testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 
-Fra enhet som er satt opp med Naisdevice:
-
-[dolly.ekstern.dev.nav.no/](https://dolly.ekstern.dev.nav.no/)
-
-Utenfor de interne Nav systemene benytt:
-
-[dolly.nais-dev-fss.adeo.no](https://dolly.nais-dev-fss.adeo.no/)
-
-Denne lenken krever tilgangen "Utvikling på laptop"
+Link til Dolly: [Dolly](https://dolly.ekstern.dev.nav.no/)
 
 ---
 
