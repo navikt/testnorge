@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -58,11 +59,20 @@ public class PdlDataConsumer {
                 .block();
     }
 
+    @Timed(name = "providers", tags = { "operation", "pdl_delete_utenom" })
+    public void slettPdlUtenom(List<String> identer) {
+
+        String accessToken = serviceProperties.getAccessToken(tokenService);
+        new PdlDataSlettUtenomCommand(webClient, identer, accessToken).call();
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_opprett" })
     public String opprettPdl(BestillingRequestDTO request) {
 
         return new PdlDataOpprettingCommand(webClient, request, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
+    @Timed(name = "providers", tags = { "operation", "pdl_oppdater" })
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block();
@@ -79,6 +89,7 @@ public class PdlDataConsumer {
                 serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
+    @Timed(name = "providers", tags = { "operation", "pdl_identCheck" })
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
 
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
