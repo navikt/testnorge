@@ -42,6 +42,7 @@ spec:
       memory: 2048Mi
   ingresses:
     - https://testnav-dolly-frontend-redirect.dev.intern.nav.no
+    - https://dolly.dev.intern.nav.no
     - https://dolly-frontend.dev.adeo.no
     - https://dolly.nais.preprod.local
     - https://dolly.nais-dev-fss.adeo.no
