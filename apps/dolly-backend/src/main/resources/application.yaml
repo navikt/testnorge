@@ -211,3 +211,4 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  max-http-header-size: 70KB
