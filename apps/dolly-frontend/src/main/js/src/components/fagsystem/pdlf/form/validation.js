@@ -25,13 +25,10 @@ const testPrioritet = (val) => {
 }
 
 const testFoedtEtter = (val) => {
-	// console.log('testfoedtEtter') //TODO - SLETT MEG
 	return val.test(
 		'is-before-foedt-foer',
 		'Dato må være før født før-dato',
 		function isBeforeFoedtFoer(value) {
-			const values = this.options.context
-			console.log('this: ', this) //TODO - SLETT MEG
 			const foedtFoer = _get(this, 'parent.foedtFoer')
 			if (!value || !foedtFoer) return true
 			return isBefore(new Date(value), new Date(foedtFoer))
@@ -44,7 +41,6 @@ const testFoedtFoer = (val) => {
 		'is-after-foedt-etter',
 		'Dato må være etter født etter-dato',
 		function isAfterFoedtEtter(value) {
-			const values = this.options.context
 			const foedtEtter = _get(this, 'parent.foedtEtter')
 			if (!value || !foedtEtter) return true
 			return isAfter(new Date(value), new Date(foedtEtter))
