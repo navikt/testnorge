@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -45,13 +46,16 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private void handle(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
-        if (isNull(foedsel.getFoedselsdato())) {
+        if (nonNull(foedsel.getFoedselsaar())) {
+            var fodselsdato = DatoFraIdentUtility.getDato(ident);
+            foedsel.setFoedselsdato(LocalDateTime.of(foedsel.getFoedselsaar(), fodselsdato.getMonth(), fodselsdato.getDayOfMonth(), 0, 0));
+
+        } else if (isNull(foedsel.getFoedselsdato())) {
             foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
         foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
 
         setFoedeland(foedsel, ident, bostedadresse, innflytting);
-
         setFodekommune(foedsel, bostedadresse);
     }
 
