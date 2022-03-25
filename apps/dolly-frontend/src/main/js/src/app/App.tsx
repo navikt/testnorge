@@ -33,9 +33,9 @@ export const App = (props: {
 		ProfilApi.getProfil().then((response: { data: Object }) => {
 			setBrukerProfil(response.data)
 		})
-		ProfilApi.getProfilBilde().then((response: { data: Response }) => {
-			setBrukerBilde(response.data)
-		})
+		ProfilApi.getProfilBilde().then((response: { data: Response }) =>
+			response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
+		)
 	}, [])
 
 	const { applicationError, clearAllErrors, brukerData, updateVarslingerBruker } = props
@@ -48,7 +48,7 @@ export const App = (props: {
 		window.location.href = '/logout?state=' + feilmelding
 	}
 
-	// if (criticalError) logout(criticalError.stack)
+	if (criticalError) logout(criticalError.stack)
 
 	if (!brukerData) return <Loading label="Laster Dolly applikasjon" fullpage />
 	return (
