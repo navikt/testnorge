@@ -54,7 +54,7 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 							<div className="person-visning_content">
 								<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
 								<TitleValue
-									title="Rapporteringsdato"
+									title="Rapporteringstidspunkt"
 									value={Formatters.formatDateTime(inntektsinformasjon.rapporteringsdato)}
 								/>
 								<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />

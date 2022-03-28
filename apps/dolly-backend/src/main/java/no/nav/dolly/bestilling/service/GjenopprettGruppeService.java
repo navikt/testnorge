@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.aktoeridsyncservice.AktoerIdSyncClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -32,7 +31,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
@@ -43,7 +41,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private List<ClientRegister> clientRegisters;
     private IdentService identService;
 
-    public GjenopprettGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+    public GjenopprettGruppeService(TpsfService tpsfService,
                                     DollyPersonCache dollyPersonCache, IdentService identService,
                                     BestillingProgressService bestillingProgressService,
                                     BestillingService bestillingService, MapperFacade mapperFacade,
@@ -51,7 +49,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                     ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                     PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer);
 
@@ -68,6 +66,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
+            bestKriterier.setEkskluderEksternePersoner(true);
 
             List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
@@ -79,7 +78,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                                     testident.getMaster());
                             try {
-                                Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);
+                                Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                                 if (dollyPerson.isPresent()) {
                                     gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
@@ -87,21 +86,17 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     coBestillinger.stream()
                                             .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
                                             .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                            .map(bestilling1 -> clientRegisters.stream()
+                                            .forEach(bestilling1 -> clientRegisters.stream()
                                                     .filter(register ->
                                                             !(register instanceof PdlForvalterClient ||
                                                                     register instanceof AktoerIdSyncClient ||
                                                                     register instanceof PensjonforvalterClient))
-                                                    .map(register -> {
+                                                    .forEach(register ->
                                                         register.gjenopprett(getDollyBestillingRequest(
                                                                 Bestilling.builder()
                                                                         .bestKriterier(bestilling1.getBestkriterier())
                                                                         .miljoer(bestilling.getMiljoer())
-                                                                        .build()), dollyPerson.get(), progress, false);
-                                                        return register;
-                                                    })
-                                                    .collect(toList()))
-                                            .collect(toList());
+                                                                        .build()), dollyPerson.get(), progress, false)));
 
                                 } else {
                                     progress.setFeil("NA:Feil= Finner ikke personen i database");

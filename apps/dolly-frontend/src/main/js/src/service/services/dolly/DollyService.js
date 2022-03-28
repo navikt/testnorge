@@ -114,6 +114,11 @@ export default {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
 	},
 
+	//* Udistub
+	getUdiPerson(ident) {
+		return Request.get(Endpoints.udiPerson(ident))
+	},
+
 	//* Bestilling
 	getBestillinger(gruppeId) {
 		return Request.get(Endpoints.bestillinger(gruppeId))

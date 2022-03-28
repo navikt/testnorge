@@ -3,14 +3,17 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import {
-	initialPdlPerson,
+	initialDoedsfall,
+	initialFoedsel,
+	initialFullmakt,
+	initialKjoenn,
+	initialNavn,
 	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
+	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
-import { addDays, subDays } from 'date-fns'
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier }) => {
@@ -33,6 +36,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 		>
 			<AttributtKategori title="Alder">
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.foedsel} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
@@ -43,18 +47,17 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 					attr={sm.attrs.utvandretTilLand}
 					disabled={!harFnr}
 					title={
-						'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
+						!harFnr
+							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
+							: ''
 					}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">
-				<Attributt attr={sm.attrs.identtype} vis={leggTil} />
-				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
-				<Attributt attr={sm.attrs.harMellomnavn} />
-				<Attributt attr={sm.attrs.harNyttNavn} vis={leggTil} />
+				<Attributt attr={sm.attrs.navn} />
 				<Attributt attr={sm.attrs.sprakKode} />
-				<Attributt attr={sm.attrs.erForsvunnet} />
+				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
 				<Attributt attr={sm.attrs.telefonnummer} />
@@ -81,21 +84,33 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	return {
 		alder: {
 			label: 'Alder',
-			checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
-			add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
-			remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
+			checked:
+				has('pdldata.opprettNyPerson.alder') ||
+				has('pdldata.opprettNyPerson.foedtEtter') ||
+				has('pdldata.opprettNyPerson.foedtFoer'),
+			add: () =>
+				setMulti(
+					['pdldata.opprettNyPerson.alder', null],
+					['pdldata.opprettNyPerson.foedtEtter', null],
+					['pdldata.opprettNyPerson.foedtFoer', null]
+				),
+			remove: () =>
+				del([
+					'pdldata.opprettNyPerson.alder',
+					'pdldata.opprettNyPerson.foedtEtter',
+					'pdldata.opprettNyPerson.foedtFoer',
+				]),
+		},
+		foedsel: {
+			label: 'Fødsel',
+			checked: has('pdldata.person.foedsel'),
+			add: () => set('pdldata.person.foedsel', [initialFoedsel]),
+			remove: () => del(['pdldata.person.foedsel']),
 		},
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has('pdldata.person.doedsfall'),
-			add: () =>
-				set('pdldata.person.doedsfall', [
-					{
-						doedsdato: new Date(),
-						kilde: 'Dolly',
-						master: 'PDL',
-					},
-				]),
+			add: () => set('pdldata.person.doedsfall', [initialDoedsfall]),
 			remove: () => del(['pdldata.person.doedsfall']),
 		},
 		statsborgerskap: {
@@ -150,41 +165,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del('pdldata.person.utflytting')
 			},
 		},
-		identHistorikk: {
-			label: 'Identhistorikk',
-			checked: has('tpsf.identHistorikk'),
-			add: () =>
-				set('tpsf.identHistorikk', [
-					{
-						foedtEtter: null,
-						foedtFoer: null,
-						identtype: null,
-						kjonn: null,
-						regdato: null,
-					},
-				]),
-			remove: () => del('tpsf.identHistorikk'),
-		},
 		kjonn: {
 			label: 'Kjønn',
-			checked: has('tpsf.kjonn'),
-			add: () =>
-				personFoerLeggTil
-					? setMulti(['tpsf.kjonn', ''], ['tpsf.identtype', 'FNR'])
-					: set('tpsf.kjonn', ''),
-			remove: () => del(['tpsf.kjonn', 'tpsf.identtype']),
+			checked: has('pdldata.person.kjoenn'),
+			add: () => set('pdldata.person.kjoenn', [initialKjoenn]),
+			remove: () => del('pdldata.person.kjoenn'),
 		},
-		harMellomnavn: {
-			label: 'Har mellomnavn',
-			checked: has('tpsf.harMellomnavn'),
-			add: () => set('tpsf.harMellomnavn', true),
-			remove: () => del('tpsf.harMellomnavn'),
-		},
-		harNyttNavn: {
-			label: 'Nytt navn',
-			checked: has('tpsf.harNyttNavn'),
-			add: () => set('tpsf.harNyttNavn', true),
-			remove: () => del('tpsf.harNyttNavn'),
+		navn: {
+			label: 'Navn',
+			checked: has('pdldata.person.navn'),
+			add: () => set('pdldata.person.navn', [initialNavn]),
+			remove: () => del('pdldata.person.navn'),
 		},
 		sprakKode: {
 			label: 'Språk',
@@ -192,14 +183,35 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () => set('tpsMessaging.spraakKode', ''),
 			remove: () => del(['tpsMessaging.spraakKode', 'tpsf.spraakKode']),
 		},
-		erForsvunnet: {
-			label: 'Forsvunnet',
-			checked: has('tpsf.erForsvunnet'),
+		egenAnsattDatoFom: {
+			label: 'Skjerming',
+			checked: has('tpsf.egenAnsattDatoFom') || has('tpsMessaging.egenAnsattDatoFom'),
 			add() {
-				setMulti(['tpsf.erForsvunnet', true], ['tpsf.forsvunnetDato', null])
+				setMulti(
+					[
+						'tpsMessaging.egenAnsattDatoFom',
+						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
+							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+							new Date(),
+					],
+					['tpsMessaging.egenAnsattDatoTom', undefined],
+					[
+						'skjerming.egenAnsattDatoFom',
+						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
+							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+							new Date(),
+					],
+					['skjerming.egenAnsattDatoTom', undefined]
+				)
 			},
 			remove() {
-				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
+				del([
+					'tpsMessaging.egenAnsattDatoFom',
+					'tpsMessaging.egenAnsattDatoTom',
+					'tpsf.egenAnsattDatoFom',
+					'tpsf.egenAnsattDatoTom',
+					'skjerming',
+				])
 			},
 		},
 		telefonnummer: {
@@ -240,52 +252,16 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del(['pdldata.person.telefonnummer', 'tpsMessaging.telefonnummer'])
 			},
 		},
-		identtype: {
-			label: 'Identtype',
-			checked: has('tpsf.identtype'),
-			add() {
-				setMulti(
-					['tpsf.identtype', 'FNR'],
-					personFoerLeggTil?.tpsf?.foedselsdato && [
-						'tpsf.foedtFoer',
-						addDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
-					],
-					personFoerLeggTil?.tpsf?.foedselsdato && [
-						'tpsf.foedtEtter',
-						subDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
-					]
-				)
-			},
-			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
-		},
 		vergemaal: {
 			label: 'Vergemål',
-			checked: has('tpsf.vergemaal'),
-			add: () =>
-				set('tpsf.vergemaal', {
-					embete: null,
-					sakType: null,
-					mandatType: null,
-					vedtakDato: null,
-					identType: null,
-					harMellomnavn: null,
-				}),
-			remove: () => del('tpsf.vergemaal'),
+			checked: has('pdldata.person.vergemaal'),
+			add: () => set('pdldata.person.vergemaal', [initialVergemaal]),
+			remove: () => del('pdldata.person.vergemaal'),
 		},
 		fullmakt: {
 			label: 'Fullmakt',
 			checked: has('pdldata.person.fullmakt'),
-			add: () =>
-				set('pdldata.person.fullmakt', [
-					{
-						omraader: [],
-						gyldigFraOgMed: null,
-						gyldigTilOgMed: null,
-						nyFullmektig: initialPdlPerson,
-						kilde: 'Dolly',
-						master: 'PDL',
-					},
-				]),
+			add: () => set('pdldata.person.fullmakt', [initialFullmakt]),
 			remove: () => del('pdldata.person.fullmakt'),
 		},
 		sikkerhetstiltak: {

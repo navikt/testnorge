@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.ArtifactDeleteService;
-import no.nav.pdl.forvalter.service.ArtifactUpdateService;
 import no.nav.pdl.forvalter.service.ArtifactGjeldendeService;
+import no.nav.pdl.forvalter.service.ArtifactUpdateService;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -121,10 +122,12 @@ public class PersonController {
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,
                                              @Parameter(description = "Angir om TPS er master, true == hovedperson skal ikke slettes i PDL")
-                                             @RequestParam(required = false) Boolean isTpsMaster) {
+                                             @RequestParam(required = false) Boolean isTpsMaster,
+                                             @Parameter(description = "Angir om 3. personer (egne hovedpersoner i Dolly) skal ekskluderes")
+                                             @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
         artifactGjeldendeService.setGjeldene(ident);
-        return pdlOrdreService.send(ident, isTpsMaster);
+        return pdlOrdreService.send(ident, isTpsMaster, ekskluderEksternePersoner);
     }
 
     @ResponseBody
@@ -134,6 +137,15 @@ public class PersonController {
                              @PathVariable String ident) {
 
         personService.deletePerson(ident);
+    }
+
+    @ResponseBody
+    @DeleteMapping(value = "/utenom")
+    @Operation(description = "Slette personer som er opprettet utenom PDL-forvalteren")
+    public void deletePersonerUtenom(@Parameter(description = "Slett angitte testpersoner")
+                             @RequestParam Set<String> identer) {
+
+        personService.deletePersonerUtenom(identer);
     }
 
     @DeleteMapping(value = "/{ident}/foedsel/{id}")

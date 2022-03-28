@@ -26,6 +26,8 @@ export default function Gruppe({
 	gruppe,
 	identer,
 	brukernavn,
+	brukerBilde,
+	brukerProfil,
 	brukertype,
 	isFetching,
 	isDeletingGruppe,
@@ -88,7 +90,11 @@ export default function Gruppe({
 				isFetchingExcel={isFetchingExcel}
 			/>
 
-			<StatusListeConnector gruppeId={gruppe.id} />
+			<StatusListeConnector
+				gruppeId={gruppe.id}
+				brukerBilde={brukerBilde}
+				brukerProfil={brukerProfil}
+			/>
 
 			<div className="toolbar">
 				{brukertype === 'AZURE' && (

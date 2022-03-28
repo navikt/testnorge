@@ -130,7 +130,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
             ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                    .kjoenn(KjoennFraIdentUtility.getKjoenn(request.getRelatertPerson()) == MANN ? KVINNE : MANN)
+                    .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
                     .build());
             forelderRelasjon.setRelatertPerson(null);
 

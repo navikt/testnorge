@@ -1,10 +1,3 @@
----
-layout: default
-title: Ident Pool
-parent: Applikasjoner
-nav_order: 2
----
-
 # Ident-Pool
 Ident-pool har oversikt på syntetiske identer, og sjekker mot prod og testmiljøer for eksistens.
 Fra ident-pool kan det rekvireres identer basert på født-før og født-etter samt kjønn og type.

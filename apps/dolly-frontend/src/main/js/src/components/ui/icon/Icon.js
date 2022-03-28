@@ -50,6 +50,7 @@ import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
 import Globe2 from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-2.svg'
 import Hierarchy3 from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3.svg'
 import Hierarchy3Light from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3Light.svg'
+import Infants from '~/assets/icons/nav-ikoner/line/SVG/people/Infants.svg'
 import Eraser from '~/assets/icons/nav-ikoner/filled/SVG/36-text/eraser.svg'
 import ArrowLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-10.svg'
 import ArrowRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-10.svg'
@@ -74,6 +75,7 @@ import Man2Light from '~/assets/icons/custom/Man2Light.svg'
 import Woman from '~/assets/icons/custom/Woman.svg'
 import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
+import ChildHalo from '~/assets/icons/custom/ChildHalo2.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
@@ -148,6 +150,7 @@ export const icons = {
 	kommentar: ChatBubble,
 	partner: Love,
 	barn: Baby,
+	doedfoedt: ChildHalo,
 	dolly: Dolly,
 	pensjon: PiggyBank,
 	brreg: BrregLogo,
@@ -163,6 +166,8 @@ export const icons = {
 	link: Link,
 	linkBroken: LinkBroken,
 	telephone: Telephone,
+	foedsel: Infants,
+	foreldreansvar: Group2,
 }
 
 const px = (v) => `${v}px`

@@ -18,14 +18,23 @@ import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,12 +82,47 @@ public class PdlOrdreService {
     private final AliasRepository aliasRepository;
     private final MapperFacade mapperFacade;
 
-    public OrdreResponseDTO send(String ident, Boolean isTpsMaster) {
+    private static Set<String> getEksternePersoner(DbPerson dbPerson) {
+
+        return Stream.of(
+                        dbPerson.getPerson().getSivilstand().stream()
+                                .filter(SivilstandDTO::isEksisterendePerson)
+                                .map(SivilstandDTO::getRelatertVedSivilstand)
+                                .toList(),
+                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                                .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
+                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                .toList(),
+                        dbPerson.getPerson().getForeldreansvar().stream()
+                                .filter(ForeldreansvarDTO::isEksisterendePerson)
+                                .map(ForeldreansvarDTO::getAnsvarlig)
+                                .toList(),
+                        dbPerson.getPerson().getVergemaal().stream()
+                                .filter(VergemaalDTO::isEksisterendePerson)
+                                .map(VergemaalDTO::getVergeIdent)
+                                .toList(),
+                        dbPerson.getPerson().getFullmakt().stream()
+                                .filter(FullmaktDTO::isEksisterendePerson)
+                                .map(FullmaktDTO::getMotpartsPersonident)
+                                .toList(),
+                        dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                .filter(Objects::nonNull)
+                                .filter(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)
+                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                .toList())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
+    }
+
+    public OrdreResponseDTO send(String ident, Boolean isTpsMaster, Boolean ekskluderEksterenePersoner) {
 
         checkAlias(ident);
 
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(String.format("Ident %s finnes ikke i databasen", ident)));
+
+        var eksternePersoner = getEksternePersoner(dbPerson);
 
         return OrdreResponseDTO.builder()
                 .hovedperson(PersonHendelserDTO.builder()
@@ -89,13 +133,16 @@ public class PdlOrdreService {
                         .build())
                 .relasjoner(dbPerson.getRelasjoner().stream()
                         .filter(relasjon -> GAMMEL_IDENTITET != relasjon.getRelasjonType())
+                        .filter(relasjon -> isNotTrue(ekskluderEksterenePersoner) ||
+                                eksternePersoner.stream()
+                                        .noneMatch(ekstern -> ekstern.equals(relasjon.getRelatertPerson().getIdent())))
                         .map(relasjon -> PersonHendelserDTO.builder()
                                 .ident(relasjon.getRelatertPerson().getIdent())
                                 .ordrer(sendAlleInformasjonselementer(relasjon.getRelatertPerson(), true)
                                         .collectList()
                                         .block())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build();
     }
 

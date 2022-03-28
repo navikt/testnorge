@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
+@Order(4)
 @RequiredArgsConstructor
 public class TagsHendelseslagerClient implements ClientRegister {
 

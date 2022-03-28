@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialNyIdent } from '~/components/fagsystem/pdlf/form/initialValues'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const IdentifikasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)
+	const opts = useContext(BestillingsveilederContext)
+
+	const harNpid = opts.identtype === 'NPID'
 
 	return (
 		<Panel
@@ -15,6 +20,11 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
+				<Attributt
+					attr={sm.attrs.nyident}
+					disabled={harNpid}
+					title={harNpid ? 'Personer med identtype NPID kan ikke ha identhistorikk' : ''}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)
@@ -53,5 +63,15 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 				},
 			]),
 		remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),
+	},
+	nyident: {
+		label: 'Har ny ident',
+		checked: has('pdldata.person.nyident'),
+		add() {
+			set('pdldata.person.nyident', [initialNyIdent])
+		},
+		remove() {
+			del('pdldata.person.nyident')
+		},
 	},
 })

@@ -9,7 +9,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
@@ -38,7 +37,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @Slf4j
 @Service
-@Order(6)
+@Order(5)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
@@ -97,8 +96,7 @@ public class TpsMessagingClient implements ClientRegister {
                         } catch (InterruptedException | ExecutionException | TimeoutException e) {
 
                             log.error(e.getMessage(), e);
-                            Thread.currentThread().interrupt();
-                            throw new DollyFunctionalException(e.getMessage());
+                            Thread.interrupted();
                         }
                     });
 

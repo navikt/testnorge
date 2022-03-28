@@ -2,10 +2,12 @@ import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 export const ArenaPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
+	const importTestnorge = opts.is.importTestnorge
 
 	const { personFoerLeggTil } = opts
 	const alleredeRegistrert = personFoerLeggTil && personFoerLeggTil.arenaforvalteren
@@ -18,9 +20,16 @@ export const ArenaPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
 		>
+			{importTestnorge && (
+				<AlertStripeAdvarsel style={{ marginBottom: '20px' }}>
+					Registrering av arbeidsytelser på Testnorge ident(er) kan gjøres via "LEGG TIL/ENDRE"
+					etter at identen(e) er importert.
+				</AlertStripeAdvarsel>
+			)}
 			<AttributtKategori title={'Aktiv bruker'}>
 				<Attributt
 					disabled={
+						importTestnorge ||
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
@@ -32,20 +41,28 @@ export const ArenaPanel = ({ stateModifier }) => {
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || alleredeRegistrert
+						importTestnorge ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						alleredeRegistrert
 					}
 					attr={sm.attrs.aap115}
 					title={alleredeRegistrert ? alleredeRegistertTitle : null}
 				/>
 				<Attributt
 					disabled={
-						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || alleredeRegistrert
+						importTestnorge ||
+						sm.attrs.ikkeServicebehov.checked ||
+						sm.attrs.ingenYtelser.checked ||
+						alleredeRegistrert
 					}
 					attr={sm.attrs.aap}
 					title={alleredeRegistrert ? alleredeRegistertTitle : null}
 				/>
 				<Attributt
-					disabled={sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked}
+					disabled={
+						importTestnorge || sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked
+					}
 					attr={sm.attrs.dagpenger}
 				/>
 			</AttributtKategori>
@@ -53,6 +70,7 @@ export const ArenaPanel = ({ stateModifier }) => {
 			<AttributtKategori title={'Inaktiv bruker'}>
 				<Attributt
 					disabled={
+						importTestnorge ||
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap.checked ||
 						sm.attrs.aap115.checked ||

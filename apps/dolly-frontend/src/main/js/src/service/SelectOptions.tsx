@@ -6,13 +6,7 @@ const selectOptions: SelectOptions = {
 	identtype: [
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'DNR', label: 'DNR' },
-		{ value: 'BOST', label: 'BOST' },
-	],
-	identtypeBarn: [
-		{ value: 'FNR', label: 'FNR' },
-		{ value: 'DNR', label: 'DNR' },
-		{ value: 'BOST', label: 'BOST' },
-		{ value: 'FDAT', label: 'FDAT (dødfødt)' },
+		{ value: 'NPID', label: 'NPID' },
 	],
 
 	kjonnBarn: [
@@ -30,6 +24,21 @@ const selectOptions: SelectOptions = {
 	foreldreType: [
 		{ value: 'MOR', label: 'Mor' },
 		{ value: 'FAR', label: 'Far' },
+	],
+
+	foreldreTypePDL: [
+		{ value: 'FORELDER', label: 'Forelder' },
+		{ value: 'MOR', label: 'Mor' },
+		{ value: 'MEDMOR', label: 'Medmor' },
+		{ value: 'FAR', label: 'Far' },
+	],
+
+	pdlRelasjonTyper: [
+		{ value: 'FORELDER', label: 'Forelder' },
+		{ value: 'MOR', label: 'Mor' },
+		{ value: 'MEDMOR', label: 'Medmor' },
+		{ value: 'FAR', label: 'Far' },
+		{ value: 'BARN', label: 'Barn' },
 	],
 
 	barnBorHos: [
@@ -150,7 +159,7 @@ const selectOptions: SelectOptions = {
 	kontaktType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
-		{ value: 'PERSON_FDATO', label: 'Person med fødselsdato' },
+		{ value: 'PERSON_FDATO', label: 'Person med identifikasjon' },
 		{ value: 'NY_PERSON', label: 'Ny person' },
 	],
 
@@ -164,6 +173,36 @@ const selectOptions: SelectOptions = {
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' },
+	],
+
+	// PDL - sivilstand
+	sivilstandType: [
+		{ value: 'UOPPGITT', label: 'Uoppgitt' },
+		{ value: 'UGIFT', label: 'Ugift' },
+		{ value: 'GIFT', label: 'Gift' },
+		{ value: 'ENKE_ELLER_ENKEMANN', label: 'Enke eller enkemann' },
+		{ value: 'SKILT', label: 'Skilt' },
+		{ value: 'SEPARERT', label: 'Separert' },
+		{ value: 'REGISTRERT_PARTNER', label: 'Registrert partner' },
+		{ value: 'SEPARERT_PARTNER', label: 'Separtert partner' },
+		{ value: 'SKILT_PARTNER', label: 'Skilt partner' },
+		{ value: 'GJENLEVENDE_PARTNER', label: 'Gjenlevende partner' },
+	],
+
+	// PDL - foreldreansvar
+	foreldreansvar: [
+		{ value: 'FELLES', label: 'Felles' },
+		{ value: 'MOR', label: 'Mor' },
+		{ value: 'FAR', label: 'Far' },
+		{ value: 'MEDMOR', label: 'Medmor' },
+		{ value: 'ANDRE', label: 'Andre' },
+		{ value: 'UKJENT', label: 'Ukjent' },
+	],
+
+	typeAnsvarlig: [
+		{ value: 'EKSISTERENDE', label: 'Eksisterende person' },
+		{ value: 'NY', label: 'Ny person' },
+		{ value: 'UTEN_ID', label: 'Person uten identifikator' },
 	],
 
 	// Arena

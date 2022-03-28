@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -44,7 +43,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private ExecutorService dollyForkJoinPool;
     private PdlDataConsumer pdlDataConsumer;
 
-    public OpprettPersonerByKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+    public OpprettPersonerByKriterierService(TpsfService tpsfService,
                                              DollyPersonCache dollyPersonCache, IdentService identService,
                                              BestillingProgressService bestillingProgressService,
                                              BestillingService bestillingService, MapperFacade mapperFacade,
@@ -52,7 +51,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                              ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                              PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer);
 
@@ -63,6 +62,17 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
+    }
+
+    private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
+
+        return BestillingProgress.builder()
+                .bestilling(bestilling)
+                .ident("?")
+                .feil(TPSF == master ? ("NA:" + error) : null)
+                .pdlDataStatus(PDLF == master ? error : null)
+                .master(master)
+                .build();
     }
 
     @Async
@@ -91,14 +101,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                                 progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
 
-                                if (originator.isTpsf()) {
-                                    sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(",")),
-                                            opprettedeIdenter, bestilling.getGruppe(), progress, bestKriterier.getBeskrivelse());
-
-                                } else {
-                                    identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                            originator.getMaster(), bestKriterier.getBeskrivelse());
-                                }
+                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
+                                        originator.getMaster(), bestKriterier.getBeskrivelse());
 
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
 
@@ -110,7 +114,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 oppdaterProgress(bestilling, progress);
                             }
                         });
-
                 oppdaterBestillingFerdig(bestilling);
             });
 
@@ -133,16 +136,5 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         } else {
             throw new DollyFunctionalException("Bestilling er ikke støttet.");
         }
-    }
-
-    private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
-
-        return BestillingProgress.builder()
-                .bestilling(bestilling)
-                .ident("?")
-                .feil(TPSF == master ? ("NA:" + error) : null)
-                .pdlDataStatus(PDLF == master ? error : null)
-                .master(master)
-                .build();
     }
 }

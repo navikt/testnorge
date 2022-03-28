@@ -1,54 +1,37 @@
 import React from 'react'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import {
-	ForelderBarnRelasjon,
-	HentPerson,
-	Rolle,
-	Sivilstand,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { PdlBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlBarn'
-import { PdlForeldre } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldre'
+import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlForeldreBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreBarn'
 import { PdlPartner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlPartner'
+import { Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
+import { PdlForeldreansvar } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreansvar'
+import { PdlDoedfoedtBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlDoedfoedtBarn'
 
 type PdlRelasjonerProps = {
 	data: HentPerson
 	visTittel?: boolean
 }
 
-export const PdlRelasjoner = ({ data, visTittel = true }: PdlRelasjonerProps) => {
+export const PdlRelasjoner = ({ data }: PdlRelasjonerProps) => {
 	if (!data) {
 		return null
 	}
 
 	const partnere = data.sivilstand?.filter((sivilstand: Sivilstand) => sivilstand.type !== 'UGIFT')
-	const barn = data.forelderBarnRelasjon?.filter(
-		(relasjon: ForelderBarnRelasjon) => relasjon.relatertPersonsRolle == Rolle.BARN
-	)
 	const doedfoedtBarn = data.doedfoedtBarn
-	const foreldre = data.forelderBarnRelasjon?.filter(
-		(relasjon: ForelderBarnRelasjon) =>
-			relasjon.relatertPersonsRolle == Rolle.MOR ||
-			relasjon.relatertPersonsRolle == Rolle.FAR ||
-			relasjon.relatertPersonsRolle == Rolle.MEDMOR
-	)
+	const foreldreBarn = data.forelderBarnRelasjon
+	const foreldreansvar = data.foreldreansvar
 
-	if (
-		hasNoValues(partnere) &&
-		hasNoValues(barn) &&
-		hasNoValues(foreldre) &&
-		hasNoValues(doedfoedtBarn)
-	)
-		return null
+	if (hasNoValues(partnere) && hasNoValues(doedfoedtBarn) && hasNoValues(foreldreBarn)) return null
 
 	return (
 		<ErrorBoundary>
-			<div>
-				{visTittel && <SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />}
+			<>
 				<PdlPartner data={partnere} />
-				<PdlBarn barn={barn} doedfoedtBarn={doedfoedtBarn} />
-				<PdlForeldre data={foreldre} />
-			</div>
+				<PdlDoedfoedtBarn data={doedfoedtBarn} />
+				<PdlForeldreBarn data={foreldreBarn} />
+				<PdlForeldreansvar data={foreldreansvar} />
+			</>
 		</ErrorBoundary>
 	)
 }

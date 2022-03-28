@@ -4,7 +4,6 @@ import Button from '~/components/ui/button/Button'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 interface AvansertFormValues {
 	path: string

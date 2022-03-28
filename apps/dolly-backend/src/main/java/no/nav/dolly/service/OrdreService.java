@@ -59,7 +59,7 @@ public class OrdreService {
                 .build();
 
         List.of(CompletableFuture.supplyAsync(
-                                () -> pdlDataConsumer.sendOrdre(ident, testident.isTpsf()), dollyForkJoinPool),
+                                () -> pdlDataConsumer.sendOrdre(ident, testident.isTpsf(), false), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
                                 () -> sendTpsMessaging(ident, progress), dollyForkJoinPool))
                 .forEach(future -> {
@@ -70,7 +70,7 @@ public class OrdreService {
                         }
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         log.error("Future task exception {}", e.getMessage(), e);
-                        Thread.currentThread().interrupt();
+                        Thread.interrupted();
                         throw new ResponseStatusException(INTERNAL_SERVER_ERROR, e.getMessage(), e);
                     }
                 });

@@ -37,3 +37,8 @@ spring:
   datasource:
     testOnBorrow: true
     validationQuery: select 1
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

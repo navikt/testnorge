@@ -33,6 +33,7 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 }
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
+	if (!data) return null
 	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge, innflytting, utflytting } = data
 	if (
 		statsborgerskap?.length < 1 &&

@@ -46,6 +46,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Slf4j
@@ -68,9 +69,18 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
+    public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        var bestillinger = nonNull(malNavn)
+                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
+                : bestillingRepository.findMalBestillingByUser(bruker);
+        return bestillinger.orElse(emptyList());
+    }
+
     @Transactional
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
         try {
+            overskrivDuplikateMalbestillinger(bestilling);
             return bestillingRepository.save(bestilling);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
@@ -313,6 +323,19 @@ public class BestillingService {
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
         bestillingRepository.swapIdent(oldIdent, newIdent);
+    }
+
+    private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
+        if (isBlank(bestilling.getMalBestillingNavn())) {
+            return;
+        }
+        List<Bestilling> gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
+        if (!gamleMalBestillinger.isEmpty()) {
+            gamleMalBestillinger.forEach(malBestilling -> {
+                malBestilling.setMalBestillingNavn(null);
+                saveBestillingToDB(malBestilling);
+            });
+        }
     }
 
     private Bruker fetchOrCreateBruker() {

@@ -22,7 +22,6 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
@@ -34,7 +33,7 @@ const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
 		return 'DNR'
 	} else if (parseInt(ident.charAt(2)) % 4 >= 2) {
-		return 'BOST'
+		return 'NPID'
 	} else {
 		return 'FNR'
 	}
@@ -69,19 +68,10 @@ export const PersonVisning = ({
 			})
 	}, [])
 
-	const personInfo = data.tpsf
-		? data.tpsf
-		: {
-				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
-				ident: data.pdlforvalter?.person?.ident,
-				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
-				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
-		  }
-
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && ident.master !== 'PDLF' && (
+				{!iLaastGruppe && (
 					<Button
 						onClick={() =>
 							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
@@ -90,9 +80,6 @@ export const PersonVisning = ({
 					>
 						LEGG TIL/ENDRE
 					</Button>
-				)}
-				{!iLaastGruppe && ident.master === 'TPSF' && (
-					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (

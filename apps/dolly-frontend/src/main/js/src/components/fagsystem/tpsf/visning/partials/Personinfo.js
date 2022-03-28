@@ -1,18 +1,53 @@
 import React from 'react'
+import { addDays, isBefore } from 'date-fns'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import _has from 'lodash/has'
 
+function hentSkjermingData(skjermingPath) {
+	if (!skjermingPath) {
+		return null
+	}
+	return (
+		<>
+			{skjermingPath.egenAnsattDatoFom && (
+				<>
+					<TitleValue
+						title="Har skjerming"
+						value={
+							skjermingPath.egenAnsattDatoTom &&
+							isBefore(new Date(skjermingPath.egenAnsattDatoTom), addDays(new Date(), -1))
+								? 'NEI'
+								: 'JA'
+						}
+					/>
+					<TitleValue
+						title="Skjerming fra"
+						value={Formatters.formatDate(skjermingPath.egenAnsattDatoFom)}
+					/>
+					{skjermingPath.egenAnsattDatoTom && (
+						<TitleValue
+							title="Skjerming til"
+							value={Formatters.formatDate(skjermingPath.egenAnsattDatoTom)}
+						/>
+					)}
+				</>
+			)}
+		</>
+	)
+}
+
 function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 	if (!sikkerhetstiltakPath) {
 		return null
 	}
 	return (
-		<>
+		<div className="person-visning_content">
+			<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
 			{sikkerhetstiltakPath.typeSikkerhetTiltak && (
-				<>
+				<div className="person-visning_content">
 					<TitleValue
 						title="Type sikkerhetstiltak"
 						value={`${sikkerhetstiltakPath.typeSikkerhetTiltak} - ${sikkerhetstiltakPath.beskrSikkerhetTiltak}`}
@@ -25,10 +60,10 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 						title="Sikkerhetstiltak opphører"
 						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoTom)}
 					/>
-				</>
+				</div>
 			)}
 			{sikkerhetstiltakPath.tiltakstype && (
-				<>
+				<div className="person-visning_content">
 					<TitleValue
 						title="Type sikkerhetstiltak"
 						value={`${sikkerhetstiltakPath.tiltakstype} - ${sikkerhetstiltakPath.beskrivelse}`}
@@ -41,9 +76,9 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 						title="Sikkerhetstiltak opphører"
 						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigTilOgMed)}
 					/>
-				</>
+				</div>
 			)}
-		</>
+		</div>
 	)
 }
 
@@ -119,16 +154,14 @@ export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }
 						{(value) => `${Formatters.gtTypeLabel(data.gtType)} - ${value.label}`}
 					</TitleValue>
 				)}
+
 				<TitleValue
 					title="TK-nummer"
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 					size="medium"
 				/>
-				{hentSikkerhetstiltakData(
-					tpsMessagingData?.sikkerhetstiltak
-						? tpsMessagingData.sikkerhetstiltak
-						: data.sikkerhetstiltak
-				)}
+				{hentSkjermingData(tpsMessagingData?.egenAnsattDatoFom ? tpsMessagingData : data)}
+				{hentSikkerhetstiltakData(tpsMessagingData?.sikkerhetstiltak || data?.sikkerhetstiltak)}
 			</div>
 		</div>
 	)
