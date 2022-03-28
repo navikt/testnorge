@@ -1,12 +1,16 @@
 import api from '@/api'
 import Logger from '~/logger'
 
+export const REQUEST_ERROR = 'REQUEST_ERROR'
+
 export default class Request {
 	static get(url: string, headers: Record<string, string> = {}) {
 		return api
 			.fetchJson(url, { headers, method: 'GET' })
 			.then((response) => ({ data: response }))
-			.catch((error) => Request.logError(error, url))
+			.catch((error) => {
+				Request.logError(error, url)
+			})
 	}
 
 	static getBilde(url: string) {
@@ -48,7 +52,9 @@ export default class Request {
 			message: error.message,
 		})
 		if (error.name !== 'NotFoundError') {
-			throw new Error(event + ' Dersom Dolly er ustabil, prøv å refreshe siden!')
+			const errorMessage = event + ' Dersom Dolly er ustabil, prøv å refreshe siden!'
+			sessionStorage.setItem(REQUEST_ERROR, errorMessage)
+			throw new Error(errorMessage)
 		}
 	}
 }

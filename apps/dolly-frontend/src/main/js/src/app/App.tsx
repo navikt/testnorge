@@ -3,7 +3,6 @@ import { Route, Switch } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 import Loading from '~/components/ui/loading/Loading'
-import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
 import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 import './App.less'
@@ -13,18 +12,21 @@ import { ProfilApi } from '~/service/Api'
 import { getCurrentBruker } from '~/ducks/bruker'
 import { getEnvironments } from '~/ducks/environments'
 import { useDispatch } from 'react-redux'
+import { Toast } from '~/components/ui/toast/Toast'
 
-export const App = ({
-	applicationError,
-	brukerData,
-	clearAllErrors,
-	updateVarslingerBruker,
-}: {
-	applicationError?: Object
+type Props = {
+	// applicationError?: Object
 	clearAllErrors?: Function
 	brukerData?: Object
 	updateVarslingerBruker?: Function
-}) => {
+}
+
+export const App = ({
+	// applicationError,
+	brukerData,
+	clearAllErrors,
+	updateVarslingerBruker,
+}: Props) => {
 	const [criticalError, setCriticalError] = useState(null)
 	const [brukerProfil, setBrukerProfil] = useState(null)
 	const [brukerBilde, setBrukerBilde] = useState(null)
@@ -35,9 +37,7 @@ export const App = ({
 		dispatch(getCurrentBruker()).catch((err: Object) => setCriticalError(err))
 		dispatch(getEnvironments()).catch((err: Object) => setCriticalError(err))
 
-		ProfilApi.getProfil().then((response: { data: Object }) => {
-			setBrukerProfil(response.data)
-		})
+		ProfilApi.getProfil().then((response: { data: Object }) => setBrukerProfil(response.data))
 		ProfilApi.getProfilBilde().then((response: { data: Response }) =>
 			response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
 		)
@@ -85,7 +85,7 @@ export const App = ({
 				</Suspense>
 			</main>
 			<Forbedring brukerBilde={brukerBilde} />
-			{applicationError && <Toast error={applicationError} clearErrors={clearAllErrors} />}
+			<Toast clearErrors={clearAllErrors} />
 		</React.Fragment>
 	)
 }
