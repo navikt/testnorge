@@ -31,7 +31,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
@@ -67,6 +66,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
+            bestKriterier.setEkskluderEksternePersoner(true);
 
             List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
@@ -86,21 +86,17 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     coBestillinger.stream()
                                             .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
                                             .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                            .map(bestilling1 -> clientRegisters.stream()
+                                            .forEach(bestilling1 -> clientRegisters.stream()
                                                     .filter(register ->
                                                             !(register instanceof PdlForvalterClient ||
                                                                     register instanceof AktoerIdSyncClient ||
                                                                     register instanceof PensjonforvalterClient))
-                                                    .map(register -> {
+                                                    .forEach(register ->
                                                         register.gjenopprett(getDollyBestillingRequest(
                                                                 Bestilling.builder()
                                                                         .bestKriterier(bestilling1.getBestkriterier())
                                                                         .miljoer(bestilling.getMiljoer())
-                                                                        .build()), dollyPerson.get(), progress, false);
-                                                        return register;
-                                                    })
-                                                    .collect(toList()))
-                                            .collect(toList());
+                                                                        .build()), dollyPerson.get(), progress, false)));
 
                                 } else {
                                     progress.setFeil("NA:Feil= Finner ikke personen i database");

@@ -59,7 +59,7 @@ public class OrdreService {
                 .build();
 
         List.of(CompletableFuture.supplyAsync(
-                                () -> pdlDataConsumer.sendOrdre(ident, testident.isTpsf()), dollyForkJoinPool),
+                                () -> pdlDataConsumer.sendOrdre(ident, testident.isTpsf(), false), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
                                 () -> sendTpsMessaging(ident, progress), dollyForkJoinPool))
                 .forEach(future -> {
