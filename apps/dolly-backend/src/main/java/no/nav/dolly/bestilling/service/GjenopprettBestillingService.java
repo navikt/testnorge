@@ -54,9 +54,9 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
-        bestKriterier.setEkskluderEksternePersoner(true);
 
         if (nonNull(bestKriterier)) {
+            bestKriterier.setEkskluderEksternePersoner(true);
             dollyForkJoinPool.submit(() -> {
                 bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))

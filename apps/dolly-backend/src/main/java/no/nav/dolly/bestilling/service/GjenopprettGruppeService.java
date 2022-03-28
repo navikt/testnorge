@@ -86,21 +86,17 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     coBestillinger.stream()
                                             .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
                                             .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                            .map(bestilling1 -> clientRegisters.stream()
+                                            .forEach(bestilling1 -> clientRegisters.stream()
                                                     .filter(register ->
                                                             !(register instanceof PdlForvalterClient ||
                                                                     register instanceof AktoerIdSyncClient ||
                                                                     register instanceof PensjonforvalterClient))
-                                                    .map(register -> {
+                                                    .forEach(register ->
                                                         register.gjenopprett(getDollyBestillingRequest(
                                                                 Bestilling.builder()
                                                                         .bestKriterier(bestilling1.getBestkriterier())
                                                                         .miljoer(bestilling.getMiljoer())
-                                                                        .build()), dollyPerson.get(), progress, false);
-                                                        return register;
-                                                    })
-                                                    .toList())
-                                            .toList();
+                                                                        .build()), dollyPerson.get(), progress, false)));
 
                                 } else {
                                     progress.setFeil("NA:Feil= Finner ikke personen i database");
