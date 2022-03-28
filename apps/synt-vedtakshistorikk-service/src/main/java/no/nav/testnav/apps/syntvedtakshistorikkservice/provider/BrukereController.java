@@ -2,6 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
+
 import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
@@ -16,6 +17,9 @@ import java.util.Map;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAKSIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
+
+import static java.util.Objects.nonNull;
 
 @RestController
 @RequestMapping("api/v1/generer")
@@ -37,13 +41,16 @@ public class BrukereController {
                 MAKSIMUM_ALDER,
                 null);
 
-        var response = arenaForvalterService.opprettArbeidssoekereUtenVedtak(
-                identer,
-                syntetiserArenaRequest.getMiljoe());
+        if (nonNull(pdlProxyConsumer.createTags(identer, SYNT_TAGS))){
+            var response = arenaForvalterService.opprettArbeidssoekereUtenVedtak(
+                    identer,
+                    syntetiserArenaRequest.getMiljoe());
 
-        pdlProxyConsumer.createSyntTags(identer);
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.ok().body(null);
+        }
 
-        return ResponseEntity.ok().body(response);
     }
 
 }

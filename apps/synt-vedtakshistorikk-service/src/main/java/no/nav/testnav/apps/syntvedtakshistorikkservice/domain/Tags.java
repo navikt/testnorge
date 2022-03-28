@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public enum Tags {
-    ARENASYNT("ARENASYNT");
+    ARENASYNT("ARENASYNT"),
+    DOLLY("DOLLY");
 
     private String beskrivelse;
 

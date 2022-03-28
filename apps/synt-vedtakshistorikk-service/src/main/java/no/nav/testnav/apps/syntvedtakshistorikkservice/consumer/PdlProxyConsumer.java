@@ -3,6 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.GetPdlPersonCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.TagsOpprettingCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.TagsSlettingCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PdlProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
@@ -16,7 +17,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,6 @@ public class PdlProxyConsumer {
     private final ServerProperties serviceProperties;
 
     private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
-    private static final List<Tags> SYNT_TAGS = Collections.singletonList(Tags.ARENASYNT);
 
     public PdlProxyConsumer(
             PdlProxyProperties serviceProperties,
@@ -73,11 +72,11 @@ public class PdlProxyConsumer {
         }
     }
 
-    public String createSyntTags(List<String> identer) {
+    public String createTags(List<String> identer, List<Tags> tags) {
         try {
             if (isNull(identer) || identer.isEmpty()) return null;
             return tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new TagsOpprettingCommand(webClient, identer, SYNT_TAGS, accessToken.getTokenValue()).call())
+                    .flatMap(accessToken -> new TagsOpprettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
         } catch (Exception e) {
             log.error("Feil i opprettelse av tag(s) på ident(er).", e);
@@ -85,4 +84,15 @@ public class PdlProxyConsumer {
         }
     }
 
+    public String deleteTags(List<String> identer, List<Tags> tags){
+        try {
+            if (isNull(identer) || identer.isEmpty()) return null;
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new TagsSlettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Feil i sletting av tag(s) på ident(er).", e);
+            return null;
+        }
+    }
 }

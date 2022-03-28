@@ -28,6 +28,8 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtil
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
+
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -94,13 +96,13 @@ class PdlConsumerTest {
         stubTokenRequest();
         stubOpprettTags();
 
-        var response = pdlProxyConsumer.createSyntTags(Collections.singletonList("12345678910"));
+        var response = pdlProxyConsumer.createTags(Collections.singletonList("12345678910"), SYNT_TAGS);
         assertThat(response).isEqualTo("OK");
     }
 
     @Test
     void shouldNotOppretteTags() {
-        var response = pdlProxyConsumer.createSyntTags(null);
+        var response = pdlProxyConsumer.createTags(null, SYNT_TAGS);
         assertThat(response).isNull();
     }
 

@@ -3,6 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntVedtakshistorikkConsumer;
 
+import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -50,6 +52,8 @@ public class VedtakshistorikkService {
     private final ArenaTilleggService arenaTilleggService;
     private final PdlProxyConsumer pdlProxyConsumer;
 
+    public static final List<Tags> SYNT_TAGS = Arrays.asList(Tags.DOLLY, Tags.ARENASYNT);
+
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             String miljoe,
@@ -72,7 +76,6 @@ public class VedtakshistorikkService {
         } finally {
             forkJoinPool.shutdown();
         }
-        opprettTagPaaIdenter(responses);
         return responses;
     }
 
@@ -104,7 +107,7 @@ public class VedtakshistorikkService {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
                 var utvalgtIdent = getUtvalgtIdentIAldersgruppe(vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
-                if (nonNull(utvalgtIdent)) {
+                if (nonNull(utvalgtIdent) && opprettetTagsPaaIdent(utvalgtIdent)) {
                     responses.putAll(opprettHistorikkOgSendTilArena(utvalgtIdent, miljoe, vedtakshistorikk, tidligsteDato));
                 }
             }
@@ -166,6 +169,7 @@ public class VedtakshistorikkService {
         var avsluttendeAap115 = arenaAapService.getAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
 
         if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, personident, miljoe)) {
+            removeTagsPaaIdent(personident);
             return Collections.emptyMap();
         }
 
@@ -213,11 +217,13 @@ public class VedtakshistorikkService {
         return true;
     }
 
-    private void opprettTagPaaIdenter(Map<String, List<NyttVedtakResponse>> responses) {
-        if (!responses.isEmpty()) {
-            List<String> identer = new ArrayList<>(responses.keySet());
-            pdlProxyConsumer.createSyntTags(identer);
-        }
+    private boolean opprettetTagsPaaIdent(String ident) {
+        var response = pdlProxyConsumer.createTags(Collections.singletonList(ident), SYNT_TAGS);
+        return nonNull(response);
+    }
+
+    private void removeTagsPaaIdent(String ident){
+        pdlProxyConsumer.deleteTags(Collections.singletonList(ident), SYNT_TAGS);
     }
 
 }
