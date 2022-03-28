@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @SuperBuilder
@@ -43,6 +44,10 @@ public abstract class DbVersjonDTO implements Serializable {
     @JsonIgnore
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
+    }
+
+    public boolean isGjeldende() {
+        return isTrue(getGjeldende());
     }
 
     public enum Master {FREG, PDL}
