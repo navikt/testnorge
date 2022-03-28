@@ -67,21 +67,14 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
 			}
 		})
 
-	const identStatusIdList = [
-		'TPSF',
-		'TPSIMPORT',
-		'PDLIMPORT',
-		'PDL_FORVALTER',
-		'PEN_FORVALTER',
-		'PEN_INNTEKT',
-	]
+	const identStatusIdList = ['TPSF', 'TPSIMPORT', 'PDLIMPORT', 'PDL_FORVALTER']
+	const aktivIdList = statusListe.filter((system) => identStatusIdList.includes(system.id))
 
-	const identerOpprettet = statusListe
-		.filter((system) => identStatusIdList.includes(system.id))
-		.flatMap((system) => addOpprettedeIdenter(system))
+	const identerOpprettet =
+		aktivIdList.length > 0 ? aktivIdList.flatMap((system) => addOpprettedeIdenter(system)) : null
 
 	// Kun unike identer
-	return [...new Set(identerOpprettet)].length
+	return identerOpprettet && [...new Set(identerOpprettet)].length
 }
 
 // Setter bestillingstatus
