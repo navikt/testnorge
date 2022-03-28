@@ -15,18 +15,13 @@ import { useDispatch } from 'react-redux'
 import { Toast } from '~/components/ui/toast/Toast'
 
 type Props = {
-	// applicationError?: Object
+	applicationError?: Object
 	clearAllErrors?: Function
 	brukerData?: Object
 	updateVarslingerBruker?: Function
 }
 
-export const App = ({
-	// applicationError,
-	brukerData,
-	clearAllErrors,
-	updateVarslingerBruker,
-}: Props) => {
+export const App = ({ brukerData, clearAllErrors, updateVarslingerBruker }: Props) => {
 	const [criticalError, setCriticalError] = useState(null)
 	const [brukerProfil, setBrukerProfil] = useState(null)
 	const [brukerBilde, setBrukerBilde] = useState(null)

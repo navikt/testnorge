@@ -8,7 +8,16 @@ export class ErrorBoundary extends React.Component {
 		stackTrace: this.props.stackTrace,
 	}
 
+	triggerError = ({ error, errorInfo }) => {
+		this.setState({
+			error: error,
+			stackTrace: errorInfo.componentStack,
+		})
+	}
+
 	componentDidCatch(error, info) {
+		console.log('error: ', error) //TODO - SLETT MEG
+		console.log('info: ', info) //TODO - SLETT MEG
 		this.setState({
 			error: error,
 			stackTrace: info.componentStack,

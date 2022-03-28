@@ -6,8 +6,9 @@ import { updateVarslingerBruker } from '~/ducks/varslinger'
 import { App } from '~/app/App'
 
 const mapStateToProps = (state) => ({
+	router: state.router,
 	brukerData: state.bruker.brukerData,
-	// applicationError: applicationErrorSelector(state),
+	redirectTo: state.common.redirectTo,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

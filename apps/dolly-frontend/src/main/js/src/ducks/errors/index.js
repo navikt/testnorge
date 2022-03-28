@@ -15,7 +15,7 @@ export const createErrorMessageSelector = (actions) => (state) => {
 
 // Pick any error
 export const applicationErrorSelector = createSelector(
-	(error) => [error],
+	(state) => state.errors,
 	(errors) => {
 		const filtered = _filter(errors, (val) => val !== '')
 		return filtered[Object.keys(filtered)[0]]
