@@ -104,19 +104,22 @@ og velg så hvilke ekstra egenskaper personen skal ha.
 Videoen nedenfor viser hvordan man kan opprette personer med tilfeldige verdier.
 
 <video src="https://user-images.githubusercontent.com/58416744/160127199-77556648-6be9-44b6-b7ca-df4d4ae52a7d.mov"
-controls="controls" style="max-width: 730px;" />
+controls="controls" style="max-width: 730px;" >
+</video>
 
 #### Opprette person med ønsket verdier
 Videoen nedenfor viser hvordan man kan opprette en person med ønskede verdier.
 
 <video src="https://user-images.githubusercontent.com/58416744/160127595-4655a2d6-9a59-4f56-b231-87fb4cded2c9.mov"
-controls="controls" style="max-width: 730px;" />
+controls="controls" style="max-width: 730px;" >
+</video>
 
 #### Legg til/endre person
 Videoen nedenfor viser hvordan man kan legge til ekstra egenskaper på en person. 
 
 <video src="https://user-images.githubusercontent.com/58416744/160127725-8e96934c-af19-4801-b69d-67fe907b16d7.mov"
-controls="controls" style="max-width: 730px;" />
+controls="controls" style="max-width: 730px;">
+</video>
 
 
 ---
@@ -139,7 +142,8 @@ Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som
 Videoen nedenfor viser hvordan man kan opprette og ta i bruk maler. 
 
 <video src="https://user-images.githubusercontent.com/58416744/160128266-a13c18ea-a709-4914-8627-befd25e1af16.mov" 
-       controls="controls" style="max-width: 730px;" />
+       controls="controls" style="max-width: 730px;" >
+</video>
 
 ---
 
@@ -204,6 +208,7 @@ cookies på nettsiden. Dette er noe vi prøver å finne en løsning for, men ime
 cleare cookies når dette skjer. Nedenfor finner du en demo-video for hvordan dette kan gjøres. 
 
 <video src="https://user-images.githubusercontent.com/58416744/159910685-f4bcbe86-c856-459c-a220-b242c46a59cd.mov"
-       controls="controls" style="max-width: 730px;"/>
+       controls="controls" style="max-width: 730px;">
+</video>
 
 
