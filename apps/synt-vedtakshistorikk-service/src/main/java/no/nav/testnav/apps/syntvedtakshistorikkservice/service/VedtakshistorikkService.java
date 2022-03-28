@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.IntStream;
 
 import lombok.RequiredArgsConstructor;
@@ -51,6 +51,7 @@ public class VedtakshistorikkService {
     private final ArenaTiltakService arenaTiltakService;
     private final ArenaTilleggService arenaTilleggService;
     private final PdlProxyConsumer pdlProxyConsumer;
+    private final ExecutorService dollyForkJoinPool;
 
     public static final List<Tags> SYNT_TAGS = Arrays.asList(Tags.DOLLY, Tags.ARENASYNT);
 
@@ -61,9 +62,8 @@ public class VedtakshistorikkService {
     ) {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         var intStream = IntStream.range(0, antallNyeIdenter).boxed().toList();
-        var forkJoinPool = new ForkJoinPool(10);
         try {
-            forkJoinPool.submit(() ->
+            dollyForkJoinPool.submit(() ->
                     intStream.parallelStream().forEach(i ->
                             opprettHistorikkForIdent(miljoe, responses)
                     )
@@ -74,7 +74,7 @@ public class VedtakshistorikkService {
         } catch (ExecutionException e) {
             log.error("Kunne ikke opprette vedtakshistorikk.", e);
         } finally {
-            forkJoinPool.shutdown();
+            dollyForkJoinPool.shutdown();
         }
         return responses;
     }
