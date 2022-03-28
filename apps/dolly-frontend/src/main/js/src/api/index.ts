@@ -1,5 +1,8 @@
 import { NotFoundError } from '~/error'
 
+const originalFetch = require('isomorphic-fetch')
+const fetch = require('fetch-retry')(originalFetch)
+
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 
 type Config = {
@@ -9,14 +12,15 @@ type Config = {
 }
 
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
-	window
-		.fetch(url, {
-			method: config.method,
-			redirect: config.redirect,
-			credentials: 'include',
-			headers: config.headers,
-			body: JSON.stringify(body),
-		})
+	fetch(url, {
+		retries: 5,
+		retryDelay: 800,
+		method: config.method,
+		redirect: config.redirect,
+		credentials: 'include',
+		headers: config.headers,
+		body: JSON.stringify(body),
+	})
 		.then((response: Response) => {
 			if (response.redirected) {
 				window.location.href = response.url

@@ -37,7 +37,7 @@ export default class RedigerGruppe extends PureComponent {
 
 		const buttons = (
 			<Fragment>
-				<NavButton type={'fare'} onClick={() => this.onCancel()}>
+				<NavButton htmlType={'reset'} type={'fare'} onClick={() => this.onCancel()}>
 					Avbryt
 				</NavButton>
 				<NavButton type="hoved" htmlType="submit">
@@ -56,7 +56,7 @@ export default class RedigerGruppe extends PureComponent {
 					<Form className="opprett-tabellrad" autoComplete="off">
 						<div className="fields">
 							<FormikTextInput name="navn" label="NAVN" size="grow" autoFocus />
-							<FormikTextInput name="hensikt" label="HENSIKT" size="grow" />
+							<FormikTextInput name="hensikt" label="HENSIKT" size="grow" useOnChange={true} />
 							{buttons}
 						</div>
 						{error && (
