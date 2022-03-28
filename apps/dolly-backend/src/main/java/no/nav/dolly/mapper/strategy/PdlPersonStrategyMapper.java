@@ -100,32 +100,28 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                     public void mapAtoB(PersonDTO personDto, Person person, MappingContext context) {
 
                         NavnDTO navnDTO = personDto.getNavn().stream()
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .findFirst()
                                 .orElse(null);
 
                         person.setPersonStatus(personDto.getFolkeregisterPersonstatus().stream()
-                                .filter(Objects::nonNull)
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(FolkeregisterPersonstatusDTO::getStatus)
                                 .filter(Objects::nonNull)
                                 .map(Enum::name)
                                 .findFirst().orElse(null));
                         person.setKjonn(personDto.getKjoenn().stream()
-                                .filter(Objects::nonNull)
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(KjoennDTO::getKjoenn)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(KjoennDTO.Kjoenn.UKJENT).name().substring(0, 1));
                         person.setFoedselsdato(personDto.getFoedsel().stream()
-                                .filter(Objects::nonNull)
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(FoedselDTO::getFoedselsdato)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(null));
                         person.setDoedsdato(personDto.getDoedsfall().stream()
-                                .filter(Objects::nonNull)
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(DoedsfallDTO::getDoedsdato)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(null));
@@ -140,24 +136,21 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                         .toList());
                         person.setSivilstand(
                                 mapSivilstand(personDto.getSivilstand().stream()
-                                        .filter(Objects::nonNull)
-                                        .filter(DbVersjonDTO::getGjeldende)
+                                        .filter(DbVersjonDTO::isGjeldende)
                                         .map(SivilstandDTO::getType)
                                         .filter(Objects::nonNull)
                                         .findFirst()
                                         .orElse(null)));
                         person.setFoedselsdato(
                                 personDto.getFoedsel().stream()
-                                        .filter(Objects::nonNull)
-                                        .filter(DbVersjonDTO::getGjeldende)
+                                        .filter(DbVersjonDTO::isGjeldende)
                                         .map(FoedselDTO::getFoedselsdato)
                                         .filter(Objects::nonNull)
                                         .findFirst()
                                         .orElse(null)
                         );
                         person.setAlder(personDto.getFoedsel().stream()
-                                .filter(Objects::nonNull)
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(foedselDTO -> ChronoUnit.YEARS.between(foedselDTO.getFoedselsdato(), LocalDateTime.now()))
                                 .map(Long::intValue)
                                 .findFirst()
@@ -170,8 +163,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                             person.setForkortetNavn("%s %s".formatted(navnDTO.getFornavn(), navnDTO.getEtternavn()));
                         }
                         person.setKjonn(personDto.getKjoenn().stream()
-                                .filter(Objects::nonNull)
-                                .filter(DbVersjonDTO::getGjeldende)
+                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(KjoennDTO::getKjoenn)
                                 .map(Enum::name)
                                 .findFirst().orElse(null)
