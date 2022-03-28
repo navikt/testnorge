@@ -54,6 +54,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        bestKriterier.setEkskluderEksternePersoner(true);
 
         if (nonNull(bestKriterier)) {
             dollyForkJoinPool.submit(() -> {

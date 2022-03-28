@@ -31,7 +31,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
@@ -65,6 +64,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        bestKriterier.setEkskluderEksternePersoner(true);
 
         if (nonNull(bestKriterier)) {
 
@@ -99,8 +99,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                         .build()), dollyPerson.get(), progress, false);
                                                         return register;
                                                     })
-                                                    .collect(toList()))
-                                            .collect(toList());
+                                                    .toList())
+                                            .toList();
 
                                 } else {
                                     progress.setFeil("NA:Feil= Finner ikke personen i database");

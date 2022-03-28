@@ -44,8 +44,8 @@ public class TpsBackportingClient implements ClientRegister {
                                 .person(bestilling.getPdldata().getPerson())
                                 .build());
             }
-        } catch (
-                WebClientResponseException e) {
+
+        } catch (WebClientResponseException e) {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
             return;
