@@ -14,7 +14,12 @@ import { getCurrentBruker } from '~/ducks/bruker'
 import { getEnvironments } from '~/ducks/environments'
 import { useDispatch } from 'react-redux'
 
-export const App = (props: {
+export const App = ({
+	applicationError,
+	brukerData,
+	clearAllErrors,
+	updateVarslingerBruker,
+}: {
 	applicationError?: Object
 	clearAllErrors?: Function
 	brukerData?: Object
@@ -37,8 +42,6 @@ export const App = (props: {
 			response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
 		)
 	}, [])
-
-	const { applicationError, clearAllErrors, brukerData, updateVarslingerBruker } = props
 
 	const logout = (stackTrace: string) => {
 		let feilmelding = 'unknown_error'
