@@ -11,4 +11,5 @@ public class PersonstatusModel implements WithMetadata{
     String status;
     String forenkletStatus;
     Metadata metadata;
+    FolkeregisterMetadata folkeregistermetadata;
 }

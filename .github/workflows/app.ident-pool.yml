@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/ident_pool_fjerne_tpsf_avhengigheter'}}
     with:
       resource: 'apps/ident-pool/nais.yml'
       app-name: 'ident-pool'

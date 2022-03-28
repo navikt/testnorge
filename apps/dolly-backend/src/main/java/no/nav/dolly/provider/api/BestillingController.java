@@ -8,6 +8,7 @@ import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.MalBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -80,6 +81,13 @@ public class BestillingController {
     public RsMalBestillingWrapper getMalBestillinger() {
 
         return malBestillingService.getMalBestillinger();
+    }
+
+    @GetMapping("/malbestilling/bruker")
+    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
+    public List<RsMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
+
+        return malBestillingService.getMalbestillingByNavnAndUser(brukerId, malNavn);
     }
 
     @DeleteMapping("/malbestilling/{id}")

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { api } from './api'
+import { malerApi } from './MalerApi'
 import Button from '~/components/ui/button/Button'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -29,7 +29,7 @@ export const EndreMalnavn = ({ malInfo, setMaler, avbrytRedigering }) => {
 }
 
 const lagreEndring = (nyttMalnavn, setMaler, id, avbrytRedigering) => {
-	api
+	malerApi
 		.endreMalNavn(id, nyttMalnavn)
 		.then(() =>
 			setMaler((maler) =>

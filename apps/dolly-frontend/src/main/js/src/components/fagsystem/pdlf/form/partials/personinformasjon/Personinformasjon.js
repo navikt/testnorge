@@ -85,7 +85,7 @@ export const Personinformasjon = ({ formikBag }) => {
 	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
 
 	useEffect(() => {
-		if (!isTestnorgeIdent) {
+		if (!isTestnorgeIdent && gruppeId) {
 			const eksisterendeIdent = personFoerLeggTil?.pdlforvalter?.person?.ident
 			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response) => {
 				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))

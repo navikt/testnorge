@@ -11,6 +11,7 @@ import Formatters from '~/utils/DataFormatter'
 
 type OrganisasjonBestillingProps = {
 	brukerId: string
+	brukertype: string
 	bestillinger: Array<OrgStatus>
 }
 
@@ -23,6 +24,7 @@ const ikonTypeMap = {
 
 export default function OrganisasjonBestilling({
 	brukerId,
+	brukertype,
 	bestillinger,
 }: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
@@ -90,7 +92,12 @@ export default function OrganisasjonBestilling({
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {
 					return (
-						<BestillingDetaljer bestilling={bestilling} iLaastGruppe={null} brukerId={brukerId} />
+						<BestillingDetaljer
+							bestilling={bestilling}
+							iLaastGruppe={null}
+							brukerId={brukerId}
+							brukertype={brukertype}
+						/>
 					)
 				}}
 			/>

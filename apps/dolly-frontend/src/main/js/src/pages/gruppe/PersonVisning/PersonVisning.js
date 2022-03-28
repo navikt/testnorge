@@ -1,5 +1,5 @@
-import React from 'react'
-import { useMount } from 'react-use'
+import React, { useEffect, useState } from 'react'
+import { useBoolean, useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -22,12 +22,12 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
+import { DollyApi } from '~/service/Api'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -52,17 +52,23 @@ export const PersonVisning = ({
 	editPdlAttributt,
 	getPdlForvalter,
 	iLaastGruppe,
+	setVisning,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
-	const personInfo = data.tpsf
-		? data.tpsf
-		: {
-				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
-				ident: data.pdlforvalter?.person?.ident,
-				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
-				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
-		  }
+	const [pdlData, setPdlData] = useState(null)
+	const [pdlLoading, setPdlLoading] = useBoolean(true)
+
+	useEffect(() => {
+		DollyApi.getPersonFraPdl(ident.ident)
+			.then((response) => {
+				setPdlData(response.data?.data)
+				setPdlLoading(false)
+			})
+			.catch((e) => {
+				setPdlLoading(false)
+			})
+	}, [])
 
 	return (
 		<div className="person-visning">
@@ -73,18 +79,9 @@ export const PersonVisning = ({
 							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
 						}
 						kind="add-circle"
-						disabled={ident.master === 'TPSF'}
-						title={
-							ident.master === 'TPSF'
-								? 'Det er dessverre ikke lenger mulig å gjøre endringer på denne testpersonen. Master for bestillinger er endret til PDL, men denne personen er opprettet med TPS som master.'
-								: null
-						}
 					>
 						LEGG TIL/ENDRE
 					</Button>
-				)}
-				{!iLaastGruppe && ident.master === 'TPSF' && (
-					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (
@@ -114,7 +111,7 @@ export const PersonVisning = ({
 					// fetch={getPdlForvalter}
 				/>
 			)}
-			{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} loading={loading.pdl} />}
+			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
@@ -138,8 +135,8 @@ export const PersonVisning = ({
 			/>
 			<DokarkivVisning ident={ident.ident} />
 			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
-			<TidligereBestillinger ids={ident.bestillingId} />
+			<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
+			<TidligereBestillinger ids={ident.bestillingId} setVisning={setVisning} ident={ident.ident} />
 			<BeskrivelseConnector ident={ident} />
 		</div>
 	)

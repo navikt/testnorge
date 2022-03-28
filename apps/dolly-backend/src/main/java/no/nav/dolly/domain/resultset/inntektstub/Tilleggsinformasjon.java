@@ -1,14 +1,17 @@
 package no.nav.dolly.domain.resultset.inntektstub;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -30,6 +33,25 @@ public class Tilleggsinformasjon {
     private AldersUfoereEtterlatteAvtalefestetOgKrigspensjon pensjon;
     private ReiseKostOgLosji reiseKostOgLosji;
     private UtenlandskArtist utenlandskArtist;
+
+    @JsonIgnore
+    public boolean isEmpty() {
+
+        return Stream.of(
+                        getBilOgBaat(),
+                        getBonusFraForsvaret(),
+                        getDagmammaIEgenBolig(),
+                        getEtterbetalingsperiode(),
+                        getInntektPaaNorskKontinentalsokkel(),
+                        getInntjeningsforhold(),
+                        getLivrente(),
+                        getLottOgPart(),
+                        getNettoloenn(),
+                        getPensjon(),
+                        getReiseKostOgLosji(),
+                        getUtenlandskArtist())
+                .allMatch(Objects::isNull);
+    }
 
     @Getter
     @Setter

@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,7 +158,7 @@ class BostedAdresseServiceTest {
     }
 
     @Test
-    void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
+    void whenOverlappingGyldigTil_thenFixInterval() {
 
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
@@ -172,16 +173,15 @@ class BostedAdresseServiceTest {
                                 .isNew(true)
                                 .build(),
                         BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
+                                .gyldigFraOgMed(LocalDate.of(2020, 2, 2).atStartOfDay())
                                 .matrikkeladresse(new MatrikkeladresseDTO())
                                 .isNew(true)
                                 .build())))
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request, null));
+        var response = bostedAdresseService.convert(request, null);
 
-        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
+        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2020,2,1,0,0))));
     }
 
     @Test

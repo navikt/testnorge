@@ -11,6 +11,8 @@ import { BestillingsveilederModal } from '~/components/bestillingsveileder/start
 import Icon from '~/components/ui/icon/Icon'
 import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
 import { Redirect } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { resetSearch } from '~/ducks/search'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -24,6 +26,8 @@ export default function Gruppe({
 	gruppe,
 	identer,
 	brukernavn,
+	brukerBilde,
+	brukerProfil,
 	brukertype,
 	isFetching,
 	isDeletingGruppe,
@@ -41,23 +45,23 @@ export default function Gruppe({
 	const [sidetall, setSidetall] = useState(0)
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
+	const slettedeIdenter = useState([])
 
-	useEffect(() => {
-		getBestillinger()
-	}, [])
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		getGruppe(sidetall, sideStoerrelse)
-	}, [sidetall, sideStoerrelse])
-
-	if (isFetching && !gruppe) return <Loading label="Laster personer" panel />
-	if (!gruppe) {
-		getGruppe(sidetall, sideStoerrelse)
 		getBestillinger()
-		return null
+	}, [sidetall, sideStoerrelse, navigerTilPerson])
+
+	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
+
+	const byttVisning = (event) => {
+		if (event?.target?.value === 'personer') {
+			dispatch(resetSearch())
+		}
+		setVisning(typeof event === 'string' ? event : event.target.value)
 	}
-
-	const byttVisning = (event) => setVisning(event.target.value)
 
 	const identArray = Object.values(identer).filter(
 		(ident) => ident.bestillingId != null && ident.bestillingId.length > 0
@@ -86,7 +90,11 @@ export default function Gruppe({
 				isFetchingExcel={isFetchingExcel}
 			/>
 
-			<StatusListeConnector gruppeId={gruppe.id} />
+			<StatusListeConnector
+				gruppeId={gruppe.id}
+				brukerBilde={brukerBilde}
+				brukerProfil={brukerProfil}
+			/>
 
 			<div className="toolbar">
 				{brukertype === 'AZURE' && (
@@ -141,9 +149,11 @@ export default function Gruppe({
 					iLaastGruppe={erLaast}
 					sidetall={sidetall}
 					sideStoerrelse={sideStoerrelse}
+					slettedeIdenter={slettedeIdenter}
 					setSidetall={setSidetall}
 					setSideStoerrelse={setSideStoerrelse}
 					brukertype={brukertype}
+					setVisning={byttVisning}
 				/>
 			)}
 			{visning === VISNING_BESTILLING && (

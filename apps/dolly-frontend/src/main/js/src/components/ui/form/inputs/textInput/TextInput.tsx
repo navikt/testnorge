@@ -37,6 +37,7 @@ export const DollyTextInput = (props: {
 	value?: any
 	size?: string
 	type?: string
+	useOnChange?: boolean
 	onBlur?: Function
 	onSubmit?: Function
 	onChange?: Function
@@ -60,6 +61,7 @@ export const FormikTextInput = ({
 	label?: string
 	size?: string
 	type?: string
+	useOnChange?: boolean
 }) => {
 	const component = <UncontrolledFormikTextInput {...props} />
 	// @ts-ignore

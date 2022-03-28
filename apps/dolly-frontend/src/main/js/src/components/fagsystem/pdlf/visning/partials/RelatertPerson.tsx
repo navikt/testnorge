@@ -72,7 +72,7 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 			</div>
 			{relatertPersonPdl?.data?.hentPerson && (
 				<StyledPdlData>
-					<PdlDataVisning pdlData={relatertPersonPdl} />
+					<PdlDataVisning pdlData={relatertPersonPdl.data} />
 					<p>
 						<i>Hold pekeren over PDL for å se dataene som finnes på {tittel.toLowerCase()} i PDL</i>
 					</p>

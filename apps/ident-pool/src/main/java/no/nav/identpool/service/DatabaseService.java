@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
@@ -33,18 +32,18 @@ public class DatabaseService {
 
         HentIdenterRequest availableIdentsRequest = mapperFacade.map(request, HentIdenterRequest.class);
 
-        Page<Ident> firstPage = findPage(availableIdentsRequest, LEDIG, 0);
-        Map<Integer, Page<Ident>> pageCache = new HashMap<>();
+        var firstPage = findPage(availableIdentsRequest, LEDIG, 0);
+        var pageCache = new HashMap<Integer, Page<Ident>>();
         pageCache.put(0, firstPage);
 
         int totalPages = firstPage.getTotalPages();
         if (totalPages > 0) {
             List<String> usedIdents = new ArrayList<>();
             SecureRandom rand = new SecureRandom();
-            for (int i = 0; i < request.getAntall(); i++) {
-                int randomPageNumber = rand.nextInt(totalPages);
+            for (var i = 0; i < request.getAntall(); i++) {
+                var randomPageNumber = rand.nextInt(totalPages);
                 pageCache.computeIfAbsent(randomPageNumber, k ->
-                    findPage(availableIdentsRequest, LEDIG, randomPageNumber));
+                        findPage(availableIdentsRequest, LEDIG, randomPageNumber));
 
                 List<Ident> content = pageCache.get(randomPageNumber).getContent();
                 for (Ident ident : content) {
@@ -60,6 +59,7 @@ public class DatabaseService {
     }
 
     private Page<Ident> findPage(HentIdenterRequest request, Rekvireringsstatus rekvireringsstatus, int page) {
+
         return identRepository.findAll(
                 rekvireringsstatus, request.getIdenttype(), request.getKjoenn(), request.getFoedtFoer(),
                 request.getFoedtEtter(), isTrue(request.getSyntetisk()), PageRequest.of(page, request.getAntall()));

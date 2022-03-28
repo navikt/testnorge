@@ -9,8 +9,9 @@ export default function TableRow({
 	expandComponent,
 	navLink,
 	expandPerson = false,
+	expandBestilling = false,
 }) {
-	const [isExpanded, setIsExpanded] = useState(expandPerson)
+	const [isExpanded, setIsExpanded] = useState(expandPerson || expandBestilling)
 
 	const onRowClick = (event) => {
 		if (expandComponent) return setIsExpanded(!isExpanded)

@@ -20,9 +20,14 @@ export const identFraTestnorge = (opts: any) => {
 	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 
+const leggTilPaaTpsfIdent = (opts: any) => {
+	return opts?.is?.leggTil && opts?.identMaster === 'TPSF'
+}
+
 export const Steg1Person = ({ stateModifier }: any) => {
 	const opts = useContext(BestillingsveilederContext)
 	const testnorgeIdent = identFraTestnorge(opts)
+	const tpsfIdent = leggTilPaaTpsfIdent(opts)
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
@@ -48,11 +53,11 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		<AttributtVelger checked={checked}>
 			{!testnorgeIdent && <PersoninformasjonPanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <AdressePanel stateModifier={stateModifier} />}
-			{!testnorgeIdent && <FamilierelasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && !tpsfIdent && <FamilierelasjonPanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<ArbeidInntektPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
-			{!testnorgeIdent && <ArenaPanel stateModifier={stateModifier} />}
+			<ArenaPanel stateModifier={stateModifier} />
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
 			<InstitusjonsoppholdPanel stateModifier={stateModifier} />

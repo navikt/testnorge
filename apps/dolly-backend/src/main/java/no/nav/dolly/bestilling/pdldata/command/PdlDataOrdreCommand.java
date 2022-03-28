@@ -22,10 +22,12 @@ public class PdlDataOrdreCommand implements Callable<Mono<String>> {
 
     private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/personer/{ident}/ordre";
     private static final String IS_TPS_MASTER = "isTpsMaster";
+    private static final String EXCLUDE_EKSTERNE_PERSONER = "ekskluderEksternePersoner";
 
     private final WebClient webClient;
     private final String ident;
     private final boolean isTpsfMaster;
+    private final boolean ekskluderEksternePersoner;
     private final String token;
 
     public Mono<String> call() {
@@ -34,6 +36,7 @@ public class PdlDataOrdreCommand implements Callable<Mono<String>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
                         .queryParam(IS_TPS_MASTER, isTpsfMaster)
+                        .queryParam(EXCLUDE_EKSTERNE_PERSONER, ekskluderEksternePersoner)
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())

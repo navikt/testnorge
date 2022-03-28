@@ -71,13 +71,15 @@ export const Foedsel = ({ data, put, fetch, tmpPersoner, ident }: FoedselTypes) 
 	const handleSubmit = async (data) => {
 		setVisningModus(Modus.Loading)
 		const attributt = Object.keys(data)[0]
-		// await put(attributt, data.foedsel.id, data.foedsel)
-		await put(attributt, data.foedsel.id, 'xxx')
+		await put(attributt, data.foedsel.id, data.foedsel)
 			.then((response) => {
-				console.log('response: ', response) //TODO - SLETT MEG
-				if (response) fetch()
-				setVisningModus(Modus.Les)
+				if (response)
+					fetch().then((test) => {
+						if (test) setVisningModus(Modus.Les)
+					})
+				// setVisningModus(Modus.Les)
 			})
+			// .then(setVisningModus(Modus.Les))
 			.catch((error) => {
 				console.log('error: ', error) //TODO - SLETT MEG
 				fetch()

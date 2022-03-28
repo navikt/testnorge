@@ -1,9 +1,3 @@
----
-layout: default
-title: Miljøer service
-parent: Applikasjoner
----
-
 # Miljoer-service
 App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
 

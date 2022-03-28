@@ -1,9 +1,3 @@
----
-layout: default
-title: Jenkins batch-status service
-parent: Applikasjoner
----
-
 # jenkins-batch-status-service
 App for å hente ut batch status fra Jenkins.
 

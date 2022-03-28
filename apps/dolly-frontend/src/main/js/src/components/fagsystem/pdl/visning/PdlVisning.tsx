@@ -8,7 +8,7 @@ import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/parti
 import { PdlNasjonalitet } from '~/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlNasjonalitet'
 import { PdlFullmakt } from '~/components/fagsystem/pdl/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
-import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
 import { PdlBoadresse } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlBoadresse'
 import { PdlOppholdsadresse } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlOppholdsadresse'
@@ -23,18 +23,17 @@ import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 
 type PdlVisningProps = {
-	pdlData: PdlDataWrapper
+	pdlData: PdlData
 	loading?: boolean
 }
 
 export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 
-	const data = pdlData.data
-	if (!data || !data.hentPerson) {
+	if (!pdlData?.hentPerson) {
 		return null
 	}
-	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
 	const {
 		foedsel,
 		telefonnummer,

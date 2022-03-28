@@ -2,6 +2,10 @@ import { connect } from 'react-redux'
 import { GjenopprettGruppe } from './GjenopprettGruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
 
+const mapStateToProps = (state) => ({
+	brukertype: state.bruker.brukerData.brukertype,
+})
+
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { id } = ownProps.gruppe
 	return {
@@ -9,4 +13,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	}
 }
 
-export default connect(null, mapDispatchToProps)(GjenopprettGruppe)
+export default connect(mapStateToProps, mapDispatchToProps)(GjenopprettGruppe)

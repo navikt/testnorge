@@ -44,9 +44,10 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 		return null
 	}
 	return (
-		<>
+		<div className="person-visning_content">
+			<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
 			{sikkerhetstiltakPath.typeSikkerhetTiltak && (
-				<>
+				<div className="person-visning_content">
 					<TitleValue
 						title="Type sikkerhetstiltak"
 						value={`${sikkerhetstiltakPath.typeSikkerhetTiltak} - ${sikkerhetstiltakPath.beskrSikkerhetTiltak}`}
@@ -59,10 +60,10 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 						title="Sikkerhetstiltak opphører"
 						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoTom)}
 					/>
-				</>
+				</div>
 			)}
 			{sikkerhetstiltakPath.tiltakstype && (
-				<>
+				<div className="person-visning_content">
 					<TitleValue
 						title="Type sikkerhetstiltak"
 						value={`${sikkerhetstiltakPath.tiltakstype} - ${sikkerhetstiltakPath.beskrivelse}`}
@@ -75,9 +76,9 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 						title="Sikkerhetstiltak opphører"
 						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigTilOgMed)}
 					/>
-				</>
+				</div>
 			)}
-		</>
+		</div>
 	)
 }
 
@@ -160,11 +161,7 @@ export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }
 					size="medium"
 				/>
 				{hentSkjermingData(tpsMessagingData?.egenAnsattDatoFom ? tpsMessagingData : data)}
-				{hentSikkerhetstiltakData(
-					tpsMessagingData?.sikkerhetstiltak
-						? tpsMessagingData.sikkerhetstiltak
-						: data.sikkerhetstiltak
-				)}
+				{hentSikkerhetstiltakData(tpsMessagingData?.sikkerhetstiltak || data?.sikkerhetstiltak)}
 			</div>
 		</div>
 	)

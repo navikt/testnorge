@@ -47,7 +47,7 @@ public class PersonDTO {
 
     private LocalDateTime egenAnsattDatoTom;
 
-    private SikkerhetstiltakDTO sikkerhetstiltak;
+    private SikkerhetTiltakDTO sikkerhetstiltak;
 
     private AdresseDTO boadresse;
 
@@ -85,7 +85,7 @@ public class PersonDTO {
 
     private String importFra;
 
-    private List<TelefonnummerDTO> telefonnumre;
+    private List<TelefonTypeNummerDTO> telefonnumre;
 
     private BankkontonrUtlandDTO bankkontonrUtland;
     private BankkontonrNorskDTO bankkontonrNorsk;
@@ -97,7 +97,7 @@ public class PersonDTO {
         return relasjoner;
     }
 
-    public List<TelefonnummerDTO> getTelefonnumre() {
+    public List<TelefonTypeNummerDTO> getTelefonnumre() {
         if (isNull(telefonnumre)) {
             telefonnumre = new ArrayList<>();
         }

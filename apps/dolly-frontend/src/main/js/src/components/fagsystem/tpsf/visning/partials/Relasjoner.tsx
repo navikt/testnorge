@@ -77,7 +77,7 @@ export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 					data={partnere}
 					getHeader={getHeader('Partner')}
 					header="Partner"
-					expandable={partnere.length > 1}
+					expandable={partnere?.length > 1}
 				>
 					{(partner: Relasjon, idx: number) => (
 						<Partner key={idx} data={partner.personRelasjonMed} />
@@ -90,7 +90,7 @@ export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 					data={barn}
 					getHeader={getHeader('Barn')}
 					header="Barn"
-					expandable={barn.length > 1}
+					expandable={barn?.length > 1}
 				>
 					{(barnet: Relasjon, idx: number) => (
 						<Barn key={idx} data={barnet.personRelasjonMed} type={barnet.relasjonTypeNavn} />
@@ -103,7 +103,7 @@ export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 					data={foreldre}
 					getHeader={getHeader('Forelder')}
 					header="Forelder"
-					expandable={foreldre.length > 1}
+					expandable={foreldre?.length > 1}
 				>
 					{(forelder: Relasjon, idx: number) => (
 						<Foreldre

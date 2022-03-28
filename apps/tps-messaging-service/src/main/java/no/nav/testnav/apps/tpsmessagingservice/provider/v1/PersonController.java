@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.apps.tpsmessagingservice.service.AdresseService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
@@ -9,12 +10,13 @@ import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,6 +47,7 @@ public class PersonController {
     private final BankkontoNorskService bankkontoNorskService;
     private final TelefonnummerService telefonnummerService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
+    private final AdresseService adresseService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
@@ -70,14 +73,14 @@ public class PersonController {
                                                          @RequestParam
                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                                                  LocalDate fraOgMed,
-                                                         @RequestParam (required = false) List<String> miljoer) {
+                                                         @RequestParam(required = false) List<String> miljoer) {
 
         return convert(egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer));
     }
 
     @DeleteMapping("/{ident}/egenansatt")
     public List<TpsMeldingResponseDTO> opphoerEgenansatt(@PathVariable String ident,
-                                                         @RequestParam (required = false) List<String> miljoer) {
+                                                         @RequestParam(required = false) List<String> miljoer) {
 
         return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
     }
@@ -85,7 +88,7 @@ public class PersonController {
     @PostMapping("/{ident}/spraakkode")
     public List<TpsMeldingResponseDTO> endreSpraakkode(@PathVariable String ident,
                                                        @RequestBody SpraakDTO spraak,
-                                                       @RequestParam (required = false) List<String> miljoer) {
+                                                       @RequestParam(required = false) List<String> miljoer) {
 
         return convert(spraakService.sendSpraakkode(ident, spraak, miljoer));
     }
@@ -93,7 +96,7 @@ public class PersonController {
     @PostMapping("/{ident}/bankkonto-norsk")
     public List<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
                                                            @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
-                                                           @RequestParam (required = false) List<String> miljoer) {
+                                                           @RequestParam(required = false) List<String> miljoer) {
 
         return convert(bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer));
     }
@@ -101,40 +104,48 @@ public class PersonController {
     @PostMapping("/{ident}/bankkonto-utenlandsk")
     public List<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
                                                                 @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
-                                                                @RequestParam (required = false) List<String> miljoer) {
+                                                                @RequestParam(required = false) List<String> miljoer) {
 
         return convert(bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer));
     }
 
     @PostMapping("/{ident}/telefonnumre")
     public List<TpsMeldingResponseDTO> endreTelefonnummer(@PathVariable String ident,
-                                                          @RequestBody List<TelefonnummerDTO> telefonnumre,
-                                                          @RequestParam (required = false) List<String> miljoer) {
+                                                          @RequestBody List<TelefonTypeNummerDTO> telefonnumre,
+                                                          @RequestParam(required = false) List<String> miljoer) {
 
         return convert(telefonnummerService.endreTelefonnummer(ident, telefonnumre, miljoer));
     }
 
     @DeleteMapping("/{ident}/telefonnumre")
     public List<TpsMeldingResponseDTO> opphoerTelefonnummer(@PathVariable String ident,
-                                                            @RequestParam List<TelefonnummerDTO.TypeTelefon> telefontyper,
-                                                            @RequestParam (required = false) List<String> miljoer) {
+                                                            @RequestParam List<TelefonTypeNummerDTO.TypeTelefon> telefontyper,
+                                                            @RequestParam(required = false) List<String> miljoer) {
 
         return convert(telefonnummerService.opphoerTelefonnummer(ident, telefontyper, miljoer));
     }
 
     @PostMapping("/{ident}/sikkerhetstiltak")
     public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
-                                                             @RequestBody SikkerhetstiltakDTO sikkerhetstiltak,
-                                                             @RequestParam (required = false) List<String> miljoer) {
+                                                             @RequestBody SikkerhetTiltakDTO sikkerhetstiltak,
+                                                             @RequestParam(required = false) List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.endreSikkerhetstiltak(ident, sikkerhetstiltak, miljoer));
     }
 
     @DeleteMapping("/{ident}/sikkerhetstiltak")
     public List<TpsMeldingResponseDTO> opphoerSikkerhetstiltak(@PathVariable String ident,
-                                                             @RequestParam (required = false) List<String> miljoer) {
+                                                               @RequestParam(required = false) List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
+    }
+
+    @PostMapping("/{ident}/adresse-utland")
+    public List<TpsMeldingResponseDTO> endreAdresseUtland(@PathVariable String ident,
+                                                          @RequestBody AdresseUtlandDTO postadresse,
+                                                          @RequestParam(required = false) List<String> miljoer) {
+
+        return convert(adresseService.endreAdresseUtland(ident, postadresse, miljoer));
     }
 }
 

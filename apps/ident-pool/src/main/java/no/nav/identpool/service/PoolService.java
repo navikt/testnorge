@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
 import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.repository.IdentRepository;
@@ -69,10 +69,10 @@ public class PoolService {
 
         if (missingIdentCount > 0) {
 
-            Set<TpsStatus> tpsStatuses = identerAvailService.generateAndCheckIdenter(request,
+            Set<TpsStatusDTO> tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request,
                     Identtype.FDAT == request.getIdenttype() ? request.getAntall() : ATTEMPT_OBTAIN);
 
-            List<Ident> identerFraTps = tpsStatuses.stream()
+            List<Ident> identerFraTps = tpsStatusDTOS.stream()
                     .map(this::buildIdent)
                     .collect(Collectors.toList());
             identRepository.saveAll(identerFraTps);
@@ -105,8 +105,8 @@ public class PoolService {
         return identEntities.stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
     }
 
-    private Ident buildIdent(TpsStatus tpsStatus) {
-        return buildIdent(tpsStatus.getIdent(), "TPS", getRekvireringsstatus(tpsStatus.isInUse()));
+    private Ident buildIdent(TpsStatusDTO tpsStatusDTO) {
+        return buildIdent(tpsStatusDTO.getIdent(), "TPS", getRekvireringsstatus(tpsStatusDTO.isInUse()));
     }
 
     private Ident buildIdent(String ident, String rekvirertAv, Rekvireringsstatus rekvireringsstatus) {

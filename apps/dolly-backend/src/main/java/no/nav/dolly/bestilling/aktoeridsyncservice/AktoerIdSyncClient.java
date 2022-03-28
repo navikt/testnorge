@@ -9,17 +9,15 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static java.time.LocalDateTime.*;
-import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
+import static java.time.LocalDateTime.now;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service
-@Order(4)
+@Order(6)
 @RequiredArgsConstructor
 public class AktoerIdSyncClient implements ClientRegister {
 
@@ -32,30 +30,28 @@ public class AktoerIdSyncClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (containsSynthEnv(bestilling.getEnvironments())) {
-            int count = 0;
+        var count = 0;
 
-            var startTime = now();
-            try {
-                while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) > ELAPSED &&
-                        isBlank(personServiceConsumer.getAktoerId(dollyPerson.getHovedperson()).getIdent())) {
-                    Thread.sleep(TIMEOUT);
-                }
-
-            } catch (InterruptedException e) {
-                log.error("Sync mot PersonService (AktoerId) ble avbrutt.", e);
-                Thread.currentThread().interrupt();
-
-            } catch (RuntimeException e) {
-                log.error("Feilet å lese id fra PersonService (AktoerId) for ident {}.", dollyPerson.getHovedperson(), e);
+        var startTime = now();
+        try {
+            while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) > ELAPSED &&
+                    isBlank(personServiceConsumer.getAktoerId(dollyPerson.getHovedperson()).getIdent())) {
+                Thread.sleep(TIMEOUT);
             }
 
-            if (count < MAX_COUNT) {
-                log.info("Synkronisering mot PersonService (AktoerId) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
-            } else {
-                log.warn("Synkronisering mot PersonService (AktoerId) gitt opp etter {} ms.",
-                        ChronoUnit.MILLIS.between(startTime, now()));
-            }
+        } catch (InterruptedException e) {
+            log.error("Sync mot PersonService (AktoerId) ble avbrutt.", e);
+            Thread.currentThread().interrupt();
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å lese id fra PersonService (AktoerId) for ident {}.", dollyPerson.getHovedperson(), e);
+        }
+
+        if (count < MAX_COUNT) {
+            log.info("Synkronisering mot PersonService (AktoerId) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
+        } else {
+            log.warn("Synkronisering mot PersonService (AktoerId) gitt opp etter {} ms.",
+                    ChronoUnit.MILLIS.between(startTime, now()));
         }
     }
 

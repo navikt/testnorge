@@ -6,14 +6,19 @@ import GjenopprettConnector from '~/components/bestilling/gjenopprett/Gjenoppret
 
 import './BestillingDetaljer.less'
 import { MalModal } from '~/pages/minSide/maler/MalModal'
+import { NAVIGER_BESTILLING_ID } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 
-export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId }) {
+export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const [isOpenMalModalOpen, openOpenMalModal, closeOpenMalModal] = useBoolean(false)
 
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
+
+	if (sessionStorage.getItem(NAVIGER_BESTILLING_ID)) {
+		sessionStorage.removeItem(NAVIGER_BESTILLING_ID)
+	}
 
 	return (
 		<div className="bestilling-detaljer">
@@ -54,6 +59,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId 
 					bestilling={bestilling}
 					brukerId={brukerId && brukerId}
 					closeModal={closeGjenoprettModal}
+					brukertype={brukertype}
 				/>
 			)}
 

@@ -4,7 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { GjenopprettModal } from './GjenopprettModal'
 
 export default function GjenopprettBestilling(props) {
-	const { bestilling, closeModal } = props
+	const { bestilling, closeModal, brukertype } = props
 	const { environments } = bestilling
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
@@ -33,6 +33,7 @@ export default function GjenopprettBestilling(props) {
 			submitFormik={submitFormik}
 			closeModal={closeModal}
 			bestilling={bestilling}
+			brukertype={brukertype}
 		/>
 	)
 }

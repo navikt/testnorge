@@ -6,8 +6,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO.TypeTelefon;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO.TypeTelefon;
 import no.nav.tps.ctg.s610.domain.TelefonType;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +19,10 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(TelefonnummerDTO.class, KontaktopplysningerRequest.TelefonData.class)
+        factory.classMap(TelefonTypeNummerDTO.class, KontaktopplysningerRequest.TelefonData.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TelefonnummerDTO source, KontaktopplysningerRequest.TelefonData target, MappingContext context) {
+                    public void mapAtoB(TelefonTypeNummerDTO source, KontaktopplysningerRequest.TelefonData target, MappingContext context) {
 
                         target.setTypeTelefon(source.getTelefontype());
                         target.setTelefonNr(source.getTelefonnummer());
@@ -42,10 +42,10 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(TelefonnummerDTO.class, TelefonnummerRequest.class)
+        factory.classMap(TelefonTypeNummerDTO.class, TelefonnummerRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TelefonnummerDTO source, TelefonnummerRequest target, MappingContext context) {
+                    public void mapAtoB(TelefonTypeNummerDTO source, TelefonnummerRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(TelefonnummerRequest.SfeAjourforing.builder()
                                 .systemInfo(TpsSystemInfo.getDefault())
@@ -56,10 +56,10 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(TelefonnummerDTO.class, TelefonnummerRequest.TelefonOpplysninger.class)
+        factory.classMap(TelefonTypeNummerDTO.class, TelefonnummerRequest.TelefonOpplysninger.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TelefonnummerDTO source, TelefonnummerRequest.TelefonOpplysninger target, MappingContext context) {
+                    public void mapAtoB(TelefonTypeNummerDTO source, TelefonnummerRequest.TelefonOpplysninger target, MappingContext context) {
 
                         target.setTelefonNr(source.getTelefonnummer());
                         target.setTelefonLandkode(source.getLandkode());
@@ -68,10 +68,10 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(TelefonnummerDTO.class, TelefonnummerRequest.BrukertypeIdentifikasjon.class)
+        factory.classMap(TelefonTypeNummerDTO.class, TelefonnummerRequest.BrukertypeIdentifikasjon.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TelefonnummerDTO source, TelefonnummerRequest.BrukertypeIdentifikasjon target, MappingContext context) {
+                    public void mapAtoB(TelefonTypeNummerDTO source, TelefonnummerRequest.BrukertypeIdentifikasjon target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
                         target.setTypeTelefon(source.getTelefontype());
@@ -79,10 +79,10 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(TelefonType.class, TelefonnummerDTO.class)
+        factory.classMap(TelefonType.class, TelefonTypeNummerDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TelefonType source, TelefonnummerDTO target, MappingContext context) {
+                    public void mapAtoB(TelefonType source, TelefonTypeNummerDTO target, MappingContext context) {
 
                         target.setTelefonnummer(source.getTlfNummer());
                         target.setLandkode(source.getTlfLandkode());

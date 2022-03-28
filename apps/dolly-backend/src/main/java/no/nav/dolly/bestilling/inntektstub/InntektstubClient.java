@@ -11,7 +11,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -19,12 +18,12 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@Order(5)
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
 
@@ -36,6 +35,14 @@ public class InntektstubClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
+
+            bestilling.getInntektstub().getInntektsinformasjon()
+                    .forEach(inntekter ->
+                            inntekter.getInntektsliste()
+                                    .forEach(inntekt ->
+                                            inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
+                                                    inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                                    inntekt.getTilleggsinformasjon())));
 
             try {
                 InntektsinformasjonWrapper inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(), InntektsinformasjonWrapper.class);

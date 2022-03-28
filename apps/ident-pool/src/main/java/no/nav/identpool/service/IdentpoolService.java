@@ -2,10 +2,11 @@ package no.nav.identpool.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.identpool.consumers.TpsMessagingConsumer;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.domain.TpsStatus;
+import no.nav.identpool.dto.TpsStatusDTO;
 import no.nav.identpool.exception.IdentAlleredeIBrukException;
 import no.nav.identpool.exception.UgyldigPersonidentifikatorException;
 import no.nav.identpool.providers.v1.support.MarkerBruktRequest;
@@ -26,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.identpool.domain.Rekvireringsstatus.I_BRUK;
 import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 import static no.nav.identpool.util.PersonidentUtil.getIdentType;
@@ -37,36 +40,38 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class IdentpoolService {
 
     private final IdentRepository identRepository;
-    private final TpsfService tpsfService;
+    private final TpsMessagingConsumer tpsMessagingConsumer;
     private final WhitelistRepository whitelistRepository;
 
     private static boolean isSyntetisk(String ident) {
         return ident.charAt(2) > '3';
     }
 
-    public Boolean erLedig(
-            String personidentifikator
-    ) {
-        Ident ident = identRepository.findTopByPersonidentifikator(personidentifikator);
-        if (ident != null) {
-            return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG) ? Boolean.TRUE : Boolean.FALSE;
-        } else {
-            Set<TpsStatus> tpsStatus = tpsfService.checkIdentsInTps(Collections.singleton(personidentifikator));
-            if (tpsStatus.size() != 1) {
-                throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps");
-            }
-            TpsStatus identStatus = tpsStatus.iterator().next();
+    public Boolean erLedig(String personidentifikator) {
 
-            return !identStatus.isInUse();
+        var ident = identRepository.findTopByPersonidentifikator(personidentifikator);
+
+        if (nonNull(ident)) {
+            return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG);
+
+        } else {
+            var tpsStatus = tpsMessagingConsumer.getIdenterStatuser(Collections.singleton(personidentifikator));
+            return tpsStatus.stream()
+                    .map(status -> !status.isInUse())
+                    .findFirst()
+                    .orElseThrow(() -> new HttpServerErrorException(INTERNAL_SERVER_ERROR,
+                            "Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps"));
         }
     }
 
     public void markerBrukt(MarkerBruktRequest markerBruktRequest) {
-        Ident ident = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
-        if (ident == null) {
+
+        var ident = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
+
+        if (isNull(ident)) {
             String personidentifikator = markerBruktRequest.getPersonidentifikator();
 
-            Ident newIdent = Ident.builder()
+            var newIdent = Ident.builder()
                     .identtype(getIdentType(personidentifikator))
                     .personidentifikator(personidentifikator)
                     .rekvireringsstatus(I_BRUK)
@@ -79,28 +84,30 @@ public class IdentpoolService {
             identRepository.save(newIdent);
             return;
 
-        } else if (ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG)) {
+        } else if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
             ident.setRekvireringsstatus(I_BRUK);
             ident.setRekvirertAv(markerBruktRequest.getBruker());
             identRepository.save(ident);
             return;
+
         } else if (ident.getRekvireringsstatus().equals(I_BRUK)) {
             throw new IdentAlleredeIBrukException("Den etterspurte identen er allerede markert som i bruk.");
         }
         throw new IllegalStateException("Den etterspurte identen er ugyldig siden den hverken er markert som i bruk eller ledig.");
     }
 
-    public List<String> markerBruktFlere(
-            String rekvirertAv,
-            List<String> identer
-    ) {
-        List<String> identerMarkertSomIBruk = new ArrayList<>(identer.size());
-        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
+    public List<String> markerBruktFlere(String rekvirertAv, List<String> identer) {
+
+        var identerMarkertSomIBruk = new ArrayList<String>(identer.size());
+        var identerSomSkalSjekkes = new HashSet<String>(identer.size());
+
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (ident == null) {
+
+            if (isNull(ident)) {
                 identerSomSkalSjekkes.add(id);
-            } else if (LEDIG.equals(ident.getRekvireringsstatus())) {
+
+            } else if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                 ident.setRekvireringsstatus(I_BRUK);
                 ident.setRekvirertAv(rekvirertAv);
                 identRepository.save(ident);
@@ -108,11 +115,11 @@ public class IdentpoolService {
             }
         }
 
-        Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identerSomSkalSjekkes);
+        Set<TpsStatusDTO> tpsStatusDTOS = tpsMessagingConsumer.getIdenterStatuser(identerSomSkalSjekkes);
 
-        for (TpsStatus tpsStatus : tpsStatuses) {
-            if (!tpsStatus.isInUse()) {
-                String id = tpsStatus.getIdent();
+        for (TpsStatusDTO tpsStatusDTO : tpsStatusDTOS) {
+            if (!tpsStatusDTO.isInUse()) {
+                String id = tpsStatusDTO.getIdent();
                 identRepository.save(Ident.builder()
                         .identtype(getIdentType(id))
                         .personidentifikator(id)
@@ -130,17 +137,16 @@ public class IdentpoolService {
         return identerMarkertSomIBruk;
     }
 
-    public List<String> frigjoerIdenter(
-            String rekvirertAv,
-            List<String> identer
-    ) {
-        List<String> ledigeIdenter = new ArrayList<>(identer.size());
-        Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());
-        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
+    public List<String> frigjoerIdenter(String rekvirertAv, List<String> identer) {
+
+        var ledigeIdenter = new ArrayList<String>(identer.size());
+        var fnrMedIdent = new HashMap<String, Ident>(identer.size());
+        var identerSomSkalSjekkes = new HashSet<String>(identer.size());
+
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (ident != null) {
-                if (LEDIG.equals(ident.getRekvireringsstatus())) {
+            if (nonNull(ident)) {
+                if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                     ledigeIdenter.add(id);
                 } else if (!ident.isFinnesHosSkatt() && rekvirertAv.equals(ident.getRekvirertAv())) {
                     fnrMedIdent.put(id, ident);
@@ -149,18 +155,20 @@ public class IdentpoolService {
             }
         }
 
-        Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identerSomSkalSjekkes);
-        return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
+        var tpsStatusDTOS = tpsMessagingConsumer.getIdenterStatuser(identerSomSkalSjekkes);
+        return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatusDTOS);
     }
 
     public List<String> frigjoerLedigeIdenter(List<String> identer) {
-        List<String> ledigeIdenter = new ArrayList<>(identer.size());
-        Map<String, Ident> fnrMedIdent = new HashMap<>(identer.size());
-        Set<String> identerSomSkalSjekkes = new HashSet<>(identer.size());
+
+        var ledigeIdenter = new ArrayList<String>(identer.size());
+        var fnrMedIdent = new HashMap<String, Ident>(identer.size());
+        var identerSomSkalSjekkes = new HashSet<String>(identer.size());
+
         for (String id : identer) {
             Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (ident != null) {
-                if (LEDIG.equals(ident.getRekvireringsstatus())) {
+            if (nonNull(ident)) {
+                if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                     ledigeIdenter.add(id);
                 } else if (!ident.isFinnesHosSkatt()) {
                     fnrMedIdent.put(id, ident);
@@ -168,28 +176,27 @@ public class IdentpoolService {
                 }
             }
         }
-        Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identerSomSkalSjekkes);
-        return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatuses);
+        var tpsStatusDTOS = tpsMessagingConsumer.getIdenterStatuser(identerSomSkalSjekkes);
+        return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatusDTOS);
     }
 
-    private List<String> leggTilLedigeIdenterIMiljoer(
-            List<String> ledigeIdenter,
-            Map<String, Ident> fnrMedIdent,
-            Set<TpsStatus> tpsStatuses
-    ) {
-        for (TpsStatus tpsStatus : tpsStatuses) {
-            if (!tpsStatus.isInUse()) {
-                Ident ident = fnrMedIdent.get(tpsStatus.getIdent());
+    private List<String> leggTilLedigeIdenterIMiljoer(List<String> ledigeIdenter, Map<String,
+            Ident> fnrMedIdent, Set<TpsStatusDTO> tpsStatuser) {
+
+        for (TpsStatusDTO tpsStatusDTO : tpsStatuser) {
+            if (!tpsStatusDTO.isInUse()) {
+                Ident ident = fnrMedIdent.get(tpsStatusDTO.getIdent());
                 ident.setRekvireringsstatus(LEDIG);
                 ident.setRekvirertAv(null);
                 identRepository.save(ident);
-                ledigeIdenter.add(tpsStatus.getIdent());
+                ledigeIdenter.add(tpsStatusDTO.getIdent());
             }
         }
         return ledigeIdenter;
     }
 
     public Ident lesInnhold(String personidentifikator) {
+
         return identRepository.findTopByPersonidentifikator(personidentifikator);
     }
 
@@ -199,11 +206,13 @@ public class IdentpoolService {
             throw new UgyldigPersonidentifikatorException("personidentifikatoren er ikke et DNR");
         }
 
-        Ident ident = identRepository.findTopByPersonidentifikator(personidentifikator);
-        if (ident != null) {
+        var ident = identRepository.findTopByPersonidentifikator(personidentifikator);
+
+        if (nonNull(ident)) {
             ident.setFinnesHosSkatt(true);
             ident.setRekvireringsstatus(I_BRUK);
             ident.setRekvirertAv("DREK");
+
         } else {
             ident = IdentGeneratorUtil.createIdent(personidentifikator, I_BRUK, "DREK");
             ident.setFinnesHosSkatt(true);
@@ -212,11 +221,9 @@ public class IdentpoolService {
         identRepository.save(ident);
     }
 
-    public List<String> hentLedigeFNRFoedtMellom(
-            LocalDate from,
-            LocalDate to
-    ) {
-        List<Ident> identer = identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(from, to,
+    public List<String> hentLedigeFNRFoedtMellom(LocalDate from, LocalDate to) {
+
+        var identer = identRepository.findByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(from, to,
                 Identtype.FNR, LEDIG, false);
         return identer.stream()
                 .map(Ident::getPersonidentifikator)
@@ -224,7 +231,8 @@ public class IdentpoolService {
     }
 
     public List<String> hentWhitelist() {
-        List<String> whiteFnrs = new ArrayList<>();
+
+        var whiteFnrs = new ArrayList<String>();
         whitelistRepository.findAll().forEach(
                 whitelist -> whiteFnrs.add(whitelist.getFnr())
         );

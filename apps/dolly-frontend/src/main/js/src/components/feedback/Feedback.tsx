@@ -43,7 +43,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 						{isAnonym ? (
 							<Icon kind="user" size={40} className="bruker-ikon" />
 						) : (
-							<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
+							<img alt="Profilbilde" src={brukerBilde || dolly} />
 						)}
 						<div className="feedback-input">
 							<Textarea

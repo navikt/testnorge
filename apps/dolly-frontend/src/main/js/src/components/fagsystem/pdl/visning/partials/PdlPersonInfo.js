@@ -11,8 +11,7 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
-	const sikkerhetstiltak = data?.sikkerhetstiltak?.[0]
-	const personstatus = data?.folkeregisterPersonstatus?.[0]
+	const personstatus = data?.folkeregisterPersonstatus?.[0] || data?.folkeregisterpersonstatus?.[0]
 
 	return (
 		<ErrorBoundary>
@@ -24,26 +23,10 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 					<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 					<TitleValue title="Etternavn" value={personNavn?.etternavn} />
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-					<TitleValue title="Personstatus" value={personstatus?.status} />
-					{sikkerhetstiltak && (
-						<div className="person-visning_content">
-							<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
-							<div className="person-visning_content">
-								<TitleValue
-									title="Type sikkerhetstiltak"
-									value={`${sikkerhetstiltak.tiltakstype} - ${sikkerhetstiltak.beskrivelse}`}
-								/>
-								<TitleValue
-									title="Sikkerhetstiltak starter"
-									value={Formatters.formatDate(sikkerhetstiltak.gyldigFraOgMed)}
-								/>
-								<TitleValue
-									title="Sikkerhetstiltak opphører"
-									value={Formatters.formatDate(sikkerhetstiltak.gyldigTilOgMed)}
-								/>
-							</div>
-						</div>
-					)}
+					<TitleValue
+						title="Personstatus"
+						value={Formatters.allCapsToCapitalized(personstatus?.status)}
+					/>
 				</div>
 			</div>
 		</ErrorBoundary>

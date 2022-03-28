@@ -52,6 +52,7 @@ export default function Organisasjoner({
 	bestillinger,
 	organisasjoner,
 	brukerId,
+	brukertype,
 	getOrganisasjonBestillingStatus,
 	getOrganisasjonBestilling,
 	fetchOrganisasjoner,
@@ -200,7 +201,11 @@ export default function Organisasjoner({
 					(isFetching ? (
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
-						<OrganisasjonBestilling brukerId={brukerId} bestillinger={filterBest()} />
+						<OrganisasjonBestilling
+							brukerId={brukerId}
+							brukertype={brukertype}
+							bestillinger={filterBest()}
+						/>
 					) : (
 						<TomOrgListe
 							startBestilling={startBestilling}

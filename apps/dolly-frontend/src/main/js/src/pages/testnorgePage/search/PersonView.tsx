@@ -33,7 +33,7 @@ export const PersonView = ({ person }: Props) => {
 	useEffect(() => {
 		DollyApi.getPersonFraPdl(person.ident)
 			.then((response: PdlResponse) => {
-				setData(response.data)
+				setData(response?.data?.data)
 				setLoading(false)
 			})
 			.catch((e: any) => {

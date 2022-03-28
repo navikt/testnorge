@@ -46,7 +46,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            if (!bestilteMiljoer.isEmpty() && !progress.isPdlf()) {
+            if (!bestilteMiljoer.isEmpty()) {
                 opprettPerson(dollyPerson, bestilteMiljoer, status);
 
                 if (nonNull(bestilling.getPensjonforvalter())) {
@@ -81,6 +81,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 var opprettPersonRequest =
                         mapperFacade.map(person, OpprettPersonRequest.class);
                 opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
+                log.info("Persondata til pensjon: " + opprettPersonRequest.toString());
                 var response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
                 if (dollyPerson.getHovedperson().equals(person.getIdent())) {
                     decodeStatus(response, status);

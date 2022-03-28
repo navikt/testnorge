@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -36,13 +35,13 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private BestillingProgressService bestillingProgressService;
     private ExecutorService dollyForkJoinPool;
 
-    public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, DollyPersonCache dollyPersonCache,
+    public GjenopprettBestillingService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
                                         IdentService identService, BestillingProgressService bestillingProgressService,
                                         BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
                                         ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer, pdlDataConsumer);
 
         this.bestillingService = bestillingService;
@@ -57,6 +56,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
+            bestKriterier.setEkskluderEksternePersoner(true);
             dollyForkJoinPool.submit(() -> {
                 bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
@@ -69,7 +69,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                             bestKriterier.setTags(bestilling.getTags());
 
                             try {
-                                Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);
+                                Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                                 if (dollyPerson.isPresent()) {
 

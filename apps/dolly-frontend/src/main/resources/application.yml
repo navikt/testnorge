@@ -64,11 +64,6 @@ consumers:
     namespace: dolly
     name: ${TPS_FORVALTERN_PROXY_NAME}
     url: ${TPS_FORVALTERN_PROXY_URL}
-  testnav-hodejegeren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-hodejegeren-proxy
-    url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   testnav-arena-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly

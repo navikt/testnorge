@@ -9,6 +9,8 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
+const alderProps = ['alder', 'foedtEtter', 'foedtFoer']
+
 export const FoedselForm = ({ formikBag, path }) => {
 	const handleLandChange = (selected, path) => {
 		formikBag.setFieldValue(`${path}.foedeland`, selected?.value || null)
@@ -62,6 +64,17 @@ export const FoedselForm = ({ formikBag, path }) => {
 }
 
 export const Foedsel = ({ formikBag }) => {
+	const person = _get(formikBag.values, 'pdldata.opprettNyPerson')
+	const hasAlder = () => {
+		let funnetAlder = false
+		alderProps.forEach((prop) => {
+			if (person.hasOwnProperty(prop)) {
+				funnetAlder = true
+			}
+		})
+		return funnetAlder
+	}
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -69,6 +82,11 @@ export const Foedsel = ({ formikBag }) => {
 				header="Fødsel"
 				newEntry={initialFoedsel}
 				canBeEmpty={false}
+				hjelpetekst={
+					hasAlder()
+						? 'Du har valgt å sette både alder og fødsel på denne personen. Det er mulig å sette verdier som ikke samsvarer med hverandre. I så fall er det alder som vil bestemme identnummer, og fødsel som vil bestemme fødselsdato. '
+						: null
+				}
 			>
 				{(path: string, idx: number) => {
 					return <FoedselForm formikBag={formikBag} path={path} />

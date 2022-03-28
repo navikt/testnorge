@@ -1,5 +1,8 @@
 package no.nav.testnav.libs.reactivesecurity.config;
 
+import no.nav.testnav.libs.reactivesecurity.domain.AzureNavProxyClientCredential;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.properties.TrygdeetatenAzureAdResourceServerProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +32,7 @@ import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
         TokenXService.class,
         TokenxResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
+        TrygdeetatenAzureAdResourceServerProperties.class,
         AzureAdTokenService.class,
         TokenExchange.class,
         GetAuthenticatedUserId.class,
@@ -36,7 +40,9 @@ import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
         GetAuthenticatedToken.class,
         TokenXProperties.class,
         AzureTrygdeetatenClientCredential.class,
-        TrygdeetatenAzureAdTokenService.class
+        TrygdeetatenAzureAdTokenService.class,
+        AzureNavProxyClientCredential.class,
+        NavAzureAdTokenService.class
 })
 public class SecureOAuth2ServerToServerConfiguration {
 

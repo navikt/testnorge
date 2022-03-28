@@ -481,6 +481,7 @@ query($identer: [ID!]!) {
             utflyttingFraNorge {
                 tilflyttingsland,
                 tilflyttingsstedIUtlandet,
+                utflyttingsdato,
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
                 },
