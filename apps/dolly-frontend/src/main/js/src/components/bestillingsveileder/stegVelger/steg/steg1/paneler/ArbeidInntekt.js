@@ -3,7 +3,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 
-export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent, tpsfIdent }) => {
+export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -17,7 +17,7 @@ export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent, tpsfIdent })
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
-			startOpen={testnorgeIdent || tpsfIdent}
+			startOpen={testnorgeIdent}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)">
 				<Attributt attr={sm.attrs.aareg} />

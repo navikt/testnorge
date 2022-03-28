@@ -51,16 +51,12 @@ export const Steg1Person = ({ stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			{!testnorgeIdent && !tpsfIdent && <PersoninformasjonPanel stateModifier={stateModifier} />}
-			{!testnorgeIdent && !tpsfIdent && <AdressePanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <PersoninformasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <AdressePanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && !tpsfIdent && <FamilierelasjonPanel stateModifier={stateModifier} />}
-			{!testnorgeIdent && !tpsfIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
-			{!testnorgeIdent && !tpsfIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
-			<ArbeidInntektPanel
-				stateModifier={stateModifier}
-				testnorgeIdent={testnorgeIdent}
-				tpsfIdent={tpsfIdent}
-			/>
+			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
+			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
+			<ArbeidInntektPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
 			<ArenaPanel stateModifier={stateModifier} />
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />
