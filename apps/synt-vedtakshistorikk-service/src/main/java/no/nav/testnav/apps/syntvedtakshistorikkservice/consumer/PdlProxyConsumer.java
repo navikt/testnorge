@@ -16,13 +16,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -48,9 +48,14 @@ public class PdlProxyConsumer {
         if (isNullOrEmpty(ident)) return null;
         var query = getSinglePersonQueryFromFile();
         try {
-            return tokenExchange.exchange(serviceProperties)
+            var response = tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
                     .block();
+            if (nonNull(response) && nonNull(response.getErrors()) && !response.getErrors().isEmpty()) {
+                log.error("Klarte ikke hente pdlperson: " + response.getErrors().get(0).getMessage());
+                return null;
+            }
+            return response;
         } catch (Exception e) {
             log.error("Klarte ikke hente pdlperson.", e);
             return null;

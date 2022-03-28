@@ -16,6 +16,7 @@ import static java.util.Objects.isNull;
 public class PdlPerson {
 
     private Data data;
+    private List<Error> errors;
 
     public enum Gruppe {AKTORID, FOLKEREGISTERIDENT, NPID}
 
@@ -137,5 +138,23 @@ public class PdlPerson {
         private LocalDate ajourholdstidspunkt;
         private LocalDate gyldighetstidspunkt;
         private LocalDate opphoerstidspunkt;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Error {
+
+        private String message;
+        private Extensions extensions;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Extensions {
+
+        private String code;
+        private String classification;
     }
 }

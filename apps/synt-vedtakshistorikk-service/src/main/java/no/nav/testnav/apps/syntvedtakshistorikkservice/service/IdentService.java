@@ -153,7 +153,7 @@ public class IdentService {
     public Kontoinfo getIdentMedKontoinformasjon() {
         var ident = IDENTER_MED_KONTONR.get(rand.nextInt(IDENTER_MED_KONTONR.size()));
         var pdlPerson = pdlProxyConsumer.getPdlPerson(ident.getIdent());
-        if (isNull(pdlPerson)) return null;
+        if (isNull(pdlPerson) || isNull(pdlPerson.getData())) return null;
         var navnInfo = pdlPerson.getData().getHentPerson().getNavn();
         var boadresseInfo = pdlPerson.getData().getHentPerson().getBostedsadresse();
 

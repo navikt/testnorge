@@ -14,9 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.AUTHORIZATION;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CALL_ID;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.CONSUMER_TOKEN;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Headers.*;
 
 @Slf4j
 public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
@@ -43,13 +41,11 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(GRAPHQL_URL).build())
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(CONSUMER_TOKEN, "Bearer " + token)
-                .header(CALL_ID, "Dolly: " + UUID.randomUUID())
+                .header(CONSUMER_ID, NAV_CONSUMER_ID)
+                .header(CALL_ID, NAV_CALL_ID + ": " + UUID.randomUUID())
                 .header(TEMA, TEMA_GENERELL)
-                .body(BodyInserters.fromValue(GraphQLRequest.builder()
-                        .query(query)
-                        .variables(Map.of("ident", ident, "historikk", true))
-                        .build()))
+                .body(BodyInserters
+                        .fromValue(new GraphQLRequest(query, Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(PdlPerson.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
