@@ -33,6 +33,6 @@ jobs:
     with:
       resource: 'proxies/nom-proxy/config.yml'
       app-name: 'testnav-nom-proxy'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

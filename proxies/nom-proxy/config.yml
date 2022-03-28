@@ -29,6 +29,10 @@ spec:
       enabled: true
       tenant: nav.no
   accessPolicy:
+    outbound:
+      rules:
+        - application: nom-api
+            cluster: dev-gcp
     inbound:
       rules:
         - application: team-dolly-lokal-app
