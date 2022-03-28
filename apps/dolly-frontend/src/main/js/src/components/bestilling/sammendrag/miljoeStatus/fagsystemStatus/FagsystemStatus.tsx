@@ -4,21 +4,23 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
-export default function FagsystemStatus({ statusrapport }) {
-	if (statusrapport?.length <= 0) return false
+export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
+	if (statusrapport.length <= 0) return null
 
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
 
-	const getIconType = (status) => {
+	const getIconType = (status: Status) => {
 		const melding = status.melding
-		const miljo = status.miljo
-		return (melding && !melding.includes('OK')) || miljo?.includes('FEIL')
-			? problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
+		if (melding && !melding.includes('OK')) {
+			return problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
 				? 'report-problem-circle'
 				: 'report-problem-triangle'
-			: 'feedback-check-circle'
+		} else {
+			return 'feedback-check-circle'
+		}
 	}
 
 	if (statusrapport && statusrapport.some((status) => status.id === 'ORGANISASJON_FORVALTER')) {
@@ -33,8 +35,8 @@ export default function FagsystemStatus({ statusrapport }) {
 						</tr>
 					</thead>
 					<tbody>
-						{statusrapport.map((status, idx) => (
-							<tr key={idx}>
+						{statusrapport.map((status, index) => (
+							<tr key={index}>
 								<td>
 									<div className="flexbox">
 										{status.melding !== 'Pågående' && status.melding !== 'Deployer' && (
@@ -67,8 +69,8 @@ export default function FagsystemStatus({ statusrapport }) {
 					</tr>
 				</thead>
 				<tbody>
-					{statusrapport.map((status, idx) => (
-						<tr key={idx}>
+					{statusrapport.map((status, index) => (
+						<tr key={index}>
 							<td>
 								<div className="flexbox">
 									<Icon size={16} kind={getIconType(status)} />

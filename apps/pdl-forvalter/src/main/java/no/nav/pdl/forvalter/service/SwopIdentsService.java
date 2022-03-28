@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
@@ -78,11 +79,12 @@ public class SwopIdentsService {
         person1.getPerson().setNyident(null);
 
         if (person1.getPerson().getSivilstand().isEmpty() && isMyndig(person1.getIdent())) {
-            person1.getPerson().getSivilstand().add(SivilstandDTO.builder()
+            person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
+                    .id(1)
                     .type(Sivilstand.UGIFT)
                     .master(FREG)
-                    .id(1)
-                    .build());
+                    .kilde("Dolly")
+                    .build())));
         }
 
         relasjonRepository.saveAll(person2.getRelasjoner().stream()

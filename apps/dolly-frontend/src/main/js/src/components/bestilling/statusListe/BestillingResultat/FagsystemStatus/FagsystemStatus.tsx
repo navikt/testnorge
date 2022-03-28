@@ -2,15 +2,16 @@ import React from 'react'
 import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
+import { Miljostatus, Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
-export default function FagsystemStatus({ bestilling }) {
+export default function FagsystemStatus({ bestilling }: Miljostatus) {
 	const iconTypes = {
 		suksess: 'feedback-check-circle',
 		avvik: 'report-problem-circle',
 		feil: 'report-problem-triangle',
 	}
 
-	const iconType = (statuser) => {
+	const iconType = (statuser: Status[]) => {
 		// Alle er OK
 		if (statuser.every((status) => status.melding === 'OK')) return iconTypes.suksess
 		// Denne statusmeldingen gir kun avvik

@@ -98,7 +98,6 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 					</p>
 				</>
 			)
-		//TODO: Legg inn denne varslingen i varslinger-service
 		case 'PDL_SOM_MASTER':
 			return (
 				<>
