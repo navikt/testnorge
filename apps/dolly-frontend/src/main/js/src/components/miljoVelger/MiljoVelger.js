@@ -36,6 +36,7 @@ const miljoeavhengig = [
 ]
 
 const erMiljouavhengig = (bestilling) => {
+	if (!bestilling) return false
 	let miljoeNotRequired = true
 	miljoeavhengig.forEach((system) => {
 		if (bestilling.hasOwnProperty(system)) {
@@ -102,7 +103,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}
-											disabled={env.disabled || disableAllEnvironments}
+											disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
