@@ -22,7 +22,6 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
@@ -68,15 +67,6 @@ export const PersonVisning = ({
 			})
 	}, [])
 
-	const personInfo = data.tpsf
-		? data.tpsf
-		: {
-				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
-				ident: data.pdlforvalter?.person?.ident,
-				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
-				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
-		  }
-
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
@@ -86,12 +76,6 @@ export const PersonVisning = ({
 							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
 						}
 						kind="add-circle"
-						disabled={ident.master === 'TPSF'}
-						title={
-							ident.master === 'TPSF'
-								? 'Det er dessverre ikke lenger mulig å gjøre endringer på denne testpersonen. Master for bestillinger er endret til PDL, men denne personen er opprettet med TPS som master.'
-								: null
-						}
 					>
 						LEGG TIL/ENDRE
 					</Button>
