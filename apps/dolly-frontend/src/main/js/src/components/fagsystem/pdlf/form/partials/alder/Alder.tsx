@@ -18,7 +18,8 @@ export const Alder = ({ formikBag }: AlderForm) => {
 		_get(formikBag.values, paths.foedtEtter) != null ||
 		_get(formikBag.values, paths.foedtFoer) != null
 
-	const disableFoedtDato = _get(formikBag.values, paths.alder) != ''
+	const disableFoedtDato =
+		_get(formikBag.values, paths.alder) != '' && _get(formikBag.values, paths.alder) != null
 
 	return (
 		<div className="flexbox--flex-wrap">
