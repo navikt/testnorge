@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,20 @@ public class ArenaForvalterConsumer {
         } catch (Exception e) {
             log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
             throw e;
+        }
+    }
+
+    public void slettBrukerIArenaForvalteren(String ident, String miljoe) {
+        try {
+            var response = tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new SlettArenaBrukerCommand(ident, miljoe, accessToken.getTokenValue(), webClient).call())
+                    .block();
+
+            if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
+                log.error("Kunne ikke slette ident {} fra Arena-forvalteren. Status: {}", ident, response.getStatusCode());
+            }
+        } catch (Exception | AssertionError e) {
+            log.error("Kunne ikke slette ident {} fra Arena-forvalteren.", ident, e);
         }
     }
 

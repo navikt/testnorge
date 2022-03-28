@@ -22,6 +22,7 @@ import java.util.Random;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.checkNyeBrukereResponse;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.EIER;
 
 import static java.util.Objects.isNull;
 
@@ -83,6 +84,11 @@ public class ArenaForvalterService {
     public boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
         var identerIArena = hentIdentListe(arenaForvalterConsumer.hentArbeidsoekere(personident, null, null));
         return !identerIArena.contains(personident);
+    }
+
+    public boolean arbeidssoekerOpprettetIArena(String personident, String miljoe) {
+        var identerIArena = hentIdentListe(arenaForvalterConsumer.hentArbeidsoekere(personident, EIER, miljoe));
+        return identerIArena.contains(personident);
     }
 
     public void opprettArbeidssoekerVedtakshistorikk(
@@ -185,5 +191,11 @@ public class ArenaForvalterService {
             List<RettighetRequest> rettigheter
     ) {
         return arenaForvalterConsumer.opprettRettighet(rettigheter);
+    }
+
+    public void slettArbeidssoekerIArena(String ident, String miljoe) {
+        if (arbeidssoekerOpprettetIArena(ident, miljoe)) {
+            arenaForvalterConsumer.slettBrukerIArenaForvalteren(ident, miljoe);
+        }
     }
 }

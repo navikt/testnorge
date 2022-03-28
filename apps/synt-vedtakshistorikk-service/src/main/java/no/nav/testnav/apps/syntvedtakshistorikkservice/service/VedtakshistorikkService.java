@@ -168,11 +168,6 @@ public class VedtakshistorikkService {
         var ikkeAvluttendeAap115 = arenaAapService.getIkkeAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
         var avsluttendeAap115 = arenaAapService.getAvsluttendeVedtakAap115(vedtakshistorikk.getAap115());
 
-        if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, personident, miljoe)) {
-            removeTagsPaaIdent(personident);
-            return Collections.emptyMap();
-        }
-
         var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
 
         arenaAapService.opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
@@ -190,6 +185,11 @@ public class VedtakshistorikkService {
         arenaTilleggService.opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
 
         if (!rettigheter.isEmpty()) {
+            if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, personident, miljoe)) {
+                removeTagsPaaIdent(personident);
+                slettIdentIArena(personident, miljoe);
+                return Collections.emptyMap();
+            }
             try {
                 arenaForvalterService.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak, tidligsteDato);
             } catch (Exception e) {
@@ -222,8 +222,12 @@ public class VedtakshistorikkService {
         return nonNull(response);
     }
 
-    private void removeTagsPaaIdent(String ident){
+    private void removeTagsPaaIdent(String ident) {
         pdlProxyConsumer.deleteTags(Collections.singletonList(ident), SYNT_TAGS);
+    }
+
+    private void slettIdentIArena(String ident, String miljoe) {
+        arenaForvalterService.slettArbeidssoekerIArena(ident, miljoe);
     }
 
 }
