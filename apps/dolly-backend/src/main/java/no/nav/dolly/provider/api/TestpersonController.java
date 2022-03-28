@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
@@ -32,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
@@ -105,11 +109,15 @@ public class TestpersonController {
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {
 
-        if (identService.slettTestident(ident) == 0) {
+        if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
         bestillingService.slettBestillingByTestIdent(ident);
-        personService.recyclePersoner(singletonList(ident));
+
+        personService.recyclePersoner(mapperFacade.mapAsList(
+                List.of(identService.getTestIdent(ident)), TestidentDTO.class));
+
+        identService.slettTestident(ident);
     }
 
     @Operation(description = "Naviger til ønsket testperson")

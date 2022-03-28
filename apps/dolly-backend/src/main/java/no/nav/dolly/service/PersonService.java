@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
@@ -15,6 +16,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.repository.IdentRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,67 +28,70 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class PersonService {
 
+    private static final int BLOCK_SIZE = 10;
+
     private final TpsfService tpsfService;
     private final List<ClientRegister> clientRegister;
     private final IdentRepository identRepository;
     private final PdlDataConsumer pdlDataConsumer;
 
     @Async
-    public void recyclePersoner(List<String> identer) {
-
-        var testidenter = identRepository.findByIdentIn(identer);
+    public void recyclePersoner(List<TestidentDTO> testidenter) {
 
         var tpsfPersoner = tpsfService.hentTestpersoner(testidenter.stream()
-                .filter(Testident::isTpsf)
-                .map(Testident::getIdent)
+                .filter(TestidentDTO::isTpsf)
+                .map(TestidentDTO::getIdent)
                 .toList());
 
-        var identerInkludertRelasjoner = Stream.of(tpsfPersoner,
-                tpsfPersoner.stream()
-                        .map(Person::getRelasjoner)
-                        .flatMap(Collection::stream)
-                        .map(Relasjon::getPersonRelasjonMed)
-                        .map(Person::getIdent)
-                        .toList(),
-                tpsfPersoner.stream()
-                        .map(Person::getVergemaal)
-                        .flatMap(Collection::stream)
-                        .map(RsVergemaal::getVerge)
-                        .map(RsSimplePerson::getIdent)
-                        .toList(),
-                tpsfPersoner.stream()
-                        .map(Person::getFullmakt)
-                        .flatMap(Collection::stream)
-                        .map(RsFullmakt::getFullmektig)
-                        .map(RsSimplePerson::getIdent)
-                        .toList(),
-                tpsfPersoner.stream()
-                        .map(Person::getIdentHistorikk)
-                        .flatMap(Collection::stream)
-                        .map(IdentHistorikk::getAliasPerson)
-                        .map(Person::getIdent)
-                        .toList())
+        var identerInkludertRelasjoner = Stream.of(tpsfPersoner.stream()
+                                .map(Person::getIdent)
+                                .toList(),
+                        tpsfPersoner.stream()
+                                .map(Person::getRelasjoner)
+                                .flatMap(Collection::stream)
+                                .map(Relasjon::getPersonRelasjonMed)
+                                .map(Person::getIdent)
+                                .toList(),
+                        tpsfPersoner.stream()
+                                .map(Person::getVergemaal)
+                                .flatMap(Collection::stream)
+                                .map(RsVergemaal::getVerge)
+                                .map(RsSimplePerson::getIdent)
+                                .toList(),
+                        tpsfPersoner.stream()
+                                .map(Person::getFullmakt)
+                                .flatMap(Collection::stream)
+                                .map(RsFullmakt::getFullmektig)
+                                .map(RsSimplePerson::getIdent)
+                                .toList(),
+                        tpsfPersoner.stream()
+                                .map(Person::getIdentHistorikk)
+                                .flatMap(Collection::stream)
+                                .map(IdentHistorikk::getAliasPerson)
+                                .map(Person::getIdent)
+                                .toList())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        pdlDataConsumer.slettPdlUtenom(testidenter.stream()
-                .filter(Testident::isTpsf)
-                .map(Testident::getIdent)
-                .toList());
+        Flux.range(0, identerInkludertRelasjoner.size() / BLOCK_SIZE)
+                .flatMap(count -> pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner.stream()
+                        .toList().subList(count * BLOCK_SIZE, (count + 1) * BLOCK_SIZE)));
 
         pdlDataConsumer.slettPdl(testidenter.stream()
-                .filter(Testident::isPdlf)
-                .map(Testident::getIdent)
+                .filter(TestidentDTO::isPdlf)
+                .map(TestidentDTO::getIdent)
                 .toList());
 
-        releaseArtifacts(identer);
+        releaseArtifacts(testidenter);
     }
 
-    private void releaseArtifacts(List<String> identer) {
+    private void releaseArtifacts(List<TestidentDTO> identer) {
 
         clientRegister.forEach(register -> {
             try {
-                register.release(identer);
+                register.release(identer.stream()
+                        .map(TestidentDTO::getIdent)
+                        .toList());
 
             } catch (RuntimeException e) {
                 log.error("Feilet å slette fra register, {}", e.getMessage(), e);

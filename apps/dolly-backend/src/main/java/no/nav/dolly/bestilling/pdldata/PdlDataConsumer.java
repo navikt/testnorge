@@ -60,10 +60,11 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_delete_utenom" })
-    public void slettPdlUtenom(List<String> identer) {
+    public Flux<Void> slettPdlUtenom(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
         new PdlDataSlettUtenomCommand(webClient, identer, accessToken).call();
+        return Flux.empty();
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_opprett" })

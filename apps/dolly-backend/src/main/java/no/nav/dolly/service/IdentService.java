@@ -32,6 +32,11 @@ public class IdentService {
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final MapperFacade mapperFacade;
 
+    @Transactional(readOnly = true)
+    public boolean exists(String ident){
+        return identRepository.existsByIdent(ident);
+    }
+
     @Transactional
     public void persisterTestidenter(List<RsTestident> personIdentListe) {
 
