@@ -16,8 +16,6 @@ export class ErrorBoundary extends React.Component {
 	}
 
 	componentDidCatch(error, info) {
-		console.log('error: ', error) //TODO - SLETT MEG
-		console.log('info: ', info) //TODO - SLETT MEG
 		this.setState({
 			error: error,
 			stackTrace: info.componentStack,

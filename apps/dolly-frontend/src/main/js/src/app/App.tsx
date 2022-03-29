@@ -9,33 +9,35 @@ import './App.less'
 import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
 import { ProfilApi } from '~/service/Api'
-import { getCurrentBruker } from '~/ducks/bruker'
-import { getEnvironments } from '~/ducks/environments'
-import { useDispatch } from 'react-redux'
-import { Toast } from '~/components/ui/toast/Toast'
+import ToastConnector from '~/components/ui/toast/ToastConnector'
 
 type Props = {
-	applicationError?: Object
-	clearAllErrors?: Function
 	brukerData?: Object
 	updateVarslingerBruker?: Function
+	getEnvironments?: Function
+	getCurrentBruker?: Function
 }
 
-export const App = ({ brukerData, clearAllErrors, updateVarslingerBruker }: Props) => {
+export const App = ({
+	brukerData,
+	updateVarslingerBruker,
+	getCurrentBruker,
+	getEnvironments,
+}: Props) => {
 	const [criticalError, setCriticalError] = useState(null)
 	const [brukerProfil, setBrukerProfil] = useState(null)
-	const [brukerBilde, setBrukerBilde] = useState(null)
-
-	const dispatch = useDispatch()
+	const [brukerBilde, setBrukerBilde] = useState(undefined)
 
 	useEffect(() => {
-		dispatch(getCurrentBruker()).catch((err: Object) => setCriticalError(err))
-		dispatch(getEnvironments()).catch((err: Object) => setCriticalError(err))
+		getCurrentBruker().catch((err: Object) => setCriticalError(err))
+		getEnvironments().catch((err: Object) => setCriticalError(err))
 
 		ProfilApi.getProfil().then((response: { data: Object }) => setBrukerProfil(response.data))
-		ProfilApi.getProfilBilde().then((response: { data: Response }) =>
-			response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
-		)
+		ProfilApi.getProfilBilde()
+			.then((response: { data: Response }) =>
+				response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
+			)
+			.catch(() => setBrukerBilde(null))
 	}, [])
 
 	const logout = (stackTrace: string) => {
@@ -48,7 +50,9 @@ export const App = ({ brukerData, clearAllErrors, updateVarslingerBruker }: Prop
 
 	if (criticalError) logout(criticalError.stack)
 
-	if (!brukerData) return <Loading label="Laster Dolly applikasjon" fullpage />
+	if (!brukerData || !brukerProfil || brukerBilde === undefined)
+		return <Loading label="Laster Dolly applikasjon" fullpage />
+
 	return (
 		<React.Fragment>
 			<Utlogging />
@@ -80,7 +84,7 @@ export const App = ({ brukerData, clearAllErrors, updateVarslingerBruker }: Prop
 				</Suspense>
 			</main>
 			<Forbedring brukerBilde={brukerBilde} />
-			<Toast clearErrors={clearAllErrors} />
+			<ToastConnector />
 		</React.Fragment>
 	)
 }
