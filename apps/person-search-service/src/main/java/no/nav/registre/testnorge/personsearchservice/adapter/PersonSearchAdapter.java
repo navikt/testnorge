@@ -73,6 +73,8 @@ public class PersonSearchAdapter {
         addIdentitetQueries(queryBuilder, search);
         addRelasjonQueries(queryBuilder, search);
         addPersonstatusQuery(queryBuilder, search);
+        addIdenttypeQuery(queryBuilder, search);
+        addAdressebeskyttelseQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -249,21 +251,6 @@ public class PersonSearchAdapter {
                         )).must();
                     }
 
-                    if (nonNull(value.getIdenttype()) && !value.getIdenttype().isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.folkeregisteridentifikator",
-                                QueryBuilders.matchQuery("hentPerson.folkeregisteridentifikator.type", value),
-                                ScoreMode.Avg
-                        ));
-                    }
-                    if (nonNull(value.getAdressebeskyttelse()) && !value.getAdressebeskyttelse().isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.adressebeskyttelse",
-                                QueryBuilders.matchQuery("hentPerson.adressebeskyttelse.gradering", value),
-                                ScoreMode.Avg
-                        ));
-                    }
-
                 });
     }
 
@@ -337,6 +324,34 @@ public class PersonSearchAdapter {
                                 QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
                                 ScoreMode.Avg
                         )).must();
+                    }
+                });
+    }
+
+    private void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getIdentitet())
+                .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.folkeregisteridentifikator",
+                                QueryBuilders.matchQuery("hentPerson.folkeregisteridentifikator.type", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
+    }
+
+    private void addAdressebeskyttelseQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getIdentitet())
+                .flatMap(value -> Optional.ofNullable(value.getAdressebeskyttelse()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.adressebeskyttelse",
+                                QueryBuilders.matchQuery("hentPerson.adressebeskyttelse.gradering", value),
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }
