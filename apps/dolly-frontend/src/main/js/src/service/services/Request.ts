@@ -8,9 +8,7 @@ export default class Request {
 		return api
 			.fetchJson(url, { headers, method: 'GET' })
 			.then((response) => ({ data: response }))
-			.catch((error) => {
-				Request.logError(error, url)
-			})
+			.catch((error) => Request.logError(error, url))
 	}
 
 	static getBilde(url: string) {

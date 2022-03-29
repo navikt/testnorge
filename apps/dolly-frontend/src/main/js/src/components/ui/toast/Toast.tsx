@@ -20,9 +20,5 @@ export const Toast = ({ applicationError, clearAllErrors }: Props) => {
 		type: 'error',
 	})
 
-	return (
-		<>
-			<ToastContainer />
-		</>
-	)
+	return <ToastContainer />
 }
