@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -24,7 +24,7 @@ public class PdlDataSlettUtenomCommand implements Callable<Mono<Void>> {
     private static final String IDENTS = "identer";
 
     private final WebClient webClient;
-    private final List<String> identer;
+    private final Set<String> identer;
     private final String token;
 
     public Mono<Void> call() {

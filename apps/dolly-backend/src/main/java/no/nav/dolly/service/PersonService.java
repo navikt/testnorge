@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.domain.dto.TestidentDTO;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
@@ -16,7 +15,6 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.repository.IdentRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.List;
@@ -73,9 +71,7 @@ public class PersonService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        Flux.range(0, identerInkludertRelasjoner.size() / BLOCK_SIZE)
-                .flatMap(count -> pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner.stream()
-                        .toList().subList(count * BLOCK_SIZE, (count + 1) * BLOCK_SIZE)));
+        pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner);
 
         pdlDataConsumer.slettPdl(testidenter.stream()
                 .filter(TestidentDTO::isPdlf)

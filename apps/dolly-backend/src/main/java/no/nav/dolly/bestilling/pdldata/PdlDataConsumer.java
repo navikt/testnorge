@@ -24,6 +24,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -60,11 +61,10 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_delete_utenom" })
-    public Flux<Void> slettPdlUtenom(List<String> identer) {
+    public void slettPdlUtenom(Set<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
-        new PdlDataSlettUtenomCommand(webClient, identer, accessToken).call();
-        return Flux.empty();
+        new PdlDataSlettUtenomCommand(webClient, identer, accessToken).call().block();
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_opprett" })
