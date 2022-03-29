@@ -32,7 +32,7 @@ spec:
     outbound:
       rules:
         - application: nom-api
-            cluster: dev-gcp
+          cluster: dev-gcp
     inbound:
       rules:
         - application: team-dolly-lokal-app
