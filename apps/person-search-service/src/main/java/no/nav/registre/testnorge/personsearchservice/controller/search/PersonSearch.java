@@ -31,5 +31,4 @@ public class PersonSearch {
     PersonstatusSearch personstatus;
     String identtype;
     AdresseSearch adresse;
-    GeografiskTilknytningSearch geografiskTilknytning;
 }
