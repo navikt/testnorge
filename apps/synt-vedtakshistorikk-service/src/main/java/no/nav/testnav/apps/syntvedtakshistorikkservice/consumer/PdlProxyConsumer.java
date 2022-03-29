@@ -72,27 +72,38 @@ public class PdlProxyConsumer {
         }
     }
 
-    public String createTags(List<String> identer, List<Tags> tags) {
+    public boolean createTags(List<String> identer, List<Tags> tags) {
         try {
-            if (isNull(identer) || identer.isEmpty()) return null;
-            return tokenExchange.exchange(serviceProperties)
+            if (isNull(identer) || identer.isEmpty()) return false;
+            var response = tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new TagsOpprettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
+
+            if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
+                log.error("Feil i opprettelse av tag(s) på ident(er).. Status: {}", response.getStatusCode());
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             log.error("Feil i opprettelse av tag(s) på ident(er).", e);
-            return null;
+            return false;
         }
     }
 
-    public String deleteTags(List<String> identer, List<Tags> tags){
+    public boolean deleteTags(List<String> identer, List<Tags> tags){
         try {
-            if (isNull(identer) || identer.isEmpty()) return null;
-            return tokenExchange.exchange(serviceProperties)
+            if (isNull(identer) || identer.isEmpty()) return false;
+            var response =  tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new TagsSlettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
+            if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
+                log.error("Feil i opprettelse av tag(s) på ident(er).. Status: {}", response.getStatusCode());
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             log.error("Feil i sletting av tag(s) på ident(er).", e);
-            return null;
+            return false;
         }
     }
 }

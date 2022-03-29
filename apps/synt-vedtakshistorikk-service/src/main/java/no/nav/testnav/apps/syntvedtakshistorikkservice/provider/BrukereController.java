@@ -19,7 +19,6 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 
-import static java.util.Objects.nonNull;
 
 @RestController
 @RequestMapping("api/v1/generer")
@@ -41,7 +40,7 @@ public class BrukereController {
                 MAKSIMUM_ALDER,
                 null);
 
-        if (nonNull(pdlProxyConsumer.createTags(identer, SYNT_TAGS))){
+        if (!pdlProxyConsumer.createTags(identer, SYNT_TAGS)){
             var response = arenaForvalterService.opprettArbeidssoekereUtenVedtak(
                     identer,
                     syntetiserArenaRequest.getMiljoe());

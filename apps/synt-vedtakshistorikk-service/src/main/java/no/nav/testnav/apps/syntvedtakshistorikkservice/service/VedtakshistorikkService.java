@@ -218,8 +218,7 @@ public class VedtakshistorikkService {
     }
 
     private boolean opprettetTagsPaaIdent(String ident) {
-        var response = pdlProxyConsumer.createTags(Collections.singletonList(ident), SYNT_TAGS);
-        return nonNull(response);
+        return pdlProxyConsumer.createTags(Collections.singletonList(ident), SYNT_TAGS);
     }
 
     private void removeTagsPaaIdent(String ident) {
