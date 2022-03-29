@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -117,21 +118,21 @@ public class AaregClient implements ClientRegister {
         try {
             Map<String, AMeldingDTO> dtoMaanedMap = new HashMap<>();
 
-            var orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
+            Set<String> orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
                     .map(RsAmeldingRequest::getArbeidsforhold)
                     .flatMap(Collection::stream)
                     .map(RsArbeidsforholdAareg::getArbeidsgiver)
                     .map(RsArbeidsgiver::getOrgnummer)
                     .collect(Collectors.toSet());
-            var organisasjoner = organisasjonServiceConsumer.getOrganisasjoner(orgnumre, env);
+            List<OrganisasjonDTO> organisasjoner = organisasjonServiceConsumer.getOrganisasjoner(orgnumre, env);
             bestilling.getAareg().get(0).getAmelding().forEach(amelding -> {
 
                 Map<String, String> opplysningspliktig = new HashMap<>();
                 orgnumre.forEach(orgnummer -> opplysningspliktig.put(orgnummer,
                         organisasjoner.stream()
-                                .filter(org -> orgnummer.equals(org.getOrgnummer()))
-                                .map(OrganisasjonDTO::getJuridiskEnhet)
                                 .filter(Objects::nonNull)
+                                .filter(org -> nonNull(org.getOrgnummer()) && org.getOrgnummer().equals(orgnummer))
+                                .map(OrganisasjonDTO::getJuridiskEnhet)
                                 .findFirst()
                                 .orElseThrow(() -> new NotFoundException(String.format("Juridisk enhet for organisasjon: %s ikke funnet i miljø: %s", orgnummer, env)))));
                 MappingContext context = new MappingContext.Factory().getContext();
@@ -143,7 +144,7 @@ public class AaregClient implements ClientRegister {
                 dtoMaanedMap.put(amelding.getMaaned(), mapperFacade.map(amelding, AMeldingDTO.class, context));
             });
 
-            var response = sendAmeldinger(dtoMaanedMap.values().stream().toList(), env);
+            Map<String, ResponseEntity<Void>> response = sendAmeldinger(dtoMaanedMap.values().stream().toList(), env);
             response.forEach((key, value) -> {
                 if (value.getStatusCode().is2xxSuccessful()) {
                     saveTransaksjonId(value, key, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
