@@ -359,11 +359,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentGeografiskTilknytning",
-                                QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value));
                     }
                 });
 
@@ -371,11 +367,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getKommune()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentGeografiskTilknytning",
-                                QueryBuilders.matchQuery("hentGeografiskTilknytning.gtKommune", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtKommune", value));
                     }
                 });
     }
