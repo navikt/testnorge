@@ -16,6 +16,10 @@ import {
 	IdentitetPaths,
 	Diverse,
 	DiversePaths,
+	Adresse,
+	AdressePaths,
+	Identtype,
+	IdenttypePaths,
 } from './options/Options'
 import _get from 'lodash/get'
 
@@ -56,9 +60,21 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				numSelected={getCount(IdentPaths, props.formikBag)}
 			/>
 			<OptionsSection
+				heading={'Identifikatortype'}
+				options={<Identtype formikBag={props.formikBag} />}
+				numSelected={getCount(IdenttypePaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
+			/>
+			<OptionsSection
 				heading={'Alder'}
 				options={<Alder />}
 				numSelected={getCount(AlderPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
+			/>
+			<OptionsSection
+				heading={'Adresse'}
+				options={<Adresse />}
+				numSelected={getCount(AdressePaths, props.formikBag)}
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection

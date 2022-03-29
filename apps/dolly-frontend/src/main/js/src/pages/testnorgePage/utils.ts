@@ -26,12 +26,28 @@ export const initialValues = {
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
+		identtype: {
+			fnr: false,
+			dnr: false,
+		},
+		adresse: {
+			adressebeskyttelse: '',
+		},
 		diverse: {
 			kjoenn: '',
 			utflyttet: false,
 			innflyttet: false,
 		},
 	},
+}
+
+const getIdenttype = (values: any) => {
+	if (values?.personinformasjon?.identtype?.fnr) {
+		return 'FNR'
+	} else if (values?.personinformasjon?.identtype?.dnr) {
+		return 'DNR'
+	}
+	return ''
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
@@ -77,6 +93,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
 				utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
 			},
+			identtype: getIdenttype(values),
 			relasjoner: {
 				barn: values?.personinformasjon?.barn?.barn,
 				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
@@ -86,6 +103,9 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			innflyttingTilNorge: {
 				innflytting: values?.personinformasjon?.diverse?.innflyttet,
+			},
+			adresse: {
+				adressebeskyttelse: values?.personinformasjon?.adresse?.adressebeskyttelse,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
