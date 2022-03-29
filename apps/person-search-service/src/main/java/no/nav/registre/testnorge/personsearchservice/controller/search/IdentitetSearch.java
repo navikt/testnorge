@@ -8,6 +8,8 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class IdentitetSearch {
+    String identtype;
+    String adressebeskyttelse;
     Boolean falskIdentitet;
     Boolean utenlandskIdentitet;
 }
