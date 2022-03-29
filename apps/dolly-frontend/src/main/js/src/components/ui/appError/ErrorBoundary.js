@@ -8,13 +8,6 @@ export class ErrorBoundary extends React.Component {
 		stackTrace: this.props.stackTrace,
 	}
 
-	triggerError = ({ error, errorInfo }) => {
-		this.setState({
-			error: error,
-			stackTrace: errorInfo.componentStack,
-		})
-	}
-
 	componentDidCatch(error, info) {
 		this.setState({
 			error: error,
