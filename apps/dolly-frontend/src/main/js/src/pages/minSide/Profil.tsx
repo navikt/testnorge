@@ -2,7 +2,7 @@ import React from 'react'
 import dolly from '~/assets/favicon.ico'
 
 type Props = {
-	bilde: Response
+	bilde: Blob
 	info: {
 		visningsNavn: string
 		epost: string
@@ -16,7 +16,7 @@ export default function Profil({ bilde, info }: Props) {
 	const bankIdProfil = info && info.type && info.type === 'BankId'
 	return (
 		<div className="profil">
-			<img alt="Profilbilde" src={(bilde && bilde.url) || dolly} />
+			<img alt="Profilbilde" src={bilde || dolly} />
 			{info && !bankIdProfil && (
 				<div className="person-info">
 					<p>

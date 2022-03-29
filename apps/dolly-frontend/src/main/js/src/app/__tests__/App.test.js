@@ -6,7 +6,7 @@ import Header from '~/components/layout/header/Header'
 import Loading from '~/components/ui/loading/Loading'
 import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 
-describe('App.js', () => {
+describe('App.tsx', () => {
 	const fetchConfig = jest.fn()
 	const getCurrentBruker = jest.fn()
 

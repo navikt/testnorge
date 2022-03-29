@@ -6,7 +6,7 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -120,12 +120,14 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
                 kontaktadresse.getUtenlandskAdresse().isEmpty()) {
 
-            kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
-            kontaktadresse.setGyldigFraOgMed(now());
-            kontaktadresse.setGyldigTilOgMed(now().plusYears(1));
+            kontaktadresse.setMaster(Master.PDL);
             kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
         }
 
+        if (Master.PDL == kontaktadresse.getMaster()) {
+            kontaktadresse.setGyldigFraOgMed(nonNull(kontaktadresse.getGyldigFraOgMed()) ? kontaktadresse.getGyldigFraOgMed() : now());
+            kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() : now().plusYears(1));
+        }
         kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
         kontaktadresse.setOpprettCoAdresseNavn(null);
     }

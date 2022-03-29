@@ -44,9 +44,10 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public String sendOrdre(String ident, boolean isTpsfMaster) {
+    public String sendOrdre(String ident, boolean isTpsfMaster, boolean ekskluderEksternePersoner) {
 
-        return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
+        return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, ekskluderEksternePersoner,
+                serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_delete"})

@@ -26,13 +26,9 @@ export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
-				<Attributt
-					attr={sm.attrs.pensjonforvalter}
-					disabled={testnorgeIdent}
-					title={testnorgeIdent ? 'Venter på støtte for Testnorge identer' : null}
-				/>
+				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
-			<AttributtKategori title="A-ordningen (Inntektskomponenten)">
+			<AttributtKategori title="A-ordningen (Inntektsstub)">
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)">

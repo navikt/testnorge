@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,7 @@ public class RsDollyUtvidetBestilling extends RsDollyBestilling {
     private String beskrivelse;
 
     private List<Tags> tags;
+
+    @JsonIgnore
+    private Boolean ekskluderEksternePersoner;
 }

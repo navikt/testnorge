@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import Stegindikator from 'nav-frontend-stegindikator'
@@ -6,11 +6,10 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { VarslingerApi } from '~/service/Api'
+import { useBoolean } from 'react-use'
 
 interface Varslinger {
-	varslinger: Array<Varsling>
-	varslingerBruker: Array<string>
-	isLoadingVarslinger: boolean
 	updateVarslingerBruker: Function
 }
 
@@ -20,26 +19,39 @@ type Varsling = {
 	varslingId: string
 }
 
-export const VarslingerModal = ({
-	varslinger,
-	varslingerBruker,
-	isLoadingVarslinger,
-	updateVarslingerBruker,
-}: Varslinger) => {
+export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
+	const [varslinger, setVarslinger] = useState(null)
+	const [varslingerBruker, setVarslingerbruker] = useState(null)
+
+	const [isLoadingVarslinger, setIsLoadingVarslinger] = useBoolean(true)
+	const [isLoadingVarslingerBruker, setIsLoadingVarslingerBruker] = useBoolean(true)
+
+	const isLoading = isLoadingVarslinger || isLoadingVarslingerBruker
+
+	useEffect(() => {
+		VarslingerApi.getVarslinger().then((response: { data: Varsling }) => {
+			setVarslinger(response.data)
+			setIsLoadingVarslinger(false)
+		})
+		VarslingerApi.getVarslingerBruker().then((response: { data: Varsling }) => {
+			setVarslingerbruker(response.data)
+			setIsLoadingVarslingerBruker(false)
+		})
+	}, [])
 
 	if (!varslinger) return null
 
 	const usetteVarslinger =
-		isLoadingVarslinger === false &&
+		isLoading === false &&
 		varslinger.length > 0 &&
-		varslinger.filter((varsel) => !varslingerBruker.includes(varsel.varslingId))
+		varslinger.filter((varsel: Varsling) => !varslingerBruker.includes(varsel.varslingId))
 	if (!usetteVarslinger || usetteVarslinger.length < 1) return null
 
 	const currentDate = new Date()
 	const gyldigeVarslinger = usetteVarslinger.filter(
-		(varsling) =>
+		(varsling: Varsling) =>
 			(!varsling.fom && (!varsling.tom || isBefore(currentDate, new Date(varsling.tom)))) ||
 			(!varsling.tom && (!varsling.fom || isAfter(currentDate, new Date(varsling.fom)))) ||
 			(isAfter(currentDate, new Date(varsling.fom)) &&
@@ -49,7 +61,9 @@ export const VarslingerModal = ({
 	const antallVarslinger = gyldigeVarslinger.length
 	if (antallVarslinger < 1) return null
 
-	const varslingerSteg = gyldigeVarslinger.map((varsling) => ({ label: varsling.varslingId }))
+	const varslingerSteg = gyldigeVarslinger.map((varsling: Varsling) => ({
+		label: varsling.varslingId,
+	}))
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)

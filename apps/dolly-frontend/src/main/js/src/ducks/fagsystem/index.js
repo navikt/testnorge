@@ -1,7 +1,6 @@
 import { createActions } from 'redux-actions'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
-import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
 	ArenaApi,
@@ -390,10 +389,10 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 
 	// Sortert etter bestillingsId
 	const identListe = Object.values(identer)
-		.sort((a, b) =>
-			a.bestillingId && b.bestillingId
-				? _last(b?.bestillingId) - _last(a?.bestillingId)
-				: _last(b?.ident) - _last(a?.ident)
+		.sort((first, second) =>
+			first.bestillingId?.[0] && second.bestillingId?.[0]
+				? second?.bestillingId[0] - first?.bestillingId[0]
+				: second?.ident - first?.ident
 		)
 		.filter(
 			(gruppeIdent) =>
