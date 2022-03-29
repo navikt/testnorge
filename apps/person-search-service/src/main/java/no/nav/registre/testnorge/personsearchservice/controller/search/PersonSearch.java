@@ -30,4 +30,5 @@ public class PersonSearch {
     RelasjonSearch relasjoner;
     PersonstatusSearch personstatus;
     String identtype;
+    AdresseSearch adresse;
 }
