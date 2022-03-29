@@ -1,17 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
-	const importTestnorge = opts.is.importTestnorge
-
-	const pensjonTitle = importTestnorge
-		? 'Registrering av pensjonsgivende inntekt på Testnorge ident(er) kan gjøres via "LEGG TIL/ENDRE" etter at identen(e) er importert.'
-		: null
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
@@ -33,11 +26,7 @@ export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
-				<Attributt
-					attr={sm.attrs.pensjonforvalter}
-					disabled={importTestnorge}
-					title={pensjonTitle}
-				/>
+				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektsstub)">
 				<Attributt attr={sm.attrs.inntektstub} />
