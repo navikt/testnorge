@@ -72,7 +72,7 @@ public class PersonSearchAdapter {
         addIdentitetQueries(queryBuilder, search);
         addRelasjonQueries(queryBuilder, search);
         addPersonstatusQuery(queryBuilder, search);
-        addIdenttypeQuery(queryBuilder, serach);
+        addIdenttypeQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
