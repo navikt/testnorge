@@ -1,27 +1,9 @@
 import React from 'react'
-import { IdentSearch } from './IdentSearch'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikProps } from 'formik'
-import _get from 'lodash/get'
-
-type Props = {
-	formikBag: FormikProps<{}>
-}
-
-export const IdentNummer = ({ formikBag }: Props) => (
-	<section>
-		<IdentSearch formikBag={formikBag} />
-	</section>
-)
-
-export const IdentPaths = {
-	'personinformasjon.ident.ident': 'ident',
-	'personinformasjon.identer': 'list',
-}
 
 export const Alder = () => (
 	<section>
@@ -109,26 +91,6 @@ export const BarnPaths = {
 	'personinformasjon.barn.doedfoedtBarn': 'boolean',
 }
 
-export const Identitet = () => (
-	<section>
-		<FormikCheckbox
-			name="personinformasjon.identitet.falskIdentitet"
-			label="Har falsk identitet"
-			size="medium"
-		/>
-		<FormikCheckbox
-			name="personinformasjon.identitet.utenlandskIdentitet"
-			label="Har utenlandsk identitet"
-			size="medium"
-		/>
-	</section>
-)
-
-export const IdentitetPaths = {
-	'personinformasjon.identitet.falskIdentitet': 'boolean',
-	'personinformasjon.identitet.utenlandskIdentitet': 'boolean',
-}
-
 export const Diverse = () => (
 	<section>
 		<FormikSelect
@@ -157,50 +119,4 @@ export const DiversePaths = {
 	'personinformasjon.diverse.kjoenn': 'string',
 	'personinformasjon.diverse.innflyttet': 'boolean',
 	'personinformasjon.diverse.utflyttet': 'boolean',
-}
-
-export const Adresse = () => (
-	<section>
-		<FormikSelect
-			name="personinformasjon.adresse.adressebeskyttelse"
-			label="Adressebeskyttelse"
-			options={[
-				{ value: 'FORTROLIG', label: 'Fortrolig' },
-				{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
-			]}
-			size="medium"
-		/>
-	</section>
-)
-
-export const AdressePaths = {
-	'personinformasjon.adresse.adressebeskyttelse': 'string',
-}
-
-interface IdenttypeProps {
-	formikBag: FormikProps<{}>
-}
-
-export const Identtype: React.FC<IdenttypeProps> = ({ formikBag }: IdenttypeProps) => {
-	return (
-		<section>
-			<FormikCheckbox
-				name="personinformasjon.identtype.fnr"
-				disabled={_get(formikBag.values, 'personinformasjon.identtype.dnr')}
-				label="Fødselsnummer"
-				size="medium"
-			/>
-			<FormikCheckbox
-				name="personinformasjon.identtype.dnr"
-				disabled={_get(formikBag.values, 'personinformasjon.identtype.fnr')}
-				label="D-nummer"
-				size="medium"
-			/>
-		</section>
-	)
-}
-
-export const IdenttypePaths = {
-	'personinformasjon.identtype.fnr': 'boolean',
-	'personinformasjon.identtype.dnr': 'boolean',
 }

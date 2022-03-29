@@ -22,16 +22,14 @@ export const initialValues = {
 			ident: '',
 		},
 		identer: [],
-		identitet: {
+		identifikasjon: {
+			adressebeskyttelse: '',
+			identtype: {
+				fnr: false,
+				dnr: false,
+			},
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
-		},
-		identtype: {
-			fnr: false,
-			dnr: false,
-		},
-		adresse: {
-			adressebeskyttelse: '',
 		},
 		diverse: {
 			kjoenn: '',
@@ -42,9 +40,9 @@ export const initialValues = {
 }
 
 const getIdenttype = (values: any) => {
-	if (values?.personinformasjon?.identtype?.fnr) {
+	if (values?.personinformasjon?.identifikasjon?.identtype?.fnr) {
 		return 'FNR'
-	} else if (values?.personinformasjon?.identtype?.dnr) {
+	} else if (values?.personinformasjon?.identifikasjon?.identtype?.dnr) {
 		return 'DNR'
 	}
 	return ''
@@ -90,10 +88,11 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			identer: identer,
 			identitet: {
-				falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
-				utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
+				falskIdentitet: values?.personinformasjon?.identifikasjon?.falskIdentitet,
+				utenlandskIdentitet: values?.personinformasjon?.identifikasjon?.utenlandskIdentitet,
+				identtype: getIdenttype(values),
+				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
-			identtype: getIdenttype(values),
 			relasjoner: {
 				barn: values?.personinformasjon?.barn?.barn,
 				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
@@ -103,9 +102,6 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			innflyttingTilNorge: {
 				innflytting: values?.personinformasjon?.diverse?.innflyttet,
-			},
-			adresse: {
-				adressebeskyttelse: values?.personinformasjon?.adresse?.adressebeskyttelse,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
