@@ -558,7 +558,7 @@ export const validation = {
 			navn: ifPresent('$pdldata.person.navn', navn),
 			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
-		}),
+		}).nullable(),
 	}),
 	tpsMessaging: ifPresent(
 		'$tpsMessaging',
