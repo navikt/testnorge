@@ -347,7 +347,7 @@ public class PersonSearchAdapter {
                     if (!value.isEmpty()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.adressebeskyttelse",
-                                QueryBuilders.matchQuery("hentPerson.dressebeskyttelse.gradering", value),
+                                QueryBuilders.matchQuery("hentPerson.adressebeskyttelse.gradering", value),
                                 ScoreMode.Avg
                         ));
                     }
