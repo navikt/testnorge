@@ -10,6 +10,8 @@ interface IdentifikasjonProps {
 }
 
 const SubTittel = styled.h4`
+	font-weight: 500;
+	text-decoration: underline;
 	margin: 10px 0 10px 0;
 `
 
