@@ -29,4 +29,5 @@ public class PersonSearch {
     IdentitetSearch identitet;
     RelasjonSearch relasjoner;
     PersonstatusSearch personstatus;
+    String identtype;
 }

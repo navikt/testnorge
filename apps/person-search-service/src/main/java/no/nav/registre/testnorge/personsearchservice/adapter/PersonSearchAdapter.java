@@ -72,6 +72,7 @@ public class PersonSearchAdapter {
         addIdentitetQueries(queryBuilder, search);
         addRelasjonQueries(queryBuilder, search);
         addPersonstatusQuery(queryBuilder, search);
+        addIdenttypeQuery(queryBuilder, serach);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -320,6 +321,19 @@ public class PersonSearchAdapter {
                                 QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
                                 ScoreMode.Avg
                         )).must();
+                    }
+                });
+    }
+
+    private void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getIdenttype())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.folkeregisteridentifikator",
+                                QueryBuilders.matchQuery("hentPerson.folkeregisteridentifikator.type", value),
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }
