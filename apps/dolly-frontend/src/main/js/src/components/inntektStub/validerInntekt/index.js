@@ -29,13 +29,13 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	useEffect(() => {
 		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
-	})
+	}, [formikBag])
 
 	useEffect(() => {
 		setCurrentTilleggsinformasjonstype(
 			_get(formikBag.values, `${inntektPath}.tilleggsinformasjonstype`)
 		)
-	})
+	}, [formikBag])
 
 	useEffect(() => {
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
@@ -103,7 +103,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
 			}
 		})
-	})
+	}, [fields])
 
 	return (
 		<Formik
