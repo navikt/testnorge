@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 public class OrganisasjonServiceConsumer {
@@ -44,7 +46,10 @@ public class OrganisasjonServiceConsumer {
 
         for (CompletableFuture<OrganisasjonDTO> future : futures) {
             try {
-                list.add(future.get());
+                var org = future.get();
+                if (nonNull(org)) {
+                    list.add(org);
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Klarer ikke å hente ut alle organisasjoner", e);
             }
