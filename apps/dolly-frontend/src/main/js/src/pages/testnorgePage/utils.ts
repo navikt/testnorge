@@ -22,7 +22,12 @@ export const initialValues = {
 			ident: '',
 		},
 		identer: [],
-		identitet: {
+		identifikasjon: {
+			adressebeskyttelse: '',
+			identtype: {
+				fnr: false,
+				dnr: false,
+			},
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
@@ -32,6 +37,15 @@ export const initialValues = {
 			innflyttet: false,
 		},
 	},
+}
+
+const getIdenttype = (values: any) => {
+	if (values?.personinformasjon?.identifikasjon?.identtype?.fnr) {
+		return 'FNR'
+	} else if (values?.personinformasjon?.identifikasjon?.identtype?.dnr) {
+		return 'DNR'
+	}
+	return ''
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
@@ -73,9 +87,11 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				til: values?.personinformasjon?.alder?.til,
 			},
 			identer: identer,
-			identitet: {
-				falskIdentitet: values?.personinformasjon?.identitet?.falskIdentitet,
-				utenlandskIdentitet: values?.personinformasjon?.identitet?.utenlandskIdentitet,
+			identifikasjon: {
+				falskIdentitet: values?.personinformasjon?.identifikasjon?.falskIdentitet,
+				utenlandskIdentitet: values?.personinformasjon?.identifikasjon?.utenlandskIdentitet,
+				identtype: getIdenttype(values),
+				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
 			relasjoner: {
 				barn: values?.personinformasjon?.barn?.barn,

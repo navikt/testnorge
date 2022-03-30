@@ -1,9 +1,8 @@
 import React from 'react'
+import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { OptionsSection } from './options/OptionsSection'
 import {
-	IdentNummer,
-	IdentPaths,
 	Alder,
 	AlderPaths,
 	Statsborgerskap,
@@ -12,12 +11,11 @@ import {
 	SivilstandPaths,
 	Barn,
 	BarnPaths,
-	Identitet,
-	IdentitetPaths,
 	Diverse,
 	DiversePaths,
 } from './options/Options'
-import _get from 'lodash/get'
+import { Identifikasjon, IdentifikasjonPaths } from './options/Identifikasjon'
+import { IdentSearch, IdentSearchPaths } from '~/pages/testnorgePage/search/options/IdentSearch'
 
 export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
@@ -42,7 +40,7 @@ export const getCount = (values: Record<string, string>, formikBag: FormikProps<
 }
 
 const getSelectionColor = (formikBag: FormikProps<{}>) => {
-	return getCount(IdentPaths, formikBag) > 0 ? 'grey' : 'blue'
+	return getCount(IdentSearchPaths, formikBag) > 0 ? 'grey' : 'blue'
 }
 
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
@@ -51,9 +49,15 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 			<h2>Personinformasjon</h2>
 			<OptionsSection
 				heading={'Fødsels- eller D-nummer'}
-				options={<IdentNummer formikBag={props.formikBag} />}
+				options={<IdentSearch formikBag={props.formikBag} />}
 				startOpen={true}
-				numSelected={getCount(IdentPaths, props.formikBag)}
+				numSelected={getCount(IdentSearchPaths, props.formikBag)}
+			/>
+			<OptionsSection
+				heading={'Identifikasjon'}
+				options={<Identifikasjon formikBag={props.formikBag} />}
+				numSelected={getCount(IdentifikasjonPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
 				heading={'Alder'}
@@ -77,12 +81,6 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				heading={'Barn'}
 				options={<Barn />}
 				numSelected={getCount(BarnPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
-			/>
-			<OptionsSection
-				heading={'Identitet'}
-				options={<Identitet />}
-				numSelected={getCount(IdentitetPaths, props.formikBag)}
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection

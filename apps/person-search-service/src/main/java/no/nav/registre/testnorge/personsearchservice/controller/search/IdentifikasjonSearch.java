@@ -7,7 +7,9 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class IdentitetSearch {
+public class IdentifikasjonSearch {
+    String identtype;
+    String adressebeskyttelse;
     Boolean falskIdentitet;
     Boolean utenlandskIdentitet;
 }
