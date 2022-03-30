@@ -64,9 +64,9 @@ public class PdlDataConsumer {
     public void slettPdlUtenom(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
-        Flux.range(0, identer.size() / BLOCK_SIZE)
+        Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
                 .flatMap(count -> new PdlDataSlettUtenomCommand(webClient,
-                        identer.subList(count * BLOCK_SIZE, (count + 1) * BLOCK_SIZE),
+                        identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
                         accessToken).call())
                 .collectList()
                 .block();

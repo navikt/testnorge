@@ -38,44 +38,49 @@ public class PersonService {
                 .map(TestidentDTO::getIdent)
                 .toList());
 
-        var identerInkludertRelasjoner = Stream.of(tpsfPersoner.stream()
-                                .map(Person::getIdent)
-                                .toList(),
-                        tpsfPersoner.stream()
-                                .map(Person::getRelasjoner)
-                                .flatMap(Collection::stream)
-                                .map(Relasjon::getPersonRelasjonMed)
-                                .map(Person::getIdent)
-                                .toList(),
-                        tpsfPersoner.stream()
-                                .map(Person::getVergemaal)
-                                .flatMap(Collection::stream)
-                                .map(RsVergemaal::getVerge)
-                                .map(RsSimplePerson::getIdent)
-                                .toList(),
-                        tpsfPersoner.stream()
-                                .map(Person::getFullmakt)
-                                .flatMap(Collection::stream)
-                                .map(RsFullmakt::getFullmektig)
-                                .map(RsSimplePerson::getIdent)
-                                .toList(),
-                        tpsfPersoner.stream()
-                                .map(Person::getIdentHistorikk)
-                                .flatMap(Collection::stream)
-                                .map(IdentHistorikk::getAliasPerson)
-                                .map(Person::getIdent)
-                                .toList())
-                .flatMap(Collection::stream)
-                .distinct()
-                .toList();
+        if (!tpsfPersoner.isEmpty()) {
+            var identerInkludertRelasjoner = Stream.of(tpsfPersoner.stream()
+                                    .map(Person::getIdent)
+                                    .toList(),
+                            tpsfPersoner.stream()
+                                    .map(Person::getRelasjoner)
+                                    .flatMap(Collection::stream)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .toList(),
+                            tpsfPersoner.stream()
+                                    .map(Person::getVergemaal)
+                                    .flatMap(Collection::stream)
+                                    .map(RsVergemaal::getVerge)
+                                    .map(RsSimplePerson::getIdent)
+                                    .toList(),
+                            tpsfPersoner.stream()
+                                    .map(Person::getFullmakt)
+                                    .flatMap(Collection::stream)
+                                    .map(RsFullmakt::getFullmektig)
+                                    .map(RsSimplePerson::getIdent)
+                                    .toList(),
+                            tpsfPersoner.stream()
+                                    .map(Person::getIdentHistorikk)
+                                    .flatMap(Collection::stream)
+                                    .map(IdentHistorikk::getAliasPerson)
+                                    .map(Person::getIdent)
+                                    .toList())
+                    .flatMap(Collection::stream)
+                    .distinct()
+                    .toList();
 
 
-        pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner);
+            pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner);
+        }
 
-        pdlDataConsumer.slettPdl(testidenter.stream()
-                .filter(TestidentDTO::isPdlf)
-                .map(TestidentDTO::getIdent)
-                .toList());
+        if (testidenter.stream().anyMatch(TestidentDTO::isPdlf)) {
+
+            pdlDataConsumer.slettPdl(testidenter.stream()
+                    .filter(TestidentDTO::isPdlf)
+                    .map(TestidentDTO::getIdent)
+                    .toList());
+        }
 
         releaseArtifacts(testidenter);
     }
