@@ -28,6 +28,7 @@ import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInn
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
+import static no.nav.dolly.mapper.BestillingNomStatusMapper.buildNomStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
@@ -64,6 +65,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildNomStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
@@ -84,6 +86,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .pdldata(bestillingRequest.getPdldata())
                                 .aareg(bestillingRequest.getAareg())
                                 .krrstub(bestillingRequest.getKrrstub())
+                                .nomData(bestillingRequest.getNomData())
                                 .arenaforvalter(bestillingRequest.getArenaforvalter())
                                 .instdata(bestillingRequest.getInstdata())
                                 .inntektstub(bestillingRequest.getInntektstub())

@@ -15,6 +15,7 @@ public class CachingConfig {
     public static final String CACHE_GRUPPE = "gruppe";
     public static final String CACHE_KODEVERK = "kodeverk";
     public static final String CACHE_KODEVERK_2 = "kodeverk2";
+    public static final String CACHE_NOMDATA = "nom";
 
     @Bean
     public CacheManager cacheManager() {
@@ -22,7 +23,8 @@ public class CachingConfig {
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
                 CACHE_KODEVERK,
-                CACHE_KODEVERK_2
+                CACHE_KODEVERK_2,
+                CACHE_NOMDATA
         );
     }
 }

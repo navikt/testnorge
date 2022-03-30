@@ -21,6 +21,7 @@ import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
+import no.nav.dolly.consumer.nom.NomConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
@@ -50,6 +51,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
+import static no.nav.dolly.config.CachingConfig.CACHE_NOMDATA;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +68,7 @@ public class OppslagController {
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
+    private final NomConsumer nomConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
@@ -128,6 +131,20 @@ public class OppslagController {
     @Operation(description = "Hent udistub ident")
     public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
         return udiStubConsumer.getUdiPerson(ident);
+    }
+
+    @Cacheable(CACHE_NOMDATA)
+    @GetMapping("/nom/{ident}")
+    @Operation(description = "Hent nom data på ident")
+    public JsonNode getNomPersondata(@PathVariable String ident) {
+        return nomConsumer.getNomPersonMedPersonIdent(ident);
+    }
+
+    @Cacheable(CACHE_NOMDATA)
+    @GetMapping("/nom")
+    @Operation(description = "Hent alle nom ressurser")
+    public JsonNode getalleNomRessurser() {
+        return nomConsumer.hentAlleNomRessurser();
     }
 
     @GetMapping("/helsepersonell")

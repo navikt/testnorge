@@ -1,0 +1,241 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+union SearchResult = Organisasjonsenhet | Ressurs
+
+type Kode {
+    gyldigFom: Date
+    gyldigTom: Date
+    kode: String!
+    navn: String!
+}
+
+type LederOrganisasjonsenhet {
+    organisasjonsenhet: Organisasjonsenhet!
+}
+
+type Mutation {
+    """
+
+    Ordre
+    removeRequestFromOrdre(ordreId: ID!, ordreLinjeId: ID!): ResultCode!
+    editOrdre(ordreId: ID!, metadata: EditOrdreRequest!): ResultCode!
+    """
+    godkjennOrdre(ordreId: ID!): ResultCode!
+    opprettEnhet(request: OpprettEnhetRequest!): OrdreLinjeResponse!
+    opprettRessurs(forbokstav: String, personIdent: String!): OpprettRessursResponse
+    "OrdreLinje"
+    ordreRessurs(request: OpprettRessursRequest!): OrdreLinjeResponse!
+}
+
+type Navn {
+    etternavn: String!
+    fornavn: String!
+    mellomnavn: String
+}
+
+type OpprettRessursResponse {
+    navIdent: String!
+    nomId: String!
+    person: Person
+    personIdent: String!
+}
+
+type Ordre {
+    beskrivelse: String
+    endretTidspunkt: DateTime!
+    ordreId: ID!
+    ordreLinjer: [OrdreLinje!]!
+}
+
+type OrdreLinje {
+    "define explicitly?"
+    data: JSON
+    metadata: OrdreLinjeMetadata
+    ordreId: ID!
+    ordreLinjeId: ID!
+    type: OrdreLinjeType
+}
+
+type OrdreLinjeMetadata {
+    beskrivelse: String
+    ordreId: ID!
+}
+
+"Responses"
+type OrdreLinjeResponse {
+    ordreLinje: OrdreLinje!
+}
+
+type Organisasjonsenhet {
+    agressoId: ID!
+    gyldigFom: Date!
+    gyldigTom: Date
+    koblinger: [OrganisasjonsenhetsKobling!]!
+    leder: [OrganisasjonsenhetsLeder!]!
+    navn: String!
+    orgNiv: String!
+    organiseringer(retning: Retning): [Organisering!]!
+    type: Kode
+}
+
+type OrganisasjonsenhetResult {
+    code: ResultCode!
+    id: String!
+    orgNiv: String
+    organisasjonsenhet: Organisasjonsenhet
+}
+
+type OrganisasjonsenhetsKobling {
+    gyldigFom: Date!
+    gyldigTom: Date
+    ressurs: Ressurs!
+}
+
+type OrganisasjonsenhetsLeder {
+    ressurs: Ressurs!
+}
+
+type Organisering {
+    gyldigFom: Date!
+    gyldigTom: Date
+    organisasjonsenhet: Organisasjonsenhet!
+    retning: Retning!
+}
+
+type Person {
+    navn: Navn!
+}
+
+type PersonResult {
+    navIdent: String
+    nomId: String
+    person: Person
+    personIdent: String!
+}
+
+type Query {
+    ordre(ordreId: ID!): Ordre
+    ordreBulk(ordreId: [ID!]): [Ordre!]!
+    organisasjonsenhet(where: OrganisasjonsenhetSearch): Organisasjonsenhet
+    organisasjonsenheter(where: OrganisasjonsenheterSearch): [OrganisasjonsenhetResult!]!
+    person(where: PersonSearch): PersonResult
+    ressurs(where: RessursSearch): Ressurs
+    ressurser(where: RessurserSearch): [RessursResult!]!
+    search(term: String!): [SearchResult!]!
+}
+
+type Ressurs {
+    epost: String
+    etternavn: String
+    fornavn: String
+    koblinger: [RessursKobling!]!
+    lederFor: [LederOrganisasjonsenhet!]!
+    ledere: [RessursLeder!]!
+    navIdent: String!
+    nomId: String!
+    person: Person
+    personIdent: String!
+    telefon: [Telefon!]!
+    visningsNavn: String
+}
+
+type RessursKobling {
+    gyldigFom: Date!
+    gyldigTom: Date
+    organisasjonsenhet: Organisasjonsenhet!
+}
+
+type RessursLeder {
+    ressurs: Ressurs!
+}
+
+type RessursResult {
+    code: ResultCode!
+    id: String!
+    ressurs: Ressurs
+}
+
+type Telefon {
+    beskrivelse: String
+    nummer: String!
+    type: TelefonType!
+}
+
+enum OrdreLinjeType {
+    OPPRETT_ENHET
+    OPPRETT_RESSURS
+}
+
+enum ResultCode {
+    ERROR
+    NOT_FOUND
+    OK
+}
+
+enum Retning {
+    over
+    under
+}
+
+enum TelefonType {
+    NAV_KONTOR_TELEFON
+    NAV_TJENESTE_TELEFON
+    PRIVAT_TELEFON
+}
+
+"An RFC-3339 compliant Full Date Scalar"
+scalar Date
+
+"An ISO-8601 compliant DateTime Scalar"
+scalar DateTime
+
+"A JSON scalar"
+scalar JSON
+
+input OpprettEnhetRequest {
+    agressoId: String
+    metadata: OrdreLinjeRequestMetadata!
+    navn: String!
+}
+
+input OpprettRessursRequest {
+    metadata: OrdreLinjeRequestMetadata!
+    personIdent: String!
+    visningsnavn: String
+}
+
+"Requests"
+input OrdreLinjeRequestMetadata {
+    beskrivelse: String
+    "Request set/Endringspakke, valgfri, bruk for å legge til eksisterende pakke"
+    ordreId: ID
+}
+
+input OrganisasjonsenhetSearch {
+    agressoId: String
+    orgNiv: String
+}
+
+input OrganisasjonsenheterSearch {
+    agressoIder: [String!]
+    orgNiv: String
+}
+
+input PersonSearch {
+    personIdent: String!
+}
+
+input RessursSearch {
+    navIdent: String
+    personIdent: String
+}
+
+input RessurserSearch {
+    navIdenter: [String!]
+    personIdenter: [String!]
+}

@@ -3,30 +3,25 @@ package no.nav.dolly.consumer.pdlperson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.consumer.graphql.GraphQLRequest;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.apache.http.Consts;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+import static no.nav.dolly.consumer.graphql.GraphQLRequest.getQueryFromFile;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -103,23 +98,6 @@ public class PdlPersonConsumer {
     }
 
     public Map<String, String> checkAlive() {
-        try {
-            return Map.of(serviceProperties.getName() + PDL_API_URL, serviceProperties.checkIsAlive(webClient, serviceProperties.getAccessToken(tokenService)));
-        } catch (SecurityException | WebClientResponseException ex) {
-            log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
-            return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
-        }
-    }
-
-    private static String getQueryFromFile(String pathResource) {
-
-        val resource = new ClassPathResource(pathResource);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-
-        } catch (IOException e) {
-            log.error("Lesing av query ressurs {} feilet", pathResource, e);
-            return null;
-        }
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 }

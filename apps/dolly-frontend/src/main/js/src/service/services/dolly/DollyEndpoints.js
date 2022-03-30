@@ -15,6 +15,7 @@ const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
 const dokarkivBase = `${uri}/dokarkiv`
 const skjermingBase = `${uri}/skjerming`
+const nomBase = `${uri}/nom`
 const inntektsmeldingBase = `${uri}/inntektsmelding`
 const organisasjonBase = `${uri}/organisasjon`
 
@@ -82,6 +83,10 @@ export default class DollyEndpoints {
 
 	static skjermingByIdent(ident) {
 		return `${skjermingBase}/${ident}`
+	}
+
+	static nomDataByIdent(ident) {
+		return `${nomBase}/${ident}`
 	}
 
 	static organisasjonStatusByBestillingId(bestillingId) {

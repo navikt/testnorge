@@ -60,6 +60,12 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		getNom: [
+			DollyApi.getNomPerson,
+			(ident) => ({
+				ident,
+			}),
+		],
 		getArena: [
 			ArenaApi.getPerson,
 			(ident) => ({
@@ -147,6 +153,7 @@ const initialState = {
 	sigrunstub: {},
 	inntektstub: {},
 	krrstub: {},
+	nomData: {},
 	arenaforvalteren: {},
 	aareg: {},
 	pdl: {},
@@ -193,6 +200,9 @@ export default handleActions(
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data
 		},
+		[onSuccess(actions.getNom)](state, action) {
+			state.nomData[action.meta.ident] = action.payload.data?.data
+		},
 		[onSuccess(actions.getArena)](state, action) {
 			state.arenaforvalteren[action.meta.ident] = action.payload.data
 		},
@@ -226,6 +236,7 @@ export default handleActions(
 			delete state.sigrunstub[action.meta.ident]
 			delete state.inntektstub[action.meta.ident]
 			delete state.krrstub[action.meta.ident]
+			delete state.nomData[action.meta.ident]
 			delete state.arenaforvalteren[action.meta.ident]
 			delete state.aareg[action.meta.ident]
 			delete state.pdl[action.meta.ident]
@@ -289,6 +300,8 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
+			case 'NOM':
+				return dispatch(actions.getNom(personId))
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
@@ -317,6 +330,7 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 	// Liste over systemer
 	const systemer = [
+		'NOM',
 		'KRRSTUB',
 		'SIGRUNSTUB',
 		'INNTK',
@@ -332,6 +346,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
+			case 'NOM':
+				return dispatch(actions.getNom(personId))
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
@@ -522,5 +538,6 @@ export const selectDataForIdent = (state, ident) => {
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
 		brregstub: state.fagsystem.brregstub[ident],
 		skjermingsregister: state.fagsystem.skjermingsregister[ident],
+		nomData: state.fagsystem.nomData[ident],
 	}
 }

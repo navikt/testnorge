@@ -51,6 +51,7 @@ export const erForste = (values, attributt) => {
 		'brregstub',
 		'instdata',
 		'krrstub',
+		'nomData',
 		'arenaforvalter',
 		'udistub',
 		'pensjonforvalter',

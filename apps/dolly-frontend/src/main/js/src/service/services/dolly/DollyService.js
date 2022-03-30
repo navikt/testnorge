@@ -19,6 +19,10 @@ export default {
 		return Request.get(Endpoints.skjermingByIdent(ident))
 	},
 
+	getNomPerson(ident) {
+		return Request.get(Endpoints.nomDataByIdent(ident))
+	},
+
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},

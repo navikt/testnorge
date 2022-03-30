@@ -27,6 +27,7 @@ import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { DollyApi } from '~/service/Api'
+import { NomVisning } from '~/components/fagsystem/nom/visning/NomVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -98,6 +99,11 @@ export const PersonVisning = ({
 				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
+			<NomVisning
+				data={data.nomData}
+				skjermingsregister={data.skjermingsregister}
+				loading={loading.nomData}
+			/>
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />

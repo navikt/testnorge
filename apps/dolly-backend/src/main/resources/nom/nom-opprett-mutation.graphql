@@ -1,0 +1,14 @@
+mutation opprettRessurs($personIdent: String!) {
+    opprettRessurs(personIdent: $personIdent) {
+        nomId
+        navIdent
+        personIdent
+        person{
+            navn{
+                fornavn
+                mellomnavn
+                etternavn
+            }
+        }
+    }
+}
