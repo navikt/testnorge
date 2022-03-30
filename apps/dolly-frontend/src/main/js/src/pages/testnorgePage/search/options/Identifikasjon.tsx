@@ -1,6 +1,5 @@
 import React from 'react'
 import _get from 'lodash/get'
-import styled from 'styled-components'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -9,18 +8,12 @@ interface IdentifikasjonProps {
 	formikBag: FormikProps<{}>
 }
 
-const SubTittel = styled.h4`
-	font-weight: 500;
-	text-decoration: underline;
-	margin: 10px 0 10px 0;
-`
-
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	formikBag,
 }: IdentifikasjonProps) => {
 	return (
 		<section>
-			<SubTittel>Identifikatortype</SubTittel>
+			<h4 className="subtittel">Identifikatortype</h4>
 			<FormikCheckbox
 				name="personinformasjon.identifikasjon.identtype.fnr"
 				disabled={_get(formikBag.values, 'personinformasjon.identifikasjon.identtype.dnr')}
@@ -33,7 +26,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				label="D-nummer"
 				size="medium"
 			/>
-			<SubTittel>Adressebeskyttelse</SubTittel>
+			<h4 className="subtittel">Adressebeskyttelse</h4>
 			<FormikSelect
 				name="personinformasjon.identifikasjon.adressebeskyttelse"
 				label="Gradering"
@@ -43,7 +36,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				]}
 				size="medium"
 			/>
-			<SubTittel>Identitet</SubTittel>
+			<h4 className="subtittel">Identitet</h4>
 			<FormikCheckbox
 				name="personinformasjon.identifikasjon.falskIdentitet"
 				label="Har falsk identitet"
