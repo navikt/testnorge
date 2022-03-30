@@ -5,6 +5,8 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
+import java.util.Collection;
+
 @UtilityClass
 public class QueryUtils {
 
@@ -12,6 +14,22 @@ public class QueryUtils {
         return QueryBuilders.nestedQuery(
                 path,
                 QueryBuilders.matchQuery(path + "." + name, value),
+                ScoreMode.Avg
+        );
+    }
+
+    public static NestedQueryBuilder nestedTermsQuery(String path, String name, Collection<String> values) {
+        return QueryBuilders.nestedQuery(
+                path,
+                QueryBuilders.termsQuery(path + "." + name, values),
+                ScoreMode.Avg
+        );
+    }
+
+    public static NestedQueryBuilder nestedExistsQuery(String path, String name, Collection<String> values) {
+        return QueryBuilders.nestedQuery(
+                path,
+                QueryBuilders.termsQuery(path + "." + name, values),
                 ScoreMode.Avg
         );
     }
