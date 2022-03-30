@@ -15,11 +15,13 @@ public class IdentUtil {
         var month = parseInt(ident.substring(2, 4));
         var day = parseInt(ident.substring(0, 2));
 
+        if (isTestnorgeIdent(ident)) {
+            month = month - 80;
+        }
+
         var identtype = getIdentType(ident);
         if (Identtype.DNR.equals(identtype)) {
             day = day - 40;
-        } else if (Identtype.TESTNORGE.equals(identtype)){
-            month = month - 80;
         } else if (Identtype.BOST.equals(identtype)) {
             month = month - 20;
         }
@@ -30,14 +32,16 @@ public class IdentUtil {
     private static Identtype getIdentType(String ident) {
         if (parseInt(ident.substring(0, 1)) > 3) {
             return Identtype.DNR;
-        } else if (parseInt(ident.substring(2, 3)) > 7){
-            return Identtype.TESTNORGE;
         } else if (parseInt(ident.substring(2, 3)) > 1) {
             return Identtype.BOST;
         } else if ("0000".equals(ident.substring(6, 10))) {
             return Identtype.FDAT;
         }
         return Identtype.FNR;
+    }
+
+    private static boolean isTestnorgeIdent(String ident) {
+        return parseInt(ident.substring(2, 3)) > 7;
     }
 
     /**
