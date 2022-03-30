@@ -365,8 +365,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.boolQuery()
-                                .must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value)));
+                        queryBuilder.must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value));
                     }
                 });
     }
@@ -376,13 +375,21 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.boolQuery()
-                                .should(kommunenrVegadresseQuery(value))
-                                .should(kommunenrMatrikkeladresseQuery(value))
-                                .minimumShouldMatch(1)
-                        );
+                        queryBuilder.must(kommuneNrQuery(value));
                     }
                 });
+    }
+
+    private NestedQueryBuilder kommuneNrQuery(String value){
+        return QueryBuilders.nestedQuery(
+                "hentPerson.bostedsadresse",
+                QueryBuilders.boolQuery()
+                        .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenummer", value))
+                        .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenummer", value))
+                        .minimumShouldMatch(1)
+                ,
+                ScoreMode.Avg
+        );
     }
 
     private NestedQueryBuilder kommunenrVegadresseQuery(String value) {
