@@ -296,7 +296,8 @@ public class PersonSearchAdapter {
     }
 
     private void addKommunenrQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getBosted())
+        Optional.ofNullable(search.getAdresser())
+                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
                 .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -315,7 +316,8 @@ public class PersonSearchAdapter {
     }
 
     private void addPostnrQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getBosted())
+        Optional.ofNullable(search.getAdresser())
+                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
                 .flatMap(value -> Optional.ofNullable(value.getPostnummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -334,7 +336,8 @@ public class PersonSearchAdapter {
     }
 
     private void addUtenlandskAdresseQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
-        Optional.ofNullable(search.getBosted())
+        Optional.ofNullable(search.getAdresser())
+                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
                 .flatMap(value -> Optional.ofNullable(value.getUtenlandskAdresse()))
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
