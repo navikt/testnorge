@@ -40,7 +40,7 @@ consumers:
     name: nom-mock
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/nom
-    cluster: dev-fss
+    cluster: dev-gcp
   testnav-inst-proxy:
     name: inst-mock
     namespace: dolly
