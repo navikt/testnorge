@@ -40,6 +40,6 @@ public class PdlDataClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        pdlDataConsumer.slettPdl(identer);
+        // Sletting gjøres nå i PersonService
     }
 }

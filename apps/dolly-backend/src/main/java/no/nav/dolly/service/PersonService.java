@@ -18,15 +18,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
-
-    private static final int BLOCK_SIZE = 10;
 
     private final TpsfService tpsfService;
     private final List<ClientRegister> clientRegister;
@@ -69,7 +66,9 @@ public class PersonService {
                                 .map(Person::getIdent)
                                 .toList())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .distinct()
+                .toList();
+
 
         pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner);
 

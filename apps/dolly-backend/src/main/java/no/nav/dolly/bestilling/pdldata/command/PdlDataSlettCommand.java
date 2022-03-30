@@ -7,7 +7,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -17,7 +17,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataSlettCommand implements Callable<Mono<Void>> {
+public class PdlDataSlettCommand implements Callable<Flux<Void>> {
 
     private static final String PDL_FORVALTER_URL = "/api/v1/personer/{ident}";
 
@@ -25,7 +25,7 @@ public class PdlDataSlettCommand implements Callable<Mono<Void>> {
     private final String ident;
     private final String token;
 
-    public Mono<Void> call() {
+    public Flux<Void> call() {
 
         return webClient
                 .delete()
@@ -33,10 +33,10 @@ public class PdlDataSlettCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToFlux(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty());
+                        throwable -> Flux.empty());
     }
 }

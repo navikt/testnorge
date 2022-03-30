@@ -24,11 +24,12 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Service
 public class PdlDataConsumer {
+
+    private static final int BLOCK_SIZE = 10;
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -43,37 +44,41 @@ public class PdlDataConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
+    @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
     public String sendOrdre(String ident, boolean isTpsfMaster) {
 
         return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_delete" })
+    @Timed(name = "providers", tags = {"operation", "pdl_delete"})
     public void slettPdl(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
-        identer.stream()
-                .map(ident -> Flux.from(new PdlDataSlettCommand(webClient, ident, accessToken).call()))
-                .reduce(Flux.empty(), Flux::concat)
+        Flux.range(0, identer.size())
+                .flatMap(count -> new PdlDataSlettCommand(webClient, identer.get(count), accessToken).call())
                 .collectList()
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_delete_utenom" })
-    public void slettPdlUtenom(Set<String> identer) {
+    @Timed(name = "providers", tags = {"operation", "pdl_delete_utenom"})
+    public void slettPdlUtenom(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
-        new PdlDataSlettUtenomCommand(webClient, identer, accessToken).call().block();
+        Flux.range(0, identer.size() / BLOCK_SIZE)
+                .flatMap(count -> new PdlDataSlettUtenomCommand(webClient,
+                        identer.subList(count * BLOCK_SIZE, (count + 1) * BLOCK_SIZE),
+                        accessToken).call())
+                .collectList()
+                .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_opprett" })
+    @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
     public String opprettPdl(BestillingRequestDTO request) {
 
         return new PdlDataOpprettingCommand(webClient, request, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_oppdater" })
+    @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block();
@@ -90,13 +95,13 @@ public class PdlDataConsumer {
                 serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_identCheck" })
+    @Timed(name = "providers", tags = {"operation", "pdl_identCheck"})
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
 
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_dataforvalter_alive" })
+    @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
