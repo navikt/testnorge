@@ -45,7 +45,7 @@ public class PersonSearchAdapter {
     private final RestHighLevelClient client;
 
     private static final String FORELDER_BARN_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
-    private static final String RELATERT_PERSONS_ROLLE_PATH = FORELDER_BARN_RELASJON_PATH + ".relatertPersonsRolle";
+    private static final String RELATERT_PERSONS_ROLLE = "relatertPersonsRolle";
 
 
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
@@ -154,11 +154,7 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.kjoenn",
-                                QueryBuilders.matchQuery("hentPerson.kjoenn.kjoenn", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedMatchQuery("hentPerson.kjoenn", "kjoenn", value));
                     }
                 });
     }
@@ -237,28 +233,16 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getRelasjoner())
                 .ifPresent(value -> {
                     if (nonNull(value.getBarn()) && value.getBarn()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                FORELDER_BARN_RELASJON_PATH,
-                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "BARN"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "BARN"));
                     }
                     if (nonNull(value.getDoedfoedtBarn()) && value.getDoedfoedtBarn()) {
                         queryBuilder.must(nestedExistsQuery("hentPerson.doedfoedtBarn", "metadata"));
                     }
                     if (nonNull(value.getFar()) && value.getFar()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                FORELDER_BARN_RELASJON_PATH,
-                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "FAR"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "FAR"));
                     }
                     if (nonNull(value.getMor()) && value.getMor()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                FORELDER_BARN_RELASJON_PATH,
-                                QueryBuilders.matchQuery(RELATERT_PERSONS_ROLLE_PATH, "MOR"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "MOR"));
                     }
                 });
     }
@@ -268,11 +252,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getStatus()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.folkeregisterpersonstatus",
-                                QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedMatchQuery("hentPerson.folkeregisterpersonstatus", "status", value));
                     }
                 });
     }
@@ -300,11 +280,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.folkeregisteridentifikator",
-                                QueryBuilders.matchQuery("hentPerson.folkeregisteridentifikator.type", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedMatchQuery("hentPerson.folkeregisteridentifikator", "type", value));
                     }
                 });
     }
@@ -314,11 +290,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getAdressebeskyttelse()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.adressebeskyttelse",
-                                QueryBuilders.matchQuery("hentPerson.adressebeskyttelse.gradering", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedMatchQuery("hentPerson.adressebeskyttelse", "gradering", value));
                     }
                 });
     }
