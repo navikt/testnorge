@@ -50,7 +50,7 @@ export default class Request {
 			message: error.message,
 		})
 		if (error.name !== 'NotFoundError') {
-			const errorMessage = event + ' Dersom Dolly er ustabil, prøv å refreshe siden!'
+			const errorMessage = event + ' Dersom Dolly er ustabil, prøv å laste siden på nytt!'
 			sessionStorage.setItem(REQUEST_ERROR, errorMessage)
 			throw new Error(errorMessage)
 		}
