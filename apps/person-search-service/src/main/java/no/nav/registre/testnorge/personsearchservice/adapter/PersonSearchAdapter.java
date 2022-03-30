@@ -81,7 +81,6 @@ public class PersonSearchAdapter {
         addAdressebeskyttelseQuery(queryBuilder, search);
         addKommunenrQuery(queryBuilder, search);
         addPostnrQuery(queryBuilder, search);
-        addBostedsadresseQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -334,38 +333,6 @@ public class PersonSearchAdapter {
                     }
                 });
     }
-
-    private void addBostedsadresseQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
-        Optional.ofNullable(search.getAdresser())
-                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
-                .ifPresent(value -> {
-                    var utenlandskAdresse = value.getUtenlandskAdresse();
-                    var norskAdresse = value.getNorskAdresse();
-                    if (nonNull(utenlandskAdresse) && Boolean.TRUE.equals(utenlandskAdresse)) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.bostedsadresse",
-                                QueryBuilders.boolQuery()
-                                        .must(QueryBuilders.existsQuery("hentPerson.bostedsadresse.utenlandskAdresse.landkode"))
-                                ,
-                                ScoreMode.Avg
-                        ));
-                    }
-
-                    if (nonNull(norskAdresse) && Boolean.TRUE.equals(norskAdresse)) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.bostedsadresse",
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.existsQuery("hentPerson.bostedsadresse.vegadresse.postnummer"))
-                                        .should(QueryBuilders.existsQuery("hentPerson.bostedsadresse.matrikkeladresse.postnummer"))
-                                        .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
-                                        .minimumShouldMatch(1)
-                                ,
-                                ScoreMode.Avg
-                        ));
-                    }
-                });
-    }
-
 
     private Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
         if (fom == null && tom == null) {

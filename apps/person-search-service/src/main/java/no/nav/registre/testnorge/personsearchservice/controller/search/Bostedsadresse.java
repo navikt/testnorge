@@ -10,6 +10,4 @@ import lombok.Value;
 public class Bostedsadresse {
     String kommunenummer;
     String postnummer;
-    Boolean utenlandskAdresse;
-    Boolean norskAdresse;
 }
