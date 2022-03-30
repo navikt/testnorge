@@ -33,6 +33,7 @@ import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 
 import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 
 @Slf4j
 @Component
@@ -188,11 +189,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getType()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.sivilstand",
-                                QueryBuilders.matchQuery("hentPerson.sivilstand.type", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedMatchQuery("hentPerson.sivilstand", "type", value));
                     }
                 });
     }
@@ -399,6 +396,7 @@ public class PersonSearchAdapter {
                                 QueryBuilders.boolQuery()
                                         .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.postnummer", value))
                                         .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.postnummer", value))
+                                        .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
                                         .minimumShouldMatch(1)
                                 ,
                                 ScoreMode.Avg
