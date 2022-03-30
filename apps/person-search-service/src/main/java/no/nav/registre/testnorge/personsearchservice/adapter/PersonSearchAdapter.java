@@ -363,11 +363,9 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentGeografiskTilknytning",
-                                QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(QueryBuilders
+                                .boolQuery().must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value))
+                        );
                     }
                 });
     }
@@ -378,14 +376,14 @@ public class PersonSearchAdapter {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.bostedadresse",
+                                "hentPerson.bostedsadresse",
                                 QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedadresse.vegadresse",
-                                                QueryBuilders.matchQuery("hentPerson.bostedadresse.vegadresse.kommunenummer", value),
+                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedsadresse.vegadresse",
+                                                QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenummer", value),
                                                 ScoreMode.Avg
                                                 ))
-                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedadresse.matrikkeladresse",
-                                                QueryBuilders.matchQuery("hentPerson.bostedadresse.matrikkeladresse.kommunenummer", value),
+                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedsadresse.matrikkeladresse",
+                                                QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenummer", value),
                                                 ScoreMode.Avg
                                         ))
                                         .minimumShouldMatch(1),
