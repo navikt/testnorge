@@ -33,6 +33,7 @@ const miljoeavhengig = [
 	'sykemelding',
 	'instdata',
 	'dokarkiv',
+	'organisasjon',
 ]
 
 const erMiljouavhengig = (bestilling) => {
