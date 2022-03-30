@@ -5,6 +5,8 @@ import { OptionsSection } from './options/OptionsSection'
 import {
 	Alder,
 	AlderPaths,
+	Adresse,
+	AdressePaths,
 	Statsborgerskap,
 	StatsborgerskapPaths,
 	Sivilstand,
@@ -63,6 +65,12 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				heading={'Alder'}
 				options={<Alder />}
 				numSelected={getCount(AlderPaths, props.formikBag)}
+				selectionColor={getSelectionColor(props.formikBag)}
+			/>
+			<OptionsSection
+				heading={'Adresse'}
+				options={<Adresse />}
+				numSelected={getCount(AdressePaths, props.formikBag)}
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection

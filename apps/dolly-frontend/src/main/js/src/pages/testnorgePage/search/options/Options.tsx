@@ -91,6 +91,30 @@ export const BarnPaths = {
 	'personinformasjon.barn.doedfoedtBarn': 'boolean',
 }
 
+export const Adresse = () => (
+	<section>
+		<FormikSelect
+			name="personinformasjon.adresse.postnr"
+			label="Postnummer"
+			kodeverk={AdresseKodeverk.Postnummer}
+			optionHeight={50}
+			size="medium"
+		/>
+		<FormikSelect
+			name="personinformasjon.adresse.kommunenr"
+			label="Kommunenummer"
+			kodeverk={AdresseKodeverk.Kommunenummer}
+			optionHeight={50}
+			size="medium"
+		/>
+	</section>
+)
+
+export const AdressePaths = {
+	'personinformasjon.adresse.postnr': 'string',
+	'personinformasjon.adresse.kommunenr': 'string',
+}
+
 export const Diverse = () => (
 	<section>
 		<FormikSelect

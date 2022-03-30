@@ -31,6 +31,10 @@ export const initialValues = {
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
+		adresse: {
+			kommunenr: '',
+			postnr: '',
+		},
 		diverse: {
 			kjoenn: '',
 			utflyttet: false,
@@ -102,6 +106,10 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			innflyttingTilNorge: {
 				innflytting: values?.personinformasjon?.diverse?.innflyttet,
+			},
+			adresse: {
+				postnummer: values?.personinformasjon?.adresse?.postnr,
+				kommunenummer: values?.personinformasjon?.adresse?.kommunenr,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
