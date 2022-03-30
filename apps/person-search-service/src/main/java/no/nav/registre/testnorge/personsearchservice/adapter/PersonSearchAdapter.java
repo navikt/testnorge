@@ -79,9 +79,9 @@ public class PersonSearchAdapter {
         addPersonstatusQuery(queryBuilder, search);
         addIdenttypeQuery(queryBuilder, search);
         addAdressebeskyttelseQuery(queryBuilder, search);
-        addBydelQuery(queryBuilder, search);
         addKommunenrQuery(queryBuilder, search);
         addPostnrQuery(queryBuilder, search);
+        addUtenlandskAdresseQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -295,18 +295,8 @@ public class PersonSearchAdapter {
                 });
     }
 
-    private void addBydelQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresse())
-                .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.termQuery("hentGeografiskTilknytning.gtBydel", value));
-                    }
-                });
-    }
-
     private void addKommunenrQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresse())
+        Optional.ofNullable(search.getBosted())
                 .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -325,7 +315,7 @@ public class PersonSearchAdapter {
     }
 
     private void addPostnrQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresse())
+        Optional.ofNullable(search.getBosted())
                 .flatMap(value -> Optional.ofNullable(value.getPostnummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -336,6 +326,23 @@ public class PersonSearchAdapter {
                                         .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.postnummer", value))
                                         .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
                                         .minimumShouldMatch(1)
+                                ,
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
+    }
+
+    private void addUtenlandskAdresseQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
+        Optional.ofNullable(search.getBosted())
+                .flatMap(value -> Optional.ofNullable(value.getUtenlandskAdresse()))
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.bostedsadresse",
+                                QueryBuilders.boolQuery()
+                                        .must(QueryBuilders.existsQuery("hentPerson.bostedsadresse.utenlandskAdresse.landkode"))
+                                        .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
                                 ,
                                 ScoreMode.Avg
                         ));

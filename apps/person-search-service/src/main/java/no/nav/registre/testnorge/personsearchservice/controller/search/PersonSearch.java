@@ -29,5 +29,5 @@ public class PersonSearch {
     IdentifikasjonSearch identifikasjon;
     RelasjonSearch relasjoner;
     PersonstatusSearch personstatus;
-    AdresseSearch adresse;
+    BostedSearch bosted;
 }
