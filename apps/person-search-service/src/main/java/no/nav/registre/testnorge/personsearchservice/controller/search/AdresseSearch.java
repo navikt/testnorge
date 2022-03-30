@@ -10,4 +10,5 @@ import lombok.Value;
 public class AdresseSearch {
     String gtBydel;
     String kommunenummer;
+    String postnummer;
 }
