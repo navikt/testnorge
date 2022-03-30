@@ -75,6 +75,8 @@ public class PersonSearchAdapter {
         addPersonstatusQuery(queryBuilder, search);
         addIdenttypeQuery(queryBuilder, search);
         addAdressebeskyttelseQuery(queryBuilder, search);
+        addBydelQuery(queryBuilder, search);
+        addKommuneQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -350,6 +352,43 @@ public class PersonSearchAdapter {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.adressebeskyttelse",
                                 QueryBuilders.matchQuery("hentPerson.adressebeskyttelse.gradering", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
+    }
+
+    private void addBydelQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getAdresse())
+                .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentGeografiskTilknytning",
+                                QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value),
+                                ScoreMode.Avg
+                        ));
+                    }
+                });
+    }
+
+    private void addKommuneQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getAdresse())
+                .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.bostedadresse",
+                                QueryBuilders.boolQuery()
+                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedadresse.vegadresse",
+                                                QueryBuilders.matchQuery("hentPerson.bostedadresse.vegadresse.kommunenummer", value),
+                                                ScoreMode.Avg
+                                                ))
+                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedadresse.matrikkeladresse",
+                                                QueryBuilders.matchQuery("hentPerson.bostedadresse.matrikkeladresse.kommunenummer", value),
+                                                ScoreMode.Avg
+                                        ))
+                                        .minimumShouldMatch(1),
                                 ScoreMode.Avg
                         ));
                     }
