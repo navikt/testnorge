@@ -30,15 +30,15 @@ export default function Liste({
 					<p>Søket gav ingen resultater.</p>
 				) : (
 					<>
-						<p>Du har for øyeblikket ingen testdatagrupper på denne brukerkontoen.</p>
-						<p>For å opprette en ny testdatagruppe, trykk på "Ny gruppe"-knappen over.</p>
+						<p>Du har for øyeblikket ingen grupper på denne brukerkontoen.</p>
+						<p>For å opprette en ny gruppe, trykk på "Ny gruppe"-knappen over.</p>
 						{azureAdProfil && (
 							<>
 								<p>
 									Om dette er første gang du bruker din personlige brukerkonto kan du importere
-									testdatagrupper Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen
-									nedenfor. Du kan når som helst importere testdatagrupper fra Z-brukere via Min
-									side øverst til høyre.
+									grupper fra Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen
+									nedenfor. Du kan når som helst importere grupper fra Z-brukere via Min side øverst
+									til høyre.
 								</p>
 								<ImporterGrupperConnector />
 							</>

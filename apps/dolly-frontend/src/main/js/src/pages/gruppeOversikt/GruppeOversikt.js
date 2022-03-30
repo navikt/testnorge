@@ -46,9 +46,9 @@ export default function GruppeOversikt({
 		<div className="oversikt-container">
 			<div className="toolbar">
 				<div className="page-header flexbox--align-center--justify-start">
-					<h1>Testdatagrupper</h1>
-					<Hjelpetekst hjelpetekstFor="Testdatagrupper">
-						Testdatagruppen inneholder alle personene dine (FNR/DNR/NPID).
+					<h1>Grupper</h1>
+					<Hjelpetekst hjelpetekstFor="Grupper">
+						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
 					</Hjelpetekst>
 				</div>
 			</div>
