@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TotalHits;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
@@ -13,6 +14,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
@@ -363,9 +365,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders
-                                .boolQuery().must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value))
-                        );
+                        queryBuilder.must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value));
                     }
                 });
     }
@@ -375,22 +375,29 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.bostedsadresse",
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedsadresse.vegadresse",
-                                                QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenummer", value),
-                                                ScoreMode.Avg
-                                                ))
-                                        .should(QueryBuilders.nestedQuery("hentPerson.bostedsadresse.matrikkeladresse",
-                                                QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenummer", value),
-                                                ScoreMode.Avg
-                                        ))
-                                        .minimumShouldMatch(1),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(QueryBuilders.boolQuery()
+                                .should(kommunenrVegadresseQuery(value))
+                                .should(kommunenrMatrikkeladresseQuery(value))
+                                .minimumShouldMatch(1)
+                        );
                     }
                 });
+    }
+
+    private NestedQueryBuilder kommunenrVegadresseQuery(String value){
+        return QueryBuilders.nestedQuery(
+                "hentPerson.bostedsadresse.vegadresse",
+                QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenr", value),
+                ScoreMode.Avg
+        );
+    }
+
+    private NestedQueryBuilder kommunenrMatrikkeladresseQuery(String value){
+        return QueryBuilders.nestedQuery(
+                "hentPerson.bostedsadresse.matrikkeladresse",
+                QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenr", value),
+                ScoreMode.Avg
+        );
     }
 
 
