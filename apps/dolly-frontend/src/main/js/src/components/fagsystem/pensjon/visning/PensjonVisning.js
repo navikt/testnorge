@@ -10,18 +10,16 @@ export const PensjonVisning = ({ data, loading }) => {
 	if (!data || data.length === 0) return false
 
 	return (
-		<div>
+		<ErrorBoundary>
 			<SubOverskrift label="Pensjonsgivende inntekt (POPP)" iconKind="pensjon" />
-			<ErrorBoundary>
-				<DollyFieldArray data={data.inntekter} nested>
-					{(inntekt, idx) => (
-						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Inntektsår" value={inntekt.inntektAar} />
-							<TitleValue title="Beløp" value={inntekt.belop} />
-						</div>
-					)}
-				</DollyFieldArray>
-			</ErrorBoundary>
-		</div>
+			<DollyFieldArray data={data.inntekter} nested>
+				{(inntekt, idx) => (
+					<div className="person-visning_content" key={idx}>
+						<TitleValue title="Inntektsår" value={inntekt.inntektAar} />
+						<TitleValue title="Beløp" value={inntekt.belop} />
+					</div>
+				)}
+			</DollyFieldArray>
+		</ErrorBoundary>
 	)
 }
