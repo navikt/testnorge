@@ -9,7 +9,7 @@ import InntektstubService from '@/service/services/inntektstub/InntektstubServic
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
 	const [reset, setReset] = useBoolean(false)
-	const [inntektValues, setInntektValues] = useState(_get(formikBag.values, inntektPath))
+	const [inntektValues] = useState(_get(formikBag.values, inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
 		_get(formikBag.values, `${inntektPath}.inntektstype`)
 	)
@@ -43,7 +43,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				setFields(response)
 			})
 		}
-	}, [])
+	}, [inntektValues, fields])
 
 	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
@@ -124,20 +124,18 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				InntektstubService.validate(values).then((response) => setFields(response))
 				setFormikBag(values)
 			}}
-			component={({ handleSubmit }) => {
-				return (
-					<div>
-						<Inntekt
-							fields={fields}
-							onValidate={handleSubmit}
-							formikBag={formikBag}
-							path={inntektPath}
-							resetForm={reset}
-							tilleggsinformasjonAttributter={tilleggsinformasjonAttributter}
-						/>
-					</div>
-				)
-			}}
+			component={({ handleSubmit }) => (
+				<div>
+					<Inntekt
+						fields={fields}
+						onValidate={handleSubmit}
+						formikBag={formikBag}
+						path={inntektPath}
+						resetForm={reset}
+						tilleggsinformasjonAttributter={tilleggsinformasjonAttributter}
+					/>
+				</div>
+			)}
 		/>
 	)
 }
