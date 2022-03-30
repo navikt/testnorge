@@ -34,6 +34,7 @@ const miljoeavhengig = [
 	'instdata',
 	'dokarkiv',
 	'organisasjon',
+	'underenheter',
 ]
 
 const erMiljouavhengig = (bestilling) => {
