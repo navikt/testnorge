@@ -87,7 +87,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				til: values?.personinformasjon?.alder?.til,
 			},
 			identer: identer,
-			identitet: {
+			identifikasjon: {
 				falskIdentitet: values?.personinformasjon?.identifikasjon?.falskIdentitet,
 				utenlandskIdentitet: values?.personinformasjon?.identifikasjon?.utenlandskIdentitet,
 				identtype: getIdenttype(values),

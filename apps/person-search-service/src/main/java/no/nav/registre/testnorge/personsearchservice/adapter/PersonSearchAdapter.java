@@ -234,7 +234,7 @@ public class PersonSearchAdapter {
     }
 
     private void addIdentitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentitet())
+        Optional.ofNullable(search.getIdentifikasjon())
                 .ifPresent(value -> {
                     if (nonNull(value.getFalskIdentitet()) && value.getFalskIdentitet()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
@@ -329,7 +329,7 @@ public class PersonSearchAdapter {
     }
 
     private void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentitet())
+        Optional.ofNullable(search.getIdentifikasjon())
                 .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -343,7 +343,7 @@ public class PersonSearchAdapter {
     }
 
     private void addAdressebeskyttelseQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentitet())
+        Optional.ofNullable(search.getIdentifikasjon())
                 .flatMap(value -> Optional.ofNullable(value.getAdressebeskyttelse()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
