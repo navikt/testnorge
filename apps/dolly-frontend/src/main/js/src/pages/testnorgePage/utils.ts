@@ -31,9 +31,10 @@ export const initialValues = {
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
-		adresse: {
+		bosted: {
 			kommunenr: '',
 			postnr: '',
+			bydel: '',
 		},
 		diverse: {
 			kjoenn: '',
@@ -107,12 +108,21 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			innflyttingTilNorge: {
 				innflytting: values?.personinformasjon?.diverse?.innflyttet,
 			},
-			adresse: {
-				postnummer: values?.personinformasjon?.adresse?.postnr,
-				kommunenummer: values?.personinformasjon?.adresse?.kommunenr,
+			adresser: {
+				bostedsadresse: getBostedsadresseSearchValues(values),
+			},
+			geografiskTilknytning: {
+				gtBydel: values?.personinformasjon?.bosted?.bydel,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
 		}
+	}
+}
+
+const getBostedsadresseSearchValues = (values: any) => {
+	return {
+		postnummer: values?.personinformasjon?.bosted?.postnr,
+		kommunenummer: values?.personinformasjon?.bosted?.kommunenr,
 	}
 }

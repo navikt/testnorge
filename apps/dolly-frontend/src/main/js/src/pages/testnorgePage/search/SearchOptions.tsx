@@ -5,8 +5,6 @@ import { OptionsSection } from './options/OptionsSection'
 import {
 	Alder,
 	AlderPaths,
-	Adresse,
-	AdressePaths,
 	Statsborgerskap,
 	StatsborgerskapPaths,
 	Sivilstand,
@@ -18,6 +16,7 @@ import {
 } from './options/Options'
 import { Identifikasjon, IdentifikasjonPaths } from './options/Identifikasjon'
 import { IdentSearch, IdentSearchPaths } from '~/pages/testnorgePage/search/options/IdentSearch'
+import { Adresser, AdresserPaths } from '~/pages/testnorgePage/search/options/Adresser'
 
 export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
@@ -68,9 +67,9 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
-				heading={'Adresse'}
-				options={<Adresse />}
-				numSelected={getCount(AdressePaths, props.formikBag)}
+				heading={'Adresser'}
+				options={<Adresser />}
+				numSelected={getCount(AdresserPaths, props.formikBag)}
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>
 			<OptionsSection
