@@ -365,7 +365,8 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value));
+                        queryBuilder.must(QueryBuilders.boolQuery()
+                                .must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value)));
                     }
                 });
     }
@@ -384,18 +385,30 @@ public class PersonSearchAdapter {
                 });
     }
 
-    private NestedQueryBuilder kommunenrVegadresseQuery(String value){
+    private NestedQueryBuilder kommunenrVegadresseQuery(String value) {
         return QueryBuilders.nestedQuery(
-                "hentPerson.bostedsadresse.vegadresse",
-                QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenr", value),
+                "hentPerson.bostedsadresse",
+                QueryBuilders.nestedQuery(
+                        "hentPerson.bostedsadresse.vegadresse",
+                        QueryBuilders.boolQuery()
+                                .must(QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenummer", value)),
+                        ScoreMode.Avg
+
+                ),
                 ScoreMode.Avg
         );
     }
 
-    private NestedQueryBuilder kommunenrMatrikkeladresseQuery(String value){
+    private NestedQueryBuilder kommunenrMatrikkeladresseQuery(String value) {
         return QueryBuilders.nestedQuery(
-                "hentPerson.bostedsadresse.matrikkeladresse",
-                QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenr", value),
+                "hentPerson.bostedsadresse",
+                QueryBuilders.nestedQuery(
+                        "hentPerson.bostedsadresse.matrikkeladresse",
+                        QueryBuilders.boolQuery()
+                                .must(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenummer", value)),
+                        ScoreMode.Avg
+
+                ),
                 ScoreMode.Avg
         );
     }
