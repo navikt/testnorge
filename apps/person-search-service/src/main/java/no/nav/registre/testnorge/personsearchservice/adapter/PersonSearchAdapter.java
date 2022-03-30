@@ -35,6 +35,7 @@ import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 
 @Slf4j
 @Component
@@ -205,11 +206,7 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
                     if (nonNull(value.getUtflyttet()) && Boolean.TRUE.equals(value.getUtflyttet())) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.utflyttingFraNorge",
-                                QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge.metadata"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", "metadata"));
                     }
                 });
     }
@@ -218,11 +215,7 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
                     if (nonNull(value.getInnflytting()) && Boolean.TRUE.equals(value.getInnflytting())) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.innflyttingTilNorge",
-                                QueryBuilders.existsQuery("hentPerson.innflyttingTilNorge.metadata"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", "metadata"));
                     }
                 });
     }
@@ -231,18 +224,10 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getIdentifikasjon())
                 .ifPresent(value -> {
                     if (nonNull(value.getFalskIdentitet()) && value.getFalskIdentitet()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.falskIdentitet",
-                                QueryBuilders.existsQuery("hentPerson.falskIdentitet.metadata"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", "metadata"));
                     }
                     if (nonNull(value.getUtenlandskIdentitet()) && value.getUtenlandskIdentitet()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.utenlandskIdentifikasjonsnummer",
-                                QueryBuilders.existsQuery("hentPerson.utenlandskIdentifikasjonsnummer.metadata"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", "metadata"));
                     }
 
                 });
@@ -259,11 +244,7 @@ public class PersonSearchAdapter {
                         )).must();
                     }
                     if (nonNull(value.getDoedfoedtBarn()) && value.getDoedfoedtBarn()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.doedfoedtBarn",
-                                QueryBuilders.existsQuery("hentPerson.doedfoedtBarn.metadata"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedExistsQuery("hentPerson.doedfoedtBarn", "metadata"));
                     }
                     if (nonNull(value.getFar()) && value.getFar()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
@@ -300,11 +281,7 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(QueryBuilders.nestedQuery(
-                                "hentPerson.doedsfall",
-                                QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
                     }
                 });
     }
@@ -313,11 +290,7 @@ public class PersonSearchAdapter {
         Optional.ofNullable(search.getKunDoede())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.doedsfall",
-                                QueryBuilders.existsQuery("hentPerson.doedsfall.doedsdato"),
-                                ScoreMode.Avg
-                        )).must();
+                        queryBuilder.must(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
                     }
                 });
     }

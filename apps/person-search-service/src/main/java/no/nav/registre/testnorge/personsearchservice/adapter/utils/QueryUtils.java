@@ -26,10 +26,10 @@ public class QueryUtils {
         );
     }
 
-    public static NestedQueryBuilder nestedExistsQuery(String path, String name, Collection<String> values) {
+    public static NestedQueryBuilder nestedExistsQuery(String path, String name) {
         return QueryBuilders.nestedQuery(
                 path,
-                QueryBuilders.termsQuery(path + "." + name, values),
+                QueryBuilders.existsQuery(path + "." + name),
                 ScoreMode.Avg
         );
     }
