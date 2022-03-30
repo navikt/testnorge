@@ -214,7 +214,7 @@ public class PersonSearchAdapter {
     private void addUtflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
-                    if (nonNull(value.getUtflyttet()) && value.getUtflyttet()) {
+                    if (nonNull(value.getUtflyttet()) && Boolean.TRUE.equals(value.getUtflyttet())) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.utflyttingFraNorge",
                                 QueryBuilders.existsQuery("hentPerson.utflyttingFraNorge.metadata"),
@@ -227,7 +227,7 @@ public class PersonSearchAdapter {
     private void addInnflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
-                    if (nonNull(value.getInnflytting()) && value.getInnflytting()) {
+                    if (nonNull(value.getInnflytting()) && Boolean.TRUE.equals(value.getInnflytting())) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.innflyttingTilNorge",
                                 QueryBuilders.existsQuery("hentPerson.innflyttingTilNorge.metadata"),
@@ -365,7 +365,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.matchQuery("hentGeografiskTilknytning.gtBydel", value));
+                        queryBuilder.must(QueryBuilders.termQuery("hentGeografiskTilknytning.gtBydel", value));
                     }
                 });
     }
@@ -380,6 +380,7 @@ public class PersonSearchAdapter {
                                 QueryBuilders.boolQuery()
                                         .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenummer", value))
                                         .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenummer", value))
+                                        .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
                                         .minimumShouldMatch(1)
                                 ,
                                 ScoreMode.Avg
