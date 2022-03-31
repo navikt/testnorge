@@ -68,7 +68,7 @@ export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSear
 	}
 
 	return (
-		<div>
+		<section>
 			{identer?.length > 0 && (
 				<ErrorBoundary>
 					<ul>
@@ -104,6 +104,11 @@ export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSear
 					Legg til flere
 				</Button>
 			)}
-		</div>
+		</section>
 	)
+}
+
+export const IdentSearchPaths = {
+	'personinformasjon.ident.ident': 'ident',
+	'personinformasjon.identer': 'list',
 }
