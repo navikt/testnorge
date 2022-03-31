@@ -35,7 +35,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class KrrstubConsumer {
 
     private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
-    private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v2/person/kontaktinformasjon";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -48,25 +47,6 @@ public class KrrstubConsumer {
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
-    }
-
-    @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
-    public ResponseEntity<List<DigitalKontaktdata>> getDigitalKontaktdata(String ident) {
-
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PERSON_DIGITAL_KONTAKT_URL)
-                        .build())
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HEADER_NAV_PERSON_IDENT, ident)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntityList(DigitalKontaktdata.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
     }
 
     @Timed(name = "providers", tags = { "operation", "krrstub_createKontaktdata" })
@@ -89,23 +69,8 @@ public class KrrstubConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_deleteKontaktdata" })
-    public ResponseEntity<Object> deleteDigitalKontaktdata(Long id) {
+    public int deleteKontaktdata(List<String> identer) {
 
-        return webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path(DIGITAL_KONTAKT_URL)
-                        .pathSegment(id.toString())
-                        .build())
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntity(Object.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
     }
 
     public Map<String, String> checkAlive() {
