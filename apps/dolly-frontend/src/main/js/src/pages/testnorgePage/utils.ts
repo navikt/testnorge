@@ -34,7 +34,6 @@ export const initialValues = {
 		bosted: {
 			kommunenr: '',
 			postnr: '',
-			bydel: '',
 		},
 		diverse: {
 			kjoenn: '',
@@ -110,9 +109,6 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			adresser: {
 				bostedsadresse: getBostedsadresseSearchValues(values),
-			},
-			geografiskTilknytning: {
-				gtBydel: values?.personinformasjon?.bosted?.bydel,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
