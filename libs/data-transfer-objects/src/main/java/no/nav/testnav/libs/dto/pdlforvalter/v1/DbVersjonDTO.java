@@ -39,13 +39,14 @@ public abstract class DbVersjonDTO implements Serializable {
     private Boolean isNew;
 
     @Schema(description = "Denne kan også benyttes ved behov")
-    private FolkeregistermetadataDTO metadata;
+    private FolkeregistermetadataDTO folkeregistermetadata;
 
     @JsonIgnore
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
     }
 
+    @JsonIgnore
     public boolean isGjeldende() {
         return isTrue(getGjeldende());
     }

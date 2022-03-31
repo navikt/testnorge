@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlInnflytting;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +30,10 @@ public class InnflyttingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(InnflyttingDTO kilde,
                                         PdlInnflytting destinasjon, MappingContext context) {
 
-                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
+                        destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
                                 .ajourholdstidspunkt(LocalDate.now())
                                 .gyldighetstidspunkt(toDate(kilde.getInnflyttingsdato()))
+                                .gjeldende(kilde.isGjeldende())
                                 .build());
                     }
                 })

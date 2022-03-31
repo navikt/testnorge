@@ -78,8 +78,8 @@ public class PdlTestdataConsumer {
         String body;
         try {
             var artifact = value.getBody();
-            artifact.setMetadata(nonNull(artifact.getMetadata()) ? artifact.getMetadata() : new FolkeregistermetadataDTO());
-            artifact.getMetadata().setGjeldende(nonNull(artifact.getMetadata().getGjeldende()) ? artifact.getMetadata().getGjeldende() : artifact.getGjeldende());
+            artifact.setFolkeregistermetadata(nonNull(artifact.getFolkeregistermetadata()) ? artifact.getFolkeregistermetadata() : new FolkeregistermetadataDTO());
+            artifact.getFolkeregistermetadata().setGjeldende(nonNull(artifact.getFolkeregistermetadata().getGjeldende()) ? artifact.getFolkeregistermetadata().getGjeldende() : artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(
