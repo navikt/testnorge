@@ -171,11 +171,11 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                         person.getBoadresse().addAll(Stream.of(
                                         mapperFacade.mapAsList(personDto.getBostedsadresse()
                                                         .stream()
-                                                        .filter(BostedadresseDTO::isVegadresse).toList(),
+                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getVegadresse())).toList(),
                                                 BoAdresse.class),
                                         mapperFacade.mapAsList(personDto.getBostedsadresse()
                                                         .stream()
-                                                        .filter(BostedadresseDTO::isMatrikkeladresse).toList(),
+                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getMatrikkeladresse())).toList(),
                                                 BoAdresse.class))
                                 .flatMap(Collection::stream)
                                 .toList());

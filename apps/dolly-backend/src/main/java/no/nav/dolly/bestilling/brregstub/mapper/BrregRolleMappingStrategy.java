@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.brregstub.mapper;
 
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -32,8 +31,6 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RolleUtskriftMapper.BregPerson bregPerson, RolleoversiktTo rolleoversiktTo, MappingContext context) {
 
                         Person rollePerson = bregPerson.getDollyPerson().getPerson(bregPerson.getDollyPerson().getHovedperson());
-
-                        log.info("Person: {}", Json.pretty(rollePerson));
 
                         rolleoversiktTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
                         rolleoversiktTo.setEnheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class));

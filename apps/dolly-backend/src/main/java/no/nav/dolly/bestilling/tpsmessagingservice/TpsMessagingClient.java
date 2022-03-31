@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -33,7 +32,6 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -54,9 +52,9 @@ public class TpsMessagingClient implements ClientRegister {
 
         var status = new StringBuilder();
 
-        dollyPersonCache.fetchIfEmpty(dollyPerson);
-
         try {
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
+
             List.of(
                             supplyAsync(() -> sendSpraakkode(bestilling, dollyPerson), dollyForkJoinPool),
                             supplyAsync(() -> sendBankkontoer(bestilling, dollyPerson), dollyForkJoinPool),

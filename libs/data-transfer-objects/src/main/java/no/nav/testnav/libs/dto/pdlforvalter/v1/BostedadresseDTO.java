@@ -41,18 +41,6 @@ public class BostedadresseDTO extends AdresseDTO {
         return nonNull(getVegadresse()) || nonNull(getUkjentBosted()) || nonNull(getMatrikkeladresse());
     }
 
-    @JsonIgnore
-    public boolean isVegadresse() {
-
-        return nonNull(getVegadresse());
-    }
-
-    @JsonIgnore
-    public boolean isMatrikkeladresse() {
-
-        return nonNull(getMatrikkeladresse());
-    }
-
     @Data
     @SuperBuilder
     @NoArgsConstructor
