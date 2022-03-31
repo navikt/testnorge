@@ -20,7 +20,7 @@ type RadioOptionsProps = {
 }
 
 const IconContainer = styled.div`
-	margin: 0px 0 0px auto;
+	margin: 0 0 0 auto;
 `
 
 export const RadioGroupOptions = ({
