@@ -9,7 +9,9 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
@@ -44,40 +46,17 @@ public class TpsMessagingClient implements ClientRegister {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final PdlDataConsumer pdlDataConsumer;
     private final ExecutorService dollyForkJoinPool;
-
-    private static String getResponse(String melding, List<TpsMeldingResponseDTO> responseList) {
-
-        StringBuilder respons = new StringBuilder();
-
-        if (!responseList.isEmpty()) {
-            respons.append('$')
-                    .append(melding)
-                    .append('#');
-
-            responseList.forEach(response -> {
-                respons.append(response.getMiljoe());
-                respons.append(':');
-                respons.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
-                respons.append(',');
-            });
-        }
-        return respons.toString();
-    }
+    private final DollyPersonCache dollyPersonCache;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var status = new StringBuilder();
 
+        dollyPersonCache.fetchIfEmpty(dollyPerson);
+
         try {
-            if (isNull(dollyPerson.getPdlfPerson())) {
-
-                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
-                        .stream().findFirst().orElse(null));
-            }
-
             List.of(
                             supplyAsync(() -> sendSpraakkode(bestilling, dollyPerson), dollyForkJoinPool),
                             supplyAsync(() -> sendBankkontoer(bestilling, dollyPerson), dollyForkJoinPool),
@@ -128,7 +107,7 @@ public class TpsMessagingClient implements ClientRegister {
                                         tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
                                                 mapperFacade.map(person.getBostedsadresse().stream()
                                                         .filter(AdresseDTO::isAdresseUtland)
-                                                        .findFirst().get(), AdresseUtlandDTO.class)))
+                                                        .findFirst().orElse(new BostedadresseDTO()), AdresseUtlandDTO.class)))
                                 .findFirst()
                                 .orElse(emptyList()))
                 : emptyMap();
@@ -236,5 +215,24 @@ public class TpsMessagingClient implements ClientRegister {
         }
 
         return bankkontoer;
+    }
+
+    private static String getResponse(String melding, List<TpsMeldingResponseDTO> responseList) {
+
+        StringBuilder respons = new StringBuilder();
+
+        if (!responseList.isEmpty()) {
+            respons.append('$')
+                    .append(melding)
+                    .append('#');
+
+            responseList.forEach(response -> {
+                respons.append(response.getMiljoe());
+                respons.append(':');
+                respons.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
+                respons.append(',');
+            });
+        }
+        return respons.toString();
     }
 }
