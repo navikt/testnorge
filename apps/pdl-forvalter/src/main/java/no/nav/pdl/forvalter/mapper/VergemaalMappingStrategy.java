@@ -98,7 +98,6 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                                 .ajourholdstidspunkt(LocalDate.now())
                                 .gyldighetstidspunkt(toDate(kilde.getGyldigFraOgMed()))
                                 .opphoerstidspunkt(toDate(kilde.getGyldigTilOgMed()))
-                                .gjeldende(kilde.isGjeldende())
                                 .build());
 
                         var person = personRepository.findByIdent(kilde.getVergeIdent());

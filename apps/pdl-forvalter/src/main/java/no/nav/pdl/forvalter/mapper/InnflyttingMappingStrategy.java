@@ -33,7 +33,6 @@ public class InnflyttingMappingStrategy implements MappingStrategy {
                         destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
                                 .ajourholdstidspunkt(LocalDate.now())
                                 .gyldighetstidspunkt(toDate(kilde.getInnflyttingsdato()))
-                                .gjeldende(kilde.isGjeldende())
                                 .build());
                     }
                 })

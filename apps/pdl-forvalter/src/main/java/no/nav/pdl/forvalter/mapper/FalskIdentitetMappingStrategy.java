@@ -34,7 +34,6 @@ public class FalskIdentitetMappingStrategy implements MappingStrategy {
                                 .ajourholdstidspunkt(LocalDate.now())
                                 .gyldighetstidspunkt(toDate(kilde.getGyldigFraOgMed()))
                                 .opphoerstidspunkt(toDate(kilde.getGyldigTilOgMed()))
-                                .gjeldende(kilde.isGjeldende())
                                 .build());
 
                         destinasjon.setRettIdentitet(PdlFalskIdentitet.RettIdentitet.builder()
