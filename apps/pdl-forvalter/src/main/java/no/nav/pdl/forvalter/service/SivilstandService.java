@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
@@ -148,14 +149,26 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 .findFirst()
                 .orElse(0) + 1);
         relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
+
+        relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
         personRepository.save(relatertPerson);
     }
 
     protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
 
+        var tidligsteSivilstandDato = person.getSivilstand().stream()
+                        .map(SivilstandDTO::getSivilstandsdato)
+                                .filter(Objects::nonNull)
+                                        .min(LocalDateTime::compareTo);
+
+        var myndighetsdato = getFoedselsdato(person).plusYears(18);
+
         person.getSivilstand().forEach(stand -> {
             if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {
-                stand.setSivilstandsdato(getFoedselsdato(person).plusYears(18));
+                stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
+                        tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
+                        tidligsteSivilstandDato.get().minusMonths(3) :
+                        myndighetsdato);
             }
         });
 
