@@ -10,14 +10,19 @@ import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Sivilstand;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -41,6 +46,32 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
+
+        factory.classMap(BostedadresseDTO.class, BoGateadresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(BostedadresseDTO bostedadresseDTO, BoGateadresse boAdresse, MappingContext context) {
+                        if (nonNull(bostedadresseDTO.getVegadresse())) {
+                            VegadresseDTO vegadresse = bostedadresseDTO.getVegadresse();
+                            boAdresse.setAdressetype("GATE");
+                            boAdresse.setBolignr(vegadresse.getHusnummer());
+                            boAdresse.setKommunenr(vegadresse.getKommunenummer());
+                            boAdresse.setPostnr(vegadresse.getPostnummer());
+                        }
+                        if (nonNull(bostedadresseDTO.getMatrikkeladresse())) {
+                            MatrikkeladresseDTO matrikkeladresse = bostedadresseDTO.getMatrikkeladresse();
+                            boAdresse.setAdressetype("MATR");
+                            boAdresse.setKommunenr(matrikkeladresse.getKommunenummer());
+                            boAdresse.setPostnr(matrikkeladresse.getPostnummer());
+                            boAdresse.setBolignr(matrikkeladresse.getBruksenhetsnummer());
+                            boAdresse.setTilleggsadresse(matrikkeladresse.getTilleggsnavn());
+                        }
+                    }
+                })
+                .exclude("matrikkeladresse")
+                .byDefault()
+                .register();
+
         factory.classMap(PdlPersonBolk.PersonBolk.class, Person.class)
                 .customize(new CustomMapper<>() {
                     @Override
@@ -119,6 +150,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                 .map(DoedsfallDTO::getDoedsdato)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(null));
+                        person.setBoadresse(mapperFacade.mapAsList(personDto.getBostedsadresse(), BoAdresse.class));
                         person.getInnvandretUtvandret().addAll(
                                 personDto.getUtflytting().stream()
                                         .map(utflytting -> InnvandretUtvandret.builder()
@@ -163,6 +195,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                 .exclude("sivilstand")
                 .byDefault()
                 .register();
+
     }
 
     private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
