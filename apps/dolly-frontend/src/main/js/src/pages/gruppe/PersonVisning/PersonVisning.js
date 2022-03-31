@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useBoolean, useMount } from 'react-use'
+import React from 'react'
+import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -26,7 +26,6 @@ import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/Be
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
-import { DollyApi } from '~/service/Api'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const getIdenttype = (ident) => {
@@ -53,20 +52,6 @@ export const PersonVisning = ({
 	setVisning,
 }) => {
 	useMount(fetchDataFraFagsystemer)
-
-	const [pdlData, setPdlData] = useState(null)
-	const [pdlLoading, setPdlLoading] = useBoolean(true)
-
-	useEffect(() => {
-		DollyApi.getPersonFraPdl(ident.ident)
-			.then((response) => {
-				setPdlData(response.data?.data)
-				setPdlLoading(false)
-			})
-			.catch((e) => {
-				setPdlLoading(false)
-			})
-	}, [])
 
 	return (
 		<ErrorBoundary>
@@ -123,7 +108,7 @@ export const PersonVisning = ({
 				/>
 				<DokarkivVisning ident={ident.ident} />
 				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-				<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
+				<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 				<TidligereBestillinger
 					ids={ident.bestillingId}
 					setVisning={setVisning}

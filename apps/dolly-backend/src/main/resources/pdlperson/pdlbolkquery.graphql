@@ -524,6 +524,17 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
+            forelderBarnRelasjon {
+                relatertPersonsIdent,
+                relatertPersonsRolle,
+                minRolleForPerson,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
             foreldreansvar(historikk: true) {
                 ansvar,
                 ansvarlig,
