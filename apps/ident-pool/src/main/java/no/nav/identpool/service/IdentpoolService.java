@@ -15,6 +15,7 @@ import no.nav.identpool.repository.WhitelistRepository;
 import no.nav.identpool.util.IdentGeneratorUtil;
 import no.nav.identpool.util.PersonidentUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.time.LocalDate;
@@ -49,7 +50,7 @@ public class IdentpoolService {
 
     public Boolean erLedig(String personidentifikator) {
 
-        var ident = identRepository.findTopByPersonidentifikator(personidentifikator);
+        var ident = identRepository.findByPersonidentifikator(personidentifikator);
 
         if (nonNull(ident)) {
             return ident.getRekvireringsstatus().equals(Rekvireringsstatus.LEDIG);
@@ -66,7 +67,7 @@ public class IdentpoolService {
 
     public void markerBrukt(MarkerBruktRequest markerBruktRequest) {
 
-        var ident = identRepository.findTopByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
+        var ident = identRepository.findByPersonidentifikator(markerBruktRequest.getPersonidentifikator());
 
         if (isNull(ident)) {
             String personidentifikator = markerBruktRequest.getPersonidentifikator();
@@ -102,7 +103,7 @@ public class IdentpoolService {
         var identerSomSkalSjekkes = new HashSet<String>(identer.size());
 
         for (String id : identer) {
-            Ident ident = identRepository.findTopByPersonidentifikator(id);
+            Ident ident = identRepository.findByPersonidentifikator(id);
 
             if (isNull(ident)) {
                 identerSomSkalSjekkes.add(id);
@@ -137,26 +138,29 @@ public class IdentpoolService {
         return identerMarkertSomIBruk;
     }
 
+    @Transactional
     public List<String> frigjoerIdenter(String rekvirertAv, List<String> identer) {
 
-        var ledigeIdenter = new ArrayList<String>(identer.size());
-        var fnrMedIdent = new HashMap<String, Ident>(identer.size());
-        var identerSomSkalSjekkes = new HashSet<String>(identer.size());
+        var personidentifikatore = identRepository.findByPersonidentifikatorIn(identer);
 
-        for (String id : identer) {
-            Ident ident = identRepository.findTopByPersonidentifikator(id);
-            if (nonNull(ident)) {
-                if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
-                    ledigeIdenter.add(id);
-                } else if (!ident.isFinnesHosSkatt() && rekvirertAv.equals(ident.getRekvirertAv())) {
-                    fnrMedIdent.put(id, ident);
-                    identerSomSkalSjekkes.add(id);
-                }
-            }
-        }
+        personidentifikatore
+                .forEach(personidentifikator -> {
+                    if (rekvirertAv.equals(personidentifikator.getRekvirertAv()) &&
+                            !personidentifikator.isFinnesHosSkatt()) {
 
-        var tpsStatusDTOS = tpsMessagingConsumer.getIdenterStatuser(identerSomSkalSjekkes);
-        return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatusDTOS);
+                        personidentifikator.setRekvireringsstatus(LEDIG);
+                        personidentifikator.setRekvirertAv(null);
+                    }
+                });
+
+        var frigjorteIdenter =  personidentifikatore.stream()
+                .filter(personidentifikator -> LEDIG.equals(personidentifikator.getRekvireringsstatus()))
+                .map(Ident::getPersonidentifikator)
+                .toList();
+
+        log.info("Frigjort identer: {}" + String.join(", ", frigjorteIdenter));
+
+        return frigjorteIdenter;
     }
 
     public List<String> frigjoerLedigeIdenter(List<String> identer) {
@@ -166,7 +170,7 @@ public class IdentpoolService {
         var identerSomSkalSjekkes = new HashSet<String>(identer.size());
 
         for (String id : identer) {
-            Ident ident = identRepository.findTopByPersonidentifikator(id);
+            Ident ident = identRepository.findByPersonidentifikator(id);
             if (nonNull(ident)) {
                 if (Rekvireringsstatus.LEDIG == ident.getRekvireringsstatus()) {
                     ledigeIdenter.add(id);
@@ -197,7 +201,7 @@ public class IdentpoolService {
 
     public Ident lesInnhold(String personidentifikator) {
 
-        return identRepository.findTopByPersonidentifikator(personidentifikator);
+        return identRepository.findByPersonidentifikator(personidentifikator);
     }
 
     public void registrerFinnesHosSkatt(String personidentifikator) {
@@ -206,7 +210,7 @@ public class IdentpoolService {
             throw new UgyldigPersonidentifikatorException("personidentifikatoren er ikke et DNR");
         }
 
-        var ident = identRepository.findTopByPersonidentifikator(personidentifikator);
+        var ident = identRepository.findByPersonidentifikator(personidentifikator);
 
         if (nonNull(ident)) {
             ident.setFinnesHosSkatt(true);
