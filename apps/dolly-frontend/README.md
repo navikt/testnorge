@@ -1,5 +1,5 @@
 # Dolly
-Prosjekt for å opprette og konfigurere testpersoner knyttet til fellesregistrene i NAV.
+Prosjekt for å opprette og konfigurere personer knyttet til fellesregistrene i NAV.
 
 ## Dokumentasjon
 ### Swagger
