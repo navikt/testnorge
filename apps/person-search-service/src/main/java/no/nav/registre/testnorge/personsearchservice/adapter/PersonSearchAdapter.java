@@ -81,7 +81,6 @@ public class PersonSearchAdapter {
         addAdressebeskyttelseQuery(queryBuilder, search);
         addKommunenrQuery(queryBuilder, search);
         addPostnrQuery(queryBuilder, search);
-        addGeografiskTilknytningQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -331,16 +330,6 @@ public class PersonSearchAdapter {
                                 ,
                                 ScoreMode.Avg
                         ));
-                    }
-                });
-    }
-
-    private void addGeografiskTilknytningQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getGeografiskTilknytning())
-                .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.existsQuery("hentGeografiskTilknytning"));
                     }
                 });
     }
