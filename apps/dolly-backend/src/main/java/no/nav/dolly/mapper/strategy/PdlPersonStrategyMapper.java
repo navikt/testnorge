@@ -195,7 +195,6 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                 .exclude("sivilstand")
                 .byDefault()
                 .register();
-
     }
 
     private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
