@@ -340,7 +340,7 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getGtBydel()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.existsQuery("hentGeografiskTilknytning.gtBydel"));
+                        queryBuilder.must(QueryBuilders.existsQuery("hentGeografiskTilknytning"));
                     }
                 });
     }
