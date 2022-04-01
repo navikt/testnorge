@@ -7,6 +7,7 @@ import { FormikProps } from 'formik'
 interface AlderForm {
 	formikBag: FormikProps<{}>
 }
+
 export const Alder = ({ formikBag }: AlderForm) => {
 	const paths = {
 		alder: 'pdldata.opprettNyPerson.alder',
@@ -18,11 +19,11 @@ export const Alder = ({ formikBag }: AlderForm) => {
 		_get(formikBag.values, paths.foedtEtter) != null ||
 		_get(formikBag.values, paths.foedtFoer) != null
 
-	const disableFoedtDato = _get(formikBag.values, paths.alder) != ''
+	const disableFoedtDato =
+		_get(formikBag.values, paths.alder) != '' && _get(formikBag.values, paths.alder) != null
 
 	return (
 		<div className="flexbox--flex-wrap">
-			{/*// @ts-ignore*/}
 			<FormikTextInput name={paths.alder} type="number" label="Alder" disabled={disableAlder} />
 			<FormikDatepicker
 				name={paths.foedtEtter}

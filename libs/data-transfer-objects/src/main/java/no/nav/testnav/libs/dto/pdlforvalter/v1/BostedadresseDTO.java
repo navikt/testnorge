@@ -27,16 +27,6 @@ public class BostedadresseDTO extends AdresseDTO {
     private MatrikkeladresseDTO matrikkeladresse;
     private UtenlandskAdresseDTO utenlandskAdresse;
 
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class UkjentBostedDTO implements Serializable {
-
-        private String bostedskommune;
-    }
-
     @JsonIgnore
     public int countAdresser() {
 
@@ -49,5 +39,15 @@ public class BostedadresseDTO extends AdresseDTO {
     public boolean isAdresseNorge() {
 
         return nonNull(getVegadresse()) || nonNull(getUkjentBosted()) || nonNull(getMatrikkeladresse());
+    }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class UkjentBostedDTO implements Serializable {
+
+        private String bostedskommune;
     }
 }

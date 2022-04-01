@@ -96,7 +96,17 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     private void handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
-        if (FNR == getIdenttype(person.getIdent())) {
+        if (!person.getUtflytting().isEmpty() && !person.getUtflytting().stream()
+                .findFirst().orElse(new UtflyttingDTO()).isVelkjentLand()) {
+
+            person.setBostedsadresse(person.getBostedsadresse().stream()
+                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
+                    .toList());
+
+            return;
+        }
+
+        if (FNR == getIdenttype(person.getIdent()) && person.getUtflytting().isEmpty()) {
 
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {

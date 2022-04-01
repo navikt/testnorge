@@ -39,7 +39,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/alle-pdl-attributter-i-dolly' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/person-bolk-enum-mapping' }}
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'

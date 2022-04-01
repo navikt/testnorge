@@ -6,4 +6,4 @@ has_children: true
 ---
 
 # {{ page.title }}
-Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data.

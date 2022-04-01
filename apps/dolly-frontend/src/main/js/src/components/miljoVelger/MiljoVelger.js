@@ -8,6 +8,7 @@ import './MiljoVelger.less'
 import styled from 'styled-components'
 import { ifPresent } from '~/utils/YupValidations'
 import * as Yup from 'yup'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -24,6 +25,29 @@ const bankIdMiljoer = {
 	],
 }
 
+const miljoeavhengig = [
+	'aareg',
+	'pensjonforvalter',
+	'inntektsmelding',
+	'arenaforvalter',
+	'sykemelding',
+	'instdata',
+	'dokarkiv',
+	'organisasjon',
+	'underenheter',
+]
+
+const erMiljouavhengig = (bestilling) => {
+	if (!bestilling) return false
+	let miljoeNotRequired = true
+	miljoeavhengig.forEach((system) => {
+		if (bestilling.hasOwnProperty(system)) {
+			miljoeNotRequired = false
+		}
+	})
+	return miljoeNotRequired
+}
+
 export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
 	const environments = useSelector((state) => state.environments.data)
 	if (!environments) return null
@@ -36,6 +60,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 		return filtrerteMiljoer
 	}
 
+	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
 	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon, bankIdBruker)
 
@@ -45,7 +70,14 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 		<div className="miljo-velger">
 			<h2>{heading}</h2>
 			{bestillingsdata && (
-				<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
+				<>
+					{disableAllEnvironments && (
+						<AlertStripeInfo>
+							Denne bestillingen er uavhengig av miljøer.<p> </p>
+						</AlertStripeInfo>
+					)}
+					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
+				</>
 			)}
 
 			<FieldArray name="environments">
@@ -73,7 +105,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}
-											disabled={env.disabled}
+											disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
@@ -97,22 +129,8 @@ MiljoVelger.validation = {
 	environments: ifPresent(
 		'$environments',
 		Yup.array().test('har-miljoe-nar-pakrevd', 'Velg minst ett miljø', function miljoetest() {
-			const miljoeavhengig = [
-				'aareg',
-				'pensjonforvalter',
-				'inntektsmelding',
-				'arenaforvalter',
-				'sykemelding',
-				'instdata',
-				'dokarkiv',
-			]
 			const values = this.options.context
-			let miljoeNotRequired = true
-			miljoeavhengig.forEach((system) => {
-				if (values.hasOwnProperty(system)) {
-					miljoeNotRequired = false
-				}
-			})
+			const miljoeNotRequired = erMiljouavhengig(values)
 			const hasEnvironments = values.environments.length > 0
 			return miljoeNotRequired || hasEnvironments
 		})

@@ -30,10 +30,10 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 
 					<h2>Prinsipper for bruk av Dolly</h2>
 					<p>
-						Dolly selvbetjening brukes for å lage egne testdata til randtilfeller og spesialbehov.
+						Dolly selvbetjening brukes for å lage egne data til randtilfeller og spesialbehov.
 						Syntetiske personer gis egenskaper fra registre og fagsystemer - f.eks. sivilstand,
 						inntekt, statsborgerskap. Brukere av Dolly selvbetjening har selv ansvar for å følge
-						følgende prinsipper ved oppretting av syntetiske testdata:
+						følgende prinsipper ved oppretting av syntetiske data:
 					</p>
 					<ul>
 						<li>
@@ -41,13 +41,13 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 							er syntetiske personer som blir laget i Dolly, finnes det allikevel en risiko for å
 							skape gjenkjennbare personer, ved å kombinere verdier som er svært spesifikke for en
 							ekte person. Derfor må du aldri ta utgangspunkt i reelle personer når du oppretter
-							syntetiske testpersoner - alle verdier som settes for å dekke behovet må være
-							tilfeldig valgt.
+							syntetiske personer - alle verdier som settes for å dekke behovet må være tilfeldig
+							valgt.
 						</li>
 						<li>
-							Når du er logget inn i Dolly har du tilgang til alle brukeres testdatagrupper og
-							testpersoner. Ikke gjør endringer på eller slett andres testdatagrupper eller
-							testpersoner uten at dette er avtalt med eier.
+							Når du er logget inn i Dolly har du tilgang til alle brukeres grupper og personer.
+							Ikke gjør endringer på eller slett andres grupper eller personer uten at dette er
+							avtalt med eier.
 						</li>
 						<li>
 							Dolly selvbetjening har personlig innlogging med Azure AD. Ikke del
@@ -85,30 +85,28 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 					<p>
 						Som du sikkert la merke til da du logget deg inn i Dolly, er den gamle innloggingen med
 						Z-bruker fjernet til fordel for personlig innlogging med AzureAD. Dette er gjort for å
-						gjøre det lettere å ta i bruk Dolly, gi deg bedre oversikt over testdataene dine, og
-						lettere kunne hjelpe deg dersom det skulle oppstå en feil.
+						gjøre det lettere å ta i bruk Dolly, gi deg bedre oversikt over dataene dine, og lettere
+						kunne hjelpe deg dersom det skulle oppstå en feil.
 					</p>
 
-					<h2>Hvor er testpersonene dine?</h2>
+					<h2>Hvor er personene dine?</h2>
 					<p>
-						Ikke bekymre deg - testpersonene dine er ikke slettet! Men fordi de er koblet til
-						Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til
-						dem. Dette kan du gjøre første gang i testdatagruppe-oversikten, eller når som helst på
-						Min side.
+						Ikke bekymre deg - personene dine er ikke slettet! Men fordi de er koblet til Z-brukeren
+						din må du importere dem til din personlige brukerkonto for å få tilgang til dem. Dette
+						kan du gjøre første gang i gruppe-oversikten, eller når som helst på Min side.
 					</p>
 				</>
 			)
-		//TODO: Legg inn denne varslingen i varslinger-service
 		case 'PDL_SOM_MASTER':
 			return (
 				<>
 					<h1>PDL som master for bestillinger</h1>
 
 					<p>
-						I dag er det gjort en større endring på bestilling av testpersoner i Dolly: Vi har
-						endret master for bestillinger fra TPS til PDL. Alle testpersoner som bestilles vil fra
-						nå derfor opprettes i PDL istedenfor TPS. Den observante Dolly-bruker vil også se en del
-						endringer i bestillingsskjemaet, som er gjort for å tilpasses persondata i PDL.
+						Det er gjort en større endring på bestilling av personer i Dolly: Vi har endret master
+						for bestillinger fra TPS til PDL. Alle personer som bestilles vil fra nå derfor
+						opprettes i PDL istedenfor TPS. Den observante Dolly-bruker vil også se en del endringer
+						i bestillingsskjemaet, som er gjort for å tilpasses persondata i PDL.
 					</p>
 					<p>
 						Blant annet er sammenknytning av relaterte personer endret, slik at du kan velge en

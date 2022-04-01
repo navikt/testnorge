@@ -1,6 +1,8 @@
 import api from '@/api'
 import Logger from '~/logger'
 
+export const REQUEST_ERROR = 'REQUEST_ERROR'
+
 export default class Request {
 	static get(url: string, headers: Record<string, string> = {}) {
 		return api
@@ -48,7 +50,9 @@ export default class Request {
 			message: error.message,
 		})
 		if (error.name !== 'NotFoundError') {
-			throw new Error(event + ' Dersom Dolly er ustabil, prøv å refreshe siden!')
+			const errorMessage = event + ' Dersom Dolly er ustabil, prøv å laste siden på nytt!'
+			sessionStorage.setItem(REQUEST_ERROR, errorMessage)
+			throw new Error(errorMessage)
 		}
 	}
 }

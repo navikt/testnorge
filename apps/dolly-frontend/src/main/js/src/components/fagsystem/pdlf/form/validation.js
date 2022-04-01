@@ -1,7 +1,112 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
+
+const testTelefonnummer = () =>
+	Yup.string()
+		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
+		.when('landskode', {
+			is: '+47',
+			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
+		})
+		.required('Feltet er påkrevd')
+		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
+
+const testPrioritet = (val) => {
+	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
+		const values = this.options.context
+		const index = this.options.index
+		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
+		if (tlfListe.length < 2) return true
+		const index2 = index === 0 ? 1 : 0
+		return tlfListe[index]?.prioritet !== tlfListe[index2]?.prioritet
+	})
+}
+
+const testFoedtEtter = (val) => {
+	return val.test(
+		'is-before-foedt-foer',
+		'Dato må være før født før-dato',
+		function isBeforeFoedtFoer(value) {
+			const foedtFoer = _get(this, 'parent.foedtFoer')
+			if (!value || !foedtFoer) return true
+			return isBefore(new Date(value), new Date(foedtFoer))
+		}
+	)
+}
+
+const testFoedtFoer = (val) => {
+	return val.test(
+		'is-after-foedt-etter',
+		'Dato må være etter født etter-dato',
+		function isAfterFoedtEtter(value) {
+			const foedtEtter = _get(this, 'parent.foedtEtter')
+			if (!value || !foedtEtter) return true
+			return isAfter(new Date(value), new Date(foedtEtter))
+		}
+	)
+}
+
+const testForeldreansvar = (val) => {
+	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
+		var feilmelding = null
+		const values = this.options.context
+
+		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
+			(a) => a.minRolleForPerson
+		)
+		const sivilstander = _get(values, 'pdldata.person.sivilstand')?.map((a) => a.type)
+		const barn = _get(values, 'pdldata.person.forelderBarnRelasjon')?.filter(
+			(a) => a.relatertPersonsRolle === 'BARN'
+		)
+		const kjoennListe = _get(values, 'pdldata.person.kjoenn')
+
+		const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
+
+		if (selected === 'MOR' || selected === 'MEDMOR') {
+			const gyldigeRelasjoner = ['MOR', 'MEDMOR']
+			if (
+				(foreldrerelasjoner?.includes('FORELDER') &&
+					!kjoennListe?.some((a) => a.kjoenn === 'KVINNE') &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) ||
+				(!foreldrerelasjoner?.includes('FORELDER') &&
+					!gyldigeRelasjoner.some((a) => foreldrerelasjoner?.includes(a)) &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a)))
+			) {
+				feilmelding = 'Barn med foreldrerolle mor eller medmor finnes ikke'
+			}
+			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+				feilmelding = 'Partner er ikke forelder'
+			}
+		}
+		if (selected === 'FAR') {
+			if (
+				(foreldrerelasjoner?.includes('FORELDER') &&
+					!kjoennListe?.some((a) => a.kjoenn === 'MANN') &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) ||
+				(!foreldrerelasjoner?.includes('FORELDER') &&
+					!foreldrerelasjoner?.includes('FAR') &&
+					!gyldigeSivilstander.some((a) => sivilstander?.includes(a)))
+			) {
+				feilmelding = 'Barn med foreldrerolle far finnes ikke'
+			}
+			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+				feilmelding = 'Partner er ikke forelder'
+			}
+		}
+		if (selected === 'FELLES') {
+			if (!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) {
+				feilmelding =
+					'Partner med sivilstand gift, registrert partner, separert eller separert partner finnes ikke'
+			}
+			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+				feilmelding = 'Partner er ikke forelder'
+			}
+		}
+		return feilmelding ? this.createError({ message: feilmelding }) : true
+	})
+}
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -12,9 +117,11 @@ const personnavnSchema = Yup.object({
 const nyPerson = Yup.object({
 	identtype: Yup.string().nullable(),
 	kjoenn: Yup.string().nullable(),
-	foedtEtter: Yup.string().nullable(),
-	foedtFoer: Yup.string().nullable(),
-	alder: Yup.string().nullable(),
+	alder: Yup.number()
+		.transform((i, j) => (j === '' ? null : i))
+		.nullable(),
+	foedtEtter: testFoedtEtter(Yup.date().nullable()),
+	foedtFoer: testFoedtFoer(Yup.date().nullable()),
 	syntetisk: Yup.boolean(),
 	nyttNavn: Yup.object({
 		hasMellomnavn: Yup.boolean(),
@@ -287,113 +394,6 @@ const kontaktDoedsbo = Yup.array().of(
 	})
 )
 
-const testTelefonnummer = () =>
-	Yup.string()
-		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
-		.when('landskode', {
-			is: '+47',
-			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
-		})
-		.required('Feltet er påkrevd')
-		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
-
-const testPrioritet = (val) => {
-	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
-		const values = this.options.context
-		const index = this.options.index
-		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
-		if (tlfListe.length < 2) return true
-		const index2 = index === 0 ? 1 : 0
-		return tlfListe[index]?.prioritet !== tlfListe[index2]?.prioritet
-	})
-}
-
-const testFoedtEtter = (val) => {
-	return val.test(
-		'is-before-foedt-foer',
-		'Dato må være før født før-dato',
-		function isBeforeFoedtFoer(value) {
-			const values = this.options.context
-			const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
-			if (!value || !foedtFoer) return true
-			return isBefore(new Date(value), new Date(foedtFoer))
-		}
-	)
-}
-
-const testFoedtFoer = (val) => {
-	return val.test(
-		'is-after-foedt-etter',
-		'Dato må være etter født etter-dato',
-		function isAfterFoedtEtter(value) {
-			const values = this.options.context
-			const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
-			if (!value || !foedtEtter) return true
-			return isAfter(new Date(value), new Date(foedtEtter))
-		}
-	)
-}
-
-const testForeldreansvar = (val) => {
-	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
-		var feilmelding = null
-		const values = this.options.context
-
-		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
-			(a) => a.minRolleForPerson
-		)
-		const sivilstander = _get(values, 'pdldata.person.sivilstand')?.map((a) => a.type)
-		const barn = _get(values, 'pdldata.person.forelderBarnRelasjon')?.filter(
-			(a) => a.relatertPersonsRolle === 'BARN'
-		)
-		const kjoennListe = _get(values, 'pdldata.person.kjoenn')
-
-		const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
-
-		if (selected === 'MOR' || selected === 'MEDMOR') {
-			const gyldigeRelasjoner = ['MOR', 'MEDMOR']
-			if (
-				(foreldrerelasjoner?.includes('FORELDER') &&
-					!kjoennListe?.some((a) => a.kjoenn === 'KVINNE') &&
-					!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) ||
-				(!foreldrerelasjoner?.includes('FORELDER') &&
-					!gyldigeRelasjoner.some((a) => foreldrerelasjoner?.includes(a)) &&
-					!gyldigeSivilstander.some((a) => sivilstander?.includes(a)))
-			) {
-				feilmelding = 'Barn med foreldrerolle mor eller medmor finnes ikke'
-			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
-				feilmelding = 'Partner er ikke forelder'
-			}
-		}
-		if (selected === 'FAR') {
-			if (
-				(foreldrerelasjoner?.includes('FORELDER') &&
-					!kjoennListe?.some((a) => a.kjoenn === 'MANN') &&
-					!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) ||
-				(!foreldrerelasjoner?.includes('FORELDER') &&
-					!foreldrerelasjoner?.includes('FAR') &&
-					!gyldigeSivilstander.some((a) => sivilstander?.includes(a)))
-			) {
-				feilmelding = 'Barn med foreldrerolle far finnes ikke'
-			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
-				feilmelding = 'Partner er ikke forelder'
-			}
-		}
-		if (selected === 'FELLES') {
-			if (!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) {
-				feilmelding =
-					'Partner med sivilstand gift, registrert partner, separert eller separert partner finnes ikke'
-			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
-				feilmelding = 'Partner er ikke forelder'
-			}
-		}
-		return feilmelding ? this.createError({ message: feilmelding }) : true
-	})
-}
-
 const doedsfall = Yup.array().of(
 	Yup.object({
 		doedsdato: requiredDate.nullable(),
@@ -453,6 +453,15 @@ const sivilstand = Yup.array().of(
 	})
 )
 
+const forelderBarnRelasjon = Yup.array().of(
+	Yup.object({
+		minRolleForPerson: requiredString,
+		relatertPerson: Yup.string().nullable(),
+		borIkkeSammen: Yup.boolean(),
+		nyRelatertPerson: nyPerson,
+	})
+)
+
 const kjoenn = Yup.array().of(
 	Yup.object({
 		kjoenn: requiredString.nullable(),
@@ -488,13 +497,35 @@ const foreldreansvar = Yup.array().of(
 
 export const validation = {
 	pdldata: Yup.object({
-		opprettNyPerson: Yup.object({
-			alder: Yup.number()
-				.transform((i, j) => (j === '' ? null : i))
-				.nullable(),
-			foedtEtter: testFoedtEtter(Yup.date().nullable()),
-			foedtFoer: testFoedtFoer(Yup.date().nullable()),
-		}).nullable(),
+		opprettNyPerson: Yup.object()
+			.shape(
+				{
+					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
+						is: null,
+						then: Yup.mixed().required(messages.required).nullable(),
+					}),
+					foedtEtter: testFoedtEtter(
+						Yup.mixed().when(['alder', 'foedtFoer'], {
+							is: (alder, foedtFoer) =>
+								(alder === null || alder === '') && (foedtFoer === null || foedtFoer === ''),
+							then: requiredDate.nullable(),
+						})
+					),
+					foedtFoer: testFoedtFoer(
+						Yup.mixed().when(['alder', 'foedtEtter'], {
+							is: (alder, foedtEtter) =>
+								(alder === null || alder === '') && (foedtEtter === null || foedtEtter === ''),
+							then: requiredDate.nullable(),
+						})
+					),
+				},
+				[
+					['foedtEtter', 'foedtFoer'],
+					['alder', 'foedtFoer'],
+					['alder', 'foedtEtter'],
+				]
+			)
+			.nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
@@ -521,12 +552,13 @@ export const validation = {
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
 				kontaktDoedsbo
 			),
+			forelderBarnRelasjon: ifPresent('$pdldata.person.forelderBarnRelasjon', forelderBarnRelasjon),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
 			navn: ifPresent('$pdldata.person.navn', navn),
 			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
-		}),
+		}).nullable(),
 	}),
 	tpsMessaging: ifPresent(
 		'$tpsMessaging',

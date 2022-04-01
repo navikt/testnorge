@@ -27,66 +27,54 @@ type Bestilling = {
 	gruppeId: number
 	stoppet: boolean
 	environments: [string]
-	status: [Status]
+	status: [System]
 }
 
-type Status = {
+type System = {
 	id: string
 	navn: string
 	statuser: [
 		{
+			identer: string[]
 			melding: string
-			identer?: [string]
-			detaljert?: [
+			detaljert: [
 				{
 					miljo: string
-					identer: [string]
+					identer: string[]
 				}
 			]
 		}
 	]
 }
 
-const finnesDetAvvikForBestillinger = (statusListe: [Status]) => {
-	if (!statusListe) return false
-	return statusListe.some((source) => {
-		return source.statuser.some((status) => status.melding !== 'OK')
+const finnesDetAvvikForBestillinger = (systemListe: [System]) => {
+	if (!systemListe) return false
+	return systemListe.some((system) => {
+		return system.statuser.some((status) => status.melding !== 'OK')
 	})
 }
 
-const antallIdenterOpprettetPaaBestilling = (statusListe: [Status]) => {
+const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
 	if (!statusListe) return 0
 	if (statusListe.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
-	let identerOpprettet: string[] = []
-	if (statusListe.length) {
-		const tpsf = statusListe.find((f) => f.id === 'TPSF')
-		const importFraTps = statusListe.find((f) => f.id === 'TPSIMPORT')
-		const importFraPdl = statusListe.find((f) => f.id === 'PDLIMPORT')
-		const pdlf = statusListe.find((f) => f.id === 'PDL_FORVALTER')
 
-		const addOpprettedeIdenter = (system: Status) => {
-			system.statuser.forEach((stat) => {
-				if (system.id === 'PDL_FORVALTER') {
-					const gyldigeIdenter = stat.identer.filter((a) => a !== '?')
-					identerOpprettet = identerOpprettet.concat(gyldigeIdenter)
-				} else {
-					stat.detaljert?.forEach((miljo) => {
-						identerOpprettet = identerOpprettet.concat(miljo.identer)
-					})
-				}
-			})
-		}
+	const addOpprettedeIdenter = (system: System) =>
+		system.statuser.flatMap((status) => {
+			if (status?.identer) {
+				return status.identer
+			} else {
+				return status?.detaljert?.flatMap((detaljert) => detaljert.identer)
+			}
+		})
 
-		if (tpsf) addOpprettedeIdenter(tpsf)
-		if (importFraTps) addOpprettedeIdenter(importFraTps)
-		if (importFraPdl) addOpprettedeIdenter(importFraPdl)
-		if (pdlf) addOpprettedeIdenter(pdlf)
-	}
+	const identStatusIdList = ['TPSF', 'TPSIMPORT', 'PDLIMPORT', 'PDL_FORVALTER']
+	const aktivIdList = statusListe.filter((system) => identStatusIdList.includes(system.id))
+
+	const identerOpprettet =
+		aktivIdList.length > 0 ? aktivIdList.flatMap((system) => addOpprettedeIdenter(system)) : null
 
 	// Kun unike identer
-	identerOpprettet = [...new Set(identerOpprettet)]
-
-	return identerOpprettet.length
+	return identerOpprettet && [...new Set(identerOpprettet)].length
 }
 
 // Setter bestillingstatus
@@ -127,7 +115,7 @@ export default function bestillingStatusMapper(data: [Object]) {
 		const alleIdenter = [
 			...new Set(
 				bestilling.status?.flatMap(
-					(status: Status) => status?.statuser?.[0]?.detaljert?.[0]?.identer
+					(status: System) => status?.statuser?.[0]?.detaljert?.[0]?.identer
 				)
 			),
 		]?.filter((ident) => ident !== undefined)

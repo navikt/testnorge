@@ -1,12 +1,6 @@
 package no.nav.dolly.bestilling.brregstub.mapper;
 
-import static java.lang.String.format;
-import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.AdresseTo;
-import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.NavnTo;
-import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.RolleTo;
-
-import org.springframework.stereotype.Component;
-
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -18,7 +12,14 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
 
+import static java.lang.String.format;
+import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.AdresseTo;
+import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.NavnTo;
+import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.RolleTo;
+
+@Slf4j
 @Component
 public class BrregRolleMappingStrategy implements MappingStrategy {
 
@@ -54,7 +55,7 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(Person.class, AdresseTo.class)
-                .customize(new CustomMapper<Person, AdresseTo>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person, AdresseTo adresseTo, MappingContext context) {
 
@@ -81,6 +82,9 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                             adresseTo.setAdresse2(adresse.getPostLinje2());
                             adresseTo.setAdresse3(adresse.getPostLinje3());
                             adresseTo.setLandKode(LandkoderIso3To2.getCountryIso2(adresse.getPostLand()));
+                        } else {
+                            adresseTo.setAdresse1("FYRSTIKKALLÉEN 2");
+                            adresseTo.setLandKode("NO");
                         }
                     }
                 })

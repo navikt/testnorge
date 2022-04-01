@@ -22,11 +22,11 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '~/service/Api'
 
 const getIdenttype = (ident) => {
@@ -68,78 +68,69 @@ export const PersonVisning = ({
 			})
 	}, [])
 
-	const personInfo = data.tpsf
-		? data.tpsf
-		: {
-				kjonn: data.pdlforvalter?.person?.kjoenn?.[0]?.kjoenn,
-				ident: data.pdlforvalter?.person?.ident,
-				fornavn: data.pdlforvalter?.person?.navn?.[0]?.fornavn,
-				etternavn: data.pdlforvalter?.person?.navn?.[0]?.etternavn,
-		  }
-
 	return (
-		<div className="person-visning">
-			<div className="person-visning_actions">
-				{!iLaastGruppe && (
-					<Button
-						onClick={() =>
-							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
-						}
-						kind="add-circle"
-						disabled={ident.master === 'TPSF'}
-						title={
-							ident.master === 'TPSF'
-								? 'Det er dessverre ikke lenger mulig å gjøre endringer på denne testpersonen. Master for bestillinger er endret til PDL, men denne personen er opprettet med TPS som master.'
-								: null
-						}
-					>
-						LEGG TIL/ENDRE
-					</Button>
+		<ErrorBoundary>
+			<div className="person-visning">
+				<div className="person-visning_actions">
+					{!iLaastGruppe && (
+						<Button
+							onClick={() =>
+								leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+							}
+							kind="add-circle"
+						>
+							LEGG TIL/ENDRE
+						</Button>
+					)}
+					<BestillingSammendragModal bestilling={bestilling} />
+					{!iLaastGruppe && (
+						<SlettButton action={slettPerson} loading={loading.slettPerson}>
+							Er du sikker på at du vil slette denne personen?
+						</SlettButton>
+					)}
+				</div>
+				{ident.master !== 'PDL' && (
+					<TpsfVisning
+						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+						pdlData={data.pdlforvalter?.person}
+						environments={bestilling?.environments}
+					/>
 				)}
-				<BestillingSammendragModal bestilling={bestilling} />
-				{!iLaastGruppe && (
-					<SlettButton action={slettPerson} loading={loading.slettPerson}>
-						Er du sikker på at du vil slette denne personen?
-					</SlettButton>
+				{ident.master !== 'PDL' && (
+					<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
-			</div>
-			{ident.master !== 'PDL' && (
-				<TpsfVisning
-					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-					pdlData={data.pdlforvalter?.person}
-					environments={bestilling?.environments}
+				{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
+				<AaregVisning liste={data.aareg} loading={loading.aareg} />
+				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
+				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
+				<InntektsmeldingVisning
+					liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
+					ident={ident.ident}
 				/>
-			)}
-			{ident.master !== 'PDL' && (
-				<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
-			)}
-			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
-			<AaregVisning liste={data.aareg} loading={loading.aareg} />
-			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
-			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
-			<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
-			<InntektsmeldingVisning
-				liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
-				ident={ident.ident}
-			/>
-			<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
-			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
-			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-			<InstVisning data={data.instdata} loading={loading.instdata} />
-			<ArenaVisning
-				data={data.arenaforvalteren}
-				bestillinger={bestillingsListe}
-				loading={loading.arenaforvalteren}
-			/>
-			<UdiVisning
-				data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
-				loading={loading.udistub}
-			/>
-			<DokarkivVisning ident={ident.ident} />
-			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-			<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
-			<TidligereBestillinger ids={ident.bestillingId} setVisning={setVisning} ident={ident.ident} />
-			<BeskrivelseConnector ident={ident} />
-		</div>
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
+				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
+				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
+				<InstVisning data={data.instdata} loading={loading.instdata} />
+				<ArenaVisning
+					data={data.arenaforvalteren}
+					bestillinger={bestillingsListe}
+					loading={loading.arenaforvalteren}
+				/>
+				<UdiVisning
+					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
+					loading={loading.udistub}
+				/>
+				<DokarkivVisning ident={ident.ident} />
+				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
+				<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
+				<TidligereBestillinger
+					ids={ident.bestillingId}
+					setVisning={setVisning}
+					ident={ident.ident}
+				/>
+				<BeskrivelseConnector ident={ident} />
+			</div>
+		</ErrorBoundary>
 	)
 }

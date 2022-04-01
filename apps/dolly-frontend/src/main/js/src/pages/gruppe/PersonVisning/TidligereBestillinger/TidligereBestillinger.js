@@ -8,7 +8,7 @@ export const NAVIGER_BESTILLING_ID = 'NAVIGER_BESTILLING_ID'
 export const SEARCH_IDENT = 'SEARCH_IDENT'
 
 const NavigerTilBestillingButton = styled(Button)`
-	align-self: flex-start;
+	align-self: center;
 `
 
 export const TidligereBestillinger = ({ ids, setVisning, ident }) => {

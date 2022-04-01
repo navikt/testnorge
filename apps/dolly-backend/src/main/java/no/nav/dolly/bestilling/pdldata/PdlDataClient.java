@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -29,8 +30,11 @@ public class PdlDataClient implements ClientRegister {
 
         try {
             if (!progress.isPdl()  && isBlank(progress.getPdlDataStatus())) {
-                progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
+                progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(),
+                        progress.isTpsf(),
+                        isTrue(bestilling.getEkskluderEksternePersoner())));
             }
+
         } catch (WebClientResponseException e) {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));

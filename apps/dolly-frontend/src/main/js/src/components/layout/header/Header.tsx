@@ -15,12 +15,11 @@ type Props = {
 		visningsNavn: string
 		brukernavn: string
 	}
-	brukerBilde: Response
+	brukerBilde: Blob
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
 	const location = useLocation()
-
 	const logout = () => (window.location.href = '/logout')
 
 	return (
@@ -38,9 +37,9 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 					isActive={() => location.pathname === '/' || location.pathname.includes('/gruppe')}
 					to="/"
 				>
-					Testpersoner
+					Personer
 				</NavLink>
-				<NavLink to="/organisasjoner">Testorganisasjoner</NavLink>
+				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<a
 					href="https://endringsmelding.dev.intern.nav.no"
 					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
@@ -70,7 +69,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				<Button kind="logout" title="Logg ut" onClick={logout} />
 				<div className="profil-area flexbox--all-center">
 					<NavLink to="/minside">
-						<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
+						<img alt="Profilbilde" src={brukerBilde || dolly} />
 						<div className="profil-navn">
 							<p className="min-side">MIN SIDE</p>
 							<p>{brukerProfil && brukerProfil.visningsNavn}</p>

@@ -5,9 +5,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -16,8 +18,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
@@ -44,6 +48,14 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
+    private static LocalDateTime getFoedselsdato(PersonDTO person) {
+
+        return person.getFoedsel().stream()
+                .map(FoedselDTO::getFoedselsdato)
+                .findFirst()
+                .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
+    }
+
     public List<SivilstandDTO> convert(PersonDTO person) {
 
         for (var type : person.getSivilstand()) {
@@ -56,7 +68,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             }
         }
 
-        return enforceIntegrity(person.getSivilstand());
+        return enforceIntegrity(person);
     }
 
     @Override
@@ -137,12 +149,30 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 .findFirst()
                 .orElse(0) + 1);
         relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
+
+        relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
         personRepository.save(relatertPerson);
     }
 
-    protected List<SivilstandDTO> enforceIntegrity(List<SivilstandDTO> sivilstand) {
+    protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
 
-        return sivilstand.stream()
+        var tidligsteSivilstandDato = person.getSivilstand().stream()
+                        .map(SivilstandDTO::getSivilstandsdato)
+                                .filter(Objects::nonNull)
+                                        .min(LocalDateTime::compareTo);
+
+        var myndighetsdato = getFoedselsdato(person).plusYears(18);
+
+        person.getSivilstand().forEach(stand -> {
+            if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {
+                stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
+                        tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
+                        tidligsteSivilstandDato.get().minusMonths(3) :
+                        myndighetsdato);
+            }
+        });
+
+        return person.getSivilstand().stream()
                 .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
                 .toList();
     }

@@ -114,7 +114,7 @@ public class PdlOrdreService {
                 .collect(Collectors.toSet());
     }
 
-    public OrdreResponseDTO send(String ident, Boolean isTpsMaster) {
+    public OrdreResponseDTO send(String ident, Boolean isTpsMaster, Boolean ekskluderEksterenePersoner) {
 
         checkAlias(ident);
 
@@ -132,8 +132,9 @@ public class PdlOrdreService {
                         .build())
                 .relasjoner(dbPerson.getRelasjoner().stream()
                         .filter(relasjon -> GAMMEL_IDENTITET != relasjon.getRelasjonType())
-                        .filter(relasjon -> eksternePersoner.stream()
-                                .noneMatch(ekstern -> ekstern.equals(relasjon.getRelatertPerson().getIdent())))
+                        .filter(relasjon -> isNotTrue(ekskluderEksterenePersoner) ||
+                                eksternePersoner.stream()
+                                        .noneMatch(ekstern -> ekstern.equals(relasjon.getRelatertPerson().getIdent())))
                         .map(relasjon -> PersonHendelserDTO.builder()
                                 .ident(relasjon.getRelatertPerson().getIdent())
                                 .ordrer(sendAlleInformasjonselementer(relasjon.getRelatertPerson(), true)

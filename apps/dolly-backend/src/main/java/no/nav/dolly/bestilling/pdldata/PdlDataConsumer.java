@@ -25,6 +25,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 public class PdlDataConsumer {
@@ -45,9 +47,10 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public String sendOrdre(String ident, boolean isTpsfMaster) {
+    public String sendOrdre(String ident, boolean isTpsfMaster, boolean ekskluderEksternePersoner) {
 
-        return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, serviceProperties.getAccessToken(tokenService)).call().block();
+        return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, ekskluderEksternePersoner,
+                serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_delete"})
@@ -81,7 +84,9 @@ public class PdlDataConsumer {
     @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
-        return new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block();
+        return nonNull(request.getPerson()) ?
+                new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block()
+                : ident;
     }
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {

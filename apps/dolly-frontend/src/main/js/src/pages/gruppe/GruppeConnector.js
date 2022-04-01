@@ -11,18 +11,21 @@ const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
 const loadingSelectorGetExcel = createLoadingSelector(actions.getGruppeExcelFil)
 
-const mapStateToProps = (state, ownProps) => ({
-	isFetching: loadingSelector(state),
-	isDeletingGruppe: loadingSelectorSlettGruppe(state),
-	isSendingTags: loadingSelectorSendTags(state),
-	isLockingGruppe: loadingSelectorLaasGruppe(state),
-	isFetchingExcel: loadingSelectorGetExcel(state),
-	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
-	identer: state.gruppe.ident,
-	brukernavn: state.bruker.brukerData.brukernavn,
-	brukertype: state.bruker.brukerData.brukertype,
-	bestillingStatuser: state.bestillingStatuser.byId,
-})
+const mapStateToProps = (state, ownProps) => {
+	return {
+		...ownProps,
+		isFetching: loadingSelector(state),
+		isDeletingGruppe: loadingSelectorSlettGruppe(state),
+		isSendingTags: loadingSelectorSendTags(state),
+		isLockingGruppe: loadingSelectorLaasGruppe(state),
+		isFetchingExcel: loadingSelectorGetExcel(state),
+		gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
+		identer: state.gruppe.ident,
+		brukernavn: state.bruker.brukerData.brukernavn,
+		brukertype: state.bruker.brukerData.brukertype,
+		bestillingStatuser: state.bestillingStatuser.byId,
+	}
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { gruppeId } = ownProps.match.params
