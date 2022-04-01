@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.brregstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.brregstub.command.BrregDeleteCommand;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
-import no.nav.dolly.bestilling.brregstub.domain.command.BrregDeleteCommand;
 import no.nav.dolly.config.credentials.BrregstubProxyProperties;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -88,7 +88,7 @@ public class BrregstubConsumer {
                         .block();
     }
 
-    public Mono<List<String>> deleteRolleoversikt(List<String> identer) {
+    public Mono<List<Void>> deleteRolleoversikt(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())

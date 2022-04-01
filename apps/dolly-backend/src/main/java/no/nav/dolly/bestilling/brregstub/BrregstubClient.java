@@ -52,8 +52,8 @@ public class BrregstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         try {
-            var test = brregstubConsumer.deleteRolleoversikt(identer).block();
-            log.info("Brreg sletting");
+            brregstubConsumer.deleteRolleoversikt(identer)
+                            .subscribe(resp -> log.info("Sletting utført i Brregstub"));
 
         } catch (RuntimeException e) {
             log.error("BRREGSTUB: Feilet å slette rolledata for identer {}", identer.stream().collect(Collectors.joining(", ")), e);

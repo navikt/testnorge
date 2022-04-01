@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.brregstub.domain.command;
+package no.nav.dolly.bestilling.brregstub.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class BrregDeleteCommand implements Callable<Flux<String>> {
+public class BrregDeleteCommand implements Callable<Flux<Void>> {
 
     private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
 
@@ -25,7 +25,7 @@ public class BrregDeleteCommand implements Callable<Flux<String>> {
     private final String ident;
     private final String token;
 
-    public Flux<String> call() {
+    public Flux<Void> call() {
 
         return
             webClient.delete().uri(uriBuilder -> uriBuilder.path(ROLLEOVERSIKT_URL).build())
@@ -33,7 +33,7 @@ public class BrregDeleteCommand implements Callable<Flux<String>> {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .retrieve()
-                    .bodyToFlux(String.class)
+                    .bodyToFlux(Void.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                     .doOnError(throwable -> log.error(WebClientFilter.getMessage(throwable)));
