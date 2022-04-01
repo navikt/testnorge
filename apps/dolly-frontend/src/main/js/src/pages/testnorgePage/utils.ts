@@ -13,10 +13,8 @@ export const initialValues = {
 			utflyttet: false,
 			innflyttet: false,
 		},
-		sivilstand: {
-			type: '',
-		},
-		barn: {
+		relasjoner: {
+			sivilstand: '',
 			barn: false,
 			doedfoedtBarn: false,
 		},
@@ -35,6 +33,7 @@ export const initialValues = {
 			kommunenr: '',
 			postnr: '',
 		},
+		personstatus: '',
 	},
 }
 
@@ -44,6 +43,9 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		identer.push(values?.personinformasjon?.ident?.ident)
 		identer = identer.filter((item: string) => item)
 	}
+
+	const personstatus = values?.personinformasjon?.personstatus
+	const kunLevende = personstatus === null || personstatus.isEmpty || personstatus !== 'DOED'
 
 	if (identer.length > 0) {
 		return {
@@ -61,6 +63,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			pageSize: 100,
 			randomSeed: randomSeed,
 			terminateAfter: 100,
+			kunLevende: kunLevende,
 			kjoenn: values?.personinformasjon?.identifikasjon?.kjoenn,
 			foedsel: {
 				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
@@ -70,7 +73,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				land: values?.personinformasjon?.nasjonalitet?.statsborgerskap,
 			},
 			sivilstand: {
-				type: values?.personinformasjon?.sivilstand?.type,
+				type: values?.personinformasjon?.relasjoner?.sivilstand,
 			},
 			alder: {
 				fra: values?.personinformasjon?.alder?.fra,
@@ -84,8 +87,8 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
 			relasjoner: {
-				barn: values?.personinformasjon?.barn?.barn,
-				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
+				barn: values?.personinformasjon?.relasjoner?.barn,
+				doedfoedtBarn: values?.personinformasjon?.relasjoenr?.doedfoedtBarn,
 			},
 			utflyttingFraNorge: {
 				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,
@@ -98,6 +101,9 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 					postnummer: values?.personinformasjon?.bosted?.postnr,
 					kommunenummer: values?.personinformasjon?.bosted?.kommunenr,
 				},
+			},
+			personstatus: {
+				status: personstatus,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
