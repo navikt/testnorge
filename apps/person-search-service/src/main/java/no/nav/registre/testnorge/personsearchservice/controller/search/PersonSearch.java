@@ -17,10 +17,9 @@ public class PersonSearch {
     List<String> excludeTags;
     String kjoenn;
     String randomSeed;
-    Boolean kunLevende;
-    Boolean kunDoede;
     List<String> identer;
     FoedselSearch foedsel;
+    Doedsfall doedsfall;
     SivilstandSearch sivilstand;
     StatsborgerskapSearch statsborgerskap;
     AlderSearch alder;
