@@ -19,7 +19,7 @@ public class IdentUtil {
             month = month - 80;
         }
 
-        var identtype = getIdentType(ident);
+        var identtype = getIdentType(ident, month);
         if (Identtype.DNR.equals(identtype)) {
             day = day - 40;
         } else if (Identtype.BOST.equals(identtype)) {
@@ -29,10 +29,10 @@ public class IdentUtil {
         return LocalDate.of(year, month, day);
     }
 
-    private static Identtype getIdentType(String ident) {
+    private static Identtype getIdentType(String ident, int month) {
         if (parseInt(ident.substring(0, 1)) > 3) {
             return Identtype.DNR;
-        } else if (parseInt(ident.substring(2, 3)) > 1) {
+        } else if (month > 12) {
             return Identtype.BOST;
         } else if ("0000".equals(ident.substring(6, 10))) {
             return Identtype.FDAT;
