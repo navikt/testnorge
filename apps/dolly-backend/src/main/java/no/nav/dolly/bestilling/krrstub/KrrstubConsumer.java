@@ -12,7 +12,6 @@ import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +43,7 @@ public class KrrstubConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
+    private final ObjectMapper objectMapper;
 
     public KrrstubConsumer(TokenExchange tokenService, KrrstubProxyProperties serverProperties, ObjectMapper objectMapper) {
         this.tokenService = tokenService;
@@ -52,6 +52,7 @@ public class KrrstubConsumer {
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
+        this.objectMapper = objectMapper;
     }
 
     private static String getNavCallId() {
@@ -84,28 +85,23 @@ public class KrrstubConsumer {
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .map(idx -> new GetKontaktdataCommand(webClient, identer.get(idx), token.getTokenValue()).call())
                         .flatMap(Flux::from)
-                        .next()
+                        .filter(resp -> nonNull(resp.getId()))
                         .map(resp -> {
-                            if (nonNull(resp.getId())) {
-                                new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue()).call();
+                                new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue());
                                 return format("Slettet ident med id=%d", resp.getId());
-                            } else {
-                                return " ";
-                            }
-                        }))
-                .filter(StringUtils::isNotBlank)
-                .collectList();
+                        })
+                ).collectList();
     }
 
-    public List<DigitalKontaktdata> getKontaktdata(String ident) {
+        public List<DigitalKontaktdata> getKontaktdata (String ident){
 
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new GetKontaktdataCommand(webClient, ident, token.getTokenValue()).call())
-                .collectList()
-                .block();
-    }
+            return tokenService.exchange(serviceProperties)
+                    .flatMapMany(token -> new GetKontaktdataCommand(webClient, ident, token.getTokenValue()).call())
+                    .collectList()
+                    .block();
+        }
 
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+        public Map<String, String> checkAlive () {
+            return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+        }
     }
-}

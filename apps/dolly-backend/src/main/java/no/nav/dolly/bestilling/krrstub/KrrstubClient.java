@@ -42,7 +42,8 @@ public class KrrstubClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub()) ||
-                (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()))) {
+                (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) ||
+                (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode()))) {
 
             try {
                 DigitalKontaktdata digitalKontaktdata = mapperFacade.map(
@@ -69,8 +70,18 @@ public class KrrstubClient implements ClientRegister {
 
     private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
 
-        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
-            digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode().toLowerCase());
+        String maalform = null;
+
+        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) {
+            maalform = bestilling.getTpsf().getSprakKode();
+
+        } else if (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode())) {
+            maalform = bestilling.getTpsMessaging().getSpraakKode();
+        }
+
+        if (isNotBlank(maalform) && isBlank(digitalKontaktdata.getSpraak())) {
+
+            digitalKontaktdata.setSpraak(maalform.toLowerCase());
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
             digitalKontaktdata.setRegistrert(true);
         }
@@ -80,7 +91,6 @@ public class KrrstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         try {
-
             krrstubConsumer.deleteKontaktdata(identer)
                     .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
 
