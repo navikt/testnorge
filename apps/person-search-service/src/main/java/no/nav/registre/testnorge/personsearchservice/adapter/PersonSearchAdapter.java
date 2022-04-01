@@ -15,6 +15,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -35,7 +36,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.queryDateField;
 
 @Slf4j
 @Component
@@ -110,7 +110,13 @@ public class PersonSearchAdapter {
     }
 
     private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
-        queryDateField("hentPerson.foedsel", "foedselsdato", tom, fom, queryBuilder);
+        getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
+                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.foedsel",
+                                rangeQueryBuilder,
+                                ScoreMode.Avg
+                        ))
+                );
     }
 
     private void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
@@ -249,19 +255,6 @@ public class PersonSearchAdapter {
                 });
     }
 
-    private void addDoedsfallQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getDoedsfall())
-                .ifPresent(value -> {
-                    if (nonNull(value.getHarDoedsdato()) && Boolean.TRUE.equals(value.getHarDoedsdato())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
-                    }
-                    if (nonNull(value.getHarIkkeDoedsdato()) && Boolean.TRUE.equals(value.getHarIkkeDoedsdato())) {
-                        queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
-                    }
-                    queryDateField("hentPerson.doedsfall", "doedsdato", value.getFom(), value.getTom(), queryBuilder);
-                });
-    }
-
     private void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getIdentifikasjon())
                 .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
@@ -320,6 +313,47 @@ public class PersonSearchAdapter {
                         ));
                     }
                 });
+    }
+
+    private void addDoedsfallQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getDoedsfall())
+                .ifPresent(value -> {
+                    var harDoedsdato = value.getHarDoedsdato();
+                    if (nonNull(harDoedsdato)) {
+                        if (Boolean.TRUE.equals(harDoedsdato)) {
+                            queryBuilder.must(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
+                        } else {
+                            queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
+                        }
+                    }
+                    queryDoedsdato(value.getFom(), value.getTom(), queryBuilder);
+                });
+    }
+
+    private void queryDoedsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
+        getBetween(fom, tom, "hentPerson.doedsfall.doedsdato")
+                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.doedsfall",
+                                rangeQueryBuilder,
+                                ScoreMode.Avg
+                        ))
+                );
+    }
+
+    private Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
+        if (fom == null && tom == null) {
+            return Optional.empty();
+        }
+        var builder = QueryBuilders.rangeQuery(field);
+
+        if (nonNull(fom)) {
+            builder.gte(fom);
+        }
+
+        if (nonNull(tom)) {
+            builder.lte(tom);
+        }
+        return Optional.of(builder);
     }
 
 }

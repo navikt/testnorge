@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Doedsfall {
-    Boolean harIkkeDoedsdato;
     Boolean harDoedsdato;
     LocalDate fom;
     LocalDate tom;
