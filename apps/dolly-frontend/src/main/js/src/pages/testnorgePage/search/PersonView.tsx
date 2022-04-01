@@ -57,6 +57,12 @@ export const PersonView = ({ person }: Props) => {
 						value={Formatters.formatStringDates(person.foedsel?.foedselsdato)}
 					/>
 					<Title title="Sivilstand" value={person.sivilstand?.type} />
+					<Title
+						title="Personstatus"
+						value={person.folkeregisterpersonstatus
+							?.map((personstatus) => Formatters.allCapsToCapitalized(personstatus.status))
+							.toString()}
+					/>
 				</Group>
 			</section>
 			<section>

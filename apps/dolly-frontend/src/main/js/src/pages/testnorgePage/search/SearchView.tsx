@@ -24,6 +24,19 @@ const SearchView = styled.div`
 	flex-direction: column;
 `
 
+const getAlder = (foedselsdato: string, doedsdato: string) => {
+	const fdato = new Date(foedselsdato)
+	let diff_ms = Date.now() - fdato.getTime()
+	if (doedsdato !== null && doedsdato !== '') {
+		const ddato = new Date(doedsdato)
+		diff_ms = ddato.getTime() - fdato.getTime()
+	}
+
+	const age_dt = new Date(diff_ms)
+	const alder = Math.abs(age_dt.getUTCFullYear() - 1970)
+	return <>{alder}</>
+}
+
 export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPersoner }: Props) => {
 	if (loading) return <Loading label="Søker..." />
 	if (!items || items.length === 0) {
@@ -62,12 +75,13 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 		},
 		{
 			text: 'Alder',
-			width: '10',
+			width: '15',
 			formatter: (cell: any, row: Person) => {
-				const foedselsdato = new Date(row.foedsel.foedselsdato)
-				const diff_ms = Date.now() - foedselsdato.getTime()
-				const age_dt = new Date(diff_ms)
-				const alder = Math.abs(age_dt.getUTCFullYear() - 1970)
+				const doedsdato = row.doedsfall.doedsdato
+				const alder = getAlder(row.foedsel.foedselsdato, doedsdato)
+				if (doedsdato != null && doedsdato !== '') {
+					return <>{alder}(Død)</>
+				}
 				return <>{alder}</>
 			},
 		},
