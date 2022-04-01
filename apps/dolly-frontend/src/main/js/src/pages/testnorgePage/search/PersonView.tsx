@@ -44,7 +44,7 @@ export const PersonView = ({ person }: Props) => {
 	return (
 		<div>
 			<section>
-				<SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />
+				<SubOverskrift label="Persondetaljer (Forenklet)" iconKind="personinformasjon" />
 				<Group>
 					<Title title="Ident" value={person.ident} />
 					<Title title="Aktør Id" value={person.aktorId} />
@@ -63,11 +63,6 @@ export const PersonView = ({ person }: Props) => {
 							?.map((personstatus) => Formatters.allCapsToCapitalized(personstatus.status))
 							.toString()}
 					/>
-				</Group>
-			</section>
-			<section>
-				<SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />
-				<Group>
 					<Title
 						title="Statsborgerskap"
 						value={person.statsborgerskap?.land ? person.statsborgerskap.land.toString() : ''}
