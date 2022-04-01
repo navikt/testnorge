@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.lucene.search.TotalHits;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -15,13 +14,11 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -32,21 +29,21 @@ import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSea
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 
-import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.IdentifikasjonUtils.addIdentifikasjonQueries;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.AlderUtils.addAlderQueries;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.AdresserUtils.addAdresserQueries;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.NasjonalitetUtils.addNasjonalitetQueries;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.StatusUtils.addStatusQueries;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.RelasjonerUtils.addRelasjonerQueries;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PersonSearchAdapter {
+
     private final ObjectMapper objectMapper;
     private final RestHighLevelClient client;
-
-    private static final String FORELDER_BARN_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
-    private static final String RELATERT_PERSONS_ROLLE = "relatertPersonsRolle";
-
 
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
@@ -62,24 +59,7 @@ public class PersonSearchAdapter {
     public PersonList search(PersonSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
-        addRandomScoreQuery(queryBuilder, search);
-        addTagsQueries(queryBuilder, search);
-        addKjoennQuery(queryBuilder, search);
-        addLevendeQuery(queryBuilder, search);
-        addFoedselQuery(queryBuilder, search);
-        addAlderQuery(queryBuilder, search);
-        addIdentQuery(queryBuilder, search);
-        addSivilstandQuery(queryBuilder, search);
-        addStatsborgerskapQuery(queryBuilder, search);
-        addUtflyttingQuery(queryBuilder, search);
-        addInnflyttingQuery(queryBuilder, search);
-        addIdentitetQueries(queryBuilder, search);
-        addRelasjonQueries(queryBuilder, search);
-        addPersonstatusQuery(queryBuilder, search);
-        addIdenttypeQuery(queryBuilder, search);
-        addAdressebeskyttelseQuery(queryBuilder, search);
-        addKommunenrQuery(queryBuilder, search);
-        addPostnrQuery(queryBuilder, search);
+        buildQuery(queryBuilder, search);
 
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
@@ -109,23 +89,17 @@ public class PersonSearchAdapter {
         );
     }
 
-    private void queryFoedselsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
-        getBetween(fom, tom, "hentPerson.foedsel.foedselsdato")
-                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.foedsel",
-                                rangeQueryBuilder,
-                                ScoreMode.Avg
-                        ))
-                );
-    }
+    private void buildQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
+        addRandomScoreQuery(queryBuilder, search);
+        addTagsQueries(queryBuilder, search);
+        addIdentQuery(queryBuilder, search);
 
-    private void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
-        LocalDate now = LocalDate.now();
-
-        LocalDate tom = nonNull(fra) ? now.minusYears(fra).minusMonths(3) : now.minusMonths(3);
-        LocalDate fom = nonNull(til) ? now.minusYears(til).minusYears(1) : null;
-
-        queryFoedselsdato(fom, tom, queryBuilder);
+        addIdentifikasjonQueries(queryBuilder, search);
+        addAlderQueries(queryBuilder, search);
+        addAdresserQueries(queryBuilder, search);
+        addNasjonalitetQueries(queryBuilder, search);
+        addStatusQueries(queryBuilder, search);
+        addRelasjonerQueries(queryBuilder, search);
     }
 
     private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -148,25 +122,6 @@ public class PersonSearchAdapter {
                 });
     }
 
-    private void addKjoennQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getKjoenn())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.kjoenn", "kjoenn", value));
-                    }
-                });
-    }
-
-    private void addFoedselQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getFoedsel())
-                .ifPresent(value -> queryFoedselsdato(value.getFom(), value.getTom(), queryBuilder));
-    }
-
-    private void addAlderQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAlder())
-                .ifPresent(value -> queryAlder(value.getFra(), value.getTil(), queryBuilder));
-    }
-
     private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getIdenter())
                 .ifPresent(values -> {
@@ -174,177 +129,6 @@ public class PersonSearchAdapter {
                         queryBuilder.must(nestedTermsQuery("hentIdenter.identer", "ident", values));
                     }
                 });
-    }
-
-    private void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getSivilstand())
-                .flatMap(value -> Optional.ofNullable(value.getType()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.sivilstand", "type", value));
-                    }
-                });
-    }
-
-    private void addStatsborgerskapQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getStatsborgerskap())
-                .flatMap(value -> Optional.ofNullable(value.getLand()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.statsborgerskap", "land", value));
-                    }
-                });
-    }
-
-    private void addUtflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getUtflyttingFraNorge())
-                .ifPresent(value -> {
-                    if (nonNull(value.getUtflyttet()) && Boolean.TRUE.equals(value.getUtflyttet())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", "metadata"));
-                    }
-                });
-    }
-
-    private void addInnflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getInnflyttingTilNorge())
-                .ifPresent(value -> {
-                    if (nonNull(value.getInnflytting()) && Boolean.TRUE.equals(value.getInnflytting())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", "metadata"));
-                    }
-                });
-    }
-
-    private void addIdentitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentifikasjon())
-                .ifPresent(value -> {
-                    if (nonNull(value.getFalskIdentitet()) && value.getFalskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", "metadata"));
-                    }
-                    if (nonNull(value.getUtenlandskIdentitet()) && value.getUtenlandskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", "metadata"));
-                    }
-
-                });
-    }
-
-    private void addRelasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getRelasjoner())
-                .ifPresent(value -> {
-                    if (nonNull(value.getBarn()) && value.getBarn()) {
-                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "BARN"));
-                    }
-                    if (nonNull(value.getDoedfoedtBarn()) && value.getDoedfoedtBarn()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.doedfoedtBarn", "metadata"));
-                    }
-                    if (nonNull(value.getFar()) && value.getFar()) {
-                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "FAR"));
-                    }
-                    if (nonNull(value.getMor()) && value.getMor()) {
-                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "MOR"));
-                    }
-                });
-    }
-
-    private void addPersonstatusQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getPersonstatus())
-                .flatMap(value -> Optional.ofNullable(value.getStatus()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.folkeregisterpersonstatus",
-                                QueryBuilders.boolQuery()
-                                        .must(QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value))
-                                        .must(QueryBuilders.termQuery("hentPerson.folkeregisterpersonstatus.metadata.historisk", false))
-                                ,
-                                ScoreMode.Avg
-                        ));
-                    }
-                });
-    }
-
-    private void addLevendeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getKunLevende())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
-                    }
-                });
-    }
-
-    private void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentifikasjon())
-                .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.folkeregisteridentifikator", "type", value));
-                    }
-                });
-    }
-
-    private void addAdressebeskyttelseQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentifikasjon())
-                .flatMap(value -> Optional.ofNullable(value.getAdressebeskyttelse()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.adressebeskyttelse", "gradering", value));
-                    }
-                });
-    }
-
-    private void addKommunenrQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresser())
-                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
-                .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.bostedsadresse",
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.kommunenummer", value))
-                                        .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.kommunenummer", value))
-                                        .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
-                                        .minimumShouldMatch(1)
-                                ,
-                                ScoreMode.Avg
-                        ));
-                    }
-                });
-    }
-
-    private void addPostnrQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresser())
-                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
-                .flatMap(value -> Optional.ofNullable(value.getPostnummer()))
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.bostedsadresse",
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.vegadresse.postnummer", value))
-                                        .should(QueryBuilders.matchQuery("hentPerson.bostedsadresse.matrikkeladresse.postnummer", value))
-                                        .must(QueryBuilders.termQuery("hentPerson.bostedsadresse.metadata.historisk", false))
-                                        .minimumShouldMatch(1)
-                                ,
-                                ScoreMode.Avg
-                        ));
-                    }
-                });
-    }
-
-    private Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
-        if (fom == null && tom == null) {
-            return Optional.empty();
-        }
-        var builder = QueryBuilders.rangeQuery(field);
-
-        if (nonNull(fom)) {
-            builder.gte(fom);
-        }
-
-        if (nonNull(tom)) {
-            builder.lte(tom);
-        }
-        return Optional.of(builder);
     }
 
 }
