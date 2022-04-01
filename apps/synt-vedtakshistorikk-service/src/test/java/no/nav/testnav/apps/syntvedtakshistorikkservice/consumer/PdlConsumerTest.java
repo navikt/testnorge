@@ -21,8 +21,8 @@ import java.util.Collections;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtils.getResourceFileContent;
 import static org.mockito.Mockito.when;
@@ -97,21 +97,19 @@ class PdlConsumerTest {
         stubOpprettTags();
 
         var response = pdlProxyConsumer.createTags(Collections.singletonList("12345678910"), SYNT_TAGS);
-        assertThat(response).isEqualTo("OK");
+        assertThat(response).isTrue();
     }
 
     @Test
     void shouldNotOppretteTags() {
         var response = pdlProxyConsumer.createTags(null, SYNT_TAGS);
-        assertThat(response).isNull();
+        assertThat(response).isFalse();
     }
 
     private void stubOpprettTags() {
-        stubFor(post(urlPathMatching("(.*)/pdl/pdl-testdata/api/v1/bestilling/tags"))
-                .withQueryParam("tags", equalTo("ARENASYNT"))
+        stubFor(post(urlEqualTo("/pdl/pdl-testdata/api/v1/bestilling/tags?tags=DOLLY&tags=ARENASYNT"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("OK")
                 )
         );
     }

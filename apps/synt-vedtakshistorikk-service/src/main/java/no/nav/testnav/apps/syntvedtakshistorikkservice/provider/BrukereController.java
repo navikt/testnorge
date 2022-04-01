@@ -40,7 +40,7 @@ public class BrukereController {
                 MAKSIMUM_ALDER,
                 null);
 
-        if (!pdlProxyConsumer.createTags(identer, SYNT_TAGS)){
+        if (pdlProxyConsumer.createTags(identer, SYNT_TAGS)){
             var response = arenaForvalterService.opprettArbeidssoekereUtenVedtak(
                     identer,
                     syntetiserArenaRequest.getMiljoe());

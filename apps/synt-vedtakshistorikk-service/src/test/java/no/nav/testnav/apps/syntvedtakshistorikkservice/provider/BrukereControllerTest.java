@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAKSIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,6 +33,9 @@ public class BrukereControllerTest {
 
     @Mock
     private IdentService identService;
+
+    @Mock
+    private PdlProxyConsumer pdlProxyConsumer;
 
     @InjectMocks
     private BrukereController brukereController;
@@ -60,6 +65,7 @@ public class BrukereControllerTest {
         var identer = Collections.singletonList(fnr1);
 
         when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, null)).thenReturn(identer);
+        when(pdlProxyConsumer.createTags(identer, SYNT_TAGS)).thenReturn(true);
         when(arenaForvalterService
                 .opprettArbeidssoekereUtenVedtak(identer, miljoe))
                 .thenReturn(oppfoelgingResponse);
