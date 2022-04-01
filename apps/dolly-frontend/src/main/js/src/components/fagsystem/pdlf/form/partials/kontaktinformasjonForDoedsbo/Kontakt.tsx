@@ -139,7 +139,6 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 				<div className="flexbox--flex-wrap">
 					<OrganisasjonSelect
 						path={`${organisasjonPath}.organisasjonsnummer`}
-						label="Organisasjonsnummer"
 						afterChange={(val: OrgValues) => organisasjonHandleChange(val, organisasjonPath)}
 					/>
 					<DollySelect

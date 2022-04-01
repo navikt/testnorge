@@ -96,7 +96,7 @@ export const SelectOptionsOppslag = {
 		})
 	},
 
-	formatOptions: (type: string, data: Data) => {
+	formatOptions: (type: string, data: any) => {
 		if (type === 'personnavn') {
 			const persondata: any[] = data.value && data.value.data ? data.value.data : []
 			const options: Option[] = []
@@ -111,7 +111,7 @@ export const SelectOptionsOppslag = {
 			return options
 		} else if (type === 'fornavn' || type === 'mellomnavn' || type === 'etternavn') {
 			const navnData = data?.value?.data || []
-			const options = []
+			const options: { value: string; label: string }[] = []
 			navnData.length > 0 &&
 				navnData.forEach((navn) => {
 					options.push({ value: navn[type], label: navn[type] })

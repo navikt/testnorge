@@ -4,14 +4,22 @@ import { MiljoeApi, OrgforvalterApi, OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
 import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import {
-	OrganisasjonToogleGruppe,
 	inputValg,
+	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { FormikBag } from 'formik'
 
-const getJuridiskEnhet = (orgnr, enheter) => {
+type Props = {
+	formikBag: FormikBag<any, any>
+	path: string
+	opplysningspliktigPath: any
+}
+
+const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	for (let enhet of enheter) {
 		if (enhet.underenheter && enhet.underenheter.length > 0) {
 			for (let underenhet of enhet.underenheter) {
@@ -24,7 +32,11 @@ const getJuridiskEnhet = (orgnr, enheter) => {
 
 const validEnhetstyper = ['BEDR', 'AAFY']
 
-export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => {
+export const OrgnummerToggle = ({
+	formikBag: { setFieldValue },
+	opplysningspliktigPath,
+	path,
+}: Props) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
@@ -40,20 +52,19 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 		fetchData()
 	}, [])
 
-	const handleToggleChange = (event) => {
+	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setInputType(event.target.value)
-		formikBag.setFieldValue(path, '')
+		setFieldValue(path, '')
 	}
 
-	const handleChange = (value) => {
-		opplysningspliktigPath &&
-			formikBag.setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
-		formikBag.setFieldValue(`${path}`, value.orgnr)
+	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {
+		opplysningspliktigPath && setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
+		setFieldValue(`${path}`, value.orgnr)
 	}
 
-	const handleManualOrgChange = (org, miljo) => {
+	const handleManualOrgChange = (org: string, miljo: string) => {
 		if (!org || !miljo) return
-		formikBag.setFieldValue(path, '')
+		setFieldValue(path, '')
 		setError(null)
 		setLoading(true)
 		setSuccess(false)
@@ -66,8 +77,8 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 				}
 				setSuccess(true)
 				opplysningspliktigPath &&
-					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
-				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
+					setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
+				setFieldValue(`${path}`, response.data.orgnummer)
 			})
 			.catch(() => {
 				setLoading(false)

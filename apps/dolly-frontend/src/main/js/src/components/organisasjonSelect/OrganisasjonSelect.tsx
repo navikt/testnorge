@@ -1,14 +1,15 @@
 import * as React from 'react'
-import { OrganisasjonLoader } from './OrganisasjonLoader'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 
 export type OrganisasjonSelectProps = {
 	path: string
-	label: string
+	label?: string
 	isClearable?: boolean
 	afterChange?: Function
 	valueNavn?: boolean
 	kanHaArbeidsforhold?: boolean
+	value?: any
+	feil?: any
 }
 
 export const OrganisasjonSelect = ({
@@ -17,21 +18,17 @@ export const OrganisasjonSelect = ({
 	afterChange = null,
 	valueNavn = false,
 	kanHaArbeidsforhold,
+	value,
+	feil,
 }: OrganisasjonSelectProps) => (
-	<OrganisasjonLoader
+	<OrganisasjonLoaderConnector
 		kanHaArbeidsforhold={kanHaArbeidsforhold}
+		label={label}
 		valueNavn={valueNavn}
-		render={(liste) => (
-			<FormikSelect
-				name={path}
-				label={label}
-				options={liste}
-				type="text"
-				size="xlarge"
-				isClearable={false}
-				optionHeight={50}
-				afterChange={afterChange}
-			/>
-		)}
+		path={path}
+		useFormikSelect={true}
+		afterChange={afterChange}
+		value={value}
+		feil={feil}
 	/>
 )
