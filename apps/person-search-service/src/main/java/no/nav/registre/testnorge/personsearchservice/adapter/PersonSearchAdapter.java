@@ -65,7 +65,7 @@ public class PersonSearchAdapter {
         addRandomScoreQuery(queryBuilder, search);
         addTagsQueries(queryBuilder, search);
         addKjoennQuery(queryBuilder, search);
-        addDoedsfallQuery(queryBuilder, search);
+        addLevendeQuery(queryBuilder, search);
         addFoedselQuery(queryBuilder, search);
         addAlderQuery(queryBuilder, search);
         addIdentQuery(queryBuilder, search);
@@ -255,6 +255,15 @@ public class PersonSearchAdapter {
                 });
     }
 
+    private void addLevendeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getKunLevende())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
+                    }
+                });
+    }
+
     private void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getIdentifikasjon())
                 .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
@@ -313,31 +322,6 @@ public class PersonSearchAdapter {
                         ));
                     }
                 });
-    }
-
-    private void addDoedsfallQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getDoedsfall())
-                .ifPresent(value -> {
-                    var harDoedsdato = value.getHarDoedsdato();
-                    if (nonNull(harDoedsdato)) {
-                        if (Boolean.TRUE.equals(harDoedsdato)) {
-                            queryBuilder.must(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
-                        } else {
-                            queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
-                        }
-                    }
-                    queryDoedsdato(value.getFom(), value.getTom(), queryBuilder);
-                });
-    }
-
-    private void queryDoedsdato(LocalDate fom, LocalDate tom, BoolQueryBuilder queryBuilder) {
-        getBetween(fom, tom, "hentPerson.doedsfall.doedsdato")
-                .ifPresent(rangeQueryBuilder -> queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.doedsfall",
-                                rangeQueryBuilder,
-                                ScoreMode.Avg
-                        ))
-                );
     }
 
     private Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
