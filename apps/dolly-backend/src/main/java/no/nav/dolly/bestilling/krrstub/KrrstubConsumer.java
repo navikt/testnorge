@@ -93,14 +93,6 @@ public class KrrstubConsumer {
                 ).collectList();
     }
 
-        public List<DigitalKontaktdata> getKontaktdata (String ident){
-
-            return tokenService.exchange(serviceProperties)
-                    .flatMapMany(token -> new GetKontaktdataCommand(webClient, ident, token.getTokenValue()).call())
-                    .collectList()
-                    .block();
-        }
-
         public Map<String, String> checkAlive () {
             return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
         }

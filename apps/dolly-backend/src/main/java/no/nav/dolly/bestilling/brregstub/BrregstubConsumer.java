@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.brregstub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
+import no.nav.dolly.bestilling.brregstub.domain.command.BrregDeleteCommand;
 import no.nav.dolly.config.credentials.BrregstubProxyProperties;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -15,9 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
@@ -84,22 +88,13 @@ public class BrregstubConsumer {
                         .block();
     }
 
-    public void deleteRolleoversikt(String ident) {
+    public Mono<List<String>> deleteRolleoversikt(List<String> identer) {
 
-        try {
-            webClient.delete().uri(uriBuilder -> uriBuilder.path(ROLLEOVERSIKT_URL).build())
-                    .header(HEADER_NAV_PERSON_IDENT, ident)
-                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                    .retrieve()
-                    .toEntity(String.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
-                    .block();
-
-        } catch (RuntimeException e) {
-            log.error("BRREGSTUB: Feilet å slette rolledata for ident {}", ident, e);
-        }
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .map(idx -> new BrregDeleteCommand(webClient, identer.get(idx), token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     public Map<String, String> checkAlive() {
