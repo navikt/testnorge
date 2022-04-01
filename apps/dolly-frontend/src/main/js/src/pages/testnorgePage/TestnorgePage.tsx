@@ -49,14 +49,14 @@ export default () => {
 		<div>
 			<Title title="Søk og import fra Testnorge" />
 			<p>
-				Testnorge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
+				Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 				forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
-				at personer fødes, dør, får barn, osv. Hele Testnorge er tilgjengelig i PDL.
+				at personer fødes, dør, får barn, osv. Hele Test-Norge er tilgjengelig i PDL.
 				<br />
 				<br />
-				I søket nedenfor kan man søke opp Testnorge-identer, velge identer man ønsker å ta i bruk,
+				I søket nedenfor kan man søke opp Test-Norge-identer, velge identer man ønsker å ta i bruk,
 				velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket
-				gruppe i Dolly. Søket returnerer maks 100 tilfeldige Testnorge-identer som passer
+				gruppe i Dolly. Søket returnerer maks 100 tilfeldige Test-Norge-identer som passer
 				søkekriteriene og som ikke allerede er importert til en gruppe i Dolly.
 				<br />
 				<br />
