@@ -5,17 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.personsearchservice.adapter.model.FoedselModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.KjoennModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.NavnModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.StatsborgerskapModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
+import no.nav.registre.testnorge.personsearchservice.adapter.model.*;
+import no.nav.testnav.libs.dto.personsearchservice.v1.*;
 
 public class Person {
     private final Response response;
@@ -71,6 +62,10 @@ public class Person {
 
     private LocalDate getFoedselsdato() {
         return getCurrent(response.getHentPerson().getFoedsel()).map(FoedselModel::getFoedselsdato).orElse(null);
+    }
+
+    private LocalDate getDoedsdato(){
+        return getCurrent(response.getHentPerson().getDoedsfall()).map(DoedsfallModel::getDoedsdato).orElse(null);
     }
 
     private String getKjoenn() {
@@ -136,6 +131,7 @@ public class Person {
                 .kjoenn(getKjoenn())
                 .tags(getTags())
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
+                .doedsfall(DoedsfallDTO.builder().doedsdato(getDoedsdato()).build())
                 .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
                 .statsborgerskap(toDTO(statsborgerskap))
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
