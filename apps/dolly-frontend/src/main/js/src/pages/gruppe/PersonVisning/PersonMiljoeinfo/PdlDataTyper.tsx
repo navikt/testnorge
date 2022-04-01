@@ -48,6 +48,7 @@ export type HentPerson = {
 	innflyttingTilNorge: [InnflyttingTilNorge]
 	utflyttingFraNorge: [UtflyttingFraNorge]
 	doedsfall: [Doedsfall]
+	folkeregisterpersonstatus: [FolkeregisterPersonstatus]
 }
 
 export type BostedData = {
@@ -281,4 +282,10 @@ export type UtvandringValues = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
+}
+
+export type Folkeregisterpersonstatus = {
+	status: string
+	forenkletStatus: string
+	metadata: Metadata
 }
