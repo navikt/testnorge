@@ -21,6 +21,7 @@ import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visnin
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { PdlDoedsfall } from '~/components/fagsystem/pdl/visning/partials/PdlDoedsfall'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -49,6 +50,7 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 		falskIdentitet,
 		sikkerhetstiltak,
 		kontaktinformasjonForDoedsbo,
+		doedsfall,
 	} = hentPerson
 
 	return (
@@ -59,6 +61,7 @@ export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<Foedsel data={foedsel} />
+				<PdlDoedsfall data={doedsfall} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
