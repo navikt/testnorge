@@ -80,7 +80,8 @@ public class PdlProxyConsumer {
                     .block();
 
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
-                log.error("Feil i opprettelse av tag(s) på ident(er).. Status: {}", response.getStatusCode());
+                var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
+                log.error("Feil i opprettelse av tag(s) på ident(er).{}", status);
                 return false;
             }
             return true;
@@ -97,7 +98,8 @@ public class PdlProxyConsumer {
                     .flatMap(accessToken -> new TagsSlettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
-                log.error("Feil i opprettelse av tag(s) på ident(er).. Status: {}", response.getStatusCode());
+                var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
+                log.error("Feil i opprettelse av tag(s) på ident(er).{}", status);
                 return false;
             }
             return true;

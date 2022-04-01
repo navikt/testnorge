@@ -66,7 +66,8 @@ public class ArenaForvalterConsumer {
                     .block();
 
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
-                log.error("Kunne ikke slette ident {} fra Arena-forvalteren. Status: {}", ident, response.getStatusCode());
+                var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
+                log.error("Kunne ikke slette ident {} fra Arena-forvalteren.{}", ident, status);
             }
         } catch (Exception | AssertionError e) {
             log.error("Kunne ikke slette ident {} fra Arena-forvalteren.", ident, e);

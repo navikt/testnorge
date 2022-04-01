@@ -51,7 +51,7 @@ public class VedtakshistorikkService {
     private final ArenaTiltakService arenaTiltakService;
     private final ArenaTilleggService arenaTilleggService;
     private final PdlProxyConsumer pdlProxyConsumer;
-    private final ExecutorService dollyForkJoinPool;
+    private final ExecutorService syntForkJoinPool;
 
     public static final List<Tags> SYNT_TAGS = Arrays.asList(Tags.DOLLY, Tags.ARENASYNT);
 
@@ -63,7 +63,7 @@ public class VedtakshistorikkService {
         Map<String, List<NyttVedtakResponse>> responses = new HashMap<>();
         var intStream = IntStream.range(0, antallNyeIdenter).boxed().toList();
         try {
-            dollyForkJoinPool.submit(() ->
+            syntForkJoinPool.submit(() ->
                     intStream.parallelStream().forEach(i ->
                             opprettHistorikkForIdent(miljoe, responses)
                     )
@@ -74,7 +74,7 @@ public class VedtakshistorikkService {
         } catch (ExecutionException e) {
             log.error("Kunne ikke opprette vedtakshistorikk.", e);
         } finally {
-            dollyForkJoinPool.shutdown();
+            syntForkJoinPool.shutdown();
         }
         return responses;
     }

@@ -21,8 +21,8 @@ public class ApplicationConfig {
     private static final int THREADS_COUNT = 10;
 
     @Bean
-    public ExecutorService dollyForkJoinPool() {
+    public ExecutorService syntForkJoinPool() {
         return new DelegatingSecurityContextExecutorService(
-                new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true));
+                new ForkJoinPool(THREADS_COUNT, new SyntForkJoinWorkerThreadFactory(), null, true));
     }
 }

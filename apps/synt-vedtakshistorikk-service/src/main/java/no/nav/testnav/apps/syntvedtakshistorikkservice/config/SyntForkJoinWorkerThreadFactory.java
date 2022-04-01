@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.config;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
 
-public class ForkJoinWorkerThreadFactory implements ForkJoinPool.ForkJoinWorkerThreadFactory {
+public class SyntForkJoinWorkerThreadFactory implements ForkJoinPool.ForkJoinWorkerThreadFactory {
 
     @Override
     public final ForkJoinWorkerThread newThread(ForkJoinPool pool) {
