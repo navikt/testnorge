@@ -24,4 +24,4 @@ brukes. Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp idente
 søkeløsning og deretter importere dem til ønsket Dolly gruppe. 
 
 ### ID-Porten
-Vi anbefaler bruk av TestID når man skal teste ID-porten ved bruk av Testnorge-ident import i Dolly. 
+Vi anbefaler bruk av TestID når man skal teste ID-porten ved bruk av importert Testnorge-ident. 
