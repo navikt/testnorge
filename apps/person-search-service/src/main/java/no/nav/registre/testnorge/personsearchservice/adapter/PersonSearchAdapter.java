@@ -250,7 +250,14 @@ public class PersonSearchAdapter {
                 .flatMap(value -> Optional.ofNullable(value.getStatus()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.folkeregisterpersonstatus", "status", value));
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.folkeregisterpersonstatus",
+                                QueryBuilders.boolQuery()
+                                        .must(QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value))
+                                        .must(QueryBuilders.termQuery("hentPerson.folkeregisterpersonstatus.metadata.historisk", false))
+                                ,
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }
