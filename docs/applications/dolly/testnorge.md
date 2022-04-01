@@ -22,3 +22,6 @@ hvordan dette kan gjøres.
 For å finne mer spesifikke identer kan Skatteetaten sin testdatasøkeløsning [Tenor](https://www.skatteetaten.no/skjema/testdata) 
 brukes. Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp identer du fant i Tenor via Dolly sin 
 søkeløsning og deretter importere dem til ønsket Dolly gruppe. 
+
+### ID-Porten
+Vi anbefaler bruk av TestID når man skal teste ID-porten ved bruk av Testnorge-ident import i Dolly. 
