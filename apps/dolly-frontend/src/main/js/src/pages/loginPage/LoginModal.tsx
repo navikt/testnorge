@@ -50,9 +50,9 @@ export default () => {
 			<div className="login-modal" style={{ height: modalHeight + 'px' }}>
 				<h1>Velkommen til Dolly</h1>
 				<h3>
-					Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata. I Dolly kan du
-					opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre
-					testdataene i valgte testmiljøer.
+					Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data. I Dolly kan du
+					opprette syntetiske personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i
+					valgte testmiljøer.
 				</h3>
 				{advarsel && (
 					<Alertstripe type="advarsel">

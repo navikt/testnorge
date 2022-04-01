@@ -15,16 +15,15 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class PdlAdresse extends PdlOpplysning {
 
-    public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND}
-
-    public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
-
     private String adresseIdentifikatorFraMatrikkelen;
     private Adressegradering adressegradering;
     private LocalDate gyldigFraOgMed;
     private LocalDate gyldigTilOgMed;
     private String coAdressenavn;
-
     private String naerAdresseIdentifikatorFraMatrikkelen;
     private PdlVegadresse vegadresse;
+
+    public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND}
+
+    public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
 }

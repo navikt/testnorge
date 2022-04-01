@@ -16,8 +16,8 @@ nav_order: 1
 
 ---
 
-Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske 
-testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
+Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske data. I Dolly kan du opprette syntetiske 
+personer med forskjellige egenskaper, og tilgjengeliggjøre dataene i valgte testmiljøer.
 
 Link til Dolly: [Dolly](https://dolly.ekstern.dev.nav.no/)
 
@@ -28,7 +28,7 @@ Link til Dolly: [Dolly](https://dolly.ekstern.dev.nav.no/)
 Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet.
 Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
 
-Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine testdatagrupper
+Det første som møter deg når du har logget inn er en startside med noen menyvalg. Siden åpnes automatisk med en oversikt over dine grupper
 
 ![Startside](assets/startside.png)
 
@@ -40,41 +40,41 @@ Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon 
 
 ---
 
-## Opprette en ny testdatagruppe
+## Opprette en ny gruppe
 
-For å opprette nye syntetiske testpersoner i Dolly, så kan du enten lage en ny testdatagruppe eller legge til testpersoner i en eksisterende gruppe. En testdatagruppe inneholder testpersoner du/teamet har opprettet.
+For å opprette nye syntetiske personer i Dolly, så kan du enten lage en ny gruppe eller legge til personer i en eksisterende gruppe. En gruppe inneholder personer du/teamet har opprettet.
 
-Under ‘Mine’ vises testdatagrupper opprettet av deg selv. Under ‘Alle’ vises dine og andres testdatagrupper. En god regel er at du ikke endrer andres testdatagrupper uten avtale med eieren.
+Under ‘Mine’ vises grupper opprettet av deg selv. Under ‘Alle’ vises dine og andres grupper. En god regel er at du ikke endrer andres grupper uten avtale med eieren.
 
-Trykk på "ny gruppe" og velg navn og beskriv gjerne hensikten med gruppen. Når hensikten er beskrevet er det enklere for både deg selv og eventuelt andre du samarbeider med å forstå hva denne testdatagruppen brukes til. Trykk "Opprett og gå til gruppe".
+Trykk på "ny gruppe" og velg navn og beskriv gjerne hensikten med gruppen. Når hensikten er beskrevet er det enklere for både deg selv og eventuelt andre du samarbeider med å forstå hva denne gruppen brukes til. Trykk "Opprett og gå til gruppe".
 
 ![Testdatagrupper](assets/testdatagrupper.png)
 
-Inne på gruppen har du en oversikt over alle testpersonene som tilhører gruppen og hvilke egenskaper de har. Her har du også mulighet til å legge til nye testpersoner.
+Inne på gruppen har du en oversikt over alle personene som tilhører gruppen og hvilke egenskaper de har. Her har du også mulighet til å legge til nye personer.
 
 ![Testdatagruppe](assets/ny_testdatagruppe.png)
 
 Det kommer opp en boks der du får to valg:
 
-1. Opprette helt nye testpersoner. Da finner Dolly et ubrukt fnr, dnr eller bost.
+1. Opprette helt nye personer. Da finner Dolly et ubrukt fnr, dnr eller bost.
 2. Opprette fra eksisterende fnr, dnr eller Bost (identifikasjonsnummer kan ikke finnes i prod eller i Dolly).
 
 Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
 
-Opprettelse av testpersoner følger en prosess med tre steg:
+Opprettelse av personer følger en prosess med tre steg:
 
 ![Opprettelse prossess](assets/opprettelse_prossess.png)
 
 1. Først må du velge hvilke egenskaper du selv ønsker å bestemme. De resterende egenskapene vil systemet tilegne for deg
 2. Deretter får du mulighet til å angi verdier på egenskapene du valgte i steg 1
-3. Til slutt får du en oppsummering og mulighet til å velge hvilke(t) testmiljø testpersonene skal sendes til
+3. Til slutt får du en oppsummering og mulighet til å velge hvilke(t) testmiljø personene skal sendes til
 
 ### Velg egenskaper
 
 ![Velg egenskaper](assets/velg_egenskaper.png)
 
 Som du ser av skjermbildet over, så er det en lang rekke områder med egenskaper du kan velge. Trykk på pil ned til høyre i boksen for å ekspandere hvert område. I de fleste tilfellene er det kun noen utvalgte egenskaper som er nødvendig å definere for det eller de testscenariene du skal gjennomføre.
-For at du skal slippe å velge alle egenskaper som trengs for å få en komplett testperson vil Dolly tildele verdier til de egenskapene som ikke er avgjørende for din test, altså de du ikke krysser av for i skjermbildet.
+For at du skal slippe å velge alle egenskaper som trengs for å få en komplett person vil Dolly tildele verdier til de egenskapene som ikke er avgjørende for din test, altså de du ikke krysser av for i skjermbildet.
 
 I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper:
 
@@ -82,7 +82,7 @@ I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av f
 
 Team Dolly jobber kontinuerlig med videreutvikling av Dolly og nye egenskaper legges til fortløpende. Om det er noe du savner, så meld det inn på [#Dolly](https://nav-it.slack.com/archives/CA3P9NGA2) på Slack.
 
-Når du har angitt aktuelle verdier for egenskapene trykk videre og i neste steg får du mulighet til å velge hvilke(t) miljø testpersonene skal opprettes i.
+Når du har angitt aktuelle verdier for egenskapene trykk videre og i neste steg får du mulighet til å velge hvilke(t) miljø personene skal opprettes i.
 
 For mer informasjon om NAVs testmiljøer se: [Miljøer](https://confluence.adeo.no/pages/viewpage.action?pageId=305341700)
 
@@ -92,7 +92,7 @@ Velg miljø og trykk opprett
 
 ![Opprettet gruppe](assets/opprettet_gruppe.png)
 
-Testdatagruppen har fått nye testpersoner og du kan jobbe med disse i relevante fagsystemer.  Trykk på pil ned til høyre på raden for å få opp detaljinformasjon om hver enkelt testperson.
+Gruppen har fått nye personer og du kan jobbe med disse i relevante fagsystemer. Trykk på pil ned til høyre på raden for å få opp detaljinformasjon om hver enkelt person.
 
 ### Legg til / endre person
 Noen ganger er det ønskelig å legge til ekstra egenskaper på en person man allerede har opprettet. Dette kan gjøres
@@ -157,12 +157,12 @@ Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
 
 Det vil fortsatt være mulig å sende fødselsmeldinger og dødsmeldinger i Dolly:
 
-* Sende fødselsmelding: Gå til testdatagruppe og finn personen som skal være forelder. Her finnes to alternativer:
+* Sende fødselsmelding: Gå til gruppe og finn personen som skal være forelder. Her finnes to alternativer:
     * Velg "Legg til/endre", og huk av for "Barn" i første steg. I neste steg kan et utvalg av egenskaper velges for barnet.
-    * Hvis barnet (og eventuelt den andre forelderen) allerede er opprettet i testdatagruppen: Velg "Legg til relasjoner" og legg til barn.
+    * Hvis barnet (og eventuelt den andre forelderen) allerede er opprettet i gruppen: Velg "Legg til relasjoner" og legg til barn.
 
 * Sende dødsmelding:
-    * Gå til testdatagruppe og finn personen det skal sendes dødsmelding på.
+    * Gå til gruppe og finn personen det skal sendes dødsmelding på.
     * Velg "Legg til/endre", og huk av for "Dødsdato" i første steg.
     * I neste steg kan dødsdatoen settes, før dødsmeldingen sendes som en vanlig bestilling.
 
@@ -184,11 +184,11 @@ For personer som ikke eksisterer i Dolly må disse først hentes inn ved å oppr
 
 ## Importere grupper fra gammel Z-bruker
 
-Dersom du tidligere har brukt Dolly med en Z-bruker, vil du se at testdatagruppe-oversikten er tom første gang du logger deg på med personlig brukerkonto.
+Dersom du tidligere har brukt Dolly med en Z-bruker, vil du se at gruppe-oversikten er tom første gang du logger deg på med personlig brukerkonto.
 
-Ikke bekymre deg - testpersonene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
+Ikke bekymre deg - personene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
 
-Import fra Z-bruker kan du gjøre direkte fra testdatagruppe-oversikten, eller fra Min side.
+Import fra Z-bruker kan du gjøre direkte fra gruppe-oversikten, eller fra Min side.
 
 ![Import fra min side](assets/minside.png)
 
@@ -196,7 +196,7 @@ For at overgangen skal gå så smertefritt som mulig, vil følgende regler gjeld
 * Du kan importere så mange Z-brukere du ønsker. Har du flere Z-brukere vil altså alle dataene fra disse kunne samles på din personlige brukerkonto.
 * Hver Z-bruker kan kun importeres av én personlig brukerkonto. Her er det førstemann til mølla-prinsippet som gjelder, dvs. at når du importerer en Z-bruker vil ingen andre kunne importere den samme.
 
-Det vil fortsatt være mulig å sette andre brukeres testdatagrupper som “favoritter”, slik at du har enkel tilgang til dem fra testdatagruppe-oversikten.
+Det vil fortsatt være mulig å sette andre brukeres grupper som “favoritter”, slik at du har enkel tilgang til dem fra gruppe-oversikten.
 
 
 ## Feil ved innlogging
