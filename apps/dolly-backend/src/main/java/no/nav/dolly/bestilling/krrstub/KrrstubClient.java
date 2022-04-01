@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -52,7 +53,7 @@ public class KrrstubClient implements ClientRegister {
                 kobleMaalformTilSpraak(bestilling, digitalKontaktdata);
 
                 if (!isOpprettEndre) {
-                    deleteIdent(dollyPerson.getHovedperson());
+                    krrstubConsumer.deleteKontaktdata(List.of(dollyPerson.getHovedperson())).block();
                 }
 
                 ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
@@ -78,25 +79,14 @@ public class KrrstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(this::deleteIdent);
-    }
-
-    private void deleteIdent(String ident) {
-
         try {
-            ResponseEntity<List<DigitalKontaktdata>> response = krrstubConsumer.getDigitalKontaktdata(ident);
 
-            if (response.hasBody()) {
-                response.getBody().forEach(dkif -> {
-                    if (nonNull(dkif.getId())) {
-                        krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
-                    }
-                });
-            }
+            krrstubConsumer.deleteKontaktdata(identer)
+                    .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å slette ident {} fra KRR-Stub", ident, e);
+            log.error("Feilet å slette identer {} fra KRR-Stub", identer.stream().collect(Collectors.joining(", ")), e);
         }
     }
 }

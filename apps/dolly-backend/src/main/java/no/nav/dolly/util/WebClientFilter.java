@@ -11,4 +11,11 @@ public class WebClientFilter {
         return throwable instanceof WebClientResponseException wce &&
                 wce.getStatusCode().is5xxServerError();
     }
+
+    public static String getMessage(Throwable throwable) {
+
+        return throwable instanceof WebClientResponseException ?
+                ((WebClientResponseException) throwable).getResponseBodyAsString() :
+                throwable.getMessage();
+    }
 }
