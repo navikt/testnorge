@@ -60,6 +60,7 @@ export const Foedsel = ({
 	getPdl,
 	tmpPersoner,
 	ident,
+	erPdlVisning = false,
 }: FoedselTypes) => {
 	if (!data || data.length === 0) return null
 
@@ -123,7 +124,7 @@ export const Foedsel = ({
 				value={foedsel.foedeland}
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
-			<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} />
+			{!erPdlVisning && <Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} />}
 			{/*<Button kind="trashcan" onClick={() => console.log('klikk slett!')} />*/}
 		</div>
 	)

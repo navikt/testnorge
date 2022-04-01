@@ -64,7 +64,7 @@ export const PdlVisning = ({ pdlData, loading, tmpPersoner }: PdlVisningProps) =
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
-				<Foedsel data={foedsel} tmpPersoner={tmpPersoner} ident={ident} />
+				<Foedsel data={foedsel} tmpPersoner={tmpPersoner} ident={ident} erPdlVisning />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
