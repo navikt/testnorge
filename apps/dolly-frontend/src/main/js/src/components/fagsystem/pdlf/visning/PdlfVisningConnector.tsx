@@ -4,17 +4,16 @@ import { withRouter } from 'react-router-dom'
 import { PdlfVisning } from '~/components/fagsystem'
 
 const mapStateToProps = (state, ownProps) => {
-	// console.log('state: ', state) //TODO - SLETT MEG
 	return {
-		tmpPersoner: state?.redigertePersoner?.data,
+		tmpPersoner: state?.redigertePersoner?.pdlforvalter,
 	}
 }
 
-const mapDispetchToProps = (dispatch, ownProps) => {
-	// console.log('ownProps: ', ownProps) //TODO - SLETT MEG
+const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		getPdlForvalter: () => dispatch(actions.hentPerson(ownProps.data?.person?.ident)),
+		getPdlForvalter: () => dispatch(actions.hentPdlforvalterPersoner(ownProps.data?.person?.ident)),
+		getPdl: () => dispatch(actions.hentPdlPersoner(ownProps.data?.person?.ident)),
 	}
 }
 
-export default withRouter(connect(mapStateToProps, mapDispetchToProps)(PdlfVisning))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PdlfVisning))

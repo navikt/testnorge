@@ -18,12 +18,17 @@ import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 
-export const PdlfVisning = ({ data, loading, put, tmpPersoner, getPdlForvalter }) => {
+export const PdlfVisning = ({
+	data,
+	loading,
+	put,
+	sendOrdrePdl,
+	tmpPersoner,
+	getPdlForvalter,
+	getPdl,
+}) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data) return null
-	console.log('data: ', data) //TODO - SLETT MEG
-	// console.log('tmpPersoner: ', tmpPersoner) //TODO - SLETT MEG
-	// console.log('getPdlForvalter: ', getPdlForvalter) //TODO - SLETT MEG
 
 	const {
 		foedsel,
@@ -50,7 +55,9 @@ export const PdlfVisning = ({ data, loading, put, tmpPersoner, getPdlForvalter }
 				<Foedsel
 					data={foedsel}
 					put={put}
+					sendOrdrePdl={sendOrdrePdl}
 					fetch={getPdlForvalter}
+					getPdl={getPdl}
 					tmpPersoner={tmpPersoner}
 					ident={ident}
 				/>

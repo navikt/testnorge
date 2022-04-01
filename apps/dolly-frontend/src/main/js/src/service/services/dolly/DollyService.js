@@ -80,6 +80,10 @@ export default {
 		return Request.get(Endpoints.naviger(ident))
 	},
 
+	sendOrdre(ident) {
+		return Request.post(Endpoints.ordre(ident))
+	},
+
 	//* Bruker
 	getBrukere() {
 		return Request.get(Endpoints.bruker())

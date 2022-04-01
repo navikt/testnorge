@@ -12,7 +12,6 @@ import {
 	InntektstubVisning,
 	InstVisning,
 	KrrVisning,
-	PdlfVisning,
 	PensjonVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
@@ -49,8 +48,8 @@ export const PersonVisning = ({
 	loading,
 	slettPerson,
 	leggTilPaaPerson,
-	editPdlAttributt,
-	getPdlForvalter,
+	editPdlforvalterAttributt,
+	sendOrdrePdl,
 	iLaastGruppe,
 	setVisning,
 }) => {
@@ -98,17 +97,11 @@ export const PersonVisning = ({
 				/>
 			)}
 			{ident.master !== 'PDL' && (
-				// <PdlfVisning
-				// 	data={data.pdlforvalter}
-				// 	loading={loading.pdlforvalter}
-				// 	put={editPdlAttributt}
-				// 	fetch={getPdlForvalter}
-				// />
 				<PdlfVisningConnector
 					data={data.pdlforvalter}
 					loading={loading.pdlforvalter}
-					put={editPdlAttributt}
-					// fetch={getPdlForvalter}
+					put={editPdlforvalterAttributt}
+					sendOrdrePdl={sendOrdrePdl}
 				/>
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}

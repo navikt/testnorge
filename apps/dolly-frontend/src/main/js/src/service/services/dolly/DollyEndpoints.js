@@ -200,6 +200,10 @@ export default class DollyEndpoints {
 		return `${identBase}/naviger/${ident}`
 	}
 
+	static ordre(ident) {
+		return `${identBase}/ident/${ident}/ordre`
+	}
+
 	static kobleIdenter(ident) {
 		return `${identBase}/${ident}/relasjon`
 	}

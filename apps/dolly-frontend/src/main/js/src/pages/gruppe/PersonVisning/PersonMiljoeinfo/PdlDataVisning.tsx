@@ -1,9 +1,9 @@
 import React from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import Tooltip from 'rc-tooltip'
+import PdlVisningConnector from '~/components/fagsystem/pdl/visning/PdlVisningConnector'
 
 type PdlDataVisningProps = {
 	pdlData: PdlData
@@ -15,7 +15,7 @@ export const PdlDataVisning = ({ pdlData }: PdlDataVisningProps) => {
 	}
 
 	const getPersonInfo = () => {
-		return <PdlVisning pdlData={pdlData} />
+		return <PdlVisningConnector pdlData={pdlData} />
 	}
 
 	return (

@@ -32,7 +32,8 @@ type FoedselVisningTypes = {
 enum Modus {
 	Les = 'LES',
 	Skriv = 'SKRIV',
-	Loading = 'LOADING',
+	LoadingPdlf = 'LOADING_PDLF',
+	LoadingPdl = 'LOADING_PDL',
 }
 
 const FieldArrayEdit = styled.div`
@@ -51,14 +52,19 @@ const Knappegruppe = styled.div`
 	align-content: baseline;
 `
 
-export const Foedsel = ({ data, put, fetch, tmpPersoner, ident }: FoedselTypes) => {
+export const Foedsel = ({
+	data,
+	put,
+	sendOrdrePdl,
+	fetch,
+	getPdl,
+	tmpPersoner,
+	ident,
+}: FoedselTypes) => {
 	if (!data || data.length === 0) return null
 
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessage, setErrorMessage] = useState(null)
-
-	const initFoedsel = Object.assign(initialFoedsel, data[0]) //TODO hent fra riktig objekt
-	const initialValues = { foedsel: initFoedsel }
 
 	// const foedselTest = {
 	// 	fodekommune: null,
@@ -72,13 +78,13 @@ export const Foedsel = ({ data, put, fetch, tmpPersoner, ident }: FoedselTypes) 
 	// }
 
 	const handleSubmit = async (data) => {
-		setVisningModus(Modus.Loading)
+		setVisningModus(Modus.LoadingPdlf)
 		const attributt = Object.keys(data)[0]
 		await put(attributt, data.foedsel.id, data.foedsel)
 			.then((putResponse) => {
 				if (putResponse)
 					fetch().then((fetchResponse) => {
-						if (fetchResponse) setVisningModus(Modus.Les)
+						if (fetchResponse) setVisningModus(Modus.LoadingPdl)
 					})
 			})
 			.catch((error) => {
@@ -86,6 +92,16 @@ export const Foedsel = ({ data, put, fetch, tmpPersoner, ident }: FoedselTypes) 
 				setErrorMessage(error.toString())
 				setVisningModus(Modus.Les)
 			})
+			.then(() =>
+				sendOrdrePdl().then((sendOrdrePdlResponse) => {
+					if (sendOrdrePdlResponse)
+						setTimeout(() => {
+							getPdl().then((getPdlResponse) => {
+								if (getPdlResponse) setVisningModus(Modus.Les)
+							})
+						}, 5000)
+				})
+			)
 	}
 
 	const FoedselLes = ({ foedsel, idx }) => (
@@ -113,16 +129,22 @@ export const Foedsel = ({ data, put, fetch, tmpPersoner, ident }: FoedselTypes) 
 	)
 
 	const FoedselVisning = ({ item, idx }: FoedselVisningTypes) => {
-		const redigertFoedsel = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
+		const initFoedsel = Object.assign(initialFoedsel, data[idx])
+		const initialValues = { foedsel: initFoedsel }
+
+		const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
 			(a) => a.id === item.id
 		)
+		const redigertFoedselPdl = _get(tmpPersoner, `${ident}.foedsel.${idx}`)
+
 		return (
 			<>
-				{visningModus === Modus.Loading && <Loading label="Endrer....." />}
+				{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
+				{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
 				{visningModus === Modus.Les && (
 					<>
-						{redigertFoedsel ? (
-							<FoedselLes foedsel={redigertFoedsel} idx={idx} />
+						{redigertFoedselPdlf || redigertFoedselPdl ? (
+							<FoedselLes foedsel={redigertFoedselPdlf || redigertFoedselPdl} idx={idx} />
 						) : (
 							<FoedselLes foedsel={item} idx={idx} />
 						)}
@@ -131,7 +153,7 @@ export const Foedsel = ({ data, put, fetch, tmpPersoner, ident }: FoedselTypes) 
 				)}
 				{visningModus === Modus.Skriv && (
 					<Formik
-						initialValues={redigertFoedsel ? { foedsel: redigertFoedsel } : initialValues}
+						initialValues={redigertFoedselPdlf ? { foedsel: redigertFoedselPdlf } : initialValues}
 						onSubmit={handleSubmit}
 						enableReinitialize
 					>
