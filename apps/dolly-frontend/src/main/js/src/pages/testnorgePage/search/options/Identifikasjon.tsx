@@ -1,40 +1,48 @@
 import React from 'react'
-import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 
 interface IdentifikasjonProps {
 	formikBag: FormikProps<{}>
+	path: string
+}
+
+const options = {
+	identtype: [
+		{ value: 'FNR', label: 'FNR' },
+		{ value: 'DNR', label: 'DNR' },
+	],
+	adressebeskyttelse: [
+		{ value: 'FORTROLIG', label: 'Fortrolig' },
+		{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
+	],
+	kjoenn: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+	],
 }
 
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	formikBag,
+	path,
 }: IdentifikasjonProps) => {
 	return (
 		<section>
-			<h4 className="subtittel">Identifikatortype</h4>
-			<FormikCheckbox
-				name="personinformasjon.identifikasjon.identtype.fnr"
-				disabled={_get(formikBag.values, 'personinformasjon.identifikasjon.identtype.dnr')}
-				label="Fødselsnummer"
-				size="medium"
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Identifikatortype'}
+				path={`${path}.identtype`}
+				legend={'Velg identifikatortype'}
+				options={options.identtype}
 			/>
-			<FormikCheckbox
-				name="personinformasjon.identifikasjon.identtype.dnr"
-				disabled={_get(formikBag.values, 'personinformasjon.identifikasjon.identtype.fnr')}
-				label="D-nummer"
-				size="medium"
-			/>
-			<h4 className="subtittel">Adressebeskyttelse</h4>
-			<FormikSelect
-				name="personinformasjon.identifikasjon.adressebeskyttelse"
-				label="Gradering"
-				options={[
-					{ value: 'FORTROLIG', label: 'Fortrolig' },
-					{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
-				]}
-				size="medium"
+
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Adressebeskyttelse'}
+				path={`${path}.adressebeskyttelse`}
+				legend={'Velg gradering'}
+				options={options.adressebeskyttelse}
 			/>
 			<h4 className="subtittel">Identitet</h4>
 			<FormikCheckbox
@@ -47,6 +55,13 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				label="Har utenlandsk identitet"
 				size="medium"
 			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Kjønn'}
+				path={`${path}.kjoenn`}
+				legend={'Velg kjønn'}
+				options={options.kjoenn}
+			/>
 		</section>
 	)
 }
@@ -54,7 +69,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 export const IdentifikasjonPaths = {
 	'personinformasjon.identifikasjon.falskIdentitet': 'boolean',
 	'personinformasjon.identifikasjon.utenlandskIdentitet': 'boolean',
-	'personinformasjon.identifikasjon.identtype.fnr': 'boolean',
-	'personinformasjon.identifikasjon.identtype.dnr': 'boolean',
+	'personinformasjon.identifikasjon.identtype': 'string',
 	'personinformasjon.identifikasjon.adressebeskyttelse': 'string',
+	'personinformasjon.identifikasjon.kjoenn': 'string',
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 export const Alder = () => (
@@ -41,22 +40,6 @@ export const AlderPaths = {
 	'personinformasjon.alder.foedselsdato.tom': 'string',
 }
 
-export const Statsborgerskap = () => (
-	<section>
-		<FormikSelect
-			name="personinformasjon.statsborgerskap.land"
-			label="Statsborgerskap"
-			kodeverk={AdresseKodeverk.StatsborgerskapLand}
-			optionHeight={50}
-			size="medium"
-		/>
-	</section>
-)
-
-export const StatsborgerskapPaths = {
-	'personinformasjon.statsborgerskap.land': 'string',
-}
-
 export const Sivilstand = () => (
 	<section>
 		<FormikSelect
@@ -89,34 +72,4 @@ export const Barn = () => (
 export const BarnPaths = {
 	'personinformasjon.barn.barn': 'boolean',
 	'personinformasjon.barn.doedfoedtBarn': 'boolean',
-}
-
-export const Diverse = () => (
-	<section>
-		<FormikSelect
-			name="personinformasjon.diverse.kjoenn"
-			label="Kjønn"
-			options={[
-				{ value: 'KVINNE', label: 'Kvinne' },
-				{ value: 'MANN', label: 'Mann' },
-			]}
-			size="medium"
-		/>
-		<FormikCheckbox
-			name="personinformasjon.diverse.innflyttet"
-			label="Har innflyttet til Norge"
-			size="medium"
-		/>
-		<FormikCheckbox
-			name="personinformasjon.diverse.utflyttet"
-			label="Har utflyttet fra Norge"
-			size="medium"
-		/>
-	</section>
-)
-
-export const DiversePaths = {
-	'personinformasjon.diverse.kjoenn': 'string',
-	'personinformasjon.diverse.innflyttet': 'boolean',
-	'personinformasjon.diverse.utflyttet': 'boolean',
 }

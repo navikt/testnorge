@@ -8,8 +8,10 @@ export const initialValues = {
 				tom: '',
 			},
 		},
-		statsborgerskap: {
-			land: '',
+		nasjonalitet: {
+			statsborgerskap: '',
+			utflyttet: false,
+			innflyttet: false,
 		},
 		sivilstand: {
 			type: '',
@@ -24,28 +26,16 @@ export const initialValues = {
 		identer: [],
 		identifikasjon: {
 			adressebeskyttelse: '',
-			identtype: {
-				fnr: false,
-				dnr: false,
-			},
+			identtype: '',
+			kjoenn: '',
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
-		diverse: {
-			kjoenn: '',
-			utflyttet: false,
-			innflyttet: false,
+		bosted: {
+			kommunenr: '',
+			postnr: '',
 		},
 	},
-}
-
-const getIdenttype = (values: any) => {
-	if (values?.personinformasjon?.identifikasjon?.identtype?.fnr) {
-		return 'FNR'
-	} else if (values?.personinformasjon?.identifikasjon?.identtype?.dnr) {
-		return 'DNR'
-	}
-	return ''
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
@@ -71,13 +61,13 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			pageSize: 100,
 			randomSeed: randomSeed,
 			terminateAfter: 100,
-			kjoenn: values?.personinformasjon?.diverse?.kjoenn,
+			kjoenn: values?.personinformasjon?.identifikasjon?.kjoenn,
 			foedsel: {
 				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
 				tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
 			},
 			statsborgerskap: {
-				land: values?.personinformasjon?.statsborgerskap?.land,
+				land: values?.personinformasjon?.nasjonalitet?.statsborgerskap,
 			},
 			sivilstand: {
 				type: values?.personinformasjon?.sivilstand?.type,
@@ -90,7 +80,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			identifikasjon: {
 				falskIdentitet: values?.personinformasjon?.identifikasjon?.falskIdentitet,
 				utenlandskIdentitet: values?.personinformasjon?.identifikasjon?.utenlandskIdentitet,
-				identtype: getIdenttype(values),
+				identtype: values?.personinformasjon?.identifikasjon?.identtype,
 				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
 			relasjoner: {
@@ -98,10 +88,16 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
 			},
 			utflyttingFraNorge: {
-				utflyttet: values?.personinformasjon?.diverse?.utflyttet,
+				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,
 			},
 			innflyttingTilNorge: {
-				innflytting: values?.personinformasjon?.diverse?.innflyttet,
+				innflytting: values?.personinformasjon?.nasjonalitet?.innflyttet,
+			},
+			adresser: {
+				bostedsadresse: {
+					postnummer: values?.personinformasjon?.bosted?.postnr,
+					kommunenummer: values?.personinformasjon?.bosted?.kommunenr,
+				},
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
