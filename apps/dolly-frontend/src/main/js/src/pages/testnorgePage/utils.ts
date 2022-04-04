@@ -91,7 +91,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			relasjoner: {
 				barn: values?.personinformasjon?.relasjoner?.barn,
-				doedfoedtBarn: values?.personinformasjon?.relasjoenr?.doedfoedtBarn,
+				doedfoedtBarn: values?.personinformasjon?.relasjoner?.doedfoedtBarn,
 			},
 			utflyttingFraNorge: {
 				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,

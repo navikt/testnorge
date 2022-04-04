@@ -15,7 +15,7 @@ export const Relasjoner = () => (
 		/>
 		<FormikCheckbox name="personinformasjon.relasjoner.barn" label="Har barn" size="medium" />
 		<FormikCheckbox
-			name="personinformasjon.relasjoenr.doedfoedtBarn"
+			name="personinformasjon.relasjoner.doedfoedtBarn"
 			label="Har dødfødt barn"
 			size="medium"
 		/>
@@ -25,5 +25,5 @@ export const Relasjoner = () => (
 export const RelasjonerPaths = {
 	'personinformasjon.relasjoner.sivilstand': 'string',
 	'personinformasjon.relasjoner.barn': 'boolean',
-	'personinformasjon.relasjoenr.doedfoedtBarn': 'boolean',
+	'personinformasjon.relasjoner.doedfoedtBarn': 'boolean',
 }
