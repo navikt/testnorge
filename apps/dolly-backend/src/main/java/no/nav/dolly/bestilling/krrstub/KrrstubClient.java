@@ -81,7 +81,7 @@ public class KrrstubClient implements ClientRegister {
 
         if (isNotBlank(maalform) && isBlank(digitalKontaktdata.getSpraak())) {
 
-            digitalKontaktdata.setSpraak(isNotBlank(maalform) ? maalform.toLowerCase() : maalform);
+            digitalKontaktdata.setSpraak(isNotBlank(maalform) ? maalform.toLowerCase() : maalform); //NOSONAR
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
             digitalKontaktdata.setRegistrert(true);
         }
