@@ -5,7 +5,7 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 export const Relasjoner = () => (
 	<section>
 		<FormikSelect
-			name="personinformasjon.relasjoenr.sivilstand"
+			name="personinformasjon.relasjoner.sivilstand"
 			label="Sivilstand"
 			options={[
 				{ value: 'GIFT', label: 'Gift' },
