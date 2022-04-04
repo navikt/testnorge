@@ -7,13 +7,13 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
 
 @UtilityClass
 public class IdentifikasjonUtils {
 
     public static void addIdentifikasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
+        addIdentQuery(queryBuilder, search);
         addIdenttypeQuery(queryBuilder, search);
         addIdentitetQueries(queryBuilder, search);
         addAdressebeskyttelseQuery(queryBuilder, search);
@@ -58,6 +58,15 @@ public class IdentifikasjonUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery("hentPerson.kjoenn", "kjoenn", value));
+                    }
+                });
+    }
+
+    private static void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getIdenter())
+                .ifPresent(values -> {
+                    if (!values.isEmpty()) {
+                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", "ident", values));
                     }
                 });
     }

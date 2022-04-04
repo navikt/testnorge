@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import net.minidev.json.JSONArray;
+import no.nav.registre.testnorge.personsearchservice.domain.PdlResponse;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -29,7 +31,6 @@ import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSea
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.IdentifikasjonUtils.addIdentifikasjonQueries;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.AlderUtils.addAlderQueries;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.AdresserUtils.addAdresserQueries;
@@ -57,13 +58,63 @@ public class PersonSearchAdapter {
 
     @SneakyThrows
     public PersonList search(PersonSearch search) {
+        SearchResponse searchResponse = getSearchResponse(search);
+
+        TotalHits totalHits = searchResponse.getHits().getTotalHits();
+        log.info("Fant {} personer i pdl.", totalHits.value);
+
+        List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
+
+        return new PersonList(
+                searchResponse.getHits().getTotalHits().value,
+                responses.stream().map(Person::new).toList()
+        );
+    }
+
+    @SneakyThrows
+    public PdlResponse searchWithJsonStringResponse(PersonSearch search) {
+        SearchResponse searchResponse = getSearchResponse(search);
+
+        TotalHits totalHits = searchResponse.getHits().getTotalHits();
+        log.info("Fant {} personer i pdl.", totalHits.value);
+
+        var searchHits = searchResponse.getHits().getHits();
+
+        var listResponse = Arrays.stream(searchHits).map(SearchHit::getSourceAsString).toList();
+        var jsonResponse = JSONArray.toJSONString(listResponse);
+
+        return new PdlResponse(
+                searchResponse.getHits().getTotalHits().value,
+                jsonResponse
+        );
+    }
+
+    @SneakyThrows
+    private SearchResponse getSearchResponse(PersonSearch search){
         var queryBuilder = QueryBuilders.boolQuery();
 
         buildQuery(queryBuilder, search);
 
+        var searchSourceBuilder = getSearchSourceBuilder(queryBuilder, search);
         var searchRequest = new SearchRequest();
         searchRequest.indices("pdl-sok");
+        searchRequest.source(searchSourceBuilder);
 
+        return client.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
+    private void buildQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        addRandomScoreQuery(queryBuilder, search);
+        addTagsQueries(queryBuilder, search);
+        addIdentifikasjonQueries(queryBuilder, search);
+        addAlderQueries(queryBuilder, search);
+        addAdresserQueries(queryBuilder, search);
+        addNasjonalitetQueries(queryBuilder, search);
+        addStatusQueries(queryBuilder, search);
+        addRelasjonerQueries(queryBuilder, search);
+    }
+
+    private SearchSourceBuilder getSearchSourceBuilder(BoolQueryBuilder queryBuilder, PersonSearch search) {
         var searchSourceBuilder = new SearchSourceBuilder();
         int page = search.getPage();
         int pageSize = search.getPageSize();
@@ -73,33 +124,7 @@ public class PersonSearchAdapter {
         searchSourceBuilder.query(queryBuilder);
         Optional.ofNullable(search.getTerminateAfter())
                 .ifPresent(searchSourceBuilder::terminateAfter);
-
-        searchRequest.source(searchSourceBuilder);
-
-        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-        TotalHits totalHits = searchResponse.getHits().getTotalHits();
-        log.info("Fant {} personer i pdl.", totalHits.value);
-
-        List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
-
-
-        return new PersonList(
-                searchResponse.getHits().getTotalHits().value,
-                responses.stream().map(Person::new).toList()
-        );
-    }
-
-    private void buildQuery(BoolQueryBuilder queryBuilder, PersonSearch search){
-        addRandomScoreQuery(queryBuilder, search);
-        addTagsQueries(queryBuilder, search);
-        addIdentQuery(queryBuilder, search);
-
-        addIdentifikasjonQueries(queryBuilder, search);
-        addAlderQueries(queryBuilder, search);
-        addAdresserQueries(queryBuilder, search);
-        addNasjonalitetQueries(queryBuilder, search);
-        addStatusQueries(queryBuilder, search);
-        addRelasjonerQueries(queryBuilder, search);
+        return searchSourceBuilder;
     }
 
     private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -121,14 +146,4 @@ public class PersonSearchAdapter {
                     }
                 });
     }
-
-    private void addIdentQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdenter())
-                .ifPresent(values -> {
-                    if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", "ident", values));
-                    }
-                });
-    }
-
 }

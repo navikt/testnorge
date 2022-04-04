@@ -17,7 +17,7 @@ public class AdresserUtils {
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addKommunenrBostedQuery(queryBuilder, search);
-        addKommunenrBostedQuery(queryBuilder, search);
+        addPostnrBostedQuery(queryBuilder, search);
     }
 
     private static void addKommunenrBostedQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
