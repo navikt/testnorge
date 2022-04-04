@@ -17,13 +17,13 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 
 
 @RestController
-@RequestMapping("/api/v1/person")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class PersonSearchController {
     private static final String NUMBER_OF_ITEMS_HEADER = "NUMBER_OF_ITEMS";
     private final PersonSearchService service;
 
-    @PostMapping
+    @PostMapping("/person")
     public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
         PersonList personList = service.search(search);
         List<PersonDTO> dto = personList.getList().stream().map(Person::toDTO).toList();
@@ -33,4 +33,12 @@ public class PersonSearchController {
                 .body(dto);
     }
 
+    @PostMapping("/pdlPerson")
+    public ResponseEntity<String> searchPdlPerson(@RequestBody PersonSearch search) {
+        var response = service.searchPdlPersoner(search);
+        return ResponseEntity
+                .ok()
+                .header(NUMBER_OF_ITEMS_HEADER, String.valueOf(response.getNumberOfItems()))
+                .body(response.getResponse());
+    }
 }

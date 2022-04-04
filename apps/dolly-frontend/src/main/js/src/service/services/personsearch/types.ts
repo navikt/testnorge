@@ -4,7 +4,7 @@ export type Search = {
 	terminateAfter: number
 	tag: string
 	excludeTags: Array<string>
-	kunLevende: boolean
+	kunLevende?: boolean
 	kjoenn?: string
 	foedsel?: {
 		fom?: string

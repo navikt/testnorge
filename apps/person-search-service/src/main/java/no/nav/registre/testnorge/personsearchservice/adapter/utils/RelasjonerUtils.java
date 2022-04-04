@@ -1,0 +1,51 @@
+package no.nav.registre.testnorge.personsearchservice.adapter.utils;
+
+import lombok.experimental.UtilityClass;
+import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+
+import java.util.Optional;
+
+import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+
+@UtilityClass
+public class RelasjonerUtils {
+
+    private static final String FORELDER_BARN_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
+    private static final String RELATERT_PERSONS_ROLLE = "relatertPersonsRolle";
+
+    public static void addRelasjonerQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
+        addRelasjonQueries(queryBuilder, search);
+        addSivilstandQuery(queryBuilder, search);
+    }
+
+    private static void addRelasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getRelasjoner())
+                .ifPresent(value -> {
+                    if (nonNull(value.getBarn()) && value.getBarn()) {
+                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "BARN"));
+                    }
+                    if (nonNull(value.getDoedfoedtBarn()) && value.getDoedfoedtBarn()) {
+                        queryBuilder.must(nestedExistsQuery("hentPerson.doedfoedtBarn", "metadata"));
+                    }
+                    if (nonNull(value.getFar()) && value.getFar()) {
+                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "FAR"));
+                    }
+                    if (nonNull(value.getMor()) && value.getMor()) {
+                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "MOR"));
+                    }
+                });
+    }
+
+    private static void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getSivilstand())
+                .flatMap(value -> Optional.ofNullable(value.getType()))
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(nestedMatchQuery("hentPerson.sivilstand", "type", value));
+                    }
+                });
+    }
+}
