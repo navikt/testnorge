@@ -1,16 +1,16 @@
 ---
-title: Testnorge
+title: Test-Norge
 layout: default
 parent: Dolly
 ---
 # {{ page.title }}
-Testnorge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
+Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
 at personer fødes, dør, får barn, osv. Populasjonen har syntetiske fnr/dnr hvor det er lagt til 80 på måned. 
-Hele Testnorge populasjoen er tilgjengelig i PDL. 
+Hele Test-Norge populasjoen er tilgjengelig i PDL. 
 
 ## Søk og import
-Under "Testnorge" fanen i Dolly er mulig å søke opp Testnorge identer i Dolly, velge identer man ønsker å ta i bruk, 
+Under "Test-Norge" fanen i Dolly er mulig å søke opp Test-Norge identer i Dolly, velge identer man ønsker å ta i bruk, 
 velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket gruppe i Dolly. Videon under viser en demo for 
 hvordan dette kan gjøres.
 
@@ -24,4 +24,4 @@ brukes. Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp idente
 søkeløsning og deretter importere dem til ønsket Dolly gruppe. 
 
 ### ID-Porten
-Vi anbefaler bruk av TestID når man skal teste ID-porten ved bruk av importert Testnorge-ident. 
+Vi anbefaler bruk av TestID når man skal teste ID-porten ved bruk av importert Test-Norge-ident. 
