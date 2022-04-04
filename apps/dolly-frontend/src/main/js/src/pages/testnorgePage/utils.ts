@@ -1,3 +1,6 @@
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { getKjoenn } from '~/ducks/fagsystem'
+
 export const initialValues = {
 	personinformasjon: {
 		alder: {
@@ -109,4 +112,25 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			excludeTags: ['DOLLY'],
 		}
 	}
+}
+
+export const getIdent = (person: PdlData) => {
+	const identer = person.hentIdenter?.identer?.filter(
+		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
+	)
+	return identer.length > 0 ? identer[0].ident : ''
+}
+
+export const getFornavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((navn) => !navn.metadata.historisk)
+	return navn.length > 0 ? navn[0].fornavn : ''
+}
+
+export const getEtternavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((navn) => !navn.metadata.historisk)
+	return navn.length > 0 ? navn[0].etternavn : ''
+}
+
+export const getPdlKjoenn = (person: PdlData) => {
+	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
 }

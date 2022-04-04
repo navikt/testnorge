@@ -3,16 +3,19 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import styled from 'styled-components'
-import { PersonView } from '~/pages/testnorgePage/search/PersonView'
-import { Person } from '~/service/services/personsearch/types'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { getAlder } from '~/ducks/fagsystem'
+import Formatters from '~/utils/DataFormatter'
+import { getFornavn, getIdent, getEtternavn, getPdlKjoenn } from '~/pages/testnorgePage/utils'
+import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 
 type Props = {
-	items?: Person[]
+	items?: PdlData[]
 	loading: boolean
 	valgtePersoner: string[]
 	setValgtePersoner: (personer: string[]) => void
@@ -23,19 +26,6 @@ const SearchView = styled.div`
 	display: flex;
 	flex-direction: column;
 `
-
-const getAlder = (foedselsdato: string, doedsdato: string) => {
-	const fdato = new Date(foedselsdato)
-	let diff_ms = Date.now() - fdato.getTime()
-	if (doedsdato !== null && doedsdato !== '') {
-		const ddato = new Date(doedsdato)
-		diff_ms = ddato.getTime() - fdato.getTime()
-	}
-
-	const age_dt = new Date(diff_ms)
-	const alder = Math.abs(age_dt.getUTCFullYear() - 1970)
-	return <>{alder}</>
-}
 
 export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPersoner }: Props) => {
 	if (loading) return <Loading label="Søker..." />
@@ -51,63 +41,65 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 		{
 			text: 'Ident',
 			width: '20',
-			dataField: 'ident',
-			unique: true,
+			formatter: (cell: any, row: PdlData) => {
+				return <>{getIdent(row)}</>
+			},
 		},
 		{
 			text: 'Fornavn',
 			width: '20',
-			dataField: 'fornavn',
-			unique: true,
+			formatter: (cell: any, row: PdlData) => {
+				return <>{getFornavn(row)}</>
+			},
 		},
 		{
 			text: 'Etternavn',
 			width: '20',
-			dataField: 'etternavn',
-			unique: true,
+			formatter: (cell: any, row: PdlData) => {
+				return <>{getEtternavn(row)}</>
+			},
 		},
 		{
 			text: 'Kjønn',
 			width: '10',
-			formatter: (cell: any, row: Person) => {
-				return <>{row.kjoenn.substring(0, 1)}</>
+			formatter: (cell: any, row: PdlData) => {
+				return <>{getPdlKjoenn(row)}</>
 			},
 		},
 		{
 			text: 'Alder',
 			width: '15',
-			formatter: (cell: any, row: Person) => {
-				const doedsdato = row.doedsfall.doedsdato
-				const alder = getAlder(row.foedsel.foedselsdato, doedsdato)
-				if (doedsdato != null && doedsdato !== '') {
-					return <>{alder}(Død)</>
-				}
-				return <>{alder}</>
+			formatter: (cell: any, row: PdlData) => {
+				const alder = getAlder(
+					row.hentPerson?.foedsel[0]?.foedselsdato,
+					row.hentPerson?.doedsfall[0]?.doedsdato
+				)
+				return <>{Formatters.formatAlder(alder, row.hentPerson?.doedsfall[0]?.doedsdato)}</>
 			},
 		},
 		{
 			text: 'Velg alle',
 			width: '15',
 			dataField: 'velg',
-			headerFormatter: (text: string, data: Array<Person>) => {
+			headerFormatter: (text: string, data: Array<PdlData>) => {
 				return (
 					<Button
 						onClick={() => {
 							const alleValgtPaaSiden = data.every((person) =>
-								valgtePersoner.includes(person.ident)
+								valgtePersoner.includes(getIdent(person))
 							)
 							alleValgtPaaSiden
 								? setValgtePersoner([])
-								: setValgtePersoner(data.map((person) => person.ident))
+								: setValgtePersoner(data.map((person) => getIdent(person)))
 						}}
 					>
 						{text}
 					</Button>
 				)
 			},
-			formatter: (cell: any, row: Person) => (
+			formatter: (cell: any, row: PdlData) => (
 				<VelgPerson
-					personinfo={row}
+					ident={getIdent(row)}
 					valgtePersoner={valgtePersoner}
 					setValgtePersoner={setValgtePersoner}
 				/>
@@ -127,10 +119,10 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			<DollyTable
 				data={items}
 				columns={columns}
-				iconItem={(person: Person) =>
-					person?.kjoenn === 'MANN' ? <ManIconItem /> : <WomanIconItem />
+				iconItem={(person: PdlData) =>
+					getPdlKjoenn(person) === 'M' ? <ManIconItem /> : <WomanIconItem />
 				}
-				onExpand={(person: Person) => <PersonView person={person} />}
+				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
 				pagination
 			/>
 			<div className="flexbox--align-center--justify-end">

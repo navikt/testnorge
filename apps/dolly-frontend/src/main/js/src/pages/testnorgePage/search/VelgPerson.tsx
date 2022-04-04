@@ -3,19 +3,19 @@ import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { Person } from '~/service/services/personsearch/types'
 
 interface VelgPersonProps {
-	personinfo: Person
+	ident: string
 	valgtePersoner: Array<string>
 	setValgtePersoner: (personer: Array<string>) => void
 }
 
-export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: VelgPersonProps) => {
-	const avhuket = valgtePersoner.includes(personinfo.ident)
+export const VelgPerson = ({ ident, valgtePersoner, setValgtePersoner }: VelgPersonProps) => {
+	const avhuket = valgtePersoner.includes(ident)
 
 	const handleOnChange = () => {
 		if (avhuket) {
-			setValgtePersoner(valgtePersoner.filter((ident) => ident !== personinfo.ident))
+			setValgtePersoner(valgtePersoner.filter((valgtident) => valgtident !== ident))
 		} else {
-			setValgtePersoner([...valgtePersoner, personinfo.ident])
+			setValgtePersoner([...valgtePersoner, ident])
 		}
 	}
 
@@ -27,7 +27,7 @@ export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: Ve
 			}}
 		>
 			<Checkbox
-				id={personinfo.ident}
+				id={ident}
 				title={'Marker'}
 				label={''}
 				checked={avhuket}
