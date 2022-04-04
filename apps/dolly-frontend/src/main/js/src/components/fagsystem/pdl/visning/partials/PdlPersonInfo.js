@@ -6,15 +6,13 @@ import Formatters from '~/utils/DataFormatter'
 import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
 
 const getCurrentPersonstatus = (data) => {
-	if (data?.folkeregisterPersonstatus && data?.folkeregisterPersonstatus?.[0] !== null) {
-		const statuser = data.folkeregisterPersonstatus.filter((status) => {
-			return !status?.metadata?.historisk
-		})
-		return statuser.length > 0 ? statuser[0] : null
-	} else if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
+	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
 		const statuser = data.folkeregisterpersonstatus.filter((status) => {
 			return !status?.metadata?.historisk
 		})
+		return statuser.length > 0 ? statuser[0] : null
+	} else if (data?.folkeregisterPersonstatus && data?.folkeregisterPersonstatus?.[0] !== null) {
+		const statuser = data.folkeregisterPersonstatus
 		return statuser.length > 0 ? statuser[0] : null
 	}
 	return null
