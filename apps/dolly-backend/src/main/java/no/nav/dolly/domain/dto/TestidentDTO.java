@@ -8,11 +8,11 @@ import no.nav.dolly.domain.jpa.Testident;
 public class TestidentDTO {
 
     private String ident;
-    private Testident.Master Master;
+    private Testident.Master master;
 
     @JsonIgnore
     public boolean isTpsf() {
-        return getMaster() == Master.TPSF;
+        return getMaster() == master.TPSF;
     }
 
     @JsonIgnore
@@ -22,6 +22,6 @@ public class TestidentDTO {
 
     @JsonIgnore
     public boolean isPdlf() {
-        return getMaster() == Master.PDLF;
+        return getMaster() == master.PDLF;
     }
 }

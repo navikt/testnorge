@@ -43,7 +43,6 @@ public class KrrstubConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
-    private final ObjectMapper objectMapper;
 
     public KrrstubConsumer(TokenExchange tokenService, KrrstubProxyProperties serverProperties, ObjectMapper objectMapper) {
         this.tokenService = tokenService;
@@ -52,7 +51,6 @@ public class KrrstubConsumer {
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
-        this.objectMapper = objectMapper;
     }
 
     private static String getNavCallId() {

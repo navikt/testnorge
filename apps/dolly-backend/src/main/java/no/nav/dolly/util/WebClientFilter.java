@@ -14,8 +14,8 @@ public class WebClientFilter {
 
     public static String getMessage(Throwable throwable) {
 
-        return throwable instanceof WebClientResponseException ?
-                ((WebClientResponseException) throwable).getResponseBodyAsString() :
+        return throwable instanceof WebClientResponseException webClientResponseException?
+                webClientResponseException.getResponseBodyAsString() :
                 throwable.getMessage();
     }
 }
