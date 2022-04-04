@@ -22,7 +22,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.when;
 
@@ -164,7 +163,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     @Test
     void markerEksisterendeLedigIdentIBruk() throws Exception {
 
-        assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
+        assertThat(identRepository.findByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
 
         String request = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
@@ -174,13 +173,13 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertThat(identRepository.findByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 
     @Test
     void markerNyLedigIdentIBruk() throws Exception {
 
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
+        assertThat(identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
         String request = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
@@ -190,8 +189,8 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
+        assertThat(identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertThat(identRepository.findByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
     }
 
     @Test

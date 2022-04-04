@@ -26,7 +26,7 @@ export const Nasjonalitet = () => (
 )
 
 export const NasjonalitetPaths = {
-	'personinformasjon.nasjonalitet.land': 'string',
+	'personinformasjon.nasjonalitet.statsborgerskap': 'string',
 	'personinformasjon.nasjonalitet.innflyttet': 'boolean',
 	'personinformasjon.nasjonalitet.utflyttet': 'boolean',
 }

@@ -78,6 +78,7 @@ import ChildHalo from '~/assets/icons/custom/ChildHalo2.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
+import RIP from '~/assets/icons/custom/RIP.svg'
 
 import './Icon.less'
 
@@ -166,6 +167,7 @@ export const icons = {
 	telephone: Telephone,
 	foedsel: Infants,
 	foreldreansvar: Group2,
+	grav: RIP,
 }
 
 const px = (v) => `${v}px`

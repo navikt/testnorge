@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.brregstub;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.mapper.RolleUtskriftMapper;
@@ -15,9 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BrregstubClient implements ClientRegister {
@@ -48,7 +51,13 @@ public class BrregstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(brregstubConsumer::deleteRolleoversikt);
+        try {
+            brregstubConsumer.deleteRolleoversikt(identer)
+                            .subscribe(resp -> log.info("Sletting utført i Brregstub"));
+
+        } catch (RuntimeException e) {
+            log.error("BRREGSTUB: Feilet å slette rolledata for identer {}", identer.stream().collect(Collectors.joining(", ")), e);
+        }
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {

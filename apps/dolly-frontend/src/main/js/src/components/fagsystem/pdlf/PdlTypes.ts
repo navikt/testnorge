@@ -42,6 +42,11 @@ export type FoedselData = {
 	metadata: Metadata
 }
 
+export type Doedsfall = {
+	doedsdato: string
+	metadata: Metadata
+}
+
 type Statsborgerskap = {
 	landkode: string
 }
