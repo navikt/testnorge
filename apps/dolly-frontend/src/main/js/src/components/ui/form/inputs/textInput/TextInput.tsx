@@ -62,6 +62,7 @@ export const FormikTextInput = ({
 	size?: string
 	type?: string
 	useOnChange?: boolean
+	disabled?: boolean
 }) => {
 	const component = <UncontrolledFormikTextInput {...props} />
 	// @ts-ignore

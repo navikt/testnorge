@@ -1,3 +1,6 @@
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { getKjoenn } from '~/ducks/fagsystem'
+
 export const initialValues = {
 	personinformasjon: {
 		alder: {
@@ -8,13 +11,13 @@ export const initialValues = {
 				tom: '',
 			},
 		},
-		statsborgerskap: {
-			land: '',
+		nasjonalitet: {
+			statsborgerskap: '',
+			utflyttet: false,
+			innflyttet: false,
 		},
-		sivilstand: {
-			type: '',
-		},
-		barn: {
+		relasjoner: {
+			sivilstand: '',
 			barn: false,
 			doedfoedtBarn: false,
 		},
@@ -24,28 +27,17 @@ export const initialValues = {
 		identer: [],
 		identifikasjon: {
 			adressebeskyttelse: '',
-			identtype: {
-				fnr: false,
-				dnr: false,
-			},
+			identtype: '',
+			kjoenn: '',
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
-		diverse: {
-			kjoenn: '',
-			utflyttet: false,
-			innflyttet: false,
+		bosted: {
+			kommunenr: '',
+			postnr: '',
 		},
+		personstatus: '',
 	},
-}
-
-const getIdenttype = (values: any) => {
-	if (values?.personinformasjon?.identifikasjon?.identtype?.fnr) {
-		return 'FNR'
-	} else if (values?.personinformasjon?.identifikasjon?.identtype?.dnr) {
-		return 'DNR'
-	}
-	return ''
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
@@ -54,6 +46,9 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		identer.push(values?.personinformasjon?.ident?.ident)
 		identer = identer.filter((item: string) => item)
 	}
+
+	const personstatus = values?.personinformasjon?.personstatus
+	const kunLevende = personstatus === null || personstatus.isEmpty || personstatus !== 'DOED'
 
 	if (identer.length > 0) {
 		return {
@@ -71,16 +66,17 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			pageSize: 100,
 			randomSeed: randomSeed,
 			terminateAfter: 100,
-			kjoenn: values?.personinformasjon?.diverse?.kjoenn,
+			kunLevende: kunLevende,
+			kjoenn: values?.personinformasjon?.identifikasjon?.kjoenn,
 			foedsel: {
 				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
 				tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
 			},
 			statsborgerskap: {
-				land: values?.personinformasjon?.statsborgerskap?.land,
+				land: values?.personinformasjon?.nasjonalitet?.statsborgerskap,
 			},
 			sivilstand: {
-				type: values?.personinformasjon?.sivilstand?.type,
+				type: values?.personinformasjon?.relasjoner?.sivilstand,
 			},
 			alder: {
 				fra: values?.personinformasjon?.alder?.fra,
@@ -90,21 +86,51 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			identifikasjon: {
 				falskIdentitet: values?.personinformasjon?.identifikasjon?.falskIdentitet,
 				utenlandskIdentitet: values?.personinformasjon?.identifikasjon?.utenlandskIdentitet,
-				identtype: getIdenttype(values),
+				identtype: values?.personinformasjon?.identifikasjon?.identtype,
 				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
 			relasjoner: {
-				barn: values?.personinformasjon?.barn?.barn,
-				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
+				barn: values?.personinformasjon?.relasjoner?.barn,
+				doedfoedtBarn: values?.personinformasjon?.relasjoner?.doedfoedtBarn,
 			},
 			utflyttingFraNorge: {
-				utflyttet: values?.personinformasjon?.diverse?.utflyttet,
+				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,
 			},
 			innflyttingTilNorge: {
-				innflytting: values?.personinformasjon?.diverse?.innflyttet,
+				innflytting: values?.personinformasjon?.nasjonalitet?.innflyttet,
+			},
+			adresser: {
+				bostedsadresse: {
+					postnummer: values?.personinformasjon?.bosted?.postnr,
+					kommunenummer: values?.personinformasjon?.bosted?.kommunenr,
+				},
+			},
+			personstatus: {
+				status: personstatus,
 			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
 		}
 	}
+}
+
+export const getIdent = (person: PdlData) => {
+	const identer = person.hentIdenter?.identer?.filter(
+		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
+	)
+	return identer.length > 0 ? identer[0].ident : ''
+}
+
+export const getFornavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].fornavn : ''
+}
+
+export const getEtternavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].etternavn : ''
+}
+
+export const getPdlKjoenn = (person: PdlData) => {
+	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
 }

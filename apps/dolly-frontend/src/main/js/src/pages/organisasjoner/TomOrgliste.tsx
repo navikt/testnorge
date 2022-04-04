@@ -10,8 +10,8 @@ type Props = {
 export default ({ startBestilling, bestillingstype }: Props) => (
 	<ContentContainer>
 		<p>
-			Du har for øyeblikket ingen testorganisasjoner. Trykk på knappen under for å opprette en
-			testorganisasjon med standard oppsett.
+			Du har for øyeblikket ingen organisasjoner. Trykk på knappen under for å opprette en
+			organisasjon med standard oppsett.
 		</p>
 		<NavButton
 			type="standard"

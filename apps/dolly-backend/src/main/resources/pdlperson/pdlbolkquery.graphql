@@ -42,7 +42,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            bostedsadresse(historikk: false) {
+            bostedsadresse(historikk: true) {
                 angittFlyttedato,
                 coAdressenavn,
                 gyldigFraOgMed,
@@ -95,7 +95,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            oppholdsadresse(historikk: false) {
+            oppholdsadresse(historikk: true) {
                 utenlandskAdresse {
                     adressenavnNummer,
                     bygningEtasjeLeilighet,
@@ -144,7 +144,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             }
-            deltBosted(historikk: false) {
+            deltBosted(historikk: true) {
                 startdatoForKontrakt,
                 sluttdatoForKontrakt,
                 coAdressenavn,
@@ -198,7 +198,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            kontaktadresse(historikk: false) {
+            kontaktadresse(historikk: true) {
                 gyldigFraOgMed,
                 gyldigTilOgMed,
                 type,
@@ -254,7 +254,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            kontaktinformasjonForDoedsbo(historikk: false) {
+            kontaktinformasjonForDoedsbo(historikk: true) {
                 skifteform,
                 attestutstedelsesdato,
                 folkeregistermetadata {
@@ -302,7 +302,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            utenlandskIdentifikasjonsnummer(historikk: false) {
+            utenlandskIdentifikasjonsnummer(historikk: true) {
                 identifikasjonsnummer,
                 utstederland,
                 opphoert,
@@ -310,7 +310,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            adressebeskyttelse(historikk: false) {
+            adressebeskyttelse(historikk: true) {
                 gradering,
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
@@ -325,17 +325,32 @@ query($identer: [ID!]!) {
                 foedeland,
                 foedested,
                 foedekommune,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            doedfoedtBarn{
+                dato,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
                 metadata {
                     ...metadataDetails
                 }
             },
             doedsfall {
                 doedsdato,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
                 metadata {
                     ...metadataDetails
                 }
             },
-            kjoenn(historikk: false) {
+            kjoenn(historikk: true) {
                 kjoenn,
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
@@ -344,7 +359,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            navn(historikk: false) {
+            navn(historikk: true) {
                 fornavn,
                 mellomnavn,
                 etternavn,
@@ -362,7 +377,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            folkeregisterpersonstatus(historikk: false) {
+            folkeregisterpersonstatus(historikk: true) {
                 status,
                 forenkletStatus,
                 folkeregistermetadata {
@@ -372,7 +387,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            identitetsgrunnlag(historikk: false) {
+            identitetsgrunnlag(historikk: true) {
                 status,
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
@@ -397,12 +412,12 @@ query($identer: [ID!]!) {
                 motpartsRolle,
                 omraader,
                 gyldigFraOgMed,
-                gyldigTilOgMed
+                gyldigTilOgMed,
                 metadata {
                     ...metadataDetails
                 }
             },
-            folkeregisteridentifikator(historikk: false) {
+            folkeregisteridentifikator(historikk: true) {
                 identifikasjonsnummer,
                 status,
                 type,
@@ -413,7 +428,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            statsborgerskap(historikk: false) {
+            statsborgerskap(historikk: true) {
                 land,
                 gyldigFraOgMed,
                 gyldigTilOgMed,
@@ -437,7 +452,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            opphold(historikk: false) {
+            opphold(historikk: true) {
                 type,
                 oppholdFra,
                 oppholdTil,
@@ -520,7 +535,7 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            foreldreansvar(historikk: false) {
+            foreldreansvar(historikk: true) {
                 ansvar,
                 ansvarlig,
                 ansvarligUtenIdentifikator {

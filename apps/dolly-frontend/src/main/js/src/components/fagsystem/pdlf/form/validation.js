@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
 
@@ -502,7 +502,7 @@ export const validation = {
 				{
 					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
 						is: null,
-						then: requiredString.nullable(),
+						then: Yup.mixed().required(messages.required).nullable(),
 					}),
 					foedtEtter: testFoedtEtter(
 						Yup.mixed().when(['alder', 'foedtFoer'], {

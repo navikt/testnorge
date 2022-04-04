@@ -1,15 +1,11 @@
 package no.nav.dolly.bestilling.krrstub;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
-
+import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.config.credentials.KrrstubProxyProperties;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +22,21 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
-import no.nav.dolly.config.credentials.KrrstubProxyProperties;
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import java.util.List;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -40,7 +47,7 @@ public class KrrstubConsumerTest {
 
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
-    private static final Long IDENT = 12345678901L;
+    private static final String IDENT = "12345678901";
     private static final boolean RESERVERT = true;
 
     @MockBean
@@ -77,9 +84,9 @@ public class KrrstubConsumerTest {
 
         stubDeleteKrrData();
 
-        ResponseEntity<Object> response = krrStubConsumer.deleteDigitalKontaktdata(IDENT);
+        var response = krrStubConsumer.deleteKontaktdata(List.of(IDENT)).block();
 
-        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
+        MatcherAssert.assertThat(response.size(), is(equalTo(1)));
     }
 
     @Test
@@ -108,5 +115,11 @@ public class KrrstubConsumerTest {
         stubFor(delete(urlPathMatching("(.*)/api/v2/kontaktinformasjon/" + IDENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
+        
+        stubFor(get(urlPathMatching("(.*)/api/v2/person/kontaktinformasjon"))
+                .withHeader(HEADER_NAV_PERSON_IDENT, WireMock.equalTo(IDENT))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"id\":1}")));
     }
 }
