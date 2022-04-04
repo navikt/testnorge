@@ -16,7 +16,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlInnflytting extends DbVersjonDTO {
 
-    private Folkeregistermetadata folkeregistermetadata;
     private String fraflyttingsland;
     private String fraflyttingsstedIUtlandet;
 }
