@@ -3,6 +3,8 @@ package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.apache.lucene.search.join.ScoreMode;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -14,6 +16,7 @@ public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
     private static final String B_VEGADRESSE_PATH = BOSTEDSADRESSE_PATH + ".vegadresse";
     private static final String B_MATRIKKELADRESSE_PATH = BOSTEDSADRESSE_PATH + ".matrikkeladresse";
+    private static final String B_HISTORISK_PATH = BOSTEDSADRESSE_PATH + ".metadata.historisk";
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addKommunenrBostedQuery(queryBuilder, search);
@@ -26,10 +29,16 @@ public class AdresserUtils {
                 .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        var fields = Arrays.asList(
-                                new FieldQuery(B_VEGADRESSE_PATH + ".kommunenummer", value),
-                                new FieldQuery(B_MATRIKKELADRESSE_PATH + ".kommunenummer", value));
-                        queryBuilder.must(nestedBoolShouldQuery(BOSTEDSADRESSE_PATH, fields, 1, false));
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                BOSTEDSADRESSE_PATH,
+                                QueryBuilders.boolQuery()
+                                        .should(QueryBuilders.matchQuery(B_VEGADRESSE_PATH + ".kommunenummer", value))
+                                        .should(QueryBuilders.matchQuery(B_MATRIKKELADRESSE_PATH + ".kommunenummer", value))
+                                        .must(QueryBuilders.termQuery(B_HISTORISK_PATH, false))
+                                        .minimumShouldMatch(1)
+                                ,
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }
@@ -40,10 +49,16 @@ public class AdresserUtils {
                 .flatMap(value -> Optional.ofNullable(value.getPostnummer()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        var fields = Arrays.asList(
-                                new FieldQuery(B_VEGADRESSE_PATH + ".postnummer", value),
-                                new FieldQuery(B_MATRIKKELADRESSE_PATH + ".postnummer", value));
-                        queryBuilder.must(nestedBoolShouldQuery(BOSTEDSADRESSE_PATH, fields, 1, false));
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                BOSTEDSADRESSE_PATH,
+                                QueryBuilders.boolQuery()
+                                        .should(QueryBuilders.matchQuery(B_VEGADRESSE_PATH + ".postnummer", value))
+                                        .should(QueryBuilders.matchQuery(B_MATRIKKELADRESSE_PATH + ".postnummer", value))
+                                        .must(QueryBuilders.termQuery(B_HISTORISK_PATH, false))
+                                        .minimumShouldMatch(1)
+                                ,
+                                ScoreMode.Avg
+                        ));
                     }
                 });
     }

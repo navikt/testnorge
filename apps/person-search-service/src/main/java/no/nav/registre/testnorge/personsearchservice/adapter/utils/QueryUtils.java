@@ -55,21 +55,6 @@ public class QueryUtils {
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
     }
 
-    public static NestedQueryBuilder nestedBoolShouldQuery(String path, List<FieldQuery> fields, int minimumShould, boolean historisk) {
-        var boolQuery = QueryBuilders.boolQuery();
-
-        for (FieldQuery field : fields) {
-            boolQuery.should(QueryBuilders.matchQuery(path + field.getPath(), field.getValue()));
-        }
-        boolQuery.minimumShouldMatch(minimumShould);
-
-        if (!historisk) {
-            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_FIELD, false));
-        }
-
-        return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
-    }
-
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
         if (fom == null && tom == null) {
             return Optional.empty();
