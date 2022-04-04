@@ -8,12 +8,15 @@ import org.elasticsearch.index.query.RangeQueryBuilder;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
 @UtilityClass
 public class QueryUtils {
+
+    private static final String HISTORISK_FIELD = ".metadata.historisk";
 
     public static NestedQueryBuilder nestedMatchQuery(String path, String name, String value) {
         return QueryBuilders.nestedQuery(
@@ -37,6 +40,34 @@ public class QueryUtils {
                 QueryBuilders.existsQuery(path + "." + name),
                 ScoreMode.Avg
         );
+    }
+
+    public static NestedQueryBuilder nestedBoolMustQuery(String path, List<FieldQuery> fields, boolean historisk) {
+        var boolQuery = QueryBuilders.boolQuery();
+
+        for (FieldQuery field : fields) {
+            boolQuery.must(QueryBuilders.matchQuery(path + field.getPath(), field.getValue()));
+        }
+        if (!historisk) {
+            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_FIELD, false));
+        }
+
+        return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
+    }
+
+    public static NestedQueryBuilder nestedBoolShouldQuery(String path, List<FieldQuery> fields, int minimumShould, boolean historisk) {
+        var boolQuery = QueryBuilders.boolQuery();
+
+        for (FieldQuery field : fields) {
+            boolQuery.should(QueryBuilders.matchQuery(path + field.getPath(), field.getValue()));
+        }
+        boolQuery.minimumShouldMatch(minimumShould);
+
+        if (!historisk) {
+            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_FIELD, false));
+        }
+
+        return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
     }
 
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {

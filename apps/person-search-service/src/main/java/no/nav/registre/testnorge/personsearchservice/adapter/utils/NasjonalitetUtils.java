@@ -4,11 +4,12 @@ import lombok.experimental.UtilityClass;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedBoolMustQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 
 @UtilityClass
 public class NasjonalitetUtils {
@@ -24,7 +25,8 @@ public class NasjonalitetUtils {
                 .flatMap(value -> Optional.ofNullable(value.getLand()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.statsborgerskap", "land", value));
+                        var fields = Collections.singletonList(new FieldQuery(".land", value));
+                        queryBuilder.must(nestedBoolMustQuery("hentPerson.statsborgerskap", fields, false));
                     }
                 });
     }
