@@ -13,7 +13,7 @@ import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryU
 @UtilityClass
 public class NasjonalitetUtils {
 
-    private final static String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
+    private static final String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
 
     public static void addNasjonalitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addStatsborgerskapQuery(queryBuilder, search);
