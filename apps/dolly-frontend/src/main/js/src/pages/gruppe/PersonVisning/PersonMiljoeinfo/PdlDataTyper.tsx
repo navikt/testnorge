@@ -48,7 +48,8 @@ export type HentPerson = {
 	innflyttingTilNorge: [InnflyttingTilNorge]
 	utflyttingFraNorge: [UtflyttingFraNorge]
 	doedsfall: [Doedsfall]
-	folkeregisterpersonstatus: [Folkeregisterpersonstatus]
+	folkeregisterpersonstatus?: [Folkeregisterpersonstatus]
+	folkeregisterPersonstatus?: [Folkeregisterpersonstatus]
 	kjoenn: [Kjoenn]
 	navn: [Navn]
 }
