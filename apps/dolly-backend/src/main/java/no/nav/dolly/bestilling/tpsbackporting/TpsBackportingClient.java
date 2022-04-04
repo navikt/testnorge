@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.nonNull;
 
 @Service
-@Order(1)
+@Order(3)
 @RequiredArgsConstructor
 public class TpsBackportingClient implements ClientRegister {
 

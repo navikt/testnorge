@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
+import no.nav.pdl.forvalter.consumer.IdentPoolConsumer.Bruker;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
@@ -133,7 +134,7 @@ public class PersonService {
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),
-                        identPoolConsumer.releaseIdents(identer),
+                        identPoolConsumer.releaseIdents(identer, Bruker.PDLF),
                         Flux.just(personRepository.deleteByIdentIn(identer)))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
@@ -153,7 +154,7 @@ public class PersonService {
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),
-                        identPoolConsumer.releaseIdents(identer),
+                        identPoolConsumer.releaseIdents(identer, Bruker.TPSF),
                         Flux.just(personRepository.deleteByIdentIn(dbIdenter)))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()

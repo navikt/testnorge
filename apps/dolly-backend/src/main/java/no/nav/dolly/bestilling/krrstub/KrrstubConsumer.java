@@ -2,6 +2,8 @@ package no.nav.dolly.bestilling.krrstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataCommand;
+import no.nav.dolly.bestilling.krrstub.command.GetKontaktdataCommand;
 import no.nav.dolly.config.credentials.KrrstubProxyProperties;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.metrics.Timed;
@@ -15,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -23,10 +27,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -35,7 +39,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class KrrstubConsumer {
 
     private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
-    private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v2/person/kontaktinformasjon";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -50,26 +53,11 @@ public class KrrstubConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
-    public ResponseEntity<List<DigitalKontaktdata>> getDigitalKontaktdata(String ident) {
-
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PERSON_DIGITAL_KONTAKT_URL)
-                        .build())
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HEADER_NAV_PERSON_IDENT, ident)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntityList(DigitalKontaktdata.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_createKontaktdata" })
+    @Timed(name = "providers", tags = {"operation", "krrstub_createKontaktdata"})
     public ResponseEntity<Object> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
 
         return webClient.post()
@@ -89,30 +77,21 @@ public class KrrstubConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_deleteKontaktdata" })
-    public ResponseEntity<Object> deleteDigitalKontaktdata(Long id) {
+    public Mono<List<String>> deleteKontaktdata(List<String> identer) {
 
-        return webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path(DIGITAL_KONTAKT_URL)
-                        .pathSegment(id.toString())
-                        .build())
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntity(Object.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .map(idx -> new GetKontaktdataCommand(webClient, identer.get(idx), token.getTokenValue()).call())
+                        .flatMap(Flux::from)
+                        .filter(resp -> nonNull(resp.getId()))
+                        .map(resp -> {
+                                new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue());
+                                return format("Slettet ident med id=%d", resp.getId());
+                        })
+                ).collectList();
     }
 
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+        public Map<String, String> checkAlive () {
+            return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+        }
     }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-}

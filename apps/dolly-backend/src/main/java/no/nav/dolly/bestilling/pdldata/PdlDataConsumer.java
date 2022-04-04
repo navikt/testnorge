@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -29,6 +30,8 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @Service
 public class PdlDataConsumer {
+
+    private static final int BLOCK_SIZE = 10;
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -54,18 +57,31 @@ public class PdlDataConsumer {
     public void slettPdl(List<String> identer) {
 
         String accessToken = serviceProperties.getAccessToken(tokenService);
-        identer.stream()
-                .map(ident -> Flux.from(new PdlDataSlettCommand(webClient, ident, accessToken).call()))
-                .reduce(Flux.empty(), Flux::concat)
+        Flux.range(0, identer.size())
+                .flatMap(count -> new PdlDataSlettCommand(webClient, identer.get(count), accessToken).call())
                 .collectList()
                 .block();
     }
 
+    @Timed(name = "providers", tags = {"operation", "pdl_delete_utenom"})
+    public void slettPdlUtenom(List<String> identer) {
+
+        String accessToken = serviceProperties.getAccessToken(tokenService);
+        Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                .flatMap(count -> new PdlDataSlettUtenomCommand(webClient,
+                        identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
+                        accessToken).call())
+                .collectList()
+                .block();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
     public String opprettPdl(BestillingRequestDTO request) {
 
         return new PdlDataOpprettingCommand(webClient, request, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
+    @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return nonNull(request.getPerson()) ?
@@ -84,6 +100,7 @@ public class PdlDataConsumer {
                 serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
+    @Timed(name = "providers", tags = {"operation", "pdl_identCheck"})
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
 
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());

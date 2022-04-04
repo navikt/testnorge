@@ -85,16 +85,6 @@ public class TestgruppeController {
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
-    @DeleteMapping(value = "/{gruppeId}/ident/{ident}")
-    @Operation(description = "Slette ident fra gruppe")
-    public void slettIdent(@PathVariable("gruppeId") Long gruppeId,
-                           @PathVariable("ident") String ident) {
-
-        testgruppeService.slettIdent(gruppeId, ident);
-    }
-
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
-    @Transactional
     @PutMapping(value = "/{gruppeId}/laas")
     @Operation(description = "Oppdater testgruppe Laas")
     public RsTestgruppe oppdaterTestgruppeLaas(@PathVariable("gruppeId") Long gruppeId,

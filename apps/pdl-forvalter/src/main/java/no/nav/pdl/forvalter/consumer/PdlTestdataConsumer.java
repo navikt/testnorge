@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -78,8 +78,10 @@ public class PdlTestdataConsumer {
         String body;
         try {
             var artifact = value.getBody();
-            artifact.setMetadata(nonNull(artifact.getMetadata()) ? artifact.getMetadata() : new FolkeregistermetadataDTO());
-            artifact.getMetadata().setGjeldende(nonNull(artifact.getMetadata().getGjeldende()) ? artifact.getMetadata().getGjeldende() : artifact.getGjeldende());
+            if (isNull(artifact.getFolkeregistermetadata())) {
+                artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
+            }
+            artifact.getFolkeregistermetadata().setGjeldende(artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(

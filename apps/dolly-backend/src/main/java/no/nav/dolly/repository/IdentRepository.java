@@ -21,6 +21,8 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
 
     Testident save(Testident testident);
 
+    boolean existsByIdent(String ident);
+
     @Modifying
     int deleteTestidentByIdent(String testident);
 

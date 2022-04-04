@@ -4,15 +4,15 @@ import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
 import { SearchOptions } from './search/SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
-import { Person } from '~/service/services/personsearch/types'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
 import { initialValues, getSearchValues } from '~/pages/testnorgePage/utils'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import { Exception } from 'sass'
 import '../gruppe/PersonVisning/PersonVisning.less'
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 export default () => {
-	const [items, setItems] = useState<Person[]>([])
+	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
@@ -22,7 +22,7 @@ export default () => {
 		setError(null)
 		setStartedSearch(true)
 		setLoading(true)
-		PersonSearch.search(getSearchValues(seed, values))
+		PersonSearch.searchPdlPerson(getSearchValues(seed, values))
 			.then((response) => {
 				setItems(response.items)
 				setLoading(false)
@@ -47,7 +47,7 @@ export default () => {
 
 	return (
 		<div>
-			<Title title="Søk og importer fra Testnorge" />
+			<Title title="Søk og import fra Testnorge" />
 			<p>
 				Testnorge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 				forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
