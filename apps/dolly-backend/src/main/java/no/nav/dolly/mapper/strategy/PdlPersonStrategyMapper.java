@@ -184,8 +184,10 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                         .map(utflytting -> InnvandretUtvandret.builder()
                                                 .innutvandret(InnUtvandret.UTVANDRET)
                                                 .landkode(utflytting.getTilflyttingsland())
-                                                .flyttedato(utflytting.getMetadata()
-                                                        .getGyldighetstidspunkt().atStartOfDay())
+                                                .flyttedato(nonNull(utflytting.getMetadata()) &&
+                                                        nonNull(utflytting.getMetadata().getGyldighetstidspunkt()) ?
+                                                        utflytting.getMetadata().getGyldighetstidspunkt().atStartOfDay()
+                                                        : null)
                                                 .build())
                                         .toList());
                         person.setSivilstand(
