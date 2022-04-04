@@ -22,9 +22,9 @@ import {
 	initialForenkletOppgjoersordningOrg,
 	initialForenkletOppgjoersordningPers,
 } from '../initialValues'
-import { EgenOrganisasjonSelect } from '~/components/organisasjonSelect/EgenOrganisasjonSelect'
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
 import { isDate } from 'date-fns'
+import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -33,6 +33,7 @@ export const ArbeidsforholdForm = ({
 	formikBag,
 	erLenket,
 	arbeidsgiverType,
+	warningMessage,
 }) => {
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
@@ -50,7 +51,7 @@ export const ArbeidsforholdForm = ({
 				const amelding = _get(formikBag.values, 'aareg[0].amelding')
 				amelding.forEach((maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
-						return
+						return null
 					} else {
 						const arbeidsforholdClone = _cloneDeep(
 							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
@@ -134,10 +135,11 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
-					<EgenOrganisasjonSelect
-						name={`${path}.arbeidsgiver.orgnummer`}
-						isClearable={false}
-						onChange={onChangeLenket('arbeidsgiver.orgnummer')}
+					<EgneOrganisasjonerConnector
+						path={`${path}.arbeidsgiver.orgnummer`}
+						formikBag={formikBag}
+						handleChange={onChangeLenket('arbeidsgiver.orgnummer')}
+						warningMessage={warningMessage}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.felles && (

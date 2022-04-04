@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { BaseSyntheticEvent, ReactElement, useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
@@ -15,9 +15,6 @@ import {
 import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import { AlertStripeAdvarsel, AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface ArbeidsforholdToggleProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
@@ -40,9 +37,6 @@ const fellesOrg = [
 ]
 
 export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): ReactElement => {
-	// const fellesOrg = SelectOptionsOppslag.hentOrgnr().value?.liste
-	// TODO hent felles organisasjoner fra api istedenfor hardkodet liste
-
 	const getArbeidsgiverType =
 		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
 			? ArbeidsgiverTyper.egen
@@ -84,79 +78,70 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 		}
 	}
 
+	const warningMessage = (
+		<AlertStripeAdvarsel>
+			Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for person. For å
+			lage dine egne organisasjoner trykk {<a href="/organisasjoner">her</a>}. For å opprette person
+			med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere, velg en annen kategori
+			ovenfor.
+		</AlertStripeAdvarsel>
+	)
+
 	return (
-		<ErrorBoundary>
-			<LoadableComponent
-				onFetch={() =>
-					SelectOptionsOppslag.hentVirksomheterFraOrgforvalter().then((response) => {
-						return response
-					})
-				}
-				render={(data) => {
-					const harEgneOrg = data && data.length > 0 ? true : false
-					const orgLink = <a href="/organisasjoner">her</a>
-					return (
-						<div className="toggle--wrapper">
-							<ToggleArbeidsgiver
-								onChange={(event) => handleToggleChange(event.target.value)}
-								name={'arbeidsforhold'}
-							>
-								{toggleValues.map((type) => (
-									<ToggleKnapp
-										key={type.value}
-										value={type.value}
-										checked={type.value === typeArbeidsgiver}
-									>
-										{type.label}
-									</ToggleKnapp>
-								))}
-							</ToggleArbeidsgiver>
-							{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
-								<>
-									{!harEgneOrg && (
-										<AlertStripeAdvarsel>
-											Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for
-											person. For å lage dine egne organisasjoner trykk {orgLink}. For å opprette
-											person med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere,
-											velg en annen kategori ovenfor.
-										</AlertStripeAdvarsel>
-									)}
-									<AmeldingForm formikBag={formikBag} />
-								</>
-							) : (
-								<>
-									<AlertStripeInfo>
-										For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
-										sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere
-										med disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
-									</AlertStripeInfo>
-									<FormikDollyFieldArray
-										name="aareg"
-										header="Arbeidsforhold"
-										newEntry={
-											typeArbeidsgiver === ArbeidsgiverTyper.privat
-												? { ...initialArbeidsforholdPers, arbeidsforholdstype: '' }
-												: { ...initialArbeidsforholdOrg, arbeidsforholdstype: '' }
-										}
-										canBeEmpty={false}
-									>
-										{(path: string, idx: number) => (
-											<ArbeidsforholdForm
-												path={path}
-												key={idx}
-												arbeidsforholdIndex={idx}
-												formikBag={formikBag}
-												erLenket={null}
-												arbeidsgiverType={typeArbeidsgiver}
-											/>
-										)}
-									</FormikDollyFieldArray>
-								</>
-							)}
-						</div>
-					)
-				}}
-			/>
-		</ErrorBoundary>
+		<div className="toggle--wrapper">
+			<ToggleArbeidsgiver
+				onChange={(event: BaseSyntheticEvent) => handleToggleChange(event.target.value)}
+				name={'arbeidsforhold'}
+			>
+				{toggleValues.map((type) => (
+					<ToggleKnapp
+						key={type.value}
+						value={type.value}
+						checked={type.value === typeArbeidsgiver}
+					>
+						{type.label}
+					</ToggleKnapp>
+				))}
+			</ToggleArbeidsgiver>
+			{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
+				<>
+					{
+						// @ts-ignore
+						<AmeldingForm formikBag={formikBag} warningMessage={warningMessage} />
+					}
+				</>
+			) : (
+				<>
+					<AlertStripeInfo>
+						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
+						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere med
+						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
+					</AlertStripeInfo>
+					<FormikDollyFieldArray
+						name="aareg"
+						header="Arbeidsforhold"
+						newEntry={
+							typeArbeidsgiver === ArbeidsgiverTyper.privat
+								? { ...initialArbeidsforholdPers, arbeidsforholdstype: '' }
+								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: '' }
+						}
+						canBeEmpty={false}
+					>
+						{(path: string, idx: number) => (
+							<ArbeidsforholdForm
+								path={path}
+								key={idx}
+								arbeidsforholdIndex={idx}
+								formikBag={formikBag}
+								erLenket={null}
+								arbeidsgiverType={typeArbeidsgiver}
+								ameldingIndex={undefined}
+								warningMessage={undefined}
+							/>
+						)}
+					</FormikDollyFieldArray>
+				</>
+			)}
+		</div>
 	)
 }

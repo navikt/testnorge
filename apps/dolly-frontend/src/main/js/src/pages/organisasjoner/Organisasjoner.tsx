@@ -15,6 +15,7 @@ import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 import _isEmpty from 'lodash/isEmpty'
 import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
+import { PopoverOrientering } from 'nav-frontend-popover'
 
 type OrganisasjonerProps = {
 	history: History
@@ -23,6 +24,7 @@ type OrganisasjonerProps = {
 	bestillinger: Array<EnhetBestilling>
 	organisasjoner: Array<Organisasjon>
 	brukerId: string
+	brukertype: string
 	getOrganisasjonBestillingStatus: Function
 	getOrganisasjonBestilling: Function
 	fetchOrganisasjoner: Function
@@ -66,7 +68,9 @@ export default function Organisasjoner({
 	}, [organisasjoner?.length])
 
 	useEffect(() => {
-		fetchOrganisasjoner(brukerId)
+		if (!organisasjoner) {
+			fetchOrganisasjoner(brukerId)
+		}
 	}, [])
 
 	const searchfieldPlaceholderSelector = () => {
@@ -91,7 +95,7 @@ export default function Organisasjoner({
 		)
 	}
 
-	const hentOrgStatus = (bestillinger: Array<EnhetBestilling>, bestillingId: string) => {
+	const hentOrgStatus = (bestillinger: Array<EnhetBestilling>, bestillingId: string | number) => {
 		if (!bestillinger) return null
 		let orgStatus = 'Ferdig'
 		const bestilling = bestillinger.find((obj) => {
@@ -142,8 +146,7 @@ export default function Organisasjoner({
 				<div className="toolbar">
 					<div className="page-header flexbox--align-center">
 						<h1>Organisasjoner</h1>
-						{/* @ts-ignore */}
-						<Hjelpetekst hjelpetekstFor="Organisasjoner" type="under">
+						<Hjelpetekst hjelpetekstFor="Organisasjoner" type={PopoverOrientering.Under}>
 							Organisasjoner i Dolly er en del av NAVs syntetiske populasjon og dekker behov for
 							data knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og det
 							legges til ny funksjonalitet fortløpende.
@@ -183,13 +186,14 @@ export default function Organisasjoner({
 						</ToggleKnapp>
 					</ToggleGruppe>
 
-					<SearchField placeholder={searchfieldPlaceholderSelector()} />
+					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
 				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
 					(isFetching || antallOrg === undefined ? (
 						<Loading label="Laster organisasjoner" panel />
 					) : antallOrg > 0 ? (
+						// @ts-ignore
 						<OrganisasjonListe bestillinger={bestillinger} organisasjoner={filterOrg()} />
 					) : (
 						<TomOrgListe

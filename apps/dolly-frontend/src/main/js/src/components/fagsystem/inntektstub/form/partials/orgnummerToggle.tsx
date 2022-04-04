@@ -1,42 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { MiljoeApi, OrgforvalterApi, OrgserviceApi } from '~/service/Api'
+import { MiljoeApi, OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
 import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
-import { FormikBag } from 'formik'
+import { FormikProps } from 'formik'
+import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
 
 type Props = {
-	formikBag: FormikBag<any, any>
+	formikBag: FormikProps<{}>
 	path: string
 	opplysningspliktigPath: any
 }
 
-const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
-	for (let enhet of enheter) {
-		if (enhet.underenheter && enhet.underenheter.length > 0) {
-			for (let underenhet of enhet.underenheter) {
-				if (underenhet.organisasjonsnummer === orgnr) return enhet.organisasjonsnummer
-			}
-		}
-	}
-	return ''
-}
-
 const validEnhetstyper = ['BEDR', 'AAFY']
 
-export const OrgnummerToggle = ({
-	formikBag: { setFieldValue },
-	opplysningspliktigPath,
-	path,
-}: Props) => {
+export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Props) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
@@ -54,17 +36,18 @@ export const OrgnummerToggle = ({
 
 	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setInputType(event.target.value)
-		setFieldValue(path, '')
+		formikBag.setFieldValue(path, '')
 	}
 
 	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {
-		opplysningspliktigPath && setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
-		setFieldValue(`${path}`, value.orgnr)
+		opplysningspliktigPath &&
+			formikBag.setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
+		formikBag.setFieldValue(`${path}`, value.orgnr)
 	}
 
 	const handleManualOrgChange = (org: string, miljo: string) => {
 		if (!org || !miljo) return
-		setFieldValue(path, '')
+		formikBag.setFieldValue(path, '')
 		setError(null)
 		setLoading(true)
 		setSuccess(false)
@@ -77,8 +60,8 @@ export const OrgnummerToggle = ({
 				}
 				setSuccess(true)
 				opplysningspliktigPath &&
-					setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
-				setFieldValue(`${path}`, response.data.orgnummer)
+					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
+				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
 			})
 			.catch(() => {
 				setLoading(false)
@@ -101,32 +84,13 @@ export const OrgnummerToggle = ({
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<ErrorBoundary>
-					<LoadableComponent
-						onFetch={() =>
-							OrgforvalterApi.getAlleOrganisasjonerPaaBruker().then((response) => {
-								if (!response || response.length === 0) return []
-								return response
-									.filter((virksomhet) => validEnhetstyper.includes(virksomhet.enhetstype))
-									.map((virksomhet) => ({
-										value: virksomhet.organisasjonsnummer,
-										label: `${virksomhet.organisasjonsnummer} (${virksomhet.enhetstype}) - ${virksomhet.organisasjonsnavn}`,
-										orgnr: virksomhet.organisasjonsnummer,
-										juridiskEnhet: getJuridiskEnhet(virksomhet.organisasjonsnummer, response),
-									}))
-							})
-						}
-						render={(data) => (
-							<FormikSelect
-								name={path}
-								label="Organisasjonsnummer"
-								size="xlarge"
-								options={data}
-								afterChange={handleChange}
-							/>
-						)}
-					/>
-				</ErrorBoundary>
+				<EgneOrganisasjonerConnector
+					path={path}
+					formikBag={formikBag}
+					filterValidEnhetstyper={true}
+					// @ts-ignore
+					handleChange={handleChange}
+				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonMedMiljoeSelect

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/egneOrganisasjoner'
 import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { MiljoeApi } from '~/service/Api'
 import {
@@ -9,14 +8,22 @@ import {
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
+import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
+	warningMessage?: AlertStripeAdvarsel
 }
 
-export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps) => {
+export const OrgnrToggle = ({
+	path,
+	formikBag,
+	setEnhetsinfo,
+	warningMessage,
+}: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 
@@ -65,7 +72,12 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<EgneOrganisasjoner path={path} formikBag={formikBag} handleChange={handleChange} />
+				<EgneOrganisasjonerConnector
+					path={`${path}.orgNr`}
+					formikBag={formikBag}
+					handleChange={handleChange}
+					warningMessage={warningMessage}
+				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonTextSelect

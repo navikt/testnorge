@@ -1,6 +1,5 @@
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
-// @ts-ignore
 import { createActions } from 'redux-actions'
 import OrganisasjonFasteDataService from '~/service/services/organisasjonFasteDataService/OrganisasjonFasteDataService'
 

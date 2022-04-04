@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useEffect } from 'react'
 import { Organisasjon } from '~/service/services/organisasjonFasteDataService/OrganisasjonFasteDataService'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import Loading from '~/components/ui/loading/Loading'
 
 type OrganisasjonLoaderProps = {
 	kanHaArbeidsforhold?: boolean
@@ -10,11 +11,12 @@ type OrganisasjonLoaderProps = {
 	organisasjoner: Organisasjon[]
 	hentOrganisasjoner: Function
 	path: string
-	handleChange: Function
-	afterChange: Function
+	handleChange?: Function
+	afterChange?: Function
 	value: any
 	feil?: any
 	useFormikSelect?: boolean
+	isLoading: boolean
 }
 
 export const OrganisasjonLoader = ({
@@ -29,11 +31,15 @@ export const OrganisasjonLoader = ({
 	useFormikSelect,
 	feil,
 	value,
+	isLoading,
 }: OrganisasjonLoaderProps) => {
 	useEffect(() => {
-		hentOrganisasjoner('DOLLY', kanHaArbeidsforhold)
+		if (!organisasjoner) {
+			hentOrganisasjoner('DOLLY', kanHaArbeidsforhold)
+		}
 	}, [])
 
+	if (isLoading) return <Loading label="Laster organisasjoner" />
 	if (!organisasjoner) return null
 
 	const formatLabel = (org: Organisasjon) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`

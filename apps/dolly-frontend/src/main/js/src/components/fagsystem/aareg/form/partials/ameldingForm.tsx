@@ -23,9 +23,11 @@ import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 import { FormikProps } from 'formik'
 import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 interface AmeldingFormProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
+	warningMessage?: AlertStripeAdvarsel
 }
 
 const KjedeContainer = styled.div`
@@ -43,7 +45,7 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag }: AmeldingFormProps): ReactFragment => {
+export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): ReactFragment => {
 	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
@@ -105,16 +107,16 @@ export const AmeldingForm = ({ formikBag }: AmeldingFormProps): ReactFragment =>
 				_set(ameldingClone[idx], 'arbeidsforhold', [initialForenkletOppgjoersordningOrg])
 			})
 		} else {
-			ameldingClone.forEach((maaned: string, idx: number) => {
+			ameldingClone.forEach((maaned: any, idx: number) => {
 				if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
 					_set(ameldingClone[idx], 'arbeidsforhold', [initialArbeidsforholdOrg])
 				}
 				if (event.value === 'maritimtArbeidsforhold') {
-					maaned.arbeidsforhold.forEach((arbforh, id) => {
+					maaned.arbeidsforhold.forEach((arbforh: Object, id: number) => {
 						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, initialFartoy)
 					})
 				} else {
-					maaned.arbeidsforhold.forEach((arbforh, id) => {
+					maaned.arbeidsforhold.forEach((arbforh: Object, id: number) => {
 						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, undefined)
 					})
 				}
@@ -290,6 +292,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingFormProps): ReactFragment =>
 										formikBag={formikBag}
 										arbeidsgiverType={'EGEN'}
 										erLenket={erLenket}
+										warningMessage={warningMessage}
 									/>
 								)}
 							</FormikDollyFieldArray>
