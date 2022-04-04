@@ -50,6 +50,18 @@ public class QueryUtils {
         }
     }
 
+    public static NestedQueryBuilder nestedHistoriskQuery(String path, String field, String value, boolean historisk) {
+        if (historisk) {
+            return nestedMatchQuery(path, field, value);
+        } else {
+            return QueryBuilders.nestedQuery(
+                    path,
+                    boolMatchQuery(path, field, value, false),
+                    ScoreMode.Avg
+            );
+        }
+    }
+
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
         if (fom == null && tom == null) {
             return Optional.empty();

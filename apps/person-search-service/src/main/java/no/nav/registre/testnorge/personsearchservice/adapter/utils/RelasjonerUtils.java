@@ -12,6 +12,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.boolMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
 
 @UtilityClass
 public class RelasjonerUtils {
@@ -48,11 +49,12 @@ public class RelasjonerUtils {
                 .flatMap(value -> Optional.ofNullable(value.getType()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                SIVILSTAND_PATH,
-                                boolMatchQuery(SIVILSTAND_PATH, "type", value, false),
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedHistoriskQuery(SIVILSTAND_PATH, "type", value, false));
+//                        queryBuilder.must(QueryBuilders.nestedQuery(
+//                                SIVILSTAND_PATH,
+//                                boolMatchQuery(SIVILSTAND_PATH, "type", value, false),
+//                                ScoreMode.Avg
+//                        ));
                     }
                 });
     }
