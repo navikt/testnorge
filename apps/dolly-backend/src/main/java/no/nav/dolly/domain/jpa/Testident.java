@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -57,6 +58,8 @@ public class Testident implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "TILHOERER_GRUPPE", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Testgruppe testgruppe;
 
     @Column(name = "MASTER")
@@ -65,6 +68,8 @@ public class Testident implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "IDENT", referencedColumnName = "ident", insertable = false, updatable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<BestillingProgress> bestillingProgress;
 
     public List<BestillingProgress> getBestillingProgress() {
