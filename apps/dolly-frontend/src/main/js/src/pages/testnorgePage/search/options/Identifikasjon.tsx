@@ -2,6 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 interface IdentifikasjonProps {
 	formikBag: FormikProps<{}>
@@ -16,6 +17,7 @@ const options = {
 	adressebeskyttelse: [
 		{ value: 'FORTROLIG', label: 'Fortrolig' },
 		{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
+		{ value: 'INGEN', label: 'Ingen' },
 	],
 	kjoenn: [
 		{ value: 'KVINNE', label: 'Kvinne' },
@@ -36,13 +38,11 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				legend={'Velg identifikatortype'}
 				options={options.identtype}
 			/>
-
-			<RadioGroupOptions
-				formikBag={formikBag}
-				name={'Adressebeskyttelse'}
-				path={`${path}.adressebeskyttelse`}
-				legend={'Velg gradering'}
+			<FormikSelect
+				name={`${path}.adressebeskyttelse`}
+				label="Adressebeskyttelse"
 				options={options.adressebeskyttelse}
+				size="medium"
 			/>
 			<h4 className="subtittel">Identitet</h4>
 			<FormikCheckbox
