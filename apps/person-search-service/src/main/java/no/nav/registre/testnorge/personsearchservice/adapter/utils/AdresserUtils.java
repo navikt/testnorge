@@ -6,10 +6,8 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.apache.lucene.search.join.ScoreMode;
 
-import java.util.Arrays;
 import java.util.Optional;
 
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedBoolShouldQuery;
 
 @UtilityClass
 public class AdresserUtils {
