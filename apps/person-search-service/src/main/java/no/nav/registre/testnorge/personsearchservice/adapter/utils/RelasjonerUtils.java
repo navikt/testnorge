@@ -24,16 +24,16 @@ public class RelasjonerUtils {
     private static void addRelasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
                 .ifPresent(value -> {
-                    if (nonNull(value.getBarn()) && value.getBarn()) {
+                    if (nonNull(value.getBarn()) && Boolean.TRUE.equals(value.getBarn())) {
                         queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "BARN"));
                     }
-                    if (nonNull(value.getDoedfoedtBarn()) && value.getDoedfoedtBarn()) {
+                    if (nonNull(value.getDoedfoedtBarn()) && Boolean.TRUE.equals(value.getDoedfoedtBarn())) {
                         queryBuilder.must(nestedExistsQuery("hentPerson.doedfoedtBarn", "metadata"));
                     }
-                    if (nonNull(value.getFar()) && value.getFar()) {
+                    if (nonNull(value.getFar()) && Boolean.TRUE.equals(value.getFar())) {
                         queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "FAR"));
                     }
-                    if (nonNull(value.getMor()) && value.getMor()) {
+                    if (nonNull(value.getMor()) && Boolean.TRUE.equals(value.getMor())) {
                         queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, "MOR"));
                     }
                 });

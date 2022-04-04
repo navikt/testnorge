@@ -1,6 +1,5 @@
 import React from 'react'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { Person } from '~/service/services/personsearch/types'
 
 interface VelgPersonProps {
 	ident: string

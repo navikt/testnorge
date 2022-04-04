@@ -41,35 +41,35 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 		{
 			text: 'Ident',
 			width: '20',
-			formatter: (cell: any, row: PdlData) => {
+			formatter: (_cell: any, row: PdlData) => {
 				return <>{getIdent(row)}</>
 			},
 		},
 		{
 			text: 'Fornavn',
 			width: '20',
-			formatter: (cell: any, row: PdlData) => {
+			formatter: (_cell: any, row: PdlData) => {
 				return <>{getFornavn(row)}</>
 			},
 		},
 		{
 			text: 'Etternavn',
 			width: '20',
-			formatter: (cell: any, row: PdlData) => {
+			formatter: (_cell: any, row: PdlData) => {
 				return <>{getEtternavn(row)}</>
 			},
 		},
 		{
 			text: 'Kjønn',
 			width: '10',
-			formatter: (cell: any, row: PdlData) => {
+			formatter: (_cell: any, row: PdlData) => {
 				return <>{getPdlKjoenn(row)}</>
 			},
 		},
 		{
 			text: 'Alder',
 			width: '15',
-			formatter: (cell: any, row: PdlData) => {
+			formatter: (_cell: any, row: PdlData) => {
 				const alder = getAlder(
 					row.hentPerson?.foedsel[0]?.foedselsdato,
 					row.hentPerson?.doedsfall[0]?.doedsdato
@@ -97,7 +97,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 					</Button>
 				)
 			},
-			formatter: (cell: any, row: PdlData) => (
+			formatter: (_cell: any, row: PdlData) => (
 				<VelgPerson
 					ident={getIdent(row)}
 					valgtePersoner={valgtePersoner}

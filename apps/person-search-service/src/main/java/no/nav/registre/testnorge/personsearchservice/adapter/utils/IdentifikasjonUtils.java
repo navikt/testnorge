@@ -13,6 +13,7 @@ import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryU
 public class IdentifikasjonUtils {
 
     private static final String NO_VALUE = "INGEN";
+    private static final String METADATA = "metadata";
     private static final String ADRESSEBESKYTTELSE_PATH = "hentPerson.adressebeskyttelse";
 
     public static void addIdentifikasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -37,10 +38,10 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdentifikasjon())
                 .ifPresent(value -> {
                     if (nonNull(value.getFalskIdentitet()) && value.getFalskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", "metadata"));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA));
                     }
                     if (nonNull(value.getUtenlandskIdentitet()) && value.getUtenlandskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", "metadata"));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA));
                     }
 
                 });
@@ -52,7 +53,7 @@ public class IdentifikasjonUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         if (value.equals(NO_VALUE)) {
-                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, "metadata"));
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA));
                         } else {
                             queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value));
                         }

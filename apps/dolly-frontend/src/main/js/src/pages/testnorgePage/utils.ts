@@ -122,12 +122,12 @@ export const getIdent = (person: PdlData) => {
 }
 
 export const getFornavn = (person: PdlData) => {
-	const navn = person.hentPerson?.navn.filter((navn) => !navn.metadata.historisk)
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
 	return navn.length > 0 ? navn[0].fornavn : ''
 }
 
 export const getEtternavn = (person: PdlData) => {
-	const navn = person.hentPerson?.navn.filter((navn) => !navn.metadata.historisk)
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
 	return navn.length > 0 ? navn[0].etternavn : ''
 }
 
