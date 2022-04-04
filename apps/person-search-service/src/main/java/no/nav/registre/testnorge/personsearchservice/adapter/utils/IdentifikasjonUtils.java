@@ -12,7 +12,10 @@ import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryU
 @UtilityClass
 public class IdentifikasjonUtils {
 
-    public static void addIdentifikasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
+    private static final String NO_VALUE = "INGEN";
+    private static final String ADRESSEBESKYTTELSE_PATH = "hentPerson.adressebeskyttelse";
+
+    public static void addIdentifikasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addIdentQuery(queryBuilder, search);
         addIdenttypeQuery(queryBuilder, search);
         addIdentitetQueries(queryBuilder, search);
@@ -48,7 +51,11 @@ public class IdentifikasjonUtils {
                 .flatMap(value -> Optional.ofNullable(value.getAdressebeskyttelse()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.adressebeskyttelse", "gradering", value));
+                        if (value.equals(NO_VALUE)) {
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, "metadata"));
+                        } else {
+                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value));
+                        }
                     }
                 });
     }
