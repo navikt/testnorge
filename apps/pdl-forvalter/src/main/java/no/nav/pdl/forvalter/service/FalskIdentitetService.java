@@ -9,6 +9,8 @@ import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
@@ -63,7 +65,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                handle(type, person.getIdent());
+                handle(type, person);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
             }
@@ -110,7 +112,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
     }
 
-    private void handle(FalskIdentitetDTO identitet, String ident) {
+    private void handle(FalskIdentitetDTO identitet, PersonDTO person) {
 
         if (isTrue(identitet.getRettIdentitetErUkjent())) {
             return;
@@ -139,10 +141,19 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
             identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setHasMellomnavn(null);
 
             if (isNull(identitet.getRettIdentitetVedOpplysninger().getFoedselsdato())) {
-                identitet.getRettIdentitetVedOpplysninger().setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+                identitet.getRettIdentitetVedOpplysninger().setFoedselsdato(
+                        person.getFoedsel().stream()
+                                .map(FoedselDTO::getFoedselsdato)
+                                .findFirst()
+                                .orElse(DatoFraIdentUtility.getDato(person.getIdent())
+                                        .atStartOfDay()));
             }
             if (isNull(identitet.getRettIdentitetVedOpplysninger().getKjoenn())) {
-                identitet.getRettIdentitetVedOpplysninger().setKjoenn(KjoennFraIdentUtility.getKjoenn(ident));
+                identitet.getRettIdentitetVedOpplysninger().setKjoenn(
+                        person.getKjoenn().stream()
+                                .map(KjoennDTO::getKjoenn)
+                                .findFirst()
+                                .orElse(KjoennFraIdentUtility.getKjoenn(person.getIdent())));
             }
             if (identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap().isEmpty()) {
                 identitet.getRettIdentitetVedOpplysninger().setStatsborgerskap(
@@ -164,12 +175,12 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
             }
 
             if (isNull(identitet.getNyFalskIdentitetPerson().getSyntetisk())) {
-                identitet.getNyFalskIdentitetPerson().setSyntetisk(isSyntetisk(ident));
+                identitet.getNyFalskIdentitetPerson().setSyntetisk(isSyntetisk(person.getIdent()));
             }
 
             identitet.setRettIdentitetVedIdentifikasjonsnummer(
                     createPersonService.execute(identitet.getNyFalskIdentitetPerson()).getIdent());
-            relasjonService.setRelasjoner(ident, RelasjonType.FALSK_IDENTITET,
+            relasjonService.setRelasjoner(person.getIdent(), RelasjonType.FALSK_IDENTITET,
                     identitet.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
             identitet.setNyFalskIdentitetPerson(null);
         }

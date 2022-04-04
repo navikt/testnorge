@@ -10,6 +10,7 @@ import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -220,10 +221,13 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private LocalDateTime getLastFlyttedato(PersonDTO person) {
 
-        return person.getBostedsadresse().stream().findFirst()
-                .filter(adr -> nonNull(adr.getGyldigFraOgMed()))
-                .map(adr -> adr.getGyldigTilOgMed())
-                .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
+        return person.getBostedsadresse().stream()
+                .map(BostedadresseDTO::getGyldigFraOgMed)
+                .findFirst()
+                .orElse(person.getFoedsel().stream()
+                        .map(FoedselDTO::getFoedselsdato)
+                        .findFirst()
+                        .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
     }
 
     private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {

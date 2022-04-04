@@ -5,13 +5,16 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -108,10 +111,14 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         if (isNull(adresse.getGyldigFraOgMed())) {
             adresse.setGyldigFraOgMed(person.getBostedsadresse().stream()
                     .reduce((a1, a2) -> a2)
-                    .filter(adr -> isNull(adr.getGyldigFraOgMed()))
-                    .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay())
-                    .orElse(LocalDateTime.now()));
+                    .map(BostedadresseDTO::getGyldigFraOgMed)
+                    .filter(Objects::nonNull)
+                    .orElse(person.getFoedsel().stream()
+                            .map(FoedselDTO::getFoedselsdato)
+                            .findFirst()
+                            .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay())));
         }
+
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
         adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
     }

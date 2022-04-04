@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -37,7 +38,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
+                handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
             }
@@ -58,12 +59,12 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         }
     }
 
-    private void handle(StatsborgerskapDTO statsborgerskap, String ident, InnflyttingDTO innflytting) {
+    private void handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
                 statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
-            } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
+            } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
                 statsborgerskap.setLandkode(geografiskeKodeverkConsumer.getTilfeldigLand());
@@ -71,7 +72,10 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         }
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
-            statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+            statsborgerskap.setGyldigFraOgMed(person.getFoedsel().stream()
+                    .map(FoedselDTO::getFoedselsdato)
+                    .findFirst()
+                    .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
         }
     }
 }
