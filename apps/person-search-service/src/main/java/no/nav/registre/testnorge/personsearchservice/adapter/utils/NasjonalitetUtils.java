@@ -7,11 +7,13 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 
 @UtilityClass
 public class NasjonalitetUtils {
+
+    private final static String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
 
     public static void addNasjonalitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addStatsborgerskapQuery(queryBuilder, search);
@@ -24,7 +26,7 @@ public class NasjonalitetUtils {
                 .flatMap(value -> Optional.ofNullable(value.getLand()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.statsborgerskap", "land", value));
+                        queryBuilder.must(nestedHistoriskQuery(STATSBORGERSKAP_PATH, "land", value, false));
                     }
                 });
     }

@@ -7,7 +7,10 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
 
 @UtilityClass
 public class IdentifikasjonUtils {
@@ -55,7 +58,7 @@ public class IdentifikasjonUtils {
                         if (value.equals(NO_VALUE)) {
                             queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA));
                         } else {
-                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value));
+                            queryBuilder.must(nestedHistoriskQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value, false));
                         }
                     }
                 });

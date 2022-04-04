@@ -2,16 +2,13 @@ package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.boolMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
 
 @UtilityClass
@@ -50,11 +47,6 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedHistoriskQuery(SIVILSTAND_PATH, "type", value, false));
-//                        queryBuilder.must(QueryBuilders.nestedQuery(
-//                                SIVILSTAND_PATH,
-//                                boolMatchQuery(SIVILSTAND_PATH, "type", value, false),
-//                                ScoreMode.Avg
-//                        ));
                     }
                 });
     }

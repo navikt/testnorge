@@ -40,26 +40,19 @@ public class QueryUtils {
         );
     }
 
-    public static BoolQueryBuilder boolMatchQuery(String path, String field, String value, boolean historisk) {
-        if (historisk) {
-            return QueryBuilders.boolQuery().must(QueryBuilders.matchQuery(path + "." + field, value));
-        } else {
-            return QueryBuilders.boolQuery()
-                    .must(QueryBuilders.matchQuery(path + "." + field, value))
-                    .must(QueryBuilders.termQuery(path + ".metadata.historisk", false));
-        }
-    }
-
     public static NestedQueryBuilder nestedHistoriskQuery(String path, String field, String value, boolean historisk) {
         if (historisk) {
             return nestedMatchQuery(path, field, value);
         } else {
-            return QueryBuilders.nestedQuery(
-                    path,
-                    boolMatchQuery(path, field, value, false),
-                    ScoreMode.Avg
-            );
+            return QueryBuilders.nestedQuery(path, boolMatchQuery(path, field, value), ScoreMode.Avg);
         }
+    }
+
+    private static BoolQueryBuilder boolMatchQuery(String path, String field, String value) {
+        return QueryBuilders.boolQuery()
+                .must(QueryBuilders.matchQuery(path + "." + field, value))
+                .must(QueryBuilders.termQuery(path + ".metadata.historisk", false));
+
     }
 
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {

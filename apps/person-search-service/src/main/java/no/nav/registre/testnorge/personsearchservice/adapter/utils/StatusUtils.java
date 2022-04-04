@@ -2,16 +2,18 @@ package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.Optional;
 
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 
 @UtilityClass
 public class StatusUtils {
+
+    private static final String PERSONSTATUS_PATH = "hentPerson.folkeregisterpersonstatus";
+    private static final String DOEDSFALL_PATH = "hentPerson.doedsfall";
 
     public static void addStatusQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
         addPersonstatusQuery(queryBuilder, search);
@@ -23,14 +25,7 @@ public class StatusUtils {
                 .flatMap(value -> Optional.ofNullable(value.getStatus()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentPerson.folkeregisterpersonstatus",
-                                QueryBuilders.boolQuery()
-                                        .must(QueryBuilders.matchQuery("hentPerson.folkeregisterpersonstatus.status", value))
-                                        .must(QueryBuilders.termQuery("hentPerson.folkeregisterpersonstatus.metadata.historisk", false))
-                                ,
-                                ScoreMode.Avg
-                        ));
+                        queryBuilder.must(nestedHistoriskQuery(PERSONSTATUS_PATH, "status", value, false));
                     }
                 });
     }
@@ -39,7 +34,7 @@ public class StatusUtils {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery("hentPerson.doedsfall", "doedsdato"));
+                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, "doedsdato"));
                     }
                 });
     }
