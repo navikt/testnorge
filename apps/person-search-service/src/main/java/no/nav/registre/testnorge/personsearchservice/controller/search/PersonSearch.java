@@ -18,7 +18,6 @@ public class PersonSearch {
     String kjoenn;
     String randomSeed;
     Boolean kunLevende;
-    Boolean kunDoede;
     List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;

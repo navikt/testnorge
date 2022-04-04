@@ -5,6 +5,14 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
 
+const getCurrentPersonstatus = (data) => {
+	if (data?.folkeregisterpersonstatus?.[0] === null) return null
+	const statuser = data.folkeregisterpersonstatus.filter((status) => {
+		return !status.metadata.historisk
+	})
+	return statuser.length > 0 ? statuser[0] : null
+}
+
 export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	if (!data) {
 		return null
@@ -14,7 +22,7 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	const personKjoenn = data?.kjoenn?.[0]
 	const personSivilstand = getSortedSivilstand(data?.sivilstand)?.[0]
 	const personFoedsel = data?.foedsel?.[0]
-	const personstatus = data?.folkeregisterPersonstatus?.[0] || data?.folkeregisterpersonstatus?.[0]
+	const personstatus = getCurrentPersonstatus(data)
 
 	return (
 		<ErrorBoundary>

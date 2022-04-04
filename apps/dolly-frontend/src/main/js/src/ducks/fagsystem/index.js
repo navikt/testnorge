@@ -471,7 +471,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
-	const alder = getAlder(person.foedsel[0]?.foedselsdato)
+	const alder = getAlder(person.foedsel[0]?.foedselsdato, person.doedsfall[0]?.doedsdato)
 
 	return {
 		ident,
@@ -487,15 +487,20 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	}
 }
 
-const getAlder = (datoFoedt) => {
+export const getAlder = (datoFoedt, doedsdato) => {
 	const foedselsdato = new Date(datoFoedt)
-	const diff_ms = Date.now() - foedselsdato.getTime()
-	const age_dt = new Date(diff_ms)
+	let diff_ms = Date.now() - foedselsdato.getTime()
 
+	if (doedsdato && doedsdato !== '') {
+		const ddato = new Date(doedsdato)
+		diff_ms = ddato.getTime() - foedselsdato.getTime()
+	}
+
+	const age_dt = new Date(diff_ms)
 	return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
 
-const getKjoenn = (kjoenn) => {
+export const getKjoenn = (kjoenn) => {
 	switch (kjoenn) {
 		case 'KVINNE':
 			return 'K'

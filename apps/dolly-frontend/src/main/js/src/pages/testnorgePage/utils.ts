@@ -1,3 +1,6 @@
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { getKjoenn } from '~/ducks/fagsystem'
+
 export const initialValues = {
 	personinformasjon: {
 		alder: {
@@ -13,10 +16,8 @@ export const initialValues = {
 			utflyttet: false,
 			innflyttet: false,
 		},
-		sivilstand: {
-			type: '',
-		},
-		barn: {
+		relasjoner: {
+			sivilstand: '',
 			barn: false,
 			doedfoedtBarn: false,
 		},
@@ -35,6 +36,7 @@ export const initialValues = {
 			kommunenr: '',
 			postnr: '',
 		},
+		personstatus: '',
 	},
 }
 
@@ -44,6 +46,9 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		identer.push(values?.personinformasjon?.ident?.ident)
 		identer = identer.filter((item: string) => item)
 	}
+
+	const personstatus = values?.personinformasjon?.personstatus
+	const kunLevende = personstatus === null || personstatus.isEmpty || personstatus !== 'DOED'
 
 	if (identer.length > 0) {
 		return {
@@ -61,6 +66,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			pageSize: 100,
 			randomSeed: randomSeed,
 			terminateAfter: 100,
+			kunLevende: kunLevende,
 			kjoenn: values?.personinformasjon?.identifikasjon?.kjoenn,
 			foedsel: {
 				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
@@ -70,7 +76,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				land: values?.personinformasjon?.nasjonalitet?.statsborgerskap,
 			},
 			sivilstand: {
-				type: values?.personinformasjon?.sivilstand?.type,
+				type: values?.personinformasjon?.relasjoner?.sivilstand,
 			},
 			alder: {
 				fra: values?.personinformasjon?.alder?.fra,
@@ -84,8 +90,8 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
 			relasjoner: {
-				barn: values?.personinformasjon?.barn?.barn,
-				doedfoedtBarn: values?.personinformasjon?.barn?.doedfoedtBarn,
+				barn: values?.personinformasjon?.relasjoner?.barn,
+				doedfoedtBarn: values?.personinformasjon?.relasjoner?.doedfoedtBarn,
 			},
 			utflyttingFraNorge: {
 				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,
@@ -99,8 +105,32 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 					kommunenummer: values?.personinformasjon?.bosted?.kommunenr,
 				},
 			},
+			personstatus: {
+				status: personstatus,
+			},
 			tag: 'TESTNORGE',
 			excludeTags: ['DOLLY'],
 		}
 	}
+}
+
+export const getIdent = (person: PdlData) => {
+	const identer = person.hentIdenter?.identer?.filter(
+		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
+	)
+	return identer.length > 0 ? identer[0].ident : ''
+}
+
+export const getFornavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].fornavn : ''
+}
+
+export const getEtternavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].etternavn : ''
+}
+
+export const getPdlKjoenn = (person: PdlData) => {
+	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
 }
