@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.search.join.ScoreMode;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -15,28 +16,38 @@ import static java.util.Objects.nonNull;
 @UtilityClass
 public class QueryUtils {
 
-    public static NestedQueryBuilder nestedMatchQuery(String path, String name, String value) {
+    public static NestedQueryBuilder nestedMatchQuery(String path, String field, String value) {
         return QueryBuilders.nestedQuery(
                 path,
-                QueryBuilders.matchQuery(path + "." + name, value),
+                QueryBuilders.matchQuery(path + "." + field, value),
                 ScoreMode.Avg
         );
     }
 
-    public static NestedQueryBuilder nestedTermsQuery(String path, String name, Collection<String> values) {
+    public static NestedQueryBuilder nestedTermsQuery(String path, String field, Collection<String> values) {
         return QueryBuilders.nestedQuery(
                 path,
-                QueryBuilders.termsQuery(path + "." + name, values),
+                QueryBuilders.termsQuery(path + "." + field, values),
                 ScoreMode.Avg
         );
     }
 
-    public static NestedQueryBuilder nestedExistsQuery(String path, String name) {
+    public static NestedQueryBuilder nestedExistsQuery(String path, String field) {
         return QueryBuilders.nestedQuery(
                 path,
-                QueryBuilders.existsQuery(path + "." + name),
+                QueryBuilders.existsQuery(path + "." + field),
                 ScoreMode.Avg
         );
+    }
+
+    public static BoolQueryBuilder boolMatchQuery(String path, String field, String value, boolean historisk) {
+        if (historisk) {
+            return QueryBuilders.boolQuery().must(QueryBuilders.matchQuery(path + "." + field, value));
+        } else {
+            return QueryBuilders.boolQuery()
+                    .must(QueryBuilders.matchQuery(path + "." + field, value))
+                    .must(QueryBuilders.termQuery(path + ".metadata.historisk", false));
+        }
     }
 
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
