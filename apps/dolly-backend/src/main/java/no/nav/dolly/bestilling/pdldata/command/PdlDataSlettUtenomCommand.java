@@ -11,25 +11,29 @@ import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataSlettCommand implements Callable<Flux<Void>> {
+public class PdlDataSlettUtenomCommand implements Callable<Flux<Void>> {
 
-    private static final String PDL_FORVALTER_URL = "/api/v1/personer/{ident}";
+    private static final String PDL_FORVALTER_URL = "/api/v1/personer/utenom";
+    private static final String IDENTS = "identer";
 
     private final WebClient webClient;
-    private final String ident;
+    private final List<String> identer;
     private final String token;
 
     public Flux<Void> call() {
 
         return webClient
                 .delete()
-                .uri(PDL_FORVALTER_URL, ident)
+                .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_URL)
+                        .queryParam(IDENTS, identer)
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
