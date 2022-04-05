@@ -36,7 +36,6 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{pdldata?.person?.bostedsadresse && <li>Utenlandsk boadresse: Q2</li>}
 				{pdldata?.person?.fullmakt && <li>Fullmakt: Q2</li>}
 				{pdldata?.person?.falskIdentitet && <li>Falsk identitet: Q2</li>}
 				{pdldata?.person?.utenlandskIdentifikasjonsnummer && (
