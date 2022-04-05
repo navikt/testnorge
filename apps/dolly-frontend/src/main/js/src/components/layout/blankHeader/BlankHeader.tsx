@@ -3,7 +3,6 @@ import Icon from '~/components/ui/icon/Icon'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
 import './BlankHeader.less'
-import Logger from '~/logger'
 
 export default () => {
 	return (
