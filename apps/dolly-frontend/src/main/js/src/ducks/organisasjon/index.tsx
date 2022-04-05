@@ -52,13 +52,12 @@ export default handleActions(
 		) {
 			state.organisasjoner = action.payload.data
 		},
-		// @ts-ignore
 		[onSuccess(actions.getOrganisasjonerPaaBruker)](
 			state: { egneOrganisasjoner: any[] },
 			action: { payload: Organisasjon[] }
 		) {
 			const response = action.payload
-			if (response.length === 0) return []
+			if (response.length === 0) state.egneOrganisasjoner = []
 			state.egneOrganisasjoner = response.map((org: Organisasjon) => {
 				const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
 				const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
