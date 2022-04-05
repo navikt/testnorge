@@ -6,6 +6,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @UtilityClass
 public class FoedselsdatoUtility {
@@ -16,6 +17,7 @@ public class FoedselsdatoUtility {
 
         return person.getFoedsel().stream()
                 .map(FoedselDTO::getFoedselsdato)
+                .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
     }
