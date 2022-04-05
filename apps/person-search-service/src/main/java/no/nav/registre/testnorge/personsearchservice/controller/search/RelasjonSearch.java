@@ -9,6 +9,8 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class RelasjonSearch {
+    String harBarn;
+    String harDoedfoedtBarn;
     Boolean barn;
     Boolean doedfoedtBarn;
     Boolean mor;
