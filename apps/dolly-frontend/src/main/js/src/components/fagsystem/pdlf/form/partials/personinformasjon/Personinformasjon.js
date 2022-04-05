@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
@@ -20,9 +20,6 @@ import { Foedsel } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foeds
 import { Vergemaal } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { UtenlandskBankkonto } from '~/components/fagsystem/tpsmessaging/form/utenlandskbankkonto/UtenlandskBankkonto'
 import { NorskBankkonto } from '~/components/fagsystem/tpsmessaging/form/norskbankkonto/NorskBankkonto'
-import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { useBoolean } from 'react-use'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -78,21 +75,7 @@ const panelPaths = [
 ].flat()
 
 export const Personinformasjon = ({ formikBag }) => {
-	const { personFoerLeggTil, gruppeId, opts } = useContext(BestillingsveilederContext)
-	const isTestnorgeIdent = identFraTestnorge(opts)
-
-	const [identOptions, setIdentOptions] = useState([])
-	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
-
-	useEffect(() => {
-		if (!isTestnorgeIdent && gruppeId) {
-			const eksisterendeIdent = personFoerLeggTil?.pdlforvalter?.person?.ident
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response) => {
-				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
-				setLoadingIdentOptions(false)
-			})
-		}
-	}, [])
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
 	return (
 		<Vis attributt={panelPaths}>
@@ -155,11 +138,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
-					<Vergemaal
-						formikBag={formikBag}
-						identOptions={identOptions}
-						loadingOptions={loadingIdentOptions}
-					/>
+					<Vergemaal formikBag={formikBag} />
 				</Kategori>
 
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
