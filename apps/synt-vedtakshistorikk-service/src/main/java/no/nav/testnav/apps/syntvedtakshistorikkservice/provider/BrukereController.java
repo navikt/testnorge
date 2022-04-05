@@ -7,6 +7,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.Syntetis
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,12 +36,13 @@ public class BrukereController {
             @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         var identer = identService.getUtvalgteIdenterIAldersgruppe(
-                syntetiserArenaRequest.getAntallNyeIdenter(),
-                MINIMUM_ALDER,
-                MAKSIMUM_ALDER,
-                null);
+                        syntetiserArenaRequest.getAntallNyeIdenter(),
+                        MINIMUM_ALDER,
+                        MAKSIMUM_ALDER,
+                        null)
+                .stream().map(PersonDTO::getIdent).toList();
 
-        if (pdlProxyConsumer.createTags(identer, SYNT_TAGS)){
+        if (pdlProxyConsumer.createTags(identer, SYNT_TAGS)) {
             var response = arenaForvalterService.opprettArbeidssoekereUtenVedtak(
                     identer,
                     syntetiserArenaRequest.getMiljoe());

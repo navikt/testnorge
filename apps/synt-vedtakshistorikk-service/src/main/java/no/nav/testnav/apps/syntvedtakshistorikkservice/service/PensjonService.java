@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PensjonTestdataFacadeConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataPerson;
-import no.nav.testnav.libs.servletcore.util.IdentUtil;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,22 +24,22 @@ public class PensjonService {
     private static final String REGEX_RN = "[\r\n]";
 
     boolean opprettetPersonOgInntektIPopp(
-            String ident,
+            PersonDTO person,
             String miljoe,
             LocalDate fraDato
     ) {
-        return opprettPersonIPopp(ident, miljoe) && opprettInntektIPopp(ident, miljoe, fraDato);
+        return opprettPersonIPopp(person, miljoe) && opprettInntektIPopp(person.getIdent(), miljoe, fraDato);
     }
 
     private boolean opprettPersonIPopp(
-            String ident,
+            PersonDTO person,
             String miljoe
     ) {
         var opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
                 .bostedsland("NOR")
-                .fodselsDato(IdentUtil.getFoedselsdatoFraIdent(ident))
+                .fodselsDato(person.getFoedsel().getFoedselsdato())
                 .miljoer(Collections.singletonList(miljoe))
-                .fnr(ident)
+                .fnr(person.getIdent())
                 .build());
 
         if (opprettPersonStatus.getStatus().isEmpty()) {
@@ -50,7 +50,7 @@ public class PensjonService {
             if (response.getResponse().getHttpStatus().getStatus() != 200) {
                 log.error(
                         "Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll(REGEX_RN, ""),
+                        person.getIdent().replaceAll(REGEX_RN, ""),
                         response.getMiljo().replaceAll(REGEX_RN, ""),
                         response.getResponse().getMessage().replaceAll(REGEX_RN, "")
                 );

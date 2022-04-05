@@ -14,6 +14,8 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponseDetails;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataStatus;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,7 +35,12 @@ public class PensjonServiceTest {
     @Test
     public void shouldOpprettePersonOgInntektIPopp() {
         var miljoe = "TEST";
-        var ident = "01016412345";
+        var person = PersonDTO.builder()
+                .ident("01016412345")
+                .foedsel(FoedselDTO.builder()
+                        .foedselsdato(LocalDate.of(1964, 1, 1))
+                        .build())
+                .build();
 
         var pensjonResponse = PensjonTestdataResponse.builder()
                 .status(Collections.singletonList(PensjonTestdataStatus.builder()
@@ -49,7 +56,7 @@ public class PensjonServiceTest {
         when(pensjonTestdataFacadeConsumer.opprettPerson(any(PensjonTestdataPerson.class))).thenReturn(pensjonResponse);
         when(pensjonTestdataFacadeConsumer.opprettInntekt(any(PensjonTestdataInntekt.class))).thenReturn(pensjonResponse);
 
-        var result = pensjonService.opprettetPersonOgInntektIPopp(ident, miljoe, LocalDate.now());
+        var result = pensjonService.opprettetPersonOgInntektIPopp(person, miljoe, LocalDate.now());
 
         assertThat(result).isTrue();
     }

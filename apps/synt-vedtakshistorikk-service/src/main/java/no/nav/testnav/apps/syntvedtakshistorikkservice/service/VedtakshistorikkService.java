@@ -23,6 +23,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 
 import org.springframework.stereotype.Service;
 
@@ -107,7 +108,7 @@ public class VedtakshistorikkService {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
                 var utvalgtIdent = getUtvalgtIdentIAldersgruppe(vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
-                if (nonNull(utvalgtIdent) && opprettetTagsPaaIdent(utvalgtIdent)) {
+                if (nonNull(utvalgtIdent) && opprettetTagsPaaIdent(utvalgtIdent.getIdent())) {
                     responses.putAll(opprettHistorikkOgSendTilArena(utvalgtIdent, miljoe, vedtakshistorikk, tidligsteDato));
                 }
             }
@@ -130,7 +131,7 @@ public class VedtakshistorikkService {
         return maksimumAlder;
     }
 
-    private String getUtvalgtIdentIAldersgruppe(
+    private PersonDTO getUtvalgtIdentIAldersgruppe(
             Vedtakshistorikk vedtakshistorikk,
             LocalDate tidligsteDatoBarnetillegg,
             int minimumAlder,
@@ -141,7 +142,7 @@ public class VedtakshistorikkService {
             var maaVaereBosatt = nonNull(aapVedtak) && !aapVedtak.isEmpty();
             LocalDate tidligsteDatoBosatt = maaVaereBosatt ? finnTidligsteDatoAap(aapVedtak) : null;
 
-            List<String> identer;
+            List<PersonDTO> identer;
             if (nonNull(tidligsteDatoBarnetillegg)) {
                 identer = identService.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(1, minimumAlder, maksimumAlder, tidligsteDatoBosatt, tidligsteDatoBarnetillegg);
             } else {
@@ -157,11 +158,12 @@ public class VedtakshistorikkService {
     }
 
     private Map<String, List<NyttVedtakResponse>> opprettHistorikkOgSendTilArena(
-            String personident,
+            PersonDTO person,
             String miljoe,
             Vedtakshistorikk vedtakshistorikk,
             LocalDate tidligsteDato
     ) {
+        var personident = person.getIdent();
         List<RettighetRequest> rettigheter = new ArrayList<>();
         List<NyttVedtakTiltak> tiltak = new ArrayList<>();
 
@@ -173,7 +175,7 @@ public class VedtakshistorikkService {
         arenaAapService.opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakAap115(avsluttendeAap115, personident, miljoe, rettigheter);
-        arenaAapService.opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
+        arenaAapService.opprettVedtakUngUfoer(vedtakshistorikk, person, miljoe, rettigheter);
         arenaAapService.opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaTiltakService.oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak, senesteVedtak, tidligsteDato);
@@ -185,7 +187,7 @@ public class VedtakshistorikkService {
         arenaTilleggService.opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
 
         if (!rettigheter.isEmpty()) {
-            if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, personident, miljoe)) {
+            if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, person, miljoe)) {
                 removeTagsPaaIdent(personident);
                 slettIdentIArena(personident, miljoe);
                 return Collections.emptyMap();
@@ -204,15 +206,15 @@ public class VedtakshistorikkService {
 
     private boolean opprettetNoedvendigInfoIPopp(
             Vedtakshistorikk historikk,
-            String personident,
+            PersonDTO person,
             String miljoe
     ) {
         var aap = historikk.getAap();
         var aap115 = historikk.getAap115();
         if (nonNull(aap) && !aap.isEmpty()) {
-            return pensjonService.opprettetPersonOgInntektIPopp(personident, miljoe, aap.get(0).getFraDato());
+            return pensjonService.opprettetPersonOgInntektIPopp(person, miljoe, aap.get(0).getFraDato());
         } else if (nonNull(aap115) && !aap115.isEmpty()) {
-            return pensjonService.opprettetPersonOgInntektIPopp(personident, miljoe, aap115.get(0).getFraDato());
+            return pensjonService.opprettetPersonOgInntektIPopp(person, miljoe, aap115.get(0).getFraDato());
         }
         return true;
     }

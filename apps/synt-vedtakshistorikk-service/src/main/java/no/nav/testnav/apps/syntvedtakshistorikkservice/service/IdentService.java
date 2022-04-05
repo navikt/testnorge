@@ -56,14 +56,14 @@ public class IdentService {
         }
     }
 
-    public List<String> getUtvalgteIdenterIAldersgruppe(
+    public List<PersonDTO> getUtvalgteIdenterIAldersgruppe(
             int antallNyeIdenter,
             int minimumAlder,
             int maksimumAlder,
             LocalDate tidligsteDatoBosatt
 
     ) {
-        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
+        List<PersonDTO> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
 
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
@@ -77,7 +77,7 @@ public class IdentService {
                 for (PersonDTO person : response.getItems()) {
                     //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
                     if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent())){
-                        utvalgteIdenter.add(person.getIdent());
+                        utvalgteIdenter.add(person);
                         if (utvalgteIdenter.size() >= antallNyeIdenter) break;
                     }
                 }
@@ -90,14 +90,14 @@ public class IdentService {
         return utvalgteIdenter;
     }
 
-    public List<String> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
+    public List<PersonDTO> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
             int antallNyeIdenter,
             int minimumAlder,
             int maksimumAlder,
             LocalDate tidligsteDatoBosatt,
             LocalDate tidligsteDatoBarnetillegg
     ) {
-        List<String> utvalgteIdenter = new ArrayList<>();
+        List<PersonDTO> utvalgteIdenter = new ArrayList<>();
 
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
@@ -111,7 +111,7 @@ public class IdentService {
                 for (PersonDTO person : response.getItems()) {
                     //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
                     if (validBarn(person, tidligsteDatoBarnetillegg)){
-                        utvalgteIdenter.add(person.getIdent());
+                        utvalgteIdenter.add(person);
                         if (utvalgteIdenter.size() >= antallNyeIdenter) break;
                     }
                 }

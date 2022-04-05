@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.testnav.libs.servletcore.util.IdentUtil;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
@@ -81,15 +81,15 @@ public class ArenaAapService {
 
     public void opprettVedtakUngUfoer(
             Vedtakshistorikk historikk,
-            String personident,
+            PersonDTO person,
             String miljoe,
             List<RettighetRequest> rettigheter
     ) {
-        var foedselsdato = IdentUtil.getFoedselsdatoFraIdent(personident);
+        var foedselsdato = person.getFoedsel().getFoedselsdato();
         var ungUfoer = historikk.getUngUfoer();
         if (nonNull(ungUfoer) && !ungUfoer.isEmpty()) {
             for (var vedtak : ungUfoer) {
-                var rettighetRequest = getRettighetUngUfoerRequest(personident, miljoe, foedselsdato, vedtak);
+                var rettighetRequest = getRettighetUngUfoerRequest(person.getIdent(), miljoe, foedselsdato, vedtak);
 
                 if (rettighetRequest != null) {
                     rettigheter.add(rettighetRequest);

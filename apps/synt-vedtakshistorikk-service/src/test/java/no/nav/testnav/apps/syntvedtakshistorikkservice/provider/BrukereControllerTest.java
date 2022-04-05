@@ -6,6 +6,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterSer
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,8 +64,9 @@ public class BrukereControllerTest {
     @Test
     public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
         var identer = Collections.singletonList(fnr1);
+        var personer = Collections.singletonList(PersonDTO.builder().ident(fnr1).build());
 
-        when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, null)).thenReturn(identer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, null)).thenReturn(personer);
         when(pdlProxyConsumer.createTags(identer, SYNT_TAGS)).thenReturn(true);
         when(arenaForvalterService
                 .opprettArbeidssoekereUtenVedtak(identer, miljoe))

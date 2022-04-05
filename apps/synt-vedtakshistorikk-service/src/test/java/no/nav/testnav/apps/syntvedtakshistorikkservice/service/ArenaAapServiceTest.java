@@ -5,6 +5,8 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,12 @@ public class ArenaAapServiceTest {
     private ArenaAapService arenaAapService;
 
     private final String fnr1 = "27869949421";
+    private final PersonDTO person = PersonDTO.builder()
+            .ident(fnr1)
+            .foedsel(FoedselDTO.builder()
+                    .foedselsdato(LocalDate.of(1999, 6, 27))
+                    .build())
+            .build();
     private final String miljoe = "q2";
     private Vedtakshistorikk historikk;
     private List<NyttVedtakAap> aap115Rettigheter;
@@ -82,7 +90,7 @@ public class ArenaAapServiceTest {
 
         arenaAapService.opprettVedtakAap115(historikk.getAap115(), fnr1, miljoe, rettigheter);
         arenaAapService.opprettVedtakAap(historikk, fnr1, miljoe, rettigheter);
-        arenaAapService.opprettVedtakUngUfoer(historikk, fnr1, miljoe, rettigheter);
+        arenaAapService.opprettVedtakUngUfoer(historikk, person, miljoe, rettigheter);
         arenaAapService.opprettVedtakFritakMeldekort(historikk, fnr1, miljoe, rettigheter);
         arenaAapService.opprettVedtakTvungenForvaltning(historikk, fnr1, miljoe, rettigheter);
 
