@@ -47,7 +47,7 @@ export default () => {
 
 	return (
 		<div>
-			<Title title="Søk og import fra Testnorge" />
+			<Title title="Søk og import fra Test-Norge" />
 			<p>
 				Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 				forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
