@@ -46,9 +46,6 @@ public class RelasjonerUtils {
     private static void addBarnQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
                 .ifPresent(value -> {
-                    if (nonNull(value.getBarn()) && Boolean.TRUE.equals(value.getBarn())) {
-                        queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString()));
-                    }
                     if (nonNull(value.getHarBarn()) && !value.getHarBarn().isEmpty()) {
                         if (YES.equalsIgnoreCase(value.getHarBarn())) {
                             queryBuilder.must(nestedHistoriskQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString(), false));
@@ -62,10 +59,6 @@ public class RelasjonerUtils {
     private static void addDoedfoedtBarnQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
                 .ifPresent(value -> {
-                    if (nonNull(value.getDoedfoedtBarn()) && Boolean.TRUE.equals(value.getDoedfoedtBarn())) {
-                        queryBuilder.must(nestedExistsQuery(DOEDFOEDT_BARN_PATH, METADATA_FIELD));
-                    }
-
                     if (nonNull(value.getHarDoedfoedtBarn()) && !value.getHarDoedfoedtBarn().isEmpty()) {
                         if (YES.equalsIgnoreCase(value.getHarDoedfoedtBarn())) {
                             queryBuilder.must(nestedExistsQuery(DOEDFOEDT_BARN_PATH, METADATA_FIELD));

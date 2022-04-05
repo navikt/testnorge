@@ -11,8 +11,6 @@ import lombok.Value;
 public class RelasjonSearch {
     String harBarn;
     String harDoedfoedtBarn;
-    Boolean barn;
-    Boolean doedfoedtBarn;
     Boolean mor;
     Boolean far;
 }

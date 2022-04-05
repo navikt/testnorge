@@ -1,11 +1,22 @@
 import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
+import { FormikProps } from 'formik'
 
-export const Relasjoner = () => (
+const options = [
+	{ value: 'Y', label: 'Ja' },
+	{ value: 'N', label: 'Nei' },
+]
+
+type RelasjonerProps = {
+	formikBag: FormikProps<{}>
+	path: string
+}
+
+export const Relasjoner = ({ formikBag, path }: RelasjonerProps) => (
 	<section>
 		<FormikSelect
-			name="personinformasjon.relasjoner.sivilstand"
+			name={`${path}.sivilstand`}
 			label="Sivilstand"
 			options={[
 				{ value: 'GIFT', label: 'Gift' },
@@ -15,17 +26,23 @@ export const Relasjoner = () => (
 			]}
 			size="medium"
 		/>
-		<FormikCheckbox name="personinformasjon.relasjoner.barn" label="Har barn" size="medium" />
-		<FormikCheckbox
-			name="personinformasjon.relasjoner.doedfoedtBarn"
-			label="Har dødfødt barn"
-			size="medium"
+		<RadioGroupOptions
+			formikBag={formikBag}
+			name={'Har barn'}
+			path={`${path}.harBarn`}
+			options={options}
+		/>
+		<RadioGroupOptions
+			formikBag={formikBag}
+			name={'Har dødfødt barn'}
+			path={`${path}.harDoedfoedtBarn`}
+			options={options}
 		/>
 	</section>
 )
 
 export const RelasjonerPaths = {
 	'personinformasjon.relasjoner.sivilstand': 'string',
-	'personinformasjon.relasjoner.barn': 'boolean',
-	'personinformasjon.relasjoner.doedfoedtBarn': 'boolean',
+	'personinformasjon.relasjoner.harBarn': 'string',
+	'personinformasjon.relasjoner.harDoedfoedtBarn': 'string',
 }
