@@ -7,7 +7,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
 
@@ -27,7 +27,7 @@ public class NasjonalitetUtils {
                 .flatMap(value -> Optional.ofNullable(value.getLand()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedHistoriskQuery(STATSBORGERSKAP_PATH, "land", value, false));
+                        queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, false));
                     }
                 });
     }
@@ -36,7 +36,7 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
                     if (nonNull(value.getUtflyttet()) && Boolean.TRUE.equals(value.getUtflyttet())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", METADATA_FIELD));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", METADATA_FIELD, true));
                     }
                 });
     }
@@ -45,7 +45,7 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
                     if (nonNull(value.getInnflytting()) && Boolean.TRUE.equals(value.getInnflytting())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", METADATA_FIELD));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", METADATA_FIELD, true));
                     }
                 });
     }

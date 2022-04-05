@@ -6,7 +6,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
 
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 
 @UtilityClass
@@ -25,7 +25,7 @@ public class StatusUtils {
                 .flatMap(value -> Optional.ofNullable(value.getStatus()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedHistoriskQuery(PERSONSTATUS_PATH, "status", value, false));
+                        queryBuilder.must(nestedMatchQuery(PERSONSTATUS_PATH, ".status", value, false));
                     }
                 });
     }
@@ -34,7 +34,7 @@ public class StatusUtils {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, "doedsdato"));
+                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", true));
                     }
                 });
     }

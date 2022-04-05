@@ -7,7 +7,9 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Bostedsadresse {
+public class BostedsadresseSearch {
     String kommunenummer;
     String postnummer;
+    Boolean ukjentBosted;
+    Boolean utenlandskBosted;
 }
