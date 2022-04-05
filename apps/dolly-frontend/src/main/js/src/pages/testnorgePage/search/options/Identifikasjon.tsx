@@ -44,7 +44,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				options={options.adressebeskyttelse}
 				size="medium"
 			/>
-			<h4 className="subtittel">Identitet</h4>
+			<div className="options-title">Identitet</div>
 			<FormikCheckbox
 				name="personinformasjon.identifikasjon.falskIdentitet"
 				label="Har falsk identitet"
