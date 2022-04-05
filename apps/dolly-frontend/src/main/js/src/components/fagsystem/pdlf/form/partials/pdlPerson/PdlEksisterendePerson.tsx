@@ -14,6 +14,7 @@ interface PdlEksisterendePersonValues {
 	eksisterendePersonPath: string
 	label: string
 	formikBag?: FormikProps<{}>
+	disabled?: boolean
 }
 
 export const PdlEksisterendePerson = ({
@@ -21,6 +22,7 @@ export const PdlEksisterendePerson = ({
 	eksisterendePersonPath,
 	label,
 	formikBag,
+	disabled = false,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { gruppeId } = opts
@@ -50,7 +52,7 @@ export const PdlEksisterendePerson = ({
 					label={label}
 					options={identOptions}
 					size={'xlarge'}
-					disabled={hasNyPersonValues}
+					disabled={hasNyPersonValues || disabled}
 				/>
 			)}
 		</>

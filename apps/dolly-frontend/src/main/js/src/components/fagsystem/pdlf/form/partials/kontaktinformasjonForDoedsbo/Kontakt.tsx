@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { getPlaceholder, isEmpty, setNavn } from '../utils'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { getPlaceholder, setNavn } from '../utils'
 import _get from 'lodash/get'
 import {
 	initialNyPerson,
@@ -14,12 +14,9 @@ import {
 import { OrganisasjonSelect } from '~/components/organisasjonSelect'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
-import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
-import { useBoolean } from 'react-use'
-import Loading from '~/components/ui/loading/Loading'
+import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 
 interface KontaktValues {
 	formikBag: FormikProps<{}>
@@ -37,23 +34,6 @@ type OrgValues = {
 }
 
 export const Kontakt = ({ formikBag, path }: KontaktValues) => {
-	const opts = useContext(BestillingsveilederContext)
-	const { gruppeId } = opts
-	const isTestnorgeIdent = identFraTestnorge(opts)
-
-	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
-	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
-
-	useEffect(() => {
-		if (!isTestnorgeIdent && gruppeId) {
-			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
-				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
-				setLoadingIdentOptions(false)
-			})
-		}
-	}, [])
-
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
@@ -159,16 +139,11 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 
 			{kontaktType === 'PERSON_FDATO' && (
 				<div className="flexbox--flex-wrap">
-					{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
-					{identOptions?.length > 0 && (
-						<FormikSelect
-							name={`${personPath}.identifikasjonsnummer`}
-							label="Kontaktperson"
-							options={identOptions}
-							size={'xlarge'}
-							disabled={disableIdent}
-						/>
-					)}
+					<PdlEksisterendePerson
+						eksisterendePersonPath={`${personPath}.identifikasjonsnummer`}
+						label="Kontaktperson"
+						disabled={disableIdent}
+					/>
 					<FormikDatepicker
 						name={`${personPath}.foedselsdato`}
 						label="Fødselsdato"
@@ -192,12 +167,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 			)}
 
 			{kontaktType === 'NY_PERSON' && (
-				<PdlPersonExpander
-					path={`${personPath}.nyKontaktperson`}
-					label="KONTAKTPERSON"
-					formikBag={formikBag}
-					isExpanded={!isEmpty(_get(formikBag.values, `${personPath}.nyKontaktperson`))}
-				/>
+				<PdlNyPerson nyPersonPath={`${personPath}.nyKontaktperson`} formikBag={formikBag} />
 			)}
 		</Kategori>
 	)
