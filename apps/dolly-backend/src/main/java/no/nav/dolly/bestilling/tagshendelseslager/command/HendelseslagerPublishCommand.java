@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
-@Order(1)
+@Order(2)
 @RequiredArgsConstructor
 public class HendelseslagerPublishCommand implements Callable<Mono<String>> {
 

@@ -9,12 +9,14 @@ import java.util.Optional;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
 
 @UtilityClass
 public class RelasjonerUtils {
 
     private static final String FORELDER_BARN_RELASJON_PATH = "hentPerson.forelderBarnRelasjon";
     private static final String RELATERT_PERSONS_ROLLE = "relatertPersonsRolle";
+    private static final String SIVILSTAND_PATH = "hentPerson.sivilstand";
 
     public static void addRelasjonerQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
         addRelasjonQueries(queryBuilder, search);
@@ -44,7 +46,7 @@ public class RelasjonerUtils {
                 .flatMap(value -> Optional.ofNullable(value.getType()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.sivilstand", "type", value));
+                        queryBuilder.must(nestedHistoriskQuery(SIVILSTAND_PATH, "type", value, false));
                     }
                 });
     }

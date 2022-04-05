@@ -10,6 +10,8 @@ export const Relasjoner = () => (
 			options={[
 				{ value: 'GIFT', label: 'Gift' },
 				{ value: 'UGIFT', label: 'Ugift' },
+				{ value: 'SEPARERT', label: 'Separert' },
+				{ value: 'SKILT', label: 'Skilt' },
 			]}
 			size="medium"
 		/>
