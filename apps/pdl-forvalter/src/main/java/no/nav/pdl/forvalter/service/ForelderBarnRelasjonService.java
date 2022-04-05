@@ -6,7 +6,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -220,10 +220,10 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private LocalDateTime getLastFlyttedato(PersonDTO person) {
 
-        return person.getBostedsadresse().stream().findFirst()
-                .filter(adr -> nonNull(adr.getGyldigFraOgMed()))
-                .map(adr -> adr.getGyldigTilOgMed())
-                .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
+        return person.getBostedsadresse().stream()
+                .map(BostedadresseDTO::getGyldigFraOgMed)
+                .findFirst()
+                .orElse(FoedselsdatoUtility.getFoedselsdato(person));
     }
 
     private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {

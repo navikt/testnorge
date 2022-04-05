@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -19,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Service
@@ -78,7 +78,7 @@ public class SwopIdentsService {
 
         person1.getPerson().setNyident(null);
 
-        if (person1.getPerson().getSivilstand().isEmpty() && isMyndig(person1.getIdent())) {
+        if (person1.getPerson().getSivilstand().isEmpty() && FoedselsdatoUtility.isMyndig(person1.getPerson())) {
             person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
                     .id(1)
                     .type(Sivilstand.UGIFT)
