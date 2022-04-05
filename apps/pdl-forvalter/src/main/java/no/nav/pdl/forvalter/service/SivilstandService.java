@@ -145,7 +145,11 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
                     sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
             createRelatertSivilstand(sivilstand, hovedperson.getIdent());
+
+        } else {
+            sivilstand.setRelatertVedSivilstand(null);
         }
+
         return true;
     }
 
