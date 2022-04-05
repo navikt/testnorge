@@ -3,10 +3,9 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -72,10 +71,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         }
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
-            statsborgerskap.setGyldigFraOgMed(person.getFoedsel().stream()
-                    .map(FoedselDTO::getFoedselsdato)
-                    .findFirst()
-                    .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
+            statsborgerskap.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
         }
     }
 }

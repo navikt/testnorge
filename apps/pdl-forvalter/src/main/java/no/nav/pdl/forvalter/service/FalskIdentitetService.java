@@ -5,11 +5,10 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -142,11 +141,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
             if (isNull(identitet.getRettIdentitetVedOpplysninger().getFoedselsdato())) {
                 identitet.getRettIdentitetVedOpplysninger().setFoedselsdato(
-                        person.getFoedsel().stream()
-                                .map(FoedselDTO::getFoedselsdato)
-                                .findFirst()
-                                .orElse(DatoFraIdentUtility.getDato(person.getIdent())
-                                        .atStartOfDay()));
+                        FoedselsdatoUtility.getFoedselsdato(person));
             }
             if (isNull(identitet.getRettIdentitetVedOpplysninger().getKjoenn())) {
                 identitet.getRettIdentitetVedOpplysninger().setKjoenn(

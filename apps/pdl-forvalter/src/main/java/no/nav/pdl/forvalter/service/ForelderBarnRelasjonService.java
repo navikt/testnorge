@@ -6,11 +6,10 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -224,10 +223,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         return person.getBostedsadresse().stream()
                 .map(BostedadresseDTO::getGyldigFraOgMed)
                 .findFirst()
-                .orElse(person.getFoedsel().stream()
-                        .map(FoedselDTO::getFoedselsdato)
-                        .findFirst()
-                        .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
+                .orElse(FoedselsdatoUtility.getFoedselsdato(person));
     }
 
     private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
