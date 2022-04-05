@@ -5,19 +5,21 @@ import { FormikProps } from 'formik'
 import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 
 interface PdlPersonValues {
-	path: string
+	nyPersonPath: string
+	eksisterendePersonPath: string
 	label: string
 	formikBag: FormikProps<{}>
 	kanSettePersondata?: boolean
 	erNyIdent?: boolean
 	isExpanded?: boolean
+	eksisterendePersonValg?: any
 }
 
 export const PdlPersonExpander = ({
-	path,
+	nyPersonPath,
+	eksisterendePersonPath,
 	label,
 	formikBag,
-	kanSettePersondata = true,
 	erNyIdent = false,
 	isExpanded = false,
 }: PdlPersonValues) => {
@@ -28,7 +30,7 @@ export const PdlPersonExpander = ({
 		} else {
 			setSkjulPersonValg()
 		}
-	}, [isExpanded])
+	}, [])
 
 	return (
 		<div className="flexbox--full-width">
@@ -37,14 +39,20 @@ export const PdlPersonExpander = ({
 					SKJUL VALG FOR {label}
 				</Button>
 			) : (
-				<Button onClick={setVisPersonValg} kind={'expand'} disabled={!kanSettePersondata}>
+				<Button onClick={setVisPersonValg} kind={'expand'}>
 					VIS VALG FOR {label}
 				</Button>
 			)}
 			{visPersonValg && (
-				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<PdlPersonForm path={path} formikBag={formikBag} erNyIdent={erNyIdent} />
-				</div>
+				<>
+					<PdlPersonForm
+						nyPersonPath={nyPersonPath}
+						eksisterendePersonPath={eksisterendePersonPath}
+						label={label}
+						formikBag={formikBag}
+						erNyIdent={erNyIdent}
+					/>
+				</>
 			)}
 		</div>
 	)

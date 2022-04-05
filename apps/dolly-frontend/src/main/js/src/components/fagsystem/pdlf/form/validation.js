@@ -76,7 +76,7 @@ const testForeldreansvar = (val) => {
 			) {
 				feilmelding = 'Barn med foreldrerolle mor eller medmor finnes ikke'
 			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+			if (!barn?.some((a) => !a.partnerErIkkeForelder)) {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
@@ -91,16 +91,16 @@ const testForeldreansvar = (val) => {
 			) {
 				feilmelding = 'Barn med foreldrerolle far finnes ikke'
 			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+			if (!barn?.some((a) => !a.partnerErIkkeForelder)) {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
 		if (selected === 'FELLES') {
-			if (!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) {
+			if (!gyldigeSivilstander?.some((a) => sivilstander?.includes(a))) {
 				feilmelding =
 					'Partner med sivilstand gift, registrert partner, separert eller separert partner finnes ikke'
 			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+			if (!barn?.some((a) => !a.partnerErIkkeForelder)) {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}

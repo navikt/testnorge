@@ -103,7 +103,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				startOpen={() => erForste(formikBag.values, panelPaths)}
 			>
 				{!personFoerLeggTil && (
-					<Kategori title="Alder" vis={alderPaths}>
+					<Kategori title="Alder (grunnlag for fødselsnummer)" vis={alderPaths}>
 						<Alder formikBag={formikBag} />
 					</Kategori>
 				)}
