@@ -1,23 +1,20 @@
 import * as React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
-import Loading from '~/components/ui/loading/Loading'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 import _get from 'lodash/get'
 
 interface FullmaktForm {
 	formikBag: FormikProps<{}>
-	identOptions: Array<Option>
-	loadingOptions: boolean
 }
 
-export const Fullmakt = ({ formikBag, identOptions, loadingOptions }: FullmaktForm) => {
+export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
@@ -44,20 +41,15 @@ export const Fullmakt = ({ formikBag, identOptions, loadingOptions }: FullmaktFo
 						</div>
 						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-						{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
-						{identOptions?.length > 0 && (
-							<FormikSelect
-								name={`${path}.motpartsPersonident`}
-								label="Fullmektig"
-								options={identOptions}
-								size={'xlarge'}
-							/>
-						)}
 						<PdlPersonExpander
-							path={`${path}.nyFullmektig`}
+							nyPersonPath={`${path}.nyFullmektig`}
+							eksisterendePersonPath={`${path}.motpartsPersonident`}
 							label={'FULLMEKTIG'}
 							formikBag={formikBag}
-							isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyFullmektig`))}
+							isExpanded={
+								!isEmpty(_get(formikBag.values, `${path}.nyFullmektig`)) ||
+								_get(formikBag.values, `${path}.motpartsPersonident`) !== null
+							}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</div>

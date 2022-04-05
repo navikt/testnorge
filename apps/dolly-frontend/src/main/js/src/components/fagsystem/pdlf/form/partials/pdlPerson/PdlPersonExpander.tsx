@@ -9,10 +9,8 @@ interface PdlPersonValues {
 	eksisterendePersonPath: string
 	label: string
 	formikBag: FormikProps<{}>
-	kanSettePersondata?: boolean
 	erNyIdent?: boolean
 	isExpanded?: boolean
-	eksisterendePersonValg?: any
 }
 
 export const PdlPersonExpander = ({
