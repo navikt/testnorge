@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { Organisasjon } from '~/service/services/organisasjonFasteDataService/OrganisasjonFasteDataService'
 import { createLoadingSelector } from '~/ducks/loading'
 import { actions } from '~/ducks/organisasjon'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/egneOrganisasjoner'
+import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 
 const loadingSelector = createLoadingSelector([actions.getOrganisasjonerPaaBruker])
 

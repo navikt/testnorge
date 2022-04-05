@@ -140,6 +140,7 @@ export const ArbeidsforholdForm = ({
 						formikBag={formikBag}
 						handleChange={onChangeLenket('arbeidsgiver.orgnummer')}
 						warningMessage={warningMessage}
+						filterValidEnhetstyper={true}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.felles && (

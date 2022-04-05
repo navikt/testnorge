@@ -5,6 +5,7 @@ import { handleActions } from '../utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Dispatch } from 'redux'
+import { getAdresseWithAdressetype } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 
 const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	for (let enhet of enheter) {
@@ -58,22 +59,21 @@ export default handleActions(
 		) {
 			const response = action.payload
 			if (response.length === 0) return []
-			state.egneOrganisasjoner = []
-			// state.egneOrganisasjoner = response.map((org: Organisasjon) => {
-			// 	const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
-			// 	const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
-			//
-			// 	return {
-			// 		value: org.organisasjonsnummer,
-			// 		label: `${org.organisasjonsnummer} (${org.enhetstype}) - ${org.organisasjonsnavn}`,
-			// 		orgnr: org.organisasjonsnummer,
-			// 		navn: org.organisasjonsnavn,
-			// 		enhetstype: org.enhetstype,
-			// 		forretningsAdresse: fAdresser.length > 0 ? fAdresser[0] : null,
-			// 		postAdresse: pAdresser.length > 0 ? pAdresser[0] : null,
-			// 		juridiskEnhet: getJuridiskEnhet(org.organisasjonsnummer, response),
-			// 	}
-			// })
+			state.egneOrganisasjoner = response.map((org: Organisasjon) => {
+				const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
+				const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
+
+				return {
+					value: org.organisasjonsnummer,
+					label: `${org.organisasjonsnummer} (${org.enhetstype}) - ${org.organisasjonsnavn}`,
+					orgnr: org.organisasjonsnummer,
+					navn: org.organisasjonsnavn,
+					enhetstype: org.enhetstype,
+					forretningsAdresse: fAdresser.length > 0 ? fAdresser[0] : null,
+					postAdresse: pAdresser.length > 0 ? pAdresser[0] : null,
+					juridiskEnhet: getJuridiskEnhet(org.organisasjonsnummer, response),
+				}
+			})
 		},
 	},
 	initialState

@@ -3,11 +3,13 @@ import _set from 'lodash/fp/set'
 import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
 import _get from 'lodash/get'
+import { useDispatch } from 'react-redux'
 
 export const stateModifierFns = (initial, setInitial, options = null) => {
 	const opts = options
 	const set = (path, value) => setInitial(_set(path, value, initial))
 	const has = (path) => _has(initial, path)
+	const dispatch = useDispatch()
 	const del = (path) => {
 		let newObj = _omit(initial, path)
 
@@ -47,7 +49,7 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 	}
 
 	return (fn) => {
-		const attrs = fn({ set, setMulti, del, has, opts, initial, setInitial }) || {}
+		const attrs = fn({ set, setMulti, del, has, dispatch, opts, initial, setInitial }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
