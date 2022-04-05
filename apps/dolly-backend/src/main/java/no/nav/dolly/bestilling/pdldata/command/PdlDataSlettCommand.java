@@ -30,7 +30,7 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
         return webClient
                 .delete()
                 .uri(PDL_FORVALTER_URL, ident)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(Void.class)

@@ -34,7 +34,7 @@ public class PdlDataSlettUtenomCommand implements Callable<Flux<Void>> {
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_URL)
                         .queryParam(IDENTS, identer)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(Void.class)
