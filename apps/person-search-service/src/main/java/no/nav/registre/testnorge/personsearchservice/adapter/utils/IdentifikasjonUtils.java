@@ -7,7 +7,9 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
 
 @UtilityClass
 public class IdentifikasjonUtils {
@@ -15,6 +17,8 @@ public class IdentifikasjonUtils {
     private static final String NO_VALUE = "INGEN";
     private static final String METADATA = "metadata";
     private static final String ADRESSEBESKYTTELSE_PATH = "hentPerson.adressebeskyttelse";
+    private static final String KJOENN_PATH = "hentPerson.kjoenn";
+    private static final String IDENTIFIKATOR_PATH = "hentPerson.folkeregisteridentifikator";
 
     public static void addIdentifikasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addIdentQuery(queryBuilder, search);
@@ -29,7 +33,7 @@ public class IdentifikasjonUtils {
                 .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.folkeregisteridentifikator", "type", value));
+                        queryBuilder.must(nestedHistoriskQuery(IDENTIFIKATOR_PATH, "type", value, false));
                     }
                 });
     }
@@ -55,7 +59,7 @@ public class IdentifikasjonUtils {
                         if (value.equals(NO_VALUE)) {
                             queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA));
                         } else {
-                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value));
+                            queryBuilder.must(nestedHistoriskQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value, false));
                         }
                     }
                 });
@@ -65,7 +69,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.kjoenn", "kjoenn", value));
+                        queryBuilder.must(nestedHistoriskQuery(KJOENN_PATH, "kjoenn", value, false));
                     }
                 });
     }
