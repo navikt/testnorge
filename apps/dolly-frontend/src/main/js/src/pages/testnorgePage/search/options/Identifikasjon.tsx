@@ -6,7 +6,6 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 interface IdentifikasjonProps {
 	formikBag: FormikProps<{}>
-	path: string
 }
 
 const options = {
@@ -25,40 +24,42 @@ const options = {
 	],
 }
 
+const identifikasjonPath = 'personinformasjon.identifikasjon'
+const kjoennPath = 'personinformasjon.kjoenn'
+
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	formikBag,
-	path,
 }: IdentifikasjonProps) => {
 	return (
 		<section>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Identifikatortype'}
-				path={`${path}.identtype`}
+				path={`${identifikasjonPath}.identtype`}
 				legend={'Velg identifikatortype'}
 				options={options.identtype}
 			/>
 			<FormikSelect
-				name={`${path}.adressebeskyttelse`}
+				name={`${identifikasjonPath}.adressebeskyttelse`}
 				label="Adressebeskyttelse"
 				options={options.adressebeskyttelse}
 				size="medium"
 			/>
 			<div className="options-title">Identitet</div>
 			<FormikCheckbox
-				name="personinformasjon.identifikasjon.falskIdentitet"
+				name={`${identifikasjonPath}.falskIdentitet`}
 				label="Har falsk identitet"
 				size="medium"
 			/>
 			<FormikCheckbox
-				name="personinformasjon.identifikasjon.utenlandskIdentitet"
+				name={`${identifikasjonPath}.utenlandskIdentitet`}
 				label="Har utenlandsk identitet"
 				size="medium"
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
-				name={'Kjønn'}
-				path={`${path}.kjoenn`}
+				name={kjoennPath}
+				path={kjoennPath}
 				legend={'Velg kjønn'}
 				options={options.kjoenn}
 			/>
@@ -71,5 +72,5 @@ export const IdentifikasjonPaths = {
 	'personinformasjon.identifikasjon.utenlandskIdentitet': 'boolean',
 	'personinformasjon.identifikasjon.identtype': 'string',
 	'personinformasjon.identifikasjon.adressebeskyttelse': 'string',
-	'personinformasjon.identifikasjon.kjoenn': 'string',
+	'personinformasjon.kjoenn': 'string',
 }
