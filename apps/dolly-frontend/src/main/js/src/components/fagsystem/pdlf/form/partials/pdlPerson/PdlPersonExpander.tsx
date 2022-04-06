@@ -3,13 +3,14 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
 import { FormikProps } from 'formik'
 import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
+import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
 
 interface PdlPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	label: string
 	formikBag: FormikProps<{}>
-	erNyIdent?: boolean
+	nyIdentValg?: NyIdent
 	isExpanded?: boolean
 }
 
@@ -18,7 +19,7 @@ export const PdlPersonExpander = ({
 	eksisterendePersonPath,
 	label,
 	formikBag,
-	erNyIdent = false,
+	nyIdentValg = null,
 	isExpanded = false,
 }: PdlPersonValues) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(isExpanded)
@@ -48,7 +49,7 @@ export const PdlPersonExpander = ({
 						eksisterendePersonPath={eksisterendePersonPath}
 						label={label}
 						formikBag={formikBag}
-						erNyIdent={erNyIdent}
+						nyIdentValg={nyIdentValg}
 					/>
 				</>
 			)}

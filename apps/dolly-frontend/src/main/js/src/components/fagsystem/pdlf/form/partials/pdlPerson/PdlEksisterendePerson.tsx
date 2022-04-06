@@ -8,6 +8,7 @@ import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/s
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
+import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
@@ -15,6 +16,7 @@ interface PdlEksisterendePersonValues {
 	label: string
 	formikBag?: FormikProps<{}>
 	disabled?: boolean
+	nyIdentValg?: NyIdent
 }
 
 export const PdlEksisterendePerson = ({
@@ -23,6 +25,7 @@ export const PdlEksisterendePerson = ({
 	label,
 	formikBag,
 	disabled = false,
+	nyIdentValg = null,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { gruppeId } = opts
@@ -41,7 +44,9 @@ export const PdlEksisterendePerson = ({
 		}
 	}, [])
 
-	const hasNyPersonValues = nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
+	const hasNyPersonValues = nyIdentValg
+		? !isEmpty(nyIdentValg)
+		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
 
 	return (
 		<>
