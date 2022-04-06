@@ -17,7 +17,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
-@Order(3)
+@Order(5)
 @Service
 @RequiredArgsConstructor
 public class PdlDataClient implements ClientRegister {
@@ -44,6 +44,6 @@ public class PdlDataClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        pdlDataConsumer.slettPdl(identer);
+        // Sletting gjøres nå i PersonService
     }
 }

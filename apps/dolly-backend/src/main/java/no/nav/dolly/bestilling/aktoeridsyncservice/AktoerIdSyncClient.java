@@ -17,7 +17,7 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service
-@Order(6)
+@Order(7)
 @RequiredArgsConstructor
 public class AktoerIdSyncClient implements ClientRegister {
 

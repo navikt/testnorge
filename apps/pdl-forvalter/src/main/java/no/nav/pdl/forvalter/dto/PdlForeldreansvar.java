@@ -27,7 +27,6 @@ public class PdlForeldreansvar extends DbVersjonDTO {
     private String ansvarlig;
     private PersonRequestDTO nyAnsvarlig;
     private RelatertBiPersonDTO ansvarligUtenIdentifikator;
-    private Folkeregistermetadata folkeregistermetadata;
 
     public enum Ansvar {FELLES, MOR, FAR, MEDMOR, ANDRE, UKJENT}
 

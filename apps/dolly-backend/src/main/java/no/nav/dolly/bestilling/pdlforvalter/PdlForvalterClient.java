@@ -61,7 +61,7 @@ import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
-@Order(2)
+@Order(6)
 @Service
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {
@@ -123,15 +123,7 @@ public class PdlForvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
-            identer.stream()
-                    // Testnorge identer skal ikke slettes
-                    .filter(ident -> Integer.parseInt(ident.substring(2, 3)) < 8)
-                    .forEach(pdlForvalterConsumer::deleteIdent);
-
-        } catch (RuntimeException e) {
-            log.error(e.getMessage(), e);
-        }
+        // Sletting blir nå utført fra PersonService
     }
 
     private PersonDTO getPdldataHovedIdent(String ident) {

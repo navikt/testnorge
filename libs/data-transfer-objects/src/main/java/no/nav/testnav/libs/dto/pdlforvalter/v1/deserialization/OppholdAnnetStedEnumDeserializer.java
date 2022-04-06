@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
-
 public class OppholdAnnetStedEnumDeserializer extends StdDeserializer<OppholdAnnetSted> {
 
     public OppholdAnnetStedEnumDeserializer() {
@@ -22,7 +21,7 @@ public class OppholdAnnetStedEnumDeserializer extends StdDeserializer<OppholdAnn
         var node = (TextNode) jsonParser.getCodec().readTree(jsonParser);
 
         var words = StringUtils.splitByCharacterTypeCamelCase(node.asText());
-        var name = String.join("_", words).toUpperCase();
+        var name = String.join("_", words).toUpperCase().replaceAll("(_)+", "_");
 
         return OppholdAnnetSted.valueOf(name);
     }

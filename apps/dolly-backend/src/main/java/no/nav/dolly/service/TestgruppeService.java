@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
@@ -124,6 +125,7 @@ public class TestgruppeService {
     public void deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
 
+        personService.recyclePersoner(mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class));
         transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
                 .map(Testident::getIdent)
                 .collect(Collectors.toList()));
@@ -131,7 +133,6 @@ public class TestgruppeService {
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         testgruppeRepository.deleteTestgruppeById(gruppeId);
-        personService.recyclePersoner(testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors.toList()));
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {

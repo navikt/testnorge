@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -33,8 +34,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static java.lang.String.format;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -54,7 +56,7 @@ public class TestpersonController {
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
@@ -88,7 +90,7 @@ public class TestpersonController {
     @Operation(description = "Koble eksisterende personer i Dolly ")
     @PutMapping("/{ident}/relasjon")
     @ResponseStatus(HttpStatus.OK)
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     public RsBestillingStatus koblePerson(@Parameter(description = "Ident for hovedperson", required = true)
                                           @PathVariable("ident") String ident,
                                           @RequestBody RsDollyRelasjonRequest request) {
@@ -100,16 +102,19 @@ public class TestpersonController {
     }
 
     @Operation(description = "Slett test ident")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {
 
-        if (identService.slettTestident(ident) == 0) {
+        if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
+        personService.recyclePersoner(mapperFacade.mapAsList(
+                List.of(identService.getTestIdent(ident)), TestidentDTO.class));
+
         bestillingService.slettBestillingByTestIdent(ident);
-        personService.recyclePersoner(singletonList(ident));
+        identService.slettTestident(ident);
     }
 
     @Operation(description = "Naviger til ønsket testperson")

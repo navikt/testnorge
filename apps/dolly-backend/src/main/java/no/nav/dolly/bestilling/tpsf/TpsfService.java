@@ -49,7 +49,6 @@ public class TpsfService {
     private static final String TPSF_CHECK_IDENT_STATUS = "checkpersoner";
     private static final String TPSF_UPDATE_PERSON_URL = TPSF_BASE_URL + "/leggtilpaaperson";
     private static final String TPSF_CREATE_ALIASES = TPSF_BASE_URL + "/aliaser";
-    private static final String TPSF_DELETE_PERSON_URL = TPSF_BASE_URL + "/person";
     private static final String TPSF_PERSON_RELASJON = TPSF_BASE_URL + "/relasjonperson";
     private static final String TPSF_IMPORTER_PERSON = TPSF_BASE_URL + "/import/lagre";
 
@@ -76,21 +75,6 @@ public class TpsfService {
         return error instanceof WebClientResponseException webClientResponseException ?
                 webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tpsf_deletePersons"})
-    public Object deletePerson(String ident) {
-
-        return webClient.delete().uri(uriBuilder -> uriBuilder
-                        .path(TPSF_DELETE_PERSON_URL)
-                        .queryParam(TPSF_IDENT_QUERY, ident).build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .bodyToMono(Object.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
     }
 
     @Timed(name = "providers", tags = {"operation", "tpsf_createAliases"})

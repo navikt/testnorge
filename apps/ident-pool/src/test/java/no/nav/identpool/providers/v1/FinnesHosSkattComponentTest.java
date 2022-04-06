@@ -58,8 +58,8 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        assertTrue(identRepository.findTopByPersonidentifikator(DNR).isFinnesHosSkatt());
-        assertThat(identRepository.findTopByPersonidentifikator(DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertTrue(identRepository.findByPersonidentifikator(DNR).isFinnesHosSkatt());
+        assertThat(identRepository.findByPersonidentifikator(DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 
     @Test
@@ -71,7 +71,7 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        assertTrue(identRepository.findTopByPersonidentifikator(NYTT_DNR).isFinnesHosSkatt());
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertTrue(identRepository.findByPersonidentifikator(NYTT_DNR).isFinnesHosSkatt());
+        assertThat(identRepository.findByPersonidentifikator(NYTT_DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 }

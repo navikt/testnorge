@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -30,7 +31,6 @@ import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Slf4j
@@ -100,7 +100,7 @@ public class CreatePersonService {
                 .block();
 
         mergedPerson.setIdent(delivery.stream()
-                .filter(list -> list.stream().anyMatch(item -> item instanceof IdentDTO))
+                .filter(list -> list.stream().anyMatch(IdentDTO.class::isInstance))
                 .flatMap(Collection::stream)
                 .map(IdentDTO.class::cast)
                 .findFirst().get().getIdent());
@@ -115,7 +115,7 @@ public class CreatePersonService {
                 .collectList()
                 .block();
 
-        if (isMyndig(mergedPerson.getIdent())) {
+        if (FoedselsdatoUtility.isMyndig(mergedPerson)) {
             mergedPerson.getSivilstand().add(getUgift());
         }
 

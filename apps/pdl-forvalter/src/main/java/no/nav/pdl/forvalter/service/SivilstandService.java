@@ -5,11 +5,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -32,6 +31,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -48,23 +48,22 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
 
-    private static LocalDateTime getFoedselsdato(PersonDTO person) {
-
-        return person.getFoedsel().stream()
-                .map(FoedselDTO::getFoedselsdato)
-                .findFirst()
-                .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
-    }
-
     public List<SivilstandDTO> convert(PersonDTO person) {
 
-        for (var type : person.getSivilstand()) {
+        var iterator = person.getSivilstand().iterator();
+
+        while (iterator.hasNext()) {
+
+            var type = iterator.next();
 
             if (isTrue(type.getIsNew())) {
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                handle(type, person);
+
+                if (!handle(type, person)) {
+                    iterator.remove();
+                }
             }
         }
 
@@ -83,7 +82,17 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         }
     }
 
-    private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private boolean handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+
+        if (isNull(sivilstand.getType())) {
+
+            if (FoedselsdatoUtility.isMyndig(hovedperson)) {
+                sivilstand.setType(UGIFT);
+
+            } else {
+                return false;
+            }
+        }
 
         if (sivilstand.isGift() || sivilstand.isSeparert()) {
 
@@ -137,6 +146,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                     sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
             createRelatertSivilstand(sivilstand, hovedperson.getIdent());
         }
+        return true;
     }
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
@@ -157,11 +167,11 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
 
         var tidligsteSivilstandDato = person.getSivilstand().stream()
-                        .map(SivilstandDTO::getSivilstandsdato)
-                                .filter(Objects::nonNull)
-                                        .min(LocalDateTime::compareTo);
+                .map(SivilstandDTO::getSivilstandsdato)
+                .filter(Objects::nonNull)
+                .min(LocalDateTime::compareTo);
 
-        var myndighetsdato = getFoedselsdato(person).plusYears(18);
+        var myndighetsdato = FoedselsdatoUtility.getMyndighetsdato(person);
 
         person.getSivilstand().forEach(stand -> {
             if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {
