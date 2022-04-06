@@ -16,6 +16,12 @@ import static java.util.Objects.nonNull;
 @UtilityClass
 public class QueryUtils {
 
+    public static final String METADATA_FIELD = "metadata";
+    public static final String HISTORISK_PATH = ".metadata.historisk";
+
+    public static final String YES = "Y";
+    public static final String NO = "N";
+
     public static NestedQueryBuilder nestedMatchQuery(String path, String field, String value) {
         return QueryBuilders.nestedQuery(
                 path,
@@ -51,7 +57,7 @@ public class QueryUtils {
     private static BoolQueryBuilder boolMatchQuery(String path, String field, String value) {
         return QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchQuery(path + "." + field, value))
-                .must(QueryBuilders.termQuery(path + ".metadata.historisk", false));
+                .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false));
 
     }
 
