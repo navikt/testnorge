@@ -83,8 +83,7 @@ consumers:
   testnav-inst-proxy:
     name: testnav-testnorge-inst-proxy
     namespace: dolly
-    #url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
-    url: https://testnav-testnorge-inst-proxy.dev.intern.nav.no
+    url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-statisk-data-forvalter-proxy:
     name: testnav-statisk-data-forvalter-proxy

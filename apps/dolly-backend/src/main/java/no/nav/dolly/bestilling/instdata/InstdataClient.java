@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -14,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -80,10 +83,14 @@ public class InstdataClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        List<String> environments = instdataConsumer.getMiljoer();
-        environments.forEach(environment ->
-                identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
-        );
+        instdataConsumer.deleteInstdata(identer)
+                .subscribe(response -> log.info("Slettet antall {} identer fra Instdata",
+                        response.stream().collect(Collectors.groupingBy(DeleteResponseDTO::getEnvironment))
+                                .entrySet()
+                                .stream()
+                                .findFirst()
+                                .orElse(Map.entry("miljoe", Collections.emptyList()))
+                                .getValue().size()));
     }
 
     private List<Instdata> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
