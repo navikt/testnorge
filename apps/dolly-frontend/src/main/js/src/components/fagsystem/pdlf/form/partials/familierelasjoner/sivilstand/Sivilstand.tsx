@@ -15,7 +15,7 @@ interface SivilstandForm {
 	formikBag: FormikProps<{}>
 }
 
-const gyldigeSivilstander = ['GIFT', 'SEPARERT']
+const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
 export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 	const handleTypeChange = (selected: any, path: string) => {
