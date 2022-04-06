@@ -8,9 +8,8 @@ public class WebClientFilter {
 
     public static boolean is5xxException(Throwable throwable) {
 
-        return (throwable instanceof WebClientResponseException wce &&
-                wce.getStatusCode().is5xxServerError()) ||
-                !(throwable instanceof NullPointerException);
+        return throwable instanceof WebClientResponseException wce &&
+                wce.getStatusCode().is5xxServerError();
     }
 
     public static String getMessage(Throwable throwable) {

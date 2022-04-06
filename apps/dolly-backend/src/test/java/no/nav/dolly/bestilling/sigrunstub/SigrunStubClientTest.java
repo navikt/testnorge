@@ -14,9 +14,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -61,6 +63,7 @@ public class SigrunStubClientTest {
     public void gjenopprett_sigrunstub_feiler() {
 
         BestillingProgress progress = new BestillingProgress();
+        when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenThrow(HttpClientErrorException.class);
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
 
@@ -83,6 +86,8 @@ public class SigrunStubClientTest {
 
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(ResponseEntity.ok(new SigrunResponse()));
         when(sigrunStubResponseHandler.extractResponse(any())).thenReturn("OK");
+
+        when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
 
         sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
