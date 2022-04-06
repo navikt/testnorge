@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useBoolean, useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
@@ -57,16 +57,30 @@ export const PersonVisning = ({
 
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
+	const mountedRef = useRef(true)
+
+	const execute = useCallback(() => {
+		const pdlPerson = async () => {
+			const person = await DollyApi.getPersonFraPdl(ident.ident)
+				.then((response) => {
+					return response.data?.data
+				})
+				.catch((e) => {
+					return null
+				})
+			if (mountedRef.current) {
+				setPdlData(person)
+				setPdlLoading(false)
+			}
+		}
+		return pdlPerson()
+	}, [ident])
 
 	useEffect(() => {
-		DollyApi.getPersonFraPdl(ident.ident)
-			.then((response) => {
-				setPdlData(response.data?.data)
-				setPdlLoading(false)
-			})
-			.catch((e) => {
-				setPdlLoading(false)
-			})
+		execute()
+		return () => {
+			mountedRef.current = false
+		}
 	}, [])
 
 	return (

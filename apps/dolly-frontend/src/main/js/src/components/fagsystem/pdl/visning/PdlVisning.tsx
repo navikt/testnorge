@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
@@ -40,22 +40,31 @@ export const PdlVisning = ({ pdlData, loading, environments }: PdlVisningProps) 
 
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
+	const mountedRef = useRef(true)
 
-	useEffect(() => {
-		if (environments && environments.length > 0) {
-			setTpsMessagingLoading(true)
-			const tpsMessaging = async () => {
-				const resp = await TpsMessagingApi.getTpsPersonInfo(getIdent(pdlData), environments[0])
-					.then((response: any) => {
-						return response?.data[0]?.person
-					})
-					.catch((e: Error) => {
-						return null
-					})
+	const execute = useCallback(() => {
+		const tpsMessaging = async () => {
+			const resp = await TpsMessagingApi.getTpsPersonInfo(getIdent(pdlData), environments[0])
+				.then((response: any) => {
+					return response?.data[0]?.person
+				})
+				.catch((e: Error) => {
+					return null
+				})
+			if (mountedRef.current) {
 				setTpsMessagingData(resp)
 				setTpsMessagingLoading(false)
 			}
-			tpsMessaging()
+		}
+		return tpsMessaging()
+	}, [environments])
+
+	useEffect(() => {
+		if (!loading && environments && environments.length > 0) {
+			execute()
+		}
+		return () => {
+			mountedRef.current = false
 		}
 	}, [])
 

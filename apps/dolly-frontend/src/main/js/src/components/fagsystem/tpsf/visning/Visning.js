@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import _has from 'lodash/has'
 import {
 	Boadresse,
@@ -21,26 +21,35 @@ import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Tele
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
 	if (!data) return null
-
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
+	const mountedRef = useRef(true)
 
-	useEffect(() => {
-		if (environments && environments.length > 0) {
-			const tpsMessaging = async () => {
-				setTpsMessagingLoading(true)
-				const ident = data?.ident ? data.ident : pdlData?.ident
-				const resp = await TpsMessagingApi.getTpsPersonInfo(ident, environments[0])
-					.then((response) => {
-						return response?.data[0]?.person
-					})
-					.catch((e) => {
-						return null
-					})
+	const execute = useCallback(() => {
+		const tpsMessaging = async () => {
+			setTpsMessagingLoading(true)
+			const ident = data?.ident ? data.ident : pdlData?.ident
+			const resp = await TpsMessagingApi.getTpsPersonInfo(ident, environments[0])
+				.then((response) => {
+					return response?.data[0]?.person
+				})
+				.catch((e) => {
+					return null
+				})
+			if (mountedRef.current) {
 				setTpsMessagingData(resp)
 				setTpsMessagingLoading(false)
 			}
-			tpsMessaging()
+		}
+		return tpsMessaging()
+	}, [environments])
+
+	useEffect(() => {
+		if (environments && environments.length > 0) {
+			execute()
+		}
+		return () => {
+			mountedRef.current = false
 		}
 	}, [])
 
