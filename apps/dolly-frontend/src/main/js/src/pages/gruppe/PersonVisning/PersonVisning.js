@@ -106,7 +106,13 @@ export const PersonVisning = ({
 				{ident.master !== 'PDL' && (
 					<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
-				{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
+				{ident.master === 'PDL' && (
+					<PdlVisning
+						pdlData={pdlData}
+						loading={pdlLoading}
+						environments={bestilling?.environments}
+					/>
+				)}
 				<AaregVisning liste={data.aareg} loading={loading.aareg} />
 				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />

@@ -7,6 +7,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Innvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
 import { Utvandring } from '~/components/fagsystem/pdlf/visning/partials/Utvandring'
+import { PdlSpraak } from '~/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlSpraak'
 
 const Statsborgerskap = ({ statsborgerskap }) => {
 	if (statsborgerskap) {
@@ -32,7 +33,12 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 	return null
 }
 
-export const PdlNasjonalitet = ({ data, visTittel = true }) => {
+export const PdlNasjonalitet = ({
+	data,
+	tpsMessagingData,
+	tpsMessagingLoading = false,
+	visTittel = true,
+}) => {
 	if (!data) return null
 	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge, innflytting, utflytting } = data
 	if (
@@ -58,6 +64,8 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 					<Statsborgerskap statsborgerskap={statsborgerskap?.[0]} />
 				)}
 			</div>
+
+			<PdlSpraak data={tpsMessagingData} loading={tpsMessagingLoading} />
 
 			{(innflyttingTilNorge?.length > 0 || innflytting?.length > 0) && (
 				<Innvandring data={innflyttingTilNorge || innflytting} />

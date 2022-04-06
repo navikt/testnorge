@@ -20,15 +20,29 @@ import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/Pd
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
+	if (!data) return null
+
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
+	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
+
 	useEffect(() => {
 		if (environments && environments.length > 0) {
-			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) =>
-				setTpsMessagingData(response?.data[0]?.person)
-			)
+			const tpsMessaging = async () => {
+				setTpsMessagingLoading(true)
+				const ident = data?.ident ? data.ident : pdlData?.ident
+				const resp = await TpsMessagingApi.getTpsPersonInfo(ident, environments[0])
+					.then((response) => {
+						return response?.data[0]?.person
+					})
+					.catch((e) => {
+						return null
+					})
+				setTpsMessagingData(resp)
+				setTpsMessagingLoading(false)
+			}
+			tpsMessaging()
 		}
 	}, [])
-	if (!data) return null
 
 	const harPdlAdresse =
 		_has(pdlData, 'person.bostedsadresse') ||
@@ -45,12 +59,20 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 				{hasTpsfData ? (
 					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
 				) : (
-					<PdlPersonInfo data={pdlData} />
+					<PdlPersonInfo
+						data={pdlData}
+						tpsMessagingData={tpsMessagingData}
+						tpsMessagingLoading={tpsMessagingLoading}
+					/>
 				)}
 				{hasTpsfData ? (
 					<Nasjonalitet data={data} pdlData={pdlData} />
 				) : (
-					<PdlNasjonalitet data={pdlData} />
+					<PdlNasjonalitet
+						data={pdlData}
+						tpsMessagingData={tpsMessagingData}
+						tpsMessagingLoading={tpsMessagingLoading}
+					/>
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}
