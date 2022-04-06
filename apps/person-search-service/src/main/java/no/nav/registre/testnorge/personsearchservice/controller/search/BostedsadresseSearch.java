@@ -11,5 +11,5 @@ public class BostedsadresseSearch {
     String kommunenummer;
     String postnummer;
     Boolean ukjentBosted;
-    Boolean utenlandskBosted;
+    Boolean utenlandskAdresse;
 }

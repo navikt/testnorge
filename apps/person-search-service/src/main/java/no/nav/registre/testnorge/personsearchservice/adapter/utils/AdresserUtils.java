@@ -60,14 +60,13 @@ public class AdresserUtils {
     }
 
     private static void addUtenlandskBostedQuery(BoolQueryBuilder queryBuilder, BostedsadresseSearch bostedsadresse) {
-        Optional.ofNullable(bostedsadresse.getUtenlandskBosted())
+        Optional.ofNullable(bostedsadresse.getUtenlandskAdresse())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
                     }
                 });
     }
-
 
 }
 
