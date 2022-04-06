@@ -9,4 +9,5 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class AdresserSearch {
     BostedsadresseSearch bostedsadresse;
+    KontaktadresseSearch kontaktadresse;
 }

@@ -61,7 +61,7 @@ public class QueryUtils {
         }
     }
 
-    public static NestedQueryBuilder nestedShouldQuery(
+    public static NestedQueryBuilder nestedShouldMatchQuery(
             String path,
             List<String> fields,
             String value,
@@ -72,6 +72,26 @@ public class QueryUtils {
 
         for (String field : fields) {
             boolQuery.should(QueryBuilders.matchQuery(path + field, value));
+        }
+        if (historisk) {
+            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, false));
+        }
+        boolQuery.minimumShouldMatch(minimumShould);
+
+        return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
+    }
+
+
+    public static NestedQueryBuilder nestedShouldExistQuery(
+            String path,
+            List<String> fields,
+            int minimumShould,
+            boolean historisk
+    ) {
+        var boolQuery = QueryBuilders.boolQuery();
+
+        for (String field : fields) {
+            boolQuery.should(QueryBuilders.existsQuery(path + field));
         }
         if (historisk) {
             boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, false));
