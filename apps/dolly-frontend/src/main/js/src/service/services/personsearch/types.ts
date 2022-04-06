@@ -37,8 +37,6 @@ export type Search = {
 		bostedsadresse?: {
 			postnummer?: string
 			kommunenummer?: string
-			ukjentBosted?: boolean
-			utenlandskAdresse?: boolean
 		}
 	}
 	personstatus?: {

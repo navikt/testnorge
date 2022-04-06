@@ -35,8 +35,6 @@ export const initialValues = {
 		bosted: {
 			kommunenummer: '',
 			postnummer: '',
-			ukjentBosted: false,
-			utenlandskAdresse: false,
 		},
 		personstatus: '',
 	},

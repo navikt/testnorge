@@ -22,18 +22,10 @@ export const Adresser = () => (
 			optionHeight={50}
 			size="medium"
 		/>
-		<FormikCheckbox
-			name={`${bostedPath}.utenlandskAdresse`}
-			label="Har utenlandsk adresse"
-			size="medium"
-		/>
-		<FormikCheckbox name={`${bostedPath}.ukjentBosted`} label="Har ukjent bosted" size="medium" />
 	</section>
 )
 
 export const AdresserPaths = {
 	'personinformasjon.bosted.postnummer': 'string',
 	'personinformasjon.bosted.kommunenummer': 'string',
-	'personinformasjon.bosted.ukjentBosted': 'boolean',
-	'personinformasjon.bosted.utenlandskAdresse': 'boolean',
 }
