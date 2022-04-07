@@ -2,12 +2,12 @@ import React from 'react'
 import Loading from '~/components/ui/loading/Loading'
 import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/tpsf/visning/partials'
 
-type PdlBankkontoProps = {
+type TpsMBankkontoProps = {
 	data: any
 	loading?: boolean
 }
 
-export const PdlBankkonto = ({ data, loading = false }: PdlBankkontoProps) => {
+export const TpsMBankkonto = ({ data, loading = false }: TpsMBankkontoProps) => {
 	if (loading) return <Loading />
 	if (!data) return null
 

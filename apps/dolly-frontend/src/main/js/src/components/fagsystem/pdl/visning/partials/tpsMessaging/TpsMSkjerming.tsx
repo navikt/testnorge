@@ -4,7 +4,7 @@ import { addDays, isBefore } from 'date-fns'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 
-type PdlSkjermingProps = {
+type TpsMSkjermingProps = {
 	data: Skjerming
 	loading?: boolean
 }
@@ -14,8 +14,7 @@ type Skjerming = {
 	egenAnsattDatoFom?: string
 }
 
-export const PdlSkjerming = ({ data, loading = false }: PdlSkjermingProps) => {
-	if (loading) return <Loading />
+export const TpsMSkjerming = ({ data, loading = false }: TpsMSkjermingProps) => {
 	if (!data?.egenAnsattDatoFom) return null
 	return (
 		<>

@@ -77,11 +77,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 				{hasTpsfData ? (
 					<Nasjonalitet data={data} pdlData={pdlData} />
 				) : (
-					<PdlNasjonalitet
-						data={pdlData}
-						tpsMessagingData={tpsMessagingData}
-						tpsMessagingLoading={tpsMessagingLoading}
-					/>
+					<PdlNasjonalitet data={pdlData} />
 				)}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}

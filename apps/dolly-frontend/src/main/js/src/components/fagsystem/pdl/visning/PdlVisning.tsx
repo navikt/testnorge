@@ -24,7 +24,7 @@ import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/V
 import { PdlDoedsfall } from '~/components/fagsystem/pdl/visning/partials/PdlDoedsfall'
 import { TpsMessagingApi } from '~/service/Api'
 import { getIdent } from '~/pages/testnorgePage/utils'
-import { PdlBankkonto } from '~/components/fagsystem/pdl/visning/partials/PdlBankkonto'
+import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -44,6 +44,7 @@ export const PdlVisning = ({ pdlData, loading, environments }: PdlVisningProps) 
 
 	const execute = useCallback(() => {
 		const tpsMessaging = async () => {
+			setTpsMessagingLoading(true)
 			const resp = await TpsMessagingApi.getTpsPersonInfo(getIdent(pdlData), environments[0])
 				.then((response: any) => {
 					return response?.data[0]?.person
@@ -97,15 +98,11 @@ export const PdlVisning = ({ pdlData, loading, environments }: PdlVisningProps) 
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
-				<PdlNasjonalitet
-					data={hentPerson}
-					tpsMessagingData={tpsMessagingData}
-					tpsMessagingLoading={tpsMessagingLoading}
-				/>
+				<PdlNasjonalitet data={hentPerson} />
+				<TpsMBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
 				<Foedsel data={foedsel} />
 				<PdlDoedsfall data={doedsfall} />
 				<Telefonnummer data={telefonnummer} />
-				<PdlBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<PdlBoadresse data={bostedsadresse} />
