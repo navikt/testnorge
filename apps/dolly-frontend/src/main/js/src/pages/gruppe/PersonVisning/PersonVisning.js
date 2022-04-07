@@ -28,6 +28,7 @@ import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoein
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '~/service/Api'
+import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -83,10 +84,16 @@ export const PersonVisning = ({
 						</Button>
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
-					{!iLaastGruppe && (
+					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil slette denne personen?
 						</SlettButton>
+					)}
+					{!iLaastGruppe && ident.master === 'PDL' && (
+						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
+							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
+							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
+						</FrigjoerButton>
 					)}
 				</div>
 				{ident.master !== 'PDL' && (
