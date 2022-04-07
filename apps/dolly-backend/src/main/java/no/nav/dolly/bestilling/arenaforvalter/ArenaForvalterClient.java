@@ -7,7 +7,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -34,6 +33,18 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
 
+    private static void appendErrorText(StringBuilder status, RuntimeException e) {
+
+        status.append("Feil: ")
+                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
+
+        if (e instanceof HttpClientErrorException) {
+            status.append(" (")
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
+                    .append(')');
+        }
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -50,7 +61,7 @@ public class ArenaForvalterClient implements ClientRegister {
             if (!availEnvironments.isEmpty()) {
 
                 if (!isOpprettEndre) {
-                    deleteServicebruker(dollyPerson.getHovedperson(), availEnvironments);
+                    arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
                 }
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
@@ -90,30 +101,8 @@ public class ArenaForvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> {
-            ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = arenaForvalterConsumer.getIdent(ident);
-            if (existingServicebruker.hasBody()) {
-                existingServicebruker.getBody().getArbeidsokerList().forEach(list -> {
-                    if (nonNull(list.getMiljoe())) {
-                        List.of(list.getMiljoe().split(",")).forEach(
-                                environment -> arenaForvalterConsumer.deleteIdent(ident, environment));
-                    }
-                });
-            }
-        });
-    }
-
-    private void deleteServicebruker(String ident, List<String> availEnvironments) {
-
-        try {
-            availEnvironments.forEach(environment ->
-                    arenaForvalterConsumer.deleteIdent(ident, environment));
-
-        } catch (RuntimeException e) {
-
-            log.error("Feilet å inaktivere testperson: {} i ArenaForvalter: ", ident, e);
-        }
-
+        arenaForvalterConsumer.deleteIdenter(identer)
+                .subscribe(response -> log.info("Slettet utført mot arena-forvalteren"));
     }
 
     private void sendArenadagpenger(ArenaDagpenger arenaNyeDagpenger, StringBuilder status) {
@@ -214,17 +203,5 @@ public class ArenaForvalterClient implements ClientRegister {
                 .filter(arenaNyBruker ->
                         (!isNull(arenaNyBruker.getKvalifiseringsgruppe()) || !isNull(arenaNyBruker.getUtenServicebehov())))
                 .collect(Collectors.toList()));
-    }
-
-    private static void appendErrorText(StringBuilder status, RuntimeException e) {
-
-        status.append("Feil: ")
-                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
-
-        if (e instanceof HttpClientErrorException) {
-            status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
-                    .append(')');
-        }
     }
 }
