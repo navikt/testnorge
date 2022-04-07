@@ -2,8 +2,6 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import React from 'react'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
-import { FormikProps } from 'formik'
 
 const bostedPath = 'personinformasjon.adresser.bostedsadresse'
 const kontaktPath = 'personinformasjon.adresser.kontaktadresse'
