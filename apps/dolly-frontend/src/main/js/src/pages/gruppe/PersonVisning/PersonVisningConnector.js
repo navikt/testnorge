@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
 import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
@@ -67,4 +66,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	}
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PersonVisning))
+export default connect(mapStateToProps, mapDispatchToProps)(PersonVisning)

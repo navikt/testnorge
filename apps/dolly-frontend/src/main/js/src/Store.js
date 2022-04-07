@@ -1,7 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
-import { connectRouter, LOCATION_CHANGE, routerMiddleware } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import gruppeReducer from './ducks/gruppe'
 import brukerReducer from './ducks/bruker'
@@ -9,7 +9,6 @@ import fagsystemReducer from './ducks/fagsystem'
 import searchReducer from './ducks/search'
 import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
-import commonReducer from './ducks/common'
 import bestillingReducer from './ducks/bestilling'
 import bestillingStatusReducer from './ducks/bestillingStatus'
 import environmentsReducer from './ducks/environments'
@@ -17,8 +16,7 @@ import kodeverkReducer from './ducks/kodeverk'
 import varslingerReducer from './ducks/varslinger'
 import finnPersonReducer from './ducks/finnPerson'
 import organisasjonReducer from './ducks/organisasjon'
-
-import history from './history'
+import commonReducer from '~/ducks/common'
 
 const locationMiddleware = (store) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
@@ -31,17 +29,15 @@ const locationMiddleware = (store) => (next) => (action) => {
 	return next(action)
 }
 
-const configureReduxStore = (currentHistory) => {
+export const configureReduxStore = () => {
 	const allMiddleware = [
 		locationMiddleware,
 		thunkMiddleware,
 		createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
-		routerMiddleware(currentHistory),
 	]
 
-	const rootReducer = (data) =>
+	const rootReducer = () =>
 		combineReducers({
-			router: connectRouter(data),
 			bestveil: bestillingReducer,
 			bestillingStatuser: bestillingStatusReducer,
 			gruppe: gruppeReducer,
@@ -58,10 +54,5 @@ const configureReduxStore = (currentHistory) => {
 			organisasjon: organisasjonReducer,
 		})
 
-	return createStore(
-		rootReducer(currentHistory),
-		composeWithDevTools(applyMiddleware(...allMiddleware))
-	)
+	return createStore(rootReducer(), composeWithDevTools(applyMiddleware(...allMiddleware)))
 }
-
-export default configureReduxStore(history)

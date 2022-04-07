@@ -108,7 +108,7 @@ export const loadingGrupper = createLoadingSelector([
 	actions.getByUserId,
 ])
 
-export const selectGruppeById = (state, gruppeId) => state.gruppe.byId[gruppeId]
+export const selectGruppeById = (gruppe, gruppeId) => gruppe.byId[gruppeId]
 export const selectIdentById = (state, ident) => state.gruppe.ident[ident]
 
 export const sokSelectorGruppeOversikt = (state) => {

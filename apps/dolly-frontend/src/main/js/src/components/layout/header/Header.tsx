@@ -8,7 +8,6 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
-import { useLocation } from 'react-use'
 
 type Props = {
 	brukerProfil: {
@@ -19,7 +18,6 @@ type Props = {
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
-	const location = useLocation()
 	const logout = () => (window.location.href = '/logout')
 
 	return (

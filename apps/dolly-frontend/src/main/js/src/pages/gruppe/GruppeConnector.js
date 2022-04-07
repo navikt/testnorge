@@ -11,34 +11,30 @@ const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
 const loadingSelectorGetExcel = createLoadingSelector(actions.getGruppeExcelFil)
 
-const mapStateToProps = (state, ownProps) => {
-	return {
-		...ownProps,
-		isFetching: loadingSelector(state),
-		isDeletingGruppe: loadingSelectorSlettGruppe(state),
-		isSendingTags: loadingSelectorSendTags(state),
-		isLockingGruppe: loadingSelectorLaasGruppe(state),
-		isFetchingExcel: loadingSelectorGetExcel(state),
-		gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
-		identer: state.gruppe.ident,
-		brukernavn: state.bruker.brukerData.brukernavn,
-		brukertype: state.bruker.brukerData.brukertype,
-		bestillingStatuser: state.bestillingStatuser.byId,
-	}
-}
+const mapStateToProps = (state, ownProps) => ({
+	...ownProps,
+	isFetching: loadingSelector(state),
+	isDeletingGruppe: loadingSelectorSlettGruppe(state),
+	isSendingTags: loadingSelectorSendTags(state),
+	isLockingGruppe: loadingSelectorLaasGruppe(state),
+	isFetchingExcel: loadingSelectorGetExcel(state),
+	selectGruppe: selectGruppeById,
+	grupper: state.gruppe,
+	identer: state.gruppe.ident,
+	brukernavn: state.bruker.brukerData.brukernavn,
+	brukertype: state.bruker.brukerData.brukertype,
+	bestillingStatuser: state.bestillingStatuser.byId,
+})
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	const { gruppeId } = ownProps.match.params
-	return {
-		getGruppe: (pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
-		navigerTilPerson: (ident) => dispatch(navigerTilPerson(ident)),
-		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
-		sendTags: (tags) => dispatch(actions.sendGruppeTags(gruppeId, tags)),
-		laasGruppe: () =>
-			dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
-		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
-		getGruppeExcelFil: () => dispatch(actions.getGruppeExcelFil(gruppeId)),
-	}
-}
+const mapDispatchToProps = (dispatch, ownProps) => ({
+	getGruppe: (gruppeId, pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
+	navigerTilPerson: (ident) => dispatch(navigerTilPerson(ident)),
+	deleteGruppe: (gruppeId) => dispatch(actions.remove(gruppeId)),
+	sendTags: (tags) => dispatch(actions.sendGruppeTags(gruppeId, tags)),
+	laasGruppe: (gruppeId) =>
+		dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
+	getBestillinger: (gruppeId) => dispatch(getBestillinger(gruppeId)),
+	getGruppeExcelFil: (gruppeId) => dispatch(actions.getGruppeExcelFil(gruppeId)),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gruppe)

@@ -16,7 +16,6 @@ export default function GruppeOversikt({
 	gruppeListe,
 	gruppeInfo,
 	mineIds,
-	history,
 	searchActive,
 	importerteZIdenter,
 	brukerProfil,
@@ -74,7 +73,6 @@ export default function GruppeOversikt({
 			<Liste
 				gruppeDetaljer={visning === 'alle' ? gruppeInfo : { pageSize: sideStoerrelse }}
 				items={items}
-				history={history}
 				isFetching={isFetching}
 				searchActive={searchActive}
 				visSide={sidetall}

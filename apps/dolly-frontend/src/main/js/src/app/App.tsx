@@ -1,15 +1,15 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
-import Breadcrumb from '~/components/layout/breadcrumb/BreadcrumbWithHoc'
 import Loading from '~/components/ui/loading/Loading'
-import routes from '~/Routes'
+import allRoutes from '~/Routes'
 import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 import './App.less'
 import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
 import { ProfilApi } from '~/service/Api'
 import ToastConnector from '~/components/ui/toast/ToastConnector'
+import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
 
 type Props = {
 	brukerData?: Object
@@ -58,29 +58,29 @@ export const App = ({
 			<Utlogging />
 			<VarslingerModal updateVarslingerBruker={updateVarslingerBruker} />
 			<Header brukerProfil={brukerProfil} brukerBilde={brukerBilde} />
-			<Breadcrumb />
+			<Breadcrumbs />
 			<main>
 				<Suspense fallback={<Loading label="Laster inn" />}>
-					<Switch>
-						{routes.map((route, idx) => {
-							return route.component ? (
+					<Routes>
+						{allRoutes.map((route, idx) =>
+							route.element ? (
 								<Route
 									key={idx}
 									path={route.path}
-									exact={route.exact}
 									// @ts-ignore
-									render={(props) => (
-										<route.component
-											{...props}
+									element={
+										<route.element
 											// @ts-ignore
 											brukerBilde={brukerBilde}
 											brukerProfil={brukerProfil}
 										/>
-									)}
+									}
 								/>
-							) : null
-						})}
-					</Switch>
+							) : (
+								<React.Fragment />
+							)
+						)}
+					</Routes>
 				</Suspense>
 			</main>
 			<Forbedring brukerBilde={brukerBilde} />

@@ -8,10 +8,10 @@ import Icon from '~/components/ui/icon/Icon'
 import ImporterGrupperConnector from './ImporterGrupperConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
+import { useNavigate } from 'react-router-dom'
 
 export default function Liste({
 	items,
-	history,
 	searchActive,
 	isFetching,
 	gruppeDetaljer,
@@ -20,6 +20,7 @@ export default function Liste({
 	setSideStoerrelse,
 	brukerProfil,
 }) {
+	const navigate = useNavigate()
 	if (isFetching) return <Loading label="Laster grupper" panel />
 	const azureAdProfil = brukerProfil && brukerProfil.type && brukerProfil.type === 'AzureAD'
 
@@ -102,7 +103,7 @@ export default function Liste({
 			<DollyTable
 				data={items}
 				columns={columns}
-				onRowClick={(row) => () => history.push(`gruppe/${row.id}`)}
+				onRowClick={(row) => () => navigate(`gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
 				pagination
 				gruppeDetaljer={gruppeDetaljer}

@@ -1,28 +1,33 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import cn from 'classnames'
 import Version from '~/components/version/Version'
 
 import './Breadcrumb.less'
+import allRoutes from '~/Routes'
+import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs'
 
-const isActive = (match, location) => match.url === location.pathname
+export const Breadcrumbs = () => {
+	const location = useLocation()
 
-export const Breadcrumbs = ({ breadcrumbs }) => (
-	<nav aria-label="breadcrumb" className="breadcrumb">
-		<ol>
-			{breadcrumbs.map(({ match, location, breadcrumb }) => {
-				const active = isActive(match, location)
-				const classes = cn('breadcrumb-item', {
-					active,
-				})
+	const isActive = (match, location) => match.pathname === location.pathname
 
-				return (
-					<li className={classes} key={breadcrumb.key}>
-						{active ? breadcrumb : <NavLink to={match.url}>{breadcrumb}</NavLink>}
-					</li>
-				)
-			})}
-		</ol>
-		<Version />
-	</nav>
-)
+	const breadcrumbs = useReactRouterBreadcrumbs(allRoutes)
+	return (
+		<nav aria-label="breadcrumb" className="breadcrumb">
+			<ol>
+				{breadcrumbs.map(({ match, breadcrumb }, idx) => {
+					const active = isActive(match, location)
+					const classes = cn('breadcrumb-item', {})
+
+					return (
+						<li className={classes} key={idx}>
+							{active ? breadcrumb : <NavLink to={match.pathname}>{breadcrumb}</NavLink>}
+						</li>
+					)
+				})}
+			</ol>
+			<Version />
+		</nav>
+	)
+}

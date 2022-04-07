@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import SearchView from '~/pages/testnorgePage/search/SearchView'
 
@@ -20,4 +19,4 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SearchView))
+export default connect(mapStateToProps, mapDispatchToProps)(SearchView)

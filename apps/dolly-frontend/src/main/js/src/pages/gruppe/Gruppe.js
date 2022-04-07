@@ -10,7 +10,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
 import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
-import { Redirect } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { resetSearch } from '~/ducks/search'
 
@@ -23,7 +23,8 @@ export default function Gruppe({
 	navigerTilPerson,
 	laasGruppe,
 	getBestillinger,
-	gruppe,
+	grupper,
+	selectGruppe,
 	identer,
 	brukernavn,
 	brukerBilde,
@@ -36,8 +37,6 @@ export default function Gruppe({
 	isLockingGruppe,
 	getGruppeExcelFil,
 	isFetchingExcel,
-	match,
-	history,
 	bestillingStatuser,
 }) {
 	const [visning, setVisning] = useState(VISNING_PERSONER)
@@ -45,14 +44,21 @@ export default function Gruppe({
 	const [sidetall, setSidetall] = useState(0)
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
+	const [gruppe, setGruppe] = useState(null)
 	const slettedeIdenter = useState([])
 
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
+	const { gruppeId } = useParams()
 
 	useEffect(() => {
-		getGruppe(sidetall, sideStoerrelse)
-		getBestillinger()
+		getGruppe(gruppeId, sidetall, sideStoerrelse)
+		getBestillinger(gruppeId)
 	}, [sidetall, sideStoerrelse, navigerTilPerson])
+
+	useEffect(() => {
+		setGruppe(selectGruppe(grupper, gruppeId))
+	}, [grupper])
 
 	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
 
@@ -67,10 +73,9 @@ export default function Gruppe({
 		(ident) => ident.bestillingId != null && ident.bestillingId.length > 0
 	)
 
-	const startBestilling = (values) =>
-		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
+	const startBestilling = (values) => navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
-	if (redirectToSoek) return <Redirect to={`/soek`} />
+	if (redirectToSoek) return navigate(`/soek`)
 
 	const erLaast = gruppe.erLaast
 

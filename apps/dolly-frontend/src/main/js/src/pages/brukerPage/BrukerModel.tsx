@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NotFoundError } from '~/error'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
 import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
-import { Bruker, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
-import { PersonOrgTilgangApi, BrukerApi, SessionApi } from '~/service/Api'
-import { Redirect } from 'react-router-dom'
+import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
+import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
+import { useNavigate } from 'react-router-dom'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -21,6 +21,8 @@ export default () => {
 	const [organisasjon, setOrganisasjon] = useState<Organisasjon>(null)
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
+
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
@@ -60,7 +62,7 @@ export default () => {
 		SessionApi.addToSession(org).then(() => setSessionUpdated(true))
 	}
 
-	if (sessionUpdated) return <Redirect to={''} />
+	if (sessionUpdated) return navigate('')
 
 	return (
 		<div className="bruker-container">
