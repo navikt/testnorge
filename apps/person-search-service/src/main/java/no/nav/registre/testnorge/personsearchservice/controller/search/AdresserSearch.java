@@ -10,4 +10,19 @@ import lombok.Value;
 public class AdresserSearch {
     BostedsadresseSearch bostedsadresse;
     KontaktadresseSearch kontaktadresse;
+
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public class BostedsadresseSearch {
+        String kommunenummer;
+        String postnummer;
+    }
+
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public class KontaktadresseSearch {
+        String norskAdresse;
+    }
 }

@@ -1,8 +1,7 @@
 package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.registre.testnorge.personsearchservice.controller.search.BostedsadresseSearch;
-import no.nav.registre.testnorge.personsearchservice.controller.search.KontaktadresseSearch;
+import no.nav.registre.testnorge.personsearchservice.controller.search.AdresserSearch;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
@@ -11,7 +10,8 @@ import java.util.Optional;
 
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldExistQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
 
 import static java.util.Objects.nonNull;
 
@@ -28,14 +28,12 @@ public class AdresserUtils {
                         addPostnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
                     }
                     if (nonNull(adresser.getKontaktadresse())) {
-                        addKommunenrKontaktQuery(queryBuilder, adresser.getKontaktadresse());
-                        addPostnrKontaktQuery(queryBuilder, adresser.getKontaktadresse());
                         addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
                     }
                 });
     }
 
-    private static void addKommunenrBostedQuery(BoolQueryBuilder queryBuilder, BostedsadresseSearch bostedsadresse) {
+    private static void addKommunenrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
         Optional.ofNullable(bostedsadresse.getKommunenummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -47,7 +45,7 @@ public class AdresserUtils {
                 });
     }
 
-    private static void addPostnrBostedQuery(BoolQueryBuilder queryBuilder, BostedsadresseSearch bostedsadresse) {
+    private static void addPostnrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
         Optional.ofNullable(bostedsadresse.getPostnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -59,34 +57,21 @@ public class AdresserUtils {
                 });
     }
 
-    private static void addKommunenrKontaktQuery(BoolQueryBuilder queryBuilder, KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getKommunenummer())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(KONTAKTADRESSE_PATH, ".vegadresse.kommunenummer", value, false));
-                    }
-                });
-    }
 
-    private static void addPostnrKontaktQuery(BoolQueryBuilder queryBuilder, KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getPostnummer())
+    private static void addUtenlandskKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
+        Optional.ofNullable(kontaktadresse.getNorskAdresse())
                 .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(
-                                KONTAKTADRESSE_PATH,
-                                Arrays.asList(".vegadresse.postnummer", ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),
-                                value, 1, false));
-                    }
-                });
-    }
-
-    private static void addUtenlandskKontaktadresseQuery(BoolQueryBuilder queryBuilder, KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getUtenlandskAdresse())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
+                    if (NO.equalsIgnoreCase(value)) {
                         queryBuilder.must(nestedShouldExistQuery(
                                 KONTAKTADRESSE_PATH,
                                 Arrays.asList(".utenlandskAdresse.landkode", ".utenlandskAdresseIFrittFormat.landkode"),
+                                1,
+                                false
+                        ));
+                    } else if (YES.equalsIgnoreCase(value)) {
+                        queryBuilder.must(nestedShouldExistQuery(
+                                KONTAKTADRESSE_PATH,
+                                Arrays.asList(".vegadresse.postnummer", ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),
                                 1,
                                 false
                         ));
