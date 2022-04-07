@@ -1,0 +1,23 @@
+@import (reference) '~lessVars';
+
+.frigjoerModal {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  &-content {
+    border-bottom: 1px solid @color-bg-divider;
+    margin-bottom: 20px;
+
+    h1 {
+      border: none;
+      margin: 10px 0 0;
+    }
+  }
+  &-actions {
+    padding: 20px 0 0;
+    button {
+      margin: 0 10px;
+    }
+  }
+}
