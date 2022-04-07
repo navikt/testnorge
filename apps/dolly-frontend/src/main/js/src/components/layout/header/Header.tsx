@@ -22,7 +22,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 
 	return (
 		<header className="app-header">
-			<NavLink to="/" className="home-nav">
+			<NavLink to="/" end className="home-nav">
 				<div className="img-logo">
 					<img alt="NAV logo" src={logo} />
 				</div>
@@ -31,12 +31,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink
-					isActive={() => location.pathname === '/' || location.pathname.includes('/gruppe')}
-					to="/"
-				>
-					Personer
-				</NavLink>
+				<NavLink to="/gruppe">Personer</NavLink>
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<a
 					href="https://endringsmelding.dev.intern.nav.no"

@@ -17,12 +17,13 @@ type Props = {
 	eksisterendeTags: [string]
 }
 
-export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
+export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Props) => {
 	if (loading) return <Loading label="Sender tags..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [tags, setTags] = useState(eksisterendeTags)
 
 	const tagsFraDolly = SelectOptionsOppslag.hentTagsFraDolly()
+	// @ts-ignore
 	const tagOptions = SelectOptionsOppslag.formatOptions('tags', tagsFraDolly)
 
 	return (
@@ -56,7 +57,7 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 						</NavButton>
 						<NavButton
 							onClick={() => {
-								action(tags)
+								action(gruppeId, tags)
 								location.reload()
 							}}
 							type="hoved"

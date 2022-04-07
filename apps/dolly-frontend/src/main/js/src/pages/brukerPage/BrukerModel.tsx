@@ -62,7 +62,7 @@ export default () => {
 		SessionApi.addToSession(org).then(() => setSessionUpdated(true))
 	}
 
-	if (sessionUpdated) return navigate('')
+	if (sessionUpdated) return navigate('/')
 
 	return (
 		<div className="bruker-container">

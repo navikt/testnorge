@@ -22,7 +22,7 @@ export const EksporterExcel = ({ gruppeId, action, loading }) => {
 
 	const download = async () => {
 		Logger.log({ event: 'Eksporterer til excel' })
-		const data = await action()
+		const data = await action(gruppeId)
 		downloadExcelString(gruppeId, data?.value)
 	}
 

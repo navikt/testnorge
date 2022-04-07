@@ -103,7 +103,7 @@ export default function Liste({
 			<DollyTable
 				data={items}
 				columns={columns}
-				onRowClick={(row) => () => navigate(`gruppe/${row.id}`)}
+				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
 				pagination
 				gruppeDetaljer={gruppeDetaljer}

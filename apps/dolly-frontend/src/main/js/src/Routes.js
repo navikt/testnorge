@@ -13,7 +13,8 @@ const TestnorgePage = lazy(() => import('./pages/testnorgePage/TestnorgePage'))
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
 const allRoutes = [
-	{ path: '/', breadcrumb: 'Personer', element: GruppeOversikt },
+	{ path: '/', breadcrumb: 'Hjem', element: GruppeOversikt },
+	{ path: '/gruppe', breadcrumb: 'Personer', element: GruppeOversikt },
 	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: Gruppe },
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',

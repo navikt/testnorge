@@ -7,8 +7,10 @@ import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 
 import './SlettModal.less'
+import { useNavigate } from 'react-router-dom'
 
-export const SlettButton = ({ action, loading, children, disabled = false }) => {
+export const SlettButton = ({ action, gruppeId, loading, children, disabled = false }) => {
+	const navigate = useNavigate()
 	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
@@ -34,7 +36,8 @@ export const SlettButton = ({ action, loading, children, disabled = false }) => 
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action()
+								action(gruppeId)
+								return navigate('/')
 							}}
 							type="hoved"
 						>

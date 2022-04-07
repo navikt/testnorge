@@ -88,7 +88,7 @@ export default function GruppeHeader({
 						GJENOPPRETT
 					</Button>
 					{!erLaast && (
-						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
+						<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
 							Er du sikker på at du vil låse denne gruppen? <br />
 							En gruppe som er låst kan ikke endres, og blir heller ikke <br />
 							påvirket av prodlast i samhandlermiljøet (Q1). <br />
@@ -97,7 +97,7 @@ export default function GruppeHeader({
 						</LaasButton>
 					)}
 					{!erLaast && (
-						<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
+						<SlettButton gruppeId={gruppe.id} action={deleteGruppe} loading={isDeletingGruppe}>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
 					)}
