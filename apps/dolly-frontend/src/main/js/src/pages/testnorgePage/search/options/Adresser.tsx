@@ -8,17 +8,7 @@ import { FormikProps } from 'formik'
 const bostedPath = 'personinformasjon.adresser.bostedsadresse'
 const kontaktPath = 'personinformasjon.adresser.kontaktadresse'
 
-const options = [
-	{ value: 'N', label: 'Har norsk kontaktadresse' },
-	{ value: 'U', label: 'Har utenlandsk kontaktadresse' },
-	{ value: 'B', label: 'Har begge' },
-]
-
-type AdresserProps = {
-	formikBag: FormikProps<{}>
-}
-
-export const Adresser = ({ formikBag }: AdresserProps) => (
+export const Adresser = () => (
 	<section>
 		<h4 className="subtittel">Boadresse</h4>
 		<FormikSelect
