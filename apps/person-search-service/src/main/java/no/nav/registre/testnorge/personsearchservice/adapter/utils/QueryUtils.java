@@ -38,7 +38,7 @@ public class QueryUtils {
             return QueryBuilders.nestedQuery(
                     path,
                     QueryBuilders.boolQuery()
-                            .must(QueryBuilders.existsQuery(path  + field))
+                            .must(QueryBuilders.existsQuery(path + field))
                             .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false))
                     ,
                     ScoreMode.Avg
@@ -91,11 +91,16 @@ public class QueryUtils {
         var boolQuery = QueryBuilders.boolQuery();
 
         for (String field : fields) {
-            boolQuery.should(QueryBuilders.existsQuery(path + field));
+            if (historisk) {
+                boolQuery.should(QueryBuilders.existsQuery(path + field));
+            } else {
+                boolQuery.should(
+                        (QueryBuilders.boolQuery()
+                                .must(QueryBuilders.existsQuery(path + field))
+                                .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false))));
+            }
         }
-        if (historisk) {
-            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, false));
-        }
+
         boolQuery.minimumShouldMatch(minimumShould);
 
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
