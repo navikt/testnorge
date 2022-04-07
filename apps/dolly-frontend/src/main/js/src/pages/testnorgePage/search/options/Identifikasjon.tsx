@@ -68,9 +68,9 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 }
 
 export const IdentifikasjonPaths = {
-	'personinformasjon.identifikasjon.falskIdentitet': 'boolean',
-	'personinformasjon.identifikasjon.utenlandskIdentitet': 'boolean',
-	'personinformasjon.identifikasjon.identtype': 'string',
-	'personinformasjon.identifikasjon.adressebeskyttelse': 'string',
-	'personinformasjon.kjoenn': 'string',
+	[identifikasjonPath + '.falskIdentitet']: 'boolean',
+	[identifikasjonPath + '.utenlandskIdentitet']: 'boolean',
+	[identifikasjonPath + '.identtype']: 'string',
+	[identifikasjonPath + '.adressebeskyttelse']: 'string',
+	[kjoennPath]: 'string',
 }

@@ -38,6 +38,10 @@ export type Search = {
 			postnummer?: string
 			kommunenummer?: string
 		}
+		kontaktadresse?: {
+			norskAdresse?: boolean
+			utenlandskAdresse?: boolean
+		}
 	}
 	personstatus?: {
 		status?: string

@@ -2,12 +2,25 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import React from 'react'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
+import { FormikProps } from 'formik'
 
-const bostedPath = 'personinformasjon.bosted'
+const bostedPath = 'personinformasjon.adresser.bostedsadresse'
+const kontaktPath = 'personinformasjon.adresser.kontaktadresse'
 
-export const Adresser = () => (
+const options = [
+	{ value: 'N', label: 'Har norsk kontaktadresse' },
+	{ value: 'U', label: 'Har utenlandsk kontaktadresse' },
+	{ value: 'B', label: 'Har begge' },
+]
+
+type AdresserProps = {
+	formikBag: FormikProps<{}>
+}
+
+export const Adresser = ({ formikBag }: AdresserProps) => (
 	<section>
-		<h4 className="subtittel">Bostedsadresse</h4>
+		<h4 className="subtittel">Boadresse</h4>
 		<FormikSelect
 			name={`${bostedPath}.postnummer`}
 			label="Postnummer"
@@ -22,10 +35,19 @@ export const Adresser = () => (
 			optionHeight={50}
 			size="medium"
 		/>
+		<h4 className="subtittel">Kontaktadresse</h4>
+		<FormikCheckbox name={`${kontaktPath}.norskAdresse`} label="Har norsk adresse" size="medium" />
+		<FormikCheckbox
+			name={`${kontaktPath}.utenlandskAdresse`}
+			label="Har utenlandsk adresse"
+			size="medium"
+		/>
 	</section>
 )
 
 export const AdresserPaths = {
-	'personinformasjon.bosted.postnummer': 'string',
-	'personinformasjon.bosted.kommunenummer': 'string',
+	[bostedPath + '.postnummer']: 'string',
+	[bostedPath + '.kommunenummer']: 'string',
+	[kontaktPath + '.norskAdresse']: 'boolean',
+	[kontaktPath + '.utenlandskAdresse']: 'boolean',
 }

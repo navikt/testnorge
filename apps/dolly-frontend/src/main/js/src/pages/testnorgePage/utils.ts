@@ -32,9 +32,15 @@ export const initialValues = {
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
-		bosted: {
-			kommunenummer: '',
-			postnummer: '',
+		adresser: {
+			bostedsadresse: {
+				kommunenummer: '',
+				postnummer: '',
+			},
+			kontaktadresse: {
+				norskAdresse: false,
+				utenlanskAdresse: false,
+			},
 		},
 		personstatus: '',
 	},
@@ -91,9 +97,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			innflyttingTilNorge: {
 				innflytting: values?.personinformasjon?.nasjonalitet?.innflyttet,
 			},
-			adresser: {
-				bostedsadresse: values?.personinformasjon?.bosted,
-			},
+			adresser: values?.personinformasjon?.adresser,
 			personstatus: {
 				status: personstatus,
 			},
