@@ -10,8 +10,6 @@ import java.util.Optional;
 
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldExistQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
 
 import static java.util.Objects.nonNull;
 
@@ -29,6 +27,7 @@ public class AdresserUtils {
                     }
                     if (nonNull(adresser.getKontaktadresse())) {
                         addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
+                        addNorskkKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
                     }
                 });
     }
@@ -59,16 +58,23 @@ public class AdresserUtils {
 
 
     private static void addUtenlandskKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getNorskAdresse())
+        Optional.ofNullable(kontaktadresse.getUtenlandskAdresse())
                 .ifPresent(value -> {
-                    if (NO.equalsIgnoreCase(value)) {
+                    if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedShouldExistQuery(
                                 KONTAKTADRESSE_PATH,
                                 Arrays.asList(".utenlandskAdresse.landkode", ".utenlandskAdresseIFrittFormat.landkode"),
                                 1,
                                 false
                         ));
-                    } else if (YES.equalsIgnoreCase(value)) {
+                    }
+                });
+    }
+
+    private static void addNorskkKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
+        Optional.ofNullable(kontaktadresse.getNorskAdresse())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedShouldExistQuery(
                                 KONTAKTADRESSE_PATH,
                                 Arrays.asList(".vegadresse.postnummer", ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),

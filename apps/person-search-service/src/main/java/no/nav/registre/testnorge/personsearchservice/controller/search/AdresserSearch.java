@@ -23,6 +23,7 @@ public class AdresserSearch {
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
     public class KontaktadresseSearch {
-        String norskAdresse;
+        Boolean norskAdresse;
+        Boolean utenlandskAdresse;
     }
 }
