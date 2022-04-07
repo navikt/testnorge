@@ -57,7 +57,6 @@ export const Foedsel = ({
 	put,
 	sendOrdrePdl,
 	fetch,
-	getPdl,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -66,17 +65,6 @@ export const Foedsel = ({
 
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessage, setErrorMessage] = useState(null)
-
-	// const foedselTest = {
-	// 	fodekommune: null,
-	// 	foedeland: 'LIER',
-	// 	foedested: null,
-	// 	foedselsaar: 1979,
-	// 	foedselsdato: '1979-08-19T00:00:00',
-	// 	kilde: 'Dolly',
-	// 	master: 'FREG',
-	// 	id: 1,
-	// }
 
 	const handleSubmit = async (data) => {
 		setVisningModus(Modus.LoadingPdlf)
@@ -95,14 +83,10 @@ export const Foedsel = ({
 			})
 			.then(() =>
 				sendOrdrePdl().then((sendOrdrePdlResponse) => {
-					if (sendOrdrePdlResponse)
-						setTimeout(() => {
-							getPdl().then((getPdlResponse) => {
-								if (getPdlResponse) setVisningModus(Modus.Les)
-							})
-						}, 5000)
+					if (sendOrdrePdlResponse) setVisningModus(Modus.Les)
 				})
 			)
+		//TODO Catch error her også??
 	}
 
 	const FoedselLes = ({ foedsel, idx }) => (
@@ -136,7 +120,6 @@ export const Foedsel = ({
 		const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
 			(a) => a.id === item.id
 		)
-		const redigertFoedselPdl = _get(tmpPersoner, `${ident}.foedsel.${idx}`)
 
 		return (
 			<>
@@ -144,8 +127,8 @@ export const Foedsel = ({
 				{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
 				{visningModus === Modus.Les && (
 					<>
-						{redigertFoedselPdlf || redigertFoedselPdl ? (
-							<FoedselLes foedsel={redigertFoedselPdlf || redigertFoedselPdl} idx={idx} />
+						{redigertFoedselPdlf ? (
+							<FoedselLes foedsel={redigertFoedselPdlf} idx={idx} />
 						) : (
 							<FoedselLes foedsel={item} idx={idx} />
 						)}

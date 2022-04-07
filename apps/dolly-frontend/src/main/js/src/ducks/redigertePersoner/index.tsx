@@ -1,4 +1,4 @@
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
+import { PdlforvalterApi } from '~/service/Api'
 import { createActions } from 'redux-actions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
@@ -11,17 +11,10 @@ export const actions = createActions({
 			identer,
 		}),
 	],
-	hentPdlPersoner: [
-		DollyApi.getPersonFraPdl,
-		(identer) => ({
-			identer,
-		}),
-	],
 })
 
 const initialState = {
 	pdlforvalter: {},
-	pdl: {},
 }
 
 export default handleActions(
@@ -33,9 +26,6 @@ export default handleActions(
 			action.payload?.data?.forEach((ident) => {
 				state.pdlforvalter[ident.person.ident] = ident
 			})
-		},
-		[onSuccess(actions.hentPdlPersoner)](state, action) {
-			state.pdl[action.meta?.identer] = action.payload?.data?.data?.hentPerson
 		},
 	},
 	initialState

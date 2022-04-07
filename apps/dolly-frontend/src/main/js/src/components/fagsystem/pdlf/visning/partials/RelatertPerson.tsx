@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
-import { DollyApi } from '~/service/Api'
 import styled from 'styled-components'
 
 const StyledPdlData = styled.div`
@@ -23,18 +22,6 @@ type RelatertPersonData = {
 
 export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 	if (!data) return null
-
-	const [relatertPersonPdl, setRelatertPersonPdl] = useState(null)
-
-	useEffect(() => {
-		getRelatertPersonPdl()
-	}, [])
-
-	const getRelatertPersonPdl = async () => {
-		await DollyApi.getPersonFraPdl(data.ident).then((response: any) => {
-			setRelatertPersonPdl(response.data)
-		})
-	}
 
 	return (
 		<>
@@ -70,14 +57,12 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 					<TitleValue title="Foreldreansvar" value="Ansvarlig uten identifikator" />
 				)}
 			</div>
-			{relatertPersonPdl?.data?.hentPerson && (
-				<StyledPdlData>
-					<PdlDataVisning pdlData={relatertPersonPdl.data} />
-					<p>
-						<i>Hold pekeren over PDL for å se dataene som finnes på {tittel.toLowerCase()} i PDL</i>
-					</p>
-				</StyledPdlData>
-			)}
+			<StyledPdlData>
+				<PdlDataVisning ident={data.ident} />
+				<p>
+					<i>Hold pekeren over PDL for å se dataene som finnes på {tittel.toLowerCase()} i PDL</i>
+				</p>
+			</StyledPdlData>
 		</>
 	)
 }

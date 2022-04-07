@@ -25,10 +25,9 @@ import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/V
 type PdlVisningProps = {
 	pdlData: PdlData
 	loading?: boolean
-	tmpPersoner?: any
 }
 
-export const PdlVisning = ({ pdlData, loading, tmpPersoner }: PdlVisningProps) => {
+export const PdlVisning = ({ pdlData, loading }: PdlVisningProps) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 
 	if (!pdlData?.hentPerson) {
@@ -53,10 +52,6 @@ export const PdlVisning = ({ pdlData, loading, tmpPersoner }: PdlVisningProps) =
 		kontaktinformasjonForDoedsbo,
 	} = hentPerson
 
-	const ident = hentIdenter?.identer?.find(
-		(i) => i.gruppe === 'FOLKEREGISTERIDENT' && !i.historisk
-	)?.ident
-
 	return (
 		<ErrorBoundary>
 			<div className="boks">
@@ -64,7 +59,7 @@ export const PdlVisning = ({ pdlData, loading, tmpPersoner }: PdlVisningProps) =
 				<IdentInfo pdlResponse={hentIdenter} />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
-				<Foedsel data={foedsel} tmpPersoner={tmpPersoner} ident={ident} erPdlVisning />
+				<Foedsel data={foedsel} erPdlVisning />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

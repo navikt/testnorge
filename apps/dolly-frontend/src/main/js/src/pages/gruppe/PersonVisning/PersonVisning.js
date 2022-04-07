@@ -128,7 +128,7 @@ export const PersonVisning = ({
 			/>
 			<DokarkivVisning ident={ident.ident} />
 			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-			<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
+			<PdlPersonMiljoeInfo ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} setVisning={setVisning} ident={ident.ident} />
 			<BeskrivelseConnector ident={ident} />
 		</div>
