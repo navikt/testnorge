@@ -96,7 +96,7 @@ public class InstdataConsumer {
                 .flatMapMany(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
                         .map(miljoe -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
                                 .map(index -> new InstdataDeleteCommand(webClient,
-                                        identer.subList(index * BLOCK_SIZE, Math.min((index +1 ) * BLOCK_SIZE, identer.size())),
+                                        identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                         miljoe, token.getTokenValue()).call()
                                         .map(response -> DeleteResponseDTO.builder()
                                                 .ident(response.getPersonident())
@@ -108,25 +108,6 @@ public class InstdataConsumer {
                         .flatMap(Flux::from))
                 .collectList();
     }
-
-
-//    @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
-//    public Mono<List<DeleteResponseDTO>> deleteInstdata(List<String> identer) {
-//
-//        return tokenService.exchange(serviceProperties)
-//                .flatMapMany(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
-//                        .map(miljoe -> new InstdataDeleteCommand(webClient,
-//                                identer,
-//                                miljoe, token.getTokenValue()).call()
-//                                .map(response -> DeleteResponseDTO.builder()
-//                                        .ident(response.getPersonident())
-//                                        .status(response.getStatus())
-//                                        .environment(miljoe)
-//                                        .build()
-//                                ))
-//                        .flatMap(Flux::from))
-//                .collectList();
-//    }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
     public List<InstdataResponse> deleteInstdata(String ident, String env) {

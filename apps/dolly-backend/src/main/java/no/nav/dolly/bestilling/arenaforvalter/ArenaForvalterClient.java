@@ -101,8 +101,14 @@ public class ArenaForvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        arenaForvalterConsumer.deleteIdenter(identer)
-                .subscribe(response -> log.info("Slettet utført mot arena-forvalteren"));
+        try {
+            arenaForvalterConsumer.deleteIdenter(identer)
+                    .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
+
+        } catch (RuntimeException e) {
+
+            log.error("Feilet å slette mot Arena-forvalteren: ", identer.stream().collect(Collectors.joining(", ")), e);
+        }
     }
 
     private void sendArenadagpenger(ArenaDagpenger arenaNyeDagpenger, StringBuilder status) {

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.inntektstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.inntektstub.command.InbtektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.config.credentials.InntektstubProxyProperties;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -29,9 +32,10 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class InntektstubConsumer {
 
     private static final String INNTEKTER_URL = "/api/v2/inntektsinformasjon";
-    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer";
     private static final String VALIDER_INNTEKTER_URL = "/api/v2/valider";
     private static final String NORSKE_IDENTER_QUERY = "norske-identer";
+
+    private static final int BLOCK_SIZE = 10;
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -64,20 +68,15 @@ public class InntektstubConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
-    public ResponseEntity<Inntektsinformasjon> deleteInntekter(String ident) {
+    public Mono<List<Void>> deleteInntekter(List<String> identer) {
 
-        return webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path(DELETE_INNTEKTER_URL)
-                        .queryParam(NORSKE_IDENTER_QUERY, ident)
-                        .build())
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntity(Inntektsinformasjon.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .map(index -> new InbtektstubDeleteCommand(webClient,
+                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
+                                token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
