@@ -78,7 +78,14 @@ public class AaregClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
+
+        try {
+            var response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(identer).block();
+            log.info("Slettet til Aareg utført");
+
+        } catch (RuntimeException e) {
+            log.error("Slettet fra aareg feilet: " + String.join(", ", identer));
+        }
     }
 
     private void sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre, StringBuilder result, String env) {
