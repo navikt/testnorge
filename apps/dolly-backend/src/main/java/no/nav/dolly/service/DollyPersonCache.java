@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -117,9 +116,14 @@ public class DollyPersonCache {
                 dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
                         .stream().findFirst().orElse(new FullPersonDTO()));
             }
-            dollyPerson.setPersondetaljer(List.of(mapperFacade.map(
-                    dollyPerson.getPdlfPerson().getPerson(),
-                    Person.class)));
+            dollyPerson.setPersondetaljer(mapperFacade.mapAsList(Stream.of(
+                                    List.of(dollyPerson.getPdlfPerson().getPerson()),
+                                    dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                            .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                            .toList())
+                            .flatMap(Collection::stream)
+                            .toList(),
+                    Person.class));
         }
 
         if (!manglendeIdenter.isEmpty()) {
