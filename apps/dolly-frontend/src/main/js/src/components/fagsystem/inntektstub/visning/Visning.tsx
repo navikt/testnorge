@@ -41,7 +41,7 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 
 	return (
 		<div>
-			<SubOverskrift label="A-ordningen (Inntektsstub)" iconKind="inntektstub" />
+			<SubOverskrift label="A-ordningen (Inntektstub)" iconKind="inntektstub" />
 			<ErrorBoundary>
 				<DollyFieldArray
 					header="Inntektsinformasjon"

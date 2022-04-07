@@ -42,7 +42,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 	//@ts-ignore
 	<Vis attributt={inntektstubAttributt}>
 		<Panel
-			heading="A-ordningen (Inntektskomponenten)"
+			heading="A-ordningen (Inntektstub)"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
 			iconType="inntektstub"
 			//@ts-ignore
