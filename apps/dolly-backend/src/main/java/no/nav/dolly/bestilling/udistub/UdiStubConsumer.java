@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.udistub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.udistub.command.UdistubDeleteCommand;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.config.credentials.UdistubServerProperties;
@@ -18,8 +19,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,7 +59,11 @@ public class UdiStubConsumer {
         this.errorStatusDecoder = errorStatusDecoder;
     }
 
-    @Timed(name = "providers", tags = { "operation", "udi_getPerson" })
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "udi_getPerson"})
     public UdiPersonResponse getUdiPerson(String ident) {
 
         try {
@@ -78,7 +85,7 @@ public class UdiStubConsumer {
         }
     }
 
-    @Timed(name = "providers", tags = { "operation", "udi_createPerson" })
+    @Timed(name = "providers", tags = {"operation", "udi_createPerson"})
     public UdiPersonResponse createUdiPerson(UdiPerson udiPerson) {
 
         try {
@@ -101,8 +108,7 @@ public class UdiStubConsumer {
         }
     }
 
-
-    @Timed(name = "providers", tags = { "operation", "udi_updatePerson" })
+    @Timed(name = "providers", tags = {"operation", "udi_updatePerson"})
     public UdiPersonResponse updateUdiPerson(UdiPerson udiPerson) {
 
         try {
@@ -124,31 +130,18 @@ public class UdiStubConsumer {
         }
     }
 
-    @Timed(name = "providers", tags = { "operation", "udi_deletePerson" })
-    public void deleteUdiPerson(String ident) {
+    @Timed(name = "providers", tags = {"operation", "udi_deletePerson"})
+    public Mono<List<Void>> deleteUdiPerson(List<String> identer) {
 
-        try {
-            webClient
-                    .put()
-                    .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
-                    .header(HEADER_NAV_CALL_ID, getNavCallId())
-                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                    .header(NAV_PERSON_IDENT, ident)
-                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                    .retrieve().toBodilessEntity()
-                    .block();
-
-        } catch (RuntimeException e) {
-            errorStatusDecoder.decodeRuntimeException(e);
-        }
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .map(index -> new UdistubDeleteCommand(webClient,
+                                identer.get(index), token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }
