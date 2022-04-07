@@ -33,7 +33,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 				.then((response) => {
 					return response?.data[0]?.person
 				})
-				.catch((e) => {
+				.catch((_e) => {
 					return null
 				})
 			if (mountedRef.current) {

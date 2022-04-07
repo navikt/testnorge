@@ -2,11 +2,9 @@ import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { addDays, isBefore } from 'date-fns'
 import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
 
 type TpsMSkjermingProps = {
 	data: Skjerming
-	loading?: boolean
 }
 
 type Skjerming = {
@@ -14,7 +12,7 @@ type Skjerming = {
 	egenAnsattDatoFom?: string
 }
 
-export const TpsMSkjerming = ({ data, loading = false }: TpsMSkjermingProps) => {
+export const TpsMSkjerming = ({ data }: TpsMSkjermingProps) => {
 	if (!data?.egenAnsattDatoFom) return null
 	return (
 		<>

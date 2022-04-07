@@ -49,7 +49,7 @@ export const PdlVisning = ({ pdlData, loading, environments }: PdlVisningProps) 
 				.then((response: any) => {
 					return response?.data[0]?.person
 				})
-				.catch((e: Error) => {
+				.catch((_e: Error) => {
 					return null
 				})
 			if (mountedRef.current) {

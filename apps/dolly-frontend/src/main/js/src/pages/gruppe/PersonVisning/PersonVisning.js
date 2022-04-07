@@ -22,7 +22,6 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
@@ -65,7 +64,7 @@ export const PersonVisning = ({
 				.then((response) => {
 					return response.data?.data
 				})
-				.catch((e) => {
+				.catch((_e) => {
 					return null
 				})
 			if (mountedRef.current) {
