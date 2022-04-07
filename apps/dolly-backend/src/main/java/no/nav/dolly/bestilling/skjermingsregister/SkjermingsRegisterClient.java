@@ -70,7 +70,13 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(skjermingsRegisterConsumer::deleteSkjerming);
+        try {
+            skjermingsRegisterConsumer.deleteSkjerming(identer)
+                    .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å slette identer fra Skjermingsregistert: ", String.join(", ", identer));
+        }
     }
 
     private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime skjermetTil, StringBuilder status) {
