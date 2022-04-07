@@ -50,7 +50,7 @@ export const App = ({
 
 	if (criticalError) logout(criticalError.stack)
 
-	if (!brukerData || !brukerProfil || brukerBilde === undefined)
+	if (!brukerData || brukerBilde === undefined)
 		return <Loading label="Laster Dolly applikasjon" fullpage />
 
 	return (

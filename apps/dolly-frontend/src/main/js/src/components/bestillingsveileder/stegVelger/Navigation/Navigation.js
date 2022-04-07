@@ -1,21 +1,20 @@
 import React, { useContext } from 'react'
-import { useDispatch } from 'react-redux'
-import { go } from 'connected-react-router'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 
 import './Navigation.less'
 import { AvbrytButton } from '~/components/ui/button/AvbrytButton/AvbrytButton'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { useNavigate } from 'react-router-dom'
 
 export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts.is.importTestnorge
 
-	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const { isSubmitting, handleSubmit } = formikBag
 
-	const onAbort = () => dispatch(go(-1))
+	const onAbort = () => navigate(-1)
 
 	const getLastButtonText = () => {
 		if (importTestnorge) {

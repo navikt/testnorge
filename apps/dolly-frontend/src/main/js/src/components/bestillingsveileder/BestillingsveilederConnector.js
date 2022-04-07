@@ -9,7 +9,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	sendBestilling: (values, opts, gruppeId) => dispatch(sendBestilling(values, opts, gruppeId)),
+	sendBestilling: (values, opts, gruppeId, navigate) =>
+		dispatch(sendBestilling(values, opts, gruppeId, navigate)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bestillingsveileder)

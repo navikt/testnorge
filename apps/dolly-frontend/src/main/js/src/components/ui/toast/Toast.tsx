@@ -1,6 +1,13 @@
 import React from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import styled from 'styled-components'
+
+const StyledToastContainer = styled(ToastContainer)`
+	.Toastify__toast {
+		background: #ba3a26;
+	}
+`
 
 type Props = {
 	applicationError: string
@@ -19,5 +26,5 @@ export const Toast = ({ applicationError }: Props) => {
 		draggable: true,
 	})
 
-	return <ToastContainer theme={'colored'} />
+	return <StyledToastContainer theme={'colored'} />
 }

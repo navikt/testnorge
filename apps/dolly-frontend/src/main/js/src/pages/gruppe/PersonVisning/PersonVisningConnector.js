@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { push } from 'connected-react-router'
 import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
 import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
@@ -53,16 +52,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 			ownProps.slettedeIdenter?.[1]?.([...ownProps.slettedeIdenter[0], ownProps.personId])
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
-		leggTilPaaPerson: (data, bestillinger, master, type) => {
-			return dispatch(
-				push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling/${ownProps.personId}`, {
+		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
+			navigate(`/gruppe/${gruppeId}/bestilling/${ownProps.personId}`, {
+				state: {
 					personFoerLeggTil: data,
 					tidligereBestillinger: bestillinger,
 					identMaster: master,
 					identtype: type,
-				})
-			)
-		},
+				},
+			}),
 	}
 }
 

@@ -97,7 +97,12 @@ export default function GruppeHeader({
 						</LaasButton>
 					)}
 					{!erLaast && (
-						<SlettButton gruppeId={gruppe.id} action={deleteGruppe} loading={isDeletingGruppe}>
+						<SlettButton
+							gruppeId={gruppe.id}
+							action={deleteGruppe}
+							loading={isDeletingGruppe}
+							navigateHome={true}
+						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
 					)}

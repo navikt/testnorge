@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { push } from 'connected-react-router'
 import SearchView from '~/pages/testnorgePage/search/SearchView'
 
 const mapStateToProps = (state: any, ownProps: any) => ({
@@ -9,13 +8,13 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 	loading: ownProps.loading,
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
-	importerPersoner: (valgtePersoner: string[]) => {
-		return dispatch(
-			push(`/importer`, {
+const mapDispatchToProps = () => ({
+	importerPersoner: (valgtePersoner: string[], navigate: Function) => {
+		return navigate(`/importer`, {
+			state: {
 				importPersoner: valgtePersoner,
-			})
-		)
+			},
+		})
 	},
 })
 

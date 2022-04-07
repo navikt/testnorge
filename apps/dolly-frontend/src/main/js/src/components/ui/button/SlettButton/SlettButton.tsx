@@ -9,10 +9,26 @@ import Loading from '~/components/ui/loading/Loading'
 import './SlettModal.less'
 import { useNavigate } from 'react-router-dom'
 
-export const SlettButton = ({ action, gruppeId, loading, children, disabled = false }) => {
-	const navigate = useNavigate()
+type Props = {
+	action: Function
+	gruppeId?: string
+	loading: boolean
+	children: any
+	disabled?: boolean
+	navigateHome?: boolean
+}
+
+export const SlettButton = ({
+	action,
+	gruppeId,
+	loading,
+	children,
+	disabled = false,
+	navigateHome = false,
+}: Props) => {
 	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const navigate = useNavigate()
 
 	return (
 		<React.Fragment>
@@ -36,8 +52,8 @@ export const SlettButton = ({ action, gruppeId, loading, children, disabled = fa
 						<NavButton
 							onClick={() => {
 								closeModal()
-								action(gruppeId)
-								return navigate('/')
+								gruppeId ? action(gruppeId) : action()
+								navigateHome && navigate('/')
 							}}
 							type="hoved"
 						>

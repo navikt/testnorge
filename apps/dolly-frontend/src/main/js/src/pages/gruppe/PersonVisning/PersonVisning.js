@@ -28,6 +28,7 @@ import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoein
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '~/service/Api'
+import { useNavigate } from 'react-router-dom'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -43,6 +44,7 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	gruppeId,
 	brukertype,
 	bestilling,
 	bestillingsListe,
@@ -56,6 +58,7 @@ export const PersonVisning = ({
 
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		DollyApi.getPersonFraPdl(ident.ident)
@@ -63,7 +66,7 @@ export const PersonVisning = ({
 				setPdlData(response.data?.data)
 				setPdlLoading(false)
 			})
-			.catch((e) => {
+			.catch(() => {
 				setPdlLoading(false)
 			})
 	}, [])
@@ -75,7 +78,14 @@ export const PersonVisning = ({
 					{!iLaastGruppe && (
 						<Button
 							onClick={() =>
-								leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+								leggTilPaaPerson(
+									data,
+									bestillingsListe,
+									ident.master,
+									getIdenttype(ident.ident),
+									gruppeId,
+									navigate
+								)
 							}
 							kind="add-circle"
 						>
