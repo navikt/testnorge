@@ -43,8 +43,8 @@ export type Search = {
 		status?: string
 	}
 	relasjoner?: {
-		barn?: boolean
-		doedfoedtBarn?: boolean
+		harBarn?: string
+		harDoedfoedtBarn?: string
 	}
 }
 

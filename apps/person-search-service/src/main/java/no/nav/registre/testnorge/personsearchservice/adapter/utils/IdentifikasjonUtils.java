@@ -10,12 +10,12 @@ import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
 
 @UtilityClass
 public class IdentifikasjonUtils {
 
     private static final String NO_VALUE = "INGEN";
-    private static final String METADATA = "metadata";
     private static final String ADRESSEBESKYTTELSE_PATH = "hentPerson.adressebeskyttelse";
     private static final String KJOENN_PATH = "hentPerson.kjoenn";
     private static final String IDENTIFIKATOR_PATH = "hentPerson.folkeregisteridentifikator";
@@ -42,10 +42,10 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdentifikasjon())
                 .ifPresent(value -> {
                     if (nonNull(value.getFalskIdentitet()) && value.getFalskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD));
                     }
                     if (nonNull(value.getUtenlandskIdentitet()) && value.getUtenlandskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD));
                     }
 
                 });
@@ -57,7 +57,7 @@ public class IdentifikasjonUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         if (value.equals(NO_VALUE)) {
-                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA));
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD));
                         } else {
                             queryBuilder.must(nestedHistoriskQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value, false));
                         }

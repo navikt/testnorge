@@ -8,13 +8,14 @@ import org.apache.lucene.search.join.ScoreMode;
 
 import java.util.Optional;
 
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.HISTORISK_PATH;
 
 @UtilityClass
 public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
     private static final String B_VEGADRESSE_PATH = BOSTEDSADRESSE_PATH + ".vegadresse";
     private static final String B_MATRIKKELADRESSE_PATH = BOSTEDSADRESSE_PATH + ".matrikkeladresse";
-    private static final String B_HISTORISK_PATH = BOSTEDSADRESSE_PATH + ".metadata.historisk";
+    private static final String B_HISTORISK_PATH = BOSTEDSADRESSE_PATH + HISTORISK_PATH;
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addKommunenrBostedQuery(queryBuilder, search);

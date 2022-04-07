@@ -13,12 +13,12 @@ public class ForelderBarnRelasjon implements WithDTO<ForelderBarnRelasjonDTO> {
 
     public ForelderBarnRelasjonDTO toDTO() {
         var barn = forelderBarnRelasjoner.stream()
-                .filter(relasjon -> relasjon.getRelatertPersonsRolle().equals("BARN"))
+                .filter(relasjon -> relasjon.getRelatertPersonsRolle().equals(PersonRolle.BARN.toString()))
                 .map(ForelderBarnRelasjonModel::getRelatertPersonsIdent)
                 .toList();
 
         var foreldre = forelderBarnRelasjoner.stream()
-                .filter(relasjon -> !relasjon.getRelatertPersonsRolle().equals("BARN"))
+                .filter(relasjon -> !relasjon.getRelatertPersonsRolle().equals(PersonRolle.BARN.toString()))
                 .map(forelder -> {
                     return ForelderDTO.builder()
                             .ident(forelder.getRelatertPersonsIdent())

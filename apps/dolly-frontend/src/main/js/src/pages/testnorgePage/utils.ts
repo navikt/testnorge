@@ -18,8 +18,8 @@ export const initialValues = {
 		},
 		relasjoner: {
 			sivilstand: '',
-			barn: false,
-			doedfoedtBarn: false,
+			harBarn: '',
+			harDoedfoedtBarn: '',
 		},
 		ident: {
 			ident: '',
@@ -90,8 +90,8 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
 			},
 			relasjoner: {
-				barn: values?.personinformasjon?.relasjoner?.barn,
-				doedfoedtBarn: values?.personinformasjon?.relasjoner?.doedfoedtBarn,
+				harBarn: values?.personinformasjon?.relasjoner?.harBarn,
+				harDoedfoedtBarn: values?.personinformasjon?.relasjoner?.harDoedfoedtBarn,
 			},
 			utflyttingFraNorge: {
 				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,

@@ -19,6 +19,11 @@ type Target = {
 }
 
 export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
+	const harFnr = _get(formikBag.values, 'pdldata.opprettNyPerson.identtype') === 'FNR'
+	const adressebeskyttelseOptions = harFnr
+		? Options('gradering')
+		: Options('gradering').filter((v) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value))
+
 	const handleChangeGradering = (target: Target, path: string) => {
 		const adressebeskyttelse = _get(formikBag.values, path)
 		const adressebeskyttelseClone = _cloneDeep(adressebeskyttelse)
@@ -46,7 +51,7 @@ export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 								<FormikSelect
 									name={`${path}.gradering`}
 									label="Gradering"
-									options={Options('gradering')}
+									options={adressebeskyttelseOptions}
 									onChange={(target: Target) => handleChangeGradering(target, path)}
 									size="large"
 								/>
