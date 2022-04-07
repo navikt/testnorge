@@ -78,7 +78,7 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 			/>
 			<OptionsSection
 				heading={'Relasjoner'}
-				options={<Relasjoner formikBag={props.formikBag} path={'personinformasjon.relasjoner'} />}
+				options={<Relasjoner formikBag={props.formikBag} />}
 				numSelected={getCount(RelasjonerPaths, props.formikBag)}
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>
