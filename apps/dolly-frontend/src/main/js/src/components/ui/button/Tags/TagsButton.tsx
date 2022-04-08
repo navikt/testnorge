@@ -53,7 +53,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 					</div>
 					<div className="tagsModal-actions">
 						<NavButton type={'fare'} onClick={closeModal}>
-							AVBRYT
+							Avbryt
 						</NavButton>
 						<NavButton
 							onClick={() => {

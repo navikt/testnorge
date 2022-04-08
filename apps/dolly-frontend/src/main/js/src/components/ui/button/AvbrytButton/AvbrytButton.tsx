@@ -6,18 +6,18 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './AvbrytModal.less'
 
-type data = {
+type Props = {
 	action: Function
 	children: ReactChildren
 }
 
-export const AvbrytButton = ({ action, children }: data) => {
+export const AvbrytButton = ({ action, children }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (
 		<React.Fragment>
 			<NavButton type={'fare'} onClick={openModal}>
-				AVBRYT
+				Avbryt
 			</NavButton>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="fit-content" overflow="auto">
 				<div className="avbrytModal">
@@ -27,7 +27,7 @@ export const AvbrytButton = ({ action, children }: data) => {
 						<h4>{children}</h4>
 					</div>
 					<div className="avbrytModal-actions">
-						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
@@ -35,7 +35,7 @@ export const AvbrytButton = ({ action, children }: data) => {
 							}}
 							type="hoved"
 						>
-							JA, JEG ER SIKKER
+							Ja, jeg er sikker
 						</NavButton>
 					</div>
 				</div>

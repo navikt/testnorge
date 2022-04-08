@@ -50,11 +50,11 @@ export default ({ brukerId }) => {
 			formatter: (cell, row) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
-						AVBRYT
+						Avbryt
 					</Button>
 				) : (
 					<Button kind="edit" onClick={() => setUnderRedigering(underRedigering.concat([row.id]))}>
-						ENDRE NAVN
+						Endre navn
 					</Button>
 				)
 			},

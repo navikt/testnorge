@@ -207,7 +207,7 @@ export default class BestillingProgresjon extends PureComponent {
 							</h5>
 						</div>
 						<NavButton type="fare" onClick={this._onCancelBtn}>
-							AVBRYT BESTILLING
+							Avbryt bestilling
 						</NavButton>
 					</div>
 				)}

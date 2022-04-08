@@ -38,17 +38,17 @@ export const SlettButton = ({
 				title={disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
 				kind="trashcan"
 			>
-				SLETT
+				Slett
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="slettModal">
 					<div className="slettModal slettModal-content">
 						<Icon size={50} kind="report-problem-circle" />
-						<h1>SLETT</h1>
+						<h1>Slett</h1>
 						<h4>{children}</h4>
 					</div>
 					<div className="slettModal-actions">
-						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
@@ -57,7 +57,7 @@ export const SlettButton = ({
 							}}
 							type="hoved"
 						>
-							JA, JEG ER SIKKER
+							Ja, jeg er sikker
 						</NavButton>
 					</div>
 				</div>

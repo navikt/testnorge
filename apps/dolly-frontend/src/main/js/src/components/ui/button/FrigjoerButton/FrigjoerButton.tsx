@@ -21,17 +21,17 @@ export const FrigjoerButton = ({ action, loading, children }: Props) => {
 	return (
 		<React.Fragment>
 			<Button onClick={openModal} kind="trashcan">
-				FRIGJØR/SLETT
+				Frigjør/slett
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="frigjoerModal">
 					<div className="frigjoerModal frigjoerModal-content">
 						<Icon size={50} kind="report-problem-circle" />
-						<h1>FRIGJØR/SLETT</h1>
+						<h1>Frigjør/slett</h1>
 						<h4>{children}</h4>
 					</div>
 					<div className="frigjoerModal-actions">
-						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
@@ -39,7 +39,7 @@ export const FrigjoerButton = ({ action, loading, children }: Props) => {
 							}}
 							type="hoved"
 						>
-							JA, JEG ER SIKKER
+							Ja, jeg er sikker
 						</NavButton>
 					</div>
 				</div>

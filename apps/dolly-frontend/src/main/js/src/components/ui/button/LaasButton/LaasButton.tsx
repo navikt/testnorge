@@ -34,7 +34,7 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 						<h4>{children}</h4>
 					</div>
 					<div className="laasModal-actions">
-						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
@@ -42,7 +42,7 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 							}}
 							type="hoved"
 						>
-							JA, JEG ER SIKKER
+							Ja, jeg er sikker
 						</NavButton>
 					</div>
 				</div>
