@@ -14,4 +14,5 @@ public class RelasjonSearch {
     String harBarn;
     String harDoedfoedtBarn;
     List<String> forelderRelasjoner;
+    String deltBosted;
 }

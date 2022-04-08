@@ -22,6 +22,7 @@ public class RelasjonerUtils {
     private static final String RELATERT_PERSONS_ROLLE = ".relatertPersonsRolle";
     private static final String SIVILSTAND_PATH = "hentPerson.sivilstand";
     private static final String DOEDFOEDT_BARN_PATH = "hentPerson.doedfoedtBarn";
+    private static final String DELT_BOSTED_PATH = "hentPerson.deltBosted";
 
     public static void addRelasjonerQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
@@ -29,6 +30,7 @@ public class RelasjonerUtils {
                     addForeldreQueries(queryBuilder, value);
                     addBarnQuery(queryBuilder, value);
                     addDoedfoedtBarnQuery(queryBuilder, value);
+                    addDeltBostedQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
     }
@@ -81,6 +83,20 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value, false));
+                    }
+                });
+    }
+
+
+    private static void addDeltBostedQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
+        Optional.ofNullable(search.getDeltBosted())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        if (YES.equalsIgnoreCase(value)) {
+                            queryBuilder.must(nestedExistsQuery(DELT_BOSTED_PATH, METADATA_FIELD, false));
+                        } else if (NO.equalsIgnoreCase(value)) {
+                            queryBuilder.mustNot(nestedExistsQuery(DELT_BOSTED_PATH, METADATA_FIELD, false));
+                        }
                     }
                 });
     }
