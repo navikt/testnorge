@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import _has from 'lodash/has'
 import {
 	Boadresse,
@@ -20,15 +20,38 @@ import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/Pd
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
+	if (!data) return null
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
+	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
+	const mountedRef = useRef(true)
+
+	const execute = useCallback(() => {
+		const tpsMessaging = async () => {
+			setTpsMessagingLoading(true)
+			const ident = data?.ident ? data.ident : pdlData?.ident
+			const resp = await TpsMessagingApi.getTpsPersonInfo(ident, environments[0])
+				.then((response) => {
+					return response?.data[0]?.person
+				})
+				.catch((_e) => {
+					return null
+				})
+			if (mountedRef.current) {
+				setTpsMessagingData(resp)
+				setTpsMessagingLoading(false)
+			}
+		}
+		return tpsMessaging()
+	}, [environments])
+
 	useEffect(() => {
 		if (environments && environments.length > 0) {
-			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) =>
-				setTpsMessagingData(response?.data[0]?.person)
-			)
+			execute()
+		}
+		return () => {
+			mountedRef.current = false
 		}
 	}, [])
-	if (!data) return null
 
 	const harPdlAdresse =
 		_has(pdlData, 'person.bostedsadresse') ||
@@ -45,7 +68,11 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 				{hasTpsfData ? (
 					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
 				) : (
-					<PdlPersonInfo data={pdlData} />
+					<PdlPersonInfo
+						data={pdlData}
+						tpsMessagingData={tpsMessagingData}
+						tpsMessagingLoading={tpsMessagingLoading}
+					/>
 				)}
 				{hasTpsfData ? (
 					<Nasjonalitet data={data} pdlData={pdlData} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useBoolean, useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
@@ -22,7 +22,6 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
@@ -57,16 +56,30 @@ export const PersonVisning = ({
 
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
+	const mountedRef = useRef(true)
+
+	const execute = useCallback(() => {
+		const pdlPerson = async () => {
+			const person = await DollyApi.getPersonFraPdl(ident.ident)
+				.then((response) => {
+					return response.data?.data
+				})
+				.catch((_e) => {
+					return null
+				})
+			if (mountedRef.current) {
+				setPdlData(person)
+				setPdlLoading(false)
+			}
+		}
+		return pdlPerson()
+	}, [ident])
 
 	useEffect(() => {
-		DollyApi.getPersonFraPdl(ident.ident)
-			.then((response) => {
-				setPdlData(response.data?.data)
-				setPdlLoading(false)
-			})
-			.catch((e) => {
-				setPdlLoading(false)
-			})
+		execute()
+		return () => {
+			mountedRef.current = false
+		}
 	}, [])
 
 	return (
@@ -106,7 +119,13 @@ export const PersonVisning = ({
 				{ident.master !== 'PDL' && (
 					<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
-				{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
+				{ident.master === 'PDL' && (
+					<PdlVisning
+						pdlData={pdlData}
+						loading={pdlLoading}
+						environments={bestilling?.environments}
+					/>
+				)}
 				<AaregVisning liste={data.aareg} loading={loading.aareg} />
 				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
