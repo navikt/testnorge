@@ -23,12 +23,19 @@ public class QueryUtils {
     public static final String NO = "N";
 
 
-    public static NestedQueryBuilder nestedTermsQuery(String path, String field, Collection<String> values) {
-        return QueryBuilders.nestedQuery(
-                path,
-                QueryBuilders.termsQuery(path + field, values),
-                ScoreMode.Avg
-        );
+    public static NestedQueryBuilder nestedTermsQuery(String path, String field, Collection<String> values, boolean historisk) {
+        if (historisk){
+            return QueryBuilders.nestedQuery(path, QueryBuilders.termsQuery(path + field, values), ScoreMode.Avg);
+        }else{
+            return QueryBuilders.nestedQuery(
+                    path,
+                    QueryBuilders.boolQuery()
+                            .must(QueryBuilders.termsQuery(path + field, values))
+                            .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false))
+                    ,
+                    ScoreMode.Avg
+            );
+        }
     }
 
     public static NestedQueryBuilder nestedExistsQuery(String path, String field, boolean historisk) {

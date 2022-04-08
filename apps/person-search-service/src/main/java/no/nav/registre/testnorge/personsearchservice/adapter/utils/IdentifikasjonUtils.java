@@ -77,7 +77,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdenter())
                 .ifPresent(values -> {
                     if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", ".ident", values));
+                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", ".ident", values, true));
                     }
                 });
     }
