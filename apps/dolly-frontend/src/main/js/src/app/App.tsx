@@ -26,7 +26,7 @@ export const App = ({
 	getEnvironments,
 }: Props) => {
 	const [criticalError, setCriticalError] = useState(null)
-	const [brukerProfil, setBrukerProfil] = useState(null)
+	const [brukerProfil, setBrukerProfil] = useState(undefined)
 	const [brukerBilde, setBrukerBilde] = useState(undefined)
 	const navigate = useNavigate()
 
@@ -34,7 +34,9 @@ export const App = ({
 		getCurrentBruker().catch((err: Object) => setCriticalError(err))
 		getEnvironments().catch((err: Object) => setCriticalError(err))
 
-		ProfilApi.getProfil().then((response: { data: Object }) => setBrukerProfil(response.data))
+		ProfilApi.getProfil()
+			.then((response: { data: Object }) => setBrukerProfil(response.data))
+			.catch(() => setBrukerProfil(null))
 		ProfilApi.getProfilBilde()
 			.then((response: { data: Response }) =>
 				response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
@@ -55,7 +57,7 @@ export const App = ({
 
 	if (criticalError) logout(criticalError.stack)
 
-	if (!brukerData || brukerBilde === undefined)
+	if (!brukerData || brukerProfil === undefined || brukerBilde === undefined)
 		return <Loading label="Laster Dolly applikasjon" fullpage />
 
 	return (
