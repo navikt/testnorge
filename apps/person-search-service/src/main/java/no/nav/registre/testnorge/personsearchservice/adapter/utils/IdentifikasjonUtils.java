@@ -1,13 +1,14 @@
 package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.registre.testnorge.personsearchservice.controller.search.IdentifikasjonSearch;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedHistoriskQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
@@ -22,44 +23,42 @@ public class IdentifikasjonUtils {
 
     public static void addIdentifikasjonQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addIdentQuery(queryBuilder, search);
-        addIdenttypeQuery(queryBuilder, search);
-        addIdentitetQueries(queryBuilder, search);
-        addAdressebeskyttelseQuery(queryBuilder, search);
         addKjoennQuery(queryBuilder, search);
+
+        Optional.ofNullable(search.getIdentifikasjon())
+                .ifPresent(value -> {
+                    addIdenttypeQuery(queryBuilder, value);
+                    addIdentitetQueries(queryBuilder, value);
+                    addAdressebeskyttelseQuery(queryBuilder, value);
+                });
     }
 
-    private static void addIdenttypeQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentifikasjon())
-                .flatMap(value -> Optional.ofNullable(value.getIdenttype()))
+    private static void addIdenttypeQuery(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
+        Optional.ofNullable(search.getIdenttype())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedHistoriskQuery(IDENTIFIKATOR_PATH, "type", value, false));
+                        queryBuilder.must(nestedMatchQuery(IDENTIFIKATOR_PATH, ".type", value, false));
                     }
                 });
     }
 
-    private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentifikasjon())
-                .ifPresent(value -> {
-                    if (nonNull(value.getFalskIdentitet()) && value.getFalskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD));
-                    }
-                    if (nonNull(value.getUtenlandskIdentitet()) && value.getUtenlandskIdentitet()) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD));
-                    }
-
-                });
+    private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
+        if (nonNull(search.getFalskIdentitet()) && search.getFalskIdentitet()) {
+            queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, true));
+        }
+        if (nonNull(search.getUtenlandskIdentitet()) && search.getUtenlandskIdentitet()) {
+            queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, true));
+        }
     }
 
-    private static void addAdressebeskyttelseQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getIdentifikasjon())
-                .flatMap(value -> Optional.ofNullable(value.getAdressebeskyttelse()))
+    private static void addAdressebeskyttelseQuery(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
+        Optional.ofNullable(search.getAdressebeskyttelse())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         if (value.equals(NO_VALUE)) {
-                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD));
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD, true));
                         } else {
-                            queryBuilder.must(nestedHistoriskQuery(ADRESSEBESKYTTELSE_PATH, "gradering", value, false));
+                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, ".gradering", value, false));
                         }
                     }
                 });
@@ -69,7 +68,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedHistoriskQuery(KJOENN_PATH, "kjoenn", value, false));
+                        queryBuilder.must(nestedMatchQuery(KJOENN_PATH, ".kjoenn", value, false));
                     }
                 });
     }
@@ -78,7 +77,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdenter())
                 .ifPresent(values -> {
                     if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", "ident", values));
+                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", ".ident", values));
                     }
                 });
     }
