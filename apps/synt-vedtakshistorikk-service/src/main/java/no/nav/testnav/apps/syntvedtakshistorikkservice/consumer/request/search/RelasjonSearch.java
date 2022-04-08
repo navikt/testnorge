@@ -10,5 +10,5 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class RelasjonSearch {
-    Boolean barn;
+    String harBarn;
 }

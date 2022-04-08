@@ -205,7 +205,7 @@ public class IdentService {
 
         if (nonNull(harBarn) && Boolean.TRUE.equals(harBarn)) {
             request.setRelasjoner(RelasjonSearch.builder()
-                    .barn(Boolean.TRUE)
+                    .harBarn("Y")
                     .build());
         }
 
