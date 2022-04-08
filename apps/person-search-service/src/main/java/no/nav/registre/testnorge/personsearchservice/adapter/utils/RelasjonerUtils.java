@@ -34,11 +34,17 @@ public class RelasjonerUtils {
     }
 
     private static void addForeldreQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
-        if (nonNull(search.getFar()) && Boolean.TRUE.equals(search.getFar())) {
-            queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.FAR.toString(), true));
-        }
-        if (nonNull(search.getMor()) && Boolean.TRUE.equals(search.getMor())) {
-            queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.MOR.toString(), true));
+        var relasjoner = search.getForelderRelasjoner();
+        if (nonNull(relasjoner) && !relasjoner.isEmpty()){
+            if (relasjoner.contains(PersonRolle.FAR.toString())){
+                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.FAR.toString(), true));
+            }
+            if (relasjoner.contains(PersonRolle.MOR.toString())){
+                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.MOR.toString(), true));
+            }
+            if (relasjoner.contains(PersonRolle.MEDMOR.toString())){
+                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.MEDMOR.toString(), true));
+            }
         }
     }
 
