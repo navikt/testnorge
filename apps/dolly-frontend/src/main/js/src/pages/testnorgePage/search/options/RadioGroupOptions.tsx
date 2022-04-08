@@ -37,11 +37,11 @@ export const RadioGroupOptions = ({
 	}
 	return (
 		<div className="radio-group">
-			<div className="radio-group__title">
-				<h4>{name}</h4>
+			<div className="flexbox--align-center">
+				<div className="options-title">{name}</div>
 				{selected != null && (
 					<IconContainer onClick={() => setSelected('')}>
-						<Icon size={16} kind={'trashcan'} />
+						<Icon size={14} kind={'trashcan'} />
 					</IconContainer>
 				)}
 			</div>

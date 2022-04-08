@@ -109,6 +109,6 @@ export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSear
 }
 
 export const IdentSearchPaths = {
-	'personinformasjon.ident.ident': 'ident',
-	'personinformasjon.identer': 'list',
+	[identPath]: 'ident',
+	[identerPath]: 'list',
 }

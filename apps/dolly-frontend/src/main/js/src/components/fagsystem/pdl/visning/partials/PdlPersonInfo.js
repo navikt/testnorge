@@ -4,6 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
+import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 
 const getCurrentPersonstatus = (data) => {
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
@@ -18,7 +19,12 @@ const getCurrentPersonstatus = (data) => {
 	return null
 }
 
-export const PdlPersonInfo = ({ data, visTittel = true }) => {
+export const PdlPersonInfo = ({
+	data,
+	tpsMessagingData,
+	tpsMessagingLoading = false,
+	visTittel = true,
+}) => {
 	if (!data) {
 		return null
 	}
@@ -48,6 +54,7 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 						title="Personstatus"
 						value={Formatters.allCapsToCapitalized(personstatus?.status)}
 					/>
+					<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />
 				</div>
 			</div>
 		</ErrorBoundary>

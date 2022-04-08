@@ -14,6 +14,11 @@ export default () => {
 				<Icon size={30} kind="dolly" className="dollysheep" />
 				<h1>Dolly</h1>
 			</div>
+			<div className="menu-links">
+				<a href="https://navikt.github.io/testnorge/applications/dolly/" target="_blank">
+					Dokumentasjon
+				</a>
+			</div>
 		</header>
 	)
 }

@@ -11,6 +11,7 @@ export const initialValues = {
 				tom: '',
 			},
 		},
+		kjoenn: '',
 		nasjonalitet: {
 			statsborgerskap: '',
 			utflyttet: false,
@@ -18,8 +19,8 @@ export const initialValues = {
 		},
 		relasjoner: {
 			sivilstand: '',
-			barn: false,
-			doedfoedtBarn: false,
+			harBarn: '',
+			harDoedfoedtBarn: '',
 		},
 		ident: {
 			ident: '',
@@ -28,13 +29,18 @@ export const initialValues = {
 		identifikasjon: {
 			adressebeskyttelse: '',
 			identtype: '',
-			kjoenn: '',
 			falskIdentitet: false,
 			utenlandskIdentitet: false,
 		},
-		bosted: {
-			kommunenr: '',
-			postnr: '',
+		adresser: {
+			bostedsadresse: {
+				kommunenummer: '',
+				postnummer: '',
+			},
+			kontaktadresse: {
+				norskAdresse: false,
+				utenlanskAdresse: false,
+			},
 		},
 		personstatus: '',
 	},
@@ -67,7 +73,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			randomSeed: randomSeed,
 			terminateAfter: 100,
 			kunLevende: kunLevende,
-			kjoenn: values?.personinformasjon?.identifikasjon?.kjoenn,
+			kjoenn: values?.personinformasjon?.kjoenn,
 			foedsel: {
 				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
 				tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
@@ -83,28 +89,15 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				til: values?.personinformasjon?.alder?.til,
 			},
 			identer: identer,
-			identifikasjon: {
-				falskIdentitet: values?.personinformasjon?.identifikasjon?.falskIdentitet,
-				utenlandskIdentitet: values?.personinformasjon?.identifikasjon?.utenlandskIdentitet,
-				identtype: values?.personinformasjon?.identifikasjon?.identtype,
-				adressebeskyttelse: values?.personinformasjon?.identifikasjon?.adressebeskyttelse,
-			},
-			relasjoner: {
-				barn: values?.personinformasjon?.relasjoner?.barn,
-				doedfoedtBarn: values?.personinformasjon?.relasjoner?.doedfoedtBarn,
-			},
+			identifikasjon: values?.personinformasjon?.identifikasjon,
+			relasjoner: values?.personinformasjon?.relasjoner,
 			utflyttingFraNorge: {
 				utflyttet: values?.personinformasjon?.nasjonalitet?.utflyttet,
 			},
 			innflyttingTilNorge: {
 				innflytting: values?.personinformasjon?.nasjonalitet?.innflyttet,
 			},
-			adresser: {
-				bostedsadresse: {
-					postnummer: values?.personinformasjon?.bosted?.postnr,
-					kommunenummer: values?.personinformasjon?.bosted?.kommunenr,
-				},
-			},
+			adresser: values?.personinformasjon?.adresser,
 			personstatus: {
 				status: personstatus,
 			},
