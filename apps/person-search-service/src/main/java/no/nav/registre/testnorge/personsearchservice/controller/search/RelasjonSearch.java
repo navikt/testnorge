@@ -13,6 +13,6 @@ import java.util.List;
 public class RelasjonSearch {
     String harBarn;
     String harDoedfoedtBarn;
-    List<String> forelderRelasjoner;
+    List<String> forelderBarnRelasjoner;
     String deltBosted;
 }
