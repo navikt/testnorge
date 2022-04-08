@@ -8,15 +8,20 @@ const options = [
 	{ value: 'N', label: 'Nei' },
 ]
 
-type RelasjonerProps = {
-	formikBag: FormikProps<{}>
-	path: string
+const paths = {
+	sivistand: 'personinformasjon.relasjoner.sivilstand',
+	harBarn: 'personinformasjon.relasjoner.harBarn',
+	harDoedfoedtBarn: 'personinformasjon.relasjoner.harDoedfoedtBarn',
 }
 
-export const Relasjoner = ({ formikBag, path }: RelasjonerProps) => (
+type RelasjonerProps = {
+	formikBag: FormikProps<{}>
+}
+
+export const Relasjoner = ({ formikBag }: RelasjonerProps) => (
 	<section>
 		<FormikSelect
-			name={`${path}.sivilstand`}
+			name={paths.sivistand}
 			label="Sivilstand"
 			options={[
 				{ value: 'GIFT', label: 'Gift' },
@@ -29,20 +34,20 @@ export const Relasjoner = ({ formikBag, path }: RelasjonerProps) => (
 		<RadioGroupOptions
 			formikBag={formikBag}
 			name={'Har barn'}
-			path={`${path}.harBarn`}
+			path={paths.harBarn}
 			options={options}
 		/>
 		<RadioGroupOptions
 			formikBag={formikBag}
 			name={'Har dødfødt barn'}
-			path={`${path}.harDoedfoedtBarn`}
+			path={paths.harDoedfoedtBarn}
 			options={options}
 		/>
 	</section>
 )
 
 export const RelasjonerPaths = {
-	'personinformasjon.relasjoner.sivilstand': 'string',
-	'personinformasjon.relasjoner.harBarn': 'string',
-	'personinformasjon.relasjoner.harDoedfoedtBarn': 'string',
+	[paths.sivistand]: 'string',
+	[paths.harBarn]: 'string',
+	[paths.harDoedfoedtBarn]: 'string',
 }

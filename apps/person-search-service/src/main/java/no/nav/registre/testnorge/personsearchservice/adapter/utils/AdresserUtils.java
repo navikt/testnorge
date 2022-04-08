@@ -1,65 +1,89 @@
 package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.registre.testnorge.personsearchservice.controller.search.AdresserSearch;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.apache.lucene.search.join.ScoreMode;
 
+import java.util.Arrays;
 import java.util.Optional;
 
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.HISTORISK_PATH;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldExistQuery;
+
+import static java.util.Objects.nonNull;
 
 @UtilityClass
 public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
-    private static final String B_VEGADRESSE_PATH = BOSTEDSADRESSE_PATH + ".vegadresse";
-    private static final String B_MATRIKKELADRESSE_PATH = BOSTEDSADRESSE_PATH + ".matrikkeladresse";
-    private static final String B_HISTORISK_PATH = BOSTEDSADRESSE_PATH + HISTORISK_PATH;
+    private static final String KONTAKTADRESSE_PATH = "hentPerson.kontaktadresse";
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        addKommunenrBostedQuery(queryBuilder, search);
-        addPostnrBostedQuery(queryBuilder, search);
+        Optional.ofNullable(search.getAdresser())
+                .ifPresent(adresser -> {
+                    if (nonNull(adresser.getBostedsadresse())) {
+                        addKommunenrBostedQuery(queryBuilder, adresser.getBostedsadresse());
+                        addPostnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
+                    }
+                    if (nonNull(adresser.getKontaktadresse())) {
+                        addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
+                        addNorskkKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
+                    }
+                });
     }
 
-    private static void addKommunenrBostedQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresser())
-                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
-                .flatMap(value -> Optional.ofNullable(value.getKommunenummer()))
+    private static void addKommunenrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
+        Optional.ofNullable(bostedsadresse.getKommunenummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
+                        queryBuilder.must(nestedShouldMatchQuery(
                                 BOSTEDSADRESSE_PATH,
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.matchQuery(B_VEGADRESSE_PATH + ".kommunenummer", value))
-                                        .should(QueryBuilders.matchQuery(B_MATRIKKELADRESSE_PATH + ".kommunenummer", value))
-                                        .must(QueryBuilders.termQuery(B_HISTORISK_PATH, false))
-                                        .minimumShouldMatch(1)
-                                ,
-                                ScoreMode.Avg
+                                Arrays.asList(".vegadresse.kommunenummer", ".matrikkeladresse.kommunenummer"),
+                                value, 1, false));
+                    }
+                });
+    }
+
+    private static void addPostnrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
+        Optional.ofNullable(bostedsadresse.getPostnummer())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(nestedShouldMatchQuery(
+                                BOSTEDSADRESSE_PATH,
+                                Arrays.asList(".vegadresse.postnummer", ".matrikkeladresse.postnummer"),
+                                value, 1, false));
+                    }
+                });
+    }
+
+
+    private static void addUtenlandskKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
+        Optional.ofNullable(kontaktadresse.getUtenlandskAdresse())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(nestedShouldExistQuery(
+                                KONTAKTADRESSE_PATH,
+                                Arrays.asList(".utenlandskAdresse.landkode", ".utenlandskAdresseIFrittFormat.landkode"),
+                                1,
+                                false
                         ));
                     }
                 });
     }
 
-    private static void addPostnrBostedQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getAdresser())
-                .flatMap(value -> Optional.ofNullable(value.getBostedsadresse()))
-                .flatMap(value -> Optional.ofNullable(value.getPostnummer()))
+    private static void addNorskkKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
+        Optional.ofNullable(kontaktadresse.getNorskAdresse())
                 .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                BOSTEDSADRESSE_PATH,
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.matchQuery(B_VEGADRESSE_PATH + ".postnummer", value))
-                                        .should(QueryBuilders.matchQuery(B_MATRIKKELADRESSE_PATH + ".postnummer", value))
-                                        .must(QueryBuilders.termQuery(B_HISTORISK_PATH, false))
-                                        .minimumShouldMatch(1)
-                                ,
-                                ScoreMode.Avg
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(nestedShouldExistQuery(
+                                KONTAKTADRESSE_PATH,
+                                Arrays.asList(".vegadresse.postnummer", ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),
+                                1,
+                                false
                         ));
                     }
                 });
     }
+
 }
 

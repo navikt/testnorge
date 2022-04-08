@@ -1,6 +1,8 @@
 import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
+const personstatusPath = 'personinformasjon.personstatus'
+
 const options = {
 	personstatus: [
 		{ value: 'BOSATT', label: 'Bosatt' },
@@ -18,7 +20,7 @@ const options = {
 export const Personstatus = () => (
 	<section>
 		<FormikSelect
-			name="personinformasjon.personstatus"
+			name={personstatusPath}
 			label="Folkeregisterpersonstatus"
 			options={options.personstatus}
 			size="medium"
@@ -27,5 +29,5 @@ export const Personstatus = () => (
 )
 
 export const PersonstatusPaths = {
-	'personinformasjon.personstatus': 'string',
+	[personstatusPath]: 'string',
 }
