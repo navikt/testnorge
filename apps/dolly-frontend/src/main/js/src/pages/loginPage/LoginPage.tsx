@@ -4,15 +4,15 @@ import LoginModal from '~/pages/loginPage/LoginModal'
 import './LoginPage.less'
 import { PaaskeBackground as Background } from '~/components/ui/background/Background'
 
-import './../../eggs.scss'
+import './../../snow.scss'
 
 export default () => {
 	return (
 		<>
 			<BlankHeader />
-			{/*{Array.from(Array(50).keys()).map(() => (*/}
-			{/*	<div className="egg" />*/}
-			{/*))}*/}
+			{Array.from(Array(15).keys()).map(() => (
+				<div className="snowflake" />
+			))}
 			<Background>
 				<LoginModal />
 			</Background>
