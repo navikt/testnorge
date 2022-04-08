@@ -122,7 +122,7 @@ public class AdresserUtils {
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedTermsQuery(
-                                OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", OPPHOLD_ANNET_STED, false));
+                                OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", OPPHOLD_ANNET_STED, true));
                     }
                 });
     }
