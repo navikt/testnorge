@@ -1,68 +1,40 @@
-import React, { useContext } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import _get from 'lodash/get'
+import React from 'react'
 import { FormikProps } from 'formik'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
 
 interface PdlPersonValues {
-	path: string
+	nyPersonPath: string
+	eksisterendePersonPath: string
+	label: string
 	formikBag: FormikProps<{}>
-	erNyIdent?: boolean
+	nyIdentValg?: NyIdent
 }
 
-export const PdlPersonForm = ({ path, formikBag, erNyIdent = false }: PdlPersonValues) => {
-	const opts = useContext(BestillingsveilederContext)
-	const isLeggTil = opts?.is?.leggTil
-
-	const disableAlder =
-		_get(formikBag.values, `${path}.foedtEtter`) != null ||
-		_get(formikBag.values, `${path}.foedtFoer`) != null
-
-	const disableFoedtDato = _get(formikBag.values, `${path}.alder`) != ''
-
-	const identtypeOptions =
-		erNyIdent && isLeggTil
-			? Options('identtype').filter((a) => a.value !== 'NPID')
-			: Options('identtype')
-
+export const PdlPersonForm = ({
+	nyPersonPath,
+	eksisterendePersonPath,
+	label,
+	formikBag,
+	nyIdentValg = null,
+}: PdlPersonValues) => {
 	return (
 		<>
-			<FormikSelect name={`${path}.identtype`} label="Identtype" options={identtypeOptions} />
-			<FormikSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
-			<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={disableAlder} />
-			<FormikDatepicker
-				name={`${path}.foedtEtter`}
-				label="Født etter"
-				disabled={disableFoedtDato}
-				fastfield={false}
+			<h4>Opprett ny person</h4>
+			<PdlNyPerson
+				nyPersonPath={nyPersonPath}
+				eksisterendePersonPath={eksisterendePersonPath}
+				formikBag={formikBag}
+				erNyIdent={nyIdentValg !== null}
 			/>
-			<FormikDatepicker
-				name={`${path}.foedtFoer`}
-				label="Født før"
-				disabled={disableFoedtDato}
-				fastfield={false}
-			/>
-			{!erNyIdent && (
-				<FormikSelect
-					name={`${path}.statsborgerskapLandkode`}
-					label="Statsborgerskap"
-					kodeverk={AdresseKodeverk.StatsborgerskapLand}
-					size="large"
-				/>
-			)}
-			{!erNyIdent && (
-				<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
-			)}
-			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" checkboxMargin />
-			<FormikCheckbox
-				name={`${path}.nyttNavn.hasMellomnavn`}
-				label="Har mellomnavn"
-				checkboxMargin
+			<h4>Velg eksisterende person</h4>
+			<PdlEksisterendePerson
+				nyPersonPath={nyPersonPath}
+				eksisterendePersonPath={eksisterendePersonPath}
+				label={label}
+				formikBag={formikBag}
+				nyIdentValg={nyIdentValg}
 			/>
 		</>
 	)
