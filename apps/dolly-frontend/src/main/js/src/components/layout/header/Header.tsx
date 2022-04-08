@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 // @ts-ignore
@@ -8,6 +8,7 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
+import { logoutBruker } from '~/components/utlogging/Utlogging'
 
 type Props = {
 	brukerProfil: {
@@ -18,7 +19,7 @@ type Props = {
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
-	const logout = () => (window.location.href = '/logout')
+	const navigate = useNavigate()
 
 	return (
 		<header className="app-header">
@@ -59,7 +60,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				</a>
 			</div>
 			<div className="flexbox--all-center">
-				<Button kind="logout" title="Logg ut" onClick={logout} />
+				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker(navigate)} />
 				<div className="profil-area flexbox--all-center">
 					<NavLink to="/minside">
 						<img alt="Profilbilde" src={brukerBilde || dolly} />

@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'redux-first-history'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { actions } from '~/ducks/gruppe'
 

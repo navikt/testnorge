@@ -1,7 +1,6 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import gruppeReducer from './ducks/gruppe'
 import brukerReducer from './ducks/bruker'
@@ -17,10 +16,12 @@ import varslingerReducer from './ducks/varslinger'
 import finnPersonReducer from './ducks/finnPerson'
 import organisasjonReducer from './ducks/organisasjon'
 import commonReducer from '~/ducks/common'
+import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
+import { createBrowserHistory } from 'history'
 
 const locationMiddleware = (store) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
-		const prevPath = store.getState().router.location.pathname
+		const prevPath = store.getState()?.router?.location?.pathname
 		const nextPath = action.payload.location.pathname
 		if (prevPath === nextPath) {
 			return false
@@ -29,30 +30,39 @@ const locationMiddleware = (store) => (next) => (action) => {
 	return next(action)
 }
 
-export const configureReduxStore = () => {
-	const allMiddleware = [
-		locationMiddleware,
-		thunkMiddleware,
-		createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
-	]
+const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
+	history: createBrowserHistory(),
+})
 
-	const rootReducer = () =>
-		combineReducers({
-			bestveil: bestillingReducer,
-			bestillingStatuser: bestillingStatusReducer,
-			gruppe: gruppeReducer,
-			bruker: brukerReducer,
-			fagsystem: fagsystemReducer,
-			search: searchReducer,
-			loading: loadingReducer,
-			errors: errorsReducer,
-			common: commonReducer,
-			environments: environmentsReducer,
-			kodeverk: kodeverkReducer,
-			varslinger: varslingerReducer,
-			finnPerson: finnPersonReducer,
-			organisasjon: organisasjonReducer,
-		})
+const allMiddleware = [
+	routerMiddleware,
+	locationMiddleware,
+	thunkMiddleware,
+	createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
+]
 
-	return createStore(rootReducer(), composeWithDevTools(applyMiddleware(...allMiddleware)))
-}
+const rootReducer = () =>
+	combineReducers({
+		router: routerReducer,
+		bestveil: bestillingReducer,
+		bestillingStatuser: bestillingStatusReducer,
+		gruppe: gruppeReducer,
+		bruker: brukerReducer,
+		fagsystem: fagsystemReducer,
+		search: searchReducer,
+		loading: loadingReducer,
+		errors: errorsReducer,
+		common: commonReducer,
+		environments: environmentsReducer,
+		kodeverk: kodeverkReducer,
+		varslinger: varslingerReducer,
+		finnPerson: finnPersonReducer,
+		organisasjon: organisasjonReducer,
+	})
+
+export const store = createStore(
+	rootReducer(),
+	composeWithDevTools(applyMiddleware(...allMiddleware))
+)
+
+export const history = createReduxHistory(store)

@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { NotFoundError } from '~/error'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
 import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
+import { logoutBruker } from '~/components/utlogging/Utlogging'
 import { useNavigate } from 'react-router-dom'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
-
-const logout = (feilmelding: string = null) => {
-	window.location.href = '/logout' + (feilmelding ? '?state=' + feilmelding : '')
-}
 
 export default () => {
 	const [loading, setLoading] = useState(true)
@@ -21,21 +17,20 @@ export default () => {
 	const [organisasjon, setOrganisasjon] = useState<Organisasjon>(null)
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
-
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logout(UNKNOWN_ERROR)
+					logoutBruker(navigate, UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch((e: NotFoundError) => logout(ORG_ERROR))
-			.catch((e: Error) => logout(UNKNOWN_ERROR))
+			.catch(() => logoutBruker(navigate, ORG_ERROR))
+			.catch(() => logoutBruker(navigate, UNKNOWN_ERROR))
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
@@ -47,14 +42,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logout(UNKNOWN_ERROR)
+					logoutBruker(navigate, UNKNOWN_ERROR)
 				}
 			})
-			.catch((e: NotFoundError) => {
+			.catch(() => {
 				setLoading(false)
 			})
-			.catch((e: Error) => {
-				logout(UNKNOWN_ERROR)
+			.catch(() => {
+				logoutBruker(navigate, UNKNOWN_ERROR)
 			})
 	}
 
@@ -75,7 +70,7 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton className="tilbake-button" onClick={() => logout()}>
+				<NavButton className="tilbake-button" onClick={() => logoutBruker(navigate)}>
 					Tilbake til innlogging
 				</NavButton>
 			</div>

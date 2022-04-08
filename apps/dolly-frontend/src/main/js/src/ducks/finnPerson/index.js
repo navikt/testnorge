@@ -1,6 +1,6 @@
 import { DollyApi } from '~/service/Api'
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'redux-first-history'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 

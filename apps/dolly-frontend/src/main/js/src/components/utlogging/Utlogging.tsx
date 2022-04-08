@@ -6,6 +6,7 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Api from '~/api'
 import ProgressBar from 'fremdriftslinje'
 import { WarningFilled } from '@navikt/ds-icons'
+import { useNavigate } from 'react-router-dom'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
@@ -22,10 +23,16 @@ function getCookie(cookieName: string) {
 	return ''
 }
 
+export const logoutBruker = (navigate: Function, feilmelding?: string) => {
+	navigate('/logout' + (feilmelding ? '?state=' + feilmelding : ''))
+	window.location.reload()
+}
+
 const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000
 
 const Utlogging = () => {
 	const [serverTime, setServerTime] = useState(parseInt(getCookie('serverTime')))
+	const navigate = useNavigate()
 
 	const calculateOffset = () => {
 		const calcExpiry = parseInt(getCookie('sessionExpiry'))
@@ -48,18 +55,17 @@ const Utlogging = () => {
 		}
 	}, [milliseconds])
 
-	const logout = () => (window.location.href = '/logout')
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		logout()
+		logoutBruker(navigate)
 	}
 
 	return (
 		<DollyModal
 			minWidth={670}
 			isOpen={milliseconds <= SHOW_MODAL_WHEN_TIME_LEFT}
-			onRequestClose={logout}
+			onRequestClose={() => logoutBruker(navigate)}
 			noCloseButton={true}
 			contentLabel="Utlogging rute"
 		>
@@ -77,7 +83,7 @@ const Utlogging = () => {
 					</p>
 				</ProgressBar>
 				<div className="utlogging__button-group">
-					<Knapp className="utlogging__button" onClick={logout}>
+					<Knapp className="utlogging__button" onClick={() => logoutBruker(navigate)}>
 						Logg ut nå
 					</Knapp>
 					<Hovedknapp className="utlogging__button" onClick={continueSession}>

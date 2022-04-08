@@ -1,5 +1,4 @@
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _set from 'lodash/fp/set'
 import _get from 'lodash/get'
@@ -27,9 +26,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
 		[actions.bestillingFeilet](state, action) {
 			state.error = action.payload.error
 		},

@@ -1,4 +1,3 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { createActions } from 'redux-actions'
 import { DollyApi, OrgforvalterApi } from '~/service/Api'
 import { handleActions } from '../utils/immerHandleActions'
@@ -21,9 +20,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
 		[onSuccess(actions.getOrganisasjonBestilling)](state, action) {
 			state.bestillinger = action.payload.data
 		},

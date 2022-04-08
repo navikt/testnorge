@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'redux-first-history'
 import { createAction } from 'redux-actions'
 import { SEARCH_IDENT } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 

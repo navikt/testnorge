@@ -1,5 +1,4 @@
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
@@ -161,9 +160,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
 		[onSuccess(actions.getTpsf)](state, action) {
 			action.payload.data.forEach((ident) => {
 				state.tpsf[ident.ident] = ident

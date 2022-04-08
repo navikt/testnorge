@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Loading from '~/components/ui/loading/Loading'
 import allRoutes from '~/Routes'
@@ -10,6 +10,7 @@ import Utlogging from '~/components/utlogging'
 import { ProfilApi } from '~/service/Api'
 import ToastConnector from '~/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
+import { logoutBruker } from '~/components/utlogging/Utlogging'
 
 type Props = {
 	brukerData?: Object
@@ -27,6 +28,7 @@ export const App = ({
 	const [criticalError, setCriticalError] = useState(null)
 	const [brukerProfil, setBrukerProfil] = useState(null)
 	const [brukerBilde, setBrukerBilde] = useState(undefined)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		getCurrentBruker().catch((err: Object) => setCriticalError(err))
@@ -40,12 +42,15 @@ export const App = ({
 			.catch(() => setBrukerBilde(null))
 	}, [])
 
-	const logout = (stackTrace: string) => {
-		let feilmelding = 'unknown_error'
-		if (stackTrace.includes('miljoer')) feilmelding = 'miljoe_error'
-		else if (stackTrace.includes('current')) feilmelding = 'azure_error'
+	function extractFelmelding(stackTrace: string) {
+		if (stackTrace?.includes('miljoer')) return 'miljoe_error'
+		else if (stackTrace?.includes('current')) return 'azure_error'
+		else return 'unknown_error'
+	}
 
-		window.location.href = '/logout?state=' + feilmelding
+	const logout = (stackTrace: string) => {
+		const feilmelding = extractFelmelding(stackTrace)
+		logoutBruker(navigate, feilmelding)
 	}
 
 	if (criticalError) logout(criticalError.stack)
