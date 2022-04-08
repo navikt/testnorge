@@ -10,6 +10,7 @@ import lombok.Value;
 public class AdresserSearch {
     BostedsadresseSearch bostedsadresse;
     KontaktadresseSearch kontaktadresse;
+    OppholdsadresseSearch oppholdsadresse;
 
     @Value
     @AllArgsConstructor
@@ -25,5 +26,14 @@ public class AdresserSearch {
     public class KontaktadresseSearch {
         Boolean norskAdresse;
         Boolean utenlandskAdresse;
+    }
+
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public class OppholdsadresseSearch {
+        Boolean norskAdresse;
+        Boolean utenlandskAdresse;
+        Boolean oppholdAnnetSted;
     }
 }

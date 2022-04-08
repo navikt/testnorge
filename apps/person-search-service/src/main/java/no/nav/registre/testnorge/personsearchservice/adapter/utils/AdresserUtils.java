@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldExistQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 
 import static java.util.Objects.nonNull;
 
@@ -17,6 +18,7 @@ import static java.util.Objects.nonNull;
 public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
     private static final String KONTAKTADRESSE_PATH = "hentPerson.kontaktadresse";
+    private static final String OPPHOLDSADRESSE_PATH = "hentPerson.oppholdsadresse";
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getAdresser())
@@ -27,7 +29,12 @@ public class AdresserUtils {
                     }
                     if (nonNull(adresser.getKontaktadresse())) {
                         addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
-                        addNorskkKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
+                        addNorskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
+                    }
+                    if (nonNull(adresser.getOppholdsadresse())) {
+                        addUtenlandskOppholdQuery(queryBuilder, adresser.getOppholdsadresse());
+                        addNorskOppholdQuery(queryBuilder, adresser.getOppholdsadresse());
+                        addOppholdAnnetStedQuery(queryBuilder, adresser.getOppholdsadresse());
                     }
                 });
     }
@@ -71,7 +78,7 @@ public class AdresserUtils {
                 });
     }
 
-    private static void addNorskkKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
+    private static void addNorskKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
         Optional.ofNullable(kontaktadresse.getNorskAdresse())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
@@ -81,6 +88,38 @@ public class AdresserUtils {
                                 1,
                                 false
                         ));
+                    }
+                });
+    }
+
+    private static void addUtenlandskOppholdQuery(BoolQueryBuilder queryBuilder, AdresserSearch.OppholdsadresseSearch oppholdsadresse) {
+        Optional.ofNullable(oppholdsadresse.getUtenlandskAdresse())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
+                    }
+                });
+    }
+
+    private static void addNorskOppholdQuery(BoolQueryBuilder queryBuilder, AdresserSearch.OppholdsadresseSearch oppholdsadresse) {
+        Optional.ofNullable(oppholdsadresse.getNorskAdresse())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(nestedShouldExistQuery(
+                                OPPHOLDSADRESSE_PATH,
+                                Arrays.asList(".vegadresse.postnummer", ".matrikkeladresse.postnummer"),
+                                1,
+                                false
+                        ));
+                    }
+                });
+    }
+
+    private static void addOppholdAnnetStedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.OppholdsadresseSearch oppholdsadresse) {
+        Optional.ofNullable(oppholdsadresse.getOppholdAnnetSted())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", false));
                     }
                 });
     }
