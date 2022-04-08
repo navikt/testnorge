@@ -2,20 +2,20 @@ import React from 'react'
 import BlankHeader from '~/components/layout/blankHeader/BlankHeader'
 import BrukerModal from '~/pages/brukerPage/BrukerModel'
 import './BrukerPage.less'
-import { SpringBackground as Background } from '~/components/ui/background/Background'
+import { PaaskeBackground as Background } from '~/components/ui/background/Background'
 
-import './../../flowers.scss'
+import './../../snow.scss'
 
 export default () => {
 	return (
-		<React.Fragment>
+		<>
 			<BlankHeader />
-			{Array.from(Array(50).keys()).map(() => (
-				<div className="flower" />
+			{Array.from(Array(15).keys()).map(() => (
+				<div className="snowflake" />
 			))}
 			<Background>
 				<BrukerModal />
 			</Background>
-		</React.Fragment>
+		</>
 	)
 }
