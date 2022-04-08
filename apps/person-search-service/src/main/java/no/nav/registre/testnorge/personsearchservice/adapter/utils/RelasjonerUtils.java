@@ -22,7 +22,6 @@ public class RelasjonerUtils {
     private static final String RELATERT_PERSONS_ROLLE = ".relatertPersonsRolle";
     private static final String SIVILSTAND_PATH = "hentPerson.sivilstand";
     private static final String DOEDFOEDT_BARN_PATH = "hentPerson.doedfoedtBarn";
-    private static final String DELT_BOSTED_PATH = "hentPerson.deltBosted";
 
     public static void addRelasjonerQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
@@ -30,22 +29,15 @@ public class RelasjonerUtils {
                     addForeldreQueries(queryBuilder, value);
                     addBarnQuery(queryBuilder, value);
                     addDoedfoedtBarnQuery(queryBuilder, value);
-                    addDeltBostedQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
     }
 
     private static void addForeldreQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
         var relasjoner = search.getForelderRelasjoner();
-        if (nonNull(relasjoner) && !relasjoner.isEmpty()){
-            if (relasjoner.contains(PersonRolle.FAR.toString())){
-                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.FAR.toString(), true));
-            }
-            if (relasjoner.contains(PersonRolle.MOR.toString())){
-                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.MOR.toString(), true));
-            }
-            if (relasjoner.contains(PersonRolle.MEDMOR.toString())){
-                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.MEDMOR.toString(), true));
+        if (nonNull(relasjoner) && !relasjoner.isEmpty()) {
+            for (var relasjon : relasjoner) {
+                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, relasjon, true));
             }
         }
     }
@@ -83,20 +75,6 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value, false));
-                    }
-                });
-    }
-
-
-    private static void addDeltBostedQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
-        Optional.ofNullable(search.getDeltBosted())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        if (YES.equalsIgnoreCase(value)) {
-                            queryBuilder.must(nestedExistsQuery(DELT_BOSTED_PATH, METADATA_FIELD, false));
-                        } else if (NO.equalsIgnoreCase(value)) {
-                            queryBuilder.mustNot(nestedExistsQuery(DELT_BOSTED_PATH, METADATA_FIELD, false));
-                        }
                     }
                 });
     }
