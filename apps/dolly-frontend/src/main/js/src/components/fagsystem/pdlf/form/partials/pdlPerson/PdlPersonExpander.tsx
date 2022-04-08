@@ -43,15 +43,13 @@ export const PdlPersonExpander = ({
 				</Button>
 			)}
 			{visPersonValg && (
-				<>
-					<PdlPersonForm
-						nyPersonPath={nyPersonPath}
-						eksisterendePersonPath={eksisterendePersonPath}
-						label={label}
-						formikBag={formikBag}
-						nyIdentValg={nyIdentValg}
-					/>
-				</>
+				<PdlPersonForm
+					nyPersonPath={nyPersonPath}
+					eksisterendePersonPath={eksisterendePersonPath}
+					label={label}
+					formikBag={formikBag}
+					nyIdentValg={nyIdentValg}
+				/>
 			)}
 		</div>
 	)
