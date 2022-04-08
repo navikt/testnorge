@@ -12,8 +12,9 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import org.apache.commons.lang3.StringUtils;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +24,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,8 +71,8 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public String sendTagsPaaGruppe(@RequestBody List<Tags> tags,
-                                    @PathVariable("gruppeId") Long gruppeId) {
+    public Mono<String> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
+                                          @PathVariable("gruppeId") Long gruppeId) {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
@@ -78,33 +82,37 @@ public class TagController {
                 .map(Testident::getIdent)
                 .toList();
 
-        var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk();
-        var bolkPersoner = pdlpersonBolk.stream().map(PdlPersonBolk.PersonBolk::getPerson).toList();
-        var bolkIdenter = Stream.of(
-                        pdlpersonBolk.stream()
-                                .map(PdlPersonBolk.PersonBolk::getIdent)
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getSivilstand().stream()
-                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getForelderBarnRelasjon().stream()
-                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getVergemaalEllerFremtidsfullmakt().stream()
-                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig))
-                                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                .toList()
-                ).flatMap(Collection::stream)
-                .filter(StringUtils::isNotBlank)
-                .distinct()
-                .toList();
+        var pdlPersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter)
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .map(person -> Stream.of(List.of(person.getIdent()),
+                                person.getPerson().getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .toList(),
+                                person.getPerson().getForeldreansvar().stream()
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .toList(),
+                                person.getPerson().getFullmakt().stream()
+                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                        .toList(),
+                                person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                        .filter(Objects::nonNull)
+                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList());
 
         var tagsTilSletting = testgruppe.getTags().stream()
                 .filter(eksisterendeTag -> tags.stream()
@@ -117,9 +125,16 @@ public class TagController {
                 .collect(Collectors.joining(",")));
 
         if (!tagsTilSletting.isEmpty()) {
-            tagsHendelseslagerConsumer.deleteTags(bolkIdenter, tagsTilSletting);
+            pdlPersonBolk
+                    .map(identer -> tagsHendelseslagerConsumer.deleteTags(identer, tagsTilSletting))
+                    .flatMap(Flux::from)
+                    .collectList()
+                    .subscribe();
         }
 
-        return tagsHendelseslagerConsumer.createTags(bolkIdenter, tags);
+        return pdlPersonBolk
+                .map(identer -> tagsHendelseslagerConsumer.createTags(identer, tags))
+                .flatMap(Flux::from)
+                .collect(Collectors.joining(", "));
     }
 }

@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -55,12 +54,12 @@ public class DollyPersonCache {
                     .filter(Relasjon::isPartner)
                     .map(Relasjon::getPersonRelasjonMed)
                     .map(Person::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
 
             dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(
                     dollyPerson.getPartnere().stream()
                             .filter(ident -> isNull(dollyPerson.getPerson(ident)))
-                            .collect(Collectors.toList())));
+                            .toList()));
 
             dollyPerson.setBarn(new ArrayList<>(Stream.of(
                             person.getRelasjoner().stream()
@@ -84,19 +83,19 @@ public class DollyPersonCache {
                     .filter(Relasjon::isForelder)
                     .map(Relasjon::getPersonRelasjonMed)
                     .map(Person::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
             dollyPerson.setIdenthistorikk(person.getIdentHistorikk().stream()
                     .map(IdentHistorikk::getAliasPerson)
                     .map(Person::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
             dollyPerson.setVerger(person.getVergemaal().stream()
                     .map(RsVergemaal::getVerge)
                     .map(RsSimplePerson::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
             dollyPerson.setFullmektige(person.getFullmakt().stream()
                     .map(RsFullmakt::getFullmektig)
                     .map(RsSimplePerson::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         Set<String> identer =
@@ -110,7 +109,7 @@ public class DollyPersonCache {
                 .filter(ident -> dollyPerson.getPersondetaljer().stream()
                         .map(Person::getIdent)
                         .noneMatch(ident2 -> ident2.equals(ident)))
-                .collect(Collectors.toList());
+                .toList();
 
         if (dollyPerson.isPdlfMaster()) {
             if (isNull(dollyPerson.getPdlfPerson())) {
@@ -127,8 +126,13 @@ public class DollyPersonCache {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
             } else if (dollyPerson.isPdlMaster()) {
                 var pdlPersonBolk =
-                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter);
-                dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
+                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter)
+                                .collectList()
+                                .block();
+
+                if (!pdlPersonBolk.isEmpty()) {
+                    dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.get(0).getData().getHentPersonBolk(), Person.class));
+                }
             }
         }
         return dollyPerson;
@@ -164,19 +168,19 @@ public class DollyPersonCache {
                         .filter(sivilstand -> !sivilstand.getMetadata().isHistorisk() &&
                                 nonNull(sivilstand.getRelatertVedSivilstand()))
                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .barn(pdlPerson.getData().getHentPerson().getForelderBarnRelasjon().stream()
                         .filter(relasjon -> !relasjon.getMetadata().isHistorisk() && relasjon.isBarn())
                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .foreldre(pdlPerson.getData().getHentPerson().getForelderBarnRelasjon().stream()
                         .filter(relasjon -> !relasjon.getMetadata().isHistorisk() && relasjon.isForelder())
                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .identhistorikk(pdlPerson.getData().getHentPerson().getFolkeregisteridentifikator().stream()
                         .filter(ident -> ident.getMetadata().isHistorisk())
                         .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .master(Master.PDL)
                 .build();
     }

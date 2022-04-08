@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.consumer.pdlperson.command.PdlBolkPersonGetCommand;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.io.BufferedReader;
@@ -42,7 +44,7 @@ public class PdlPersonConsumer {
     private static final String GRAPHQL_URL = "/graphql";
     private static final String PDL_API_URL = "/pdl-api";
     private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
-    private static final String MULTI_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
+    private static final int BLOCK_SIZE = 50;
 
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
@@ -58,7 +60,19 @@ public class PdlPersonConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
+    private static String getQueryFromFile(String pathResource) {
+
+        val resource = new ClassPathResource(pathResource);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+
+        } catch (IOException e) {
+            log.error("Lesing av query ressurs {} feilet", pathResource, e);
+            return null;
+        }
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pdl_getPerson"})
     public JsonNode getPdlPerson(String ident) {
 
         return webClient
@@ -81,25 +95,15 @@ public class PdlPersonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
-    public PdlPersonBolk getPdlPersoner(List<String> identer) {
+    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
+    public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer) {
 
-        return webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PDL_API_URL)
-                        .path(GRAPHQL_URL)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
-                .header(TEMA, GEN.name())
-                .body(BodyInserters
-                        .fromValue(new GraphQLRequest(getQueryFromFile(MULTI_PERSON_QUERY),
-                                Map.of("identer", identer))))
-                .retrieve()
-                .bodyToMono(PdlPersonBolk.class)
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
+                        .map(index -> new PdlBolkPersonGetCommand(webClient,
+                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
+                                token.getTokenValue()).call())
+                        .flatMap(Flux::from));
     }
 
     public Map<String, String> checkAlive() {
@@ -108,18 +112,6 @@ public class PdlPersonConsumer {
         } catch (SecurityException | WebClientResponseException ex) {
             log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
             return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
-        }
-    }
-
-    private static String getQueryFromFile(String pathResource) {
-
-        val resource = new ClassPathResource(pathResource);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-
-        } catch (IOException e) {
-            log.error("Lesing av query ressurs {} feilet", pathResource, e);
-            return null;
         }
     }
 }
