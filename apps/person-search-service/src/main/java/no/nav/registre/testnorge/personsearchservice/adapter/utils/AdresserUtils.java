@@ -122,11 +122,8 @@ public class AdresserUtils {
         Optional.ofNullable(oppholdsadresse.getOppholdAnnetSted())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(QueryBuilders.boolQuery()
-                                .must(QueryBuilders.termsQuery(OPPHOLDSADRESSE_PATH + ".oppholdAnnetSted", OPPHOLD_ANNET_STED))
-                                .must(QueryBuilders.termQuery(OPPHOLDSADRESSE_PATH + ".metadata.historisk", false)));
-//                        queryBuilder.must(nestedTermsQuery(
-//                                OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", OPPHOLD_ANNET_STED, false));
+                        queryBuilder.must(nestedTermsQuery(
+                                OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", OPPHOLD_ANNET_STED, false));
                     }
                 });
     }
