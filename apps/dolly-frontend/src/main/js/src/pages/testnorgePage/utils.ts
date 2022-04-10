@@ -21,6 +21,7 @@ export const initialValues = {
 			sivilstand: '',
 			harBarn: '',
 			harDoedfoedtBarn: '',
+			forelderBarnRelasjoner: [],
 		},
 		ident: {
 			ident: '',
@@ -41,6 +42,11 @@ export const initialValues = {
 				norskAdresse: false,
 				utenlanskAdresse: false,
 			},
+			oppholdsadresse: {
+				norskAdresse: false,
+				utenlanskAdresse: false,
+				oppholdAnnetSted: false,
+			},
 		},
 		personstatus: '',
 	},
@@ -55,6 +61,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 
 	const personstatus = values?.personinformasjon?.personstatus
 	const kunLevende = personstatus === null || personstatus.isEmpty || personstatus !== 'DOED'
+	const oppholdType = values?.personinformasjon?.adresser?.oppholdsadresse
 
 	if (identer.length > 0) {
 		return {

@@ -42,6 +42,11 @@ export type Search = {
 			norskAdresse?: boolean
 			utenlandskAdresse?: boolean
 		}
+		oppholdsadresse?: {
+			norskAdresse?: boolean
+			utenlandskAdresse?: boolean
+			oppholdAnnetSted?: boolean
+		}
 	}
 	personstatus?: {
 		status?: string
@@ -49,6 +54,7 @@ export type Search = {
 	relasjoner?: {
 		harBarn?: string
 		harDoedfoedtBarn?: string
+		forelderBarnRelasjoner?: string[]
 	}
 }
 

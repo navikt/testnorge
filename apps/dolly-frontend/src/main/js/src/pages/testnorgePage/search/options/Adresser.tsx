@@ -5,6 +5,7 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const bostedPath = 'personinformasjon.adresser.bostedsadresse'
 const kontaktPath = 'personinformasjon.adresser.kontaktadresse'
+const oppholdPath = 'personinformasjon.adresser.oppholdsadresse'
 
 export const Adresser = () => (
 	<section>
@@ -30,6 +31,18 @@ export const Adresser = () => (
 			label="Har utenlandsk adresse"
 			size="medium"
 		/>
+		<h4 className="subtittel">Oppholdsadresse</h4>
+		<FormikCheckbox name={`${oppholdPath}.norskAdresse`} label="Har norsk adresse" size="medium" />
+		<FormikCheckbox
+			name={`${oppholdPath}.utenlandskAdresse`}
+			label="Har utenlandsk adresse"
+			size="medium"
+		/>
+		<FormikCheckbox
+			name={`${oppholdPath}.oppholdAnnetSted`}
+			label="Har opphold annet sted"
+			size="medium"
+		/>
 	</section>
 )
 
@@ -38,4 +51,7 @@ export const AdresserPaths = {
 	[bostedPath + '.kommunenummer']: 'string',
 	[kontaktPath + '.norskAdresse']: 'boolean',
 	[kontaktPath + '.utenlandskAdresse']: 'boolean',
+	[oppholdPath + '.norskAdresse']: 'boolean',
+	[oppholdPath + '.utenlandskAdresse']: 'boolean',
+	[oppholdPath + '.oppholdAnnetSted']: 'boolean',
 }
