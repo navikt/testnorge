@@ -128,7 +128,7 @@ public class TestgruppeService {
         personService.recyclePersoner(mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class));
         transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
                 .map(Testident::getIdent)
-                .collect(Collectors.toList()));
+                .toList());
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
