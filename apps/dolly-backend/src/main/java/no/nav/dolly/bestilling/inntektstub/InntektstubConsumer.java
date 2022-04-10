@@ -71,7 +71,7 @@ public class InntektstubConsumer {
     public Mono<List<Void>> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size())
+                .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
                         .map(index -> new InbtektstubDeleteCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()).call())

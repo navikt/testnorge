@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +34,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 @Slf4j
@@ -71,8 +71,8 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public Mono<String> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
-                                          @PathVariable("gruppeId") Long gruppeId) {
+    public String sendTagsPaaGruppe(@RequestBody List<Tags> tags,
+                                    @PathVariable("gruppeId") Long gruppeId) {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
@@ -83,9 +83,11 @@ public class TagController {
                 .toList();
 
         var pdlPersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter)
+                .filter(pdlBolk -> nonNull(pdlBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
                 .map(person -> Stream.of(List.of(person.getIdent()),
                                 person.getPerson().getSivilstand().stream()
                                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
@@ -96,9 +98,11 @@ public class TagController {
                                         .toList(),
                                 person.getPerson().getForeldreansvar().stream()
                                         .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull)
                                         .toList(),
                                 person.getPerson().getFullmakt().stream()
                                         .map(FullmaktDTO::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
                                         .toList(),
                                 person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
                                         .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
@@ -109,10 +113,15 @@ public class TagController {
                                         .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
                                         .filter(Objects::nonNull)
                                         .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .filter(Objects::nonNull)
                                         .toList())
                         .flatMap(Collection::stream)
                         .distinct()
-                        .toList());
+                        .toList())
+                .filter(Objects::nonNull)
+                .flatMap(Flux::fromIterable)
+                .collectList()
+                .block();
 
         var tagsTilSletting = testgruppe.getTags().stream()
                 .filter(eksisterendeTag -> tags.stream()
@@ -125,16 +134,13 @@ public class TagController {
                 .collect(Collectors.joining(",")));
 
         if (!tagsTilSletting.isEmpty()) {
-            pdlPersonBolk
-                    .map(identer -> tagsHendelseslagerConsumer.deleteTags(identer, tagsTilSletting))
-                    .flatMap(Flux::from)
+            tagsHendelseslagerConsumer.deleteTags(pdlPersonBolk, tagsTilSletting)
                     .collectList()
                     .subscribe();
         }
 
-        return pdlPersonBolk
-                .map(identer -> tagsHendelseslagerConsumer.createTags(identer, tags))
-                .flatMap(Flux::from)
-                .collect(Collectors.joining(", "));
+        return tagsHendelseslagerConsumer.createTags(pdlPersonBolk, tags)
+                .collect(Collectors.joining(", "))
+                .block();
     }
 }

@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Testident.Master;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
@@ -182,6 +183,7 @@ public class DollyPersonCache {
                         .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
                         .toList())
                 .master(Master.PDL)
+                .tags(List.of(Tags.DOLLY))
                 .build();
     }
 
