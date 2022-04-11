@@ -7,6 +7,13 @@ const bostedPath = 'personinformasjon.adresser.bostedsadresse'
 const kontaktPath = 'personinformasjon.adresser.kontaktadresse'
 const oppholdPath = 'personinformasjon.adresser.oppholdsadresse'
 
+const oppholdAnnetStedOptions = [
+	{ value: 'MILITAER', label: 'Militær' },
+	{ value: 'UTENRIKS', label: 'Utenriks' },
+	{ value: 'PAA_SVALBARD', label: 'På Svalbard' },
+	{ value: 'PENDLER', label: 'Pendler' },
+]
+
 export const Adresser = () => (
 	<section>
 		<h4 className="subtittel">Boadresse</h4>
@@ -38,9 +45,10 @@ export const Adresser = () => (
 			label="Har utenlandsk adresse"
 			size="medium"
 		/>
-		<FormikCheckbox
+		<FormikSelect
 			name={`${oppholdPath}.oppholdAnnetSted`}
-			label="Har opphold annet sted"
+			label="Opphold annet sted"
+			options={oppholdAnnetStedOptions}
 			size="medium"
 		/>
 	</section>
@@ -53,5 +61,5 @@ export const AdresserPaths = {
 	[kontaktPath + '.utenlandskAdresse']: 'boolean',
 	[oppholdPath + '.norskAdresse']: 'boolean',
 	[oppholdPath + '.utenlandskAdresse']: 'boolean',
-	[oppholdPath + '.oppholdAnnetSted']: 'boolean',
+	[oppholdPath + '.oppholdAnnetSted']: 'string',
 }

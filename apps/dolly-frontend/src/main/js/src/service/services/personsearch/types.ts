@@ -45,7 +45,7 @@ export type Search = {
 		oppholdsadresse?: {
 			norskAdresse?: boolean
 			utenlandskAdresse?: boolean
-			oppholdAnnetSted?: boolean
+			oppholdAnnetSted?: string
 		}
 	}
 	personstatus?: {

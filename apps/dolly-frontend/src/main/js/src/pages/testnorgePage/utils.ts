@@ -45,7 +45,7 @@ export const initialValues = {
 			oppholdsadresse: {
 				norskAdresse: false,
 				utenlanskAdresse: false,
-				oppholdAnnetSted: false,
+				oppholdAnnetSted: '',
 			},
 		},
 		personstatus: '',
