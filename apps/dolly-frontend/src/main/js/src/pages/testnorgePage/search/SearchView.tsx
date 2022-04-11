@@ -13,8 +13,6 @@ import { getAlder } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
 import { getFornavn, getIdent, getEtternavn, getPdlKjoenn } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
-import Tooltip from 'rc-tooltip'
-import Icon from '~/components/ui/icon/Icon'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 
 type Props = {

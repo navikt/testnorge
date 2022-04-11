@@ -1,8 +1,6 @@
 import React from 'react'
 import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-// @ts-ignore
-import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
@@ -40,7 +38,7 @@ export default function OrganisasjonListe({
 			dataField: 'organisasjonsnummer',
 			unique: true,
 
-			formatter: (cell: string, row: EnhetData) => <CopyButton value={row.organisasjonsnummer} />,
+			formatter: (_cell: string, row: EnhetData) => <CopyButton value={row.organisasjonsnummer} />,
 		},
 		{
 			text: 'Navn',
@@ -56,7 +54,7 @@ export default function OrganisasjonListe({
 			text: 'Bestilling-ID',
 			width: '20',
 			dataField: 'bestillingId',
-			formatter: (cell: number, row: EnhetData) => {
+			formatter: (_cell: number, row: EnhetData) => {
 				const str = row.bestillingId
 				if (str.length > 1) return `${str[0]} ...`
 				return str[0]
