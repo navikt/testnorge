@@ -14,6 +14,8 @@ interface MatrikkeladresseValues {
 		angittFlyttedato: string
 		gyldigFraOgMed: string
 		gyldigTilOgMed: string
+		startdatoForKontrakt?: string
+		sluttdatoForKontrakt?: string
 	}
 	idx: number
 }
@@ -21,7 +23,13 @@ interface MatrikkeladresseValues {
 export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 	const { kommunenummer, gaardsnummer, bruksnummer, postnummer, bruksenhetsnummer, tilleggsnavn } =
 		adresse.matrikkeladresse
-	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed } = adresse
+	const {
+		angittFlyttedato,
+		gyldigFraOgMed,
+		gyldigTilOgMed,
+		startdatoForKontrakt,
+		sluttdatoForKontrakt,
+	} = adresse
 
 	return (
 		<>
@@ -52,6 +60,14 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Angitt flyttedato" value={Formatters.formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={Formatters.formatDate(gyldigTilOgMed)} />
+				<TitleValue
+					title="Startdato for kontrakt"
+					value={Formatters.formatDate(startdatoForKontrakt)}
+				/>
+				<TitleValue
+					title="Sluttdato for kontrakt"
+					value={Formatters.formatDate(sluttdatoForKontrakt)}
+				/>
 			</div>
 		</>
 	)

@@ -13,7 +13,9 @@ interface VegadresseValues {
 		vegadresse: Adresse
 		angittFlyttedato: string
 		gyldigFraOgMed: string
-		gyldigTilOgMed: string
+		gyldigTilOgMed?: string
+		startdatoForKontrakt?: string
+		sluttdatoForKontrakt?: string
 	}
 	idx: number
 }
@@ -28,7 +30,13 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 		kommunenummer,
 		postnummer,
 	} = adresse.vegadresse
-	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed } = adresse
+	const {
+		angittFlyttedato,
+		gyldigFraOgMed,
+		gyldigTilOgMed,
+		startdatoForKontrakt,
+		sluttdatoForKontrakt,
+	} = adresse
 
 	return (
 		<>
@@ -60,6 +68,14 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				<TitleValue title="Angitt flyttedato" value={Formatters.formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={Formatters.formatDate(gyldigTilOgMed)} />
+				<TitleValue
+					title="Startdato for kontrakt"
+					value={Formatters.formatDate(startdatoForKontrakt)}
+				/>
+				<TitleValue
+					title="Sluttdato for kontrakt"
+					value={Formatters.formatDate(sluttdatoForKontrakt)}
+				/>
 			</div>
 		</>
 	)

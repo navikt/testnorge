@@ -25,6 +25,7 @@ import { PdlDoedsfall } from '~/components/fagsystem/pdl/visning/partials/PdlDoe
 import { TpsMessagingApi } from '~/service/Api'
 import { getIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
+import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -76,6 +77,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
+		deltBosted,
 		oppholdsadresse,
 		opphold,
 		kontaktadresse,
@@ -106,6 +108,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<PdlBoadresse data={bostedsadresse} />
+				<PdlDeltBosted data={deltBosted} />
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse data={kontaktadresse} />
