@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Tooltip from 'rc-tooltip'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
@@ -15,6 +14,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import { KommentarModal } from '~/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEqual } from 'lodash'
+import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -101,33 +101,7 @@ export default function PersonListe({
 			dataField: 'identNr',
 			unique: true,
 
-			formatter: (cell, row) => (
-				<div className="identnummer-cell">
-					{row.identNr}
-					<CopyToClipboard text={row.identNr}>
-						<Tooltip
-							overlay={'Kopier'}
-							placement="top"
-							destroyTooltipOnHide={true}
-							mouseEnterDelay={0}
-							mouseLeaveDelay={0.1}
-							arrowContent={<div className="rc-tooltip-arrow-inner" />}
-							align={{
-								offset: ['0', '-10'],
-							}}
-						>
-							<div
-								className="icon"
-								onClick={(event) => {
-									event.stopPropagation()
-								}}
-							>
-								<Icon kind="copy" size={15} />
-							</div>
-						</Tooltip>
-					</CopyToClipboard>
-				</div>
-			),
+			formatter: (cell, row) => <CopyButton value={row.identNr} />,
 		},
 		{
 			text: 'Navn',
