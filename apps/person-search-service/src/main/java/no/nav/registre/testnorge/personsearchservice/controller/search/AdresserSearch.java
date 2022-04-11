@@ -34,6 +34,6 @@ public class AdresserSearch {
     public class OppholdsadresseSearch {
         Boolean norskAdresse;
         Boolean utenlandskAdresse;
-        Boolean oppholdAnnetSted;
+        String oppholdAnnetSted;
     }
 }

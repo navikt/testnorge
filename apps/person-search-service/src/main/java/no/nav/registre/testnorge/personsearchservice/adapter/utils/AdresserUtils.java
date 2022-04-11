@@ -3,18 +3,15 @@ package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.registre.testnorge.personsearchservice.controller.search.AdresserSearch;
 import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldExistQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedTermsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 
 import static java.util.Objects.nonNull;
 
@@ -23,7 +20,6 @@ public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
     private static final String KONTAKTADRESSE_PATH = "hentPerson.kontaktadresse";
     private static final String OPPHOLDSADRESSE_PATH = "hentPerson.oppholdsadresse";
-    private static final List<String> OPPHOLD_ANNET_STED = Arrays.asList("MILITAER", "UTENRIKS", "PAA_SVALBARD", "PENDLER");
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getAdresser())
@@ -122,20 +118,8 @@ public class AdresserUtils {
     private static void addOppholdAnnetStedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.OppholdsadresseSearch oppholdsadresse) {
         Optional.ofNullable(oppholdsadresse.getOppholdAnnetSted())
                 .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(QueryBuilders.nestedQuery(
-                                OPPHOLDSADRESSE_PATH,
-                                QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.matchQuery(OPPHOLDSADRESSE_PATH + ".oppholdAnnetSted", "MILITAER"))
-                                        .should(QueryBuilders.matchQuery(OPPHOLDSADRESSE_PATH + ".oppholdAnnetSted", "UTENRIKS"))
-                                        .should(QueryBuilders.matchQuery(OPPHOLDSADRESSE_PATH + ".oppholdAnnetSted", "PAA_SVALBARD"))
-                                        .should(QueryBuilders.matchQuery(OPPHOLDSADRESSE_PATH + ".oppholdAnnetSted", "PENDLER"))
-                                        .must(QueryBuilders.termQuery(OPPHOLDSADRESSE_PATH + ".metadata.historisk", false))
-                                        .minimumShouldMatch(1)
-                                ,
-                                ScoreMode.Avg));
-//                        queryBuilder.must(nestedTermsQuery(
-//                                OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", OPPHOLD_ANNET_STED, false));
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(nestedMatchQuery(OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", value, false));
                     }
                 });
     }
