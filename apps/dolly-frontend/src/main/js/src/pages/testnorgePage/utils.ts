@@ -61,7 +61,6 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 
 	const personstatus = values?.personinformasjon?.personstatus
 	const kunLevende = personstatus === null || personstatus.isEmpty || personstatus !== 'DOED'
-	const oppholdType = values?.personinformasjon?.adresser?.oppholdsadresse
 
 	if (identer.length > 0) {
 		return {
