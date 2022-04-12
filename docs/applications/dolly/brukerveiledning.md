@@ -150,7 +150,7 @@ Videoen nedenfor viser hvordan man kan opprette og ta i bruk maler.
 ## Endringsmelding
 
 Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø.
-Endringsmeldinger er en egen applikasjon separert fra Dolly. Dette medfører at man trenger spesifikk tilgang for å  kunne sende endringsmeldinger - ta kontakt med Team Dolly dersom du har behov for dette.
+Endringsmeldinger er en egen applikasjon separat fra Dolly. Dette medfører at man trenger spesifikk tilgang for å  kunne sende endringsmeldinger - ta kontakt med Team Dolly dersom du har behov for dette.
 
 Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
 
