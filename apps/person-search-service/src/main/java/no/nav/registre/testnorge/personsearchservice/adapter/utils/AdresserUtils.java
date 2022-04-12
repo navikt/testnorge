@@ -20,6 +20,7 @@ public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
     private static final String KONTAKTADRESSE_PATH = "hentPerson.kontaktadresse";
     private static final String OPPHOLDSADRESSE_PATH = "hentPerson.oppholdsadresse";
+    private static final String VEGADRESSE_POSTNR = ".vegadresse.postnummer";
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getAdresser())
@@ -58,7 +59,7 @@ public class AdresserUtils {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedShouldMatchQuery(
                                 BOSTEDSADRESSE_PATH,
-                                Arrays.asList(".vegadresse.postnummer", ".matrikkeladresse.postnummer"),
+                                Arrays.asList(VEGADRESSE_POSTNR, ".matrikkeladresse.postnummer"),
                                 value, 1, false));
                     }
                 });
@@ -84,7 +85,7 @@ public class AdresserUtils {
                     if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedShouldExistQuery(
                                 KONTAKTADRESSE_PATH,
-                                Arrays.asList(".vegadresse.postnummer", ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),
+                                Arrays.asList(VEGADRESSE_POSTNR, ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),
                                 1,
                                 false
                         ));
@@ -107,7 +108,7 @@ public class AdresserUtils {
                     if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedShouldExistQuery(
                                 OPPHOLDSADRESSE_PATH,
-                                Arrays.asList(".vegadresse.postnummer", ".matrikkeladresse.postnummer"),
+                                Arrays.asList(VEGADRESSE_POSTNR, ".matrikkeladresse.postnummer"),
                                 1,
                                 false
                         ));
