@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.provider.utils.InputValidator.validateMiljoe;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAKSIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
@@ -33,8 +34,9 @@ public class BrukereController {
     @PostMapping("/bruker/oppfoelging")
 //    @ApiOperation(value = "Legg til identer med oppfoelging i Arena", notes = "Legger til oppgitt antall identer i Arena med oppfoelging.")
     public ResponseEntity<Map<String, NyeBrukereResponse>> registrerBrukereIArenaForvalterMedOppfoelging(
-            @RequestBody(required = false) SyntetiserArenaRequest syntetiserArenaRequest
+            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
+        validateMiljoe(syntetiserArenaRequest.getMiljoe());
         var identer = identService.getUtvalgteIdenterIAldersgruppe(
                         syntetiserArenaRequest.getAntallNyeIdenter(),
                         MINIMUM_ALDER,

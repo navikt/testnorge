@@ -16,6 +16,8 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.provider.utils.InputValidator.validateMiljoe;
+
 @RestController
 @RequestMapping("api/v1/generer")
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class VedtakshistorikkController {
     public ResponseEntity<Map<String, List<NyttVedtakResponse>>> genererVedtakshistorikk(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
+        validateMiljoe(syntetiserArenaRequest.getMiljoe());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
