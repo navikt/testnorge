@@ -46,18 +46,20 @@ class PdlConsumerTest {
     @Autowired
     private PdlProxyConsumer pdlProxyConsumer;
 
+    private static final String IDENT = "12345678910";
+
 
     @Test
     void shouldGetPdlPerson() {
         stubTokenRequest();
         stubPdlPersonResponse();
 
-        var response = pdlProxyConsumer.getPdlPerson("12345678910").getData();
+        var response = pdlProxyConsumer.getPdlPerson(IDENT).getData();
         var ident = response.getHentIdenter().getIdenter().stream()
                 .filter(identer -> identer.getGruppe().equals(PdlPerson.Gruppe.FOLKEREGISTERIDENT))
                 .toList().get(0).getIdent();
 
-        assertThat(ident).isEqualTo("12345678910");
+        assertThat(ident).isEqualTo(IDENT);
         assertThat(response.getHentPerson().getBostedsadresse()).hasSize(1);
         assertThat(response.getHentPerson().getNavn()).hasSize(1);
     }
@@ -73,6 +75,33 @@ class PdlConsumerTest {
     @Test
     void shouldNotGetPdlPerson() {
         var response = pdlProxyConsumer.getPdlPerson(null);
+        assertThat(response).isNull();
+    }
+
+    @Test
+    void shouldGetPdlPersoner() {
+        stubTokenRequest();
+        stubPdlPersonBolkResponse();
+
+        var response = pdlProxyConsumer.getPdlPersoner(Collections.singletonList(IDENT)).getData();
+        var bolk = response.getHentPersonBolk();
+        var ident = bolk.get(0).getIdent();
+
+        assertThat(ident).isEqualTo(IDENT);
+        assertThat(bolk).hasSize(1);
+    }
+
+    private void stubPdlPersonBolkResponse() {
+        stubFor(post(urlPathMatching("(.*)/pdl/pdl-api/graphql"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(getResourceFileContent("files/pdl/pdlpersonbolk.json")))
+        );
+    }
+
+    @Test
+    void shouldNotGetPdlPersoner() {
+        var response = pdlProxyConsumer.getPdlPersoner(null);
         assertThat(response).isNull();
     }
 
