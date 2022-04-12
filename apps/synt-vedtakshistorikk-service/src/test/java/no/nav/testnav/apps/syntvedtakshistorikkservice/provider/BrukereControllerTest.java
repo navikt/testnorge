@@ -14,12 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAKSIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
@@ -77,5 +79,13 @@ public class BrukereControllerTest {
         assertThat(result.getBody()).containsKey(fnr1);
         assertThat(result.getBody().get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
         assertThat(result.getBody().get(fnr1).getArbeidsoekerList()).hasSize(1);
+    }
+
+    @Test
+    public void checkExceptionOccursOnBadMiljoe() {
+        var request = new SyntetiserArenaRequest("test", 1);
+        assertThrows(ResponseStatusException.class, () -> {
+            brukereController.registrerBrukereIArenaForvalterMedOppfoelging(request);
+        });
     }
 }
