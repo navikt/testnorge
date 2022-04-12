@@ -1,0 +1,31 @@
+{
+  "nyeAaungufor": [
+    {
+      "avbruddKode": "",
+      "begrunnelse": "Syntetisert rettighet",
+      "datoMottatt": "2019-04-21",
+      "fraDato": "2019-04-21",
+      "utfall": "JA",
+      "vilkaar": [
+        {
+          "kode": "AAUNGNEDS",
+          "status": "V"
+        },
+        {
+          "kode": "AANEDSSL",
+          "status": "V"
+        },
+        {
+          "kode": "AASSLDOK",
+          "status": "V"
+        },
+        {
+          "kode": "AAFOR36",
+          "status": "V"
+        }
+      ],
+      "vedtaktype": "O"
+    }
+  ],
+  "nyeAaunguforFeilList": []
+}

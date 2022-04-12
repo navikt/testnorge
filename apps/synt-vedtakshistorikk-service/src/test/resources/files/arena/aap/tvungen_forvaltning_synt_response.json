@@ -1,0 +1,24 @@
+[
+  {
+    "AVBRUDDSKODE": "",
+    "DATO_MOTTATT": "2007-10-24",
+    "FRA_DATO": "2007-12-14",
+    "UTFALL": "JA",
+    "UTLANDSMOTTAKER": "N",
+    "VEDTAKTYPE": "O",
+    "VILKAAR": [
+      {
+        "KODE": "MISBRUK",
+        "STATUS": "J"
+      },
+      {
+        "KODE": "PSYK",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "SKADE",
+        "STATUS": "J"
+      }
+    ]
+  }
+]

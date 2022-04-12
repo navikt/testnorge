@@ -1,0 +1,464 @@
+{
+  "TSOREISOBL": [
+    {
+      "kode": "HOYEREUTD",
+      "sannsynlighet": 28
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 21
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 19
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 17
+    },
+    {
+      "kode": "OUTDEF",
+      "sannsynlighet": 15
+    }
+  ],
+  "TSOLMIDLER": [
+    {
+      "kode": "HOYEREUTD",
+      "sannsynlighet": 37
+    },
+    {
+      "kode": "OUTDEF",
+      "sannsynlighet": 35
+    },
+    {
+      "kode": "ENKFAGYRKE",
+      "sannsynlighet": 16
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 7
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 5
+    }
+  ],
+  "TSRLMIDLER": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 33
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 23
+    },
+    {
+      "kode": "ENKFAGYRKE",
+      "sannsynlighet": 22
+    },
+    {
+      "kode": "HOYEREUTD",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 10
+    }
+  ],
+  "TSRREISAKT": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 56
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 19
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 7
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 6
+    }
+  ],
+  "BTIL": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 51
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 16
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 14
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 11
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 8
+    }
+  ],
+  "TSOREISARB": [
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 39
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 21
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 17
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 16
+    },
+    {
+      "kode": "UTVAOONAV",
+      "sannsynlighet": 7
+    }
+  ],
+  "TSOTILFAM": [
+    {
+      "kode": "OUTDEF",
+      "sannsynlighet": 55
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 25
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 10
+    },
+    {
+      "kode": "ENKFAGYRKE",
+      "sannsynlighet": 5
+    },
+    {
+      "kode": "INDJOBSTOT",
+      "sannsynlighet": 5
+    }
+  ],
+  "BASI": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 51
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 14
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 9
+    }
+  ],
+  "TSRTILBARN": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 62
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 7
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 6
+    }
+  ],
+  "TSODAGREIS": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 27
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 25
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 24
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 17
+    },
+    {
+      "kode": "ARBRRHDAG",
+      "sannsynlighet": 7
+    }
+  ],
+  "TSOTILBARN": [
+    {
+      "kode": "OUTDEF",
+      "sannsynlighet": 45
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 20
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 10
+    }
+  ],
+  "TSRREISARB": [
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 34
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 34
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 16
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 9
+    },
+    {
+      "kode": "UTVAOONAV",
+      "sannsynlighet": 7
+    }
+  ],
+  "TSRFLYTT": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 41
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 23
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "UTVAOONAV",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "MIDLONTIL",
+      "sannsynlighet": 12
+    }
+  ],
+  "TSOREISAKT": [
+    {
+      "kode": "HOYEREUTD",
+      "sannsynlighet": 29
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 26
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 18
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 14
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 13
+    }
+  ],
+  "TSRBOUTG": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 53
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 15
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 10
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 9
+    }
+  ],
+  "TSOBOUTG": [
+    {
+      "kode": "HOYEREUTD",
+      "sannsynlighet": 34
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 22
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 15
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 15
+    },
+    {
+      "kode": "OUTDEF",
+      "sannsynlighet": 14
+    }
+  ],
+  "TSOFLYTT": [
+    {
+      "kode": "HOYEREUTD",
+      "sannsynlighet": 31
+    },
+    {
+      "kode": "OUTDEF",
+      "sannsynlighet": 21
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 19
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 16
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 13
+    }
+  ],
+  "TILTAK": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 32
+    },
+    {
+      "kode": "MIDLONTIL",
+      "sannsynlighet": 21
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 19
+    },
+    {
+      "kode": "UTVAOONAV",
+      "sannsynlighet": 15
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 13
+    }
+  ],
+  "TSRTILFAM": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 46
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 19
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 12
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 10
+    }
+  ],
+  "TSRREISOBL": [
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 32
+    },
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 23
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 20
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "ENKELAMO",
+      "sannsynlighet": 12
+    }
+  ],
+  "TSRDAGREIS": [
+    {
+      "kode": "ARBTREN",
+      "sannsynlighet": 49
+    },
+    {
+      "kode": "JOBBK",
+      "sannsynlighet": 19
+    },
+    {
+      "kode": "INDOPPFAG",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "AVKLARAG",
+      "sannsynlighet": 10
+    },
+    {
+      "kode": "ARBFORB",
+      "sannsynlighet": 9
+    }
+  ]
+}

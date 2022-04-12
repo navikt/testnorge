@@ -1,0 +1,74 @@
+{
+  "nyeAap115": [
+    {
+      "begrunnelse": "Syntetisert rettighet",
+      "datoMottatt": "2019-08-21",
+      "fraDato": "2019-08-21",
+      "utfall": "JA",
+      "vilkaar": [
+        {
+          "kode": "18-67AAR",
+          "status": "J"
+        },
+        {
+          "kode": "AAARBEVNE",
+          "status": "J"
+        },
+        {
+          "kode": "AAMOTTSAMT",
+          "status": "V"
+        },
+        {
+          "kode": "AANAAVJOBB",
+          "status": "V"
+        },
+        {
+          "kode": "AANODVDOKU",
+          "status": "V"
+        },
+        {
+          "kode": "AANORSKFER",
+          "status": "V"
+        },
+        {
+          "kode": "AASNARARBG",
+          "status": "V"
+        },
+        {
+          "kode": "AASNARTARB",
+          "status": "V"
+        },
+        {
+          "kode": "AATYPEJOBB",
+          "status": "V"
+        },
+        {
+          "kode": "INNTNEDS",
+          "status": "J"
+        },
+        {
+          "kode": "SYKSKADLYT",
+          "status": "J"
+        }
+      ],
+      "vedtaktype": "O",
+      "medisinskOpplysning": [
+        {
+          "type": "HOVED",
+          "klassifisering": "5",
+          "diagnose": "N01",
+          "kilde": "LEGE",
+          "kildeDato": "2019-09-10"
+        },
+        {
+          "type": "BI",
+          "klassifisering": "2",
+          "diagnose": "P06",
+          "kilde": "LEGE",
+          "kildeDato": "2019-09-10"
+        }
+      ]
+    }
+  ],
+  "nyeAap115FeilList": []
+}

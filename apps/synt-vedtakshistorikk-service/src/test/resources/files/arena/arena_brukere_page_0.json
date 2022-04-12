@@ -1,0 +1,25 @@
+{
+  "arbeidsokerList": [
+    {
+      "personident": "07898524627",
+      "miljoe": "q2",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": false,
+      "automatiskInnsendingAvMeldekort": false,
+      "aap115": false,
+      "aap": false
+    },
+    {
+      "personident": "13919316876",
+      "miljoe": "t4",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true,
+      "aap115": false,
+      "aap": true
+    }
+  ],
+  "antallSider": 2
+}

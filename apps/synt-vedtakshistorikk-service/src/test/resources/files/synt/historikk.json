@@ -1,0 +1,1912 @@
+[
+  {
+    "AA115": [
+      {
+        "DATO_MOTTATT": "2018-11-20",
+        "FRA_DATO": "2018-12-25",
+        "MEDISINSK_OPPLYSNING": [
+          {
+            "DIAGNOSE": "P79",
+            "KILDE": "LEGE",
+            "KILDEDATO": "2018-12-25",
+            "KLASSIFISERING": "2",
+            "TYPE": "HOVED"
+          },
+          {
+            "DIAGNOSE": "A04",
+            "KILDE": "LEGE",
+            "KILDEDATO": "2018-12-25",
+            "KLASSIFISERING": "2",
+            "TYPE": "BI"
+          }
+        ],
+        "TIL_DATO": "",
+        "UTFALL": "JA",
+        "VEDTAKTYPE": "O",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAARBEVNE",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAMOTTSAMT",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AANAAVJOBB",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AANODVDOKU",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AANORSKFER",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASNARARBG",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASNARTARB",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AATYPEJOBB",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "INNTNEDS",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "SYKSKADLYT",
+            "STATUS": "J"
+          }
+        ]
+      }
+    ],
+    "AAP": [
+      {
+        "AKTFASEKODE": "UA",
+        "ANDRE_OKONOM_YTELSER": [
+          {
+            "ANNEN_OKONOM_YTELSE": [
+              {
+                "KODE": "TYPE",
+                "VERDI": ""
+              },
+              {
+                "KODE": "FDATO",
+                "VERDI": "26-11-2016"
+              },
+              {
+                "KODE": "TDATO",
+                "VERDI": ""
+              },
+              {
+                "KODE": "GRAD",
+                "VERDI": ""
+              },
+              {
+                "KODE": "BELOP",
+                "VERDI": "0"
+              },
+              {
+                "KODE": "BELPR",
+                "VERDI": ""
+              }
+            ]
+          }
+        ],
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2018-12-26",
+        "FRA_DATO": "2019-01-15",
+        "GEN_SAKSOPPLYSNINGER": [
+          {
+            "KODE": "KDATO",
+            "OVERORDNET": null,
+            "VERDI": "11-11-2018"
+          },
+          {
+            "KODE": "BTID",
+            "OVERORDNET": null,
+            "VERDI": "15-01-2018"
+          },
+          {
+            "KODE": "TUUIN",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "UUFOR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "STUBE",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTILF",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTSEK",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OOPPL",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "BDSAT",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "UFTID",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GGRAD",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "ORIGG",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "YDATO",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YINNT",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YGRAD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "TLONN",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "SPROS",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "NORIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "FAKIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "EOS",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "LAND",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "INSTITUSJONSOPPHOLD": [
+          {
+            "KODE": "STRFG",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSTA",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "FRIKL",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INPER",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "INFRA",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "INTIL",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "REDPR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSUD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "JUSTERT_FRA": "",
+        "MEDLEM_FOLKETRYGDEN": {
+          "KODE": "MEDL1",
+          "VERDI": "JA"
+        },
+        "OPPR_TIL_DATO": "2020-01-14",
+        "PERIODE": {
+          "ENDRING_PERIODE": "",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "NULLSTILL": "J",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "2020-01-14",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "O",
+        "VEDTAK_DATO": "2019-01-15",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "INTKTBFAL2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASYKSKADE",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAANNENSYK",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFOPTILUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASAMMESYK",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKFORUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKTILUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2020-01-03",
+        "FRA_DATO": "2020-01-13",
+        "JUSTERT_FRA": "",
+        "OPPR_TIL_DATO": "",
+        "TIL_DATO": "",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "S",
+        "VEDTAK_DATO": "2020-01-13",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "ANDRE_OKONOM_YTELSER": [
+          {
+            "ANNEN_OKONOM_YTELSE": [
+              {
+                "KODE": "TYPE",
+                "VERDI": ""
+              },
+              {
+                "KODE": "FDATO",
+                "VERDI": "15-04-2015"
+              },
+              {
+                "KODE": "TDATO",
+                "VERDI": ""
+              },
+              {
+                "KODE": "GRAD",
+                "VERDI": ""
+              },
+              {
+                "KODE": "BELOP",
+                "VERDI": "0"
+              },
+              {
+                "KODE": "BELPR",
+                "VERDI": ""
+              }
+            ]
+          }
+        ],
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2020-01-14",
+        "FRA_DATO": "2020-01-14",
+        "GEN_SAKSOPPLYSNINGER": [
+          {
+            "KODE": "KDATO",
+            "OVERORDNET": null,
+            "VERDI": "10-12-2019"
+          },
+          {
+            "KODE": "BTID",
+            "OVERORDNET": null,
+            "VERDI": "20-03-2019"
+          },
+          {
+            "KODE": "TUUIN",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "UUFOR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "STUBE",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTILF",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTSEK",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OOPPL",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "BDSAT",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "UFTID",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GGRAD",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "ORIGG",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "YDATO",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YINNT",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YGRAD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "TLONN",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "SPROS",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "NORIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "FAKIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "EOS",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "LAND",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "INSTITUSJONSOPPHOLD": [
+          {
+            "KODE": "STRFG",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSTA",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "FRIKL",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INPER",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "INFRA",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "INTIL",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "REDPR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSUD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "JUSTERT_FRA": "",
+        "MEDLEM_FOLKETRYGDEN": {
+          "KODE": "MEDL1",
+          "VERDI": "JA"
+        },
+        "OPPR_TIL_DATO": "2021-01-12",
+        "PERIODE": {
+          "ENDRING_PERIODE": "",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "NULLSTILL": "",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "2021-01-12",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "G",
+        "VEDTAK_DATO": "2020-01-14",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "INTKTBFAL2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASYKSKADE",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAANNENSYK",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFOPTILUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASAMMESYK",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKFORUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKTILUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2021-03-17",
+        "FRA_DATO": "2021-01-11",
+        "JUSTERT_FRA": "2021-01-11",
+        "OPPR_TIL_DATO": "2022-01-10",
+        "PERIODE": {
+          "ENDRING_PERIODE": "880.0",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "2022-01-10",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "E",
+        "VEDTAK_DATO": "2021-01-11",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2022-01-02",
+        "FRA_DATO": "2022-01-09",
+        "JUSTERT_FRA": "2022-01-09",
+        "OPPR_TIL_DATO": "2023-01-03",
+        "PERIODE": {
+          "ENDRING_PERIODE": "880.0",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "2023-01-03",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "E",
+        "VEDTAK_DATO": "2022-01-09",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "AA115": [
+      {
+        "DATO_MOTTATT": "2019-01-08",
+        "FRA_DATO": "2019-01-08",
+        "MEDISINSK_OPPLYSNING": [
+          {
+            "DIAGNOSE": "L76",
+            "KILDE": "RTV",
+            "KILDEDATO": "2019-01-08",
+            "KLASSIFISERING": "5",
+            "TYPE": "HOVED"
+          },
+          {
+            "DIAGNOSE": "J459",
+            "KILDE": "LEGE",
+            "KILDEDATO": "2019-01-08",
+            "KLASSIFISERING": "3",
+            "TYPE": "BI"
+          }
+        ],
+        "TIL_DATO": "2020-03-13",
+        "UTFALL": "JA",
+        "VEDTAKTYPE": "O",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAARBEVNE",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAMOTTSAMT",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AANAAVJOBB",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AANODVDOKU",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AANORSKFER",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AASNARARBG",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AASNARTARB",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AATYPEJOBB",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "INNTNEDS",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "SYKSKADLYT",
+            "STATUS": "J"
+          }
+        ]
+      }
+    ],
+    "AAP": [
+      {
+        "AKTFASEKODE": "SPE",
+        "ANDRE_OKONOM_YTELSER": [
+          {
+            "ANNEN_OKONOM_YTELSE": [
+              {
+                "KODE": "TYPE",
+                "VERDI": ""
+              },
+              {
+                "KODE": "FDATO",
+                "VERDI": ""
+              },
+              {
+                "KODE": "TDATO",
+                "VERDI": ""
+              },
+              {
+                "KODE": "GRAD",
+                "VERDI": ""
+              },
+              {
+                "KODE": "BELOP",
+                "VERDI": "0"
+              },
+              {
+                "KODE": "BELPR",
+                "VERDI": ""
+              }
+            ]
+          }
+        ],
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2019-01-15",
+        "FRA_DATO": "2019-01-15",
+        "GEN_SAKSOPPLYSNINGER": [
+          {
+            "KODE": "KDATO",
+            "OVERORDNET": null,
+            "VERDI": "07-09-2017"
+          },
+          {
+            "KODE": "BTID",
+            "OVERORDNET": null,
+            "VERDI": "17-10-2018"
+          },
+          {
+            "KODE": "TUUIN",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "UUFOR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "STUBE",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTILF",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTSEK",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OOPPL",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "BDSAT",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "UFTID",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GGRAD",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "ORIGG",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "YDATO",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YINNT",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YGRAD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "TLONN",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "SPROS",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "NORIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "FAKIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "EOS",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "LAND",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "INSTITUSJONSOPPHOLD": [
+          {
+            "KODE": "STRFG",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSTA",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "FRIKL",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INPER",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "INFRA",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "INTIL",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "REDPR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSUD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "JUSTERT_FRA": "",
+        "MEDLEM_FOLKETRYGDEN": {
+          "KODE": "MEDL1",
+          "VERDI": "JA"
+        },
+        "OPPR_TIL_DATO": "",
+        "PERIODE": {
+          "ENDRING_PERIODE": "",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "NULLSTILL": "",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "",
+        "UTFALL": "NEI",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "O",
+        "VEDTAK_DATO": "2019-01-15",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "INTKTBFAL2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": ""
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKSKADE",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAANNENSYK",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFOPTILUO",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASAMMESYK",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASYKFORUO",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AASYKTILUO",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "ANDRE_OKONOM_YTELSER": [
+          {
+            "ANNEN_OKONOM_YTELSE": [
+              {
+                "KODE": "TYPE",
+                "VERDI": ""
+              },
+              {
+                "KODE": "FDATO",
+                "VERDI": "27-06-2003"
+              },
+              {
+                "KODE": "TDATO",
+                "VERDI": ""
+              },
+              {
+                "KODE": "GRAD",
+                "VERDI": ""
+              },
+              {
+                "KODE": "BELOP",
+                "VERDI": "0"
+              },
+              {
+                "KODE": "BELPR",
+                "VERDI": ""
+              }
+            ]
+          }
+        ],
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2019-01-24",
+        "FRA_DATO": "2019-01-29",
+        "GEN_SAKSOPPLYSNINGER": [
+          {
+            "KODE": "KDATO",
+            "OVERORDNET": null,
+            "VERDI": "20-11-2018"
+          },
+          {
+            "KODE": "BTID",
+            "OVERORDNET": null,
+            "VERDI": "03-02-2018"
+          },
+          {
+            "KODE": "TUUIN",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "UUFOR",
+            "OVERORDNET": null,
+            "VERDI": "N"
+          },
+          {
+            "KODE": "STUBE",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTILF",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OTSEK",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "OOPPL",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "BDSAT",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "UFTID",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDRP",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GRDTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "BDSTU",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "GGRAD",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "ORIGG",
+            "OVERORDNET": "OOPPL",
+            "VERDI": ""
+          },
+          {
+            "KODE": "YDATO",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YINNT",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "YGRAD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "TLONN",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "SPROS",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "NORIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "FAKIN",
+            "OVERORDNET": "TLONN",
+            "VERDI": ""
+          },
+          {
+            "KODE": "EOS",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "LAND",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "INSTITUSJONSOPPHOLD": [
+          {
+            "KODE": "STRFG",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSTA",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "FRIKL",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INPER",
+            "OVERORDNET": null,
+            "VERDI": null
+          },
+          {
+            "KODE": "INFRA",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "INTIL",
+            "OVERORDNET": "INPER",
+            "VERDI": ""
+          },
+          {
+            "KODE": "REDPR",
+            "OVERORDNET": null,
+            "VERDI": ""
+          },
+          {
+            "KODE": "INSUD",
+            "OVERORDNET": null,
+            "VERDI": ""
+          }
+        ],
+        "JUSTERT_FRA": "",
+        "MEDLEM_FOLKETRYGDEN": {
+          "KODE": "MEDL1",
+          "VERDI": "JA"
+        },
+        "OPPR_TIL_DATO": "2020-01-03",
+        "PERIODE": {
+          "ENDRING_PERIODE": "",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "NULLSTILL": "J",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "2020-01-03",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "O",
+        "VEDTAK_DATO": "2019-01-29",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "INTKTBFAL2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AASYKSKADE",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAANNENSYK",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AAFOPTILUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASAMMESYK",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKFORUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AASYKTILUO",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2019-12-18",
+        "FRA_DATO": "2020-01-02",
+        "JUSTERT_FRA": "2020-01-02",
+        "OPPR_TIL_DATO": "2020-11-21",
+        "PERIODE": {
+          "ENDRING_PERIODE": "",
+          "ENDRING_PERIODE_BEGRUNNELSE": "",
+          "ENDRING_UNNTAK": "",
+          "ENDRING_UNNTAK_BEGRUNNELSE": "",
+          "PERIODE_KODE": "3"
+        },
+        "TIL_DATO": "2020-11-21",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "E",
+        "VEDTAK_DATO": "2020-01-02",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      },
+      {
+        "AKTFASEKODE": "UA",
+        "AVBRUDDSKODE": "",
+        "DATO_MOTTATT": "2020-11-20",
+        "FRA_DATO": "2020-11-20",
+        "JUSTERT_FRA": "2020-11-20",
+        "OPPR_TIL_DATO": "",
+        "TIL_DATO": "",
+        "UTFALL": "JA",
+        "VEDTAKSVARIANT": "",
+        "VEDTAKTYPE": "S",
+        "VEDTAK_DATO": "2020-11-20",
+        "VILKAAR": [
+          {
+            "KODE": "18-67AAR2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "MEDLSKAP12",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AOINORGE2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "A11-52",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "YTELARBGI2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "IVLGANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AIANNEN2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "STRAFFGJF2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAFAARBIS2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "ABIDRARAK2",
+            "STATUS": "J"
+          },
+          {
+            "KODE": "AAIUBEGRF2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAMEDVPLA2",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AABEHGSTUD",
+            "STATUS": "V"
+          },
+          {
+            "KODE": "AAFERD2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "UVUT2",
+            "STATUS": ""
+          },
+          {
+            "KODE": "AALANGUTRE",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AASYKDOSKA",
+            "STATUS": "N"
+          },
+          {
+            "KODE": "AAOPPLTILT",
+            "STATUS": "N"
+          }
+        ]
+      }
+    ]
+  }
+]

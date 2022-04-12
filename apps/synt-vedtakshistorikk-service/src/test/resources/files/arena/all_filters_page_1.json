@@ -1,0 +1,15 @@
+{
+  "arbeidsokerList": [
+    {
+      "personident": "10101010101",
+      "miljoe": "q2",
+      "status": "ERROR",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true,
+      "aap115": true,
+      "aap": true
+    }
+  ],
+  "antallSider": 2
+}

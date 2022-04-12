@@ -1,0 +1,41 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: application.version.todo
+    name: testnav-synt-vedtakshistorikk-service
+    description: App som genererer syntetisk vedtakshistorikk(er), tilknytter dataen til testnorge ident(er) og sender historikken(e) til arena-forvalteren.
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+consumers:
+  synt-vedtakshistorikk:
+    url: https://synthdata-arena-vedtakshistorikk.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-vedtakshistorikk
+  testnav-arena-forvalteren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-arena-forvalteren-proxy
+    url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+  testnav-pensjon-testdata-facade-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pensjon-testdata-facade-proxy
+    url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+  person-search-service:
+    cluster: dev-fss
+    namespace: dolly
+    name: person-search-service
+    url: https://person-search-service.dev-fss-pub.nais.io
+  pdl-api-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io

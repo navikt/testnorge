@@ -1,0 +1,29 @@
+{
+  "data": {
+    "hentPersonBolk": [
+      {
+        "ident": "12345678910",
+        "person": {
+          "navn": [
+            {
+              "fornavn": "TEST",
+              "etternavn": "TEST",
+              "metadata": {
+                "historisk": false
+              }
+            }
+          ],
+          "foedsel": [
+            {
+              "foedselsdato": "1973-09-05",
+              "metadata": {
+                "historisk": false
+              }
+            }
+          ],
+          "doedsfall": []
+        }
+      }
+    ]
+  }
+}
