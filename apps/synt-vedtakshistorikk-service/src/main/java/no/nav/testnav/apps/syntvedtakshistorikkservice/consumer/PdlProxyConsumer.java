@@ -2,10 +2,12 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.GetPdlPersonCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.GetPdlPersonerCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.TagsOpprettingCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.TagsSlettingCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PdlProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -33,6 +35,7 @@ public class PdlProxyConsumer {
     private final ServerProperties serviceProperties;
 
     private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
+    private static final String BOLK_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
 
     public PdlProxyConsumer(
             PdlProxyProperties serviceProperties,
@@ -45,8 +48,8 @@ public class PdlProxyConsumer {
 
     public PdlPerson getPdlPerson(String ident) {
         if (isNullOrEmpty(ident)) return null;
-        var query = getSinglePersonQueryFromFile();
         try {
+            var query = getQueryFromFile(SINGLE_PERSON_QUERY);
             var response = tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
                     .block();
@@ -62,8 +65,22 @@ public class PdlProxyConsumer {
 
     }
 
-    private static String getSinglePersonQueryFromFile() {
-        try (var reader = new BufferedReader(new InputStreamReader(FilLaster.instans().lastRessurs(SINGLE_PERSON_QUERY), StandardCharsets.UTF_8))) {
+    public PdlPersonBolk getPdlPersoner(List<String> identer) {
+        if (isNull(identer) || identer.isEmpty()) return null;
+        try {
+            var query = getQueryFromFile(BOLK_PERSON_QUERY);
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new GetPdlPersonerCommand(identer, query, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Klarte ikke hente pdlpersoner.", e);
+            return null;
+        }
+
+    }
+
+    private static String getQueryFromFile(String file) {
+        try (var reader = new BufferedReader(new InputStreamReader(FilLaster.instans().lastRessurs(file), StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
 
         } catch (IOException e) {

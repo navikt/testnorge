@@ -12,11 +12,11 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.R
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonstatusSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
-import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class IdentService {
                 numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
                 for (PersonDTO person : response.getItems()) {
                     //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
-                    if (validBarn(person, tidligsteDatoBarnetillegg)){
+                    if (validBarn(person.getForelderBarnRelasjoner().getBarn(), tidligsteDatoBarnetillegg)){
                         utvalgteIdenter.add(person);
                         if (utvalgteIdenter.size() >= antallNyeIdenter) break;
                     }
@@ -133,21 +133,34 @@ public class IdentService {
         return !gyldigeBosattstatuser.isEmpty();
     }
 
-    private boolean validBarn(PersonDTO person, LocalDate tidligsteDatoBarnetillegg) {
-        var barnIdenter = person.getForelderBarnRelasjoner().getBarn().stream()
-                .filter(ident -> under18VedTidspunkt(ident, tidligsteDatoBarnetillegg))
-                .toList();
+    private boolean validBarn(List<String> barn, LocalDate tidligsteDatoBarnetillegg) {
+        if (isNull(barn) || barn.isEmpty()) return false;
+        var pdlBolk = pdlProxyConsumer.getPdlPersoner(barn);
 
-        return !barnIdenter.isEmpty();
+        List<PdlPersonBolk.PersonBolk> gyldigeBarn = new ArrayList<>();
+        if(nonNull(pdlBolk) && nonNull(pdlBolk.getData())){
+            gyldigeBarn = pdlBolk.getData().getHentPersonBolk().stream()
+                    .filter(personBolk -> under18VedTidspunkt(personBolk, tidligsteDatoBarnetillegg))
+                    .toList();
+        }
+
+        return !gyldigeBarn.isEmpty();
     }
 
-    private boolean under18VedTidspunkt(String ident, LocalDate tidspunkt) {
-        var month = Integer.parseInt(ident.substring(2, 4)) - 80;
-        var oppdatertFnr = ident.substring(0, 2) + month + ident.substring(4);
-        var foedselsdato = IdentUtil.getFoedselsdatoFraIdent(oppdatertFnr);
+    private boolean under18VedTidspunkt(PdlPersonBolk.PersonBolk personBolk, LocalDate tidspunkt) {
+        var person = personBolk.getPerson();
+        if (nonNull(person) && nonNull(person.getFoedsel()) && !person.getFoedsel().isEmpty()){
+            var foedselsdato = person.getFoedsel().get(0).getFoedselsdato();
 
-        var alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
-        return alder > -1 && alder < 18;
+            if(nonNull(person.getDoedsfall()) && !person.getDoedsfall().isEmpty()){
+                var doedsdato = person.getDoedsfall().get(0).getDoedsdato();
+                if (doedsdato.isBefore(tidspunkt.plusDays(1))) return false;
+            }
+            var alder = Math.toIntExact(ChronoUnit.YEARS.between(foedselsdato, tidspunkt));
+            return alder > -1 && alder < 18;
+        }
+
+        return false;
     }
 
     public Kontoinfo getIdentMedKontoinformasjon() {
