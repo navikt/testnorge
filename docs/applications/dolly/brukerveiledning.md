@@ -173,7 +173,7 @@ For personer som ikke eksisterer i Dolly må disse først hentes inn ved å oppr
 ![Endringsmelding](assets/endringsmelding.png)
 
 ### Tilgang
-Endringsmeldinger er en egen applikasjon. Dette medfører at man trenger spesifikk tilgang for å  kunne sende endringsmeldinger - ta kontakt med oss dersom du har behov for dette.
+Endringsmeldinger er en egen applikasjon. Dette medfører at man trenger spesifikk tilgang for å  kunne sende endringsmeldinger - ta kontakt med Team Dolly dersom du har behov for dette.
 
 ---
 
