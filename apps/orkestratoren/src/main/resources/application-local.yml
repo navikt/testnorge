@@ -35,6 +35,7 @@ sambatch:
 
 arenabatch:
   antallNyeIdenter: 1
+  miljoe: q2
 
 frikortbatch:
   antallNyeIdenter: 1

@@ -67,6 +67,9 @@ public class JobController {
     @Value("${arenabatch.antallNyeIdenter}")
     private int arenaAntallNyeIdenter;
 
+    @Value("${arenabatch.miljoe}")
+    private String arenaMiljoe;
+
     @Value("${medlbatch.prosentfaktor}")
     private double medlProsentfaktor;
 
@@ -192,17 +195,15 @@ public class JobController {
      */
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
-                    .miljoe(entry.getValue())
+                    .miljoe(arenaMiljoe)
                     .antallVedtakshistorikker(arenaAntallNyeIdenter)
                     .build());
-
             testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(SyntetiserArenaRequest.builder()
-                    .miljoe(entry.getValue())
+                    .miljoe(arenaMiljoe)
                     .antallNyeIdenter(1)
                     .build());
-        }
+
     }
 
     @Scheduled(cron = "0 0 0 * * *")
