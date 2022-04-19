@@ -36,7 +36,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class UdiStubConsumer {
 
     private static final String CONSUMER = "Dolly";
-    private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String UDISTUB_PERSON = "/api/v1/person";
 
     private final WebClient webClient;
