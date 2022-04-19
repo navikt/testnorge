@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.config.credentials.TpsForvalterenProxyProperties;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -94,15 +93,6 @@ public class TpsfServiceTest {
 
         Assertions.assertThrows(WebClientResponseException.BadRequest.class, () ->
                 tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING));
-    }
-
-    private void stubPostTpsfDataForFlereReturnsOk(RsSkdMeldingResponse meldingResponse) throws JsonProcessingException {
-
-        stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/tilTpsFlere"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(asJsonString(meldingResponse))
-                ));
     }
 
     private void stubPostTpsfDataThrowExpection() {

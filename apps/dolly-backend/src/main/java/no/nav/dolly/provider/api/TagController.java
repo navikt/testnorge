@@ -12,8 +12,9 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import org.apache.commons.lang3.StringUtils;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +24,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
 @Slf4j
@@ -78,33 +82,46 @@ public class TagController {
                 .map(Testident::getIdent)
                 .toList();
 
-        var pdlpersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter).getData().getHentPersonBolk();
-        var bolkPersoner = pdlpersonBolk.stream().map(PdlPersonBolk.PersonBolk::getPerson).toList();
-        var bolkIdenter = Stream.of(
-                        pdlpersonBolk.stream()
-                                .map(PdlPersonBolk.PersonBolk::getIdent)
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getSivilstand().stream()
-                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getForelderBarnRelasjon().stream()
-                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident))
-                                .toList(),
-                        bolkPersoner.stream()
-                                .flatMap(person -> person.getVergemaalEllerFremtidsfullmakt().stream()
-                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig))
-                                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                .toList()
-                ).flatMap(Collection::stream)
-                .filter(StringUtils::isNotBlank)
-                .distinct()
-                .toList();
+        var pdlPersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter)
+                .filter(pdlBolk -> nonNull(pdlBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(person -> Stream.of(List.of(person.getIdent()),
+                                person.getPerson().getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .toList(),
+                                person.getPerson().getForeldreansvar().stream()
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getFullmakt().stream()
+                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                        .filter(Objects::nonNull)
+                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .filter(Objects::nonNull)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList())
+                .filter(Objects::nonNull)
+                .flatMap(Flux::fromIterable)
+                .collectList()
+                .block();
 
         var tagsTilSletting = testgruppe.getTags().stream()
                 .filter(eksisterendeTag -> tags.stream()
@@ -117,9 +134,13 @@ public class TagController {
                 .collect(Collectors.joining(",")));
 
         if (!tagsTilSletting.isEmpty()) {
-            tagsHendelseslagerConsumer.deleteTags(bolkIdenter, tagsTilSletting);
+            tagsHendelseslagerConsumer.deleteTags(pdlPersonBolk, tagsTilSletting)
+                    .collectList()
+                    .subscribe();
         }
 
-        return tagsHendelseslagerConsumer.createTags(bolkIdenter, tags);
+        return tagsHendelseslagerConsumer.createTags(pdlPersonBolk, tags)
+                .collect(Collectors.joining(", "))
+                .block();
     }
 }

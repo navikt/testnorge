@@ -1,7 +1,7 @@
-package no.nav.dolly.bestilling.pdldata.command;
+package no.nav.dolly.bestilling.udistub.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -13,13 +13,16 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
-@Slf4j
 @RequiredArgsConstructor
-public class PdlDataSlettCommand implements Callable<Flux<Void>> {
+public class UdistubDeleteCommand implements Callable<Flux<Void>> {
 
-    private static final String PDL_FORVALTER_URL = "/api/v1/personer/{ident}";
+    private static final String UDISTUB_PERSON = "/api/v1/person";
 
     private final WebClient webClient;
     private final String ident;
@@ -29,14 +32,17 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
 
         return webClient
                 .delete()
-                .uri(PDL_FORVALTER_URL, ident)
+                .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
+                .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(Void.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Flux.empty());
+                        throwable -> Flux.empty())
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

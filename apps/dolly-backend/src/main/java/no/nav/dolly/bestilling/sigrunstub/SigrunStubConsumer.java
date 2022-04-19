@@ -2,10 +2,10 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubSlettCommand;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -15,6 +15,8 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -23,7 +25,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -38,7 +39,6 @@ public class SigrunStubConsumer {
 
     private static final String CONSUMER = "Dolly";
     private static final String URL_VERSION = "/api/v1";
-    private static final String SIGRUN_STUB_DELETE_GRUNNLAG = URL_VERSION + "/slett";
     private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = URL_VERSION + "/lignetinntekt";
 
     private final TokenExchange tokenService;
@@ -55,28 +55,13 @@ public class SigrunStubConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "sigrun_deleteGrunnlag" })
-    public void deleteSkattegrunnlag(String ident) {
+    public Mono<List<String>> deleteSkattegrunnlag(List<String> identer) {
 
-        var callId = getNavCallId();
-        log.info("Delete til sigrun-stub med call-id {}", callId);
-
-        ResponseEntity<String> response = webClient.delete().uri(uriBuilder -> uriBuilder
-                        .path(SIGRUN_STUB_DELETE_GRUNNLAG)
-                        .build())
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header("personidentifikator", ident)
-                .retrieve()
-                .toEntity(String.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
-
-        if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å slette skattegrunnlag for ident %s i sigrunstub", ident));
-        }
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .map(index -> new SigrunstubSlettCommand(webClient, identer.get(index), token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     @Timed(name = "providers", tags = { "operation", "sigrun_createGrunnlag" })

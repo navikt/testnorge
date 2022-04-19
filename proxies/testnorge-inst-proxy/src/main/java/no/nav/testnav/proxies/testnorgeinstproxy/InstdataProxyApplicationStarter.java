@@ -17,10 +17,10 @@ import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
         SecurityConfig.class
 })
 @SpringBootApplication
-public class SyntrestProxyApplicationStarter {
+public class InstdataProxyApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(SyntrestProxyApplicationStarter.class, args);
+        SpringApplication.run(InstdataProxyApplicationStarter.class, args);
     }
 
     @Bean

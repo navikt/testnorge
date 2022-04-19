@@ -16,7 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Mono;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -24,6 +26,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -59,6 +62,7 @@ public class ArenaForvalterClientTest {
                                 .status("OK")
                                 .build()))
                         .build()));
+        when(arenaForvalterConsumer.deleteIdenter(anyList())).thenReturn(Mono.just(emptyList()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -86,6 +90,7 @@ public class ArenaForvalterClientTest {
                                 .melding("Lang feilmelding uegnet til å presenteres for bruker")
                                 .build()))
                         .build()));
+        when(arenaForvalterConsumer.deleteIdenter(anyList())).thenReturn(Mono.just(emptyList()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());

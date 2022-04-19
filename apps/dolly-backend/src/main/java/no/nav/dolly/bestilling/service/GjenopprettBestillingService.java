@@ -66,7 +66,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                     gjenopprettFraProgress.getMaster());
                             bestKriterier.setNavSyntetiskIdent(isSyntetisk(gjenopprettFraProgress.getIdent()));
                             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
-                            bestKriterier.setTags(bestilling.getTags());
 
                             try {
                                 Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);

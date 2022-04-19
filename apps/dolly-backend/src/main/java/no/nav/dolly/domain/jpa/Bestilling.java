@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.Tags;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -117,9 +116,6 @@ public class Bestilling {
     @Transient
     private String beskrivelse;
 
-    @Transient
-    private List<Tags> tags;
-
     public List<BestillingProgress> getProgresser() {
         if (isNull(progresser)) {
             progresser = new ArrayList<>();
@@ -132,12 +128,5 @@ public class Bestilling {
             kontroller = new ArrayList<>();
         }
         return kontroller;
-    }
-
-    public List<Tags> getTags() {
-        if (isNull(tags)) {
-            tags = new ArrayList<>();
-        }
-        return tags;
     }
 }

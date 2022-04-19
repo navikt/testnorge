@@ -56,7 +56,7 @@ public class BrregstubClient implements ClientRegister {
                             .subscribe(resp -> log.info("Sletting utført i Brregstub"));
 
         } catch (RuntimeException e) {
-            log.error("BRREGSTUB: Feilet å slette rolledata for identer {}", identer.stream().collect(Collectors.joining(", ")), e);
+            log.error("Brregstub: Feilet å slette rolledata for identer {}", identer.stream().collect(Collectors.joining(", ")), e);
         }
     }
 

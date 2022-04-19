@@ -96,7 +96,7 @@ public class KrrstubClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å slette identer {} fra KRR-Stub", identer.stream().collect(Collectors.joining(", ")), e);
+            log.error("Feilet å slette identer fra krrstub: ", identer.stream().collect(Collectors.joining(", ")), e);
         }
     }
 }

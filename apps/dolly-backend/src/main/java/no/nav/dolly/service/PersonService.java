@@ -38,9 +38,11 @@ public class PersonService {
                 .map(TestidentDTO::getIdent)
                 .toList());
 
-        if (!tpsfPersoner.isEmpty()) {
-            var identerInkludertRelasjoner = Stream.of(tpsfPersoner.stream()
-                                    .map(Person::getIdent)
+        if (testidenter.stream().anyMatch(TestidentDTO::isTpsf)) {
+
+            var identerInkludertRelasjoner = Stream.of(testidenter.stream()
+                                    .filter(TestidentDTO::isTpsf)
+                                    .map(TestidentDTO::getIdent)
                                     .toList(),
                             tpsfPersoner.stream()
                                     .map(Person::getRelasjoner)
@@ -71,15 +73,19 @@ public class PersonService {
                     .toList();
 
 
-            pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner);
+            pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner)
+                    .subscribe(response -> log.info("Slettet antall {} identer (master TPS) mot PDL-forvalter", identerInkludertRelasjoner.size()));
         }
 
         if (testidenter.stream().anyMatch(TestidentDTO::isPdlf)) {
 
-            pdlDataConsumer.slettPdl(testidenter.stream()
+            var pdlfIdenter = testidenter.stream()
                     .filter(TestidentDTO::isPdlf)
                     .map(TestidentDTO::getIdent)
-                    .toList());
+                    .toList();
+
+            pdlDataConsumer.slettPdl(pdlfIdenter)
+                    .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", pdlfIdenter.size()));
         }
 
         releaseArtifacts(testidenter);

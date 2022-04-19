@@ -1,8 +1,6 @@
-package no.nav.dolly.bestilling.tagshendelseslager.command;
+package no.nav.dolly.bestilling.inntektstub.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -16,34 +14,27 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
-@Slf4j
 @RequiredArgsConstructor
-public class TagsSlettingCommand implements Callable<Flux<String>> {
+public class InbtektstubDeleteCommand implements Callable<Flux<Void>> {
 
-    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
-    private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String IDENTS_QUERY = "personidenter";
-    private static final String TAGS_QUERY = "tags";
+    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer";
+    private static final String NORSKE_IDENTER_QUERY = "norske-identer";
 
     private final WebClient webClient;
     private final List<String> identer;
-    private final List<Tags> tags;
     private final String token;
 
-    public Flux<String> call() {
+    public Flux<Void> call() {
 
-        return webClient
-                .delete()
+        return webClient.delete()
                 .uri(uriBuilder -> uriBuilder
-                        .path(PDL_TESTDATA)
-                        .path(PDL_TAGS_URL)
-                        .queryParam(IDENTS_QUERY, identer)
-                        .queryParam(TAGS_QUERY, tags)
+                        .path(DELETE_INNTEKTER_URL)
+                        .queryParam(NORSKE_IDENTER_QUERY, identer)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToFlux(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
