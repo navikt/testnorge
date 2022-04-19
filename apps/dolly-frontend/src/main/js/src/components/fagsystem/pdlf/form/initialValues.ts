@@ -216,7 +216,7 @@ export const initialSivilstand = {
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
-	master: 'PDL',
+	master: 'FREG',
 }
 
 export const initialKjoenn = {
