@@ -30,7 +30,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/synthdata-meldekort-proxy/oeke-timeout'}}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/synt-meldekort-proxy/oeke-timeout'}}
     with:
       resource: 'proxies/synthdata-meldekort-proxy/config.yml'
       app-name: 'synthdata-meldekort-proxy'
