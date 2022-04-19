@@ -26,19 +26,19 @@ public class RelasjonerUtils {
     public static void addRelasjonerQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
                 .ifPresent(value -> {
-                    addForeldreQueries(queryBuilder, value);
+                    addRelasjonQueries(queryBuilder, value);
                     addBarnQuery(queryBuilder, value);
                     addDoedfoedtBarnQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
     }
 
-    private static void addForeldreQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
-        if (nonNull(search.getFar()) && Boolean.TRUE.equals(search.getFar())) {
-            queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.FAR.toString(), true));
-        }
-        if (nonNull(search.getMor()) && Boolean.TRUE.equals(search.getMor())) {
-            queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.MOR.toString(), true));
+    private static void addRelasjonQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
+        var relasjoner = search.getForelderBarnRelasjoner();
+        if (nonNull(relasjoner) && !relasjoner.isEmpty()) {
+            for (var relasjon : relasjoner) {
+                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, relasjon, true));
+            }
         }
     }
 
