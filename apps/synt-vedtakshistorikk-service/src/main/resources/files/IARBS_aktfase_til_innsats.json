@@ -1,0 +1,136 @@
+{
+  "AU": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 1116
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 2
+    },
+    {
+      "kode": "OPPFI",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "VARIG",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "VURDI",
+      "sannsynlighet": 4
+    }
+  ],
+  "FA": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 107
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 35
+    },
+    {
+      "kode": "VARIG",
+      "sannsynlighet": 6
+    }
+  ],
+  "SPE": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 93
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet":  22
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 11
+    },
+    {
+      "kode": "OPPFI",
+      "sannsynlighet": 11
+    },
+    {
+      "kode": "VARIG",
+      "sannsynlighet": 13
+    },
+    {
+      "kode": "VURDI",
+      "sannsynlighet": 109
+    },
+    {
+      "kode": "VURDU",
+      "sannsynlighet": 9
+    }
+  ],
+  "UA": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 41878
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 35
+    },
+    {
+      "kode": "BKART",
+      "sannsynlighet": 3
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 22
+    },
+    {
+      "kode": "OPPFI",
+      "sannsynlighet": 52
+    },
+    {
+      "kode": "VARIG",
+      "sannsynlighet": 1103
+    },
+    {
+      "kode": "VURDI",
+      "sannsynlighet": 66
+    },
+    {
+      "kode": "VURDU",
+      "sannsynlighet": 55
+    }
+  ],
+  "UVUP": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 22
+    },
+    {
+      "kode": "BKART",
+      "sannsynlighet": 6
+    },
+    {
+      "kode": "IVURD",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "VARIG",
+      "sannsynlighet": 4526
+    },
+    {
+      "kode": "VURDI",
+      "sannsynlighet": 2
+    },
+    {
+      "kode": "VURDU",
+      "sannsynlighet": 1
+    }
+  ]
+}

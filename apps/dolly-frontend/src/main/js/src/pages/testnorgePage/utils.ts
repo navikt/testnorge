@@ -21,6 +21,7 @@ export const initialValues = {
 			sivilstand: '',
 			harBarn: '',
 			harDoedfoedtBarn: '',
+			forelderBarnRelasjoner: [],
 		},
 		ident: {
 			ident: '',
@@ -40,6 +41,11 @@ export const initialValues = {
 			kontaktadresse: {
 				norskAdresse: false,
 				utenlanskAdresse: false,
+			},
+			oppholdsadresse: {
+				norskAdresse: false,
+				utenlanskAdresse: false,
+				oppholdAnnetSted: '',
 			},
 		},
 		personstatus: '',

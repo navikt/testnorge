@@ -9,9 +9,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class SigrunStubClient implements ClientRegister {
                         inntektsaar.setPersonidentifikator(dollyPerson.getHovedperson()));
 
                 if (!isOpprettEndre) {
-                    deleteExistingSkattegrunnlag(dollyPerson.getHovedperson());
+                    sigrunStubConsumer.deleteSkattegrunnlag(List.of(dollyPerson.getHovedperson())).block();
                 }
 
                 progress.setSigrunstubStatus(
@@ -51,19 +49,12 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(this::deleteExistingSkattegrunnlag);
-    }
-
-    private void deleteExistingSkattegrunnlag(String ident) {
         try {
-            // Alle skattegrunnlag har samme ident
-            sigrunStubConsumer.deleteSkattegrunnlag(ident);
+            sigrunStubConsumer.deleteSkattegrunnlag(identer)
+                    .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
 
-        } catch (WebClientResponseException error) {
-            if (!HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
-
-                log.error("Feilet å slette ident {} fra Sigrunstub", ident, error);
-            }
+        } catch (RuntimeException e) {
+            log.error("Feilet å slette identer fra Sigrunstub: ", String.join(", ", identer));
         }
     }
 }

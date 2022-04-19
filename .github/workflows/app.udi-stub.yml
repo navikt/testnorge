@@ -38,7 +38,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/teknisk_gjeld_asynk_sletting_gjenstående'}}
     with:
       resource: 'apps/udi-stub/nais-dev.yaml'
       app-name: 'testnav-udi-stub'

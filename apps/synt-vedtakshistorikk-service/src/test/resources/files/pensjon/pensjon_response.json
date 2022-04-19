@@ -1,0 +1,11 @@
+{
+  "status": [
+    {
+      "miljo": "q2",
+      "response": {
+        "message": "OK",
+        "path": "api/v1/person"
+      }
+    }
+  ]
+}

@@ -117,3 +117,15 @@ export type Vergemaal = {
 	}
 	id: number
 }
+
+export type NyIdent = {
+	identtype?: string
+	kjoenn?: string
+	foedtEtter?: string
+	foedtFoer?: string
+	alder?: string
+	syntetisk?: boolean
+	nyttNavn?: {
+		hasMellomnavn: boolean
+	}
+}

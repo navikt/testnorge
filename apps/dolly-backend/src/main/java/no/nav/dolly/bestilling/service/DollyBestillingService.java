@@ -182,7 +182,6 @@ public class DollyBestillingService {
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
-            bestKriterier.setTags(bestilling.getTags());
             return bestKriterier;
 
         } catch (JsonProcessingException e) {

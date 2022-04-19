@@ -91,6 +91,7 @@ public class DokarkivClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
+        // Sletting er ikke støttet
     }
 
     private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {

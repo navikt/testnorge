@@ -144,6 +144,7 @@ includeBuild './apps/tps-messaging-service'
 includeBuild './apps/organisasjon-tilgang-frontend'
 includeBuild './apps/import-fra-tpsf-service'
 includeBuild './apps/generer-synt-meldekort-service'
+includeBuild './apps/synt-vedtakshistorikk-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 

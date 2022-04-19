@@ -186,7 +186,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		} = pdldataKriterier
 
 		const personRelatertTil = (personData, path) => {
-			if (!personData || !_get(personData, path)) return null
+			if (!personData || !_get(personData, path)) return [expandable(null, false, null)]
 			const {
 				identtype,
 				kjoenn,
@@ -853,7 +853,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							(adresse?.postnummer || adresse?.poststedsnavn) &&
 								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 						),
-						{ ...personRelatertTil(item, 'personSomKontakt.nyKontaktperson') },
+						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
 					]
 				}),
 			}

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { FormikProps } from 'formik'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import {
 	initialForeldreansvar,
 	initialPdlBiPerson,
@@ -13,17 +13,15 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
-import Loading from '~/components/ui/loading/Loading'
 import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
+import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
-	identOptions: Array<Option>
-	loadingOptions: boolean
 }
 
 type Target = {
@@ -31,7 +29,7 @@ type Target = {
 	value: string
 }
 
-export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: ForeldreansvarForm) => {
+export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	//@ts-ignore
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
@@ -137,17 +135,10 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 							)}
 
 							{typeAnsvarlig === 'EKSISTERENDE' && (
-								<>
-									{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
-									{identOptions?.length > 0 && (
-										<FormikSelect
-											name={`${path}.ansvarlig`}
-											label="Ansvarlig"
-											options={identOptions}
-											size="xlarge"
-										/>
-									)}
-								</>
+								<PdlEksisterendePerson
+									eksisterendePersonPath={`${path}.ansvarlig`}
+									label="Ansvarlig"
+								/>
 							)}
 
 							{typeAnsvarlig === 'UTEN_ID' && (
@@ -186,7 +177,7 @@ export const Foreldreansvar = ({ formikBag, identOptions, loadingOptions }: Fore
 							)}
 
 							{typeAnsvarlig === 'NY' && (
-								<PdlPersonForm path={`${path}.nyAnsvarlig`} formikBag={formikBag} />
+								<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formikBag={formikBag} />
 							)}
 
 							<AvansertForm path={path} kanVelgeMaster={false} />

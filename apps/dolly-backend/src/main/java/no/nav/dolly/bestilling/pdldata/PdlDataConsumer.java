@@ -21,6 +21,7 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -54,25 +55,25 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_delete"})
-    public void slettPdl(List<String> identer) {
+    public Mono<List<Void>> slettPdl(List<String> identer) {
 
-        String accessToken = serviceProperties.getAccessToken(tokenService);
-        Flux.range(0, identer.size())
-                .flatMap(count -> new PdlDataSlettCommand(webClient, identer.get(count), accessToken).call())
-                .collectList()
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .map(index -> new PdlDataSlettCommand(webClient, identer.get(index), token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_delete_utenom"})
-    public void slettPdlUtenom(List<String> identer) {
+    public Mono<List<Void>> slettPdlUtenom(List<String> identer) {
 
-        String accessToken = serviceProperties.getAccessToken(tokenService);
-        Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
-                .flatMap(count -> new PdlDataSlettUtenomCommand(webClient,
-                        identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
-                        accessToken).call())
-                .collectList()
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                        .map(count -> new PdlDataSlettUtenomCommand(webClient,
+                                identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
+                                token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_opprett"})

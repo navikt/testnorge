@@ -158,7 +158,7 @@ public class IdentpoolService {
                 .map(Ident::getPersonidentifikator)
                 .toList();
 
-        log.info("Frigjort identer: {}" + String.join(", ", frigjorteIdenter));
+        log.info("Frigjort identer: " + String.join(", ", frigjorteIdenter));
 
         return frigjorteIdenter;
     }

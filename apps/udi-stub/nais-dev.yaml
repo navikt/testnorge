@@ -26,6 +26,8 @@ spec:
           cluster: dev-fss
         - application: testnav-udistub-proxy
           cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp

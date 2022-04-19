@@ -54,7 +54,13 @@ public class UdiStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(udiStubConsumer::deleteUdiPerson);
+        try {
+            udiStubConsumer.deleteUdiPerson(identer)
+                    .subscribe(response -> log.info("Slettet identer fra Udistub"));
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å slette identer fra Udistub: ", String.join(", ", identer));
+        }
     }
 
     private void sendUdiPerson(UdiPersonWrapper wrapper) {

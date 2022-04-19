@@ -1,0 +1,27 @@
+[
+  {
+    "AVBRUDDSKODE": "",
+    "DATO_MOTTATT": "2007-10-24",
+    "FRA_DATO": "2007-10-22",
+    "UTFALL": "JA",
+    "VEDTAKTYPE": "O",
+    "VILKAAR": [
+      {
+        "KODE": "AAUNGNEDS",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AANEDSSL",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AASSLDOK",
+        "STATUS": "V"
+      },
+      {
+        "KODE": "AAFOR36",
+        "STATUS": "V"
+      }
+    ]
+  }
+]

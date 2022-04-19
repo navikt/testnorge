@@ -1,0 +1,43 @@
+{
+  "nyeAatfor": [
+    {
+      "avbruddKode": "",
+      "begrunnelse": "Syntetisert rettighet",
+      "datoMottatt": "2019-11-21",
+      "fraDato": "2019-11-21",
+      "utfall": "JA",
+      "vilkaar": [
+        {
+          "kode": "MISBRUK",
+          "status": "J"
+        },
+        {
+          "kode": "PSYK",
+          "status": "V"
+        },
+        {
+          "kode": "SKADE",
+          "status": "J"
+        }
+      ],
+      "vedtaktype": "O",
+      "forvalter": {
+        "gjeldendeKontonr": {
+          "kontonr": "20000723267",
+          "utland": null
+        },
+        "utbetalingsadresse": {
+          "adresseLinje1": "GULLSPENNETUNET 6",
+          "adresseLinje2": "",
+          "adresseLinje3": "",
+          "fodselsnr": "19121216763",
+          "landkode": "NOR",
+          "navn": "NOR",
+          "orgnr": null,
+          "postnr": "4032"
+        }
+      }
+    }
+  ],
+  "nyeAatforFeilList": []
+}
