@@ -33,6 +33,8 @@ export const OrganisasjonLoader = ({
 	value,
 	isLoading,
 }: OrganisasjonLoaderProps) => {
+	const validEnhetstyper = ['BEDR', 'AAFY']
+
 	useEffect(() => {
 		if (!organisasjoner) {
 			hentOrganisasjoner('DOLLY', kanHaArbeidsforhold)
@@ -44,6 +46,9 @@ export const OrganisasjonLoader = ({
 
 	const formatLabel = (org: Organisasjon) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`
 	const organisasjonerSorted = [...organisasjoner]
+		.filter((virksomhet) =>
+			kanHaArbeidsforhold ? validEnhetstyper.includes(virksomhet.enhetstype) : true
+		)
 		.sort(function (a: Organisasjon, b: Organisasjon) {
 			if (a.opprinnelse < b.opprinnelse) return 1
 			if (a.opprinnelse > b.opprinnelse) return -1

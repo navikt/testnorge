@@ -56,14 +56,11 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		if (values.inntektstype !== currentInntektstype) {
 			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
 		} else {
-			let kapplah = new Map()
 			for (const [key, value] of Object.entries(values)) {
 				if (key === 'tilleggsinformasjonstype') {
 					if (value === null) {
-						// formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
-						kapplah.set(`${inntektPath}.tilleggsinformasjon`, undefined)
-						// formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjonstype`, '')
-						kapplah.set(`${inntektPath}.tilleggsinformasjonstype`, '')
+						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjonstype`, '')
 					} else if (value !== currentTilleggsinformasjonstype) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {})
 					}
@@ -91,7 +88,6 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					}
 				}
 			}
-			formikBag.setValues()
 		}
 	}
 
