@@ -27,7 +27,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +47,6 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.DatoFraIdentUtility.isMyndig;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -115,20 +113,20 @@ public class PersonService {
         unhookEksternePersonerService.unhook(dbPerson);
 
         var identer = Stream.of(List.of(dbPerson.getIdent()),
-                dbPerson.getRelasjoner().stream()
-                        .map(DbRelasjon::getRelatertPerson)
-                        .map(DbPerson::getPerson)
-                        .map(PersonDTO::getIdent)
-                        .toList(),
-                dbPerson.getRelasjoner().stream()
-                        .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
-                        .map(DbRelasjon::getRelatertPerson)
-                        .map(DbPerson::getPerson)
-                        .map(PersonDTO::getForeldreansvar)
-                        .flatMap(Collection::stream)
-                        .filter(ansvar -> !ansvar.isEksisterendePerson())
-                        .map(ForeldreansvarDTO::getAnsvarlig)
-                        .toList())
+                        dbPerson.getRelasjoner().stream()
+                                .map(DbRelasjon::getRelatertPerson)
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getIdent)
+                                .toList(),
+                        dbPerson.getRelasjoner().stream()
+                                .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
+                                .map(DbRelasjon::getRelatertPerson)
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getForeldreansvar)
+                                .flatMap(Collection::stream)
+                                .filter(ansvar -> !ansvar.isEksisterendePerson())
+                                .map(ForeldreansvarDTO::getAnsvarlig)
+                                .toList())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
@@ -226,10 +224,8 @@ public class PersonService {
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
         }
-        if (request.getPerson().getSivilstand().isEmpty() && isMyndig(request.getPerson().getIdent())) {
-            request.getPerson().getSivilstand().add(SivilstandDTO.builder()
-                    .type(Sivilstand.UGIFT)
-                    .build());
+        if (request.getPerson().getSivilstand().isEmpty()) {
+            request.getPerson().getSivilstand().add(new SivilstandDTO());
         }
         if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
                 Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {

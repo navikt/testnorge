@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.aareg.amelding.command;
+package no.nav.dolly.bestilling.aareg.command;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
-public record GetOrganisasjonCommand(WebClient webClient,
+public record OrganisasjonGetCommand(WebClient webClient,
                                      String token, String orgnummer,
                                      String miljo) implements Callable<OrganisasjonDTO> {
     @Override

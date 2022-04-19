@@ -16,7 +16,7 @@ import {
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
 // @ts-ignore
-export const PersoninformasjonPanel = ({ stateModifier }) => {
+export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
@@ -24,6 +24,32 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 	const harFnr = opts.identtype === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
+
+	if (testnorgeIdent) {
+		return (
+			// @ts-ignore
+			<Panel
+				heading={PersoninformasjonPanel.heading}
+				startOpen
+				checkAttributeArray={() => sm.batchAdd('identtype')}
+				uncheckAttributeArray={sm.batchRemove}
+				iconType={'personinformasjon'}
+			>
+				<AttributtKategori title="Diverse">
+					<Attributt attr={sm.attrs.sprakKode} />
+					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
+					<Attributt
+						attr={sm.attrs.norskBankkonto}
+						disabled={sm.attrs.utenlandskBankkonto.checked}
+					/>
+					<Attributt
+						attr={sm.attrs.utenlandskBankkonto}
+						disabled={sm.attrs.norskBankkonto.checked}
+					/>
+				</AttributtKategori>
+			</Panel>
+		)
+	}
 
 	return (
 		// @ts-ignore

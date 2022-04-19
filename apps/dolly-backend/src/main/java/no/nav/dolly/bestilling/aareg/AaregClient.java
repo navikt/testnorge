@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingConsumer;
 import no.nav.dolly.bestilling.aareg.amelding.OrganisasjonServiceConsumer;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
 import no.nav.dolly.bestilling.aareg.domain.AmeldingTransaksjon;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
@@ -59,6 +60,16 @@ public class AaregClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
+    private static StringBuilder appendResult(Entry<String, String> entry, String
+            arbeidsforholdId, StringBuilder builder) {
+        return builder.append(',')
+                .append(entry.getKey())
+                .append(": arbforhold=")
+                .append(arbeidsforholdId)
+                .append('$')
+                .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -78,10 +89,31 @@ public class AaregClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
+
+        try {
+            aaregConsumer.slettArbeidsforholdFraAlleMiljoer(identer)
+                    .subscribe(response -> {
+                        var status = response.stream()
+                                .map(AaregResponse::getStatusPerMiljoe)
+                                .map(Map::values)
+                                .flatMap(Collection::stream)
+                                .distinct()
+                                .map(string -> string.replace("\n", ""))
+                                .toList();
+                        if (status.isEmpty()) {
+                            log.info("Sletting mot Aareg utført");
+                        } else {
+                            log.info("Sletting mot Aareg utført: {}", String.join("\n", status));
+                        }
+                    });
+
+        } catch (RuntimeException e) {
+            log.error("Slettet fra aareg feilet: " + String.join(", ", identer));
+        }
     }
 
-    private void sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre, StringBuilder result, String env) {
+    private void sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
+                                    boolean isOpprettEndre, StringBuilder result, String env) {
         try {
 
             MappingContext context = new MappingContext.Factory().getContext();
@@ -113,7 +145,8 @@ public class AaregClient implements ClientRegister {
         }
     }
 
-    private void sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, StringBuilder result, String env) {
+    private void sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress
+            progress, StringBuilder result, String env) {
         try {
             Map<String, AMeldingDTO> dtoMaanedMap = new HashMap<>();
 
@@ -166,7 +199,8 @@ public class AaregClient implements ClientRegister {
         return ameldingConsumer.createOrder(ameldingList, miljoe).blockLast();
     }
 
-    private void saveTransaksjonId(ResponseEntity<Void> response, String maaned, String ident, Long bestillingId, String miljoe) {
+    private void saveTransaksjonId(ResponseEntity<Void> response, String maaned, String ident, Long
+            bestillingId, String miljoe) {
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
@@ -192,14 +226,5 @@ public class AaregClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for aareg", e);
         }
         return null;
-    }
-
-    private static StringBuilder appendResult(Entry<String, String> entry, String arbeidsforholdId, StringBuilder builder) {
-        return builder.append(',')
-                .append(entry.getKey())
-                .append(": arbforhold=")
-                .append(arbeidsforholdId)
-                .append('$')
-                .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
     }
 }

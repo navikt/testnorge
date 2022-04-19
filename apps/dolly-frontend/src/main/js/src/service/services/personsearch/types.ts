@@ -38,13 +38,23 @@ export type Search = {
 			postnummer?: string
 			kommunenummer?: string
 		}
+		kontaktadresse?: {
+			norskAdresse?: boolean
+			utenlandskAdresse?: boolean
+		}
+		oppholdsadresse?: {
+			norskAdresse?: boolean
+			utenlandskAdresse?: boolean
+			oppholdAnnetSted?: string
+		}
 	}
 	personstatus?: {
 		status?: string
 	}
 	relasjoner?: {
-		barn?: boolean
-		doedfoedtBarn?: boolean
+		harBarn?: string
+		harDoedfoedtBarn?: string
+		forelderBarnRelasjoner?: string[]
 	}
 }
 

@@ -5,7 +5,7 @@ import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 import { actions as orgActions } from '~/ducks/organisasjon'
 import { actions as fasteDataActions } from '~/ducks/fastedata'
 
-export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
+export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -19,7 +19,6 @@ export const ArbeidInntektPanel = ({ stateModifier, testnorgeIdent }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
-			startOpen={testnorgeIdent}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)">
 				<Attributt attr={sm.attrs.aareg} />

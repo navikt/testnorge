@@ -1,20 +1,16 @@
 package no.nav.dolly.consumer.aareg;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.created;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.bestilling.aareg.AaregConsumer;
+import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
+import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
+import no.nav.dolly.config.credentials.TestnorgeAaregProxyProperties;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,15 +30,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
-import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
-import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
-import no.nav.dolly.config.credentials.TestnorgeAaregProxyProperties;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static com.github.tomakehurst.wiremock.client.WireMock.created;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -119,9 +118,9 @@ public class AaregConsumerTest {
     public void slettArbeidsforhold() throws JsonProcessingException {
         stubSlettIdentFraAlleMiljoer(slettResponse);
 
-        AaregResponse response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
+        var response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(List.of(ident)).block();
 
-        assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
+        assertThat(response.get(0).getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
 
     private void stubOpprettArbeidsforhold(AaregResponse response) throws JsonProcessingException {

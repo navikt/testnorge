@@ -8,7 +8,7 @@ import './../../flowers.scss'
 
 export default () => {
 	return (
-		<React.Fragment>
+		<>
 			<BlankHeader />
 			{Array.from(Array(50).keys()).map(() => (
 				<div className="flower" />
@@ -16,6 +16,6 @@ export default () => {
 			<Background>
 				<BrukerModal />
 			</Background>
-		</React.Fragment>
+		</>
 	)
 }

@@ -47,6 +47,22 @@ import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.UGIF;
 @Slf4j
 public final class PdlPersonStrategyMapper implements MappingStrategy {
 
+    private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
+
+        return (isNull(sivilstatus)) ? UGIF :
+                switch (sivilstatus) {
+                    case GIFT -> Sivilstand.Sivilstatus.GIFT;
+                    case ENKE_ELLER_ENKEMANN -> ENKE;
+                    case SKILT -> SKIL;
+                    case SEPARERT -> SEPR;
+                    case REGISTRERT_PARTNER -> REPA;
+                    case SEPARERT_PARTNER -> SEPA;
+                    case SKILT_PARTNER -> SKPA;
+                    case GJENLEVENDE_PARTNER -> GJPA;
+                    default -> UGIF;
+                };
+    }
+
     @Override
     public void register(MapperFactory factory) {
 
@@ -144,6 +160,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
 
         factory.classMap(PersonDTO.class, Person.class)
                 .customize(new CustomMapper<>() {
+
                     @Override
                     public void mapAtoB(PersonDTO personDto, Person person, MappingContext context) {
 
@@ -190,12 +207,17 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                                         : null)
                                                 .build())
                                         .toList());
-                        person.setSivilstand(
-                                mapSivilstand(personDto.getSivilstand().stream()
-                                        .map(SivilstandDTO::getType)
-                                        .filter(Objects::nonNull)
-                                        .findFirst()
-                                        .orElse(null)));
+                        person.getSivilstander().addAll(
+                                personDto.getSivilstand().stream()
+                                        .map(sivilstand -> Sivilstand.builder()
+                                                .sivilstand(mapSivilstand(sivilstand.getType()))
+                                                .sivilstandRegdato(sivilstand.getSivilstandsdato())
+                                                .person(person)
+                                                .personRelasjonMed(Person.builder()
+                                                        .ident(sivilstand.getRelatertVedSivilstand())
+                                                        .build())
+                                                .build())
+                                        .toList());
                         person.setFoedselsdato(
                                 personDto.getFoedsel().stream()
                                         .map(FoedselDTO::getFoedselsdato)
@@ -225,24 +247,5 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                 .exclude("sivilstand")
                 .byDefault()
                 .register();
-    }
-
-    private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
-
-        if (isNull(sivilstatus)) {
-            return UGIF;
-        } else {
-            return switch (sivilstatus) {
-                case GIFT -> Sivilstand.Sivilstatus.GIFT;
-                case ENKE_ELLER_ENKEMANN -> ENKE;
-                case SKILT -> SKIL;
-                case SEPARERT -> SEPR;
-                case REGISTRERT_PARTNER -> REPA;
-                case SEPARERT_PARTNER -> SEPA;
-                case SKILT_PARTNER -> SKPA;
-                case GJENLEVENDE_PARTNER -> GJPA;
-                default -> UGIF;
-            };
-        }
     }
 }

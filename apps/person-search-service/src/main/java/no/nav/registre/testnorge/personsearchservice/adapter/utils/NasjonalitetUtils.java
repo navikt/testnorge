@@ -7,11 +7,14 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
 
 @UtilityClass
 public class NasjonalitetUtils {
+
+    private static final String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
 
     public static void addNasjonalitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addStatsborgerskapQuery(queryBuilder, search);
@@ -24,7 +27,7 @@ public class NasjonalitetUtils {
                 .flatMap(value -> Optional.ofNullable(value.getLand()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery("hentPerson.statsborgerskap", "land", value));
+                        queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, false));
                     }
                 });
     }
@@ -33,7 +36,7 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
                     if (nonNull(value.getUtflyttet()) && Boolean.TRUE.equals(value.getUtflyttet())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", "metadata"));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", METADATA_FIELD, true));
                     }
                 });
     }
@@ -42,7 +45,7 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
                     if (nonNull(value.getInnflytting()) && Boolean.TRUE.equals(value.getInnflytting())) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", "metadata"));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", METADATA_FIELD, true));
                     }
                 });
     }

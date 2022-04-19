@@ -10,20 +10,16 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { Option } from '~/service/SelectOptionsOppslag'
-import Loading from '~/components/ui/loading/Loading'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
-	identOptions: Array<Option>
-	loadingOptions: boolean
 }
 
 const RELASJON_BARN = 'Barn'
 const RELASJON_FORELDER = 'Forelder'
 
-export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }: ForelderForm) => {
+export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
@@ -33,6 +29,7 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }
 		>
 			{(path: string, idx: number) => {
 				const erBarn = _get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
+
 				return (
 					<div className="flexbox--flex-wrap">
 						<div className="toggle--wrapper">
@@ -54,15 +51,6 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }
 								</ToggleKnapp>
 							</ToggleGruppe>
 						</div>
-						{loadingOptions && <Loading label="Henter valg for eksisterende ident..." />}
-						{identOptions?.length > 0 && (
-							<FormikSelect
-								name={`${path}.relatertPerson`}
-								label={erBarn ? RELASJON_BARN : RELASJON_FORELDER}
-								options={identOptions}
-								size={'xlarge'}
-							/>
-						)}
 
 						{(erBarn && (
 							<>
@@ -88,11 +76,14 @@ export const ForelderBarnRelasjon = ({ formikBag, identOptions, loadingOptions }
 						)}
 						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
 						<PdlPersonExpander
-							path={`${path}.nyRelatertPerson`}
+							nyPersonPath={`${path}.nyRelatertPerson`}
+							eksisterendePersonPath={`${path}.relatertPerson`}
 							label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 							formikBag={formikBag}
-							kanSettePersondata={_get(formikBag.values, `${path}.relatertPerson`) === null}
-							isExpanded={!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`))}
+							isExpanded={
+								!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`)) ||
+								_get(formikBag.values, `${path}.relatertPerson`) !== null
+							}
 						/>
 						<AvansertForm
 							path={path}

@@ -1,0 +1,51 @@
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    aarsak
+    ajourholdstidspunkt
+    gyldighetstidspunkt
+    kilde
+    opphoerstidspunkt
+    sekvens
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    historisk
+    master
+    opplysningsId
+}
+
+query($identer: [ID!]!) {
+    hentPersonBolk(identer: $identer) {
+        ident,
+        person {
+            foedsel {
+                foedselsaar,
+                foedselsdato,
+                foedeland,
+                foedested,
+                foedekommune,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            doedsfall {
+                doedsdato,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            }
+        }
+    }
+}

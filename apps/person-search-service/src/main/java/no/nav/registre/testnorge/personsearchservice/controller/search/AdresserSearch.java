@@ -8,5 +8,32 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class AdresserSearch {
-    Bostedsadresse bostedsadresse;
+    BostedsadresseSearch bostedsadresse;
+    KontaktadresseSearch kontaktadresse;
+    OppholdsadresseSearch oppholdsadresse;
+
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public class BostedsadresseSearch {
+        String kommunenummer;
+        String postnummer;
+    }
+
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public class KontaktadresseSearch {
+        Boolean norskAdresse;
+        Boolean utenlandskAdresse;
+    }
+
+    @Value
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public class OppholdsadresseSearch {
+        Boolean norskAdresse;
+        Boolean utenlandskAdresse;
+        String oppholdAnnetSted;
+    }
 }

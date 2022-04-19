@@ -1,16 +1,11 @@
 package no.nav.dolly.bestilling.instdata;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
-
+import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,12 +23,17 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.config.credentials.InstProxyProperties;
-import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -68,7 +68,7 @@ public class InstdataConsumerTest {
 
         stubDeleteInstData();
 
-        instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT);
+        instdataConsumer.deleteInstdata(List.of(IDENT)).block();
 
         verify(tokenService).exchange(ArgumentMatchers.any(InstProxyProperties.class));
     }
@@ -98,5 +98,10 @@ public class InstdataConsumerTest {
                 .withQueryParam("miljoe", equalTo(ENVIRONMENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
+
+        stubFor(get(urlPathMatching("(.*)/api/v1/miljoer"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + ENVIRONMENT + "\"]")));
     }
 }

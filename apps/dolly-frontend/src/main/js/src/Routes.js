@@ -41,7 +41,7 @@ const routes = [
 	},
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
 	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI },
-	{ path: '/testnorge', exact: true, breadcrumb: 'Testnorge', component: TestnorgePage },
+	{ path: '/testnorge', exact: true, breadcrumb: 'Test-Norge', component: TestnorgePage },
 	{
 		path: '/importer',
 		exact: true,

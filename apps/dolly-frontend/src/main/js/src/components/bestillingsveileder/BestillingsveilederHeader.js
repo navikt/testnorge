@@ -8,7 +8,7 @@ import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 const getImportFra = (opts) => {
 	if (opts.is.leggTil) {
 		if (opts.identMaster === 'PDL') {
-			return 'Testnorge'
+			return 'Test-Norge'
 		} else if (opts.personFoerLeggTil?.tpsf?.importFra) {
 			return opts.personFoerLeggTil.tpsf.importFra
 		}
@@ -51,7 +51,7 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.nyBestillingFraMal && (
 					<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
 				)}
-				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Testnorge" />}
+				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Test-Norge" />}
 				{opts.is.leggTil && <Header.TitleValue title="Legg til/endre på person" value={ident} />}
 				{importFra !== undefined && (
 					<Header.TitleValue

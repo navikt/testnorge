@@ -93,9 +93,13 @@ public class OppslagController {
     }
 
     @GetMapping("/pdlperson/identer")
-    @Operation(description = "Hent flere personer angitt ved identer fra PDL")
+    @Operation(description = "Hent flere personer angitt ved identer fra PDL, maks BLOCK_SIZE = 50 identer")
     public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer) {
-        return pdlPersonConsumer.getPdlPersoner(identer);
+        var personer = pdlPersonConsumer.getPdlPersoner(identer)
+                .collectList()
+                .block();
+
+        return !personer.isEmpty() ? personer.get(0) : null;
     }
 
     @GetMapping("/inntektstub/{ident}")

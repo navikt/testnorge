@@ -1,0 +1,104 @@
+{
+  "AU": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 417
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "OPPFI",
+      "sannsynlighet": 1
+    }
+  ],
+  "FA": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 83
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 753
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 419
+    }
+  ],
+  "SPE": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 56
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 14
+    },
+    {
+      "kode": "BKART",
+      "sannsynlighet": 45
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 21
+    },
+    {
+      "kode": "IVURD",
+      "sannsynlighet": 6
+    }
+  ],
+  "UA": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 64448
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 109
+    },
+    {
+      "kode": "BKART",
+      "sannsynlighet": 101
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 63
+    },
+    {
+      "kode": "IVURD",
+      "sannsynlighet": 7
+    },
+    {
+      "kode": "OPPFI",
+      "sannsynlighet": 2
+    },
+    {
+      "kode": "VURDI",
+      "sannsynlighet": 3
+    }
+  ],
+  "UVUP": [
+    {
+      "kode": "BATT",
+      "sannsynlighet": 4
+    },
+    {
+      "kode": "BFORM",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "BKART",
+      "sannsynlighet": 1
+    },
+    {
+      "kode": "IKVAL",
+      "sannsynlighet": 1
+    }
+  ]
+}

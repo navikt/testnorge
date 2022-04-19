@@ -1,5 +1,6 @@
 @import (reference) '~lessVars';
 
+@headerHoverColor: lighten(@color-nav-black, 7%);
 
 header.blank-header {
   background-color: @color-nav-black;
@@ -30,6 +31,25 @@ header.blank-header {
       padding-left: 10px;
       font-size: 1.6rem;
       color: white;
+    }
+  }
+
+  .menu-links {
+    display: flex;
+    justify-content: center;
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: normal;
+      margin: 0 20px;
+      font-size: 1.2em;
+      &.active {
+        font-weight: bold;
+        background-color: lighten(@color-nav-black, 10%);
+      }
+      &:hover {
+        background-color: @headerHoverColor;
+      }
     }
   }
 }

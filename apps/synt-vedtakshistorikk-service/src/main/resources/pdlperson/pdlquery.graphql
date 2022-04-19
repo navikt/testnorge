@@ -1,0 +1,121 @@
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    aarsak
+    ajourholdstidspunkt
+    gyldighetstidspunkt
+    kilde
+    opphoerstidspunkt
+    sekvens
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    historisk
+    master
+    opplysningsId
+}
+
+query($ident: ID!, $historikk: Boolean!) {
+    hentIdenter(ident: $ident, historikk: true) {
+        identer {
+            ident,
+            historisk,
+            gruppe
+        }
+    }
+    hentGeografiskTilknytning(ident: $ident) {
+        gtType,
+        gtLand,
+        gtKommune,
+        gtBydel,
+        regel
+    }
+    hentPerson(ident: $ident) {
+        foedsel {
+            foedselsaar,
+            foedselsdato,
+            foedeland,
+            foedested,
+            foedekommune,
+            metadata {
+                ...metadataDetails
+            }
+        },
+        bostedsadresse(historikk: $historikk) {
+            angittFlyttedato,
+            coAdressenavn,
+            gyldigFraOgMed,
+            gyldigTilOgMed,
+            vegadresse {
+                matrikkelId,
+                husbokstav,
+                husnummer,
+                adressenavn,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            matrikkeladresse {
+                matrikkelId,
+                bruksenhetsnummer,
+                tilleggsnavn,
+                postnummer,
+                kommunenummer,
+                koordinater {
+                    x,
+                    y,
+                    z
+                    kvalitet
+                }
+            },
+            ukjentBosted {
+                bostedskommune
+            },
+            utenlandskAdresse {
+                adressenavnNummer,
+                bygningEtasjeLeilighet,
+                postboksNummerNavn,
+                postkode,
+                bySted,
+                regionDistriktOmraade,
+                landkode
+            }
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
+        navn(historikk: $historikk) {
+            fornavn,
+            mellomnavn,
+            etternavn,
+            forkortetNavn,
+            originaltNavn {
+                fornavn,
+                mellomnavn,
+                etternavn
+            },
+            gyldigFraOgMed,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
+    }
+}

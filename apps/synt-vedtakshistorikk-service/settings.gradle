@@ -1,0 +1,20 @@
+plugins {
+    id "com.gradle.enterprise" version "3.7.2"
+}
+
+rootProject.name = 'synt-vedtakshistorikk-service'
+
+
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/domain'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/testing'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

@@ -2,6 +2,7 @@ package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.deserialization.OppholdAnnetStedEnumDeserializer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public abstract class AdresseDTO extends DbVersjonDTO {
 
     private CoNavnDTO opprettCoAdresseNavn;
 
+    @JsonDeserialize(using = OppholdAnnetStedEnumDeserializer.class)
     public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
 
     @Data
