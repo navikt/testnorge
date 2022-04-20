@@ -12,8 +12,8 @@ interface MatrikkeladresseValues {
 	adresse: {
 		matrikkeladresse: MatrikkelAdresse
 		angittFlyttedato: string
-		gyldigFraOgMed: string
-		gyldigTilOgMed: string
+		gyldigFraOgMed?: string
+		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
 	}

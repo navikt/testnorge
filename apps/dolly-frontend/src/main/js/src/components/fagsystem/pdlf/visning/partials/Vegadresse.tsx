@@ -12,7 +12,7 @@ interface VegadresseValues {
 	adresse: {
 		vegadresse: Adresse
 		angittFlyttedato: string
-		gyldigFraOgMed: string
+		gyldigFraOgMed?: string
 		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
