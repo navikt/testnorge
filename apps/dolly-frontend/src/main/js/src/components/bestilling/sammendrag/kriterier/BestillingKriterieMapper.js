@@ -1084,7 +1084,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (inntektStubKriterier) {
 		const inntektStub = {
-			header: 'A-ordningen (Inntektskomponenten)',
+			header: 'A-ordningen (Inntektstub)',
 			// items: [
 			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
 			// ],

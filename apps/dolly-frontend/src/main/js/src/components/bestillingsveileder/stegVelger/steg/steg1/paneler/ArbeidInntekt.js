@@ -8,7 +8,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
-		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektskomponenten: \nInformasjonen blir lagt i Inntekt-stub.'
+		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.'
 
 	return (
 		<Panel
@@ -27,7 +27,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
 				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
-			<AttributtKategori title="A-ordningen (Inntektsstub)">
+			<AttributtKategori title="A-ordningen (Inntektstub)">
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)">
@@ -105,7 +105,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('pensjonforvalter'),
 		add: () =>
 			set('pensjonforvalter.inntekt', {
-				fomAar: new Date().getFullYear() - 1,
+				fomAar: new Date().getFullYear() - 10,
 				tomAar: null,
 				belop: '',
 				redusertMedGrunnbelop: true,
