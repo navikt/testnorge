@@ -21,6 +21,16 @@ fragment metadataDetails on Metadata {
 }
 
 query($identer: [ID!]!) {
+    hentGeografiskTilknytningBolk(identer: $identer) {
+        ident,
+        geografiskTilknytning {
+            gtType,
+            gtLand,
+            gtKommune,
+            gtBydel,
+            regel
+        }
+    },
     hentPersonBolk(identer: $identer) {
         ident,
         person {
