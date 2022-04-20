@@ -12,7 +12,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		getPdlForvalter: () => dispatch(actions.hentPdlforvalterPersoner(ownProps.data?.person?.ident)),
-		getPdl: () => dispatch(actions.hentPdlPersoner(ownProps.data?.person?.ident)),
 	}
 }
 
