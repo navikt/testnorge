@@ -67,14 +67,20 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 								/>
 							</>
 						)) || (
-							<FormikSelect
-								name={`${path}.relatertPersonsRolle`}
-								label="Foreldretype"
-								options={Options('foreldreTypePDL')}
-								isClearable={false}
-							/>
+							<>
+								<FormikSelect
+									name={`${path}.relatertPersonsRolle`}
+									label="Foreldretype"
+									options={Options('foreldreTypePDL')}
+									isClearable={false}
+								/>
+								<FormikCheckbox
+									name={`${path}.borIkkeSammen`}
+									label="Bor ikke sammen"
+									checkboxMargin
+								/>
+							</>
 						)}
-						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
 						<PdlPersonExpander
 							nyPersonPath={`${path}.nyRelatertPerson`}
 							eksisterendePersonPath={`${path}.relatertPerson`}
