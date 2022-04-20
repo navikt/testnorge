@@ -42,10 +42,9 @@ const Knappegruppe = styled.div`
 export const VisningRedigerbar = ({
 	dataVisning,
 	initialValues,
-	put,
-	fetch,
+	editPdlforvalterAttributt,
 	sendOrdrePdl,
-	erPdlVisning,
+	getPdlForvalter,
 	redigertAttributt = null,
 	path,
 }: VisningTypes) => {
@@ -58,17 +57,17 @@ export const VisningRedigerbar = ({
 		const attributt = Object.keys(data)[0]
 		const id = _get(data, `${path}.id`)
 		const itemData = _get(data, path)
-		await put(attributt, id, itemData)
+		await editPdlforvalterAttributt(attributt, id, itemData)
 			.then((putResponse) => {
 				console.log('putResponse: ', putResponse) //TODO - SLETT MEG
 				if (putResponse)
-					fetch().then((fetchResponse) => {
+					getPdlForvalter().then((fetchResponse) => {
 						console.log('fetchResponse: ', fetchResponse) //TODO - SLETT MEG
 						if (fetchResponse) setVisningModus(Modus.LoadingPdl)
 					})
 			})
 			.catch((error) => {
-				fetch()
+				getPdlForvalter()
 				setErrorMessage(error.toString())
 				setVisningModus(Modus.Les)
 			})
@@ -96,7 +95,7 @@ export const VisningRedigerbar = ({
 			{visningModus === Modus.Les && (
 				<>
 					{dataVisning}
-					{!erPdlVisning && <Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} />}
+					<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} />
 					{/*<Button kind="trashcan" onClick={() => console.log('klikk slett!')} />*/}
 					{errorMessage && <div className="error-message">{errorMessage}</div>}
 				</>

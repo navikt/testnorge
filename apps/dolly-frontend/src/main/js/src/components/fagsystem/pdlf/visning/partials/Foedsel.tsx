@@ -26,9 +26,9 @@ type FoedselVisningTypes = {
 
 export const Foedsel = ({
 	data,
-	put,
+	editPdlforvalterAttributt,
 	sendOrdrePdl,
-	fetch,
+	getPdlForvalter,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -67,21 +67,20 @@ export const Foedsel = ({
 			(a) => a.id === item.id
 		)
 
-		return (
-			<>
-				<VisningRedigerbar
-					dataVisning={
-						<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : item} idx={idx} />
-					}
-					initialValues={initialValues}
-					put={put}
-					fetch={fetch}
-					sendOrdrePdl={sendOrdrePdl}
-					erPdlVisning={erPdlVisning}
-					redigertAttributt={redigertFoedselPdlf ? { foedsel: redigertFoedselPdlf } : null}
-					path="foedsel"
-				/>
-			</>
+		return erPdlVisning ? (
+			<FoedselLes foedsel={item} idx={idx} />
+		) : (
+			<VisningRedigerbar
+				dataVisning={
+					<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : item} idx={idx} />
+				}
+				initialValues={initialValues}
+				editPdlforvalterAttributt={editPdlforvalterAttributt}
+				sendOrdrePdl={sendOrdrePdl}
+				getPdlForvalter={getPdlForvalter}
+				redigertAttributt={redigertFoedselPdlf ? { foedsel: redigertFoedselPdlf } : null}
+				path="foedsel"
+			/>
 		)
 	}
 

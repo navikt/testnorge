@@ -100,7 +100,7 @@ export const PersonVisning = ({
 				<PdlfVisningConnector
 					data={data.pdlforvalter}
 					loading={loading.pdlforvalter}
-					put={editPdlforvalterAttributt}
+					editPdlforvalterAttributt={editPdlforvalterAttributt}
 					sendOrdrePdl={sendOrdrePdl}
 				/>
 			)}
