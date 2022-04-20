@@ -98,8 +98,7 @@ public class AdresserUtils {
         Optional.ofNullable(kontaktadresse.getKontaktadresseForDoedsbo())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery("kontaktinformasjonForDoedsbo", ".adresse.landkode", false
-                        ));
+                        queryBuilder.must(nestedExistsQuery("hentPerson.kontaktinformasjonForDoedsbo", ".adresse.landkode", false));
                     }
                 });
     }
