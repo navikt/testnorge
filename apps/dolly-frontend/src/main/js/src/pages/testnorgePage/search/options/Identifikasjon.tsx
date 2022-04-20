@@ -24,8 +24,8 @@ const options = {
 	],
 }
 
-const identifikasjonPath = 'personinformasjon.identifikasjon'
-const kjoennPath = 'personinformasjon.kjoenn'
+const identifikasjonPath = 'identifikasjon'
+const kjoennPath = 'kjoenn'
 
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	formikBag,

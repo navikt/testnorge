@@ -41,6 +41,7 @@ export type Search = {
 		kontaktadresse?: {
 			norskAdresse?: boolean
 			utenlandskAdresse?: boolean
+			kontaktadresseForDoedsbo?: boolean
 		}
 		oppholdsadresse?: {
 			norskAdresse?: boolean
