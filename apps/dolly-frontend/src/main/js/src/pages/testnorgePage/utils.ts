@@ -20,12 +20,12 @@ export const initialValues = {
 		sivilstand: '',
 		harBarn: '',
 		harDoedfoedtBarn: '',
-		forelderBarnRelasjoner: [],
+		forelderBarnRelasjoner: [] as string[],
 	},
 	ident: {
 		ident: '',
 	},
-	identer: [],
+	identer: [] as string[],
 	identifikasjon: {
 		adressebeskyttelse: '',
 		identtype: '',
