@@ -17,6 +17,7 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
@@ -226,6 +227,9 @@ public class PersonService {
         }
         if (request.getPerson().getSivilstand().isEmpty()) {
             request.getPerson().getSivilstand().add(new SivilstandDTO());
+        }
+        if (request.getPerson().getDeltBosted().isEmpty()) {
+            request.getPerson().getDeltBosted().add(new DeltBostedDTO());
         }
         if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
                 Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {

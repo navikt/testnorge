@@ -6,12 +6,13 @@ import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,15 +27,20 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO> {
 
-    private static final String INVALID_ADRESSE_MANGLER = "Delt bosted: når personen ikke er gift må en adresse oppgis";
-    private static final String INVALID_BARN_DONT_EXIST = "Delt bosted: det finnes ingen barn å knytte delt bosted til";
-    private static final String INVALID_STARTDATO_DONT_EXIST = "Delt bosted: startdato for kontrakt må angis";
     private static final String INVALID_AMBIGUOUS_ADRESSE = "Delt bosted: kun én adresse skal være satt (vegadresse, " +
             "ukjentBosted, matrikkeladresse)";
 
     private final PersonRepository personRepository;
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
+
+    private static boolean isEqualAdresse(BostedadresseDTO adresse1, BostedadresseDTO adresse2) {
+
+        return nonNull(adresse1.getVegadresse()) && adresse1.getVegadresse().equals(adresse2.getVegadresse()) ||
+                nonNull(adresse1.getMatrikkeladresse()) && adresse1.getMatrikkeladresse().equals(adresse2.getMatrikkeladresse()) ||
+                nonNull(adresse1.getUtenlandskAdresse()) && adresse1.getUtenlandskAdresse().equals(adresse2.getUtenlandskAdresse()) ||
+                nonNull(adresse1.getUkjentBosted()) && adresse1.getUkjentBosted().equals(adresse2.getUkjentBosted());
+    }
 
     public List<DeltBostedDTO> convert(PersonDTO person) {
 
@@ -53,22 +59,6 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
 
     @Override
     public void validate(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
-
-        if (hovedperson.getForelderBarnRelasjon().stream().noneMatch(ForelderBarnRelasjonDTO::hasBarn)) {
-
-            throw new InvalidRequestException(INVALID_BARN_DONT_EXIST);
-        }
-
-        if (hovedperson.getSivilstand().stream().noneMatch(SivilstandDTO::isGift) &&
-                deltBosted.countAdresser() == 0) {
-
-            throw new InvalidRequestException(INVALID_ADRESSE_MANGLER);
-        }
-
-        if (isNull(deltBosted.getStartdatoForKontrakt())) {
-
-            throw new InvalidRequestException(INVALID_STARTDATO_DONT_EXIST);
-        }
 
         if (deltBosted.countAdresser() > 1) {
 
@@ -104,7 +94,11 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
                 var partneradresse = partner.get().getPerson()
                         .getBostedsadresse().stream().findFirst();
 
-                if (partneradresse.isPresent()) {
+                var hovedpersonadresse = hovedperson.getBostedsadresse().stream().findFirst();
+
+                if (partneradresse.isPresent() && hovedpersonadresse.isPresent() &&
+                        !isEqualAdresse(partneradresse.get(), hovedpersonadresse.get())) {
+
                     deltbosted.setVegadresse(partneradresse.get().getVegadresse());
                     deltbosted.setMatrikkeladresse(partneradresse.get().getMatrikkeladresse());
                     deltbosted.setUkjentBosted(nonNull(partneradresse.get().getUkjentBosted()) ?
@@ -114,6 +108,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         }
 
         hovedperson.getForelderBarnRelasjon().stream()
+                .filter(relasjon -> deltbosted.countAdresser() > 0)
                 .filter(ForelderBarnRelasjonDTO::hasBarn)
                 .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                 .map(ident -> personRepository.findByIdent(ident).get())
