@@ -11,10 +11,10 @@ const options = [
 ]
 
 const paths = {
-	sivistand: 'personinformasjon.relasjoner.sivilstand',
-	harBarn: 'personinformasjon.relasjoner.harBarn',
-	harDoedfoedtBarn: 'personinformasjon.relasjoner.harDoedfoedtBarn',
-	forelderBarnRelasjoner: 'personinformasjon.relasjoner.forelderBarnRelasjoner',
+	sivistand: 'relasjoner.sivilstand',
+	harBarn: 'relasjoner.harBarn',
+	harDoedfoedtBarn: 'relasjoner.harDoedfoedtBarn',
+	forelderBarnRelasjoner: 'relasjoner.forelderBarnRelasjoner',
 }
 
 type RelasjonerProps = {

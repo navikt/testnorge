@@ -3,9 +3,9 @@ import React from 'react'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-const bostedPath = 'personinformasjon.adresser.bostedsadresse'
-const kontaktPath = 'personinformasjon.adresser.kontaktadresse'
-const oppholdPath = 'personinformasjon.adresser.oppholdsadresse'
+const bostedPath = 'adresser.bostedsadresse'
+const kontaktPath = 'adresser.kontaktadresse'
+const oppholdPath = 'adresser.oppholdsadresse'
 
 const oppholdAnnetStedOptions = [
 	{ value: 'MILITAER', label: 'Militær' },
@@ -38,6 +38,11 @@ export const Adresser = () => (
 			label="Har utenlandsk adresse"
 			size="medium"
 		/>
+		<FormikCheckbox
+			name={`${kontaktPath}.kontaktadresseForDoedsbo`}
+			label="Har kontaktadresse for dødsbo"
+			size="medium"
+		/>
 		<h4 className="subtittel">Oppholdsadresse</h4>
 		<FormikCheckbox name={`${oppholdPath}.norskAdresse`} label="Har norsk adresse" size="medium" />
 		<FormikCheckbox
@@ -59,6 +64,7 @@ export const AdresserPaths = {
 	[bostedPath + '.kommunenummer']: 'string',
 	[kontaktPath + '.norskAdresse']: 'boolean',
 	[kontaktPath + '.utenlandskAdresse']: 'boolean',
+	[kontaktPath + '.kontaktadresseForDoedsbo']: 'boolean',
 	[oppholdPath + '.norskAdresse']: 'boolean',
 	[oppholdPath + '.utenlandskAdresse']: 'boolean',
 	[oppholdPath + '.oppholdAnnetSted']: 'string',

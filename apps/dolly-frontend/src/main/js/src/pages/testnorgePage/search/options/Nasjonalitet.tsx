@@ -4,9 +4,9 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const paths = {
-	statsborgerskap: 'personinformasjon.nasjonalitet.statsborgerskap',
-	inflyttet: 'personinformasjon.nasjonalitet.innflyttet',
-	utflyttet: 'personinformasjon.nasjonalitet.utflyttet',
+	statsborgerskap: 'nasjonalitet.statsborgerskap',
+	inflyttet: 'nasjonalitet.innflyttet',
+	utflyttet: 'nasjonalitet.utflyttet',
 }
 
 export const Nasjonalitet = () => (
