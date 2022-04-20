@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.controller.search;
+package no.nav.testnav.libs.dto.personsearchservice.v1.search;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -7,6 +7,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class StatsborgerskapSearch {
-    String land;
+public class PersonstatusSearch {
+    String status;
 }
