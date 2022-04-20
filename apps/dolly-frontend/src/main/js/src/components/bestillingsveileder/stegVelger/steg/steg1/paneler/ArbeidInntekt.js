@@ -106,7 +106,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('pensjonforvalter'),
 		add: () =>
 			set('pensjonforvalter.inntekt', {
-				fomAar: new Date().getFullYear() - 1,
+				fomAar: new Date().getFullYear() - 10,
 				tomAar: null,
 				belop: '',
 				redusertMedGrunnbelop: true,
