@@ -210,7 +210,12 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
-				state.pdl[ident.ident] = ident
+				state.pdl[ident.ident] = {
+					hentGeografiskTilknytning: action?.payload?.data?.data?.hentGeografiskTilknytningBolk
+						?.filter((person) => person.ident === ident.ident)
+						?.map((person) => person?.geografiskTilknytning)?.[0],
+					hentPerson: ident.person,
+				}
 			})
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {

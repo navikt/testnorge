@@ -6,10 +6,10 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface PdlMiljoeValues {
 	data: any
-	loading: boolean
+	loading?: boolean
 }
 
-export const PdlPersonMiljoeInfo = ({ data, loading }: PdlMiljoeValues) => {
+export const PdlPersonMiljoeInfo = ({ data, loading = false }: PdlMiljoeValues) => {
 	if (!data && !loading) return null
 
 	return (
