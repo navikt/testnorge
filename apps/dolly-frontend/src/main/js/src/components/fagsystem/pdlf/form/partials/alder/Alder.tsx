@@ -29,12 +29,14 @@ export const Alder = ({ formikBag }: AlderForm) => {
 				name={paths.foedtEtter}
 				label="Født etter"
 				disabled={disableFoedtDato}
+				maxDate={new Date()}
 				fastfield={false}
 			/>
 			<FormikDatepicker
 				name={paths.foedtFoer}
 				label="Født før"
 				disabled={disableFoedtDato}
+				maxDate={new Date()}
 				fastfield={false}
 			/>
 		</div>
