@@ -29,6 +29,6 @@ public class DeltBostedDTO extends DbVersjonDTO {
     @JsonIgnore
     public int countAdresser() {
 
-        return count(getVegadresse()) + count(getMatrikkeladresse()) + count(ukjentBosted);
+        return count(getVegadresse()) + count(getMatrikkeladresse()) + count(getUkjentBosted());
     }
 }

@@ -47,6 +47,8 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
     private static final String AMBIGUOUS_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle og relatert persons " +
             "rolle må være av type barn -- forelder, eller forelder -- barn";
     private static final String INVALID_RELATERT_PERSON_EXCEPTION = "ForelderBarnRelasjon: Relatert person %s finnes ikke";
+    private static final String INVALID_AMBIGUOUS_ADRESSE = "Delt bosted: kun én adresse skal være satt (vegadresse, " +
+            "ukjentBosted, matrikkeladresse)";
 
     private static final Random RANDOM = new SecureRandom();
 
@@ -54,6 +56,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
+    private final DeltBostedService deltBostedService;
 
     public List<ForelderBarnRelasjonDTO> convert(PersonDTO person) {
 
@@ -93,6 +96,11 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
             throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
                     relasjon.getRelatertPerson()));
         }
+
+        if (nonNull(relasjon.getDeltBosted()) && relasjon.getDeltBosted().countAdresser() > 1) {
+
+            throw new InvalidRequestException(INVALID_AMBIGUOUS_ADRESSE);
+        }
     }
 
     private List<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
@@ -125,6 +133,11 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 personRepository.save(partner.get());
             }
         }
+
+        if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
+            deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getRelatertPerson());
+        }
+
         relasjon.setPartnerErIkkeForelder(null);
 
         if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
