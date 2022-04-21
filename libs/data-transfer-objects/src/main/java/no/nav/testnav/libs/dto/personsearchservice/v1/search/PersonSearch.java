@@ -1,12 +1,14 @@
 package no.nav.testnav.libs.dto.personsearchservice.v1.search;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 
 import java.util.List;
 
-@Value
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PersonSearch {
@@ -21,10 +23,8 @@ public class PersonSearch {
     List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
-    StatsborgerskapSearch statsborgerskap;
+    NasjonalitetSearch nasjonalitet;
     AlderSearch alder;
-    UtflyttingFraNorgeSearch utflyttingFraNorge;
-    InnflyttingTilNorgeSearch innflyttingTilNorge;
     IdentifikasjonSearch identifikasjon;
     RelasjonSearch relasjoner;
     PersonstatusSearch personstatus;
