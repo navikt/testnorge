@@ -20,13 +20,14 @@ export const FoedselForm = ({ formikBag, path }) => {
 	}
 
 	const foedselsaar = _get(formikBag.values, `${path}.foedselsaar`)
+	const foedselsdato = _get(formikBag.values, `${path}.foedselsdato`)
 
 	return (
 		<>
 			<FormikDatepicker
 				name={`${path}.foedselsdato`}
 				label="Fødselsdato"
-				// disabled={foedselsaar !== null} //TODO FIX
+				disabled={foedselsaar !== null && foedselsdato === null}
 				fastfield={false}
 			/>
 			<Yearpicker
@@ -35,10 +36,10 @@ export const FoedselForm = ({ formikBag, path }) => {
 				label="Fødselsår"
 				date={foedselsaar ? new Date(foedselsaar, 0) : null}
 				handleDateChange={(val) =>
-					formikBag.setFieldValue(`${path}.foedselsaar`, new Date(val).getFullYear())
+					formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
 				}
 				maxDate={new Date()}
-				// disabled={_get(formikBag.values, `${path}.foedselsdato`) !== null} //TODO FIX
+				disabled={foedselsdato !== null && foedselsaar === null}
 			/>
 			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
 			<FormikSelect

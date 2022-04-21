@@ -14,6 +14,7 @@ import { FoedselData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
 import { VisningRedigerbar } from '~/components/fagsystem/pdlf/visning/VisningRedigerbar'
+import _cloneDeep from 'lodash/cloneDeep'
 
 type FoedselTypes = {
 	data: Array<FoedselData>
@@ -58,7 +59,7 @@ export const Foedsel = ({
 	}
 
 	const FoedselVisning = ({ item, idx }: FoedselVisningTypes) => {
-		const initFoedsel = Object.assign(initialFoedsel, data[idx])
+		const initFoedsel = Object.assign(_cloneDeep(initialFoedsel), data[idx])
 		const initialValues = { foedsel: initFoedsel }
 
 		const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
@@ -77,7 +78,11 @@ export const Foedsel = ({
 				}
 				initialValues={initialValues}
 				getPdlForvalter={getPdlForvalter}
-				redigertAttributt={redigertFoedselPdlf ? { foedsel: redigertFoedselPdlf } : null}
+				redigertAttributt={
+					redigertFoedselPdlf
+						? { foedsel: Object.assign(_cloneDeep(initialFoedsel), redigertFoedselPdlf) }
+						: null
+				}
 				path="foedsel"
 				ident={ident}
 			/>
