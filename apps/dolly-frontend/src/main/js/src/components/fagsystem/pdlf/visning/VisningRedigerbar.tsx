@@ -67,18 +67,13 @@ export const VisningRedigerbar = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const handleSubmit = async (data) => {
-		console.log('data: ', data) //TODO - SLETT MEG
 		setVisningModus(Modus.LoadingPdlf)
-		//path??
-		const attributt = Object.keys(data)[0]
 		const id = _get(data, `${path}.id`)
 		const itemData = _get(data, path)
-		await PdlforvalterApi.putAttributt(ident, attributt, id, itemData)
+		await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 			.then((putResponse) => {
-				console.log('putResponse: ', putResponse) //TODO - SLETT MEG
 				if (putResponse)
 					getPdlForvalter().then((fetchResponse) => {
-						console.log('fetchResponse: ', fetchResponse) //TODO - SLETT MEG
 						if (fetchResponse) setVisningModus(Modus.LoadingPdl)
 					})
 			})
@@ -89,7 +84,6 @@ export const VisningRedigerbar = ({
 			})
 			.then(() =>
 				DollyApi.sendOrdre(ident).then((sendOrdrePdlResponse) => {
-					console.log('sendOrdrePdlResponse: ', sendOrdrePdlResponse) //TODO - SLETT MEG
 					if (sendOrdrePdlResponse) setVisningModus(Modus.Les)
 				})
 			)
