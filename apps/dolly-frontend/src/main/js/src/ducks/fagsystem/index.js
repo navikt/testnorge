@@ -115,7 +115,7 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		editPdlforvalterAttributt: PdlforvalterApi.putPerson,
+		editPdlforvalterAttributt: PdlforvalterApi.putAttributt,
 		sendOrdrePdl: DollyApi.sendOrdre,
 	},
 	{

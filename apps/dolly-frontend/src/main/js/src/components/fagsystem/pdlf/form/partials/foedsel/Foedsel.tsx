@@ -68,7 +68,7 @@ export const Foedsel = ({ formikBag }) => {
 	const hasAlder = () => {
 		let funnetAlder = false
 		alderProps.forEach((prop) => {
-			if (person.hasOwnProperty(prop)) {
+			if (person?.hasOwnProperty(prop)) {
 				funnetAlder = true
 			}
 		})

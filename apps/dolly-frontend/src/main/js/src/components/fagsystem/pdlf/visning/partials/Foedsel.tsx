@@ -66,6 +66,9 @@ export const Foedsel = ({
 		const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
 			(a) => a.id === item.id
 		)
+		const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
+
+		if (slettetFoedselPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 
 		return erPdlVisning ? (
 			<FoedselLes foedsel={item} idx={idx} />
@@ -80,6 +83,7 @@ export const Foedsel = ({
 				getPdlForvalter={getPdlForvalter}
 				redigertAttributt={redigertFoedselPdlf ? { foedsel: redigertFoedselPdlf } : null}
 				path="foedsel"
+				ident={ident}
 			/>
 		)
 	}
