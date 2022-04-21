@@ -26,8 +26,6 @@ type FoedselVisningTypes = {
 
 export const Foedsel = ({
 	data,
-	editPdlforvalterAttributt,
-	sendOrdrePdl,
 	getPdlForvalter,
 	tmpPersoner,
 	ident,
@@ -78,8 +76,6 @@ export const Foedsel = ({
 					<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : item} idx={idx} />
 				}
 				initialValues={initialValues}
-				editPdlforvalterAttributt={editPdlforvalterAttributt}
-				sendOrdrePdl={sendOrdrePdl}
 				getPdlForvalter={getPdlForvalter}
 				redigertAttributt={redigertFoedselPdlf ? { foedsel: redigertFoedselPdlf } : null}
 				path="foedsel"

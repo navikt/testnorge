@@ -115,8 +115,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		editPdlforvalterAttributt: PdlforvalterApi.putAttributt,
-		sendOrdrePdl: DollyApi.sendOrdre,
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type

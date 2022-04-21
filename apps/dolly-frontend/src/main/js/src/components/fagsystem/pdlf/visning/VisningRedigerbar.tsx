@@ -6,7 +6,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 import _get from 'lodash/get'
-import { PdlforvalterApi } from '~/service/Api'
+import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
@@ -57,8 +57,6 @@ const Knappegruppe = styled.div`
 export const VisningRedigerbar = ({
 	dataVisning,
 	initialValues,
-	editPdlforvalterAttributt,
-	sendOrdrePdl,
 	getPdlForvalter,
 	redigertAttributt = null,
 	path,
@@ -75,7 +73,7 @@ export const VisningRedigerbar = ({
 		const attributt = Object.keys(data)[0]
 		const id = _get(data, `${path}.id`)
 		const itemData = _get(data, path)
-		await editPdlforvalterAttributt(attributt, id, itemData)
+		await PdlforvalterApi.putAttributt(ident, attributt, id, itemData)
 			.then((putResponse) => {
 				console.log('putResponse: ', putResponse) //TODO - SLETT MEG
 				if (putResponse)
@@ -90,9 +88,8 @@ export const VisningRedigerbar = ({
 				setVisningModus(Modus.Les)
 			})
 			.then(() =>
-				sendOrdrePdl().then((sendOrdrePdlResponse) => {
+				DollyApi.sendOrdre(ident).then((sendOrdrePdlResponse) => {
 					console.log('sendOrdrePdlResponse: ', sendOrdrePdlResponse) //TODO - SLETT MEG
-					//TODO: Visningsmodus blir satt før kall er ferdig
 					if (sendOrdrePdlResponse) setVisningModus(Modus.Les)
 				})
 			)
@@ -102,7 +99,7 @@ export const VisningRedigerbar = ({
 	const handleDelete = async () => {
 		const id = _get(initialValues, `${path}.id`)
 		setVisningModus(Modus.LoadingPdlf)
-		await PdlforvalterApi.deleteAttributt(ident, path, 1)
+		await PdlforvalterApi.deleteAttributt(ident, path, id)
 			.then((deleteResponse) => {
 				if (deleteResponse)
 					getPdlForvalter().then((fetchResponse) => {
@@ -110,10 +107,11 @@ export const VisningRedigerbar = ({
 					})
 			})
 			.then(() =>
-				sendOrdrePdl().then((sendOrdrePdlResponse) => {
+				DollyApi.sendOrdre(ident).then((sendOrdrePdlResponse) => {
 					if (sendOrdrePdlResponse) setVisningModus(Modus.Les)
 				})
 			)
+		//TODO Catch error her også??
 	}
 
 	const getForm = (formikBag) => {

@@ -48,8 +48,6 @@ export const PersonVisning = ({
 	loading,
 	slettPerson,
 	leggTilPaaPerson,
-	editPdlforvalterAttributt,
-	sendOrdrePdl,
 	iLaastGruppe,
 	setVisning,
 }) => {
@@ -97,12 +95,7 @@ export const PersonVisning = ({
 				/>
 			)}
 			{ident.master !== 'PDL' && (
-				<PdlfVisningConnector
-					data={data.pdlforvalter}
-					loading={loading.pdlforvalter}
-					editPdlforvalterAttributt={editPdlforvalterAttributt}
-					sendOrdrePdl={sendOrdrePdl}
-				/>
+				<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			)}
 			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />

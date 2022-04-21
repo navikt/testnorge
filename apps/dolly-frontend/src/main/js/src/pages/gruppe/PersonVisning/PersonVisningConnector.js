@@ -64,9 +64,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 				})
 			)
 		},
-		editPdlforvalterAttributt: (attributt, id, data) =>
-			dispatch(actions.editPdlforvalterAttributt(ownProps.personId, attributt, id, data)),
-		sendOrdrePdl: () => dispatch(actions.sendOrdrePdl(ownProps.personId)),
 	}
 }
 
