@@ -1,14 +1,10 @@
-export type Pageing = {
-	page: number
-	pageSize: number
-}
-
 export type Search = {
 	page: number
 	pageSize: number
 	terminateAfter: number
 	tag: string
 	excludeTags: Array<string>
+	kunLevende?: boolean
 	kjoenn?: string
 	foedsel?: {
 		fom?: string
@@ -31,13 +27,35 @@ export type Search = {
 	innflyttingTilNorge?: {
 		innflytting?: boolean
 	}
-	identitet?: {
+	identifikasjon?: {
+		identtype?: string
+		adressebeskyttelse?: string
 		falskIdentitet?: boolean
 		utenlandskIdentitet?: boolean
 	}
+	adresser?: {
+		bostedsadresse?: {
+			postnummer?: string
+			kommunenummer?: string
+		}
+		kontaktadresse?: {
+			norskAdresse?: boolean
+			utenlandskAdresse?: boolean
+			kontaktadresseForDoedsbo?: boolean
+		}
+		oppholdsadresse?: {
+			norskAdresse?: boolean
+			utenlandskAdresse?: boolean
+			oppholdAnnetSted?: string
+		}
+	}
+	personstatus?: {
+		status?: string
+	}
 	relasjoner?: {
-		barn?: boolean
-		doedfoedtBarn?: boolean
+		harBarn?: string
+		harDoedfoedtBarn?: string
+		forelderBarnRelasjoner?: string[]
 	}
 }
 
@@ -52,10 +70,19 @@ export type Person = {
 	foedsel?: {
 		foedselsdato?: string
 	}
+	doedsfall?: {
+		doedsdato?: string
+	}
 	sivilstand?: {
 		type?: string
 	}
 	statsborgerskap?: {
 		land?: string[]
 	}
+	folkeregisterpersonstatus?: [Personstatus]
+}
+
+type Personstatus = {
+	status?: string
+	gyldighetstidspunkt?: string
 }

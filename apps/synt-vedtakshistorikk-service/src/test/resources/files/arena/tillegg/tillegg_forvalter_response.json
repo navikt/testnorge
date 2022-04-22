@@ -1,0 +1,138 @@
+{
+  "nyeTilleggsstonad": [
+    {
+      "begrunnelse": "Syntetisert rettighet",
+      "datoMottatt": "2019-12-16",
+      "vilkaar": [
+        {
+          "kode": "TSTIKKELON",
+          "status": "J"
+        },
+        {
+          "kode": "TSTGSTATUS",
+          "status": "J"
+        },
+        {
+          "kode": "TSTENSFORS",
+          "status": ""
+        },
+        {
+          "kode": "TSTVEDTAK",
+          "status": "J"
+        },
+        {
+          "kode": "TSTGJLEEKT",
+          "status": ""
+        },
+        {
+          "kode": "TSTIKKYTLM",
+          "status": "J"
+        },
+        {
+          "kode": "TSTOGANGST",
+          "status": ""
+        },
+        {
+          "kode": "TSTOGSTPEN",
+          "status": ""
+        },
+        {
+          "kode": "TSTLOVOPPH",
+          "status": ""
+        },
+        {
+          "kode": "TSTFOLKETR",
+          "status": "J"
+        },
+        {
+          "kode": "TSTDAGPENG",
+          "status": ""
+        },
+        {
+          "kode": "TSTSYKPENG",
+          "status": "J"
+        },
+        {
+          "kode": "TSTTILPENG",
+          "status": ""
+        },
+        {
+          "kode": "TSTREGARBS",
+          "status": ""
+        },
+        {
+          "kode": "TSTUTGFUNK",
+          "status": "V"
+        },
+        {
+          "kode": "TSTTIFAMPL",
+          "status": ""
+        },
+        {
+          "kode": "TSTINGENMG",
+          "status": ""
+        },
+        {
+          "kode": "TSTUTDAKT",
+          "status": ""
+        }
+      ],
+      "vedtaktype": "O",
+      "rettighetKode": "TSOLMIDLER",
+      "utfallKode": "JA",
+      "maalgruppeKode": "NEDSARBEVN",
+      "vedtaksperiode": {
+        "fom": "2020-01-21",
+        "tom": "2020-10-23"
+      },
+      "laeremidler": [
+        {
+          "kode": "KRPER",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "KRFRA",
+          "overordnet": "KRPER",
+          "verdi": "23-11-2019"
+        },
+        {
+          "kode": "KRTIL",
+          "overordnet": "KRPER",
+          "verdi": "20-04-2019"
+        },
+        {
+          "kode": "NISKO",
+          "overordnet": null,
+          "verdi": "VGS"
+        },
+        {
+          "kode": "PRUAK",
+          "overordnet": null,
+          "verdi": "100.0"
+        },
+        {
+          "kode": "FAUTG",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "BEGRU",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "UDEKK",
+          "overordnet": null,
+          "verdi": "NEI"
+        },
+        {
+          "kode": "LAND",
+          "overordnet": null,
+          "verdi": ""
+        }
+      ]
+    }
+  ],
+  "nyeTilleggsstonadFeilList": []
+}

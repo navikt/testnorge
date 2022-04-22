@@ -51,11 +51,11 @@ Det gjennomføres tekniske og manuelle kvalitetskontroller for å sikre at det i
 
 ## Prinsipper for å lage egne testdata i Dolly selvbetjening
 
-Dolly selvbetjening brukes for å lage egne testdata til randtilfeller og spesialbehov. Syntetiske personer gis egenskaper fra registre og fagsystemer - f.eks. sivilstand, inntekt, statsborgerskap.
-Brukere av Dolly selvbetjening har selv ansvar for å følge følgende prinsipper ved oppretting av syntetiske testdata:
+Dolly selvbetjening brukes for å lage egne data til randtilfeller og spesialbehov. Syntetiske personer gis egenskaper fra registre og fagsystemer - f.eks. sivilstand, inntekt, statsborgerskap.
+Brukere av Dolly selvbetjening har selv ansvar for å følge følgende prinsipper ved oppretting av syntetiske data:
 
-- Dolly tilbyr et stort utvalg attributter som kan settes på en person. Selv om det kun er syntetiske personer som blir laget i Dolly, finnes det allikevel en risiko for å skape gjenkjennbare personer, ved å kombinere verdier som er svært spesifikke for en ekte person. Derfor må du aldri ta utgangspunkt i reelle personer når du oppretter syntetiske testpersoner - alle verdier som settes for å dekke behovet må være tilfeldig valgt.
-- Når du er logget inn i Dolly har du tilgang til alle brukeres testdatagrupper og testpersoner. Ikke gjør endringer på eller slett andres testdatagrupper eller testpersoner uten at dette er avtalt med eier.
+- Dolly tilbyr et stort utvalg attributter som kan settes på en person. Selv om det kun er syntetiske personer som blir laget i Dolly, finnes det allikevel en risiko for å skape gjenkjennbare personer, ved å kombinere verdier som er svært spesifikke for en ekte person. Derfor må du aldri ta utgangspunkt i reelle personer når du oppretter syntetiske personer - alle verdier som settes for å dekke behovet må være tilfeldig valgt.
+- Når du er logget inn i Dolly har du tilgang til alle brukeres grupper og personer. Ikke gjør endringer på eller slett andres grupper eller personer uten at dette er avtalt med eier.
 - Dolly selvbetjening har personlig innlogging med Azure AD. Ikke del påloggingsinformasjonen din med andre brukere. Brukere som mangler tilgang til Dolly bes kontakte teamet for å få hjelp til å ordne dette.
 - Snakk med oss! Skulle det være noe, vil vi gjerne at du kontakter oss på #dolly på Slack. Innspill, ønsker, meldinger om feil, osv. hjelper oss med å gjøre Dolly bedre, og kommer alle brukerne til gode.
 

@@ -10,20 +10,27 @@ import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Sivilstand;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -40,8 +47,65 @@ import static no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus.UGIF;
 @Slf4j
 public final class PdlPersonStrategyMapper implements MappingStrategy {
 
+    private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
+
+        return (isNull(sivilstatus)) ? UGIF :
+                switch (sivilstatus) {
+                    case GIFT -> Sivilstand.Sivilstatus.GIFT;
+                    case ENKE_ELLER_ENKEMANN -> ENKE;
+                    case SKILT -> SKIL;
+                    case SEPARERT -> SEPR;
+                    case REGISTRERT_PARTNER -> REPA;
+                    case SEPARERT_PARTNER -> SEPA;
+                    case SKILT_PARTNER -> SKPA;
+                    case GJENLEVENDE_PARTNER -> GJPA;
+                    default -> UGIF;
+                };
+    }
+
     @Override
     public void register(MapperFactory factory) {
+
+        factory.classMap(BostedadresseDTO.class, BoGateadresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(BostedadresseDTO bostedadresseDTO, BoGateadresse boAdresse, MappingContext context) {
+
+                        VegadresseDTO vegadresse = bostedadresseDTO.getVegadresse();
+
+                        boAdresse.setBolignr(vegadresse.getBruksenhetsnummer());
+                        boAdresse.setKommunenr(vegadresse.getKommunenummer());
+                        boAdresse.setPostnr(vegadresse.getPostnummer());
+                        boAdresse.setGateadresse(vegadresse.getAdressenavn());
+                        boAdresse.setGatekode(vegadresse.getAdressekode());
+                        boAdresse.setHusnummer(vegadresse.getHusnummer());
+                    }
+                })
+                .exclude("matrikkeladresse")
+                .exclude("adressetype")
+                .byDefault()
+                .register();
+
+        factory.classMap(BostedadresseDTO.class, BoMatrikkeladresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(BostedadresseDTO bostedadresseDTO, BoMatrikkeladresse boMatrikkeladresse, MappingContext context) {
+
+                        MatrikkeladresseDTO matrikkeladresse = bostedadresseDTO.getMatrikkeladresse();
+
+                        boMatrikkeladresse.setKommunenr(matrikkeladresse.getKommunenummer());
+                        boMatrikkeladresse.setPostnr(matrikkeladresse.getPostnummer());
+                        boMatrikkeladresse.setFestenr(matrikkeladresse.getBruksenhetsnummer());
+                        boMatrikkeladresse.setTilleggsadresse(matrikkeladresse.getTilleggsnavn());
+                        boMatrikkeladresse.setBruksnr(String.valueOf(matrikkeladresse.getBruksnummer()));
+                        boMatrikkeladresse.setGardsnr(String.valueOf((matrikkeladresse.getGaardsnummer())));
+                    }
+                })
+                .exclude("matrikkeladresse")
+                .exclude("adressetype")
+                .byDefault()
+                .register();
+
         factory.classMap(PdlPersonBolk.PersonBolk.class, Person.class)
                 .customize(new CustomMapper<>() {
                     @Override
@@ -96,61 +160,72 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
 
         factory.classMap(PersonDTO.class, Person.class)
                 .customize(new CustomMapper<>() {
+
                     @Override
                     public void mapAtoB(PersonDTO personDto, Person person, MappingContext context) {
 
                         NavnDTO navnDTO = personDto.getNavn().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .findFirst()
                                 .orElse(null);
 
                         person.setPersonStatus(personDto.getFolkeregisterPersonstatus().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(FolkeregisterPersonstatusDTO::getStatus)
                                 .filter(Objects::nonNull)
                                 .map(Enum::name)
                                 .findFirst().orElse(null));
                         person.setKjonn(personDto.getKjoenn().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(KjoennDTO::getKjoenn)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(KjoennDTO.Kjoenn.UKJENT).name().substring(0, 1));
                         person.setFoedselsdato(personDto.getFoedsel().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(FoedselDTO::getFoedselsdato)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(null));
                         person.setDoedsdato(personDto.getDoedsfall().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(DoedsfallDTO::getDoedsdato)
                                 .filter(Objects::nonNull)
                                 .findFirst().orElse(null));
+                        person.getBoadresse().addAll(Stream.of(
+                                        mapperFacade.mapAsList(personDto.getBostedsadresse()
+                                                        .stream()
+                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getVegadresse())).toList(),
+                                                BoAdresse.class),
+                                        mapperFacade.mapAsList(personDto.getBostedsadresse()
+                                                        .stream()
+                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getMatrikkeladresse())).toList(),
+                                                BoAdresse.class))
+                                .flatMap(Collection::stream)
+                                .toList());
                         person.getInnvandretUtvandret().addAll(
                                 personDto.getUtflytting().stream()
                                         .map(utflytting -> InnvandretUtvandret.builder()
                                                 .innutvandret(InnUtvandret.UTVANDRET)
                                                 .landkode(utflytting.getTilflyttingsland())
-                                                .flyttedato(utflytting.getMetadata()
-                                                        .getGyldighetstidspunkt().atStartOfDay())
+                                                .flyttedato(nonNull(utflytting.getFolkeregistermetadata()) &&
+                                                        nonNull(utflytting.getFolkeregistermetadata().getGyldighetstidspunkt()) ?
+                                                        utflytting.getFolkeregistermetadata().getGyldighetstidspunkt().atStartOfDay()
+                                                        : null)
                                                 .build())
                                         .toList());
-                        person.setSivilstand(
-                                mapSivilstand(personDto.getSivilstand().stream()
-                                        .filter(DbVersjonDTO::isGjeldende)
-                                        .map(SivilstandDTO::getType)
-                                        .filter(Objects::nonNull)
-                                        .findFirst()
-                                        .orElse(null)));
+                        person.getSivilstander().addAll(
+                                personDto.getSivilstand().stream()
+                                        .map(sivilstand -> Sivilstand.builder()
+                                                .sivilstand(mapSivilstand(sivilstand.getType()))
+                                                .sivilstandRegdato(sivilstand.getSivilstandsdato())
+                                                .person(person)
+                                                .personRelasjonMed(Person.builder()
+                                                        .ident(sivilstand.getRelatertVedSivilstand())
+                                                        .build())
+                                                .build())
+                                        .toList());
                         person.setFoedselsdato(
                                 personDto.getFoedsel().stream()
-                                        .filter(DbVersjonDTO::isGjeldende)
                                         .map(FoedselDTO::getFoedselsdato)
                                         .filter(Objects::nonNull)
                                         .findFirst()
                                         .orElse(null)
                         );
                         person.setAlder(personDto.getFoedsel().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(foedselDTO -> ChronoUnit.YEARS.between(foedselDTO.getFoedselsdato(), LocalDateTime.now()))
                                 .map(Long::intValue)
                                 .findFirst()
@@ -163,7 +238,6 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                             person.setForkortetNavn("%s %s".formatted(navnDTO.getFornavn(), navnDTO.getEtternavn()));
                         }
                         person.setKjonn(personDto.getKjoenn().stream()
-                                .filter(DbVersjonDTO::isGjeldende)
                                 .map(KjoennDTO::getKjoenn)
                                 .map(Enum::name)
                                 .findFirst().orElse(null)
@@ -173,24 +247,5 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                 .exclude("sivilstand")
                 .byDefault()
                 .register();
-    }
-
-    private static Sivilstand.Sivilstatus mapSivilstand(SivilstandDTO.Sivilstand sivilstatus) {
-
-        if (isNull(sivilstatus)) {
-            return UGIF;
-        } else {
-            return switch (sivilstatus) {
-                case GIFT -> Sivilstand.Sivilstatus.GIFT;
-                case ENKE_ELLER_ENKEMANN -> ENKE;
-                case SKILT -> SKIL;
-                case SEPARERT -> SEPR;
-                case REGISTRERT_PARTNER -> REPA;
-                case SEPARERT_PARTNER -> SEPA;
-                case SKILT_PARTNER -> SKPA;
-                case GJENLEVENDE_PARTNER -> GJPA;
-                default -> UGIF;
-            };
-        }
     }
 }

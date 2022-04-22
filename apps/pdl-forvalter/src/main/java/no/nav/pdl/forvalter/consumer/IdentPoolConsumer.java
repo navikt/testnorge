@@ -27,10 +27,9 @@ public class IdentPoolConsumer {
     private static final String ACQUIRE_IDENTS_URL = "/api/v1/identifikator";
     private static final String RELEASE_IDENTS_URL = ACQUIRE_IDENTS_URL + "/frigjoer";
     private static final String IBRUK_IDENTS_URL = ACQUIRE_IDENTS_URL + "/bruk";
-    private static final String BRUKER = "PDLF";
-    private static final String REKVIRERT_AV = "rekvirertAv=" + BRUKER;
-
+    private static final String REKVIRERT_AV = "rekvirertAv=";
     private final WebClient webClient;
+
     private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
@@ -50,10 +49,10 @@ public class IdentPoolConsumer {
                         token.getTokenValue()).call()));
     }
 
-    public Flux<List<IdentDTO>> releaseIdents(Set<String> identer) {
+    public Flux<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {
 
         return Flux.from(tokenExchange.exchange(properties).flatMap(
-                token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,
+                token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
                         token.getTokenValue()).call()));
     }
 
@@ -73,8 +72,10 @@ public class IdentPoolConsumer {
                 token -> new IdentpoolPostVoidCommand(webClient, IBRUK_IDENTS_URL, null,
                         AllokerIdentRequest.builder()
                                 .personidentifikator(ident)
-                                .bruker(BRUKER)
+                                .bruker(Bruker.PDLF.name())
                                 .build(),
                         token.getTokenValue()).call()));
     }
+
+    public enum Bruker {PDLF, TPSF}
 }

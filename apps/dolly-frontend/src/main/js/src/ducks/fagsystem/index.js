@@ -1,7 +1,6 @@
 import { createActions } from 'redux-actions'
 import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
-import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
 	ArenaApi,
@@ -390,10 +389,10 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 
 	// Sortert etter bestillingsId
 	const identListe = Object.values(identer)
-		.sort((a, b) =>
-			a.bestillingId && b.bestillingId
-				? _last(b?.bestillingId) - _last(a?.bestillingId)
-				: _last(b?.ident) - _last(a?.ident)
+		.sort((first, second) =>
+			first.bestillingId?.[0] && second.bestillingId?.[0]
+				? second?.bestillingId[0] - first?.bestillingId[0]
+				: second?.ident - first?.ident
 		)
 		.filter(
 			(gruppeIdent) =>
@@ -472,14 +471,14 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
-	const alder = getAlder(person.foedsel[0]?.foedselsdato)
+	const alder = getAlder(person.foedsel[0]?.foedselsdato, person.doedsfall[0]?.doedsdato)
 
 	return {
 		ident,
 		identNr: pdlData?.ident,
 		bestillingId: ident.bestillingId,
-		kilde: 'TESTNORGE',
-		importFra: 'Testnorge',
+		kilde: 'TEST-NORGE',
+		importFra: 'Test-Norge',
 		identtype: person?.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
@@ -488,15 +487,20 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	}
 }
 
-const getAlder = (datoFoedt) => {
+export const getAlder = (datoFoedt, doedsdato) => {
 	const foedselsdato = new Date(datoFoedt)
-	const diff_ms = Date.now() - foedselsdato.getTime()
-	const age_dt = new Date(diff_ms)
+	let diff_ms = Date.now() - foedselsdato.getTime()
 
+	if (doedsdato && doedsdato !== '') {
+		const ddato = new Date(doedsdato)
+		diff_ms = ddato.getTime() - foedselsdato.getTime()
+	}
+
+	const age_dt = new Date(diff_ms)
 	return Math.abs(age_dt.getUTCFullYear() - 1970)
 }
 
-const getKjoenn = (kjoenn) => {
+export const getKjoenn = (kjoenn) => {
 	switch (kjoenn) {
 		case 'KVINNE':
 			return 'K'

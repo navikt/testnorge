@@ -1,0 +1,305 @@
+{
+  "nyeAap": [
+    {
+      "avbruddKode": "",
+      "begrunnelse": "Syntetisert rettighet",
+      "datoMottatt": "2019-11-13",
+      "fraDato": "2019-06-21",
+      "tilDato": "2020-01-01",
+      "utfall": "JA",
+      "vilkaar": [
+        {
+          "kode": "18-67AAR2",
+          "status": "J"
+        },
+        {
+          "kode": "MEDLSKAP12",
+          "status": "J"
+        },
+        {
+          "kode": "AOINORGE2",
+          "status": "J"
+        },
+        {
+          "kode": "INTKTBFAL2",
+          "status": "V"
+        },
+        {
+          "kode": "A11-52",
+          "status": "J"
+        },
+        {
+          "kode": "YTELARBGI2",
+          "status": "J"
+        },
+        {
+          "kode": "IVLGANNEN2",
+          "status": "J"
+        },
+        {
+          "kode": "AIANNEN2",
+          "status": "J"
+        },
+        {
+          "kode": "STRAFFGJF2",
+          "status": "J"
+        },
+        {
+          "kode": "AAFAARBIS2",
+          "status": "J"
+        },
+        {
+          "kode": "ABIDRARAK2",
+          "status": "J"
+        },
+        {
+          "kode": "AAIUBEGRF2",
+          "status": "V"
+        },
+        {
+          "kode": "AAMEDVPLA2",
+          "status": "V"
+        },
+        {
+          "kode": "AABEHGSTUD",
+          "status": "V"
+        },
+        {
+          "kode": "AALANGUTRE",
+          "status": "V"
+        },
+        {
+          "kode": "AASYKDOSKA",
+          "status": "V"
+        },
+        {
+          "kode": "AAOPPLTILT",
+          "status": "V"
+        },
+        {
+          "kode": "AASYKSKADE",
+          "status": "V"
+        },
+        {
+          "kode": "AAANNENSYK",
+          "status": ""
+        },
+        {
+          "kode": "AAFERD2",
+          "status": ""
+        },
+        {
+          "kode": "AAFOPTILUO",
+          "status": ""
+        },
+        {
+          "kode": "AASAMMESYK",
+          "status": ""
+        },
+        {
+          "kode": "AASYKFORUO",
+          "status": ""
+        },
+        {
+          "kode": "AASYKTILUO",
+          "status": ""
+        },
+        {
+          "kode": "UVUT2",
+          "status": ""
+        }
+      ],
+      "vedtaktype": "O",
+      "andreOkonomYtelserListe": [
+        {
+          "annenOkonomYtelse": null
+        }
+      ],
+      "aktivitetsfase": "UA",
+      "genSaksopplysninger": [
+        {
+          "kode": "KDATO",
+          "overordnet": null,
+          "verdi": "04-04-2022"
+        },
+        {
+          "kode": "BTID",
+          "overordnet": null,
+          "verdi": "04-04-2022"
+        },
+        {
+          "kode": "TUUIN",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "UUFOR",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "STUBE",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "OTILF",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "OTSEK",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "OOPPL",
+          "overordnet": null,
+          "verdi": null
+        },
+        {
+          "kode": "BDSAT",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "UFTID",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "BDSRP",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "GRDRP",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "GRDTU",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "BDSTU",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "GGRAD",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "ORIGG",
+          "overordnet": "OOPPL",
+          "verdi": ""
+        },
+        {
+          "kode": "YDATO",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "YINNT",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "YGRAD",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "TLONN",
+          "overordnet": null,
+          "verdi": null
+        },
+        {
+          "kode": "SPROS",
+          "overordnet": "TLONN",
+          "verdi": ""
+        },
+        {
+          "kode": "NORIN",
+          "overordnet": "TLONN",
+          "verdi": ""
+        },
+        {
+          "kode": "FAKIN",
+          "overordnet": "TLONN",
+          "verdi": ""
+        },
+        {
+          "kode": "EOS",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "LAND",
+          "overordnet": null,
+          "verdi": ""
+        }
+      ],
+      "institusjonsopphold": [
+        {
+          "kode": "STRFG",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "INSTA",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "FRIKL",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "INPER",
+          "overordnet": null,
+          "verdi": null
+        },
+        {
+          "kode": "INFRA",
+          "overordnet": "INPER",
+          "verdi": ""
+        },
+        {
+          "kode": "INTIL",
+          "overordnet": "INPER",
+          "verdi": ""
+        },
+        {
+          "kode": "REDPR",
+          "overordnet": null,
+          "verdi": ""
+        },
+        {
+          "kode": "INSUD",
+          "overordnet": null,
+          "verdi": ""
+        }
+      ],
+      "justertFra": "2019-06-21",
+      "medlemFolketrygden": {
+        "kode": "MEDL1",
+        "verdi": "JA"
+      },
+      "periode": {
+        "endringPeriodeBegrunnelse": "",
+        "endringPeriodeTeller": null,
+        "endringUnntakBegrunnelse": "",
+        "endringUnntakTeller": null,
+        "nullstill": "J",
+        "periodeKode": "3"
+      },
+      "vedtaksvariant": ""
+    }
+  ],
+  "nyeAapFeilList": []
+}

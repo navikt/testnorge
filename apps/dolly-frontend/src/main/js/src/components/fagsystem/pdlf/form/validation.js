@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
 
@@ -76,7 +76,7 @@ const testForeldreansvar = (val) => {
 			) {
 				feilmelding = 'Barn med foreldrerolle mor eller medmor finnes ikke'
 			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+			if (!barn?.some((a) => !a.partnerErIkkeForelder)) {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
@@ -91,16 +91,16 @@ const testForeldreansvar = (val) => {
 			) {
 				feilmelding = 'Barn med foreldrerolle far finnes ikke'
 			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+			if (!barn?.some((a) => !a.partnerErIkkeForelder)) {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
 		if (selected === 'FELLES') {
-			if (!gyldigeSivilstander.some((a) => sivilstander?.includes(a))) {
+			if (!gyldigeSivilstander?.some((a) => sivilstander?.includes(a))) {
 				feilmelding =
 					'Partner med sivilstand gift, registrert partner, separert eller separert partner finnes ikke'
 			}
-			if (!barn.some((a) => !a.partnerErIkkeForelder)) {
+			if (!barn?.some((a) => !a.partnerErIkkeForelder)) {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
@@ -502,7 +502,7 @@ export const validation = {
 				{
 					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
 						is: null,
-						then: requiredString.nullable(),
+						then: Yup.mixed().required(messages.required).nullable(),
 					}),
 					foedtEtter: testFoedtEtter(
 						Yup.mixed().when(['alder', 'foedtFoer'], {
@@ -558,7 +558,7 @@ export const validation = {
 			navn: ifPresent('$pdldata.person.navn', navn),
 			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
-		}),
+		}).nullable(),
 	}),
 	tpsMessaging: ifPresent(
 		'$tpsMessaging',

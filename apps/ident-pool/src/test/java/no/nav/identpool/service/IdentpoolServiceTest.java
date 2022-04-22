@@ -61,12 +61,12 @@ class IdentpoolServiceTest {
         Set<TpsStatusDTO> statusSet = new HashSet<>();
         statusSet.add(tpsStatusDTO);
 
-        when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident);
+        when(repository.findByPersonidentifikator(fnr1)).thenReturn(ident);
         when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(statusSet);
 
         List<String> frigjorteIdenter = identpoolService.frigjoerLedigeIdenter(identer);
 
-        verify(repository).findTopByPersonidentifikator(fnr1);
+        verify(repository).findByPersonidentifikator(fnr1);
         verify(tpsMessagingConsumer).getIdenterStatuser(anySet());
         verify(repository).save(ident);
 
@@ -88,8 +88,8 @@ class IdentpoolServiceTest {
         tpsStatusDTO.setIdent(fnr2);
         tpsStatusDTO.setInUse(false);
 
-        when(repository.findTopByPersonidentifikator(fnr1)).thenReturn(ident1);
-        when(repository.findTopByPersonidentifikator(fnr2)).thenReturn(null);
+        when(repository.findByPersonidentifikator(fnr1)).thenReturn(ident1);
+        when(repository.findByPersonidentifikator(fnr2)).thenReturn(null);
         when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(new HashSet<>(Collections.singletonList(tpsStatusDTO)));
 
         List<String> identerMarkertSomIBruk = identpoolService.markerBruktFlere(rekvirertAv, identer);

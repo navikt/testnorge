@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useBoolean, useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
@@ -21,12 +21,13 @@ import {
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
-
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '~/service/Api'
+import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -55,75 +56,107 @@ export const PersonVisning = ({
 
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
+	const mountedRef = useRef(true)
+
+	const execute = useCallback(() => {
+		const pdlPerson = async () => {
+			const person = await DollyApi.getPersonFraPdl(ident.ident)
+				.then((response) => {
+					return response.data?.data
+				})
+				.catch((_e) => {
+					return null
+				})
+			if (mountedRef.current) {
+				setPdlData(person)
+				setPdlLoading(false)
+			}
+		}
+		return pdlPerson()
+	}, [ident])
 
 	useEffect(() => {
-		DollyApi.getPersonFraPdl(ident.ident)
-			.then((response) => {
-				setPdlData(response.data?.data)
-				setPdlLoading(false)
-			})
-			.catch((e) => {
-				setPdlLoading(false)
-			})
+		execute()
+		return () => {
+			mountedRef.current = false
+		}
 	}, [])
 
 	return (
-		<div className="person-visning">
-			<div className="person-visning_actions">
-				{!iLaastGruppe && (
-					<Button
-						onClick={() =>
-							leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
-						}
-						kind="add-circle"
-					>
-						LEGG TIL/ENDRE
-					</Button>
+		<ErrorBoundary>
+			<div className="person-visning">
+				<div className="person-visning_actions">
+					{!iLaastGruppe && (
+						<Button
+							onClick={() =>
+								leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+							}
+							kind="add-circle"
+						>
+							LEGG TIL/ENDRE
+						</Button>
+					)}
+					<BestillingSammendragModal bestilling={bestilling} />
+					{!iLaastGruppe && ident.master !== 'PDL' && (
+						<SlettButton action={slettPerson} loading={loading.slettPerson}>
+							Er du sikker på at du vil slette denne personen?
+						</SlettButton>
+					)}
+					{!iLaastGruppe && ident.master === 'PDL' && (
+						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
+							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
+							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
+						</FrigjoerButton>
+					)}
+				</div>
+				{ident.master !== 'PDL' && (
+					<TpsfVisning
+						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+						pdlData={data.pdlforvalter?.person}
+						environments={bestilling?.environments}
+					/>
 				)}
-				<BestillingSammendragModal bestilling={bestilling} />
-				{!iLaastGruppe && (
-					<SlettButton action={slettPerson} loading={loading.slettPerson}>
-						Er du sikker på at du vil slette denne personen?
-					</SlettButton>
+				{ident.master !== 'PDL' && (
+					<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
-			</div>
-			{ident.master !== 'PDL' && (
-				<TpsfVisning
-					data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-					pdlData={data.pdlforvalter?.person}
-					environments={bestilling?.environments}
+				{ident.master === 'PDL' && (
+					<PdlVisning
+						pdlData={pdlData}
+						loading={pdlLoading}
+						environments={bestilling?.environments}
+					/>
+				)}
+				<AaregVisning liste={data.aareg} loading={loading.aareg} />
+				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
+				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
+				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
+				<InntektsmeldingVisning
+					liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
+					ident={ident.ident}
 				/>
-			)}
-			{ident.master !== 'PDL' && (
-				<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
-			)}
-			{ident.master === 'PDL' && <PdlVisning pdlData={pdlData} loading={pdlLoading} />}
-			<AaregVisning liste={data.aareg} loading={loading.aareg} />
-			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
-			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
-			<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
-			<InntektsmeldingVisning
-				liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
-				ident={ident.ident}
-			/>
-			<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
-			<BrregVisning data={data.brregstub} loading={loading.brregstub} />
-			<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-			<InstVisning data={data.instdata} loading={loading.instdata} />
-			<ArenaVisning
-				data={data.arenaforvalteren}
-				bestillinger={bestillingsListe}
-				loading={loading.arenaforvalteren}
-			/>
-			<UdiVisning
-				data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
-				loading={loading.udistub}
-			/>
-			<DokarkivVisning ident={ident.ident} />
-			<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-			<PdlPersonMiljoeInfo ident={ident.ident} />
-			<TidligereBestillinger ids={ident.bestillingId} setVisning={setVisning} ident={ident.ident} />
-			<BeskrivelseConnector ident={ident} />
-		</div>
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
+				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
+				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
+				<InstVisning data={data.instdata} loading={loading.instdata} />
+				<ArenaVisning
+					data={data.arenaforvalteren}
+					bestillinger={bestillingsListe}
+					loading={loading.arenaforvalteren}
+				/>
+				<UdiVisning
+					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
+					loading={loading.udistub}
+				/>
+				<DokarkivVisning ident={ident.ident} />
+				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
+				<PdlPersonMiljoeInfo ident={ident.ident} />
+				<TidligereBestillinger
+					ids={ident.bestillingId}
+					setVisning={setVisning}
+					ident={ident.ident}
+				/>
+				<BeskrivelseConnector ident={ident} />
+			</div>
+		</ErrorBoundary>
 	)
 }

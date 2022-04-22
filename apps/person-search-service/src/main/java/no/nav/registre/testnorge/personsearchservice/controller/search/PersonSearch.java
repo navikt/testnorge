@@ -18,7 +18,6 @@ public class PersonSearch {
     String kjoenn;
     String randomSeed;
     Boolean kunLevende;
-    Boolean kunDoede;
     List<String> identer;
     FoedselSearch foedsel;
     SivilstandSearch sivilstand;
@@ -26,7 +25,8 @@ public class PersonSearch {
     AlderSearch alder;
     UtflyttingFraNorgeSearch utflyttingFraNorge;
     InnflyttingTilNorgeSearch innflyttingTilNorge;
-    IdentitetSearch identitet;
+    IdentifikasjonSearch identifikasjon;
     RelasjonSearch relasjoner;
     PersonstatusSearch personstatus;
+    AdresserSearch adresser;
 }

@@ -19,8 +19,8 @@ const ListItem = styled.li`
 	list-style-type: circle;
 `
 
-const identPath = 'personinformasjon.ident.ident'
-const identerPath = 'personinformasjon.identer'
+const identPath = 'ident.ident'
+const identerPath = 'identer'
 
 export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchProps) => {
 	const [identer, setIdenter] = useState(_get(formikBag.values, identerPath))
@@ -68,7 +68,7 @@ export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSear
 	}
 
 	return (
-		<div>
+		<section>
 			{identer?.length > 0 && (
 				<ErrorBoundary>
 					<ul>
@@ -104,6 +104,11 @@ export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSear
 					Legg til flere
 				</Button>
 			)}
-		</div>
+		</section>
 	)
+}
+
+export const IdentSearchPaths = {
+	[identPath]: 'ident',
+	[identerPath]: 'list',
 }

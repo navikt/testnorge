@@ -37,16 +37,16 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 					isActive={() => location.pathname === '/' || location.pathname.includes('/gruppe')}
 					to="/"
 				>
-					Testpersoner
+					Personer
 				</NavLink>
-				<NavLink to="/organisasjoner">Testorganisasjoner</NavLink>
+				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<a
 					href="https://endringsmelding.dev.intern.nav.no"
 					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
 				>
 					Endringsmelding
 				</a>
-				<NavLink to="/testnorge">Testnorge</NavLink>
+				<NavLink to="/testnorge">Test-Norge</NavLink>
 				<a
 					href="https://navikt.github.io/testnorge/applications/dolly/"
 					target="_blank"

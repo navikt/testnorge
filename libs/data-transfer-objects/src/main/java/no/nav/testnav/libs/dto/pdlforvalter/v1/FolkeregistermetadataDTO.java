@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class FolkeregistermetadataDTO {
+public class FolkeregistermetadataDTO implements Serializable {
 
     private LocalDate ajourholdstidspunkt;
     private Boolean gjeldende;

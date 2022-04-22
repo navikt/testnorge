@@ -1,0 +1,52 @@
+{
+  "AU": [
+    {
+      "kode": "ARBS",
+      "sannsynlighet": 420
+    },
+    {
+      "kode": "IARBS",
+      "sannsynlighet": 1125
+    }
+  ],
+  "FA": [
+    {
+      "kode": "ARBS",
+      "sannsynlighet": 1255
+    },
+    {
+      "kode": "IARBS",
+      "sannsynlighet": 161
+    }
+  ],
+  "SPE": [
+    {
+      "kode": "ARBS",
+      "sannsynlighet": 142
+    },
+    {
+      "kode": "IARBS",
+      "sannsynlighet": 268
+    }
+  ],
+  "UA": [
+    {
+      "kode": "ARBS",
+      "sannsynlighet": 64733
+    },
+    {
+      "kode": "IARBS",
+      "sannsynlighet": 43214
+    }
+  ],
+  "UVUP": [
+    {
+      "kode": "ARBS",
+      "sannsynlighet": 7
+    },
+    {
+      "kode": "IARBS",
+      "sannsynlighet": 4558
+    }
+  ]
+}

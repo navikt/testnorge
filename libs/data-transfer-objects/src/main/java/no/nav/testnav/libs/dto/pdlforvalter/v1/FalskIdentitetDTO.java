@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @SuperBuilder
@@ -70,5 +72,10 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
         private String fornavn;
         private String mellomnavn;
         private Boolean hasMellomnavn;
+    }
+
+    @JsonIgnore
+    public boolean isFalskIdentitet() {
+        return isTrue(getErFalsk());
     }
 }

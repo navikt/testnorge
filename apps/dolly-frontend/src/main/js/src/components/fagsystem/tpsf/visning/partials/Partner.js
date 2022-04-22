@@ -15,12 +15,12 @@ export const Partner = ({ data }) => {
 				<TitleValue
 					title="Forhold til partner (sivilstand)"
 					kodeverk={PersoninformasjonKodeverk.Sivilstander}
-					value={forhold.sivilstand}
+					value={forhold?.sivilstand}
 					size="medium"
 				/>
 				<TitleValue
 					title="Sivilstand fra dato"
-					value={Formatters.formatDate(forhold.sivilstandRegdato)}
+					value={Formatters.formatDate(forhold?.sivilstandRegdato)}
 				/>
 			</div>
 		)

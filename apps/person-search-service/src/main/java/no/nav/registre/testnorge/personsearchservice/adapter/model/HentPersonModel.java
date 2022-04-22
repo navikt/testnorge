@@ -13,6 +13,7 @@ public class HentPersonModel {
     List<NavnModel> navn;
     List<KjoennModel> kjoenn;
     List<FoedselModel> foedsel;
+    List<DoedsfallModel> doedsfall;
     List<SivilstandModel> sivilstand;
     List<StatsborgerskapModel> statsborgerskap;
     List<UtflyttingFraNorgeModel> utflyttingFraNorge;

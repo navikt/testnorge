@@ -14,6 +14,8 @@ import Snowing from '~/components/ui/background/backgrounds/Snowing.svg'
 import Fall from '~/components/ui/background/backgrounds/Fall.svg'
 // @ts-ignore
 import Spring from '~/components/ui/background/backgrounds/Spring.svg'
+// @ts-ignore
+import Paaske from '~/components/ui/background/backgrounds/Paaske.svg'
 
 export const SummerBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
@@ -65,6 +67,14 @@ export const FallBackground = styled.div`
 
 export const SpringBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Spring)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #cce4ee;
+`
+
+export const PaaskeBackground = styled.div`
+	background-image: url(data:image/svg+xml;base64,${btoa(Paaske)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;

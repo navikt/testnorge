@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.util.List;
+
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class RelasjonSearch {
-    Boolean barn;
-    Boolean doedfoedtBarn;
-    Boolean mor;
-    Boolean far;
+    String harBarn;
+    String harDoedfoedtBarn;
+    List<String> forelderBarnRelasjoner;
 }

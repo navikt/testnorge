@@ -28,6 +28,8 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import wiremock.com.google.common.collect.Lists;
 
 import java.time.LocalDate;
@@ -437,8 +439,11 @@ public class PersonExcelService {
                 .map(list -> CompletableFuture.supplyAsync(
                                 () -> pdlPersonConsumer.getPdlPersoner(list), dollyForkJoinPool)
                         .thenApply(response -> Stream.of(response)
-                                .map(PdlPersonBolk::getData)
+                                .map(Flux::collectList)
+                                .map(Mono::block)
                                 .filter(Objects::nonNull)
+                                .flatMap(Collection::stream)
+                                .map(PdlPersonBolk::getData)
                                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                                 .flatMap(Collection::stream)
                                 .filter(personBolk -> nonNull(personBolk.getPerson()))

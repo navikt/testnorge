@@ -20,6 +20,7 @@ public class PersonDTO {
     String aktorId;
     List<String> tags;
     FoedselDTO foedsel;
+    DoedsfallDTO doedsfall;
     SivilstandDTO sivilstand;
     StatsborgerskapDTO statsborgerskap;
     UtfyttingFraNorgeDTO utfyttingFraNorge;

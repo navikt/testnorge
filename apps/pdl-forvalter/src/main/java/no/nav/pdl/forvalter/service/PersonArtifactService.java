@@ -40,10 +40,10 @@ public class PersonArtifactService {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
         person.setKjoenn(kjoennService.convert(person));
-        person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
-        person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
         person.setFoedsel(foedselService.convert(person));
+        person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
+        person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
+        person.setStatsborgerskap(statsborgerskapService.convert(person));
         person.setNavn(navnService.convert(person.getNavn()));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
         person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
@@ -62,7 +62,6 @@ public class PersonArtifactService {
         person.setSivilstand(sivilstandService.convert(person));
         person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
         person.setForeldreansvar(foreldreansvarService.convert(person));
-        person.setDeltBosted(deltBostedService.convert(person));
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
         person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));

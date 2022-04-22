@@ -42,6 +42,11 @@ export type FoedselData = {
 	metadata: Metadata
 }
 
+export type Doedsfall = {
+	doedsdato: string
+	metadata: Metadata
+}
+
 type Statsborgerskap = {
 	landkode: string
 }
@@ -111,4 +116,16 @@ export type Vergemaal = {
 		motpartsPersonident: string
 	}
 	id: number
+}
+
+export type NyIdent = {
+	identtype?: string
+	kjoenn?: string
+	foedtEtter?: string
+	foedtFoer?: string
+	alder?: string
+	syntetisk?: boolean
+	nyttNavn?: {
+		hasMellomnavn: boolean
+	}
 }

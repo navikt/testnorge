@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -16,8 +17,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
@@ -28,6 +31,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -46,17 +50,24 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     public List<SivilstandDTO> convert(PersonDTO person) {
 
-        for (var type : person.getSivilstand()) {
+        var iterator = person.getSivilstand().iterator();
+
+        while (iterator.hasNext()) {
+
+            var type = iterator.next();
 
             if (isTrue(type.getIsNew())) {
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                handle(type, person);
+
+                if (!handle(type, person)) {
+                    iterator.remove();
+                }
             }
         }
 
-        return enforceIntegrity(person.getSivilstand());
+        return enforceIntegrity(person);
     }
 
     @Override
@@ -71,7 +82,17 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         }
     }
 
-    private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private boolean handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+
+        if (isNull(sivilstand.getType())) {
+
+            if (FoedselsdatoUtility.isMyndig(hovedperson)) {
+                sivilstand.setType(UGIFT);
+
+            } else {
+                return false;
+            }
+        }
 
         if (sivilstand.isGift() || sivilstand.isSeparert()) {
 
@@ -124,7 +145,12 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
                     sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
             createRelatertSivilstand(sivilstand, hovedperson.getIdent());
+
+        } else {
+            sivilstand.setRelatertVedSivilstand(null);
         }
+
+        return true;
     }
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
@@ -137,12 +163,30 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 .findFirst()
                 .orElse(0) + 1);
         relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
+
+        relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
         personRepository.save(relatertPerson);
     }
 
-    protected List<SivilstandDTO> enforceIntegrity(List<SivilstandDTO> sivilstand) {
+    protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
 
-        return sivilstand.stream()
+        var tidligsteSivilstandDato = person.getSivilstand().stream()
+                .map(SivilstandDTO::getSivilstandsdato)
+                .filter(Objects::nonNull)
+                .min(LocalDateTime::compareTo);
+
+        var myndighetsdato = FoedselsdatoUtility.getMyndighetsdato(person);
+
+        person.getSivilstand().forEach(stand -> {
+            if (stand.isUgift() && isNull(stand.getSivilstandsdato())) {
+                stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
+                        tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
+                        tidligsteSivilstandDato.get().minusMonths(3) :
+                        myndighetsdato);
+            }
+        });
+
+        return person.getSivilstand().stream()
                 .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
                 .toList();
     }

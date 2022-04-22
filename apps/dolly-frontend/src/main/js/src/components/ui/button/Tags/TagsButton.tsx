@@ -35,7 +35,7 @@ export const TagsButton = ({ action, loading, eksisterendeTags }: Props) => {
 					<div className="tagsModal tagsModal-content">
 						<h1>TILKNYTT TAGS</h1>
 						<AlertStripeInfo>
-							Tags gir deg mulighet til å identifisere dine PDL testpersoner på egen “tagged”
+							Tags gir deg mulighet til å identifisere dine PDL-personer på egen “tagged”
 							Kafka-topic, der tags[dintag] legges til på responsen. Ta kontakt for ytterligere
 							informasjon.
 						</AlertStripeInfo>

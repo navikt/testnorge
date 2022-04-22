@@ -13,9 +13,9 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -63,7 +63,14 @@ public class InntektstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(this::deleteInntekter);
+        try {
+            inntektstubConsumer.deleteInntekter(identer)
+                    .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
+
+        } catch (RuntimeException e) {
+
+            log.error("Feilet å slette identer fra Inntektstub: ", identer.stream().collect(Collectors.joining(", ")), e);
+        }
     }
 
     private boolean existInntekter(List<Inntektsinformasjon> inntekterRequest) {
@@ -103,22 +110,6 @@ public class InntektstubClient implements ClientRegister {
             progress.setInntektstubStatus(errorStatusDecoder.decodeRuntimeException(e));
 
             log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
-        }
-    }
-
-    private void deleteInntekter(String hovedperson) {
-
-        try {
-            ResponseEntity<Inntektsinformasjon> response = inntektstubConsumer.deleteInntekter(hovedperson);
-            log.info("Slettet inntektsinformasjon om ident {} i Inntektstub: {}", hovedperson, nonNull(response) ? response.getBody() : null);
-
-        } catch (WebClientResponseException e) {
-
-            log.error("Feilet å slette informasjon om ident {} i Inntektstub. Feilmelding: {}", hovedperson, e.getResponseBodyAsString());
-
-        } catch (RuntimeException e) {
-
-            log.error("Feilet å slette informasjon om ident {} i Inntektstub. Feilmelding: {}", hovedperson, e.getMessage());
         }
     }
 }

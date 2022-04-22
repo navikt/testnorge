@@ -52,7 +52,7 @@ const TestpersonValg = styled(RadioPanelGruppe)`
 `
 
 const informasjonstekst =
-	'Om ikke lenge kommer Dolly til å gå fra å opprette testpersoner som har ekte identifikasjonsnummer til å kun opprette testpersoner med syntetisk identifikasjonsnummer. Frem til det vil det være mulig å velge selv om man ønsker å opprette testpersonene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
+	'Om ikke lenge kommer Dolly til å gå fra å opprette personer som har ekte identifikasjonsnummer til å kun opprette personer med syntetisk identifikasjonsnummer. Frem til det vil det være mulig å velge selv om man ønsker å opprette personene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
 
 export const IdentVelger = ({ formikBag }: Form) => {
 	const erArenaBestilling = formikBag.values.hasOwnProperty('arenaforvalter')
@@ -71,7 +71,7 @@ export const IdentVelger = ({ formikBag }: Form) => {
 	return (
 		<IdentVelgerField>
 			<Tittel>
-				<h2>Velg type testperson</h2>
+				<h2>Velg type person</h2>
 				<Hjelpetekst hjelpetekstFor={'Identvelger'}>{informasjonstekst}</Hjelpetekst>
 			</Tittel>
 

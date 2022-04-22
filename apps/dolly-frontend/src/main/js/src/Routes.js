@@ -13,7 +13,7 @@ const TestnorgePage = lazy(() => import('./pages/testnorgePage/TestnorgePage'))
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match.params.gruppeId}</span>
 
 const routes = [
-	{ path: '/', exact: true, breadcrumb: 'Testpersoner', component: GruppeOversikt },
+	{ path: '/', exact: true, breadcrumb: 'Personer', component: GruppeOversikt },
 	{ path: '/gruppe/:gruppeId', exact: true, breadcrumb: GruppeBreadcrumb, component: Gruppe },
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',
@@ -30,7 +30,7 @@ const routes = [
 	{
 		path: '/organisasjoner',
 		exact: true,
-		breadcrumb: 'Testorganisasjoner',
+		breadcrumb: 'Organisasjoner',
 		component: Organisasjon,
 	},
 	{
@@ -41,7 +41,7 @@ const routes = [
 	},
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
 	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI },
-	{ path: '/testnorge', exact: true, breadcrumb: 'Testnorge', component: TestnorgePage },
+	{ path: '/testnorge', exact: true, breadcrumb: 'Test-Norge', component: TestnorgePage },
 	{
 		path: '/importer',
 		exact: true,

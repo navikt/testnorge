@@ -41,10 +41,10 @@ export const Foedsel = ({
 				<TitleValue title="Fødselsår" value={foedsel.foedselsaar} />
 				<TitleValue title="Fødested" value={foedsel.foedested} />
 				<TitleValue title="Fødekommune">
-					{foedsel.fodekommune && (
-						<KodeverkConnector navn="Kommuner" value={foedsel.fodekommune}>
+					{foedsel.foedekommune && (
+						<KodeverkConnector navn="Kommuner" value={foedsel.foedekommune}>
 							{(v: Kodeverk, verdi: KodeverkValues) => (
-								<span>{verdi ? verdi.label : foedsel.fodekommune}</span>
+								<span>{verdi ? verdi.label : foedsel.foedekommune}</span>
 							)}
 						</KodeverkConnector>
 					)}

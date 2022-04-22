@@ -190,9 +190,9 @@ export const AmeldingForm = ({ formikBag }: AmeldingFormProps): ReactFragment =>
 			<div className="flexbox--align-center">
 				<h3>A-melding</h3>
 				<Hjelpetekst hjelpetekstFor="A-melding">
-					Om du har opprettet dine egne testorganisasjoner kan du sende A-meldinger til disse
-					organisasjonene. Velg først hvilken type arbeidsforhold du ønsker å opprette, deretter kan
-					du fylle ut resten av informasjonen.
+					Om du har opprettet dine egne organisasjoner kan du sende A-meldinger til disse. Velg
+					først hvilken type arbeidsforhold du ønsker å opprette, deretter kan du fylle ut resten av
+					informasjonen.
 				</Hjelpetekst>
 			</div>
 			<div className="flexbox--flex-wrap">

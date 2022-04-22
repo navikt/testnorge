@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlForeldreansvar;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import org.springframework.stereotype.Component;
 
@@ -30,11 +30,10 @@ public class ForeldreansvarMappingStrategy implements MappingStrategy {
                     public void mapAtoB(ForeldreansvarDTO kilde,
                                         PdlForeldreansvar destinasjon, MappingContext context) {
 
-                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
+                        destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
                                 .ajourholdstidspunkt(LocalDate.now())
                                 .gyldighetstidspunkt(toDate(kilde.getGyldigFraOgMed()))
                                 .opphoerstidspunkt(toDate(kilde.getGyldigTilOgMed()))
-                                .gjeldende(nonNull(kilde.getGyldigFraOgMed()) || nonNull(kilde.getGyldigTilOgMed()))
                                 .build());
                     }
                 })

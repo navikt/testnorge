@@ -9,6 +9,8 @@ spring:
           issuer-uri: ${azure.openid.config.issuer}
           jwk-set-uri: ${azure.openid.config.jwks.uri}
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  codec:
+    max-in-memory-size: 15MB
 
 consumers:
   synt-meldekort:

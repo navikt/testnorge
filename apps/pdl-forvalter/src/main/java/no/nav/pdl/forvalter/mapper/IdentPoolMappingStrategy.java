@@ -48,6 +48,8 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                             destinasjon.setFoedtFoer(LocalDate.now().minusYears(kilde.getAlder()).minusMonths(3));
                         }
 
+                        destinasjon.setKjoenn(KjoennDTO.Kjoenn.UKJENT == kilde.getKjoenn() ? null : kilde.getKjoenn());
+
                         destinasjon.setAntall(1);
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
                     }

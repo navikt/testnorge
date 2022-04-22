@@ -20,8 +20,8 @@ export default function SlettBruker({ brukernavn, onDelete }: Props) {
 					<h2>Sletting av bruker</h2>
 					<p>
 						Om du ønsker å slette brukeren <b>{brukernavn}</b> kan du gjøre det her. Vær oppmerksom
-						på at du da også vil slette alle testdatagrupper og tilhørende testpersoner,
-						testorganisasjoner og maler.
+						på at du da også vil slette alle grupper og tilhørende personer, organisasjoner og
+						maler.
 					</p>
 				</div>
 				<div className="flexbox">

@@ -16,9 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
@@ -59,8 +63,8 @@ public class KrrstubClientTest {
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
 
-        when(krrstubConsumer.getDigitalKontaktdata(IDENT)).thenReturn(null);
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
+        when(krrstubConsumer.deleteKontaktdata(anyList())).thenReturn(Mono.just(List.of(IDENT)));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
@@ -80,11 +84,11 @@ public class KrrstubClientTest {
         BestillingProgress progress = BestillingProgress.builder()
                 .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
                 .build();
-        when(krrstubConsumer.getDigitalKontaktdata(IDENT)).thenReturn(null);
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
+        when(krrstubConsumer.deleteKontaktdata(anyList())).thenReturn(Mono.just(List.of(IDENT)));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());

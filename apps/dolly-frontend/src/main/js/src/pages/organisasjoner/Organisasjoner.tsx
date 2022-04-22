@@ -141,15 +141,15 @@ export default function Organisasjoner({
 			<div className="oversikt-container">
 				<div className="toolbar">
 					<div className="page-header flexbox--align-center">
-						<h1>Testorganisasjoner</h1>
+						<h1>Organisasjoner</h1>
 						{/* @ts-ignore */}
-						<Hjelpetekst hjelpetekstFor="Testorganisasjoner" type="under">
-							Organisasjoner i Dolly er en del av NAVs syntetiske testpopulasjon og dekker behov for
-							testdata knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og
-							det legges til ny funksjonalitet fortløpende.
+						<Hjelpetekst hjelpetekstFor="Organisasjoner" type="under">
+							Organisasjoner i Dolly er en del av NAVs syntetiske populasjon og dekker behov for
+							data knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og det
+							legges til ny funksjonalitet fortløpende.
 							<br />
-							På denne siden finner du en oversikt over dine egne testorganisasjoner. Du kan
-							opprette nye organisasjoner ved å trykke på knappen under.
+							På denne siden finner du en oversikt over dine egne organisasjoner. Du kan opprette
+							nye organisasjoner ved å trykke på knappen under.
 							<br />
 							Kontakt oss gjerne på {dollySlack} dersom du har spørsmål eller innspill.
 						</Hjelpetekst>

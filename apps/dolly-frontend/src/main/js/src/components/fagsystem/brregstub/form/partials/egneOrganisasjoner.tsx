@@ -77,7 +77,7 @@ export const EgneOrganisasjoner = ({ path, formikBag, handleChange }: OrgProps) 
 			)}
 			{!harEgneOrganisasjoner && !loading && !error && (
 				<AlertStripeAdvarsel>
-					Du har ingen egne organisasjoner. For å lage dine egne testorganisasjoner trykk{' '}
+					Du har ingen egne organisasjoner. For å lage dine egne organisasjoner trykk{' '}
 					<a href="/organisasjoner">her</a>.
 				</AlertStripeAdvarsel>
 			)}

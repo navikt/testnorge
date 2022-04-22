@@ -15,6 +15,7 @@ import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import java.util.List;
 @Service
 public class TagsHendelseslagerConsumer {
 
+    private static final int BLOCK_SIZE = 100;
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
@@ -35,25 +37,35 @@ public class TagsHendelseslagerConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tags_create" })
-    public String createTags(List<String> identer, List<Tags> tags) {
+    @Timed(name = "providers", tags = {"operation", "tags_create"})
+    public Flux<String> createTags(List<String> identer, List<Tags> tags) {
 
-        return new TagsOpprettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
+                        .map(index -> new TagsOpprettingCommand(webClient,
+                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
+                                tags, token.getTokenValue()).call())
+                        .flatMap(Flux::from));
     }
 
-    @Timed(name = "providers", tags = { "operation", "tags_delete" })
-    public void deleteTags(List<String> identer, List<Tags> tags) {
+    @Timed(name = "providers", tags = {"operation", "tags_delete"})
+    public Flux<String> deleteTags(List<String> identer, List<Tags> tags) {
 
-        new TagsSlettingCommand(webClient, identer, tags, serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                        .map(index -> new TagsSlettingCommand(webClient,
+                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
+                                tags, token.getTokenValue()).call())
+                        .flatMap(Flux::from));
     }
 
-    @Timed(name = "providers", tags = { "operation", "tags_get" })
+    @Timed(name = "providers", tags = {"operation", "tags_get"})
     public JsonNode getTag(String ident) {
 
         return new TagsHenteCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "hendelselager_publish" })
+    @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
     public String publish(List<String> identer) {
 
         return new HendelseslagerPublishCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();

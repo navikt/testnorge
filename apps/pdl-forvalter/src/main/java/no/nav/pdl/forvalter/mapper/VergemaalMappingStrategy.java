@@ -6,11 +6,11 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalMandattype;
@@ -94,11 +94,10 @@ public class VergemaalMappingStrategy implements MappingStrategy {
 
                         destinasjon.setEmbete(geografiskeKodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
-                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
+                        destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
                                 .ajourholdstidspunkt(LocalDate.now())
                                 .gyldighetstidspunkt(toDate(kilde.getGyldigFraOgMed()))
                                 .opphoerstidspunkt(toDate(kilde.getGyldigTilOgMed()))
-                                .gjeldende(nonNull(kilde.getGyldigFraOgMed()) || nonNull(kilde.getGyldigTilOgMed()))
                                 .build());
 
                         var person = personRepository.findByIdent(kilde.getVergeIdent());

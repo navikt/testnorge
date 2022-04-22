@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
@@ -26,16 +25,6 @@ public class BostedadresseDTO extends AdresseDTO {
     private UkjentBostedDTO ukjentBosted;
     private MatrikkeladresseDTO matrikkeladresse;
     private UtenlandskAdresseDTO utenlandskAdresse;
-
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class UkjentBostedDTO implements Serializable {
-
-        private String bostedskommune;
-    }
 
     @JsonIgnore
     public int countAdresser() {

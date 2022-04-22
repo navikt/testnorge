@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class SivilstandServiceTest {
 
-    private static final String IDENT = "12345678901";
+    private static final String IDENT = "12315678901";
 
     @Mock
     private PersonRepository personRepository;
@@ -55,6 +55,7 @@ class SivilstandServiceTest {
     void whenSivilstandDatoHasInvalidOrdering_fixIt() {
 
         var request = PersonDTO.builder()
+                .ident(IDENT)
                 .sivilstand(List.of(SivilstandDTO.builder()
                                 .type(SKILT)
                                 .sivilstandsdato(LocalDateTime.now().minusYears(3))

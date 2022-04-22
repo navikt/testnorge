@@ -3,15 +3,34 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
+import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 
-export const PdlPersonInfo = ({ data, visTittel = true }) => {
+const getCurrentPersonstatus = (data) => {
+	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
+		const statuser = data.folkeregisterpersonstatus.filter((status) => {
+			return !status?.metadata?.historisk
+		})
+		return statuser.length > 0 ? statuser[0] : null
+	} else if (data?.folkeregisterPersonstatus && data?.folkeregisterPersonstatus?.[0] !== null) {
+		const statuser = data.folkeregisterPersonstatus
+		return statuser.length > 0 ? statuser[0] : null
+	}
+	return null
+}
+
+export const PdlPersonInfo = ({
+	data,
+	tpsMessagingData,
+	tpsMessagingLoading = false,
+	visTittel = true,
+}) => {
 	if (!data) {
 		return null
 	}
 
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
-	const personstatus = data?.folkeregisterPersonstatus?.[0] || data?.folkeregisterpersonstatus?.[0]
+	const personstatus = getCurrentPersonstatus(data)
 
 	return (
 		<ErrorBoundary>
@@ -27,6 +46,7 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 						title="Personstatus"
 						value={Formatters.allCapsToCapitalized(personstatus?.status)}
 					/>
+					<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />
 				</div>
 			</div>
 		</ErrorBoundary>

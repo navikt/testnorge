@@ -3,7 +3,9 @@ package no.nav.dolly.domain.jpa;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import no.nav.dolly.domain.resultset.Tags;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -68,13 +70,19 @@ public class Testgruppe {
 
     @OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
     @Column(unique = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Testident> testidenter;
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Bruker> favorisertAv;
 
     @OrderBy("id")
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Bestilling> bestillinger;
 
     @Column(name = "ER_LAAST")

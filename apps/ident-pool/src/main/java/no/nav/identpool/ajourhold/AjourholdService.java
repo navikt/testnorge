@@ -236,7 +236,7 @@ public class AjourholdService {
             log.info("Fjerner {} identer som er i bruk i prod, men som er markert som LEDIG i ident-pool.", usedIdents.size());
 
             usedIdents.forEach(usedIdent -> {
-                Ident ident = identRepository.findTopByPersonidentifikator(usedIdent);
+                Ident ident = identRepository.findByPersonidentifikator(usedIdent);
                 ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
                 ident.setRekvirertAv("TPS");
                 identRepository.save(ident);

@@ -216,7 +216,7 @@ export const initialSivilstand = {
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
-	master: 'PDL',
+	master: 'FREG',
 }
 
 export const initialKjoenn = {
@@ -249,18 +249,21 @@ export const initialVergemaal = {
 export const initialForelder = {
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
-	relatertPerson: null as string,
 	borIkkeSammen: false,
+	relatertPerson: null as string,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialBarn = {
-	...initialForelder,
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
+	relatertPerson: null as string,
+	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'FREG',
 }
 
 export const initialDoedfoedtBarn = {

@@ -202,17 +202,18 @@ public class JobController {
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallVedtakshistorikker(arenaAntallNyeIdenter)
-                    .build());
-
-            testnorgeArenaService.opprettArbeidssokereIArena(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallNyeIdenter(1)
-                    .build(), true);
+            log.info("Innsending til Arena er midlertidig stanset");
+//            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
+//                    .avspillergruppeId(entry.getKey())
+//                    .miljoe(entry.getValue())
+//                    .antallVedtakshistorikker(arenaAntallNyeIdenter)
+//                    .build());
+//
+//            testnorgeArenaService.opprettArbeidssokereIArena(SyntetiserArenaRequest.builder()
+//                    .avspillergruppeId(entry.getKey())
+//                    .miljoe(entry.getValue())
+//                    .antallNyeIdenter(1)
+//                    .build(), true);
         }
     }
 

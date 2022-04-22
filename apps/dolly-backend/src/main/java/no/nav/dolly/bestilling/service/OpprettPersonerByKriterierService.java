@@ -10,7 +10,6 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -78,7 +77,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
-        RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
 
@@ -96,7 +95,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 var dollyPerson = DollyPerson.builder()
                                         .hovedperson(opprettedeIdenter.get(0))
                                         .master(originator.getMaster())
-                                        .tags(bestKriterier.getTags())
+                                        .tags(bestilling.getGruppe().getTags())
                                         .build();
 
                                 progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());

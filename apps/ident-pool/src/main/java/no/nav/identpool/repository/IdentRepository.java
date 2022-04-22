@@ -25,7 +25,9 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
                                                                                  Rekvireringsstatus rekvireringsstatus,
                                                                                  Boolean syntetisk);
 
-    Ident findTopByPersonidentifikator(String personidentifkator);
+    Ident findByPersonidentifikator(String personidentifkator);
+
+    List<Ident> findByPersonidentifikatorIn(List<String> personidentifikator);
 
     Set<Ident> findByPersonidentifikatorIn(Set<String> idents);
 

@@ -43,7 +43,7 @@ public class TpsMessagingConsumer {
 
     public List<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
 
-        return getIdenterStatus(new ArrayList<>(identer), Set.of("p"), true);
+        return getIdenterStatus(new ArrayList<>(identer), Set.of("pp"), true);
     }
 
     private List<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, boolean includeProd) {

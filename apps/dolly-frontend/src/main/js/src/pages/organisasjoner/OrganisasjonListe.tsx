@@ -1,16 +1,13 @@
 import React from 'react'
 import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-// @ts-ignore
-import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
-//@ts-ignore
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
 import { EnhetBestilling, EnhetData, OrgStatus } from '~/components/fagsystem/organisasjoner/types'
+import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 
 type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
@@ -41,33 +38,7 @@ export default function OrganisasjonListe({
 			dataField: 'organisasjonsnummer',
 			unique: true,
 
-			formatter: (cell: string, row: EnhetData) => (
-				<div className="identnummer-cell">
-					{row.organisasjonsnummer}
-					<CopyToClipboard text={row.organisasjonsnummer}>
-						<Tooltip
-							overlay={'Kopier'}
-							placement="top"
-							destroyTooltipOnHide={true}
-							mouseEnterDelay={0}
-							mouseLeaveDelay={0.1}
-							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
-							align={{
-								offset: ['0', '-10'],
-							}}
-						>
-							<div
-								className="icon"
-								onClick={(event) => {
-									event.stopPropagation()
-								}}
-							>
-								<Icon kind="copy" size={15} />
-							</div>
-						</Tooltip>
-					</CopyToClipboard>
-				</div>
-			),
+			formatter: (_cell: string, row: EnhetData) => <CopyButton value={row.organisasjonsnummer} />,
 		},
 		{
 			text: 'Navn',
@@ -83,7 +54,7 @@ export default function OrganisasjonListe({
 			text: 'Bestilling-ID',
 			width: '20',
 			dataField: 'bestillingId',
-			formatter: (cell: number, row: EnhetData) => {
+			formatter: (_cell: number, row: EnhetData) => {
 				const str = row.bestillingId
 				if (str.length > 1) return `${str[0]} ...`
 				return str[0]

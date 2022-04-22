@@ -116,9 +116,9 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 									{!harEgneOrg && (
 										<AlertStripeAdvarsel>
 											Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for
-											testperson. For å lage dine egne testorganisasjoner trykk {orgLink}. For å
-											opprette testperson med arbeidsforhold i felles organisasjoner eller andre
-											arbeidsgivere, velg en annen kategori ovenfor.
+											person. For å lage dine egne organisasjoner trykk {orgLink}. For å opprette
+											person med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere,
+											velg en annen kategori ovenfor.
 										</AlertStripeAdvarsel>
 									)}
 									<AmeldingForm formikBag={formikBag} />
@@ -127,9 +127,8 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 								<>
 									<AlertStripeInfo>
 										For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
-										sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille
-										testbrukere med disse attributtene må du bruke egen organisasjon for å opprette
-										A-meldinger.
+										sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere
+										med disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
 									</AlertStripeInfo>
 									<FormikDollyFieldArray
 										name="aareg"
