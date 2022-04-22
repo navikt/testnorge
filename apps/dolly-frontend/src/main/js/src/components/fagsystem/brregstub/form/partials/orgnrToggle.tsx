@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { OrganisasjonLoader } from '~/components/organisasjonSelect'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/egneOrganisasjoner'
 import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import { MiljoeApi } from '~/service/Api'
 import {
-	OrganisasjonToogleGruppe,
 	inputValg,
+	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
+import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
+	warningMessage?: AlertStripeAdvarsel
 }
 
-export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps) => {
+export const OrgnrToggle = ({
+	path,
+	formikBag,
+	setEnhetsinfo,
+	warningMessage,
+}: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 
@@ -54,27 +60,24 @@ export const OrgnrToggle = ({ path, formikBag, setEnhetsinfo }: OrgnrToggleProps
 				handleToggleChange={handleToggleChange}
 			/>
 			{inputType === inputValg.fraFellesListe && (
-				<OrganisasjonLoader
-					render={(data) => (
-						<DollySelect
-							name={`${path}.orgNr`}
-							label="Organisasjonsnummer"
-							options={data}
-							size="xlarge"
-							onChange={handleChange}
-							value={_get(formikBag.values, `${path}.orgNr`)}
-							feil={
-								_get(formikBag.values, `${path}.orgNr`) === '' && {
-									feilmelding: 'Feltet er påkrevd',
-								}
-							}
-							isClearable={false}
-						/>
-					)}
+				<OrganisasjonLoaderConnector
+					path={`${path}.orgNr`}
+					handleChange={handleChange}
+					value={_get(formikBag.values, `${path}.orgNr`)}
+					feil={
+						_get(formikBag.values, path) === '' && {
+							feilmelding: 'Feltet er påkrevd',
+						}
+					}
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<EgneOrganisasjoner path={path} formikBag={formikBag} handleChange={handleChange} />
+				<EgneOrganisasjonerConnector
+					path={`${path}.orgNr`}
+					formikBag={formikBag}
+					handleChange={handleChange}
+					warningMessage={warningMessage}
+				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonTextSelect

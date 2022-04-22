@@ -17,6 +17,7 @@ import kodeverkReducer from './ducks/kodeverk'
 import varslingerReducer from './ducks/varslinger'
 import finnPersonReducer from './ducks/finnPerson'
 import organisasjonReducer from './ducks/organisasjon'
+import fasteDataReducer from './ducks/fastedata'
 
 import history from './history'
 
@@ -56,6 +57,7 @@ const configureReduxStore = (currentHistory) => {
 			varslinger: varslingerReducer,
 			finnPerson: finnPersonReducer,
 			organisasjon: organisasjonReducer,
+			fasteData: fasteDataReducer,
 		})
 
 	return createStore(
