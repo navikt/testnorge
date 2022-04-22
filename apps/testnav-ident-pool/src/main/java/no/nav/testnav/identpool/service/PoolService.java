@@ -69,17 +69,16 @@ public class PoolService {
 
         if (missingIdentCount > 0) {
 
-            Set<TpsStatusDTO> tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request,
-                    Identtype.FDAT == request.getIdenttype() ? request.getAntall() : ATTEMPT_OBTAIN);
+            var tpsStatusDTOS = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
 
             List<Ident> identerFraTps = tpsStatusDTOS.stream()
                     .map(this::buildIdent)
-                    .collect(Collectors.toList());
+                    .toList();
             identRepository.saveAll(identerFraTps);
 
             Iterator<Ident> ledigeIdents = identerFraTps.stream()
                     .filter(Ident::isLedig)
-                    .collect(Collectors.toList()).iterator();
+                    .toList().iterator();
 
             int i = 0;
             while (i < missingIdentCount && ledigeIdents.hasNext()) {
@@ -100,9 +99,9 @@ public class PoolService {
                     ident.setRekvirertAv(request.getRekvirertAv());
                     return ident;
                 })
-                .collect(Collectors.toList()));
+                .toList());
 
-        return identEntities.stream().map(Ident::getPersonidentifikator).collect(Collectors.toList());
+        return identEntities.stream().map(Ident::getPersonidentifikator).toList();
     }
 
     private Ident buildIdent(TpsStatusDTO tpsStatusDTO) {

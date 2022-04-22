@@ -3,7 +3,6 @@ package no.nav.testnav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.identpool.consumers.TpsMessagingConsumer;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.repository.IdentRepository;
@@ -63,10 +62,6 @@ public class IdenterAvailService {
 
     private Set<String> genererIdenter(HentIdenterRequest request) {
 
-        if (request.getIdenttype() == Identtype.FDAT) {
-            return identGeneratorService.genererIdenterFdat(request, new HashSet<>());
-        } else {
-            return identGeneratorService.genererIdenter(request, new HashSet<>());
-        }
+        return identGeneratorService.genererIdenter(request, new HashSet<>());
     }
 }

@@ -59,48 +59,8 @@ public class IdentGeneratorService {
                 ));
     }
 
-    public Set<String> genererIdenterFdat(
-            HentIdenterRequest request,
-            Set<String> identerIIdentPool
-    ) {
-        Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
+    public Set<String> genererIdenter(HentIdenterRequest request, Set<String> identerIIdentPool) {
 
-        validateDates(request.getFoedtEtter(), request.getFoedtFoer());
-        if (request.getFoedtFoer().isEqual(request.getFoedtEtter())) {
-            request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
-        }
-
-        Set<String> identer = identerIIdentPool;
-        int antall = request.getAntall() + identer.size();
-        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
-
-        Function<LocalDate, String> numberFormat =
-                numberFormatter.getOrDefault(Identtype.FDAT, IdentGeneratorUtil::randomFormat);
-
-        while (identer.size() < antall) {
-            LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
-            String format = numberFormat.apply(birthdate);
-            if (isTrue(request.getSyntetisk())) {
-                format = addSyntetiskIdentifier(format);
-            }
-
-            int originalSize = identer.size();
-
-            for (int i = 1; i <= 9; i++) {
-                identer.add(String.format(format, i));
-            }
-
-            if (identer.size() == originalSize) {
-                throw new IllegalArgumentException("Kan ikke finne ønsket antall fødselsnummer med angitte kriterier");
-            }
-        }
-        return identer;
-    }
-
-    public Set<String> genererIdenter(
-            HentIdenterRequest request,
-            Set<String> identerIIdentPool
-    ) {
         Assert.notNull(request.getFoedtEtter(), "FOM dato ikke oppgitt");
 
         validateDates(request.getFoedtEtter(), request.getFoedtFoer());
@@ -152,10 +112,8 @@ public class IdentGeneratorService {
         return identer;
     }
 
-    private void validateDates(
-            LocalDate foedtEtter,
-            LocalDate foedtFoer
-    ) {
+    private void validateDates(LocalDate foedtEtter, LocalDate foedtFoer) {
+
         if (foedtEtter.isAfter(foedtFoer)) {
             throw new IllegalArgumentException(String.format("Til dato (%s) kan ikke være etter før dato (%s)", foedtEtter, foedtFoer));
         }

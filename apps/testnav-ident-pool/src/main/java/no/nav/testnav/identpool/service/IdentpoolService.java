@@ -231,7 +231,7 @@ public class IdentpoolService {
                 Identtype.FNR, LEDIG, false);
         return identer.stream()
                 .map(Ident::getPersonidentifikator)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> hentWhitelist() {

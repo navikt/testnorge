@@ -18,8 +18,8 @@ import java.util.Arrays;
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
 
-    private final static String BEARER_AUTH = "bearerAuth";
-    private final static String USER_JWT = "user-jwt";
+    private static final String BEARER_AUTH = "bearerAuth";
+    private static final String USER_JWT = "user-jwt";
 
     @Bean
     public OpenAPI openApi() {

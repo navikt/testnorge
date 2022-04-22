@@ -39,21 +39,29 @@ class IdentGeneratorServiceTest {
     @Test
     @DisplayName("Skal feile når FOM er etter TOM")
     void shouldThrowToDateAfterFromDate() {
-        HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
-        request.foedtFoer(LOCAL_DATE.minusDays(2));
+
+        var request = createRequest(Identtype.FNR, Kjoenn.MANN)
+                .foedtFoer(LOCAL_DATE.minusDays(2))
+                .build();
+
+        Set<String> result = new HashSet<>();
 
         assertThrows(IllegalArgumentException.class,
-                () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
+                () -> identGeneratorService.genererIdenter(request, result));
     }
 
     @Test
     @DisplayName("Skal feile når ønsket antall ikke kan genereres")
     void shouldThrowToFewIdents() {
-        HentIdenterRequest.HentIdenterRequestBuilder request = createRequest(Identtype.FNR, Kjoenn.MANN);
-        request.antall(500);
+
+        var request = createRequest(Identtype.FNR, Kjoenn.MANN)
+                .antall(500)
+                .build();
+
+        Set<String> result = new HashSet<>();
 
         assertThrows(IllegalArgumentException.class,
-                () -> identGeneratorService.genererIdenter(request.build(), new HashSet<>()));
+                () -> identGeneratorService.genererIdenter(request, result));
     }
 
     @Test

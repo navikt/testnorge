@@ -58,9 +58,6 @@ public class IdentpoolController {
         if (isNull(hentIdenterRequest.getFoedtEtter())) {
             hentIdenterRequest.setFoedtEtter(LocalDate.of(1900, 1, 1));
         }
-        if (Identtype.FDAT == hentIdenterRequest.getIdenttype()) {
-            hentIdenterRequest.setKjoenn(null); // ident-pool ignorerer kjønn hos FDAT-identer
-        }
         return poolService.allocateIdenter(hentIdenterRequest);
     }
 

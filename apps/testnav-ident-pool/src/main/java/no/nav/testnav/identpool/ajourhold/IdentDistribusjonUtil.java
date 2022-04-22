@@ -1,7 +1,10 @@
 package no.nav.testnav.identpool.ajourhold;
 
+import lombok.experimental.UtilityClass;
+
 import static java.time.LocalDate.now;
 
+@UtilityClass
 public final class IdentDistribusjonUtil {
 
     // empiriske konstanter for å få til en fin chi^2-fordeling
@@ -11,17 +14,15 @@ public final class IdentDistribusjonUtil {
     private static final double C4 = 2;
     private static final double C5 = 10;
 
-    private IdentDistribusjonUtil() {}
-
     public static Integer antallPersonerPerDagPerAar(int year) {
+
         double antallForAar = verdiFraDistribusjon(now().getYear() - year + 1);
         return (int) (Math.ceil(antallForAar / 365.0));
     }
 
     private static Double verdiFraDistribusjon(Integer aar) {
-        double aarDouble = (double) aar;
+
+        double aarDouble = aar;
         return (Math.floor(C1 / C2 * (Math.exp(-aarDouble / C3) * Math.sqrt(aarDouble)) / (C4 * Math.sqrt(C5 * Math.PI))));
-
     }
-
 }

@@ -57,8 +57,6 @@ public final class PersonidentUtil {
             return Identtype.DNR;
         } else if (parseInt(adjust.substring(2, 3)) > 1) {
             return Identtype.BOST;
-        } else if ("0000".equals(adjust.substring(6, 10))) {
-            return Identtype.FDAT;
         }
         return Identtype.FNR;
     }

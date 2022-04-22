@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class IdenterAvailServiceTest {
+class IdenterAvailServiceTest {
 
     private static final String IDENT_1 = "11111111111";
     private static final String IDENT_2 = "22222222222";
@@ -83,7 +83,7 @@ public class IdenterAvailServiceTest {
     }
 
     @Test
-    public void happyPathAvail() {
+    void happyPathAvail() {
         when(identGeneratorService.genererIdenter(eq(request), any(Set.class)))
                 .thenReturn(Set.of(IDENT_1, IDENT_2));
         when(identRepository.findByPersonidentifikatorIn(anySet()))
