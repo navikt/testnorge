@@ -55,5 +55,8 @@ spec:
       rules:
         - application: testnav-tps-messaging-service
           cluster: dev-gcp
-  vault:
-    enabled: true
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        databases:
+          - name: testnav-ident-pool-db
