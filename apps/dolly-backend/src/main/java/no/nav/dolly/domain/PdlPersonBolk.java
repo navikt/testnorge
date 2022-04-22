@@ -47,7 +47,7 @@ public class PdlPersonBolk {
     public static class IdenterBolk {
 
         private String ident;
-        private Identinformasjon identer;
+        private List<Identinformasjon> identer;
     }
 
     @lombok.Data
