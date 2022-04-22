@@ -34,6 +34,17 @@ spring:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
         showSql: true
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+          #The client_id of this application
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
   tps:
