@@ -148,6 +148,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						name={`${personPath}.foedselsdato`}
 						label="Fødselsdato"
 						disabled={disablePersoninfo}
+						maxDate={new Date()}
 						fastfield={false}
 					/>
 					<DollySelect

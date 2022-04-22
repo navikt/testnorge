@@ -21,7 +21,12 @@ export const DoedfoedtBarn = ({ formikBag }: DoedfoedtBarnForm) => {
 			{(path: string) => {
 				return (
 					<div className="flexbox--flex-wrap">
-						<FormikDatepicker name={`${path}.dato`} label="Dødsdato" fastfield={false} />
+						<FormikDatepicker
+							name={`${path}.dato`}
+							label="Dødsdato"
+							fastfield={false}
+							maxDate={new Date()}
+						/>
 						<AvansertForm
 							path={path}
 							kanVelgeMaster={_get(formikBag.values, `${path}.bekreftelsesdato`) === null}

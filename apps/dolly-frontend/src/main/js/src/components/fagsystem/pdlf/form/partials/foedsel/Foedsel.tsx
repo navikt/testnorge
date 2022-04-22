@@ -51,6 +51,7 @@ export const Foedsel = ({ formikBag }) => {
 								name={`${path}.foedselsdato`}
 								label="Fødselsdato"
 								disabled={foedselsaar !== null}
+								maxDate={new Date()}
 								fastfield={false}
 							/>
 							<Yearpicker

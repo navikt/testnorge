@@ -15,7 +15,7 @@ export const Doedsfall = () => {
 			>
 				{(path: string, idx: number) => (
 					<>
-						<FormikDatepicker name={`${path}.doedsdato`} label="Dødsdato" />
+						<FormikDatepicker name={`${path}.doedsdato`} label="Dødsdato" maxDate={new Date()} />
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)}
