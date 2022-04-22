@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { MiljoeApi, OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
@@ -10,6 +10,8 @@ import {
 import { FormikProps } from 'formik'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
 
+const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
+
 type Props = {
 	formikBag: FormikProps<{}>
 	path: string
@@ -19,7 +21,9 @@ type Props = {
 const validEnhetstyper = ['BEDR', 'AAFY']
 
 export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Props) => {
-	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
+	const [inputType, setInputType] = useState(
+		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe
+	)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
@@ -34,8 +38,9 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 		fetchData()
 	}, [])
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
+	const handleToggleChange = (event: BaseSyntheticEvent) => {
 		setInputType(event.target.value)
+		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, event.target.value)
 		formikBag.setFieldValue(path, '')
 	}
 

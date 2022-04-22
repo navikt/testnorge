@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'
+import React, { BaseSyntheticEvent } from 'react'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -7,6 +7,8 @@ import { useBoolean } from 'react-use'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
+
+const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
 
 const initialValues = {
 	beloep: '',
@@ -51,11 +53,13 @@ const simpleValues = {
 }
 
 export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
-	const [formSimple, setFormSimple] = useBoolean(false)
+	const [formSimple, setFormSimple] = useBoolean(
+		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === 'forenklet'
+	)
 
-	const changeFormType = (event: SyntheticEvent<EventTarget, Event>) => {
-		// @ts-ignore
+	const changeFormType = (event: BaseSyntheticEvent) => {
 		const eventValueSimple = event.target?.value.includes('forenklet')
+		sessionStorage.setItem(INNTEKTSTYPE_TOGGLE, event.target?.value)
 		setFormSimple(eventValueSimple)
 
 		const restValues = eventValueSimple && { ...simpleValues }
@@ -80,7 +84,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 					<ToggleKnapp value="standard" checked={!formSimple}>
 						Standard
 					</ToggleKnapp>
-					<ToggleKnapp value="forenklet" checked={formSimple}>
+					<ToggleKnapp value="forenklet" checked={formSimple} onc>
 						Forenklet
 					</ToggleKnapp>
 				</ToggleGruppe>

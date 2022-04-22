@@ -58,7 +58,7 @@ export const EgneOrganisasjoner = ({
 			{error && (
 				<AlertStripeAdvarsel>
 					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
-					eller kontakt team Dolly ved vedvarende feil.
+					eller kontakt Team Dolly ved vedvarende feil.
 				</AlertStripeAdvarsel>
 			)}
 			{!harEgneOrganisasjoner &&
