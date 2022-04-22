@@ -20,6 +20,7 @@ public class PdlPersonBolk {
 
         private List<PersonBolk> hentPersonBolk;
         private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk;
+        private List<GeografiskTilknytningBolk> hentIdenterBolk;
     }
 
     @lombok.Data
@@ -43,6 +44,15 @@ public class PdlPersonBolk {
     @lombok.Data
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class IdenterBolk {
+
+        private String ident;
+        private Identinformasjon identer;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class GeografiskTilknytning {
 
         private String gtType;
@@ -50,5 +60,14 @@ public class PdlPersonBolk {
         private String gtKommune;
         private String gtBydel;
         private String regel;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Identinformasjon {
+
+        private String ident;
+        private String gruppe;
     }
 }

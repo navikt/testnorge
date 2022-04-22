@@ -21,6 +21,13 @@ fragment metadataDetails on Metadata {
 }
 
 query($identer: [ID!]!) {
+    hentIdenterBolk(identer: $identer) {
+        ident,
+        identer {
+            ident,
+            gruppe
+        },
+    }
     hentGeografiskTilknytningBolk(identer: $identer) {
         ident,
         geografiskTilknytning {
