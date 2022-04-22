@@ -26,6 +26,8 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
 
     private Boolean eksisterendePerson;
 
+    private DeltBostedDTO deltBosted;
+
     public boolean isEksisterendePerson() {
 
         return isTrue(eksisterendePerson);

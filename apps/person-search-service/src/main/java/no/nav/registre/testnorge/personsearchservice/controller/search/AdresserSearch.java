@@ -26,6 +26,7 @@ public class AdresserSearch {
     public class KontaktadresseSearch {
         Boolean norskAdresse;
         Boolean utenlandskAdresse;
+        Boolean kontaktadresseForDoedsbo;
     }
 
     @Value

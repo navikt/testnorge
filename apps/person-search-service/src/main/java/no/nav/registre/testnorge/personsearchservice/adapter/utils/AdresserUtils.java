@@ -32,6 +32,7 @@ public class AdresserUtils {
                     if (nonNull(adresser.getKontaktadresse())) {
                         addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
                         addNorskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
+                        addKontaktadresseDoedsboQuery(queryBuilder, adresser.getKontaktadresse());
                     }
                     if (nonNull(adresser.getOppholdsadresse())) {
                         addUtenlandskOppholdQuery(queryBuilder, adresser.getOppholdsadresse());
@@ -89,6 +90,15 @@ public class AdresserUtils {
                                 1,
                                 false
                         ));
+                    }
+                });
+    }
+
+    private static void addKontaktadresseDoedsboQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
+        Optional.ofNullable(kontaktadresse.getKontaktadresseForDoedsbo())
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.must(nestedExistsQuery("hentPerson.kontaktinformasjonForDoedsbo", ".adresse.landkode", false));
                     }
                 });
     }

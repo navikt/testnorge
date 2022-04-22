@@ -28,26 +28,27 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 
 			if (validateFomBasedOnAge) {
 				const inntektFom = val
-				let alder = _get(values, 'tpsf.alder')
+				let alder = _get(values, 'pdldata.opprettNyPerson.alder')
 
 				if (personFoerLeggTil?.tpsf?.foedselsdato) {
 					alder = calculate_age(new Date(personFoerLeggTil.tpsf.foedselsdato))
 				} else if (personFoerLeggTil?.pdl) {
-					const foedselsdato = personFoerLeggTil?.pdl?.data?.hentPerson?.foedsel?.[0]?.foedselsdato
+					const foedselsdato = personFoerLeggTil?.pdl?.person?.foedsel?.[0]?.foedselsdato
 					if (foedselsdato) alder = calculate_age(new Date(foedselsdato))
 				}
 
-				const foedtFoer = new Date(_get(values, 'tpsf.foedtFoer'))
-				const foedtEtter = new Date(_get(values, 'tpsf.foedtEtter'))
+				const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+				const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
 
 				if (!_isNil(alder)) {
 					if (new Date().getFullYear() - alder + 18 > inntektFom) {
 						return false
 					}
 				} else if (!_isNil(foedtFoer)) {
-					const day = foedtFoer.getDate()
-					const month = foedtFoer.getMonth()
-					let year = foedtFoer.getFullYear()
+					const foedtFoerDate = new Date(foedtFoer)
+					const day = foedtFoerDate.getDate()
+					const month = foedtFoerDate.getMonth()
+					let year = foedtFoerDate.getFullYear()
 
 					year = day === 1 && month === 0 ? year - 1 : year
 
@@ -55,7 +56,8 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 						return false
 					}
 				} else if (!_isNil(foedtEtter) && _isNil(foedtFoer)) {
-					if (foedtEtter.getFullYear() + 18 > inntektFom) {
+					const foedtEtterDate = new Date(foedtEtter)
+					if (foedtEtterDate.getFullYear() + 18 > inntektFom) {
 						return false
 					}
 				} else {

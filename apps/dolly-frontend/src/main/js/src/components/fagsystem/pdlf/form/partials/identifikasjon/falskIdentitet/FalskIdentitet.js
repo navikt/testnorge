@@ -112,6 +112,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 									<FormikDatepicker
 										name={`${path}.rettIdentitetVedOpplysninger.foedselsdato`}
 										label="Fødselsdato"
+										maxDate={new Date()}
 									/>
 									<FormikSelect
 										name={`${path}.rettIdentitetVedOpplysninger.kjoenn`}

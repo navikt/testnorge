@@ -4,10 +4,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
@@ -181,7 +181,7 @@ class BostedAdresseServiceTest {
 
         var response = bostedAdresseService.convert(request, null);
 
-        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2020,2,1,0,0))));
+        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2020, 2, 1, 0, 0))));
     }
 
     @Test
