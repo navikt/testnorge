@@ -20,7 +20,7 @@ public class PdlPersonBolk {
 
         private List<PersonBolk> hentPersonBolk;
         private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk;
-        private List<GeografiskTilknytningBolk> hentIdenterBolk;
+        private List<IdenterBolk> hentIdenterBolk;
     }
 
     @lombok.Data
