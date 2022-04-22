@@ -9,7 +9,7 @@ import InntektstubService from '@/service/services/inntektstub/InntektstubServic
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
 	const [reset, setReset] = useBoolean(false)
-	const [inntektValues, setInntektValues] = useState(_get(formikBag.values, inntektPath))
+	const [inntektValues] = useState(_get(formikBag.values, inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
 		_get(formikBag.values, `${inntektPath}.inntektstype`)
 	)
@@ -29,13 +29,13 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	useEffect(() => {
 		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
-	})
+	}, [formikBag])
 
 	useEffect(() => {
 		setCurrentTilleggsinformasjonstype(
 			_get(formikBag.values, `${inntektPath}.tilleggsinformasjonstype`)
 		)
-	})
+	}, [formikBag])
 
 	useEffect(() => {
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
@@ -43,7 +43,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				setFields(response)
 			})
 		}
-	}, [])
+	}, [inntektValues, fields])
 
 	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
@@ -103,7 +103,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
 			}
 		})
-	})
+	}, [fields])
 
 	return (
 		<Formik
@@ -124,20 +124,18 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				InntektstubService.validate(values).then((response) => setFields(response))
 				setFormikBag(values)
 			}}
-			component={({ handleSubmit }) => {
-				return (
-					<div>
-						<Inntekt
-							fields={fields}
-							onValidate={handleSubmit}
-							formikBag={formikBag}
-							path={inntektPath}
-							resetForm={reset}
-							tilleggsinformasjonAttributter={tilleggsinformasjonAttributter}
-						/>
-					</div>
-				)
-			}}
+			component={({ handleSubmit }) => (
+				<div>
+					<Inntekt
+						fields={fields}
+						onValidate={handleSubmit}
+						formikBag={formikBag}
+						path={inntektPath}
+						resetForm={reset}
+						tilleggsinformasjonAttributter={tilleggsinformasjonAttributter}
+					/>
+				</div>
+			)}
 		/>
 	)
 }

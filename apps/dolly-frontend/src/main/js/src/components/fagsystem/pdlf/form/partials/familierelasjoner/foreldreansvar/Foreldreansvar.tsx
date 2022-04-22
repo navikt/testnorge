@@ -151,6 +151,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 									<FormikDatepicker
 										name={`${path}.ansvarligUtenIdentifikator.foedselsdato`}
 										label="Fødselsdato"
+										maxDate={new Date()}
 									/>
 									<FormikSelect
 										name={`${path}.ansvarligUtenIdentifikator.statsborgerskap`}
