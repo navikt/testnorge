@@ -209,11 +209,26 @@ export default handleActions(
 			state.brregstub[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
+			const identerBolk = action.payload.data?.data?.hentIdenterBolk?.reduce(
+				(map, person) => ({
+					...map,
+					[person.ident]: person.identer,
+				}),
+				{}
+			)
+			const geografiskTilknytningBolk =
+				action.payload.data?.data?.hentGeografiskTilknytningBolk?.reduce(
+					(map, person) => ({
+						...map,
+						[person.ident]: person.geografiskTilknytning,
+					}),
+					{}
+				)
+
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
 				state.pdl[ident.ident] = {
-					hentGeografiskTilknytning: action?.payload?.data?.data?.hentGeografiskTilknytningBolk
-						?.filter((person) => person.ident === ident.ident)
-						?.map((person) => person?.geografiskTilknytning)?.[0],
+					hentIdenter: { identer: identerBolk[ident.ident] },
+					hentGeografiskTilknytning: geografiskTilknytningBolk[ident.ident],
 					hentPerson: ident.person,
 				}
 			})

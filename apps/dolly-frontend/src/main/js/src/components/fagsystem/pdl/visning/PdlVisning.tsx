@@ -33,7 +33,6 @@ type PdlVisningProps = {
 }
 
 export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisningProps) => {
-	console.log('pdlData: ', pdlData) //TODO - SLETT MEG
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!pdlData?.hentPerson) {
 		return null
