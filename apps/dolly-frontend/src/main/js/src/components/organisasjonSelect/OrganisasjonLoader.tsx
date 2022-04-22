@@ -66,7 +66,7 @@ export const OrganisasjonLoader = ({
 	return useFormikSelect ? (
 		<FormikSelect
 			name={path}
-			label={label ? label : 'Organisasjonsnummer'}
+			label={label || 'Organisasjonsnummer'}
 			type="text"
 			options={organisasjonerSorted}
 			size="xlarge"

@@ -95,10 +95,13 @@ export default function Organisasjoner({
 		)
 	}
 
-	const hentOrgStatus = (bestillinger: Array<EnhetBestilling>, bestillingId: string | number) => {
-		if (!bestillinger) return null
+	const hentOrgStatus = (
+		bestillingArray: Array<EnhetBestilling>,
+		bestillingId: string | number
+	) => {
+		if (!bestillingArray) return null
 		let orgStatus = 'Ferdig'
-		const bestilling = bestillinger.find((obj) => {
+		const bestilling = bestillingArray.find((obj) => {
 			return obj.id === bestillingId
 		})
 		if (!bestilling?.status) orgStatus = 'Feilet'
