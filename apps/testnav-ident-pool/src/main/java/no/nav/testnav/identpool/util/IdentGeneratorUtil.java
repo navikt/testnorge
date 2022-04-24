@@ -1,6 +1,5 @@
 package no.nav.testnav.identpool.util;
 
-import com.google.common.collect.ImmutableMap;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
@@ -12,8 +11,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +29,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public final class IdentGeneratorUtil {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
     public static final Map<Identtype, BiFunction<LocalDate, Boolean, List<String>>> generatorMap =
-           Map.of(
+            Map.of(
                     Identtype.FNR, IdentGeneratorUtil::generateFNumbers,
                     Identtype.DNR, IdentGeneratorUtil::generateDNumbers,
                     Identtype.BOST, IdentGeneratorUtil::generateBNumbers);

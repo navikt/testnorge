@@ -68,30 +68,27 @@ public class IdentGeneratorService {
             request.setFoedtFoer(request.getFoedtEtter().plusDays(1));
         }
 
-        Kjoenn kjoenn = request.getKjoenn();
-        Identtype identtype = request.getIdenttype();
-
-        Set<String> identer = identerIIdentPool;
-        int antall = request.getAntall() + identer.size();
-        int iteratorRange = (kjoenn == null) ? 1 : 2;
-        int numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
+        var identer = identerIIdentPool;
+        var antall = request.getAntall() + identer.size();
+        var iteratorRange = (request.getKjoenn() == null) ? 1 : 2;
+        var numberOfDates = toIntExact(ChronoUnit.DAYS.between(request.getFoedtEtter(), request.getFoedtFoer()));
 
         Function<LocalDate, String> numberFormat =
-                numberFormatter.getOrDefault(identtype, IdentGeneratorUtil::randomFormat);
+                numberFormatter.getOrDefault(request.getIdenttype(), IdentGeneratorUtil::randomFormat);
 
         while (identer.size() < antall) {
-            LocalDate birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
-            String format = numberFormat.apply(birthdate);
+            var birthdate = request.getFoedtEtter().plusDays(random.nextInt(numberOfDates));
+            var format = numberFormat.apply(birthdate);
             if (isTrue(request.getSyntetisk())) {
                 format = addSyntetiskIdentifier(format);
             }
 
-            List<Integer> yearRange = getYearRange(birthdate);
-            int originalSize = identer.size();
-            int genderNumber = getGenderNumber(yearRange, kjoenn);
-            int startIndex = getStartIndex(yearRange.get(0), kjoenn);
+            var yearRange = getYearRange(birthdate);
+            var originalSize = identer.size();
+            var genderNumber = getGenderNumber(yearRange, request.getKjoenn());
+            var startIndex = getStartIndex(yearRange.get(0), request.getKjoenn());
 
-            for (int i = startIndex; identer.size() == originalSize && i < genderNumber; i += iteratorRange) {
+            for (int i = startIndex; identerIIdentPool.size() == originalSize && i < genderNumber; i += iteratorRange) {
                 String fnr = generateFnr(String.format(format, i));
                 if (fnr != null) {
                     identer.add(fnr);
@@ -105,7 +102,7 @@ public class IdentGeneratorService {
                 }
             }
 
-            if (identer.size() == originalSize) {
+            if (identerIIdentPool.size() == originalSize) {
                 throw new IllegalArgumentException("Kan ikke finne ønsket antall fødselsnummer med angitte kriterier");
             }
         }
