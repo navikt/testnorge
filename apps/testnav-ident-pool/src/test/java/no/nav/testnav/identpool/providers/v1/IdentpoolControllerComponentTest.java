@@ -9,7 +9,9 @@ import no.nav.testnav.identpool.util.PersonidentUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -34,6 +36,9 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     private static final String DNR_LEDIG = "50108000381";
     private static final String FNR_IBRUK = "11108000327";
     private static final String NYTT_FNR_LEDIG = "20018049946";
+
+    @MockBean
+    public JwtDecoder jwtDecoder;
 
     @BeforeEach
     void populerDatabaseMedTestidenter() {

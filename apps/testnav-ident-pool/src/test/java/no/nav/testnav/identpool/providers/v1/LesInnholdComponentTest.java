@@ -7,6 +7,8 @@ import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -24,6 +26,9 @@ class LesInnholdComponentTest extends ComponentTestbase {
     private static final boolean FINNES_HOS_SKATT = false;
     private static final LocalDate FOEDSELSDATO = LocalDate.of(1980, 10, 10);
     private static final String REKVIRERT_AV = "RekvirererMcRekvirererface";
+
+    @MockBean
+    public JwtDecoder jwtDecoder;
 
     @BeforeEach
     void populerDatabaseMedTestidenter() {
