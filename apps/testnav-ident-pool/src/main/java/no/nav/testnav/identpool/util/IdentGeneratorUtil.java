@@ -1,5 +1,7 @@
 package no.nav.testnav.identpool.util;
 
+import com.google.common.collect.ImmutableMap;
+import lombok.experimental.UtilityClass;
 import no.nav.testnav.identpool.domain.Ident;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
@@ -8,7 +10,10 @@ import no.nav.testnav.identpool.domain.Rekvireringsstatus;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,10 +28,11 @@ import static no.nav.testnav.identpool.util.PersonidentUtil.isSyntetisk;
 import static no.nav.testnav.identpool.util.PersonidentUtil.toBirthdate;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+@UtilityClass
 public final class IdentGeneratorUtil {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
     public static final Map<Identtype, BiFunction<LocalDate, Boolean, List<String>>> generatorMap =
-            Map.of(
+           Map.of(
                     Identtype.FNR, IdentGeneratorUtil::generateFNumbers,
                     Identtype.DNR, IdentGeneratorUtil::generateDNumbers,
                     Identtype.BOST, IdentGeneratorUtil::generateBNumbers);
@@ -36,9 +42,6 @@ public final class IdentGeneratorUtil {
                     Identtype.DNR, IdentGeneratorUtil::getDnrFormat,
                     Identtype.BOST, IdentGeneratorUtil::getBnrFormat);
     private static final SecureRandom random = new SecureRandom();
-
-    private IdentGeneratorUtil() {
-    }
 
     public static String randomFormat(LocalDate birthdate) {
         String format = getFnrFormat(birthdate);
@@ -98,10 +101,10 @@ public final class IdentGeneratorUtil {
     }
 
     private static List<String> generateNumbers(LocalDate date, String numberFormat) {
-        return getCategoryNumberStreamReverse(date)
+        return new ArrayList<>(getCategoryNumberStreamReverse(date)
                 .mapToObj(number -> generateFnr(String.format(numberFormat, number)))
                 .filter(Objects::nonNull)
-                .toList();
+                .toList());
     }
 
     private static String amendSyntetisk(String format, Boolean syntetiskIdent) {

@@ -124,7 +124,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     @Test
     void hentForMangeIdenterSomIkkeFinnesIDatabasen() throws Exception {
 
-        String request = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
+        String request = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\",\"identtype\":\"FNR\"}";
 
         when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Set.of(
                 TpsStatusDTO.builder().ident("15103300123").build()));
