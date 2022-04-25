@@ -27,10 +27,6 @@ type Target = {
 }
 
 export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
-	const opts = useContext(BestillingsveilederContext)
-	const { personFoerLeggTil } = opts
-	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
-
 	const [adressetype, setAdressetype] = useState(null)
 	const [error, setError] = useState('Må velge adressetype')
 
