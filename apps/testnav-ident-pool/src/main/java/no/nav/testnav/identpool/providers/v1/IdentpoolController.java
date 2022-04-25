@@ -1,11 +1,9 @@
 package no.nav.testnav.identpool.providers.v1;
 
-import com.google.common.base.Strings;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
-import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.providers.v1.support.MarkerBruktRequest;
 import no.nav.testnav.identpool.service.IdentpoolService;
@@ -26,6 +24,7 @@ import static java.util.Objects.isNull;
 import static no.nav.testnav.identpool.util.PersonidentUtil.validate;
 import static no.nav.testnav.identpool.util.PersonidentUtil.validateMultiple;
 import static no.nav.testnav.identpool.util.ValiderRequestUtil.validateDatesInRequest;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @RestController
@@ -75,7 +74,7 @@ public class IdentpoolController {
             @RequestParam String rekvirertAv,
             @RequestBody List<String> identer) {
 
-        if (Strings.isNullOrEmpty(rekvirertAv)) {
+        if (isBlank(rekvirertAv)) {
             throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
         }
         validateMultiple(identer);
@@ -108,7 +107,7 @@ public class IdentpoolController {
             @RequestParam String rekvirertAv,
             @RequestBody List<String> identer) {
 
-        if (Strings.isNullOrEmpty(rekvirertAv)) {
+        if (isBlank(rekvirertAv)) {
             throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
         }
         return identpoolService.frigjoerIdenter(rekvirertAv, identer);

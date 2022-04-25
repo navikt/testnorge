@@ -1,6 +1,5 @@
 package no.nav.testnav.identpool.service;
 
-import com.google.common.collect.Ordering;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import wiremock.com.google.common.collect.Ordering;
 
 import java.time.LocalDate;
 import java.util.HashSet;

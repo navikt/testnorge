@@ -9,9 +9,7 @@ import no.nav.testnav.identpool.util.PersonidentUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -36,9 +34,6 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     private static final String DNR_LEDIG = "50108000381";
     private static final String FNR_IBRUK = "11108000327";
     private static final String NYTT_FNR_LEDIG = "20018049946";
-
-    @MockBean
-    public JwtDecoder jwtDecoder;
 
     @BeforeEach
     void populerDatabaseMedTestidenter() {
@@ -80,8 +75,8 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
         String request = "{\"antall\":\"2\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
         when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Set.of(
-                        TpsStatusDTO.builder().ident("64038000169").build(),
-                        TpsStatusDTO.builder().ident("53061600147").build()));
+                TpsStatusDTO.builder().ident("64038000169").build(),
+                TpsStatusDTO.builder().ident("53061600147").build()));
 
         var result = mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -224,7 +219,7 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     void eksistererIkkeIDbOgLedigITps() throws Exception {
 
         when(tpsMessagingConsumer.getIdenterStatuser(anySet())).thenReturn(Set.of(
-                        TpsStatusDTO.builder().ident(NYTT_FNR_LEDIG).build()));
+                TpsStatusDTO.builder().ident(NYTT_FNR_LEDIG).build()));
 
         var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
                         .header("personidentifikator", NYTT_FNR_LEDIG))
