@@ -1,10 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.search;
 
 import lombok.AllArgsConstructor;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonSearchRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.search.PersonSearchResponse;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,7 +20,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.Head
 @AllArgsConstructor
 public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>> {
 
-    private final PersonSearchRequest request;
+    private final PersonSearch request;
     private final String token;
     private final WebClient webClient;
 
@@ -36,7 +36,7 @@ public class PersonSearchCommand implements Callable<Mono<PersonSearchResponse>>
                                 .build()
                 )
                 .header(AUTHORIZATION, "Bearer " + token)
-                .body(BodyInserters.fromPublisher(Mono.just(request), PersonSearchRequest.class))
+                .body(BodyInserters.fromPublisher(Mono.just(request), PersonSearch.class))
                 .retrieve()
                 .toEntity(RESPONSE_TYPE)
                 .flatMap(entity -> {
