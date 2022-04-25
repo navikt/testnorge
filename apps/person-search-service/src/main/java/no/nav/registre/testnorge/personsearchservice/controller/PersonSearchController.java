@@ -11,7 +11,7 @@ import java.util.List;
 
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.service.PersonSearchService;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 

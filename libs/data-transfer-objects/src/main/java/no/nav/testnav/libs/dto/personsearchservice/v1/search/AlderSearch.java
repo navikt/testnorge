@@ -1,12 +1,15 @@
-package no.nav.registre.testnorge.personsearchservice.controller.search;
+package no.nav.testnav.libs.dto.personsearchservice.v1.search;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
 @Value
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class InnflyttingTilNorgeSearch {
-    Boolean innflytting;
+public class AlderSearch {
+    Short fra;
+    Short til;
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.PersonSearchAdapter;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 
 @Slf4j
 @Service
