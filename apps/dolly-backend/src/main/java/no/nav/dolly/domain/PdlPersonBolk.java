@@ -69,5 +69,6 @@ public class PdlPersonBolk {
 
         private String ident;
         private String gruppe;
+        private Boolean historisk;
     }
 }
