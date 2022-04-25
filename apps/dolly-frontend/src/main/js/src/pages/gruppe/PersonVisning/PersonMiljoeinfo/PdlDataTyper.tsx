@@ -10,13 +10,21 @@ import {
 } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
-	data: PdlData
+	data: {
+		data: PdlData
+		errors: Array<PdlError>
+	}
 }
 
 export type PdlData = {
 	hentIdenter: { identer: [Ident] }
 	hentPerson: HentPerson
 	hentGeografiskTilknytning: object
+}
+
+export type PdlError = {
+	path?: Array<string>
+	message?: string
 }
 
 export type Ident = {

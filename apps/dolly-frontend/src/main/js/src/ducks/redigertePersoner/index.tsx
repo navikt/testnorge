@@ -1,13 +1,16 @@
 import { PdlforvalterApi } from '~/service/Api'
+// @ts-ignore
 import { createActions } from 'redux-actions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { LOCATION_CHANGE } from 'connected-react-router'
+import { Person } from '~/components/fagsystem/pdlf/PdlTypes'
+import { RootStateOrAny } from 'react-redux'
 
 export const actions = createActions({
 	hentPdlforvalterPersoner: [
 		PdlforvalterApi.getPersoner,
-		(identer) => ({
+		(identer: Array<string>) => ({
 			identer,
 		}),
 	],
@@ -19,11 +22,11 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
+		[LOCATION_CHANGE]() {
 			return initialState
 		},
-		[onSuccess(actions.hentPdlforvalterPersoner)](state, action) {
-			action.payload?.data?.forEach((ident) => {
+		[onSuccess(actions.hentPdlforvalterPersoner)](state: RootStateOrAny, action: any) {
+			action.payload?.data?.forEach((ident: Person) => {
 				state.pdlforvalter[ident.person.ident] = ident
 			})
 		},

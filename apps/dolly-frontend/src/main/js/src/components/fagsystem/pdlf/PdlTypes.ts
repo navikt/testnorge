@@ -40,6 +40,7 @@ export type FoedselData = {
 	foedekommune: string
 	foedeland: string
 	metadata: Metadata
+	id?: number
 }
 
 export type Doedsfall = {

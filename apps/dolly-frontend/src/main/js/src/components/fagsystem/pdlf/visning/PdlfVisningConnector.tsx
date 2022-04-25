@@ -1,11 +1,10 @@
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { connect, RootStateOrAny } from 'react-redux'
 import { PdlfVisning } from '~/components/fagsystem'
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state: RootStateOrAny) => {
 	return {
 		tmpPersoner: state?.redigertePersoner?.pdlforvalter,
 	}
 }
 
-export default withRouter(connect(mapStateToProps)(PdlfVisning))
+export default connect(mapStateToProps)(PdlfVisning)

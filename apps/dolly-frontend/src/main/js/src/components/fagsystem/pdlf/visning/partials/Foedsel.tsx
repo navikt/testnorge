@@ -10,7 +10,7 @@ import {
 	KodeverkValues,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { FoedselData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { FoedselData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
 import { initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
@@ -18,17 +18,20 @@ import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/Visn
 
 type FoedselTypes = {
 	data: Array<FoedselData>
+	tmpPersoner?: Array<FoedselData>
+	ident?: string
+	erPdlVisning?: boolean
 }
 
 type FoedselVisningTypes = {
-	item: FoedselData
+	foedsel: FoedselData
 	idx: number
 }
 
 export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: FoedselTypes) => {
 	if (!data || data.length === 0) return null
 
-	const FoedselLes = ({ foedsel, idx }) => {
+	const FoedselLes = ({ foedsel, idx }: FoedselVisningTypes) => {
 		return (
 			<div className="person-visning_content" key={idx}>
 				<TitleValue title="Fødselsdato" value={Formatters.formatDate(foedsel.foedselsdato)} />
@@ -52,23 +55,23 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 		)
 	}
 
-	const FoedselVisning = ({ item, idx }: FoedselVisningTypes) => {
+	const FoedselVisning = ({ foedsel, idx }: FoedselVisningTypes) => {
 		const initFoedsel = Object.assign(_cloneDeep(initialFoedsel), data[idx])
 		const initialValues = { foedsel: initFoedsel }
 
 		const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
-			(a) => a.id === item.id
+			(a: Person) => a.id === foedsel.id
 		)
 		const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
 
 		if (slettetFoedselPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 
 		return erPdlVisning ? (
-			<FoedselLes foedsel={item} idx={idx} />
+			<FoedselLes foedsel={foedsel} idx={idx} />
 		) : (
 			<VisningRedigerbarConnector
 				dataVisning={
-					<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : item} idx={idx} />
+					<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : foedsel} idx={idx} />
 				}
 				initialValues={initialValues}
 				redigertAttributt={
@@ -88,7 +91,7 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: FoedselData, idx: number) => <FoedselVisning item={item} idx={idx} />}
+						{(item: FoedselData, idx: number) => <FoedselVisning foedsel={item} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

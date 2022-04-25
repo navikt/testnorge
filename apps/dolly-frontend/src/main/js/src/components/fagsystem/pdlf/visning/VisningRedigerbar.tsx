@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Loading from '~/components/ui/loading/Loading'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
@@ -12,8 +12,12 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 
 type VisningTypes = {
-	item: any
-	idx: number
+	getPdlForvalter: Function
+	dataVisning: any
+	initialValues: any
+	redigertAttributt?: any
+	path: string
+	ident: string
 }
 
 enum Modus {
@@ -67,7 +71,7 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
-	const handleSubmit = async (data) => {
+	const handleSubmit = async (data: any) => {
 		setVisningModus(Modus.LoadingPdlf)
 		const id = _get(data, `${path}.id`)
 		const itemData = _get(data, path)
@@ -122,7 +126,7 @@ export const VisningRedigerbar = ({
 			})
 	}
 
-	const getForm = (formikBag) => {
+	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />

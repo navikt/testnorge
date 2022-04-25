@@ -6,9 +6,10 @@ import { useBoolean } from 'react-use'
 import { DollyApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import { Ident, PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type PdlDataVisningProps = {
-	ident: any
+	ident: Ident
 }
 
 export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
@@ -20,7 +21,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 		const [pdlError, setPdlError] = useState(null)
 		if (!pdlData) {
 			DollyApi.getPersonFraPdl(ident.ident || ident)
-				.then((response) => {
+				.then((response: PdlDataWrapper) => {
 					setPdlData(response.data?.data)
 					setPdlLoading(false)
 					const feil = response.data?.errors?.find((e) => e.path?.some((i) => i === 'hentPerson'))
