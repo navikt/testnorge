@@ -11,12 +11,6 @@ public class IdentPoolApplicationStarter {
 
     public static void main(String[] args) {
 
-        if ("prod".equals(System.getProperty("spring.profiles.active"))) {
-            log.info("Starter lesing av Vault token ...");
-            VaultUtil.initCloudVaultToken();
-        }
-
         SpringApplication.run(IdentPoolApplicationStarter.class, args);
     }
-
 }
