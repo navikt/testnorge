@@ -1,7 +1,6 @@
 package no.nav.testnav.identpool;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.servletcore.util.VaultUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

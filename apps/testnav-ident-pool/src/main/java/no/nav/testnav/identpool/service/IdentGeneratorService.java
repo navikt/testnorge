@@ -1,7 +1,6 @@
 package no.nav.testnav.identpool.service;
 
 import no.nav.testnav.identpool.domain.Identtype;
-import no.nav.testnav.identpool.domain.Kjoenn;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.util.IdentGeneratorUtil;
 import org.springframework.stereotype.Service;
