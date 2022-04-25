@@ -61,7 +61,7 @@ import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
-@Order(6)
+@Order(1)
 @Service
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {

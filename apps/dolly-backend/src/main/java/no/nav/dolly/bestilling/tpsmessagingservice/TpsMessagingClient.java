@@ -37,7 +37,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @Slf4j
 @Service
-@Order(1)
+@Order(3)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
