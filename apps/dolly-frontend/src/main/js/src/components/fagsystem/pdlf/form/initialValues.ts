@@ -40,6 +40,12 @@ export const initialBostedsadresse = {
 	angittFlyttedato: null as string,
 }
 
+export const initialDeltBosted = {
+	adressetype: null as string,
+	startdatoForKontrakt: null as string,
+	sluttdatoForKontrakt: null as string,
+}
+
 export const initialAdressebeskyttelse = {
 	gradering: null as string,
 	kilde: 'Dolly',
@@ -251,6 +257,7 @@ export const initialForelder = {
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
 	relatertPerson: null as string,
+	deltBosted: null,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
@@ -261,6 +268,7 @@ export const initialBarn = {
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
 	relatertPerson: null as string,
+	deltBosted: null,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',

@@ -622,6 +622,52 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(sivilstandData)
 		}
 
+		const deltBosted = (personData, path) => {
+			if (!personData || !_get(personData, path)) return [expandable(null, false, null)]
+			const data = _get(personData, path)
+
+			const fellesVerdier = [
+				obj('Adressetype', Formatters.showLabel('adressetypeDeltBosted', data.adressetype)),
+				obj('Startdato for kontrakt', Formatters.formatDate(data.startdatoForKontrakt)),
+				obj('Sluttdato for kontrakt', Formatters.formatDate(data.sluttdatoForKontrakt)),
+			]
+
+			if (data.vegadresse !== undefined) {
+				return [
+					expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [
+						...fellesVerdier,
+						obj(
+							'Vegadresse',
+							data.adressetype === 'VEGADRESSE' && isEmpty(data.vegadresse) && 'Ingen verdier satt'
+						),
+						...vegadresse(data.vegadresse),
+					]),
+				]
+			} else if (data.matrikkeladresse !== undefined) {
+				return [
+					expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [
+						...fellesVerdier,
+						obj(
+							'Matrikkeladresse',
+							data.adressetype === 'MATRIKKELADRESSE' &&
+								isEmpty(data.matrikkeladresse) &&
+								'Ingen verdier satt'
+						),
+						...matrikkeladresse(data.matrikkeladresse),
+					]),
+				]
+			} else if (data.ukjentBosted !== undefined) {
+				return [
+					expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [
+						...fellesVerdier,
+						obj('Bostedskommune', data.ukjentBosted.bostedskommune),
+					]),
+				]
+			} else {
+				return [expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [...fellesVerdier])]
+			}
+		}
+
 		if (forelderBarnRelasjon) {
 			const foreldreBarnData = {
 				header: 'Barn/foreldre',
@@ -637,6 +683,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
 						obj('Person relatert til', item.relatertPerson),
+						...deltBosted(item, 'deltBosted'),
 						...personRelatertTil(item, 'nyRelatertPerson'),
 					]
 				}),

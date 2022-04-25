@@ -453,12 +453,24 @@ const sivilstand = Yup.array().of(
 	})
 )
 
+const deltBosted = Yup.object({
+	adressetype: requiredString,
+	startdatoForKontrakt: Yup.date().optional().nullable(),
+	sluttdatoForKontrakt: Yup.date().optional().nullable(),
+	vegadresse: vegadresse,
+	matrikkeladresse: matrikkeladresse,
+	ukjentBosted: Yup.object({
+		bostedskommune: Yup.string(),
+	}),
+})
+
 const forelderBarnRelasjon = Yup.array().of(
 	Yup.object({
 		minRolleForPerson: requiredString,
 		relatertPerson: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
 		nyRelatertPerson: nyPerson,
+		deltBosted: deltBosted.nullable(),
 	})
 )
 
