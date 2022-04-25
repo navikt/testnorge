@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import { actions } from '~/ducks/redigertePersoner'
 import { withRouter } from 'react-router-dom'
 import { PdlfVisning } from '~/components/fagsystem'
 
@@ -9,10 +8,4 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-	return {
-		getPdlForvalter: () => dispatch(actions.hentPdlforvalterPersoner(ownProps.data?.person?.ident)),
-	}
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PdlfVisning))
+export default withRouter(connect(mapStateToProps)(PdlfVisning))

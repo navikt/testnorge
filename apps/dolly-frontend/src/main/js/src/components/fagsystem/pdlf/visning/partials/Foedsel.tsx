@@ -13,8 +13,8 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FoedselData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import { VisningRedigerbar } from '~/components/fagsystem/pdlf/visning/VisningRedigerbar'
 import _cloneDeep from 'lodash/cloneDeep'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 
 type FoedselTypes = {
 	data: Array<FoedselData>
@@ -25,13 +25,7 @@ type FoedselVisningTypes = {
 	idx: number
 }
 
-export const Foedsel = ({
-	data,
-	getPdlForvalter,
-	tmpPersoner,
-	ident,
-	erPdlVisning = false,
-}: FoedselTypes) => {
+export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: FoedselTypes) => {
 	if (!data || data.length === 0) return null
 
 	const FoedselLes = ({ foedsel, idx }) => {
@@ -72,12 +66,11 @@ export const Foedsel = ({
 		return erPdlVisning ? (
 			<FoedselLes foedsel={item} idx={idx} />
 		) : (
-			<VisningRedigerbar
+			<VisningRedigerbarConnector
 				dataVisning={
 					<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : item} idx={idx} />
 				}
 				initialValues={initialValues}
-				getPdlForvalter={getPdlForvalter}
 				redigertAttributt={
 					redigertFoedselPdlf
 						? { foedsel: Object.assign(_cloneDeep(initialFoedsel), redigertFoedselPdlf) }

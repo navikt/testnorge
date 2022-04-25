@@ -55,15 +55,16 @@ const Knappegruppe = styled.div`
 `
 
 export const VisningRedigerbar = ({
+	getPdlForvalter,
 	dataVisning,
 	initialValues,
-	getPdlForvalter,
 	redigertAttributt = null,
 	path,
 	ident,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
-	const [errorMessage, setErrorMessage] = useState(null)
+	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
+	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const handleSubmit = async (data) => {
@@ -71,41 +72,54 @@ export const VisningRedigerbar = ({
 		const id = _get(data, `${path}.id`)
 		const itemData = _get(data, path)
 		await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-			.then((putResponse) => {
-				if (putResponse)
-					getPdlForvalter().then((fetchResponse) => {
-						if (fetchResponse) setVisningModus(Modus.LoadingPdl)
-					})
-			})
 			.catch((error) => {
-				getPdlForvalter()
-				setErrorMessage(error.toString())
+				error &&
+					setErrorMessagePdlf(
+						`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
+					)
 				setVisningModus(Modus.Les)
 			})
-			.then(() =>
-				DollyApi.sendOrdre(ident).then((sendOrdrePdlResponse) => {
-					if (sendOrdrePdlResponse) setVisningModus(Modus.Les)
-				})
-			)
-		//TODO Catch error her også??
+			.then((putResponse) => {
+				if (putResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter()
+						setVisningModus(Modus.Les)
+					})
+				}
+			})
+			.catch((error) => {
+				error &&
+					setErrorMessagePdl(`Feil ved oppdatering i PDL: ${error.message || error.toString()}`)
+				setVisningModus(Modus.Les)
+			})
 	}
 
 	const handleDelete = async () => {
 		const id = _get(initialValues, `${path}.id`)
 		setVisningModus(Modus.LoadingPdlf)
 		await PdlforvalterApi.deleteAttributt(ident, path, id)
-			.then((deleteResponse) => {
-				if (deleteResponse)
-					getPdlForvalter().then((fetchResponse) => {
-						if (fetchResponse) setVisningModus(Modus.LoadingPdl)
-					})
+			.catch((error) => {
+				error &&
+					setErrorMessagePdlf(
+						`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
+					)
+				setVisningModus(Modus.Les)
 			})
-			.then(() =>
-				DollyApi.sendOrdre(ident).then((sendOrdrePdlResponse) => {
-					if (sendOrdrePdlResponse) setVisningModus(Modus.Les)
-				})
-			)
-		//TODO Catch error her også??
+			.then((deleteResponse) => {
+				if (deleteResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter()
+						setVisningModus(Modus.Les)
+					})
+				}
+			})
+			.catch((error) => {
+				error &&
+					setErrorMessagePdl(`Feil ved oppdatering i PDL: ${error.message || error.toString()}`)
+				setVisningModus(Modus.Les)
+			})
 	}
 
 	const getForm = (formikBag) => {
@@ -147,7 +161,10 @@ export const VisningRedigerbar = ({
 							</div>
 						</DollyModal>
 					</EditDeleteKnapper>
-					{errorMessage && <div className="error-message">{errorMessage}</div>}
+					<div className="flexbox--full-width">
+						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
+						{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
+					</div>
 				</>
 			)}
 			{visningModus === Modus.Skriv && (
