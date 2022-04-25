@@ -3,8 +3,6 @@ package no.nav.testnav.identpool.config;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import no.nav.testnav.libs.database.config.FlywayConfiguration;
-import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +13,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @Import({ApplicationCoreConfig.class,
-        FlywayConfiguration.class,
-        VaultHikariConfiguration.class,
         SecureOAuth2ServerToServerConfiguration.class})
 @EnableRetry
 @EnableScheduling
