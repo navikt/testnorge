@@ -230,6 +230,7 @@ export default handleActions(
 					hentIdenter: { identer: identerBolk?.[ident.ident] },
 					hentGeografiskTilknytning: geografiskTilknytningBolk?.[ident.ident],
 					hentPerson: ident.person,
+					ident: ident.ident,
 				}
 			})
 		},

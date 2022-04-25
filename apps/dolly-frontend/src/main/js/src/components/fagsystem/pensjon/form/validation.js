@@ -33,7 +33,7 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 				if (personFoerLeggTil?.tpsf?.foedselsdato) {
 					alder = calculate_age(new Date(personFoerLeggTil.tpsf.foedselsdato))
 				} else if (personFoerLeggTil?.pdl) {
-					const foedselsdato = personFoerLeggTil?.pdl?.person?.foedsel?.[0]?.foedselsdato
+					const foedselsdato = personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0]?.foedselsdato
 					if (foedselsdato) alder = calculate_age(new Date(foedselsdato))
 				}
 
@@ -75,7 +75,7 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 				if (personFoerLeggTil?.tpsf?.doedsdato) {
 					doedsdato = values.personFoerLeggTil.tpsf.doedsdato
 				} else if (personFoerLeggTil?.pdl) {
-					const pdlDoedsdato = personFoerLeggTil?.pdl?.data?.hentPerson?.doedsfall?.[0]?.doedsdato
+					const pdlDoedsdato = personFoerLeggTil?.pdl?.hentPerson?.doedsfall?.[0]?.doedsdato
 					if (pdlDoedsdato) doedsdato = pdlDoedsdato
 				}
 
