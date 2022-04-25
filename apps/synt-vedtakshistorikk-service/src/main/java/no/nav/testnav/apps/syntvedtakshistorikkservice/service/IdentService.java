@@ -7,16 +7,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PersonSearchConsumer;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.AlderSearch;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.RelasjonSearch;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonSearchRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonstatusSearch;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
 import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonstatusSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -189,7 +189,7 @@ public class IdentService {
         return vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer() + husbokstav;
     }
 
-    private PersonSearchRequest getSearchRequest(
+    private PersonSearch getSearchRequest(
             String randomSeed,
             int page,
             int minimumAlder,
@@ -197,7 +197,7 @@ public class IdentService {
             String personstatus,
             Boolean harBarn
     ) {
-        var request = PersonSearchRequest.builder()
+        var request = PersonSearch.builder()
                 .tag("TESTNORGE")
                 .excludeTags(Arrays.asList("DOLLY", "ARENASYNT"))
                 .kunLevende(true)

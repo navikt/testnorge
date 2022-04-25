@@ -1,12 +1,12 @@
 package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.NasjonalitetSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
 
-import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
@@ -17,14 +17,16 @@ public class NasjonalitetUtils {
     private static final String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
 
     public static void addNasjonalitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        addStatsborgerskapQuery(queryBuilder, search);
-        addUtflyttingQuery(queryBuilder, search);
-        addInnflyttingQuery(queryBuilder, search);
+        Optional.ofNullable(search.getNasjonalitet())
+                .ifPresent(value -> {
+                    addStatsborgerskapQuery(queryBuilder, value);
+                    addUtflyttingQuery(queryBuilder, value);
+                    addInnflyttingQuery(queryBuilder, value);
+                });
     }
 
-    private static void addStatsborgerskapQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private static void addStatsborgerskapQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch search) {
         Optional.ofNullable(search.getStatsborgerskap())
-                .flatMap(value -> Optional.ofNullable(value.getLand()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, false));
@@ -32,19 +34,19 @@ public class NasjonalitetUtils {
                 });
     }
 
-    private static void addUtflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private static void addUtflyttingQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch search) {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
-                    if (nonNull(value.getUtflyttet()) && Boolean.TRUE.equals(value.getUtflyttet())) {
+                    if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedExistsQuery("hentPerson.utflyttingFraNorge", METADATA_FIELD, true));
                     }
                 });
     }
 
-    private static void addInnflyttingQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private static void addInnflyttingQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch search) {
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
-                    if (nonNull(value.getInnflytting()) && Boolean.TRUE.equals(value.getInnflytting())) {
+                    if (Boolean.TRUE.equals(value)) {
                         queryBuilder.must(nestedExistsQuery("hentPerson.innflyttingTilNorge", METADATA_FIELD, true));
                     }
                 });

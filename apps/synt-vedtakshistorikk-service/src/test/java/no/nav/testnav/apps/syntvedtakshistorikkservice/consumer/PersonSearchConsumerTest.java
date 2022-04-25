@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PersonSearchProperties;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.AlderSearch;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.search.PersonSearchRequest;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class PersonSearchConsumerTest {
     @Autowired
     private PersonSearchConsumer personSearchConsumer;
 
-    private static final PersonSearchRequest REQUEST = PersonSearchRequest.builder()
+    private static final PersonSearch REQUEST = PersonSearch.builder()
             .tag("TESTNORGE")
             .excludeTags(Arrays.asList("DOLLY", "ARENASYNT"))
             .kunLevende(true)
