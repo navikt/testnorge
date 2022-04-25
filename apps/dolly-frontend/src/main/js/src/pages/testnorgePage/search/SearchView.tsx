@@ -13,6 +13,7 @@ import { getAlder } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
 import { getEtternavn, getFornavn, getIdent, getPdlKjoenn } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { useNavigate } from 'react-router-dom'
 
 type Props = {
@@ -43,9 +44,9 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 	const columns = [
 		{
 			text: 'Ident',
-			width: '20',
+			width: '25',
 			formatter: (_cell: any, row: PdlData) => {
-				return <>{getIdent(row)}</>
+				return <CopyButton value={getIdent(row)} />
 			},
 		},
 		{

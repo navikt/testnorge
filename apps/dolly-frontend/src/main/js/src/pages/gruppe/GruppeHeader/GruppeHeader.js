@@ -44,7 +44,7 @@ export default function GruppeHeader({
 					<Hjelpetekst hjelpetekstFor="Låst gruppe" type="under">
 						Denne gruppen er låst. Låste grupper er velegnet for å dele med eksterne samhandlere
 						fordi de ikke kan endres, og blir heller ikke påvirket av prodlast i samhandlermiljøet
-						(Q1). Kontakt team Dolly dersom du ønsker å låse opp gruppen.
+						(Q1). Kontakt Team Dolly dersom du ønsker å låse opp gruppen.
 					</Hjelpetekst>
 				)}
 			</div>
@@ -92,7 +92,7 @@ export default function GruppeHeader({
 							Er du sikker på at du vil låse denne gruppen? <br />
 							En gruppe som er låst kan ikke endres, og blir heller ikke <br />
 							påvirket av prodlast i samhandlermiljøet (Q1). <br />
-							Når gruppen er låst må du kontakte team Dolly <br />
+							Når gruppen er låst må du kontakte Team Dolly <br />
 							dersom du ønsker å låse den opp igjen.
 						</LaasButton>
 					)}

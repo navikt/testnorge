@@ -3,10 +3,10 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 const paths = {
-	fra: 'personinformasjon.alder.fra',
-	til: 'personinformasjon.alder.til',
-	fom: 'personinformasjon.alder.foedselsdato.fom',
-	tom: 'personinformasjon.alder.foedselsdato.tom',
+	fra: 'alder.fra',
+	til: 'alder.til',
+	fom: 'alder.foedselsdato.fom',
+	tom: 'alder.foedselsdato.tom',
 }
 
 export const Alder = () => (

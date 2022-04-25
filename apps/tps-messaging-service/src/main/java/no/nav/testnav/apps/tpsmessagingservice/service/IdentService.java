@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,8 +67,12 @@ public class IdentService {
             throw new BadRequestException(BAD_REQUEST);
         }
 
-        var tpsResponse = readFromTps(identer, isNull(miljoer) ?
-                testmiljoerServiceConsumer.getMiljoer() : miljoer, false);
+        Map<String, TpsServicerutineM201Response> tpsResponse = new HashMap<>();
+
+        if (isNull(miljoer) || !miljoer.contains("pp")) {
+            tpsResponse.putAll(readFromTps(identer, isNull(miljoer) ?
+                    testmiljoerServiceConsumer.getMiljoer() : miljoer, false));
+        }
 
         if (isTrue(includeProd)) {
             tpsResponse.put(PROD, readFromTps(identer, List.of(PROD_LIKE_ENV), true).get(PROD_LIKE_ENV));
@@ -105,7 +110,7 @@ public class IdentService {
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry ->  unmarshallFromXml(entry.getValue())));
+                        entry -> unmarshallFromXml(entry.getValue())));
     }
 
     @SneakyThrows

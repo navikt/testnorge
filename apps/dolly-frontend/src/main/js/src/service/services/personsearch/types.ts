@@ -10,8 +10,10 @@ export type Search = {
 		fom?: string
 		tom?: string
 	}
-	statsborgerskap?: {
-		land?: string
+	nasjonalitet?: {
+		statsborgerskap?: string
+		utflyttingFraNorge?: boolean
+		innflyttingTilNorge?: boolean
 	}
 	sivilstand?: {
 		type?: string
@@ -21,12 +23,6 @@ export type Search = {
 		til?: number
 	}
 	identer?: Array<string>
-	utflyttingFraNorge?: {
-		utflyttet?: boolean
-	}
-	innflyttingTilNorge?: {
-		innflytting?: boolean
-	}
 	identifikasjon?: {
 		identtype?: string
 		adressebeskyttelse?: string
@@ -41,6 +37,7 @@ export type Search = {
 		kontaktadresse?: {
 			norskAdresse?: boolean
 			utenlandskAdresse?: boolean
+			kontaktadresseForDoedsbo?: boolean
 		}
 		oppholdsadresse?: {
 			norskAdresse?: boolean

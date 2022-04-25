@@ -1,8 +1,8 @@
 package no.nav.registre.testnorge.personsearchservice.adapter.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.registre.testnorge.personsearchservice.controller.search.IdentifikasjonSearch;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.IdentifikasjonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;

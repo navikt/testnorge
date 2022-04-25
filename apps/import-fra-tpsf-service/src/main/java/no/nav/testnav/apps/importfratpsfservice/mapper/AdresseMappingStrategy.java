@@ -7,6 +7,7 @@ import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmeldingTrans1;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
@@ -83,7 +84,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                                     .bruksenhetsnummer(source.getBolignr())
                                     .build());
                         } else if (UTEN_FAST_BOSTED.equals(source.getSpesRegType())) {
-                            target.setUkjentBosted(BostedadresseDTO.UkjentBostedDTO.builder()
+                            target.setUkjentBosted(UkjentBostedDTO.builder()
                                     .bostedskommune(source.getKommunenummer())
                                     .build());
                         }

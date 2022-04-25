@@ -25,7 +25,7 @@ export type Adresse = {
 	poststed?: string
 }
 
-const fetchOrganisasjoner = (gruppe: string, kanHaArbeidsforhold: boolean = null) =>
+const fetchOrganisasjoner = (gruppe: string = 'DOLLY', kanHaArbeidsforhold: boolean = null) =>
 	Api.fetchJson<Organisasjon[]>(
 		`/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=${gruppe}${
 			kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''

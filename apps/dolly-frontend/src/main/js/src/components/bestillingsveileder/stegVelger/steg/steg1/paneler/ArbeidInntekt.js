@@ -2,13 +2,15 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
+import { actions as orgActions } from '~/ducks/organisasjon'
+import { actions as fasteDataActions } from '~/ducks/fastedata'
 
 export const ArbeidInntektPanel = ({ stateModifier }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
-		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektskomponenten: \nInformasjonen blir lagt i Inntekt-stub.'
+		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.'
 
 	return (
 		<Panel
@@ -27,7 +29,7 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
 				<Attributt attr={sm.attrs.pensjonforvalter} />
 			</AttributtKategori>
-			<AttributtKategori title="A-ordningen (Inntektsstub)">
+			<AttributtKategori title="A-ordningen (Inntektstub)">
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)">
@@ -41,11 +43,15 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
-ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
+ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 	aareg: {
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
-		add: () => set('aareg', [initialValues]),
+		add: () => {
+			dispatch(orgActions.getOrganisasjonerPaaBruker())
+			dispatch(fasteDataActions.getFastedataOrganisasjoner())
+			return set('aareg', [initialValues])
+		},
 		remove() {
 			del('aareg')
 		},
@@ -67,8 +73,10 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 	inntektsmelding: {
 		label: 'Har inntektsmelding',
 		checked: has('inntektsmelding'),
-		add: () =>
-			set('inntektsmelding', {
+		add: () => {
+			dispatch(orgActions.getOrganisasjonerPaaBruker())
+			dispatch(fasteDataActions.getFastedataOrganisasjoner())
+			return set('inntektsmelding', {
 				inntekter: [
 					{
 						aarsakTilInnsending: 'NY',
@@ -97,7 +105,8 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				joarkMetadata: {
 					tema: '',
 				},
-			}),
+			})
+		},
 		remove: () => del('inntektsmelding'),
 	},
 	pensjonforvalter: {
@@ -105,7 +114,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('pensjonforvalter'),
 		add: () =>
 			set('pensjonforvalter.inntekt', {
-				fomAar: new Date().getFullYear() - 1,
+				fomAar: new Date().getFullYear() - 10,
 				tomAar: null,
 				belop: '',
 				redusertMedGrunnbelop: true,
@@ -115,8 +124,10 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 	inntektstub: {
 		label: 'Har inntekt',
 		checked: has('inntektstub'),
-		add: () =>
-			set('inntektstub', {
+		add: () => {
+			dispatch(orgActions.getOrganisasjonerPaaBruker())
+			dispatch(fasteDataActions.getFastedataOrganisasjoner())
+			return set('inntektstub', {
 				inntektsinformasjon: [
 					{
 						sisteAarMaaned: '',
@@ -138,7 +149,8 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 						arbeidsforholdsliste: [],
 					},
 				],
-			}),
+			})
+		},
 		remove() {
 			del('inntektstub')
 		},

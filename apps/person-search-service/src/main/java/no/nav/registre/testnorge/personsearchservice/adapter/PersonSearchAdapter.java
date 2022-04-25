@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 

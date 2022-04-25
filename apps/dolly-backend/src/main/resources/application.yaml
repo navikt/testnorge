@@ -106,13 +106,14 @@ consumers:
   testnav-pdl-proxy:
     name: testnav-pdl-proxy
     namespace: dolly
-    #    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    #url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     url: https://testnav-pdl-proxy.dev.intern.nav.no
     cluster: dev-fss
   testnav-sigrunstub-proxy:
     name: testnav-sigrunstub-proxy
     namespace: dolly
-    url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io
+    #url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io TODO Bytte til denne når backend er i GCP
+    url: https://testnav-sigrunstub-proxy.dev.intern.nav.no
     cluster: dev-fss
   testnav-pensjon-testdata-facade-proxy:
     name: testnav-pensjon-testdata-facade-proxy

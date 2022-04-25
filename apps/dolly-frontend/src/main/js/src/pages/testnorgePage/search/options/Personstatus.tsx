@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
-const personstatusPath = 'personinformasjon.personstatus'
+const personstatusPath = 'personstatus'
 
 const options = {
 	personstatus: [

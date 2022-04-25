@@ -244,8 +244,7 @@ public class ArtifactUpdateService {
         person.getPerson().setDeltBosted(
                 updateArtifact(person.getPerson().getDeltBosted(), oppdatertDeltBosted, id, "DeltBosted"));
 
-        deltBostedService.validate(oppdatertDeltBosted, person.getPerson());
-        deltBostedService.convert(person.getPerson());
+        deltBostedService.update(oppdatertDeltBosted);
     }
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {

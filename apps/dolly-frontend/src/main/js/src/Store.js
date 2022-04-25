@@ -18,6 +18,7 @@ import organisasjonReducer from './ducks/organisasjon'
 import commonReducer from '~/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
+import fasteDataReducer from './ducks/fastedata'
 
 const locationMiddleware = (store) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
@@ -58,7 +59,8 @@ const rootReducer = () =>
 		varslinger: varslingerReducer,
 		finnPerson: finnPersonReducer,
 		organisasjon: organisasjonReducer,
-	})
+	fasteData: fasteDataReducer,
+		})
 
 export const store = createStore(
 	rootReducer(),
