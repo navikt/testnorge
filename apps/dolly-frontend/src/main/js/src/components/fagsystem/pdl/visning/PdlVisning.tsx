@@ -100,7 +100,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<TpsMBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
-				<Foedsel data={foedsel} />
+				<Foedsel data={foedsel} erPdlVisning />
 				<PdlDoedsfall data={doedsfall} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />

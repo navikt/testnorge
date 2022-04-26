@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PdlFoedsel extends PdlOpplysning {
 
-    private String fodekommune;
+    private String foedekommune;
     private String foedeland;
     private String foedested;
     private Integer foedselsaar;

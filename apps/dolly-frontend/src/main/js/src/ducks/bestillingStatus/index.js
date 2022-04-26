@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'redux-first-history'
 import { createActions } from 'redux-actions'
 import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'

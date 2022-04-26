@@ -1,8 +1,8 @@
 import { DollyApi } from '~/service/Api'
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { LOCATION_CHANGE } from 'redux-first-history'
 
 export const { navigerTilPerson } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,

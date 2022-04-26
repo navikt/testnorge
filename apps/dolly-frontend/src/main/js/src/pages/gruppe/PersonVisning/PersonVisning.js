@@ -12,7 +12,6 @@ import {
 	InntektstubVisning,
 	InstVisning,
 	KrrVisning,
-	PdlfVisning,
 	PensjonVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
@@ -25,6 +24,7 @@ import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/Be
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 
@@ -42,6 +42,7 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	gruppeId,
 	brukertype,
 	bestilling,
 	bestillingsListe,
@@ -68,7 +69,14 @@ export const PersonVisning = ({
 					{!iLaastGruppe && (
 						<Button
 							onClick={() =>
-								leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+								leggTilPaaPerson(
+									data,
+									bestillingsListe,
+									ident.master,
+									getIdenttype(ident.ident),
+									gruppeId,
+									navigate
+								)
 							}
 							kind="add-circle"
 						>
@@ -96,7 +104,7 @@ export const PersonVisning = ({
 					/>
 				)}
 				{ident.master !== 'PDL' && (
-					<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+					<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
@@ -124,7 +132,7 @@ export const PersonVisning = ({
 				/>
 				<DokarkivVisning ident={ident.ident} />
 				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-				<PdlPersonMiljoeInfo data={data.pdl} />
+				<PdlPersonMiljoeInfo ident={ident.ident} />
 				<TidligereBestillinger
 					ids={ident.bestillingId}
 					setVisning={setVisning}

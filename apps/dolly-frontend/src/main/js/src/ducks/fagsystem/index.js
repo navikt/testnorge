@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE } from 'connected-react-router'
 import _get from 'lodash/get'
+import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
 	ArenaApi,
@@ -160,9 +160,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
 		[onSuccess(actions.getTpsf)](state, action) {
 			action.payload.data.forEach((ident) => {
 				state.tpsf[ident.ident] = ident
@@ -411,9 +408,9 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	// Sortert etter bestillingsId
 	const identListe = Object.values(identer)
 		.sort((first, second) =>
-			first.bestillingId?.[0] && second.bestillingId?.[0]
-				? second?.bestillingId[0] - first?.bestillingId[0]
-				: second?.ident - first?.ident
+			first.bestillingId && second.bestillingId
+				? _last(second?.bestillingId) - _last(first?.bestillingId)
+				: _last(second?.ident) - _last(first?.ident)
 		)
 		.filter(
 			(gruppeIdent) =>

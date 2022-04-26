@@ -8,12 +8,13 @@ import Loading from '~/components/ui/loading/Loading'
 import './LaasModal.less'
 
 type LaasButtonProps = {
-	action: () => void
+	action: Function
 	loading: boolean
+	gruppeId: string
 	children: string
 }
 
-export const LaasButton = ({ action, loading, children }: LaasButtonProps) => {
+export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
 	if (loading) return <Loading label="låser..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
@@ -33,15 +34,15 @@ export const LaasButton = ({ action, loading, children }: LaasButtonProps) => {
 						<h4>{children}</h4>
 					</div>
 					<div className="laasModal-actions">
-						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action()
+								return action(gruppeId)
 							}}
 							type="hoved"
 						>
-							JA, JEG ER SIKKER
+							Ja, jeg er sikker
 						</NavButton>
 					</div>
 				</div>

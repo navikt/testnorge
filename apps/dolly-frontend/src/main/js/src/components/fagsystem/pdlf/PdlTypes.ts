@@ -40,6 +40,7 @@ export type FoedselData = {
 	foedekommune: string
 	foedeland: string
 	metadata: Metadata
+	id?: number
 }
 
 export type Doedsfall = {
@@ -128,4 +129,9 @@ export type NyIdent = {
 	nyttNavn?: {
 		hasMellomnavn: boolean
 	}
+}
+
+export type SelectedValue = {
+	value: string
+	label: string
 }

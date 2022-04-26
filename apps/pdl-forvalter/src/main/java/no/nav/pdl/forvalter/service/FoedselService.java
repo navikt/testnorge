@@ -56,7 +56,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
         foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
 
         setFoedeland(foedsel, ident, bostedadresse, innflytting);
-        setFodekommune(foedsel, bostedadresse);
+        setFoedekommune(foedsel, bostedadresse);
     }
 
     private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
@@ -73,7 +73,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
         }
     }
 
-    private void setFodekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
+    private void setFoedekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
         if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFoedekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {

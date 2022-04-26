@@ -12,12 +12,7 @@ import FileUpload from 'filopplasting'
 import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
-import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
-import { pdfjs } from 'react-pdf/dist/umd/entry.webpack'
-// @ts-ignore
-import pdfjsworker from 'react-pdf/src/pdf.worker.entry'
-
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsworker
+import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -44,9 +39,14 @@ export type Vedlegg = {
 const FilOpplaster = styled(FileUpload)`
 	background-color: unset;
 	margin-bottom: 10px;
+	min-height: 60px;
 
 	&:hover {
 		background-color: #f1f1f1;
+	}
+
+	.animate {
+		content-visibility: hidden;
 	}
 `
 
@@ -144,7 +144,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 								? { feilmelding: _get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
 								: null
 						}
-						// feil={'feil'}
 						name="dokarkiv.journalfoerendeEnhet"
 						label="Journalførende enhet"
 					/>
@@ -154,11 +153,10 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 							className={'flexbox--full-width'}
 							acceptedMimetypes={['application/pdf']}
 							files={files}
-							// @ts-ignore
 							onFilesChanged={handleVedleggChange}
 						/>
 						{files.length > 0 && (
-							<FilnavnDollyArray handleChange={handleVedleggChange} filer={files} />
+							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
 						)}
 					</Kategori>
 				</Kategori>
