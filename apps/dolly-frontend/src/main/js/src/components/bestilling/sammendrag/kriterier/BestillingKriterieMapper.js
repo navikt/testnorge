@@ -624,47 +624,52 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		const deltBosted = (personData, path) => {
 			if (!personData || !_get(personData, path)) return [expandable(null, false, null)]
-			const data = _get(personData, path)
+			const deltBostedData = _get(personData, path)
 
 			const fellesVerdier = [
-				obj('Adressetype', Formatters.showLabel('adressetypeDeltBosted', data.adressetype)),
-				obj('Startdato for kontrakt', Formatters.formatDate(data.startdatoForKontrakt)),
-				obj('Sluttdato for kontrakt', Formatters.formatDate(data.sluttdatoForKontrakt)),
+				obj(
+					'Adressetype',
+					Formatters.showLabel('adressetypeDeltBosted', deltBostedData.adressetype)
+				),
+				obj('Startdato for kontrakt', Formatters.formatDate(deltBostedData.startdatoForKontrakt)),
+				obj('Sluttdato for kontrakt', Formatters.formatDate(deltBostedData.sluttdatoForKontrakt)),
 			]
 
-			if (data.vegadresse !== undefined) {
+			if (deltBostedData.vegadresse !== undefined) {
 				return [
-					expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [
+					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 						...fellesVerdier,
 						obj(
 							'Vegadresse',
-							data.adressetype === 'VEGADRESSE' && isEmpty(data.vegadresse) && 'Ingen verdier satt'
+							deltBostedData.adressetype === 'VEGADRESSE' &&
+								isEmpty(deltBostedData.vegadresse) &&
+								'Ingen verdier satt'
 						),
-						...vegadresse(data.vegadresse),
+						...vegadresse(deltBostedData.vegadresse),
 					]),
 				]
-			} else if (data.matrikkeladresse !== undefined) {
+			} else if (deltBostedData.matrikkeladresse !== undefined) {
 				return [
-					expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [
+					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 						...fellesVerdier,
 						obj(
 							'Matrikkeladresse',
-							data.adressetype === 'MATRIKKELADRESSE' &&
-								isEmpty(data.matrikkeladresse) &&
+							deltBostedData.adressetype === 'MATRIKKELADRESSE' &&
+								isEmpty(deltBostedData.matrikkeladresse) &&
 								'Ingen verdier satt'
 						),
-						...matrikkeladresse(data.matrikkeladresse),
+						...matrikkeladresse(deltBostedData.matrikkeladresse),
 					]),
 				]
-			} else if (data.ukjentBosted !== undefined) {
+			} else if (deltBostedData.ukjentBosted !== undefined) {
 				return [
-					expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [
+					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 						...fellesVerdier,
-						obj('Bostedskommune', data.ukjentBosted.bostedskommune),
+						obj('Bostedskommune', deltBostedData.ukjentBosted.bostedskommune),
 					]),
 				]
 			} else {
-				return [expandable('DELT BOSTED', !isEmpty(_get(personData, path)), [...fellesVerdier])]
+				return [expandable('DELT BOSTED', !isEmpty(deltBostedData), [...fellesVerdier])]
 			}
 		}
 

@@ -116,9 +116,9 @@ const testDeltBostedAdressetype = (value) => {
 			const personFoerLeggTil = values.personFoerLeggTil
 
 			let fantPartner = false
-			const sivilstand = _get(values, 'pdldata.person.sivilstand')
-			if (sivilstand && sivilstand.length > 0) {
-				fantPartner = sivilstand[0].borIkkeSammen
+			const nyePartnere = _get(values, 'pdldata.person.sivilstand')
+			if (nyePartnere?.length > 0) {
+				fantPartner = nyePartnere[0].borIkkeSammen
 			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
 				const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
 					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'

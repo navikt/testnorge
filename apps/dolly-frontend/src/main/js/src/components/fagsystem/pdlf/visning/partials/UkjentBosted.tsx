@@ -1,7 +1,6 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
 
 type AdresseData = {
 	adresse: {

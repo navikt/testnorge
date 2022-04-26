@@ -28,8 +28,8 @@ type Target = {
 export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
 	const [adressetype, setAdressetype] = useState(_get(formikBag.values, `${path}.adressetype`))
 
-	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _get(formikBag.values, path)
+	const handleChangeAdressetype = (target: Target, adressePath: string) => {
+		const adresse = _get(formikBag.values, adressePath)
 		const adresseClone = _cloneDeep(adresse)
 
 		if (!target || target?.value === 'PARTNER_ADRESSE') {
