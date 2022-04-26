@@ -737,7 +737,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							Formatters.formatDate(item.rettIdentitetVedOpplysninger?.foedselsdato)
 						),
 						obj('Kjønn', item.rettIdentitetVedOpplysninger?.kjoenn),
-						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap.join(', ')),
+						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap?.join(', ')),
 					]
 				}),
 			}
