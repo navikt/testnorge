@@ -25,7 +25,8 @@ query($identer: [ID!]!) {
         ident,
         identer {
             ident,
-            gruppe
+            gruppe,
+            historisk
         },
     }
     hentGeografiskTilknytningBolk(identer: $identer) {
