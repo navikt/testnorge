@@ -26,7 +26,7 @@ const mapStateToProps = (state, ownProps) => ({
 	bestillingStatuser: state.bestillingStatuser.byId,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = (dispatch) => ({
 	getGruppe: (gruppeId, pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
 	navigerTilPerson: (ident) => dispatch(navigerTilPerson(ident)),
 	deleteGruppe: (gruppeId) => dispatch(actions.remove(gruppeId)),

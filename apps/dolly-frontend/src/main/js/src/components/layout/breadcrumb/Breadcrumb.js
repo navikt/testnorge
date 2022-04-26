@@ -10,7 +10,7 @@ import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs'
 export const Breadcrumbs = () => {
 	const location = useLocation()
 
-	const isActive = (match, location) => match.pathname === location.pathname
+	const isActive = (match, currentLocation) => match.pathname === currentLocation.pathname
 
 	const breadcrumbs = useReactRouterBreadcrumbs(allRoutes)
 	return (

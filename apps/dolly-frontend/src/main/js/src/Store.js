@@ -20,9 +20,9 @@ import { createBrowserHistory } from 'history'
 import fasteDataReducer from './ducks/fastedata'
 import { configureStore } from '@reduxjs/toolkit'
 
-const locationMiddleware = (store) => (next) => (action) => {
+const locationMiddleware = (reduxStore) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
-		const prevPath = store.getState()?.router?.location?.pathname
+		const prevPath = reduxStore.getState()?.router?.location?.pathname
 		const nextPath = action.payload.location.pathname
 		if (prevPath === nextPath) {
 			return false

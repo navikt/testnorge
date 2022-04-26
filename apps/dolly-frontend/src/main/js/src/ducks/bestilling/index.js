@@ -48,7 +48,7 @@ const trackBestilling = (values) => {
 /**
  * Sender de ulike bestillingstypene fra Bestillingsveileder
  */
-export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispatch, getState) => {
+export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispatch) => {
 	let bestillingAction
 
 	if (opts.is.leggTil) {
