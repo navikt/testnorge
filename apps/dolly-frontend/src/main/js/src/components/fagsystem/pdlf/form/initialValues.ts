@@ -145,7 +145,7 @@ export const initialDoedsfall = {
 }
 
 export const initialFoedsel = {
-	fodekommune: null as string,
+	foedekommune: null as string,
 	foedeland: null as string,
 	foedested: null as string,
 	foedselsaar: null as number,
