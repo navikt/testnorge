@@ -492,8 +492,11 @@ const deltBosted = Yup.object({
 	sluttdatoForKontrakt: Yup.date().optional().nullable(),
 	vegadresse: vegadresse,
 	matrikkeladresse: matrikkeladresse,
-	ukjentBosted: Yup.object({
-		bostedskommune: Yup.string(),
+	ukjentBosted: Yup.mixed().when('adressetype', {
+		is: 'UKJENT_BOSTED',
+		then: Yup.object({
+			bostedskommune: requiredString.nullable(),
+		}),
 	}),
 })
 
