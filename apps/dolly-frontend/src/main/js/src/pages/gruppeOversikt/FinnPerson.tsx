@@ -93,10 +93,8 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 		)
 	}
 
-	const redirectUrl = window.location.pathname.includes(`/${gruppe}/`)
-		? `/gruppe/${gruppe}`
-		: `/gruppe/${gruppe}/`
-	if (redirectToGruppe) navigate(redirectUrl)
+	if (redirectToGruppe && !window.location.pathname.includes(`/${gruppe}`))
+		navigate(`/gruppe/${gruppe}`, { replace: true })
 
 	return (
 		<div>

@@ -21,6 +21,7 @@ export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
 	navigerTilPerson,
+	visPerson,
 	laasGruppe,
 	getBestillinger,
 	grupper,
@@ -54,7 +55,7 @@ export default function Gruppe({
 	useEffect(() => {
 		getGruppe(gruppeId, sidetall, sideStoerrelse)
 		getBestillinger(gruppeId)
-	}, [sidetall, sideStoerrelse, navigerTilPerson])
+	}, [sidetall, sideStoerrelse])
 
 	useEffect(() => {
 		setGruppe(selectGruppe(grupper, gruppeId))
@@ -160,6 +161,7 @@ export default function Gruppe({
 					setSideStoerrelse={setSideStoerrelse}
 					brukertype={brukertype}
 					setVisning={byttVisning}
+					visPerson={visPerson}
 				/>
 			)}
 			{visning === VISNING_BESTILLING && (

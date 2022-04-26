@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => ({
 	isFetchingExcel: loadingSelectorGetExcel(state),
 	selectGruppe: selectGruppeById,
 	grupper: state.gruppe,
+	visPerson: state.finnPerson.visPerson,
 	identer: state.gruppe.ident,
 	brukernavn: state.bruker.brukerData.brukernavn,
 	brukertype: state.bruker.brukerData.brukertype,

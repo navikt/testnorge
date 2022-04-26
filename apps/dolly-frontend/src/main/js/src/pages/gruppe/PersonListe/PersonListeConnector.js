@@ -20,7 +20,6 @@ const mapStateToProps = (state, ownProps) => ({
 	gruppeInfo: state.gruppe.gruppeInfo,
 	identer: state.gruppe.ident,
 	isFetching: loadingSelector(state),
-	visPerson: state.finnPerson.visPerson,
 })
 
 const mapDispatchToProps = { fetchTpsfPersoner, fetchPdlPersoner }
