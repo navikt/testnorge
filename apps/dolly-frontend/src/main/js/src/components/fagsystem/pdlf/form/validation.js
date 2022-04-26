@@ -487,7 +487,7 @@ const sivilstand = Yup.array().of(
 )
 
 const deltBosted = Yup.object({
-	adressetype: testDeltBostedAdressetype(requiredString),
+	adressetype: testDeltBostedAdressetype(requiredString.nullable()),
 	startdatoForKontrakt: Yup.date().optional().nullable(),
 	sluttdatoForKontrakt: Yup.date().optional().nullable(),
 	vegadresse: vegadresse,
