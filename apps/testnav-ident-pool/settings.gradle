@@ -8,6 +8,7 @@ includeBuild '../../libs/security-core'
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/testing'
 
 

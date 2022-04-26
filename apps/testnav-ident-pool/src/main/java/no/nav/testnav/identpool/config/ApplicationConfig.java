@@ -13,7 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @Import({ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class})
+        SecureOAuth2ServerToServerConfiguration.class,
+        Insu})
 @EnableRetry
 @EnableScheduling
 public class ApplicationConfig {
