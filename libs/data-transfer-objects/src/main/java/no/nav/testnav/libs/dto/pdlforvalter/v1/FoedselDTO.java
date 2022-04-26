@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FoedselDTO extends DbVersjonDTO {
 
-    private String fodekommune;
+    private String foedekommune;
     private String foedeland;
     private String foedested;
     private Integer foedselsaar;

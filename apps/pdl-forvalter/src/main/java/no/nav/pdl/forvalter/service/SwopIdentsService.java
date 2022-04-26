@@ -72,7 +72,7 @@ public class SwopIdentsService {
         person1.getPerson().getFoedsel()
                 .forEach(foedsel1 -> {
                     foedsel1.setFoedeland(foedsel.getFoedeland());
-                    foedsel1.setFodekommune(foedsel.getFodekommune());
+                    foedsel1.setFoedekommune(foedsel.getFoedekommune());
                     foedsel1.setFoedested(foedsel.getFoedested());
                 });
 
