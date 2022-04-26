@@ -168,7 +168,7 @@ export const VisningRedigerbar = ({
 									<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
 								</div>
 								<div className="slettModal-actions">
-									<NavButton onClick={closeModal}>NEI</NavButton>
+									<NavButton onClick={closeModal}>Nei</NavButton>
 									<NavButton
 										onClick={() => {
 											closeModal()
@@ -176,7 +176,7 @@ export const VisningRedigerbar = ({
 										}}
 										type="hoved"
 									>
-										JA, JEG ER SIKKER
+										Ja, jeg er sikker
 									</NavButton>
 								</div>
 							</div>
