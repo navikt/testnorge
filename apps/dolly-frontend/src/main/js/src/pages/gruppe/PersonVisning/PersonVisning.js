@@ -27,7 +27,6 @@ import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoein
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
-import { useNavigate } from 'react-router-dom'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
