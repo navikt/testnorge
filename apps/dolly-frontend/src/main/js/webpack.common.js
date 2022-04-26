@@ -54,6 +54,14 @@ module.exports = {
 		},
 		extensions: ['.js', '.json', '.ts', '.tsx'],
 	},
+	externals: {
+		'@navikt/ds-css': {
+			commonjs: '@navikt/ds-css',
+			commonjs2: '@navikt/ds-css',
+			amd: '@navikt/ds-css',
+			root: '@navikt/ds-css',
+		},
+	},
 	module: {
 		rules: [
 			{
