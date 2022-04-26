@@ -8,22 +8,77 @@ import _get from 'lodash/get'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikProps } from 'formik'
+import { SelectedValue } from '~/components/fagsystem/pdlf/PdlTypes'
+
+type FoedselTypes = {
+	formikBag: FormikProps<{}>
+	path?: string
+}
 
 const alderProps = ['alder', 'foedtEtter', 'foedtFoer']
 
-export const Foedsel = ({ formikBag }) => {
-	const handleLandChange = (selected, path) => {
-		formikBag.setFieldValue(`${path}.foedeland`, selected?.value || null)
+export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
+	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
+		formikBag.setFieldValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
-			formikBag.setFieldValue(`${path}.fodekommune`, null)
+			formikBag.setFieldValue(`${foedselPath}.foedekommune`, null)
 		}
 	}
 
+	const foedselsaar = _get(formikBag.values, `${path}.foedselsaar`)
+	const foedselsdato = _get(formikBag.values, `${path}.foedselsdato`)
+
+	return (
+		<>
+			<FormikDatepicker
+				name={`${path}.foedselsdato`}
+				label="Fødselsdato"
+				disabled={foedselsaar !== null && foedselsdato === null}
+				maxDate={new Date()}
+				fastfield={false}
+			/>
+			<Yearpicker
+				formikBag={formikBag}
+				name={`${path}.foedselsaar`}
+				label="Fødselsår"
+				date={foedselsaar ? new Date(foedselsaar, 0) : null}
+				handleDateChange={(val) =>
+					formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
+				}
+				maxDate={new Date()}
+				// @ts-ignore
+				disabled={foedselsdato !== null && foedselsaar === null}
+			/>
+			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
+			<FormikSelect
+				name={`${path}.foedekommune`}
+				label="Fødekommune"
+				kodeverk={AdresseKodeverk.Kommunenummer}
+				size="large"
+				disabled={
+					_get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
+					_get(formikBag.values, `${path}.foedeland`) !== null
+				}
+			/>
+			<FormikSelect
+				name={`${path}.foedeland`}
+				label="Fødeland"
+				onChange={(selected: SelectedValue) => handleLandChange(selected, path)}
+				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+				size="large"
+			/>
+			<AvansertForm path={path} kanVelgeMaster={false} />
+		</>
+	)
+}
+
+export const Foedsel = ({ formikBag }: FoedselTypes) => {
 	const person = _get(formikBag.values, 'pdldata.opprettNyPerson')
 	const hasAlder = () => {
 		let funnetAlder = false
 		alderProps.forEach((prop) => {
-			if (person.hasOwnProperty(prop)) {
+			if (person?.hasOwnProperty(prop)) {
 				funnetAlder = true
 			}
 		})
@@ -44,48 +99,7 @@ export const Foedsel = ({ formikBag }) => {
 				}
 			>
 				{(path: string, idx: number) => {
-					const foedselsaar = _get(formikBag.values, `${path}.foedselsaar`)
-					return (
-						<>
-							<FormikDatepicker
-								name={`${path}.foedselsdato`}
-								label="Fødselsdato"
-								disabled={foedselsaar !== null}
-								maxDate={new Date()}
-								fastfield={false}
-							/>
-							<Yearpicker
-								formikBag={formikBag}
-								name={`${path}.foedselsaar`}
-								label="Fødselsår"
-								date={foedselsaar ? new Date(foedselsaar, 0) : null}
-								handleDateChange={(val) =>
-									formikBag.setFieldValue(`${path}.foedselsaar`, new Date(val).getFullYear())
-								}
-								maxDate={new Date()}
-								disabled={_get(formikBag.values, `${path}.foedselsdato`) !== null}
-							/>
-							<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
-							<FormikSelect
-								name={`${path}.fodekommune`}
-								label="Fødekommune"
-								kodeverk={AdresseKodeverk.Kommunenummer}
-								size="large"
-								disabled={
-									_get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
-									_get(formikBag.values, `${path}.foedeland`) !== null
-								}
-							/>
-							<FormikSelect
-								name={`${path}.foedeland`}
-								label="Fødeland"
-								onChange={(selected) => handleLandChange(selected, path)}
-								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-								size="large"
-							/>
-							<AvansertForm path={path} kanVelgeMaster={false} />
-						</>
-					)
+					return <FoedselForm formikBag={formikBag} path={path} />
 				}}
 			</FormikDollyFieldArray>
 		</div>
