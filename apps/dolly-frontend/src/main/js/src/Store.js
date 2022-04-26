@@ -1,7 +1,6 @@
-import { applyMiddleware, combineReducers, createStore } from 'redux'
+import { combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import gruppeReducer from './ducks/gruppe'
 import brukerReducer from './ducks/bruker'
 import fagsystemReducer from './ducks/fagsystem'
@@ -19,6 +18,7 @@ import commonReducer from '~/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
 import fasteDataReducer from './ducks/fastedata'
+import { configureStore } from '@reduxjs/toolkit'
 
 const locationMiddleware = (store) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
@@ -59,12 +59,12 @@ const rootReducer = () =>
 		varslinger: varslingerReducer,
 		finnPerson: finnPersonReducer,
 		organisasjon: organisasjonReducer,
-	fasteData: fasteDataReducer,
-		})
+		fasteData: fasteDataReducer,
+	})
 
-export const store = createStore(
-	rootReducer(),
-	composeWithDevTools(applyMiddleware(...allMiddleware))
-)
+export const store = configureStore({
+	reducer: rootReducer(),
+	middleware: allMiddleware,
+})
 
 export const history = createReduxHistory(store)

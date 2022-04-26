@@ -38,7 +38,7 @@ const allRoutes = [
 	},
 	{ path: '/minside', breadcrumb: 'Min side', element: MinSide },
 	{ path: '/ui', breadcrumb: 'UI demo', element: UI },
-	{ path: '/testnorge', breadcrumb: 'Testnorge', element: TestnorgePage },
+	{ path: '/testnorge', breadcrumb: 'Test-Norge', element: TestnorgePage },
 	{
 		path: '/importer',
 		breadcrumb: 'Importer',

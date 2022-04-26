@@ -38,7 +38,7 @@ export const SlettButton = ({
 				title={disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
 				kind="trashcan"
 			>
-				Slett
+				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="slettModal">

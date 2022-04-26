@@ -101,6 +101,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@reduxjs/toolkit": "^1.8.1",
     "@types/lodash": "^4.14.161",
     "@types/react": "^17.0.43",
     "@types/react-datepicker": "^4.1.6",

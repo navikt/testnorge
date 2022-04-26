@@ -83,6 +83,7 @@ export default function Gruppe({
 		<div className="gruppe-container">
 			<GruppeHeader
 				gruppe={gruppe}
+				slettedeIdenter={slettedeIdenter}
 				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}

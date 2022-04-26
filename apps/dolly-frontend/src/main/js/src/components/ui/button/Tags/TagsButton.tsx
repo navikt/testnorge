@@ -62,7 +62,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 							}}
 							type="hoved"
 						>
-							TILKNYTT TAGS
+							Tilknytt tags
 						</NavButton>
 					</div>
 				</div>

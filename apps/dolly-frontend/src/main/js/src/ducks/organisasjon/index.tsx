@@ -1,4 +1,3 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { createActions } from 'redux-actions'
 import { DollyApi, OrgforvalterApi } from '~/service/Api'
 import { handleActions } from '../utils/immerHandleActions'
@@ -6,6 +5,7 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Dispatch } from 'redux'
 import { getAdresseWithAdressetype } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { LOCATION_CHANGE } from 'redux-first-history'
 
 const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	for (let enhet of enheter) {

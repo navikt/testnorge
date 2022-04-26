@@ -19,6 +19,7 @@ export default function GruppeHeader({
 	identArray,
 	isDeletingGruppe,
 	deleteGruppe,
+	slettedeIdenter,
 	laasGruppe,
 	sendTags,
 	isSendingTags,
@@ -54,7 +55,10 @@ export default function GruppeHeader({
 						title="Eier"
 						value={gruppe.opprettetAv.brukernavn || gruppe.opprettetAv.navIdent}
 					/>
-					<Header.TitleValue title="Antall personer" value={gruppe.antallIdenter} />
+					<Header.TitleValue
+						title="Antall personer"
+						value={gruppe.antallIdenter - slettedeIdenter?.[0]?.length}
+					/>
 					<Header.TitleValue
 						title="Sist endret"
 						value={Formatters.formatStringDates(gruppe.datoEndret)}
