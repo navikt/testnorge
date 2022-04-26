@@ -5,6 +5,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '~/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import _get from 'lodash/get'
 
 interface BarnRelasjonValues {
 	formikBag: FormikProps<{}>
@@ -12,11 +13,17 @@ interface BarnRelasjonValues {
 }
 
 export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
-	const [deltBosted, setDeltBosted] = useState(false)
+	const [deltBosted, setDeltBosted] = useState(
+		_get(formikBag.values, `${path}.deltBosted`) !== null
+	)
 
 	useEffect(() => {
-		const newValue = deltBosted ? initialDeltBosted : null
-		formikBag.setFieldValue(`${path}.deltBosted`, newValue)
+		const currentValues = _get(formikBag.values, `${path}.deltBosted`)
+		if (deltBosted && currentValues === null) {
+			formikBag.setFieldValue(`${path}.deltBosted`, initialDeltBosted)
+		} else if (!deltBosted) {
+			formikBag.setFieldValue(`${path}.deltBosted`, null)
+		}
 	}, [deltBosted])
 
 	return (
@@ -34,6 +41,7 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 			/>
 			<DollyCheckbox
 				label="Har delt bosted"
+				checked={deltBosted}
 				onChange={() => setDeltBosted(!deltBosted)}
 				size="medium"
 				checkboxMargin

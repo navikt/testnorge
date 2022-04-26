@@ -26,7 +26,7 @@ type Target = {
 }
 
 export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
-	const [adressetype, setAdressetype] = useState(null)
+	const [adressetype, setAdressetype] = useState(_get(formikBag.values, `${path}.adressetype`))
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
