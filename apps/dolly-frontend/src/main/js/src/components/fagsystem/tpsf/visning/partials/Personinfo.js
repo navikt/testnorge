@@ -90,7 +90,7 @@ export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }
 		<div>
 			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 			<div className="person-visning_content">
-				<TitleValue title={data.identtype} value={data.ident} />
+				<TitleValue title={data.identtype} value={data.ident} visKopier />
 				<TitleValue title="Fornavn" value={data.fornavn} />
 
 				<TitleValue title="Mellomnavn" value={data.mellomnavn} />
