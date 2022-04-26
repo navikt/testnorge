@@ -11,6 +11,7 @@ const StyledPdlData = styled.div`
 	margin-bottom: 10px;
 	display: flex;
 	flex-wrap: wrap;
+
 	p {
 		margin: 0;
 	}
@@ -27,14 +28,10 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 	const [relatertPersonPdl, setRelatertPersonPdl] = useState(null)
 
 	useEffect(() => {
-		getRelatertPersonPdl()
-	}, [])
-
-	const getRelatertPersonPdl = async () => {
-		await DollyApi.getPersonFraPdl(data.ident).then((response: any) => {
+		DollyApi.getPersonFraPdl(data.ident).then((response: any) => {
 			setRelatertPersonPdl(response.data)
 		})
-	}
+	}, [])
 
 	return (
 		<>
