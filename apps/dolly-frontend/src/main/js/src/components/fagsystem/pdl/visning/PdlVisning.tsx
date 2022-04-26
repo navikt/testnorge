@@ -32,7 +32,7 @@ type PdlVisningProps = {
 	environments?: string[]
 }
 
-export const PdlVisning = ({ pdlData, loading, environments }: PdlVisningProps) => {
+export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisningProps) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!pdlData?.hentPerson) {
 		return null
@@ -100,7 +100,7 @@ export const PdlVisning = ({ pdlData, loading, environments }: PdlVisningProps) 
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<TpsMBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
-				<Foedsel data={foedsel} />
+				<Foedsel data={foedsel} erPdlVisning />
 				<PdlDoedsfall data={doedsfall} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />

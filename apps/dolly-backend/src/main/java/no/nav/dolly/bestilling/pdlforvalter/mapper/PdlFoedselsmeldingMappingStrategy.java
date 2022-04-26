@@ -44,9 +44,9 @@ public class PdlFoedselsmeldingMappingStrategy implements MappingStrategy {
                                 .filter(innvandretUtvandret -> innvandretUtvandret.getInnutvandret() == INNVANDRET)
                                 .map(InnvandretUtvandret::getLandkode)
                                 .reduce((first, second) -> second).orElse(NORGE));
-                        pdlFoedsel.setFodekommune(NORGE.equals(pdlFoedsel.getFoedeland()) ? getFoedekommune(person) : null);
-                        pdlFoedsel.setFoedested("Fødested i/på " + (isNotBlank(pdlFoedsel.getFodekommune()) ?
-                                pdlFoedsel.getFodekommune() :
+                        pdlFoedsel.setFoedekommune(NORGE.equals(pdlFoedsel.getFoedeland()) ? getFoedekommune(person) : null);
+                        pdlFoedsel.setFoedested("Fødested i/på " + (isNotBlank(pdlFoedsel.getFoedekommune()) ?
+                                pdlFoedsel.getFoedekommune() :
                                 kodeverkConsumer.getKodeverkByName(LAND).get(pdlFoedsel.getFoedeland())));
                         pdlFoedsel.setKilde(CONSUMER);
                         pdlFoedsel.setMaster(Master.FREG);

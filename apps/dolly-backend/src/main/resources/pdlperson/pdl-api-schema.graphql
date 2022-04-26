@@ -530,6 +530,7 @@ type Query {
     forslagAdresse(parameters: CompletionParameters): AdresseCompletionResult
     hentAdresse(matrikkelId: ID!): KartverketAdresse
     hentGeografiskTilknytning(ident: ID!): GeografiskTilknytning
+    hentGeografiskTilknytningBolk(identer: [ID!]!): [hentGeografiskTilknytningBolkResult!]!
     hentIdenter(grupper: [IdentGruppe!], historikk: Boolean = false, ident: ID!): Identliste
     hentIdenterBolk(grupper: [IdentGruppe!], historikk: Boolean = false, identer: [ID!]!): [HentIdenterBolkResult!]!
     hentPerson(ident: ID!): Person
@@ -684,6 +685,12 @@ type VergemaalEllerFremtidsfullmakt {
     metadata: Metadata!
     type: String
     vergeEllerFullmektig: VergeEllerFullmektig!
+}
+
+type hentGeografiskTilknytningBolkResult {
+    code: String!
+    geografiskTilknytning: GeografiskTilknytning
+    ident: String!
 }
 
 enum AdressebeskyttelseGradering {

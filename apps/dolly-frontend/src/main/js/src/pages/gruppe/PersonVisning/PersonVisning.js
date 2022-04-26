@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useBoolean, useMount } from 'react-use'
+import React, { useEffect, useRef } from 'react'
+import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -12,7 +12,6 @@ import {
 	InntektstubVisning,
 	InstVisning,
 	KrrVisning,
-	PdlfVisning,
 	PensjonVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
@@ -25,8 +24,8 @@ import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/Be
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
+import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyApi } from '~/service/Api'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 
 const getIdenttype = (ident) => {
@@ -54,29 +53,9 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
-	const [pdlData, setPdlData] = useState(null)
-	const [pdlLoading, setPdlLoading] = useBoolean(true)
 	const mountedRef = useRef(true)
 
-	const execute = useCallback(() => {
-		const pdlPerson = async () => {
-			const person = await DollyApi.getPersonFraPdl(ident.ident)
-				.then((response) => {
-					return response.data?.data
-				})
-				.catch((_e) => {
-					return null
-				})
-			if (mountedRef.current) {
-				setPdlData(person)
-				setPdlLoading(false)
-			}
-		}
-		return pdlPerson()
-	}, [ident])
-
 	useEffect(() => {
-		execute()
 		return () => {
 			mountedRef.current = false
 		}
@@ -117,14 +96,10 @@ export const PersonVisning = ({
 					/>
 				)}
 				{ident.master !== 'PDL' && (
-					<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+					<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
 				{ident.master === 'PDL' && (
-					<PdlVisning
-						pdlData={pdlData}
-						loading={pdlLoading}
-						environments={bestilling?.environments}
-					/>
+					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
 				<AaregVisning liste={data.aareg} loading={loading.aareg} />
 				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
@@ -149,7 +124,7 @@ export const PersonVisning = ({
 				/>
 				<DokarkivVisning ident={ident.ident} />
 				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-				<PdlPersonMiljoeInfo data={pdlData} loading={pdlLoading} />
+				<PdlPersonMiljoeInfo ident={ident.ident} />
 				<TidligereBestillinger
 					ids={ident.bestillingId}
 					setVisning={setVisning}
