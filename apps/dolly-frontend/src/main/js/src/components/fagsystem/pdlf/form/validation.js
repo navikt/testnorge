@@ -108,6 +108,39 @@ const testForeldreansvar = (val) => {
 	})
 }
 
+const testDeltBostedAdressetype = (value) => {
+	return value.test('har-gyldig-adressetype', function harGyldigAdressetype(selected) {
+		let feilmelding = null
+		if (selected === 'PARTNER_ADRESSE') {
+			const values = this.options.context
+			const personFoerLeggTil = values.personFoerLeggTil
+
+			let fantPartner = false
+			const sivilstand = _get(values, 'pdldata.person.sivilstand')
+			if (sivilstand && sivilstand.length > 0) {
+				fantPartner = sivilstand[0].borIkkeSammen
+			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
+				const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
+					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'
+				)
+				if (partnere.length > 0) {
+					const partnerAdresseId =
+						partnere[0].relatertPerson?.bostedsadresse?.[0]?.adresseIdentifikatorFraMatrikkelen
+					const identAdresseId =
+						personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse?.[0]
+							?.adresseIdentifikatorFraMatrikkelen
+					if (partnerAdresseId && partnerAdresseId !== identAdresseId) {
+						fantPartner = true
+					}
+				}
+			}
+			feilmelding = fantPartner ? null : 'Fant ikke gyldig partner for delt bosted'
+		}
+
+		return feilmelding ? this.createError({ message: feilmelding }) : true
+	})
+}
+
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
 	mellomnavn: Yup.string(),
@@ -454,7 +487,7 @@ const sivilstand = Yup.array().of(
 )
 
 const deltBosted = Yup.object({
-	adressetype: requiredString,
+	adressetype: testDeltBostedAdressetype(requiredString),
 	startdatoForKontrakt: Yup.date().optional().nullable(),
 	sluttdatoForKontrakt: Yup.date().optional().nullable(),
 	vegadresse: vegadresse,

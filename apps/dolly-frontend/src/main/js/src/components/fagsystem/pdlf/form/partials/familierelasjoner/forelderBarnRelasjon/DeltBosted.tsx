@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
 import { FormikProps } from 'formik'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -15,7 +15,6 @@ import {
 	initialUkjentBosted,
 	initialVegadresse,
 } from '~/components/fagsystem/pdlf/form/initialValues'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 interface DeltBostedValues {
 	formikBag: FormikProps<{}>
@@ -27,58 +26,13 @@ type Target = {
 }
 
 export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
-	const opts = useContext(BestillingsveilederContext)
-	const { personFoerLeggTil } = opts
-
 	const [adressetype, setAdressetype] = useState(null)
-	const [error, setError] = useState('Må velge adressetype')
-
-	const harIkkeDeltBostedPartner = (values: any) => {
-		const nyePartnere = values?.pdldata?.person?.sivilstand
-		if (nyePartnere && nyePartnere.length > 0) {
-			const sortedPartnere = nyePartnere.sort(
-				(a: any, b: any) => b.sivilstandsdato - a.sivilstandsdato
-			)
-			if (sortedPartnere[0].borIkkeSammen) {
-				return false
-			}
-		}
-
-		if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
-			const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
-				(relasjon: any) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'
-			)
-			if (partnere.length > 0) {
-				const partnerAdresseId =
-					partnere[0].relatertPerson?.bostedsadresse?.[0]?.adresseIdentifikatorFraMatrikkelen
-				const identAdresseId =
-					personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse?.[0]
-						?.adresseIdentifikatorFraMatrikkelen
-				if (partnerAdresseId && partnerAdresseId !== identAdresseId) {
-					return false
-				}
-			}
-		}
-
-		return true
-	}
-
-	const feilMelding = (values: any, type: string) => {
-		if (type === null) return 'Må velge adressetype'
-		if (type === 'PARTNER_ADRESSE' && harIkkeDeltBostedPartner(values)) {
-			return 'Fant ikke gyldig partner for delt bosted'
-		}
-		return null
-	}
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
 
-		const feil = feilMelding(formikBag.values, target?.value)
-		setError(feil)
-
-		if (!target || feil || target?.value === 'PARTNER_ADRESSE') {
+		if (!target || target?.value === 'PARTNER_ADRESSE') {
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'ukjentBosted', undefined)
@@ -97,7 +51,7 @@ export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
 		}
 
 		setAdressetype(target?.value)
-		_set(adresseClone, 'adressetype', feil ? null : target?.value || null)
+		_set(adresseClone, 'adressetype', target?.value || null)
 		formikBag.setFieldValue(path, adresseClone)
 	}
 	return (
@@ -109,11 +63,6 @@ export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
 				options={Options('adressetypeDeltBosted')}
 				onChange={(target: Target) => handleChangeAdressetype(target, path)}
 				size="large"
-				feil={
-					error && {
-						feilmelding: error,
-					}
-				}
 			/>
 
 			{adressetype === 'VEGADRESSE' && (
