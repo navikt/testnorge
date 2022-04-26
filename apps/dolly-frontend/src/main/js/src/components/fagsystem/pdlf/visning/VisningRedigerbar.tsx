@@ -71,17 +71,26 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
+	const pdlfError = (error: any) => {
+		error &&
+			setErrorMessagePdlf(
+				`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
+			)
+		setVisningModus(Modus.Les)
+	}
+
+	const pdlError = (error: any) => {
+		error && setErrorMessagePdl(`Feil ved oppdatering i PDL: ${error.message || error.toString()}`)
+		setVisningModus(Modus.Les)
+	}
+
 	const handleSubmit = async (data: any) => {
 		setVisningModus(Modus.LoadingPdlf)
 		const id = _get(data, `${path}.id`)
 		const itemData = _get(data, path)
 		await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 			.catch((error) => {
-				error &&
-					setErrorMessagePdlf(
-						`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
-					)
-				setVisningModus(Modus.Les)
+				pdlfError(error)
 			})
 			.then((putResponse) => {
 				if (putResponse) {
@@ -93,9 +102,7 @@ export const VisningRedigerbar = ({
 				}
 			})
 			.catch((error) => {
-				error &&
-					setErrorMessagePdl(`Feil ved oppdatering i PDL: ${error.message || error.toString()}`)
-				setVisningModus(Modus.Les)
+				pdlError(error)
 			})
 	}
 
@@ -104,11 +111,7 @@ export const VisningRedigerbar = ({
 		setVisningModus(Modus.LoadingPdlf)
 		await PdlforvalterApi.deleteAttributt(ident, path, id)
 			.catch((error) => {
-				error &&
-					setErrorMessagePdlf(
-						`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
-					)
-				setVisningModus(Modus.Les)
+				pdlfError(error)
 			})
 			.then((deleteResponse) => {
 				if (deleteResponse) {
@@ -120,9 +123,7 @@ export const VisningRedigerbar = ({
 				}
 			})
 			.catch((error) => {
-				error &&
-					setErrorMessagePdl(`Feil ved oppdatering i PDL: ${error.message || error.toString()}`)
-				setVisningModus(Modus.Les)
+				pdlError(error)
 			})
 	}
 

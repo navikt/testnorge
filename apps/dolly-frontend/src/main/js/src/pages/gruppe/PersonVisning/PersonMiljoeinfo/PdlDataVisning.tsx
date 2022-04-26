@@ -29,7 +29,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 						setPdlError(feil.message)
 					}
 				})
-				.catch((e) => {
+				.catch(() => {
 					setPdlLoading(false)
 				})
 		}

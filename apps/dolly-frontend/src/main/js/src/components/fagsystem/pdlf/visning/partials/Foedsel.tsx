@@ -63,22 +63,20 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 			(a: Person) => a.id === foedsel.id
 		)
 		const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
-
 		if (slettetFoedselPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+
+		const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
+		const redigertFoedselValues = redigertFoedselPdlf
+			? { foedsel: Object.assign(_cloneDeep(initialFoedsel), redigertFoedselPdlf) }
+			: null
 
 		return erPdlVisning ? (
 			<FoedselLes foedsel={foedsel} idx={idx} />
 		) : (
 			<VisningRedigerbarConnector
-				dataVisning={
-					<FoedselLes foedsel={redigertFoedselPdlf ? redigertFoedselPdlf : foedsel} idx={idx} />
-				}
+				dataVisning={<FoedselLes foedsel={foedselValues} idx={idx} />}
 				initialValues={initialValues}
-				redigertAttributt={
-					redigertFoedselPdlf
-						? { foedsel: Object.assign(_cloneDeep(initialFoedsel), redigertFoedselPdlf) }
-						: null
-				}
+				redigertAttributt={redigertFoedselValues}
 				path="foedsel"
 				ident={ident}
 			/>

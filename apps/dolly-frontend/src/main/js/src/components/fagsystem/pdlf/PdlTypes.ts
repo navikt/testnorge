@@ -130,3 +130,8 @@ export type NyIdent = {
 		hasMellomnavn: boolean
 	}
 }
+
+export type SelectedValue = {
+	value: string
+	label: string
+}

@@ -8,14 +8,21 @@ import _get from 'lodash/get'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikProps } from 'formik'
+import { SelectedValue } from '~/components/fagsystem/pdlf/PdlTypes'
+
+type FoedselTypes = {
+	formikBag: FormikProps<{}>
+	path?: string
+}
 
 const alderProps = ['alder', 'foedtEtter', 'foedtFoer']
 
-export const FoedselForm = ({ formikBag, path }) => {
-	const handleLandChange = (selected, path) => {
-		formikBag.setFieldValue(`${path}.foedeland`, selected?.value || null)
+export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
+	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
+		formikBag.setFieldValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
-			formikBag.setFieldValue(`${path}.fodekommune`, null)
+			formikBag.setFieldValue(`${foedselPath}.fodekommune`, null)
 		}
 	}
 
@@ -28,7 +35,8 @@ export const FoedselForm = ({ formikBag, path }) => {
 				name={`${path}.foedselsdato`}
 				label="Fødselsdato"
 				disabled={foedselsaar !== null && foedselsdato === null}
-				maxDate={new Date()}fastfield={false}
+				maxDate={new Date()}
+				fastfield={false}
 			/>
 			<Yearpicker
 				formikBag={formikBag}
@@ -39,6 +47,7 @@ export const FoedselForm = ({ formikBag, path }) => {
 					formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
 				}
 				maxDate={new Date()}
+				// @ts-ignore
 				disabled={foedselsdato !== null && foedselsaar === null}
 			/>
 			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
@@ -55,7 +64,7 @@ export const FoedselForm = ({ formikBag, path }) => {
 			<FormikSelect
 				name={`${path}.foedeland`}
 				label="Fødeland"
-				onChange={(selected) => handleLandChange(selected, path)}
+				onChange={(selected: SelectedValue) => handleLandChange(selected, path)}
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 				size="large"
 			/>
@@ -64,7 +73,7 @@ export const FoedselForm = ({ formikBag, path }) => {
 	)
 }
 
-export const Foedsel = ({ formikBag }) => {
+export const Foedsel = ({ formikBag }: FoedselTypes) => {
 	const person = _get(formikBag.values, 'pdldata.opprettNyPerson')
 	const hasAlder = () => {
 		let funnetAlder = false
