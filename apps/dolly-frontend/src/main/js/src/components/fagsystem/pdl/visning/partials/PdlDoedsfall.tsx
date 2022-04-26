@@ -4,14 +4,14 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
-import { Doedsfall } from '~/components/fagsystem/pdlf/PdlTypes'
+import { DoedsfallData } from '~/components/fagsystem/pdlf/PdlTypes'
 
 type PdlDoedsfallTypes = {
-	data: Array<Doedsfall>
+	data: Array<DoedsfallData>
 }
 
 type DoedsfallVisningTypes = {
-	item: Doedsfall
+	item: DoedsfallData
 	idx: number
 }
 
@@ -32,7 +32,7 @@ export const PdlDoedsfall = ({ data }: PdlDoedsfallTypes) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: Doedsfall, idx: number) => <DoedsfallVisning item={item} idx={idx} />}
+						{(item: DoedsfallData, idx: number) => <DoedsfallVisning item={item} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

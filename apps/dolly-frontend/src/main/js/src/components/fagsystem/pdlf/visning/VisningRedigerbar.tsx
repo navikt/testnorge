@@ -10,6 +10,7 @@ import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
+import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -29,6 +30,7 @@ enum Modus {
 
 enum Attributt {
 	Foedsel = 'foedsel',
+	Doedsfall = 'doedsfall',
 }
 
 const FieldArrayEdit = styled.div`
@@ -147,6 +149,8 @@ export const VisningRedigerbar = ({
 		switch (path) {
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
+			case Attributt.Doedsfall:
+				return <DoedsfallForm formikBag={formikBag} path={path} />
 		}
 	}
 
