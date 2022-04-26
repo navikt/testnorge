@@ -5,7 +5,7 @@ import no.nav.testnav.identpool.config.credentials.TpsMessagingServiceProperties
 import no.nav.testnav.identpool.consumers.command.TpsMessagingGetCommand;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;

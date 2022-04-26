@@ -1,19 +1,18 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Set;
-
 import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsServiceProperties;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Set;
 
 @Slf4j
 @Component

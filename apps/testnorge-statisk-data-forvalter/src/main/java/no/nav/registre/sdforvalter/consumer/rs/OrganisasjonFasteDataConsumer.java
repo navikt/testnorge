@@ -1,11 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonFasteDataServiceProperties;
 import no.nav.registre.sdforvalter.consumer.rs.commnad.SaveOrganisasjonFasteDataCommand;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTree;
@@ -13,7 +8,11 @@ import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component

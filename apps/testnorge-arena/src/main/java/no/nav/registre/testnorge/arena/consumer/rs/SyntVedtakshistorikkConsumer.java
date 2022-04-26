@@ -4,12 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.HentVedtakshistorikkCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

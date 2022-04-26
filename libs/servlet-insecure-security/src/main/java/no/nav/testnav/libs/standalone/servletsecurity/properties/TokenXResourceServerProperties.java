@@ -1,11 +1,10 @@
-package no.nav.testnav.libs.servletsecurity.properties;
+package no.nav.testnav.libs.standalone.servletsecurity.properties;
 
 
+import no.nav.testnav.libs.standalone.servletsecurity.domain.ResourceServerType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
 
 
 @Configuration

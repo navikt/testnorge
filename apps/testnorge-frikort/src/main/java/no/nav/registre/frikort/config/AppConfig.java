@@ -1,5 +1,9 @@
 package no.nav.registre.frikort.config;
 
+import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -13,11 +17,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.util.Random;
-
-import no.nav.registre.frikort.domain.xml.Egenandelsmelding;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 
 @Configuration
 @ComponentScan

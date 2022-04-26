@@ -1,6 +1,11 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OrganisasjonServiceProperties;
+import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -14,12 +19,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OrganisasjonServiceProperties;
-import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component

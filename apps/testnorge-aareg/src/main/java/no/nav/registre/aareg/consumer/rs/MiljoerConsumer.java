@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
 import no.nav.registre.aareg.util.WebClientFilter;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
