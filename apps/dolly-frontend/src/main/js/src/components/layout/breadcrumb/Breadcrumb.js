@@ -4,7 +4,7 @@ import cn from 'classnames'
 import Version from '~/components/version/Version'
 
 import './Breadcrumb.less'
-import allRoutes from '~/Routes'
+import allRoutes from '~/allRoutes'
 import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs'
 
 export const Breadcrumbs = () => {

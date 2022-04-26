@@ -1,6 +1,5 @@
 import { DollyApi } from '~/service/Api'
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE } from 'redux-first-history'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 
@@ -14,9 +13,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			if (action.payload.action !== 'REPLACE') return initialState
-		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			state.visPerson = action.payload.data.identHovedperson
 		},
