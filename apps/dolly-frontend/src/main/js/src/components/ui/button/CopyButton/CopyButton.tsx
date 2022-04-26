@@ -24,6 +24,7 @@ export const CopyButton = ({ value }: Props) => {
 					placement="top"
 					destroyTooltipOnHide={true}
 					mouseEnterDelay={0}
+					overlayStyle={{ cursor: 'pointer' }}
 					mouseLeaveDelay={0.1}
 					arrowContent={<div className="rc-tooltip-arrow-inner" />}
 					align={{
