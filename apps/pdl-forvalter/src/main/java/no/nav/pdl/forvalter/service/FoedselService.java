@@ -74,17 +74,17 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
     }
 
     private void setFodekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
-        if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFodekommune())) {
+        if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFoedekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {
-                    foedsel.setFodekommune(bostedadresse.getVegadresse().getKommunenummer());
+                    foedsel.setFoedekommune(bostedadresse.getVegadresse().getKommunenummer());
                 } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-                    foedsel.setFodekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
+                    foedsel.setFoedekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
                 } else if (nonNull(bostedadresse.getUkjentBosted())) {
-                    foedsel.setFodekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+                    foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
                 }
             } else {
-                foedsel.setFodekommune(geografiskeKodeverkConsumer.getTilfeldigKommune());
+                foedsel.setFoedekommune(geografiskeKodeverkConsumer.getTilfeldigKommune());
             }
         }
     }

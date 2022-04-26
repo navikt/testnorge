@@ -67,7 +67,7 @@ class FoedselServiceTest {
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
         assertThat(target.getFoedeland(), is(equalTo("NOR")));
-        assertThat(target.getFodekommune(), is(equalTo("3025")));
+        assertThat(target.getFoedekommune(), is(equalTo("3025")));
     }
 
     @Test
@@ -85,7 +85,7 @@ class FoedselServiceTest {
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
         assertThat(target.getFoedeland(), is(equalTo("NOR")));
-        assertThat(target.getFodekommune(), is(equalTo("3024")));
+        assertThat(target.getFoedekommune(), is(equalTo("3024")));
     }
 
     @Test
@@ -103,7 +103,7 @@ class FoedselServiceTest {
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
         assertThat(target.getFoedeland(), is(equalTo("NOR")));
-        assertThat(target.getFodekommune(), is(equalTo("4644")));
+        assertThat(target.getFoedekommune(), is(equalTo("4644")));
     }
 
     @Test
@@ -124,7 +124,7 @@ class FoedselServiceTest {
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
         assertThat(target.getFoedeland(), is(equalTo("NOR")));
-        assertThat(target.getFodekommune(), is(equalTo("4777")));
+        assertThat(target.getFoedekommune(), is(equalTo("4777")));
     }
 
     @Test
