@@ -69,7 +69,7 @@ public class PersonMappingStrategy implements MappingStrategy {
                             target.getFoedsel().add(FoedselDTO.builder()
                                     .foedeland(LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
                                             LandkodeDekoder.convert(source.getFoedekommLand().substring(1)) : null)
-                                    .fodekommune(!LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
+                                    .foedekommune(!LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
                                             source.getFoedekommLand() : null)
                                     .foedested(source.getFoedested())
                                     .foedselsdato(DatoFraIdentUtility.getDato(target.getIdent()).atStartOfDay())
