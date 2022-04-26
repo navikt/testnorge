@@ -21,7 +21,7 @@ fragment metadataDetails on Metadata {
 }
 
 query($identer: [ID!]!) {
-    hentIdenterBolk(identer: $identer) {
+    hentIdenterBolk(identer: $identer, historikk: true) {
         ident,
         identer {
             ident,
