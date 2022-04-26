@@ -27,18 +27,47 @@ type Target = {
 }
 
 export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = opts
+
 	const [adressetype, setAdressetype] = useState(null)
 	const [error, setError] = useState('Må velge adressetype')
 
-	const feilMelding = (values: any, type: string) => {
-		if (type === null) return 'Må velge adressetype'
-		if (type === 'PARTNER_ADRESSE') {
-			if (values?.pdldata?.person?.sivilstand?.[0]?.borIkkeSammen) {
-				return null
+	const harIkkeDeltBostedPartner = (values: any) => {
+		const nyePartnere = values?.pdldata?.person?.sivilstand
+		if (nyePartnere && nyePartnere.length > 0) {
+			const sortedPartnere = nyePartnere.sort(
+				(a: any, b: any) => b.sivilstandsdato - a.sivilstandsdato
+			)
+			if (sortedPartnere[0].borIkkeSammen) {
+				return false
 			}
-			return 'Fant ikke gyldig partner for delt bosted'
 		}
 
+		if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
+			const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
+				(relasjon: any) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'
+			)
+			if (partnere.length > 0) {
+				const partnerAdresseId =
+					partnere[0].relatertPerson?.bostedsadresse?.[0]?.adresseIdentifikatorFraMatrikkelen
+				const identAdresseId =
+					personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse?.[0]
+						?.adresseIdentifikatorFraMatrikkelen
+				if (partnerAdresseId && partnerAdresseId !== identAdresseId) {
+					return false
+				}
+			}
+		}
+
+		return true
+	}
+
+	const feilMelding = (values: any, type: string) => {
+		if (type === null) return 'Må velge adressetype'
+		if (type === 'PARTNER_ADRESSE' && harIkkeDeltBostedPartner(values)) {
+			return 'Fant ikke gyldig partner for delt bosted'
+		}
 		return null
 	}
 
