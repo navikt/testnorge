@@ -42,6 +42,7 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	gruppeId,
 	brukertype,
 	bestilling,
 	bestillingsListe,
@@ -68,7 +69,14 @@ export const PersonVisning = ({
 					{!iLaastGruppe && (
 						<Button
 							onClick={() =>
-								leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+								leggTilPaaPerson(
+									data,
+									bestillingsListe,
+									ident.master,
+									getIdenttype(ident.ident),
+									gruppeId,
+									navigate
+								)
 							}
 							kind="add-circle"
 						>

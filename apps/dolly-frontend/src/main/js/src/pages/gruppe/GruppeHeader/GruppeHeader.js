@@ -19,6 +19,7 @@ export default function GruppeHeader({
 	identArray,
 	isDeletingGruppe,
 	deleteGruppe,
+	slettedeIdenter,
 	laasGruppe,
 	sendTags,
 	isSendingTags,
@@ -54,7 +55,10 @@ export default function GruppeHeader({
 						title="Eier"
 						value={gruppe.opprettetAv.brukernavn || gruppe.opprettetAv.navIdent}
 					/>
-					<Header.TitleValue title="Antall personer" value={gruppe.antallIdenter} />
+					<Header.TitleValue
+						title="Antall personer"
+						value={gruppe.antallIdenter - slettedeIdenter?.[0]?.length}
+					/>
 					<Header.TitleValue
 						title="Sist endret"
 						value={Formatters.formatStringDates(gruppe.datoEndret)}
@@ -88,7 +92,7 @@ export default function GruppeHeader({
 						GJENOPPRETT
 					</Button>
 					{!erLaast && (
-						<LaasButton action={laasGruppe} loading={isLockingGruppe}>
+						<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
 							Er du sikker på at du vil låse denne gruppen? <br />
 							En gruppe som er låst kan ikke endres, og blir heller ikke <br />
 							påvirket av prodlast i samhandlermiljøet (Q1). <br />
@@ -97,7 +101,12 @@ export default function GruppeHeader({
 						</LaasButton>
 					)}
 					{!erLaast && (
-						<SlettButton action={deleteGruppe} loading={isDeletingGruppe}>
+						<SlettButton
+							gruppeId={gruppe.id}
+							action={deleteGruppe}
+							loading={isDeletingGruppe}
+							navigateHome={true}
+						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
 					)}

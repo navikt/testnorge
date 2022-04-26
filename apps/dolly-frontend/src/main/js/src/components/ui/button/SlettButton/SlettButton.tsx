@@ -7,10 +7,28 @@ import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 
 import './SlettModal.less'
+import { useNavigate } from 'react-router-dom'
 
-export const SlettButton = ({ action, loading, children, disabled = false }) => {
+type Props = {
+	action: Function
+	gruppeId?: string
+	loading: boolean
+	children: any
+	disabled?: boolean
+	navigateHome?: boolean
+}
+
+export const SlettButton = ({
+	action,
+	gruppeId,
+	loading,
+	children,
+	disabled = false,
+	navigateHome = false,
+}: Props) => {
 	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const navigate = useNavigate()
 
 	return (
 		<React.Fragment>
@@ -26,19 +44,20 @@ export const SlettButton = ({ action, loading, children, disabled = false }) => 
 				<div className="slettModal">
 					<div className="slettModal slettModal-content">
 						<Icon size={50} kind="report-problem-circle" />
-						<h1>SLETT</h1>
+						<h1>Slett</h1>
 						<h4>{children}</h4>
 					</div>
 					<div className="slettModal-actions">
-						<NavButton onClick={closeModal}>NEI</NavButton>
+						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action()
+								gruppeId ? action(gruppeId) : action()
+								navigateHome && navigate('/')
 							}}
 							type="hoved"
 						>
-							JA, JEG ER SIKKER
+							Ja, jeg er sikker
 						</NavButton>
 					</div>
 				</div>

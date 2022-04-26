@@ -22,6 +22,8 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    private static final String LOGOUT = "/logout";
+    private static final String LOGIN = "/login";
     private final String jwk;
     private final String wellKnownUrl;
     private final String postLogoutRedirectUri;
@@ -52,7 +54,7 @@ public class SecurityConfig {
                         "/internal/isAlive",
                         "/oauth2/callback",
                         "/favicon.ico",
-                        "/login",
+                        LOGIN,
                         "/main.*.css",
                         "/bundle.*.js",
                         "/oauth2/logout",
@@ -62,10 +64,10 @@ public class SecurityConfig {
                 .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationManager(authenticationManger)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
-                .formLogin().loginPage("/login")
+                .formLogin().loginPage(LOGIN)
                 .and().logout(logoutSpec -> logoutSpec
-                        .logoutUrl("/logout")
-                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
+                        .logoutUrl(LOGOUT)
+                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGOUT))
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }

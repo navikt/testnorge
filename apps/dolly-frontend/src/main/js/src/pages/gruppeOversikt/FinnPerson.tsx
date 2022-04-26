@@ -9,7 +9,7 @@ import { components } from 'react-select'
 import { PdlforvalterApi, TpsfApi } from '~/service/Api'
 import useBoolean from '~/utils/hooks/useBoolean'
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import { Option } from '~/service/SelectOptionsOppslag'
 
@@ -42,6 +42,8 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 
 	const [gruppe, setGruppe] = useState(null)
 	const [feilmelding, setFeilmelding] = useState(null)
+
+	const navigate = useNavigate()
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
 		personList
@@ -91,10 +93,8 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 		)
 	}
 
-	const redirectUrl = window.location.pathname.includes(`/${gruppe}/`)
-		? `/gruppe/${gruppe}`
-		: `/gruppe/${gruppe}/`
-	if (redirectToGruppe) return <Redirect to={redirectUrl} />
+	if (redirectToGruppe && !window.location.pathname.includes(`/${gruppe}`))
+		navigate(`/gruppe/${gruppe}`, { replace: true })
 
 	return (
 		<div>

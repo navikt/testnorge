@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 // @ts-ignore
@@ -8,7 +8,7 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
-import { useLocation } from 'react-use'
+import { logoutBruker } from '~/components/utlogging/Utlogging'
 
 type Props = {
 	brukerProfil: {
@@ -19,12 +19,11 @@ type Props = {
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
-	const location = useLocation()
-	const logout = () => (window.location.href = '/logout')
+	const navigate = useNavigate()
 
 	return (
 		<header className="app-header">
-			<NavLink to="/" className="home-nav">
+			<NavLink to="/" end className="home-nav">
 				<div className="img-logo">
 					<img alt="NAV logo" src={logo} />
 				</div>
@@ -33,12 +32,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink
-					isActive={() => location.pathname === '/' || location.pathname.includes('/gruppe')}
-					to="/"
-				>
-					Personer
-				</NavLink>
+				<NavLink to="/gruppe">Personer</NavLink>
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<a
 					href="https://endringsmelding.dev.intern.nav.no"
@@ -66,7 +60,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				</a>
 			</div>
 			<div className="flexbox--all-center">
-				<Button kind="logout" title="Logg ut" onClick={logout} />
+				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker(navigate)} />
 				<div className="profil-area flexbox--all-center">
 					<NavLink to="/minside">
 						<img alt="Profilbilde" src={brukerBilde || dolly} />

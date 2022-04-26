@@ -1,4 +1,3 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
 import { createActions } from 'redux-actions'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
@@ -43,9 +42,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
 		[onSuccess(actions.getById)](state, action) {
 			const gruppe = action.payload.data
 			state.gruppeInfo = action.payload.data
@@ -108,7 +104,7 @@ export const loadingGrupper = createLoadingSelector([
 	actions.getByUserId,
 ])
 
-export const selectGruppeById = (state, gruppeId) => state.gruppe.byId[gruppeId]
+export const selectGruppeById = (gruppe, gruppeId) => gruppe.byId[gruppeId]
 export const selectIdentById = (state, ident) => state.gruppe.ident[ident]
 
 export const sokSelectorGruppeOversikt = (state) => {

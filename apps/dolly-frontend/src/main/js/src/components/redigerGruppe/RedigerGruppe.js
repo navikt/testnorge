@@ -77,7 +77,12 @@ export default class RedigerGruppe extends PureComponent {
 			hensikt: values.hensikt,
 			navn: values.navn,
 		}
-		this.erRedigering ? await updateGruppe(gruppe.id, groupValues) : await createGruppe(groupValues)
+		this.erRedigering
+			? await updateGruppe(gruppe.id, groupValues)
+			: await createGruppe(groupValues).then((response) => {
+					const gruppeId = response.value?.data?.id
+					if (gruppeId) window.location.href = `/gruppe/${gruppeId}`
+			  })
 		return !error && this.onCancel()
 	}
 
