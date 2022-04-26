@@ -14,6 +14,7 @@ import kodeverkReducer from './ducks/kodeverk'
 import varslingerReducer from './ducks/varslinger'
 import finnPersonReducer from './ducks/finnPerson'
 import organisasjonReducer from './ducks/organisasjon'
+import redigertePersonerReducer from './ducks/redigertePersoner'
 import commonReducer from '~/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
@@ -59,6 +60,7 @@ const rootReducer = () =>
 		varslinger: varslingerReducer,
 		finnPerson: finnPersonReducer,
 		organisasjon: organisasjonReducer,
+		redigertePersoner: redigertePersonerReducer,
 		fasteData: fasteDataReducer,
 	})
 
