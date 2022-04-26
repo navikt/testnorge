@@ -12,7 +12,7 @@ type Data = {
 }
 
 export const IdentInfo = ({ pdlResponse }: Data) => {
-	if (!pdlResponse) {
+	if (!pdlResponse?.identer) {
 		return null
 	}
 

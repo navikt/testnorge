@@ -10,6 +10,7 @@ const StyledPdlData = styled.div`
 	margin-bottom: 10px;
 	display: flex;
 	flex-wrap: wrap;
+
 	p {
 		margin: 0;
 	}

@@ -4,6 +4,7 @@ import { actions, fetchOrganisasjoner } from '~/ducks/organisasjon'
 import { getOrganisasjonBestilling } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import Organisasjoner from './Organisasjoner'
+import { Dispatch } from 'redux'
 
 const loadingSelector = createLoadingSelector([
 	actions.getOrganisasjoner,
@@ -20,7 +21,7 @@ const mapStateToProps = (state: any) => ({
 	brukertype: state.bruker.brukerData.brukertype,
 })
 
-const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
 		getOrganisasjonBestillingStatus: (brukerId: string) =>
 			dispatch(getOrganisasjonBestilling(brukerId)),

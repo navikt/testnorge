@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
-@Order(2)
 @RequiredArgsConstructor
 public class HendelseslagerPublishCommand implements Callable<Mono<String>> {
 

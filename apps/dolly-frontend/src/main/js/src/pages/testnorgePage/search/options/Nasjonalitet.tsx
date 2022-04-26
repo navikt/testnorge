@@ -5,8 +5,8 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',
-	inflyttet: 'nasjonalitet.innflyttet',
-	utflyttet: 'nasjonalitet.utflyttet',
+	inflyttet: 'nasjonalitet.innflyttingTilNorge',
+	utflyttet: 'nasjonalitet.utflyttingFraNorge',
 }
 
 export const Nasjonalitet = () => (

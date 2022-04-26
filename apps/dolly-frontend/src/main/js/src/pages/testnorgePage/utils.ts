@@ -13,8 +13,8 @@ export const initialValues = {
 	kjoenn: '',
 	nasjonalitet: {
 		statsborgerskap: '',
-		utflyttet: false,
-		innflyttet: false,
+		utflyttingFraNorge: false,
+		innflyttingTilNorge: false,
 	},
 	relasjoner: {
 		sivilstand: '',
@@ -86,9 +86,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 				fom: values?.alder?.foedselsdato?.fom,
 				tom: values?.alder?.foedselsdato?.tom,
 			},
-			statsborgerskap: {
-				land: values?.nasjonalitet?.statsborgerskap,
-			},
+			nasjonalitet: values?.nasjonalitet,
 			sivilstand: {
 				type: values?.relasjoner?.sivilstand,
 			},
@@ -99,12 +97,6 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			identer: identer,
 			identifikasjon: values?.identifikasjon,
 			relasjoner: values?.relasjoner,
-			utflyttingFraNorge: {
-				utflyttet: values?.nasjonalitet?.utflyttet,
-			},
-			innflyttingTilNorge: {
-				innflytting: values?.nasjonalitet?.innflyttet,
-			},
 			adresser: values?.adresser,
 			personstatus: {
 				status: personstatus,

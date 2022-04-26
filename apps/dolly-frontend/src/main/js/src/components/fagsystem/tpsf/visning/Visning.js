@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import _has from 'lodash/has'
 import {
 	Boadresse,
@@ -52,13 +52,12 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 			mountedRef.current = false
 		}
 	}, [])
-
 	const harPdlAdresse =
-		_has(pdlData, 'person.bostedsadresse') ||
-		_has(pdlData, 'person.oppholdsadresse') ||
-		_has(pdlData, 'person.kontaktadresse')
+		_has(pdlData, 'bostedsadresse') ||
+		_has(pdlData, 'oppholdsadresse') ||
+		_has(pdlData, 'kontaktadresse')
 
-	const harPdlFullmakt = pdlData && _has(pdlData, 'person.fullmakt')
+	const harPdlFullmakt = pdlData && _has(pdlData, 'fullmakt')
 
 	const hasTpsfData = data.ident
 

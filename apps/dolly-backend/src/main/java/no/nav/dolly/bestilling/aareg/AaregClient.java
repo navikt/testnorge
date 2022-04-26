@@ -47,7 +47,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 
 @Slf4j
-@Order(8)
+@Order(6)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
