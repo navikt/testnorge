@@ -352,6 +352,10 @@ public class PdlPerson {
     @AllArgsConstructor
     public static class Foedsel {
 
+        private String foedekommune;
+        private String foedeland;
+        private String foedested;
+        private Integer foedselsaar;
         private LocalDate foedselsdato;
         private Metadata metadata;
     }

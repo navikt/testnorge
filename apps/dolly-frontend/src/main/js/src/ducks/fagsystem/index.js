@@ -206,8 +206,29 @@ export default handleActions(
 			state.brregstub[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
+			const identerBolk = action.payload.data?.data?.hentIdenterBolk?.reduce(
+				(map, person) => ({
+					...map,
+					[person.ident]: person.identer,
+				}),
+				{}
+			)
+			const geografiskTilknytningBolk =
+				action.payload.data?.data?.hentGeografiskTilknytningBolk?.reduce(
+					(map, person) => ({
+						...map,
+						[person.ident]: person.geografiskTilknytning,
+					}),
+					{}
+				)
+
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
-				state.pdl[ident.ident] = ident
+				state.pdl[ident.ident] = {
+					hentIdenter: { identer: identerBolk?.[ident.ident] },
+					hentGeografiskTilknytning: geografiskTilknytningBolk?.[ident.ident],
+					hentPerson: ident.person,
+					ident: ident.ident,
+				}
 			})
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
@@ -462,7 +483,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	if (!pdlData) return null
-	const person = pdlData.person
+	const person = pdlData.person || pdlData.hentPerson
 	if (!person) return null
 
 	const navn = person.navn[0]
@@ -472,7 +493,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 
 	return {
 		ident,
-		identNr: pdlData?.ident,
+		identNr: ident?.ident,
 		bestillingId: ident.bestillingId,
 		kilde: 'TEST-NORGE',
 		importFra: 'Test-Norge',
