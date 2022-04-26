@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import Loading from '~/components/ui/loading/Loading'
 import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
@@ -84,48 +84,64 @@ export const VisningRedigerbar = ({
 		setVisningModus(Modus.Les)
 	}
 
-	const handleSubmit = async (data: any) => {
-		setVisningModus(Modus.LoadingPdlf)
-		const id = _get(data, `${path}.id`)
-		const itemData = _get(data, path)
-		await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-			.catch((error) => {
-				pdlfError(error)
-			})
-			.then((putResponse) => {
-				if (putResponse) {
-					setVisningModus(Modus.LoadingPdl)
-					DollyApi.sendOrdre(ident).then(() => {
-						getPdlForvalter()
-						setVisningModus(Modus.Les)
-					})
-				}
-			})
-			.catch((error) => {
-				pdlError(error)
-			})
-	}
+	const mountedRef = useRef(true)
 
-	const handleDelete = async () => {
-		const id = _get(initialValues, `${path}.id`)
-		setVisningModus(Modus.LoadingPdlf)
-		await PdlforvalterApi.deleteAttributt(ident, path, id)
-			.catch((error) => {
-				pdlfError(error)
-			})
-			.then((deleteResponse) => {
-				if (deleteResponse) {
-					setVisningModus(Modus.LoadingPdl)
-					DollyApi.sendOrdre(ident).then(() => {
-						getPdlForvalter()
-						setVisningModus(Modus.Les)
-					})
-				}
-			})
-			.catch((error) => {
-				pdlError(error)
-			})
-	}
+	const handleSubmit = useCallback((data: any) => {
+		const submit = async () => {
+			const id = _get(data, `${path}.id`)
+			const itemData = _get(data, path)
+			setVisningModus(Modus.LoadingPdlf)
+			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
+				.catch((error) => {
+					pdlfError(error)
+				})
+				.then((putResponse) => {
+					if (putResponse) {
+						setVisningModus(Modus.LoadingPdl)
+						DollyApi.sendOrdre(ident).then(() => {
+							getPdlForvalter().then(() => {
+								if (mountedRef.current) {
+									setVisningModus(Modus.Les)
+								}
+							})
+						})
+					}
+				})
+				.catch((error) => {
+					pdlError(error)
+				})
+		}
+		mountedRef.current = false
+		return submit()
+	}, [])
+
+	const handleDelete = useCallback(() => {
+		const slett = async () => {
+			const id = _get(initialValues, `${path}.id`)
+			setVisningModus(Modus.LoadingPdlf)
+			await PdlforvalterApi.deleteAttributt(ident, path, id)
+				.catch((error) => {
+					pdlfError(error)
+				})
+				.then((deleteResponse) => {
+					if (deleteResponse) {
+						setVisningModus(Modus.LoadingPdl)
+						DollyApi.sendOrdre(ident).then(() => {
+							getPdlForvalter().then(() => {
+								if (mountedRef.current) {
+									setVisningModus(Modus.Les)
+								}
+							})
+						})
+					}
+				})
+				.catch((error) => {
+					pdlError(error)
+				})
+		}
+		mountedRef.current = false
+		return slett()
+	}, [])
 
 	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {

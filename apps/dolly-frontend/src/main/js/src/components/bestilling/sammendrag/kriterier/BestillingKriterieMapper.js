@@ -223,7 +223,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
 						obj('Fødselsår', item.foedselsaar),
 						obj('Fødested', item.foedested),
-						obj('Fødekommune', item.fodekommune, AdresseKodeverk.Kommunenummer),
+						obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
 						obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
 					]
 				}),

@@ -22,7 +22,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
 		formikBag.setFieldValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
-			formikBag.setFieldValue(`${foedselPath}.fodekommune`, null)
+			formikBag.setFieldValue(`${foedselPath}.foedekommune`, null)
 		}
 	}
 
@@ -52,7 +52,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 			/>
 			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
 			<FormikSelect
-				name={`${path}.fodekommune`}
+				name={`${path}.foedekommune`}
 				label="Fødekommune"
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
