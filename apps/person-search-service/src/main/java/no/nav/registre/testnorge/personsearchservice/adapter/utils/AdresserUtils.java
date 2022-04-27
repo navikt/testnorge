@@ -6,7 +6,6 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -78,7 +77,10 @@ public class AdresserUtils {
                                 false
                         ));
                     }else if(NO.equalsIgnoreCase(value)){
-                        queryBuilder.must(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
+                        queryBuilder.must(nestedShouldExistQuery(
+                                BOSTEDSADRESSE_PATH,
+                                Arrays.asList(".utenlandskAdresse.landkode", ".utenlandskAdresse.postkode"),
+                                1,false));
                     }
                 });
     }

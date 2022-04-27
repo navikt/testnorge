@@ -1,16 +1,8 @@
 import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 import { FormikProps } from 'formik'
-import Button from '~/components/ui/button/Button'
-import useBoolean from '~/utils/hooks/useBoolean'
-
-const booleanPptions = [
-	{ value: 'Y', label: 'Ja' },
-	{ value: 'N', label: 'Nei' },
-]
 
 const options = {
 	boolean: [
@@ -32,7 +24,6 @@ const kontaktPath = 'adresser.harKontaktadresse'
 const oppholdPath = 'adresser.harOppholdsadresse'
 
 export const Adresser = ({ formikBag }: AdresserProps) => {
-	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
 	return (
 		<section>
 			<RadioGroupOptions
@@ -67,33 +58,12 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				path={oppholdPath}
 				options={options.boolean}
 			/>
-
-			{visAvansert ? (
-				<Button onClick={setSkjulAvansert} kind={'collapse'}>
-					SKJUL AVANSERTE VALG
-				</Button>
-			) : (
-				<Button onClick={setVisAvansert} kind={'expand'} style={{ marginBottom: '10px' }}>
-					VIS AVANSERTE VALG
-				</Button>
-			)}
-			{visAvansert && (
-				<div>
-					<div className="options-title">Historikk</div>
-					<FormikCheckbox
-						name={'adresser.bostedsadresse.harHistorikk'}
-						label="Har bostedshistorikk"
-						size="small"
-					/>
-				</div>
-			)}
 		</section>
 	)
 }
 
 export const AdresserPaths = {
-	[bostedPath + '.harNorskAdresse']: 'string',
-	[bostedPath + '.harUtenlandskAdresse']: 'string',
+	[bostedPath + '.borINorge']: 'string',
 	[bostedPath + '.postnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
 	[kontaktPath]: 'string',
