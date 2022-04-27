@@ -74,8 +74,6 @@ public class VedtakshistorikkService {
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             log.error("Kunne ikke opprette vedtakshistorikk.", e);
-        } finally {
-            syntForkJoinPool.shutdown();
         }
         return responses;
     }
