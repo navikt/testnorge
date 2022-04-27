@@ -30,6 +30,7 @@ public class ArtifactDeleteService {
 
     private final PersonRepository personRepository;
     private final PersonService personService;
+    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
 
     private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
 
@@ -244,6 +245,8 @@ public class ArtifactDeleteService {
         dbPerson.getPerson().setDoedsfall(dbPerson.getPerson().getDoedsfall().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
+
+        folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
     public void deleteFolkeregisterPersonstatus(String ident, Integer id) {
