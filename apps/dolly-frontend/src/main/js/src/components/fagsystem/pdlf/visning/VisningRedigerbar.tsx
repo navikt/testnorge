@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
+import * as Yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
 import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
@@ -11,6 +12,8 @@ import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
+import { doedsfall } from '~/components/fagsystem/pdlf/form/validation'
+import { ifPresent } from '~/utils/YupValidations'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -154,6 +157,13 @@ export const VisningRedigerbar = ({
 		}
 	}
 
+	const validationSchema = Yup.object().shape(
+		{
+			doedsfall: ifPresent('doedsfall', doedsfall),
+		},
+		[['doedsfall', 'doedsfall']]
+	)
+
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
@@ -197,6 +207,7 @@ export const VisningRedigerbar = ({
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
+					validationSchema={validationSchema}
 				>
 					{(formikBag) => {
 						return (
@@ -208,7 +219,7 @@ export const VisningRedigerbar = ({
 											type="standard"
 											htmlType="reset"
 											onClick={() => setVisningModus(Modus.Les)}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
+											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
 										>
 											Avbryt

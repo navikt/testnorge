@@ -110,7 +110,7 @@ export default function PersonListe({
 		},
 		{
 			text: 'Alder',
-			width: '10',
+			width: '15',
 			dataField: 'alder',
 		},
 		{
