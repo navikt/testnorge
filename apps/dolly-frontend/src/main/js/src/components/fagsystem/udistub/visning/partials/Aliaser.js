@@ -13,7 +13,7 @@ export const Aliaser = ({ aliaser }) => {
 				<DollyFieldArray data={aliaser} nested>
 					{(alias, idx) => (
 						<div key={idx} className="person-visning_content">
-							<TitleValue title="FNR/DNR" value={alias.fnr} />
+							<TitleValue title="FNR/DNR" value={alias.fnr} visKopier />
 							<TitleValue title="Fornavn" value={alias.navn.fornavn} />
 							<TitleValue title="Mellomnavn" value={alias.navn.mellomnavn} />
 							<TitleValue title="Etternavn" value={alias.navn.etternavn} />
