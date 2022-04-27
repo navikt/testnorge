@@ -3,23 +3,35 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { initialDoedsfall } from '~/components/fagsystem/pdlf/form/initialValues'
-import { FormikProps } from 'formik'
+import styled from 'styled-components'
 
 type DoedsfallTypes = {
-	formikBag?: FormikProps<{}>
-	path?: string
+	path: string
 }
 
-export const DoedsfallForm = ({ formikBag, path }: DoedsfallTypes) => {
+const DatepickerWrapper = styled.div`
+	&&&& {
+		button {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			margin-right: 0;
+		}
+	}
+`
+
+export const DoedsfallForm = ({ path }: DoedsfallTypes) => {
 	return (
 		<>
-			<FormikDatepicker name={`${path}.doedsdato`} label="Dødsdato" maxDate={new Date()} />
+			<DatepickerWrapper>
+				<FormikDatepicker name={`${path}.doedsdato`} label="Dødsdato" maxDate={new Date()} />
+			</DatepickerWrapper>
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>
 	)
 }
 
-export const Doedsfall = ({ data }) => {
+export const Doedsfall = () => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray

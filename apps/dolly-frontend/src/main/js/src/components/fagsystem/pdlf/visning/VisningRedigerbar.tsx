@@ -150,7 +150,7 @@ export const VisningRedigerbar = ({
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:
-				return <DoedsfallForm formikBag={formikBag} path={path} />
+				return <DoedsfallForm path={path} />
 		}
 	}
 
