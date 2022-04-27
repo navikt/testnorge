@@ -1,4 +1,5 @@
 import React from 'react'
+import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
@@ -31,11 +32,16 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={'Bostedsadresse'}
 				path={`${bostedPath}.borINorge`}
 				options={options.borINorge}
+				disabled={
+					_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
+					_get(formikBag.values, `${bostedPath}.postnummer`)
+				}
 			/>
 			<FormikSelect
 				name={`${bostedPath}.postnummer`}
 				label="Bosted - Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
+				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -43,6 +49,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={`${bostedPath}.kommunenummer`}
 				label="Bosted - Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
+				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>

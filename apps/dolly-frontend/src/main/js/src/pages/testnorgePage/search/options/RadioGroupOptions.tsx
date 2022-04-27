@@ -17,6 +17,7 @@ type RadioOptionsProps = {
 	legend?: string
 	hideLegend?: boolean
 	options: Option[]
+	disabled?: boolean
 }
 
 const IconContainer = styled.div`
@@ -30,6 +31,7 @@ export const RadioGroupOptions = ({
 	legend = 'Velg',
 	hideLegend = true,
 	options,
+	disabled = false,
 }: RadioOptionsProps) => {
 	const selected = _get(formikBag.values, `${path}`) || null
 	const setSelected = (valg: string) => {
@@ -46,7 +48,13 @@ export const RadioGroupOptions = ({
 				)}
 			</div>
 			<div className="radio-group__options">
-				<RadioGroup value={selected} legend={legend} hideLegend={hideLegend} size="medium">
+				<RadioGroup
+					value={selected}
+					legend={legend}
+					hideLegend={hideLegend}
+					size="medium"
+					disabled={disabled}
+				>
 					{options.map((option, idx) => {
 						return (
 							<Radio
