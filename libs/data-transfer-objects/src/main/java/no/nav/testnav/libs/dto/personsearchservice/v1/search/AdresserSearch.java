@@ -11,11 +11,15 @@ public class AdresserSearch {
     BostedsadresseSearch bostedsadresse;
     KontaktadresseSearch kontaktadresse;
     OppholdsadresseSearch oppholdsadresse;
+    String harKontaktadresse;
+    String harOppholdsadresse;
 
     @Value
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
     public class BostedsadresseSearch {
+        String harNorskAdresse;
+        String harUtenlandskAdresse;
         String kommunenummer;
         String postnummer;
     }
