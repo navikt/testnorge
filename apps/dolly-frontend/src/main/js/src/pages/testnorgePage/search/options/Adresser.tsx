@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 import { FormikProps } from 'formik'
 
@@ -60,29 +60,47 @@ export const Adresser = ({ formikBag, numSelected }: AdresserProps) => {
 				optionHeight={50}
 				size="medium"
 			/>
-			{numSelected > 0 && (
-				<>
-					<div className="options-title">Søk i:</div>
-					<DollyCheckbox
-						label="Bostedsadresse"
-						size="medium"
-						checked={selectedAdressetyper.includes('bostedsadresse')}
-						onChange={() => handleSelectedChange('bostedsadresse')}
-					/>
-					<DollyCheckbox
-						label="Kontaktadresse"
-						size="medium"
-						checked={selectedAdressetyper.includes('kontaktadresse')}
-						onChange={() => handleSelectedChange('kontaktadresse')}
-					/>
-					<DollyCheckbox
-						label="Oppholdsadresse"
-						size="medium"
-						checked={selectedAdressetyper.includes('oppholdsadresse')}
-						onChange={() => handleSelectedChange('oppholdsadresse')}
-					/>
-				</>
-			)}
+			<div className="options-title">Historikk</div>
+			<FormikCheckbox
+				name={'adresser.harBostedshistorikk'}
+				label="Har bostedshistorikk"
+				size="small"
+			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Har kontaktadresse'}
+				path={'adresser.harKontaktadresse'}
+				options={options}
+			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Har oppholdsadresse'}
+				path={'adresser.harOppholdsadresse'}
+				options={options}
+			/>
+			{/*{numSelected > 0 && (*/}
+			{/*	<>*/}
+			{/*		<div className="options-title">Søk i:</div>*/}
+			{/*		<DollyCheckbox*/}
+			{/*			label="Bostedsadresse"*/}
+			{/*			size="medium"*/}
+			{/*			checked={selectedAdressetyper.includes('bostedsadresse')}*/}
+			{/*			onChange={() => handleSelectedChange('bostedsadresse')}*/}
+			{/*		/>*/}
+			{/*		<DollyCheckbox*/}
+			{/*			label="Kontaktadresse"*/}
+			{/*			size="medium"*/}
+			{/*			checked={selectedAdressetyper.includes('kontaktadresse')}*/}
+			{/*			onChange={() => handleSelectedChange('kontaktadresse')}*/}
+			{/*		/>*/}
+			{/*		<DollyCheckbox*/}
+			{/*			label="Oppholdsadresse"*/}
+			{/*			size="medium"*/}
+			{/*			checked={selectedAdressetyper.includes('oppholdsadresse')}*/}
+			{/*			onChange={() => handleSelectedChange('oppholdsadresse')}*/}
+			{/*		/>*/}
+			{/*	</>*/}
+			{/*)}*/}
 		</section>
 	)
 }
