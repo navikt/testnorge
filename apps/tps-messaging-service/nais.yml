@@ -64,6 +64,8 @@ spec:
           cluster: dev-fss
         - application: ident-pool
           cluster: dev-fss
+        - application: testnav-ident-pool
+          cluster: dev-gcp
         - application: synthdata-tps-gcp
           cluster: dev-gcp
         - application: app-1
