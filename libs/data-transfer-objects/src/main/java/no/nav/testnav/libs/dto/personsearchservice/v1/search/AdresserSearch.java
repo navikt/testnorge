@@ -18,8 +18,7 @@ public class AdresserSearch {
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
     public class BostedsadresseSearch {
-        String harNorskAdresse;
-        String harUtenlandskAdresse;
+        String borINorge;
         String kommunenummer;
         String postnummer;
     }

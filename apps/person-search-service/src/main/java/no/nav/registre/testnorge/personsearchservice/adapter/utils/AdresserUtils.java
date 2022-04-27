@@ -26,8 +26,7 @@ public class AdresserUtils {
                     if (nonNull(adresser.getBostedsadresse())) {
                         addKommunenrBostedQuery(queryBuilder, adresser.getBostedsadresse());
                         addPostnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
-                        addNorskBostedQuery(queryBuilder, adresser.getBostedsadresse());
-                        addUtenlandskBostedQuery(queryBuilder, adresser.getBostedsadresse());
+                        addBorINorgeQuery(queryBuilder, adresser.getBostedsadresse());
                     }
                     if (nonNull(adresser.getKontaktadresse())) {
                         addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
@@ -68,19 +67,8 @@ public class AdresserUtils {
                 });
     }
 
-    private static void addUtenlandskBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
-        Optional.ofNullable(bostedsadresse.getHarUtenlandskAdresse())
-                .ifPresent(value -> {
-                    if (YES.equalsIgnoreCase(value)) {
-                        queryBuilder.must(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
-                    }else if(NO.equalsIgnoreCase(value)){
-                        queryBuilder.mustNot(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
-                    }
-                });
-    }
-
-    private static void addNorskBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse ) {
-        Optional.ofNullable(bostedsadresse.getHarNorskAdresse())
+    private static void addBorINorgeQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
+        Optional.ofNullable(bostedsadresse.getBorINorge())
                 .ifPresent(value -> {
                     if (YES.equalsIgnoreCase(value)) {
                         queryBuilder.must(nestedShouldExistQuery(
@@ -90,12 +78,7 @@ public class AdresserUtils {
                                 false
                         ));
                     }else if(NO.equalsIgnoreCase(value)){
-                        queryBuilder.mustNot(nestedShouldExistQuery(
-                                BOSTEDSADRESSE_PATH,
-                                Arrays.asList(VEGADRESSE_POSTNR, MATR_POSTNR, ".ukjentBosted.bostedskommune"),
-                                1,
-                                false
-                        ));
+                        queryBuilder.must(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
                     }
                 });
     }

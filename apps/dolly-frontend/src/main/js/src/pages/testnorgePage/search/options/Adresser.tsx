@@ -7,10 +7,21 @@ import { FormikProps } from 'formik'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 
-const options = [
+const booleanPptions = [
 	{ value: 'Y', label: 'Ja' },
 	{ value: 'N', label: 'Nei' },
 ]
+
+const options = {
+	boolean: [
+		{ value: 'Y', label: 'Ja' },
+		{ value: 'N', label: 'Nei' },
+	],
+	borINorge: [
+		{ value: 'Y', label: 'Har norsk adresse' },
+		{ value: 'N', label: 'Har utenlandsk adresse' },
+	],
+}
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
@@ -26,15 +37,9 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 		<section>
 			<RadioGroupOptions
 				formikBag={formikBag}
-				name={'Har norsk bostedsadresse'}
-				path={`${bostedPath}.harNorskAdresse`}
-				options={options}
-			/>
-			<RadioGroupOptions
-				formikBag={formikBag}
-				name={'Har utenlandsk bostedsadresse'}
-				path={`${bostedPath}.harUtenlandskAdresse`}
-				options={options}
+				name={'Bostedsadresse'}
+				path={`${bostedPath}.borINorge`}
+				options={options.borINorge}
 			/>
 			<FormikSelect
 				name={`${bostedPath}.postnummer`}
@@ -54,13 +59,13 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				formikBag={formikBag}
 				name={'Har kontaktadresse'}
 				path={kontaktPath}
-				options={options}
+				options={options.boolean}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har oppholdsadresse'}
 				path={oppholdPath}
-				options={options}
+				options={options.boolean}
 			/>
 
 			{visAvansert ? (

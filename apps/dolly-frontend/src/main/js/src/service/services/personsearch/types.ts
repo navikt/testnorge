@@ -31,8 +31,7 @@ export type Search = {
 	}
 	adresser?: {
 		bostedsadresse?: {
-			harNorskAdresse?: string
-			harUtenlanskAdresse?: string
+			borINorge?: string
 			postnummer?: string
 			kommunenummer?: string
 		}

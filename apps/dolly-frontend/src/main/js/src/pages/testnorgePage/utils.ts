@@ -34,8 +34,7 @@ export const initialValues = {
 	},
 	adresser: {
 		bostedsadresse: {
-			harNorskAdresse: '',
-			harUtenlandskAdresse: '',
+			borINorge: '',
 			kommunenummer: '',
 			postnummer: '',
 		},
