@@ -112,18 +112,20 @@ public class JobController {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            try {
-                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
-            } catch (HttpStatusCodeException e) {
-                log.warn(e.getResponseBodyAsString(), e);
-            }
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            try {
+//                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
+//            } catch (HttpStatusCodeException e) {
+//                log.warn(e.getResponseBodyAsString(), e);
+//            }
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void navSyntBatch() {
         log.info("Nav-endringsmeldinger batch midlertidig stanset.");
+        //Feil i innsending av nav-endringsmeldinger må fikses før denne eventuelt kan startes igjen.
 //        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
 //            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
 //                    .avspillergruppeId(entry.getKey())
@@ -136,63 +138,70 @@ public class JobController {
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var request = new SyntetiserInntektsmeldingRequest(entry.getKey(), entry.getValue());
-            var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
-            log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var request = new SyntetiserInntektsmeldingRequest(entry.getKey(), entry.getValue());
+//            var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
+//            log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
+//        }
     }
 
     @Scheduled(cron = "0 0 1 1 5 *")
     public void poppSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
-            var testdataEier = "synt_test";
-            testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserPoppRequest = new SyntetiserPoppRequest(entry.getKey(), entry.getValue(), poppbatchAntallNyeIdenter);
+//            var testdataEier = "synt_test";
+//            testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
+//        }
     }
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void aaregSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
-            testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserAaregRequest = new SyntetiserAaregRequest(entry.getKey(), entry.getValue(), aaregbatchAntallNyeIdenter);
+//            testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void instSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserInstRequest = new SyntetiserInstRequest(entry.getKey(), entry.getValue(), instbatchAntallNyeIdenter);
-            testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserInstRequest = new SyntetiserInstRequest(entry.getKey(), entry.getValue(), instbatchAntallNyeIdenter);
+//            testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void bisysSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
-            testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
+//            testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
+//        }
     }
 
     @Scheduled(cron = "0 0 0 1 5 *")
     public void tpSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallPersoner);
-            var entity = testnorgeTpService.genererTp(request);
-            if (!entity.getStatusCode().is2xxSuccessful()) {
-                log.error("Klarte ikke å fullføre syntetisering i TP batch kjøring");
-            }
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var request = new SyntetiserTpRequest(entry.getKey(), entry.getValue(), tpAntallPersoner);
+//            var entity = testnorgeTpService.genererTp(request);
+//            if (!entity.getStatusCode().is2xxSuccessful()) {
+//                log.error("Klarte ikke å fullføre syntetisering i TP batch kjøring");
+//            }
+//        }
     }
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void samSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserSamRequest = new SyntetiserSamRequest(entry.getKey(), entry.getValue(), samAntallMeldinger);
-            testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserSamRequest = new SyntetiserSamRequest(entry.getKey(), entry.getValue(), samAntallMeldinger);
+//            testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
+//        }
     }
 
     /**
@@ -201,8 +210,8 @@ public class JobController {
      */
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            log.info("Innsending til Arena er midlertidig stanset");
+        log.info("Innsending til Arena er midlertidig stanset pga prod-setting i Arena");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
 //            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
 //                    .avspillergruppeId(entry.getKey())
 //                    .miljoe(entry.getValue())
@@ -214,22 +223,24 @@ public class JobController {
 //                    .miljoe(entry.getValue())
 //                    .antallNyeIdenter(1)
 //                    .build(), true);
-        }
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void medlSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserMedlRequest = new SyntetiserMedlRequest(entry.getKey(), entry.getValue(), medlProsentfaktor);
-            testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserMedlRequest = new SyntetiserMedlRequest(entry.getKey(), entry.getValue(), medlProsentfaktor);
+//            testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void frikortSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserFrikortRequest = new SyntetiserFrikortRequest(entry.getKey(), entry.getValue(), frikortAntallNyeIdenter);
-            testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
-        }
+        log.info("Innsending midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserFrikortRequest = new SyntetiserFrikortRequest(entry.getKey(), entry.getValue(), frikortAntallNyeIdenter);
+//            testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
+//        }
     }
 }
