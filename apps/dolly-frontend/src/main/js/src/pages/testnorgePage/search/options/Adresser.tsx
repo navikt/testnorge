@@ -16,6 +16,10 @@ type AdresserProps = {
 	formikBag: FormikProps<{}>
 }
 
+const bostedPath = 'adresser.bostedsadresse'
+const kontaktPath = 'adresser.harKontaktadresse'
+const oppholdPath = 'adresser.harOppholdsadresse'
+
 export const Adresser = ({ formikBag }: AdresserProps) => {
 	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
 	return (
@@ -23,24 +27,24 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har norsk bostedsadresse'}
-				path={'adresser.bostedsadresse.harNorskAdresse'}
+				path={`${bostedPath}.harNorskAdresse`}
 				options={options}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har utenlandsk bostedsadresse'}
-				path={'adresser.bostedsadresse.harUtenlandskAdresse'}
+				path={`${bostedPath}.harUtenlandskAdresse`}
 				options={options}
 			/>
 			<FormikSelect
-				name={'adresser.bostedsadresse.postnummer'}
+				name={`${bostedPath}.postnummer`}
 				label="Bosted - Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
 				optionHeight={50}
 				size="medium"
 			/>
 			<FormikSelect
-				name={'adresser.bostedsadresse.kommunenummer'}
+				name={`${bostedPath}.kommunenummer`}
 				label="Bosted - Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				optionHeight={50}
@@ -49,13 +53,13 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har kontaktadresse'}
-				path={'adresser.harKontaktadresse'}
+				path={kontaktPath}
 				options={options}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har oppholdsadresse'}
-				path={'adresser.harOppholdsadresse'}
+				path={oppholdPath}
 				options={options}
 			/>
 
@@ -64,7 +68,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 					SKJUL AVANSERTE VALG
 				</Button>
 			) : (
-				<Button onClick={setVisAvansert} kind={'expand'}>
+				<Button onClick={setVisAvansert} kind={'expand'} style={{ marginBottom: '10px' }}>
 					VIS AVANSERTE VALG
 				</Button>
 			)}
@@ -83,8 +87,10 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 }
 
 export const AdresserPaths = {
-	'adresser.harNorskAdresse': 'string',
-	'adresser.harUtenlandskAdresse': 'string',
-	'adresser.postnummer': 'string',
-	'adresser.kommunenummer': 'string',
+	[bostedPath + '.harNorskAdresse']: 'string',
+	[bostedPath + '.harUtenlandskAdresse']: 'string',
+	[bostedPath + '.postnummer']: 'string',
+	[bostedPath + '.kommunenummer']: 'string',
+	[kontaktPath]: 'string',
+	[oppholdPath]: 'string',
 }

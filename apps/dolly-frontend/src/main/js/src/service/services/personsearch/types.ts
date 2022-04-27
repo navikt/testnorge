@@ -31,19 +31,13 @@ export type Search = {
 	}
 	adresser?: {
 		bostedsadresse?: {
+			harNorskAdresse?: string
+			harUtenlanskAdresse?: string
 			postnummer?: string
 			kommunenummer?: string
 		}
-		kontaktadresse?: {
-			norskAdresse?: boolean
-			utenlandskAdresse?: boolean
-			kontaktadresseForDoedsbo?: boolean
-		}
-		oppholdsadresse?: {
-			norskAdresse?: boolean
-			utenlandskAdresse?: boolean
-			oppholdAnnetSted?: string
-		}
+		harKontaktadresse?: string
+		harOppholdsadresse?: string
 	}
 	personstatus?: {
 		status?: string

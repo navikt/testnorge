@@ -34,19 +34,13 @@ export const initialValues = {
 	},
 	adresser: {
 		bostedsadresse: {
+			harNorskAdresse: '',
+			harUtenlandskAdresse: '',
 			kommunenummer: '',
 			postnummer: '',
 		},
-		kontaktadresse: {
-			norskAdresse: false,
-			utenlanskAdresse: false,
-			kontaktadresseForDoedsbo: false,
-		},
-		oppholdsadresse: {
-			norskAdresse: false,
-			utenlanskAdresse: false,
-			oppholdAnnetSted: '',
-		},
+		harKontaktadresse: '',
+		harOppholdsadresse: '',
 	},
 	personstatus: '',
 }
