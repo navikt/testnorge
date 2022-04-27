@@ -14,6 +14,7 @@ import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import {PensjonPanel} from "~/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon";
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) return true
@@ -42,6 +43,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		ArenaPanel,
 		UdiPanel,
 		DokarkivPanel,
+		PensjonPanel,
 	]
 		.map((panel) => ({
 			label: panel.heading,
@@ -57,6 +59,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 			{!testnorgeIdent && <IdentifikasjonPanel stateModifier={stateModifier} />}
 			{!testnorgeIdent && <KontaktDoedsboPanel stateModifier={stateModifier} />}
 			<ArbeidInntektPanel stateModifier={stateModifier} />
+			<PensjonPanel stateModifier={stateModifier} />
 			<ArenaPanel stateModifier={stateModifier} />
 			<SykdomPanel stateModifier={stateModifier} />
 			<BrregPanel stateModifier={stateModifier} />

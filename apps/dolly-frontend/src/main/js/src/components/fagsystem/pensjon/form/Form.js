@@ -18,10 +18,10 @@ const hjelpetekst =
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
 export const PensjonForm = ({ formikBag }) => (
-	<Vis attributt={pensjonAttributt}>
+	<Vis attributt={path}>
 		<Panel
 			heading="Pensjonsgivende inntekt (POPP)"
-			hasErrors={panelError(formikBag, pensjonAttributt)}
+			hasErrors={panelError(formikBag, path)}
 			iconType="pensjon"
 			startOpen={() => erForste(formikBag.values, [pensjonAttributt])}
 			informasjonstekst={hjelpetekst}
