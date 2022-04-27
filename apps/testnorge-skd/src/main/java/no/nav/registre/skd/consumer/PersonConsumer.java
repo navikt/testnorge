@@ -1,18 +1,17 @@
 package no.nav.registre.skd.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.skd.consumer.credential.PersonServiceProperties;
+import no.nav.testnav.libs.commands.CreatePersonCommand;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import no.nav.registre.skd.consumer.credential.PersonServiceProperties;
-import no.nav.testnav.libs.commands.CreatePersonCommand;
-import no.nav.testnav.libs.dto.person.v1.PersonDTO;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class PersonConsumer {

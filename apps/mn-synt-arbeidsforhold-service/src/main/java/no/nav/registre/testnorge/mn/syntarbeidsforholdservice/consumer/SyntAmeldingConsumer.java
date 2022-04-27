@@ -10,7 +10,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforh
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.SyntetiseringException;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;

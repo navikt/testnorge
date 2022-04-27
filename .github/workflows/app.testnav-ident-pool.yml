@@ -1,0 +1,36 @@
+name: App testnav-ident-pool
+
+on:
+  push:
+    paths:
+      - apps/testnav-ident-pool/**
+      - .github/workflows/app.testnav-ident-pool.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'apps/testnav-ident-pool/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    with:
+      working-directory: 'apps/testnav-ident-pool/'
+      app-name: 'testnav-ident-pool'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/ident-pool-til-gcp'}}
+    with:
+      resource: 'apps/testnav-ident-pool/nais.yml'
+      app-name: 'testnav-ident-pool'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

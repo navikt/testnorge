@@ -2,17 +2,16 @@ package no.nav.registre.tp.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.tp.consumer.rs.command.GetSyntTpYtelserCommand;
+import no.nav.registre.tp.consumer.rs.credential.SyntTpProperties;
+import no.nav.registre.tp.database.models.TYtelse;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-
-import no.nav.registre.tp.consumer.rs.command.GetSyntTpYtelserCommand;
-import no.nav.registre.tp.consumer.rs.credential.SyntTpProperties;
-import no.nav.registre.tp.database.models.TYtelse;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component

@@ -1,5 +1,9 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config;
 
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -7,11 +11,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
-
-import no.nav.testnav.libs.database.config.FlywayConfiguration;
-import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 
 @Configuration
 @Import({

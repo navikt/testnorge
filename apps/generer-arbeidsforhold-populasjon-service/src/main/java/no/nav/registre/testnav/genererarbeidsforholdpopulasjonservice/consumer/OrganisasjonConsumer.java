@@ -1,6 +1,10 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOrganisasjonCommand;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OrganisasjonServiceProperties;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -9,11 +13,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOrganisasjonCommand;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OrganisasjonServiceProperties;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
