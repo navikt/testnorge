@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
-import _get from 'lodash/get'
+import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 import { FormikProps } from 'formik'
+import Button from '~/components/ui/button/Button'
+import useBoolean from '~/utils/hooks/useBoolean'
 
 const options = [
 	{ value: 'Y', label: 'Ja' },
@@ -13,58 +14,37 @@ const options = [
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
-	numSelected: number
 }
 
-export const Adresser = ({ formikBag, numSelected }: AdresserProps) => {
-	const [selectedAdressetyper, setSelectedAdressetyper] = useState(['bostedsadresse'])
-
-	const handleSelectedChange = (type: string) => {
-		let newValues = [...selectedAdressetyper]
-		if (newValues.includes(type)) {
-			newValues = newValues.filter((value) => value !== type)
-		} else {
-			newValues.push(type)
-		}
-		setSelectedAdressetyper(newValues)
-		formikBag.setFieldValue('adresser.adressetyper', newValues)
-	}
-
+export const Adresser = ({ formikBag }: AdresserProps) => {
+	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
 	return (
 		<section>
 			<RadioGroupOptions
 				formikBag={formikBag}
-				name={'Har norsk adresse'}
-				path={'adresser.harNorskAdresse'}
+				name={'Har norsk bostedsadresse'}
+				path={'adresser.bostedsadresse.harNorskAdresse'}
 				options={options}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
-				name={'Har utenlandsk adresse'}
-				path={'adresser.harUtenlandskAdresse'}
+				name={'Har utenlandsk bostedsadresse'}
+				path={'adresser.bostedsadresse.harUtenlandskAdresse'}
 				options={options}
 			/>
 			<FormikSelect
-				name={'adresser.postnummer'}
-				label="Postnummer"
+				name={'adresser.bostedsadresse.postnummer'}
+				label="Bosted - Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				disabled={_get(formikBag.values, 'adresser.harNorskAdresse') === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
 			<FormikSelect
-				name={'adresser.kommunenummer'}
-				label="Kommunenummer"
+				name={'adresser.bostedsadresse.kommunenummer'}
+				label="Bosted - Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				disabled={_get(formikBag.values, 'adresser.harNorskAdresse') === 'N'}
 				optionHeight={50}
 				size="medium"
-			/>
-			<div className="options-title">Historikk</div>
-			<FormikCheckbox
-				name={'adresser.harBostedshistorikk'}
-				label="Har bostedshistorikk"
-				size="small"
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
@@ -78,29 +58,26 @@ export const Adresser = ({ formikBag, numSelected }: AdresserProps) => {
 				path={'adresser.harOppholdsadresse'}
 				options={options}
 			/>
-			{/*{numSelected > 0 && (*/}
-			{/*	<>*/}
-			{/*		<div className="options-title">Søk i:</div>*/}
-			{/*		<DollyCheckbox*/}
-			{/*			label="Bostedsadresse"*/}
-			{/*			size="medium"*/}
-			{/*			checked={selectedAdressetyper.includes('bostedsadresse')}*/}
-			{/*			onChange={() => handleSelectedChange('bostedsadresse')}*/}
-			{/*		/>*/}
-			{/*		<DollyCheckbox*/}
-			{/*			label="Kontaktadresse"*/}
-			{/*			size="medium"*/}
-			{/*			checked={selectedAdressetyper.includes('kontaktadresse')}*/}
-			{/*			onChange={() => handleSelectedChange('kontaktadresse')}*/}
-			{/*		/>*/}
-			{/*		<DollyCheckbox*/}
-			{/*			label="Oppholdsadresse"*/}
-			{/*			size="medium"*/}
-			{/*			checked={selectedAdressetyper.includes('oppholdsadresse')}*/}
-			{/*			onChange={() => handleSelectedChange('oppholdsadresse')}*/}
-			{/*		/>*/}
-			{/*	</>*/}
-			{/*)}*/}
+
+			{visAvansert ? (
+				<Button onClick={setSkjulAvansert} kind={'collapse'}>
+					SKJUL AVANSERTE VALG
+				</Button>
+			) : (
+				<Button onClick={setVisAvansert} kind={'expand'}>
+					VIS AVANSERTE VALG
+				</Button>
+			)}
+			{visAvansert && (
+				<div>
+					<div className="options-title">Historikk</div>
+					<FormikCheckbox
+						name={'adresser.bostedsadresse.harHistorikk'}
+						label="Har bostedshistorikk"
+						size="small"
+					/>
+				</div>
+			)}
 		</section>
 	)
 }
