@@ -15,6 +15,7 @@ import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 import _isEmpty from 'lodash/isEmpty'
 import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
+import { useNavigate } from 'react-router-dom'
 import { PopoverOrientering } from 'nav-frontend-popover'
 
 type OrganisasjonerProps = {
@@ -47,7 +48,6 @@ const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
 export default function Organisasjoner({
-	history,
 	state,
 	search,
 	isFetching,
@@ -61,6 +61,7 @@ export default function Organisasjoner({
 }: OrganisasjonerProps) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		getOrganisasjonBestillingStatus(brukerId)
@@ -82,7 +83,7 @@ export default function Organisasjoner({
 	const antallBest = bestillinger?.length
 
 	const startBestilling = (type: string) => {
-		history.push('/organisasjoner/bestilling', { opprettOrganisasjon: type })
+		navigate('/organisasjoner/bestilling', { state: { opprettOrganisasjon: type } })
 	}
 
 	const sokSelectorOrg = (items: Array<Organisasjon>, searchStr: string) => {

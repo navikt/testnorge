@@ -2,17 +2,16 @@ package no.nav.registre.skd.consumer;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.skd.consumer.command.GetSyntSkdMeldingerCommand;
+import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
+import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-
-import no.nav.registre.skd.consumer.command.GetSyntSkdMeldingerCommand;
-import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
-import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 @Slf4j

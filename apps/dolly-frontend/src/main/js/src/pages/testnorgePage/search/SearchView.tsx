@@ -11,16 +11,17 @@ import Loading from '~/components/ui/loading/Loading'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { getAlder } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
-import { getFornavn, getIdent, getEtternavn, getPdlKjoenn } from '~/pages/testnorgePage/utils'
+import { getEtternavn, getFornavn, getIdent, getPdlKjoenn } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
 	items?: PdlData[]
 	loading: boolean
 	valgtePersoner: string[]
 	setValgtePersoner: (personer: string[]) => void
-	importerPersoner: (valgtePersoner: string[]) => void
+	importerPersoner: (valgtePersoner: string[], navigate: Function) => void
 }
 
 const SearchView = styled.div`
@@ -37,6 +38,8 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			</ContentContainer>
 		)
 	}
+
+	const navigate = useNavigate()
 
 	const columns = [
 		{
@@ -110,7 +113,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 	const personerValgt = valgtePersoner.length > 0
 
 	const onImport = () => {
-		importerPersoner(valgtePersoner)
+		importerPersoner(valgtePersoner, navigate)
 	}
 
 	return (

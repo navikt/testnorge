@@ -27,6 +27,7 @@ import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
+import { useNavigate } from 'react-router-dom'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -42,6 +43,7 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	gruppeId,
 	brukertype,
 	bestilling,
 	bestillingsListe,
@@ -54,6 +56,7 @@ export const PersonVisning = ({
 	useMount(fetchDataFraFagsystemer)
 
 	const mountedRef = useRef(true)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		return () => {
@@ -68,7 +71,14 @@ export const PersonVisning = ({
 					{!iLaastGruppe && (
 						<Button
 							onClick={() =>
-								leggTilPaaPerson(data, bestillingsListe, ident.master, getIdenttype(ident.ident))
+								leggTilPaaPerson(
+									data,
+									bestillingsListe,
+									ident.master,
+									getIdenttype(ident.ident),
+									gruppeId,
+									navigate
+								)
 							}
 							kind="add-circle"
 						>

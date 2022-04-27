@@ -1,5 +1,4 @@
 import { createActions } from 'redux-actions'
-import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { DollyApi } from '~/service/Api'
 import _set from 'lodash/fp/set'
 import _get from 'lodash/get'
@@ -27,9 +26,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
 		[actions.bestillingFeilet](state, action) {
 			state.error = action.payload.error
 		},
@@ -52,8 +48,8 @@ const trackBestilling = (values) => {
 /**
  * Sender de ulike bestillingstypene fra Bestillingsveileder
  */
-export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getState) => {
-	let bestillingAction = null
+export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispatch) => {
+	let bestillingAction
 
 	if (opts.is.leggTil) {
 		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
@@ -84,10 +80,10 @@ export const sendBestilling = (values, opts, gruppeId) => async (dispatch, getSt
 		dispatch(actions.bestillingFeilet(res))
 	} else if (type.includes('OrganisasjonBestilling')) {
 		sessionStorage.setItem('organisasjon_bestilling', JSON.stringify({ bestilling: {}, ...res }))
-		dispatch(push(`/organisasjoner`))
+		navigate(`/organisasjoner`)
 	} else if (opts.is.importTestnorge) {
-		dispatch(push(`/gruppe/${values.gruppeId}`))
+		navigate(`/gruppe/${values.gruppeId}`)
 	} else {
-		dispatch(push(`/gruppe/${gruppeId}`))
+		navigate(`/gruppe/${gruppeId}`)
 	}
 }

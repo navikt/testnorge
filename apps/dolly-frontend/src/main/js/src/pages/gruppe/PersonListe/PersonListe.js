@@ -48,7 +48,7 @@ export default function PersonListe({
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem]
+		[identer, search, fagsystem, visPerson]
 	)
 
 	useEffect(() => {
@@ -67,7 +67,7 @@ export default function PersonListe({
 	useEffect(() => {
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe)
-	}, [identListe, sidetall, sideStoerrelse])
+	}, [identListe, sidetall, sideStoerrelse, visPerson])
 
 	if (isFetching) return <Loading label="Laster personer" panel />
 

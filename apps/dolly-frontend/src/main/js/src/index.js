@@ -4,18 +4,10 @@ import '~/utils/FormatIso'
 import './polyfill'
 
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
 import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import store from './Store'
-import { ConnectedRouter } from 'connected-react-router'
-import AppConnector from './app/AppConnector'
-import history from './history'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Logger from './logger'
 import { v4 as uuid } from 'uuid'
-import LoginPage from '~/pages/loginPage'
-import BrukerPage from '~/pages/brukerPage'
+import { RootComponent } from '~/RootComponent'
 
 window.uuid = uuid()
 window.onerror = (message) => {
@@ -32,23 +24,4 @@ window.onerror = (message) => {
 
 const root = document.getElementById('root')
 
-render(
-	<Provider store={store}>
-		<ConnectedRouter history={history}>
-			<ErrorBoundary>
-				<Switch>
-					<Route path="/bruker">
-						<BrukerPage />
-					</Route>
-					<Route path="/login">
-						<LoginPage />
-					</Route>
-					<Route path="/">
-						<AppConnector />
-					</Route>
-				</Switch>
-			</ErrorBoundary>
-		</ConnectedRouter>
-	</Provider>,
-	root
-)
+render(<RootComponent />, root)

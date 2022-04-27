@@ -9,7 +9,7 @@ public abstract class JwtResolver {
 
     JwtAuthenticationToken getJwtAuthenticationToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof JwtAuthenticationToken)
+                .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
                 .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
     }

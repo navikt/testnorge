@@ -28,7 +28,7 @@ export const Visning = ({ data }: Data) => {
 						value={Formatters.formatDate(data.gyldigTilOgMed)}
 					/>
 					<TitleValue title="Områder" value={Formatters.omraaderArrayToString(data.omraader)} />
-					<TitleValue title="Motparts personident" value={data.motpartsPersonident} />
+					<TitleValue title="Motparts personident" value={data.motpartsPersonident} visKopier />
 					<TitleValue title="Motparts rolle" value={data.motpartsRolle} />
 				</ErrorBoundary>
 			</div>

@@ -2,6 +2,17 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.config.credentials.PersonServiceProperties;
+import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.domain.person.Person;
+import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
+import no.nav.testnav.libs.commands.CreatePersonCommand;
+import no.nav.testnav.libs.commands.GetPersonCommand;
+import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -19,18 +30,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
-import no.nav.registre.sdforvalter.config.credentials.PersonServiceProperties;
-import no.nav.registre.sdforvalter.domain.TpsIdent;
-import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import no.nav.registre.sdforvalter.domain.person.Person;
-import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
-import no.nav.testnav.libs.commands.CreatePersonCommand;
-import no.nav.testnav.libs.commands.GetPersonCommand;
-import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component

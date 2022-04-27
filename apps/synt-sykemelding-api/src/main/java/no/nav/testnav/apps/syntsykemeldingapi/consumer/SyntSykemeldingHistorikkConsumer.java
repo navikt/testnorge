@@ -2,19 +2,18 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.SyntSykemeldingProperties;
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSyntSykemeldingCommand;
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
+import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.Map;
-
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.SyntSykemeldingProperties;
-import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSyntSykemeldingCommand;
-import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
-import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component

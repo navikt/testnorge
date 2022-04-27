@@ -143,7 +143,7 @@ public class PersonController {
     @DeleteMapping(value = "/utenom")
     @Operation(description = "Slette personer som er opprettet utenom PDL-forvalteren")
     public void deletePersonerUtenom(@Parameter(description = "Slett angitte testpersoner")
-                             @RequestParam Set<String> identer) {
+                                     @RequestParam Set<String> identer) {
 
         personService.deletePersonerUtenom(identer);
     }
@@ -361,9 +361,9 @@ public class PersonController {
     @DeleteMapping(value = "/{ident}/foreldreansvar/{id}")
     @Operation(description = "Slett angitt foreldreansvar for person (barn)")
     public void deleteForeldreansvar(@Parameter(description = "Ident for testperson")
-                                           @PathVariable String ident,
-                                           @Parameter(description = "id som identifiserer foreldreansvar")
-                                           @PathVariable Integer id) {
+                                     @PathVariable String ident,
+                                     @Parameter(description = "id som identifiserer foreldreansvar")
+                                     @PathVariable Integer id) {
 
         artifactDeleteService.deleteForeldreansvar(ident, id);
     }
@@ -371,10 +371,10 @@ public class PersonController {
     @PutMapping(value = "/{ident}/foreldreansvar/{id}")
     @Operation(description = "Oppdater angitt foreldreansvar for person (barn)")
     public void updateForeldreansvar(@Parameter(description = "Ident for testperson")
-                                           @PathVariable String ident,
-                                           @Parameter(description = "id som identifiserer foreldreansvar")
-                                           @PathVariable Integer id,
-                                           @RequestBody ForeldreansvarDTO foreldreansvar) {
+                                     @PathVariable String ident,
+                                     @Parameter(description = "id som identifiserer foreldreansvar")
+                                     @PathVariable Integer id,
+                                     @RequestBody ForeldreansvarDTO foreldreansvar) {
 
         artifactUpdateService.updateForeldreansvar(ident, id, foreldreansvar);
     }

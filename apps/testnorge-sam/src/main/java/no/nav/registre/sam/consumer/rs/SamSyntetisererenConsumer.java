@@ -2,18 +2,17 @@ package no.nav.registre.sam.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sam.consumer.rs.command.GetSyntSamMeldingerCommand;
+import no.nav.registre.sam.consumer.rs.credential.SyntSamGcpProperties;
+import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import no.nav.registre.sam.consumer.rs.command.GetSyntSamMeldingerCommand;
-import no.nav.registre.sam.consumer.rs.credential.SyntSamGcpProperties;
-import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 @Slf4j

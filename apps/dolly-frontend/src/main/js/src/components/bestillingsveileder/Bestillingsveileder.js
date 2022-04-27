@@ -4,20 +4,17 @@ import { AppError } from '~/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
 
 import './bestillingsveileder.less'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 export const BestillingsveilederContext = createContext()
 
-export const Bestillingsveileder = ({
-	error,
-	gruppeId,
-	brukertype,
-	brukerId,
-	location,
-	sendBestilling,
-}) => {
+export const Bestillingsveileder = ({ error, brukertype, brukerId, sendBestilling }) => {
+	const location = useLocation()
+	const navigate = useNavigate()
+	const { gruppeId } = useParams()
 	const options = BVOptions(location.state, gruppeId)
 	const handleSubmit = (values, formikBag) => {
-		sendBestilling(values, options)
+		sendBestilling(values, options, gruppeId, navigate)
 	}
 
 	if (error) {
@@ -31,17 +28,15 @@ export const Bestillingsveileder = ({
 		handleSubmit
 	)
 }
-const renderBestillingsVeileder = (initialValues, options, brukertype, brukerId, handleSubmit) => {
-	return (
-		<div className="bestillingsveileder">
-			<BestillingsveilederContext.Provider value={options}>
-				<StegVelger
-					initialValues={initialValues}
-					onSubmit={handleSubmit}
-					brukertype={brukertype}
-					brukerId={brukerId}
-				/>
-			</BestillingsveilederContext.Provider>
-		</div>
-	)
-}
+const renderBestillingsVeileder = (initialValues, options, brukertype, brukerId, handleSubmit) => (
+	<div className="bestillingsveileder">
+		<BestillingsveilederContext.Provider value={options}>
+			<StegVelger
+				initialValues={initialValues}
+				onSubmit={handleSubmit}
+				brukertype={brukertype}
+				brukerId={brukerId}
+			/>
+		</BestillingsveilederContext.Provider>
+	</div>
+)

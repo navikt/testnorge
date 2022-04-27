@@ -28,7 +28,7 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 		<>
 			<div className="person-visning_content">
 				<h4 style={{ width: '100%', marginTop: '0' }}>{tittel}</h4>
-				<TitleValue title="Ident" value={data.ident} />
+				<TitleValue title="Ident" value={data.ident} visKopier />
 				<TitleValue title="Fornavn" value={data.navn?.[0].fornavn} />
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
 				<TitleValue title="Etternavn" value={data.navn?.[0].etternavn} />

@@ -22,7 +22,7 @@ const Visning = ({ relasjon, idx }: VisningProps) => {
 				{Formatters.showLabel('pdlRelasjonTyper', relasjon.relatertPersonsRolle)}
 			</h4>
 			<div key={idx} className="person-visning_content">
-				<TitleValue title="Ident" value={relasjon.relatertPersonsIdent} />
+				<TitleValue title="Ident" value={relasjon.relatertPersonsIdent} visKopier />
 				{relasjon.relatertPersonsRolle === 'BARN' && (
 					<TitleValue title="Forhold til barn" value={relasjon.minRolleForPerson} size="medium" />
 				)}

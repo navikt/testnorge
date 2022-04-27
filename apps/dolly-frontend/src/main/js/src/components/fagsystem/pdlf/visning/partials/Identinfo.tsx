@@ -27,6 +27,7 @@ export const IdentInfo = ({ pdlResponse }: Data) => {
 							<TitleValue
 								title={ident.gruppe.includes('AKTORID') ? 'ID' : 'ident'}
 								value={ident.ident}
+								visKopier
 							/>
 							<TitleValue title="Historisk" value={Formatters.oversettBoolean(ident.historisk)} />
 						</div>
