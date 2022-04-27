@@ -25,7 +25,7 @@ export const BVOptions = (
 	gruppeId
 ) => {
 	let initialValues = {
-		antall: 1,
+		antall: antall,
 		navSyntetiskIdent: false,
 		beskrivelse: null,
 		pdldata: {
