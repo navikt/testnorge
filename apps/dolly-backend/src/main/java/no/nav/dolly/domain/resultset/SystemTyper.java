@@ -24,6 +24,7 @@ public enum SystemTyper {
     INNTK("Inntektskomponenten (INNTK)"),
     PEN_FORVALTER("Pensjon (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
+    TP_FORVALTER("Tjenestepensjon (TP)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),

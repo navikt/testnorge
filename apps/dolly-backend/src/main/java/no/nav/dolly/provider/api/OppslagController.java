@@ -176,6 +176,18 @@ public class OppslagController {
         return pensjonforvalterConsumer.getMiljoer();
     }
 
+    @GetMapping("/tp/forhold/{ident}/{miljoe}")
+    @Operation(description = "Hent ordning fra TP-register")
+    public JsonNode getTpForhold(@PathVariable String ident, @PathVariable String miljoe) {
+        return pensjonforvalterConsumer.getTpForhold(ident, miljoe);
+    }
+
+    @GetMapping("/tp/miljoe")
+    @Operation(description = "Hent tilgjengelige miljøer for TP-register")
+    public Set<String> getTpMiljoer() {
+        return pensjonforvalterConsumer.getMiljoer();
+    }
+
     @GetMapping("/personnavn")
     @Operation(description = "Henter et gitt antall syntetiske personnavn")
     public ResponseEntity<List<Navn>> getPersonnavn(@RequestParam(required = false, defaultValue = "10") Integer antall) {
