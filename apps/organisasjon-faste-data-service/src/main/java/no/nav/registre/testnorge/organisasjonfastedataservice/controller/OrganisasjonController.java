@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -49,9 +51,11 @@ public class OrganisasjonController {
     }
 
     @PutMapping
-    public List<ResponseEntity<?>> save(@RequestHeader Gruppe gruppe, @RequestBody List<OrganisasjonDTO> dtoListe) {
+    public Map<String, String> save(@RequestHeader Gruppe gruppe, @RequestBody List<OrganisasjonDTO> dtoListe) {
 
-        return dtoListe.stream().map(dto -> {
+        Map<String, String> responseMap = new HashMap<>();
+
+        dtoListe.forEach(dto -> {
 
             if (dto.getOverenhet() != null && service.getOrganisasjon(dto.getOverenhet()).isEmpty()) {
                 var error = String.format(
@@ -60,17 +64,21 @@ public class OrganisasjonController {
                         dto.getOverenhet()
                 );
                 log.error(error);
-                return ResponseEntity.badRequest().body(error);
-            }
-            service.save(new Organisasjon(dto), gruppe);
+                responseMap.put(dto.getOrgnummer(), error);
+            } else {
+                service.save(new Organisasjon(dto), gruppe);
 
-            URI uri = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{orgnummer}")
-                    .buildAndExpand(dto.getOrgnummer())
-                    .toUri();
-            return ResponseEntity.created(uri).build();
-        }).toList();
+                URI uri = ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{orgnummer}")
+                        .buildAndExpand(dto.getOrgnummer())
+                        .toUri();
+                var response = ResponseEntity.created(uri).build();
+
+                responseMap.put(dto.getOrgnummer(), response.getStatusCode().name());
+            }
+        });
+        return responseMap;
     }
 
     @GetMapping("/{orgnummer}")
