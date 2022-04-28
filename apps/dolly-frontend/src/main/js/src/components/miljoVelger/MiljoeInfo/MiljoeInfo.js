@@ -56,9 +56,19 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{pensjonforvalter && (
+				{pensjonforvalter?.inntekt && (
 					<li>
 						POPP:&nbsp;
+						<TilgjengeligeMiljoer
+							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
+							dollyEnvironments={dollyEnvironments}
+						/>
+					</li>
+				)}
+
+				{pensjonforvalter?.tp && (
+					<li>
+						TP:&nbsp;
 						<TilgjengeligeMiljoer
 							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}

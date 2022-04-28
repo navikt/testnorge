@@ -18,6 +18,9 @@ public class PensjonData {
     @Schema(description = "Inntekt i pensjonsopptjeningsregister (POPP)")
     private PoppInntekt inntekt;
 
+    @Schema(description = "Data for tjenestepensjon (TP)")
+    private TpForhold tp;
+
     @Getter
     @Setter
     @NoArgsConstructor
@@ -39,5 +42,16 @@ public class PensjonData {
         @Schema(description = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi",
                 required = true)
         private Boolean redusertMedGrunnbelop;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class TpForhold {
+        @Schema(required = true,
+                description = "Tjenestepensjons leverandør")
+        private String ordning;
     }
 }
