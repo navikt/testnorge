@@ -2,6 +2,10 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
+import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,11 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
-import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
 
 @RestController
 @Slf4j
@@ -50,25 +49,28 @@ public class OrganisasjonController {
     }
 
     @PutMapping
-    public ResponseEntity<?> save(@RequestHeader Gruppe gruppe, @RequestBody OrganisasjonDTO dto) {
+    public List<ResponseEntity<?>> save(@RequestHeader Gruppe gruppe, @RequestBody List<OrganisasjonDTO> dtoListe) {
 
-        if (dto.getOverenhet() != null && service.getOrganisasjon(dto.getOverenhet()).isEmpty()) {
-            var error = String.format(
-                    "Kan ikke opprette organisasjon %s fordi overenhet %s ikke finnes i databasen.",
-                    dto.getOrgnummer(),
-                    dto.getOverenhet()
-            );
-            log.error(error);
-            return ResponseEntity.badRequest().body(error);
-        }
-        service.save(new Organisasjon(dto), gruppe);
+        return dtoListe.stream().map(dto -> {
 
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{orgnummer}")
-                .buildAndExpand(dto.getOrgnummer())
-                .toUri();
-        return ResponseEntity.created(uri).build();
+            if (dto.getOverenhet() != null && service.getOrganisasjon(dto.getOverenhet()).isEmpty()) {
+                var error = String.format(
+                        "Kan ikke opprette organisasjon %s fordi overenhet %s ikke finnes i databasen.",
+                        dto.getOrgnummer(),
+                        dto.getOverenhet()
+                );
+                log.error(error);
+                return ResponseEntity.badRequest().body(error);
+            }
+            service.save(new Organisasjon(dto), gruppe);
+
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{orgnummer}")
+                    .buildAndExpand(dto.getOrgnummer())
+                    .toUri();
+            return ResponseEntity.created(uri).build();
+        }).toList();
     }
 
     @GetMapping("/{orgnummer}")
