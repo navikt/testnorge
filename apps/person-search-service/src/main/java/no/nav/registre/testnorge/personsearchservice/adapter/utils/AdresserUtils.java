@@ -77,10 +77,13 @@ public class AdresserUtils {
                                 false
                         ));
                     }else if(NO.equalsIgnoreCase(value)){
-                        queryBuilder.must(nestedShouldExistQuery(
+                        queryBuilder.mustNot(nestedShouldExistQuery(
                                 BOSTEDSADRESSE_PATH,
-                                Arrays.asList(".utenlandskAdresse.landkode", ".utenlandskAdresse.postkode"),
-                                1,false));
+                                Arrays.asList(VEGADRESSE_POSTNR, MATR_POSTNR, ".ukjentBosted.bostedskommune"),
+                                1,
+                                false
+                        ));
+//                        queryBuilder.must(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
                     }
                 });
     }
