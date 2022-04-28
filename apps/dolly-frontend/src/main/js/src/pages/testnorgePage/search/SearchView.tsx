@@ -19,9 +19,22 @@ import { useNavigate } from 'react-router-dom'
 type Props = {
 	items?: PdlData[]
 	loading: boolean
-	valgtePersoner: string[]
-	setValgtePersoner: (personer: string[]) => void
-	importerPersoner: (valgtePersoner: string[], navigate: Function) => void
+	valgtePersoner: ImportPerson[]
+	setValgtePersoner: (personer: ImportPerson[]) => void
+	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => void
+}
+
+export type ImportPerson = {
+	ident: string
+	data: PdlData
+}
+
+const getImportPerson = (data: PdlData) => {
+	const ident = getIdent(data)
+	return {
+		ident: ident,
+		data: data,
+	}
 }
 
 const SearchView = styled.div`
@@ -90,11 +103,11 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 					<Button
 						onClick={() => {
 							const alleValgtPaaSiden = data.every((person) =>
-								valgtePersoner.includes(getIdent(person))
+								valgtePersoner.map((person) => person?.ident).includes(getIdent(person))
 							)
 							alleValgtPaaSiden
 								? setValgtePersoner([])
-								: setValgtePersoner(data.map((person) => getIdent(person)))
+								: setValgtePersoner(data.map((person) => getImportPerson(person)))
 						}}
 					>
 						{text}
@@ -104,6 +117,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			formatter: (_cell: any, row: PdlData) => (
 				<VelgPerson
 					ident={getIdent(row)}
+					data={row}
 					valgtePersoner={valgtePersoner}
 					setValgtePersoner={setValgtePersoner}
 				/>
