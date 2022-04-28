@@ -34,19 +34,13 @@ export const initialValues = {
 	},
 	adresser: {
 		bostedsadresse: {
+			borINorge: '',
 			kommunenummer: '',
 			postnummer: '',
 		},
-		kontaktadresse: {
-			norskAdresse: false,
-			utenlanskAdresse: false,
-			kontaktadresseForDoedsbo: false,
-		},
-		oppholdsadresse: {
-			norskAdresse: false,
-			utenlanskAdresse: false,
-			oppholdAnnetSted: '',
-		},
+		harUtenlandskAdresse: '',
+		harKontaktadresse: '',
+		harOppholdsadresse: '',
 	},
 	personstatus: '',
 }
@@ -106,6 +100,11 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		}
 	}
 }
+
+export const yesNoOptions = [
+	{ value: 'Y', label: 'Ja' },
+	{ value: 'N', label: 'Nei' },
+]
 
 export const getIdent = (person: PdlData) => {
 	const identer = person.hentIdenter?.identer?.filter(
