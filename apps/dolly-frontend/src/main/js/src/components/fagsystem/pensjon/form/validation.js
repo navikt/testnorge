@@ -29,7 +29,7 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 }
 
 const getDoedsdato = (val, values, personFoerLeggTil, importPersoner) => {
-	let doedsdato = values?.pdldata?.opprettNyPerson?.doedsfall?.[0]?.doedsdato
+	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
 	if (!doedsdato) {
 		if (personFoerLeggTil?.tpsf?.doedsdato) {
 			doedsdato = values.personFoerLeggTil.tpsf.doedsdato
