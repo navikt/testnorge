@@ -101,6 +101,11 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 	}
 }
 
+export const yesNoOptions = [
+	{ value: 'Y', label: 'Ja' },
+	{ value: 'N', label: 'Nei' },
+]
+
 export const getIdent = (person: PdlData) => {
 	const identer = person.hentIdenter?.identer?.filter(
 		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'

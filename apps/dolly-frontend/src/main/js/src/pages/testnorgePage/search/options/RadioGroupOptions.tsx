@@ -8,6 +8,7 @@ import _get from 'lodash/get'
 type Option = {
 	value: string
 	label: string
+	disabled?: boolean
 }
 
 type RadioOptionsProps = {
@@ -17,7 +18,6 @@ type RadioOptionsProps = {
 	legend?: string
 	hideLegend?: boolean
 	options: Option[]
-	disabled?: boolean
 }
 
 const IconContainer = styled.div`
@@ -31,7 +31,6 @@ export const RadioGroupOptions = ({
 	legend = 'Velg',
 	hideLegend = true,
 	options,
-	disabled = false,
 }: RadioOptionsProps) => {
 	const selected = _get(formikBag.values, `${path}`) || null
 	const setSelected = (valg: string) => {
@@ -48,19 +47,14 @@ export const RadioGroupOptions = ({
 				)}
 			</div>
 			<div className="radio-group__options">
-				<RadioGroup
-					value={selected}
-					legend={legend}
-					hideLegend={hideLegend}
-					size="medium"
-					disabled={disabled}
-				>
+				<RadioGroup value={selected} legend={legend} hideLegend={hideLegend} size="medium">
 					{options.map((option, idx) => {
 						return (
 							<Radio
 								key={idx}
 								value={option.value}
 								onChange={(event) => setSelected(event.target.value)}
+								disabled={option.disabled}
 							>
 								{option.label}
 							</Radio>

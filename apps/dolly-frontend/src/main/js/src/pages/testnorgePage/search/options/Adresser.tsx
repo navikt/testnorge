@@ -4,11 +4,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 import { FormikProps } from 'formik'
-
-const options = [
-	{ value: 'Y', label: 'Ja' },
-	{ value: 'N', label: 'Nei' },
-]
+import { yesNoOptions } from '~/pages/testnorgePage/utils'
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
@@ -20,17 +16,23 @@ const kontaktPath = 'adresser.harKontaktadresse'
 const oppholdPath = 'adresser.harOppholdsadresse'
 
 export const Adresser = ({ formikBag }: AdresserProps) => {
+	const bostedOptions = [
+		{ value: 'Y', label: 'Ja' },
+		{
+			value: 'N',
+			label: 'Nei',
+			disabled:
+				_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
+				_get(formikBag.values, `${bostedPath}.postnummer`),
+		},
+	]
 	return (
 		<section>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har bostedsadresse i Norge'}
 				path={`${bostedPath}.borINorge`}
-				options={options}
-				disabled={
-					_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
-					_get(formikBag.values, `${bostedPath}.postnummer`)
-				}
+				options={bostedOptions}
 			/>
 			<FormikSelect
 				name={`${bostedPath}.postnummer`}
@@ -52,19 +54,19 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				formikBag={formikBag}
 				name={'Har utenlandsk adresse'}
 				path={utlandPath}
-				options={options}
+				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har kontaktadresse'}
 				path={kontaktPath}
-				options={options}
+				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har oppholdsadresse'}
 				path={oppholdPath}
-				options={options}
+				options={yesNoOptions}
 			/>
 		</section>
 	)

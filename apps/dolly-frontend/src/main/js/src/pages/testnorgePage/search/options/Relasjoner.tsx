@@ -4,11 +4,7 @@ import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGro
 import { FormikProps } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
-
-const options = [
-	{ value: 'Y', label: 'Ja' },
-	{ value: 'N', label: 'Nei' },
-]
+import { yesNoOptions } from '~/pages/testnorgePage/utils'
 
 const paths = {
 	sivistand: 'relasjoner.sivilstand',
@@ -60,13 +56,13 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 				formikBag={formikBag}
 				name={'Har barn'}
 				path={paths.harBarn}
-				options={options}
+				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har dødfødt barn'}
 				path={paths.harDoedfoedtBarn}
-				options={options}
+				options={yesNoOptions}
 			/>
 			<div className="options-title">Har forelder</div>
 			<DollyCheckbox
