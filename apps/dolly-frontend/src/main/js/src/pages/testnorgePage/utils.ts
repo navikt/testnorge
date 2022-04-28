@@ -38,6 +38,7 @@ export const initialValues = {
 			kommunenummer: '',
 			postnummer: '',
 		},
+		harUtenlandskAdresse: '',
 		harKontaktadresse: '',
 		harOppholdsadresse: '',
 	},

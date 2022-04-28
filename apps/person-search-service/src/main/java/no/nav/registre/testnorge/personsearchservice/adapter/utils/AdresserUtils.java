@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.AdresserSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -37,6 +38,7 @@ public class AdresserUtils {
                         addNorskOppholdQuery(queryBuilder, adresser.getOppholdsadresse());
                         addOppholdAnnetStedQuery(queryBuilder, adresser.getOppholdsadresse());
                     }
+                    addHarUtenlandskAdresseQuery(queryBuilder, adresser);
                     addHarKontaktadresseQuery(queryBuilder, adresser);
                     addHarOppholdsadresseQuery(queryBuilder, adresser);
                 });
@@ -69,22 +71,16 @@ public class AdresserUtils {
     private static void addBorINorgeQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
         Optional.ofNullable(bostedsadresse.getBorINorge())
                 .ifPresent(value -> {
+                    var newQuery = nestedShouldExistQuery(
+                            BOSTEDSADRESSE_PATH,
+                            Arrays.asList(".vegadresse", ".matrikkeladresse", ".ukjentBosted"),
+                            1,
+                            false
+                    );
                     if (YES.equalsIgnoreCase(value)) {
-                        queryBuilder.must(nestedShouldExistQuery(
-                                BOSTEDSADRESSE_PATH,
-//                                Arrays.asList(VEGADRESSE_POSTNR, MATR_POSTNR, ".ukjentBosted.bostedskommune"),
-                                Arrays.asList(".vegadresse", ".matrikkeladresse", ".ukjentBosted"),
-                                1,
-                                false
-                        ));
+                        queryBuilder.must(newQuery);
                     }else if(NO.equalsIgnoreCase(value)){
-                        queryBuilder.mustNot(nestedShouldExistQuery(
-                                BOSTEDSADRESSE_PATH,
-                                Arrays.asList(".vegadresse", ".matrikkeladresse", ".ukjentBosted"),
-                                1,
-                                false
-                        ));
-//                        queryBuilder.must(nestedExistsQuery(BOSTEDSADRESSE_PATH, ".utenlandskAdresse", false));
+                        queryBuilder.mustNot(newQuery);
                     }
                 });
     }
@@ -107,6 +103,21 @@ public class AdresserUtils {
                         queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, false));
                     }else if(NO.equalsIgnoreCase(value)){
                         queryBuilder.mustNot(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, false));
+                    }
+                });
+    }
+
+    private static void addHarUtenlandskAdresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch search ) {
+        Optional.ofNullable(search.getHarUtenlandskAdresse())
+                .ifPresent(value -> {
+                    var newQuery = QueryBuilders.boolQuery()
+                            .should(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse", false))
+                            .should(nestedExistsQuery(KONTAKTADRESSE_PATH, ".utenlandskAdresse", false))
+                            .minimumShouldMatch(1);
+                    if (YES.equalsIgnoreCase(value)) {
+                        queryBuilder.must(newQuery);
+                    }else if(NO.equalsIgnoreCase(value)){
+                        queryBuilder.mustNot(newQuery);
                     }
                 });
     }

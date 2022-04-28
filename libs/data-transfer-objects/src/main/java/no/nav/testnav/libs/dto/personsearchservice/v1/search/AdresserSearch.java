@@ -11,6 +11,7 @@ public class AdresserSearch {
     BostedsadresseSearch bostedsadresse;
     KontaktadresseSearch kontaktadresse;
     OppholdsadresseSearch oppholdsadresse;
+    String harUtenlandskAdresse;
     String harKontaktadresse;
     String harOppholdsadresse;
 

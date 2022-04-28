@@ -5,22 +5,17 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 import { FormikProps } from 'formik'
 
-const options = {
-	boolean: [
-		{ value: 'Y', label: 'Ja' },
-		{ value: 'N', label: 'Nei' },
-	],
-	borINorge: [
-		{ value: 'Y', label: 'Har norsk adresse' },
-		{ value: 'N', label: 'Har utenlandsk adresse' },
-	],
-}
+const options = [
+	{ value: 'Y', label: 'Ja' },
+	{ value: 'N', label: 'Nei' },
+]
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
 }
 
 const bostedPath = 'adresser.bostedsadresse'
+const utlandPath = 'adresser.harUtenlandskAdresse'
 const kontaktPath = 'adresser.harKontaktadresse'
 const oppholdPath = 'adresser.harOppholdsadresse'
 
@@ -29,9 +24,9 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 		<section>
 			<RadioGroupOptions
 				formikBag={formikBag}
-				name={'Bostedsadresse'}
+				name={'Har bostedsadresse i Norge'}
 				path={`${bostedPath}.borINorge`}
-				options={options.borINorge}
+				options={options}
 				disabled={
 					_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
 					_get(formikBag.values, `${bostedPath}.postnummer`)
@@ -55,15 +50,21 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
+				name={'Har utenlandsk adresse'}
+				path={utlandPath}
+				options={options}
+			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
 				name={'Har kontaktadresse'}
 				path={kontaktPath}
-				options={options.boolean}
+				options={options}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har oppholdsadresse'}
 				path={oppholdPath}
-				options={options.boolean}
+				options={options}
 			/>
 		</section>
 	)
@@ -73,6 +74,7 @@ export const AdresserPaths = {
 	[bostedPath + '.borINorge']: 'string',
 	[bostedPath + '.postnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
+	[utlandPath]: 'string',
 	[kontaktPath]: 'string',
 	[oppholdPath]: 'string',
 }
