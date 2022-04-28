@@ -160,11 +160,11 @@ public class PdlOrdreService {
         return deployService.sendOrders(
                 Stream.of(
                                 conditionalDelete(person.getIdent(), skalSlettes),
-                                deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().identer(person.getAlias().stream().map(DbAlias::getTidligereIdent).collect(Collectors.toList())).build())),
+                                deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().identer(person.getAlias().stream().map(DbAlias::getTidligereIdent).toList()).build())),
                                 deployService.createOrder(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()),
                                 deployService.createOrder(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()),
                                 deployService.createOrder(PDL_FOEDSEL, person.getIdent(), person.getPerson().getFoedsel()),
-                                deployService.createOrder(PDL_FOLKEREGISTER_PERSONSTATUS, person.getIdent(), person.getPerson().getFolkeregisterPersonstatus()),
+                                deployService.createOrder(PDL_FOLKEREGISTER_PERSONSTATUS, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getFolkeregisterPersonstatus(), FolkeregisterPersonstatus.class)),
                                 deployService.createOrder(PDL_STATSBORGERSKAP, person.getIdent(), person.getPerson().getStatsborgerskap()),
                                 deployService.createOrder(PDL_KONTAKTADRESSE, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), PdlKontaktadresse.class)),
                                 deployService.createOrder(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),
