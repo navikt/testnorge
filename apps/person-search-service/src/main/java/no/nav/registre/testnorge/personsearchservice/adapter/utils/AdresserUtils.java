@@ -10,15 +10,19 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldExistQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedShouldMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 
 @UtilityClass
 public class AdresserUtils {
     private static final String BOSTEDSADRESSE_PATH = "hentPerson.bostedsadresse";
     private static final String KONTAKTADRESSE_PATH = "hentPerson.kontaktadresse";
     private static final String OPPHOLDSADRESSE_PATH = "hentPerson.oppholdsadresse";
-    private static final String VEGADRESSE_POSTNR = ".vegadresse.postnummer";
-    private static final String MATR_POSTNR = ".matrikkeladresse.postnummer";
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getAdresser())
@@ -28,14 +32,7 @@ public class AdresserUtils {
                         addPostnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
                         addBorINorgeQuery(queryBuilder, adresser.getBostedsadresse());
                     }
-                    if (nonNull(adresser.getKontaktadresse())) {
-                        addUtenlandskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
-                        addNorskKontaktadresseQuery(queryBuilder, adresser.getKontaktadresse());
-                        addKontaktadresseDoedsboQuery(queryBuilder, adresser.getKontaktadresse());
-                    }
                     if (nonNull(adresser.getOppholdsadresse())) {
-                        addUtenlandskOppholdQuery(queryBuilder, adresser.getOppholdsadresse());
-                        addNorskOppholdQuery(queryBuilder, adresser.getOppholdsadresse());
                         addOppholdAnnetStedQuery(queryBuilder, adresser.getOppholdsadresse());
                     }
                     addHarUtenlandskAdresseQuery(queryBuilder, adresser);
@@ -62,7 +59,7 @@ public class AdresserUtils {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedShouldMatchQuery(
                                 BOSTEDSADRESSE_PATH,
-                                Arrays.asList(VEGADRESSE_POSTNR, MATR_POSTNR),
+                                Arrays.asList(".vegadresse.postnummer", ".matrikkeladresse.postnummer"),
                                 value, 1, false));
                     }
                 });
@@ -118,66 +115,6 @@ public class AdresserUtils {
                         queryBuilder.must(newQuery);
                     }else if(NO.equalsIgnoreCase(value)){
                         queryBuilder.mustNot(newQuery);
-                    }
-                });
-    }
-
-    private static void addUtenlandskKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getUtenlandskAdresse())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedShouldExistQuery(
-                                KONTAKTADRESSE_PATH,
-                                Arrays.asList(".utenlandskAdresse.landkode", ".utenlandskAdresseIFrittFormat.landkode"),
-                                1,
-                                false
-                        ));
-                    }
-                });
-    }
-
-    private static void addNorskKontaktadresseQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getNorskAdresse())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedShouldExistQuery(
-                                KONTAKTADRESSE_PATH,
-                                Arrays.asList(VEGADRESSE_POSTNR, ".postboksadresse.postnummer", ".postadresseIFrittFormat.postnummer"),
-                                1,
-                                false
-                        ));
-                    }
-                });
-    }
-
-    private static void addKontaktadresseDoedsboQuery(BoolQueryBuilder queryBuilder, AdresserSearch.KontaktadresseSearch kontaktadresse) {
-        Optional.ofNullable(kontaktadresse.getKontaktadresseForDoedsbo())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery("hentPerson.kontaktinformasjonForDoedsbo", ".adresse.landkode", false));
-                    }
-                });
-    }
-
-    private static void addUtenlandskOppholdQuery(BoolQueryBuilder queryBuilder, AdresserSearch.OppholdsadresseSearch oppholdsadresse) {
-        Optional.ofNullable(oppholdsadresse.getUtenlandskAdresse())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse.landkode", false));
-                    }
-                });
-    }
-
-    private static void addNorskOppholdQuery(BoolQueryBuilder queryBuilder, AdresserSearch.OppholdsadresseSearch oppholdsadresse) {
-        Optional.ofNullable(oppholdsadresse.getNorskAdresse())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedShouldExistQuery(
-                                OPPHOLDSADRESSE_PATH,
-                                Arrays.asList(VEGADRESSE_POSTNR, MATR_POSTNR),
-                                1,
-                                false
-                        ));
                     }
                 });
     }
