@@ -15,6 +15,7 @@ import { KommentarModal } from '~/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
+import _get from 'lodash/get'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -41,6 +42,7 @@ export default function PersonListe({
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
 	setVisning,
+	tmpPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -93,6 +95,17 @@ export default function PersonListe({
 			</div>
 		)
 	}
+
+	const updateAlder = () => {
+		personListe.map((person) => {
+			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+			if (redigertPerson && !redigertPerson.doedsfall) {
+				person.alder = person.alder.split(' ')[0]
+			}
+		})
+	}
+
+	if (tmpPersoner) updateAlder()
 
 	const columns = [
 		{
