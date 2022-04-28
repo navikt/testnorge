@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -58,13 +60,9 @@ public class OrganisasjonController {
         dtoListe.forEach(dto -> {
 
             if (dto.getOverenhet() != null && service.getOrganisasjon(dto.getOverenhet()).isEmpty()) {
-                var error = String.format(
-                        "Kan ikke opprette organisasjon %s fordi overenhet %s ikke finnes i databasen.",
-                        dto.getOrgnummer(),
-                        dto.getOverenhet()
-                );
-                log.error(error);
-                responseMap.put(dto.getOrgnummer(), error);
+                handleError(responseMap, dto, "Kan ikke opprette organisasjon %s fordi overenhet %s ikke finnes i databasen.");
+            } else if (isNull(dto.getForretningsAdresse()) && isNull(dto.getPostadresse())) {
+                handleError(responseMap, dto, "Kan ikke opprette organisasjon %s med overenhet %s fordi den mangler begge typer adresse.");
             } else {
                 service.save(new Organisasjon(dto), gruppe);
 
@@ -79,6 +77,16 @@ public class OrganisasjonController {
             }
         });
         return responseMap;
+    }
+
+    private void handleError(Map<String, String> responseMap, OrganisasjonDTO dto, String errorMessage) {
+        var error = String.format(
+                errorMessage,
+                dto.getOrgnummer(),
+                dto.getOverenhet()
+        );
+        log.error(error);
+        responseMap.put(dto.getOrgnummer(), error);
     }
 
     @GetMapping("/{orgnummer}")
