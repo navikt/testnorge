@@ -61,7 +61,7 @@ const innenforInntektsperiodeTest = (validation, validateFomBasedOnAge, validate
 					if (foedtEtterDate.getFullYear() + 18 > inntektFom) {
 						return false
 					}
-				} else {
+				} else if (!values.importPersoner) {
 					if (new Date().getFullYear() - 12 > inntektFom) {
 						return false
 					}

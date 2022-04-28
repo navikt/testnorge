@@ -34,6 +34,7 @@ export const BVOptions = (
 				syntetisk: false,
 			},
 		},
+		importPersoner: null,
 	}
 
 	let initialValuesLeggTil = {
@@ -104,6 +105,7 @@ export const BVOptions = (
 		bestType = TYPE.IMPORT_TESTNORGE
 		initialValues.antall = importPersoner.length
 		initialValues.pdldata = undefined
+		initialValues.importPersoner = importPersoner
 		antall = importPersoner.length
 	}
 
