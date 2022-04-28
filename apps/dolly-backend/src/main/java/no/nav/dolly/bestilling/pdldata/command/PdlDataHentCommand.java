@@ -45,6 +45,7 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(FullPersonDTO[].class)
+                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
