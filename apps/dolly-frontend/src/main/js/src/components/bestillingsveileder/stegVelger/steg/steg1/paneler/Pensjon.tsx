@@ -2,7 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 
-export const PensjonPanel = ({ stateModifier }) => {
+export const PensjonPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 
 	const infoTekst =
@@ -29,7 +29,7 @@ export const PensjonPanel = ({ stateModifier }) => {
 
 PensjonPanel.heading = 'Pensjon'
 
-PensjonPanel.initialValues = ({ set, del, has }) => ({
+PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 	inntekt: {
 		label: 'Har inntekt',
 		checked: has('pensjonforvalter.inntekt'),
