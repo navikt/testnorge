@@ -10,7 +10,7 @@ import { validation } from '~/components/fagsystem/tjenestepensjon/form/validati
 const pensjonAttributt = 'pensjonforvalter'
 const path = `${pensjonAttributt}.tp`
 
-const hjelpetekst = 'Ordning som den bestilte person skal ha forhold til.'
+const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'
 
 export const TjenestepensjonForm = ({ formikBag }) => (
 	<Vis attributt={path}>
