@@ -28,7 +28,7 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	return alder
 }
 
-const getDoedsdato = (val, values, personFoerLeggTil, importPersoner) => {
+const getDoedsdato = (values, personFoerLeggTil, importPersoner) => {
 	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
 	if (!doedsdato) {
 		if (personFoerLeggTil?.tpsf?.doedsdato) {
@@ -112,10 +112,10 @@ const validTomDateTest = (validation) => {
 		const personFoerLeggTil = values.personFoerLeggTil
 		const importPersoner = values.importPersoner
 
-		const doedsdato = getDoedsdato(val, values, personFoerLeggTil, importPersoner)
+		const doedsdato = getDoedsdato(values, personFoerLeggTil, importPersoner)
 		if (doedsdato) {
 			const year = new Date(doedsdato).getFullYear()
-			if (year < val) {
+			if (year < inntektTom) {
 				return this.createError({ message: 'T.o.m kan ikke være etter at person har dødd.' })
 			}
 		}
