@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError, erForste } from '~/components/ui/form/formUtils'
@@ -7,9 +6,7 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { validation } from '~/components/fagsystem/tjenestepensjon/form/validation'
 
-const pensjonAttributt = 'pensjonforvalter'
-const path = `${pensjonAttributt}.tp`
-
+const path = 'pensjonforvalter.tp'
 const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'
 
 export const TjenestepensjonForm = ({ formikBag }) => (
@@ -18,7 +15,7 @@ export const TjenestepensjonForm = ({ formikBag }) => (
 			heading="Tjenestepensjon"
 			hasErrors={panelError(formikBag, path)}
 			iconType="pensjon"
-			startOpen={() => erForste(formikBag.values, [pensjonAttributt])}
+			startOpen={erForste(formikBag.values, [path])}
 			informasjonstekst={hjelpetekst}
 		>
 			<Kategori title="Forhold" vis={path}>

@@ -25,7 +25,7 @@ export const UdistubForm = ({ formikBag }) => (
 			heading="UDI"
 			hasErrors={panelError(formikBag, attrPaths)}
 			iconType="udi"
-			startOpen={() => erForste(formikBag.values, [udiAttributt])}
+			startOpen={erForste(formikBag.values, [udiAttributt])}
 		>
 			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
 				<Oppholdsstatus formikBag={formikBag} />

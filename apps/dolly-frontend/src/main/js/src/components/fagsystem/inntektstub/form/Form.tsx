@@ -45,8 +45,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 			heading="A-ordningen (Inntektstub)"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
 			iconType="inntektstub"
-			//@ts-ignore
-			startOpen={() => erForste(formikBag.values, [inntektstubAttributt])}
+			startOpen={erForste(formikBag.values, [inntektstubAttributt])}
 		>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray

@@ -58,7 +58,11 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (opts.is.importTestnorge) {
-		values = _set('identer', opts.importPersoner, values)
+		values = _set(
+			'identer',
+			opts.importPersoner.map((person) => person.ident),
+			values
+		)
 		if (!values.environments) {
 			values = _set('environments', [], values)
 		}

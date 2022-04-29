@@ -13,7 +13,7 @@ export const AaregForm = ({ formikBag }) => (
 			heading="Arbeidsforhold (Aareg)"
 			hasErrors={panelError(formikBag, aaregAttributt)}
 			iconType="arbeid"
-			startOpen={() => erForste(formikBag.values, [aaregAttributt])}
+			startOpen={erForste(formikBag.values, [aaregAttributt])}
 		>
 			<ArbeidsforholdToggle formikBag={formikBag} />
 		</Panel>

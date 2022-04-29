@@ -18,6 +18,7 @@ import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/Doka
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
+import { ifPresent } from '~/utils/YupValidations'
 
 const getEmptyMessage = (leggTil, importTestnorge) => {
 	if (leggTil) {
@@ -67,7 +68,6 @@ Steg2.validation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...SigrunstubForm.validation,
-	...PensjonForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SykdomForm.validation,
@@ -78,5 +78,11 @@ Steg2.validation = Yup.object({
 	...UdistubForm.validation,
 	...DokarkivForm.validation,
 	...OrganisasjonForm.validation,
-	...TjenestepensjonForm.validation,
+	pensjonforvalter: ifPresent(
+		'$pensjonforvalter',
+		Yup.object({
+			...PensjonForm.validation,
+			...TjenestepensjonForm.validation,
+		})
+	),
 })

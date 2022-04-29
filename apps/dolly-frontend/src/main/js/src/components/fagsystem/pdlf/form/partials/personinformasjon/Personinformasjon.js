@@ -83,7 +83,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				heading="Personinformasjon"
 				hasErrors={panelError(formikBag, panelPaths)}
 				iconType={'personinformasjon'}
-				startOpen={() => erForste(formikBag.values, panelPaths)}
+				startOpen={erForste(formikBag.values, panelPaths)}
 			>
 				{!personFoerLeggTil && (
 					<Kategori title="Alder (grunnlag for fødselsnummer)" vis={alderPaths}>
