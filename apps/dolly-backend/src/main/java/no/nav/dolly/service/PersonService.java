@@ -12,7 +12,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
-import no.nav.dolly.repository.IdentRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ public class PersonService {
 
     private final TpsfService tpsfService;
     private final List<ClientRegister> clientRegister;
-    private final IdentRepository identRepository;
     private final PdlDataConsumer pdlDataConsumer;
 
     @Async

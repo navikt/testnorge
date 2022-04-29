@@ -14,7 +14,7 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -60,7 +60,7 @@ public class PensjonforvalterConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
+    @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Set<String> getMiljoer() {
 
         try {
@@ -85,7 +85,7 @@ public class PensjonforvalterConsumer {
         }
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
+    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
         ResponseEntity<PensjonforvalterResponse> response = webClient
@@ -111,7 +111,7 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_lagreInntekt" })
+    @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
 
@@ -138,7 +138,7 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getInntekter" })
+    @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
     public JsonNode getInntekter(String ident, String miljoe) {
 
 
@@ -166,7 +166,7 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_lagreTpForhold" })
+    @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
     public PensjonforvalterResponse lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest) {
 
         ResponseEntity<PensjonforvalterResponse> response = webClient
@@ -192,7 +192,7 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getTpForhold" })
+    @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
     public JsonNode getTpForhold(String ident, String miljoe) {
 
         ResponseEntity<JsonNode> response = webClient
