@@ -21,10 +21,10 @@ import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visnin
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
-import { PdlDoedsfall } from '~/components/fagsystem/pdl/visning/partials/PdlDoedsfall'
 import { TpsMessagingApi } from '~/service/Api'
 import { getIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
+import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -101,7 +101,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<PdlNasjonalitet data={hentPerson} />
 				<TpsMBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
 				<Foedsel data={foedsel} erPdlVisning />
-				<PdlDoedsfall data={doedsfall} />
+				<Doedsfall data={doedsfall} erPdlVisning />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
