@@ -51,47 +51,47 @@ const getDoedsdato = (values, personFoerLeggTil, importPersoner) => {
 	return doedsdato
 }
 
-const validFomDateTest = (validation) => {
-	return validation.test('gyldig-fom-aar', function isWithinTest(val) {
-		if (!val) return true
-		const inntektFom = val
+const invalidAlder = (inntektFom, values, personFoerLeggTil, importPersoner) => {
+	const alder = getAlder(values, personFoerLeggTil, importPersoner)
+	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	if (!_isNil(alder)) {
+		if (new Date().getFullYear() - alder + 18 > inntektFom) {
+			return true
+		}
+	} else if (!_isNil(foedtFoer)) {
+		const foedtFoerDate = new Date(foedtFoer)
+		const day = foedtFoerDate.getDate()
+		const month = foedtFoerDate.getMonth()
+		let year = foedtFoerDate.getFullYear()
+
+		year = day === 1 && month === 0 ? year - 1 : year
+
+		if (year + 18 > inntektFom) {
+			return true
+		}
+	} else if (!_isNil(foedtEtter) && _isNil(foedtFoer)) {
+		const foedtEtterDate = new Date(foedtEtter)
+		if (foedtEtterDate.getFullYear() + 18 > inntektFom) {
+			return true
+		}
+	} else if (new Date().getFullYear() - 12 > inntektFom) {
+		return true
+	}
+	return false
+}
+
+const validFomDateTest = (val) => {
+	return val.test('gyldig-fom-aar', function isWithinTest(value) {
+		if (!value) return true
+		const inntektFom = value
 
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
 		const personFoerLeggTil = values.personFoerLeggTil
 		const importPersoner = values.importPersoner
 
-		let alderFeil = false
-		const alder = getAlder(values, personFoerLeggTil, importPersoner)
-		const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
-		const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
-		if (!_isNil(alder)) {
-			if (new Date().getFullYear() - alder + 18 > inntektFom) {
-				alderFeil = true
-			}
-		} else if (!_isNil(foedtFoer)) {
-			const foedtFoerDate = new Date(foedtFoer)
-			const day = foedtFoerDate.getDate()
-			const month = foedtFoerDate.getMonth()
-			let year = foedtFoerDate.getFullYear()
-
-			year = day === 1 && month === 0 ? year - 1 : year
-
-			if (year + 18 > inntektFom) {
-				alderFeil = true
-			}
-		} else if (!_isNil(foedtEtter) && _isNil(foedtFoer)) {
-			const foedtEtterDate = new Date(foedtEtter)
-			if (foedtEtterDate.getFullYear() + 18 > inntektFom) {
-				alderFeil = true
-			}
-		} else {
-			if (new Date().getFullYear() - 12 > inntektFom) {
-				alderFeil = true
-			}
-		}
-
-		if (alderFeil) {
+		if (invalidAlder(inntektFom, values, personFoerLeggTil, importPersoner)) {
 			return this.createError({
 				message: 'F.o.m kan tidligst være året personen fyller 18 år.',
 			})
@@ -106,10 +106,10 @@ const validFomDateTest = (validation) => {
 	})
 }
 
-const validTomDateTest = (validation) => {
-	return validation.test('gyldig-tom-aar', function isWithinTest(val) {
-		if (!val) return true
-		let inntektTom = val
+const validTomDateTest = (val) => {
+	return val.test('gyldig-tom-aar', function isWithinTest(value) {
+		if (!value) return true
+		let inntektTom = value
 
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
@@ -142,7 +142,6 @@ export const validation = {
 				tomAar: validTomDateTest(requiredNumber).typeError('Velg et gyldig år'),
 				belop: Yup.number()
 					.min(0, 'Tast inn et gyldig beløp')
-
 					.typeError('Tast inn et gyldig beløp'),
 				redusertMedGrunnbelop: Yup.boolean(),
 			}),
