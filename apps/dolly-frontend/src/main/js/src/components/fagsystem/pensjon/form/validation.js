@@ -133,17 +133,13 @@ const validTomDateTest = (val) => {
 }
 
 export const validation = {
-	pensjonforvalter: ifPresent(
-		'$pensjonforvalter',
+	inntekt: ifPresent(
+		'$pensjonforvalter.inntekt',
 		Yup.object({
-			inntekt: Yup.object({
-				fomAar: validFomDateTest(requiredNumber),
-				tomAar: validTomDateTest(requiredNumber).typeError('Velg et gyldig år'),
-				belop: Yup.number()
-					.min(0, 'Tast inn et gyldig beløp')
-					.typeError('Tast inn et gyldig beløp'),
-				redusertMedGrunnbelop: Yup.boolean(),
-			}),
+			fomAar: validFomDateTest(requiredNumber),
+			tomAar: validTomDateTest(requiredNumber).typeError('Velg et gyldig år'),
+			belop: Yup.number().min(0, 'Tast inn et gyldig beløp').typeError('Tast inn et gyldig beløp'),
+			redusertMedGrunnbelop: Yup.boolean(),
 		})
 	),
 }

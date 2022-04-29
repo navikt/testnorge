@@ -28,7 +28,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				heading="Identifikasjon"
 				hasErrors={panelError(formikBag, identifikasjonAttributter)}
 				iconType="identifikasjon"
-				startOpen={() => erForste(formikBag.values, identifikasjonAttributter)}
+				startOpen={erForste(formikBag.values, identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />

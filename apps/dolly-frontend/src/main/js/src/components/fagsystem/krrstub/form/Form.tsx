@@ -53,8 +53,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 				heading="Kontakt- og reservasjonsregisteret"
 				hasErrors={panelError(formikBag, krrAttributt)}
 				iconType="krr"
-				//@ts-ignore
-				startOpen={() => erForste(formikBag.values, [krrAttributt])}
+				startOpen={erForste(formikBag.values, [krrAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<DollySelect

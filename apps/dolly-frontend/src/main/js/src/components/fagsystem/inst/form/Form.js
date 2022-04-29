@@ -36,7 +36,7 @@ export const InstForm = ({ formikBag }) => {
 				heading="Institusjonsopphold"
 				hasErrors={panelError(formikBag, instAttributt)}
 				iconType="institusjon"
-				startOpen={() => erForste(formikBag.values, [instAttributt])}
+				startOpen={erForste(formikBag.values, [instAttributt])}
 			>
 				<FormikDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>
 					{(path, idx) => (

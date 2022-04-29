@@ -108,7 +108,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
-				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
+				startOpen={erForste(formikBag.values, [dokarkivAttributt])}
 			>
 				<Kategori
 					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}

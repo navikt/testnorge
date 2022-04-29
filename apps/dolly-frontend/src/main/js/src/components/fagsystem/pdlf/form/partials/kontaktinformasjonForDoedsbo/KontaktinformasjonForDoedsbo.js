@@ -20,7 +20,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 				heading="Kontaktinformasjon for dødsbo"
 				hasErrors={panelError(formikBag, doedsboAttributt)}
 				iconType="doedsbo"
-				startOpen={() => erForste(formikBag.values, [doedsboAttributt])}
+				startOpen={erForste(formikBag.values, [doedsboAttributt])}
 			>
 				<FormikDollyFieldArray
 					name="pdldata.person.kontaktinformasjonForDoedsbo"

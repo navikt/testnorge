@@ -20,7 +20,7 @@ export const BrregstubForm = ({ formikBag }) => {
 				heading="Brønnøysundregistrene"
 				hasErrors={panelError(formikBag, brregAttributt)}
 				iconType="brreg"
-				startOpen={() => erForste(formikBag.values, [brregAttributt])}
+				startOpen={erForste(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect

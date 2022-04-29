@@ -13,7 +13,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
 			iconType="sigrun"
-			startOpen={() => erForste(formikBag.values, [sigrunAttributt])}
+			startOpen={erForste(formikBag.values, [sigrunAttributt])}
 		>
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>

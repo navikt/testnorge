@@ -111,8 +111,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
-				//@ts-ignore
-				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
+				startOpen={erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
 				{!_has(formikBag.values, 'aareg') && (
 					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
