@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @RestController
 @Slf4j
@@ -59,7 +60,7 @@ public class OrganisasjonController {
 
         dtoListe.forEach(dto -> {
 
-            if (dto.getOverenhet() != null && service.getOrganisasjon(dto.getOverenhet()).isEmpty()) {
+            if (nonNull(dto.getOverenhet()) && service.getOrganisasjon(dto.getOverenhet()).isEmpty()) {
                 handleError(responseMap, dto, "Kan ikke opprette organisasjon %s fordi overenhet %s ikke finnes i databasen.");
             } else if (isNull(dto.getForretningsAdresse()) && isNull(dto.getPostadresse())) {
                 handleError(responseMap, dto, "Kan ikke opprette organisasjon %s med overenhet %s fordi den mangler begge typer adresse.");
