@@ -503,10 +503,14 @@ const deltBosted = Yup.object({
 const forelderBarnRelasjon = Yup.array().of(
 	Yup.object({
 		minRolleForPerson: requiredString,
+		relatertPersonsRolle: requiredString,
 		relatertPerson: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
 		nyRelatertPerson: nyPerson,
-		deltBosted: deltBosted.nullable(),
+		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
+			is: 'BARN',
+			then: deltBosted.nullable(),
+		}),
 	})
 )
 

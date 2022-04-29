@@ -257,7 +257,6 @@ export const initialForelder = {
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
 	relatertPerson: null as string,
-	deltBosted: null,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
