@@ -1,11 +1,10 @@
 package no.nav.dolly.security.config;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.HashMap;
 
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Getter
 @Setter
