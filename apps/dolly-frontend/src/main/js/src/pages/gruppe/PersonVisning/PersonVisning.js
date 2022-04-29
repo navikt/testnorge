@@ -87,12 +87,12 @@ export const PersonVisning = ({
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
-						<SlettButton action={slettPerson} loading={loading.slettPerson}>
+						<SlettButton action={slettPerson} loading={loading.slettPerson} disabled>
 							Er du sikker på at du vil slette denne personen?
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
+						<FrigjoerButton action={slettPerson} loading={loading.slettPerson} disabled>
 							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
 							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
 						</FrigjoerButton>
