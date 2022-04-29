@@ -12,15 +12,21 @@ type Props = {
 	action: Function
 	loading: boolean
 	children: ReactChildren
+	disabled?: boolean
 }
 
-export const FrigjoerButton = ({ action, loading, children }: Props) => {
+export const FrigjoerButton = ({ action, loading, children, disabled = false }: Props) => {
 	if (loading) return <Loading label="frigjører..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="trashcan">
+			<Button
+				onClick={openModal}
+				disabled={disabled}
+				title={disabled ? 'Frigjøring/sletting er midlertidig utilgjengelig' : ''}
+				kind="trashcan"
+			>
 				Frigjør/slett
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
