@@ -160,6 +160,13 @@ const selectOptions: SelectOptions = {
 		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
 	],
 
+	adressetypeDeltBosted: [
+		{ value: 'PARTNER_ADRESSE', label: 'Adresse fra partner' },
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
+	],
+
 	oppholdAnnetSted: [
 		{ value: 'MILITAER', label: 'Militær' },
 		{ value: 'UTENRIKS', label: 'Utenriks' },
