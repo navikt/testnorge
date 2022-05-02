@@ -121,12 +121,15 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(TP_FORHOLD).append('#');
 
         try {
-            LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(pensjonData.getTp(), LagreTpForholdRequest.class);
-            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-            lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
+            pensjonData.getTp()
+                    .stream()
+                    .forEach(tp -> {
+                        LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                        lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                        lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
 
-            decodeStatus(pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest), status);
-
+                        decodeStatus(pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest), status);
+                    });
         } catch (RuntimeException e) {
 
             status.append(errorStatusDecoder.decodeRuntimeException(e));

@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class PensjonData {
     private PoppInntekt inntekt;
 
     @Schema(description = "Data for tjenestepensjon (TP)")
-    private TpForhold tp;
+    private List<TpOrdning> tp;
 
     @Getter
     @Setter
@@ -49,7 +51,7 @@ public class PensjonData {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class TpForhold {
+    public static class TpOrdning {
         @Schema(required = true,
                 description = "Tjenestepensjons leverandør")
         private String ordning;
