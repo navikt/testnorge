@@ -15,6 +15,7 @@ type Props = {
 	loading: boolean
 	children: any
 	disabled?: boolean
+	title?: string
 	navigateHome?: boolean
 }
 
@@ -24,6 +25,7 @@ export const SlettButton = ({
 	loading,
 	children,
 	disabled = false,
+	title,
 	navigateHome = false,
 }: Props) => {
 	if (loading) return <Loading label="sletter..." />
@@ -35,7 +37,7 @@ export const SlettButton = ({
 			<Button
 				onClick={openModal}
 				disabled={disabled}
-				title={disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
+				title={title ? title : disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
 				kind="trashcan"
 			>
 				SLETT
