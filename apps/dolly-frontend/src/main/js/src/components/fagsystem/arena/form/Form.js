@@ -53,8 +53,8 @@ export const ArenaForm = ({ formikBag }) => {
 					<AlertStripeInfo style={{ marginBottom: '20px' }}>
 						Oppretting av ny(e) person(er) i TPS skjer asynkront og blir noen ganger ikke
 						tilgjengelig før etter oppretting av arbeidsytelser i Arena. Oppretting mot Arena vil da
-						typisk feile. Hvis dette skjer anbefales det å opprette personen først (uten
-						arbeidsytelser) og deretter bruker "LEGG TIL/ENDRE" for å legge til arbeidsytelsene.
+						typisk feile. Hvis dette skjer anbefales det å opprette personen(e) først (uten
+						arbeidsytelser) og deretter bruke "LEGG TIL/ENDRE" for å legge til arbeidsytelsene.
 					</AlertStripeInfo>
 				)}
 				{dagpengerAktiv && (
