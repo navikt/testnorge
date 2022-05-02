@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
-import { differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
+import { differenceInWeeks, isAfter, isBefore, isEqual, isSameDay } from 'date-fns'
 
 const testTelefonnummer = () =>
 	Yup.string()
@@ -24,25 +24,27 @@ const testPrioritet = (val) => {
 	})
 }
 
-const testDatoFom = (val, tomPath, feilmelding) => {
+export const testDatoFom = (val, tomPath, feilmelding) => {
 	return val.test(
 		'is-before-tom',
 		feilmelding || 'Dato må være før til-dato',
 		function isBeforeTom(value) {
 			const datoTom = _get(this, `parent.${tomPath}`)
 			if (!value || !datoTom) return true
+			if (isEqual(new Date(value), new Date(datoTom))) return true
 			return isBefore(new Date(value), new Date(datoTom))
 		}
 	)
 }
 
-const testDatoTom = (val, fomPath, feilmelding) => {
+export const testDatoTom = (val, fomPath, feilmelding) => {
 	return val.test(
 		'is-after-fom',
 		feilmelding || 'Dato må være etter fra-dato',
 		function isAfterFom(value) {
 			const datoFom = _get(this, `parent.${fomPath}`)
 			if (!value || !datoFom) return true
+			if (isEqual(new Date(value), new Date(datoFom))) return true
 			return isAfter(new Date(value), new Date(datoFom))
 		}
 	)
