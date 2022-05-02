@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.personsearchservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.personsearchservice.service.IdentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 public class PersonSearchController {
     private static final String NUMBER_OF_ITEMS_HEADER = "NUMBER_OF_ITEMS";
     private final PersonSearchService service;
+    private final IdentService persondataService;
 
     @PostMapping("/person")
     public ResponseEntity<List<PersonDTO>> search(@RequestBody PersonSearch search) {
