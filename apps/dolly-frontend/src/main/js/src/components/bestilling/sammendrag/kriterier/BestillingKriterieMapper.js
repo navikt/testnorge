@@ -622,6 +622,57 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(sivilstandData)
 		}
 
+		const deltBosted = (personData, path) => {
+			if (!personData || !_get(personData, path)) return [expandable(null, false, null)]
+			const deltBostedData = _get(personData, path)
+
+			const fellesVerdier = [
+				obj(
+					'Adressetype',
+					Formatters.showLabel('adressetypeDeltBosted', deltBostedData.adressetype)
+				),
+				obj('Startdato for kontrakt', Formatters.formatDate(deltBostedData.startdatoForKontrakt)),
+				obj('Sluttdato for kontrakt', Formatters.formatDate(deltBostedData.sluttdatoForKontrakt)),
+			]
+
+			if (deltBostedData.vegadresse !== undefined) {
+				return [
+					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
+						...fellesVerdier,
+						obj(
+							'Vegadresse',
+							deltBostedData.adressetype === 'VEGADRESSE' &&
+								isEmpty(deltBostedData.vegadresse) &&
+								'Ingen verdier satt'
+						),
+						...vegadresse(deltBostedData.vegadresse),
+					]),
+				]
+			} else if (deltBostedData.matrikkeladresse !== undefined) {
+				return [
+					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
+						...fellesVerdier,
+						obj(
+							'Matrikkeladresse',
+							deltBostedData.adressetype === 'MATRIKKELADRESSE' &&
+								isEmpty(deltBostedData.matrikkeladresse) &&
+								'Ingen verdier satt'
+						),
+						...matrikkeladresse(deltBostedData.matrikkeladresse),
+					]),
+				]
+			} else if (deltBostedData.ukjentBosted !== undefined) {
+				return [
+					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
+						...fellesVerdier,
+						obj('Bostedskommune', deltBostedData.ukjentBosted.bostedskommune),
+					]),
+				]
+			} else {
+				return [expandable('DELT BOSTED', !isEmpty(deltBostedData), [...fellesVerdier])]
+			}
+		}
+
 		if (forelderBarnRelasjon) {
 			const foreldreBarnData = {
 				header: 'Barn/foreldre',
@@ -637,6 +688,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
 						obj('Partner ikke forelder', Formatters.oversettBoolean(item.partnerErIkkeForelder)),
 						obj('Person relatert til', item.relatertPerson),
+						...deltBosted(item, 'deltBosted'),
 						...personRelatertTil(item, 'nyRelatertPerson'),
 					]
 				}),
