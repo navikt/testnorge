@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusD
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PersonDTO implements Serializable {
 
     private String ident;
