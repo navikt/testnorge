@@ -25,7 +25,7 @@ const Visning = ({ data, idx }: VisningProps) => {
 				value={data.type}
 				size="medium"
 			/>
-			<TitleValue title="Partnerident" value={data.relatertVedSivilstand} />
+			<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
 			<TitleValue title="Sivilstand fra dato" value={Formatters.formatDate(data.gyldigFraOgMed)} />
 		</div>
 	)

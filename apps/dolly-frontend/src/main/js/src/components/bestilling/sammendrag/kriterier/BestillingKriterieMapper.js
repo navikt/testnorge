@@ -1564,20 +1564,31 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
 	if (pensjonKriterier) {
-		const pensjonforvalter = {
-			header: 'Pensjonsgivende inntekt (POPP)',
-			items: [
-				obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
-				obj('Til og med år', pensjonKriterier.inntekt.tomAar),
-				obj('Beløp', pensjonKriterier.inntekt.belop),
-				obj(
-					'Nedjuster med grunnbeløp',
-					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop)
-				),
-			],
+		if (pensjonKriterier.inntekt) {
+			const pensjonforvalterPopp = {
+				header: 'Pensjonsgivende inntekt (POPP)',
+				items: [
+					obj('Fra og med år', pensjonKriterier.inntekt.fomAar),
+					obj('Til og med år', pensjonKriterier.inntekt.tomAar),
+					obj('Beløp', pensjonKriterier.inntekt.belop),
+					obj(
+						'Nedjuster med grunnbeløp',
+						Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop)
+					),
+				],
+			}
+
+			data.push(pensjonforvalterPopp)
 		}
 
-		data.push(pensjonforvalter)
+		if (pensjonKriterier.tp) {
+			const pensjonforvalterTp = {
+				header: 'Tjenestepensjon (TP)',
+				items: [obj('Ordning', pensjonKriterier.tp.ordning)],
+			}
+
+			data.push(pensjonforvalterTp)
+		}
 	}
 
 	const inntektsmeldingKriterier = bestillingData.inntektsmelding

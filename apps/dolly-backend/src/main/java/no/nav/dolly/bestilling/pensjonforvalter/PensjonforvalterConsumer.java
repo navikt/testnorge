@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
@@ -13,7 +14,7 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,6 +43,7 @@ public class PensjonforvalterConsumer {
     private static final String PENSJON_OPPRETT_PERSON_URL = API_VERSJON + "/person";
     private static final String MILJOER_HENT_TILGJENGELIGE_URL = API_VERSJON + "/miljo";
     private static final String PENSJON_INNTEKT_URL = API_VERSJON + "/inntekt";
+    private static final String PENSJON_TP_FORHOLD_URL = API_VERSJON + "/tp/forhold";
     private static final String FNR_QUERY = "fnr";
     private static final String MILJO_QUERY = "miljo";
 
@@ -58,7 +60,7 @@ public class PensjonforvalterConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
+    @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Set<String> getMiljoer() {
 
         try {
@@ -83,7 +85,7 @@ public class PensjonforvalterConsumer {
         }
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
+    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
         ResponseEntity<PensjonforvalterResponse> response = webClient
@@ -109,7 +111,7 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_lagreInntekt" })
+    @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
 
@@ -136,7 +138,7 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getInntekter" })
+    @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
     public JsonNode getInntekter(String ident, String miljoe) {
 
 
@@ -159,6 +161,59 @@ public class PensjonforvalterConsumer {
 
         if (nonNull(response) && !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Klarte ikke å hente inntekt for %s i %s fra pensjon-testdata-facade", ident, miljoe));
+        }
+
+        return response.getBody();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
+    public PensjonforvalterResponse lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest) {
+
+        ResponseEntity<PensjonforvalterResponse> response = webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(PENSJON_TP_FORHOLD_URL)
+                        .build())
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .bodyValue(lagreTpForholdRequest)
+                .retrieve()
+                .toEntity(PensjonforvalterResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .block();
+
+        if (nonNull(response) && !response.hasBody()) {
+            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i pensjon-testdata-facade", lagreTpForholdRequest.getFnr()));
+        }
+
+        return response.getBody();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
+    public JsonNode getTpForhold(String ident, String miljoe) {
+
+        ResponseEntity<JsonNode> response = webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(PENSJON_TP_FORHOLD_URL)
+                        .queryParam(FNR_QUERY, ident)
+                        .queryParam(MILJO_QUERY, miljoe)
+                        .build())
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .retrieve()
+                .toEntity(JsonNode.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .block();
+
+        if (nonNull(response) && !response.hasBody()) {
+            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra pensjon-testdata-facade", ident, miljoe));
         }
 
         return response.getBody();

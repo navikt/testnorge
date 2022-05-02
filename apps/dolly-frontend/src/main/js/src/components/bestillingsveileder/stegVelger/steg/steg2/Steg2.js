@@ -17,6 +17,8 @@ import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
 import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
+import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
+import { ifPresent } from '~/utils/YupValidations'
 
 const getEmptyMessage = (leggTil, importTestnorge) => {
 	if (leggTil) {
@@ -45,6 +47,7 @@ export const Steg2 = ({ formikBag }) => {
 			<AaregForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
 			<PensjonForm formikBag={formikBag} />
+			<TjenestepensjonForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
 			<InntektsmeldingForm formikBag={formikBag} />
 			<SykdomForm formikBag={formikBag} />
@@ -65,7 +68,6 @@ Steg2.validation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...SigrunstubForm.validation,
-	...PensjonForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SykdomForm.validation,
@@ -76,4 +78,11 @@ Steg2.validation = Yup.object({
 	...UdistubForm.validation,
 	...DokarkivForm.validation,
 	...OrganisasjonForm.validation,
+	pensjonforvalter: ifPresent(
+		'$pensjonforvalter',
+		Yup.object({
+			...PensjonForm.validation,
+			...TjenestepensjonForm.validation,
+		})
+	),
 })

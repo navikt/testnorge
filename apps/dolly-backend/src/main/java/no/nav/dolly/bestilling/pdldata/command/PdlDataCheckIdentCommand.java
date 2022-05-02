@@ -39,6 +39,7 @@ public class PdlDataCheckIdentCommand implements Callable<Mono<AvailibilityRespo
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(AvailibilityResponseDTO[].class)
+                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,

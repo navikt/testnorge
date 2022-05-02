@@ -27,6 +27,7 @@ import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
+import { useNavigate } from 'react-router-dom'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -51,10 +52,12 @@ export const PersonVisning = ({
 	leggTilPaaPerson,
 	iLaastGruppe,
 	setVisning,
+	tmpPersoner,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
 	const mountedRef = useRef(true)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		return () => {
@@ -101,6 +104,7 @@ export const PersonVisning = ({
 						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 						pdlData={data.pdlforvalter?.person}
 						environments={bestilling?.environments}
+						tmpPersoner={tmpPersoner?.pdlforvalter}
 					/>
 				)}
 				{ident.master !== 'PDL' && (

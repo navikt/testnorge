@@ -43,6 +43,7 @@ const mapStateToProps = (state, ownProps) => ({
 	data: selectDataForIdent(state, ownProps.personId),
 	bestilling: getBestillingById(state, ownProps.bestillingId),
 	bestillingsListe: getBestillingsListe(state, ownProps.bestillingsIdListe),
+	tmpPersoner: state.redigertePersoner,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

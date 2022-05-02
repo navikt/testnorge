@@ -427,11 +427,9 @@ const kontaktDoedsbo = Yup.array().of(
 	})
 )
 
-const doedsfall = Yup.array().of(
-	Yup.object({
-		doedsdato: requiredDate.nullable(),
-	})
-)
+export const doedsfall = Yup.object({
+	doedsdato: requiredDate.nullable(),
+})
 
 const doedfoedtBarn = Yup.array().of(
 	Yup.object({
@@ -592,7 +590,7 @@ export const validation = {
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
-			doedsfall: ifPresent('$pdldata.person.doedsfall', doedsfall),
+			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
 			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
 			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),

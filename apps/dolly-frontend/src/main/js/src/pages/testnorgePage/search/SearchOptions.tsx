@@ -66,7 +66,7 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 			/>
 			<OptionsSection
 				heading={'Adresser'}
-				options={<Adresser />}
+				options={<Adresser formikBag={props.formikBag} />}
 				numSelected={getCount(AdresserPaths, props.formikBag)}
 				selectionColor={getSelectionColor(props.formikBag)}
 			/>

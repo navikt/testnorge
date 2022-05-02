@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
@@ -201,7 +202,7 @@ public class OrganisasjonBestillingService {
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
 
         var orgStatus = organisasjonDeployStatus.getOrgStatus()
-                .get(bestillingProgress.getOrganisasjonsnummer()).stream()
+                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList()).stream()
                 .findFirst().orElse(new OrgStatus());
 
         return updateBestilling(bestilling, orgStatus);

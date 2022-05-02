@@ -361,6 +361,8 @@ public class ArtifactUpdateService {
 
         doedsfallService.validate(oppdatertDoedsfall);
         doedsfallService.convert(person.getPerson().getDoedsfall());
+
+        folkeregisterPersonstatusService.update(person.getPerson());
     }
 
     public void updateFolkeregisterPersonstatus(String ident, Integer id, FolkeregisterPersonstatusDTO oppdatertStatus) {

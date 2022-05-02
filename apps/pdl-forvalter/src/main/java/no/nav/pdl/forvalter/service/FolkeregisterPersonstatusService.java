@@ -57,6 +57,16 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         return person.getFolkeregisterPersonstatus();
     }
 
+    public List<FolkeregisterPersonstatusDTO> update(PersonDTO person) {
+
+        person.getFolkeregisterPersonstatus().clear();
+        person.getFolkeregisterPersonstatus()
+                .add(FolkeregisterPersonstatusDTO.builder()
+                        .isNew(true)
+                        .build());
+
+        return convert(person);
+    }
 
     private FolkeregisterPersonstatusDTO handle(FolkeregisterPersonstatusDTO personstatus, PersonDTO person) {
 
