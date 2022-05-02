@@ -106,6 +106,7 @@ export default function GruppeHeader({
 							action={deleteGruppe}
 							loading={isDeletingGruppe}
 							navigateHome={true}
+							disabled
 						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
