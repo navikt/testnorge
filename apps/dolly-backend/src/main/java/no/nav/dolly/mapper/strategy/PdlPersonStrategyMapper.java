@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret.InnUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Sivilstand;
+import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -186,13 +187,13 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                                         .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getVegadresse()))
                                                         .map(BostedadresseDTO::getVegadresse)
                                                         .toList(),
-                                                BoGateadresse.class),
+                                                BoAdresse.class),
                                         mapperFacade.mapAsList(personDto.getBostedsadresse()
                                                         .stream()
                                                         .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getMatrikkeladresse()))
                                                         .map(BostedadresseDTO::getMatrikkeladresse)
                                                         .toList(),
-                                                BoMatrikkeladresse.class))
+                                                BoAdresse.class))
                                 .flatMap(Collection::stream)
                                 .toList());
                         person.getInnvandretUtvandret().addAll(
