@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +18,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
 
     @Schema(required = true,
@@ -46,7 +44,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class KontaktinformasjonForDoedsboAdresse implements Serializable {
 
         @Schema(description = "Dødsboets adresse, adresselinje 1")
@@ -69,7 +66,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class KontaktpersonDTO implements Serializable {
 
         private String identifikasjonsnummer;
@@ -90,7 +86,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class OrganisasjonDTO implements Serializable {
 
         private PersonNavnDTO kontaktperson;
@@ -103,7 +98,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class PersonNavnDTO implements Serializable {
 
         private String etternavn;

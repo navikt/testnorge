@@ -95,7 +95,11 @@ const renderExpandablePanel = (attributt, key) => {
 				{attributt.expandableHeader}
 			</Button>
 			{visPersonValg && (
-				<div className={'flexbox--align-start flexbox--wrap'} key={key}>
+				<div
+					className={'flexbox--align-start flexbox--wrap'}
+					style={{ margin: '10px 0 10px 0' }}
+					key={key}
+				>
 					{attributt.objects.map((attr, idx) => _renderStaticValue(attr, idx))}
 				</div>
 			)}

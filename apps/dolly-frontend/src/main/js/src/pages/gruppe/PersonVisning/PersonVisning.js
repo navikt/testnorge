@@ -52,6 +52,7 @@ export const PersonVisning = ({
 	leggTilPaaPerson,
 	iLaastGruppe,
 	setVisning,
+	tmpPersoner,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -87,12 +88,12 @@ export const PersonVisning = ({
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
-						<SlettButton action={slettPerson} loading={loading.slettPerson} disabled>
+						<SlettButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil slette denne personen?
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton action={slettPerson} loading={loading.slettPerson} disabled>
+						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
 							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
 						</FrigjoerButton>
@@ -103,6 +104,7 @@ export const PersonVisning = ({
 						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 						pdlData={data.pdlforvalter?.person}
 						environments={bestilling?.environments}
+						tmpPersoner={tmpPersoner?.pdlforvalter}
 					/>
 				)}
 				{ident.master !== 'PDL' && (

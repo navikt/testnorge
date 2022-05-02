@@ -11,6 +11,7 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { BarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
@@ -51,22 +52,8 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 								</ToggleKnapp>
 							</ToggleGruppe>
 						</div>
-
-						{(erBarn && (
-							<>
-								<FormikSelect
-									name={`${path}.minRolleForPerson`}
-									label="Forelders rolle for barn"
-									options={Options('foreldreTypePDL')}
-									isClearable={false}
-								/>
-								<FormikCheckbox
-									name={`${path}.partnerErIkkeForelder`}
-									label="Partner ikke forelder"
-									checkboxMargin
-								/>
-							</>
-						)) || (
+						{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
+						{!erBarn && (
 							<>
 								<FormikSelect
 									name={`${path}.relatertPersonsRolle`}
