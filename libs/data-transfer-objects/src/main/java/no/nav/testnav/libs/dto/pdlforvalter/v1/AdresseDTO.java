@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class AdresseDTO extends DbVersjonDTO {
 
     private String adresseIdentifikatorFraMatrikkelen;
@@ -39,7 +37,6 @@ public abstract class AdresseDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class CoNavnDTO implements Serializable {
 
         private String etternavn;
