@@ -156,7 +156,54 @@ const getUpdatedPdldata = (pdldata: any) => {
 			}
 		}
 	}
+	if (newPdldata?.person?.bostedsadresse) {
+		newPdldata.person.bostedsadresse = newPdldata.person.bostedsadresse.map((adresse: any) => {
+			return updateAdressetyper(adresse, false)
+		})
+	}
+	if (newPdldata?.person?.oppholdsadresse) {
+		newPdldata.person.oppholdsadresse = newPdldata.person.oppholdsadresse.map((adresse: any) => {
+			return updateAdressetyper(adresse, false)
+		})
+	}
+	if (newPdldata?.person?.kontaktadresse) {
+		newPdldata.person.kontaktadresse = newPdldata.person.kontaktadresse.map((adresse: any) => {
+			return updateAdressetyper(adresse, false)
+		})
+	}
 	return newPdldata
+}
+
+const updateAdressetyper = (adresse: any, deltBosted: boolean) => {
+	if (adresse.vegadresse !== null) {
+		updateVegadressetype(adresse.vegadresse)
+		adresse.adressetype = 'VEGADRESSE'
+	} else if (adresse.matrikkeladresse !== null) {
+		adresse.adressetype = 'MATRIKKELADRESSE'
+		adresse.matrikkeladresse.matrikkeladresseType = 'DETALJERT'
+	} else if (adresse.utenlandskAdresse !== null) {
+		adresse.adressetype = 'UTENLANDSK_ADRESSE'
+	} else if (adresse.ukjentBosted !== null) {
+		adresse.adressetype = 'UKJENT_BOSTED'
+	} else if (adresse.oppholdAnnetSted) {
+		adresse.adressetype = 'OPPHOLD_ANNET_STED'
+	} else if (adresse.postboksadresse !== null) {
+		adresse.adressetype = 'POSTBOKSADRESSE'
+	} else if (deltBosted) {
+		adresse.adressetype = 'PARTNER_ADRESSE'
+	}
+	return adresse
+}
+
+const updateVegadressetype = (adresse: any) => {
+	const notNullKeys = Object.keys(adresse).filter((key) => adresse[key] !== null)
+	if (notNullKeys.length === 1 && notNullKeys.includes('kommunenummer')) {
+		adresse.vegadresseType = 'KOMMUNENUMMER'
+	} else if (notNullKeys.length === 1 && notNullKeys.includes('postnummer')) {
+		adresse.vegadresseType = 'POSTNUMMER'
+	} else if (notNullKeys.length !== 0) {
+		adresse.vegadresseType = 'DETALJERT'
+	}
 }
 
 const updateData = (data: any, initalValues: any) => {
