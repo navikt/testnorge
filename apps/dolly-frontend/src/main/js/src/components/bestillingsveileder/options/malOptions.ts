@@ -2,7 +2,6 @@ import { initialValues } from './utils'
 import _ from 'lodash'
 import { useSelector } from 'react-redux'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
-import { initialBarn, initialForelder } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const initialValuesBasedOnMal = (mal: any) => {
 	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
@@ -148,16 +147,14 @@ const getUpdatedUdistubData = (udistubData: any) => {
 
 const getUpdatedPdldata = (pdldata: any) => {
 	const newPdldata = Object.assign({}, pdldata)
-	if (newPdldata?.person?.forelderBarnRelasjon) {
-		newPdldata.person.forelderBarnRelasjon = newPdldata.person.forelderBarnRelasjon.map(
-			(relasjon: any) => {
-				if (relasjon.relatertPersonsRolle === 'BARN') {
-					return updateData(relasjon, initialBarn)
-				} else {
-					return updateData(relasjon, initialForelder)
-				}
+	const nyPerson = newPdldata?.opprettNyPerson
+	if (nyPerson) {
+		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
+			newPdldata.opprettNyPerson = {
+				identtype: nyPerson.identtype,
+				syntetisk: nyPerson.syntetisk,
 			}
-		)
+		}
 	}
 	return newPdldata
 }
