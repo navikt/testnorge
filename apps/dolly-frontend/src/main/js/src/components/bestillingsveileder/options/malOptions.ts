@@ -175,19 +175,19 @@ const getUpdatedPdldata = (pdldata: any) => {
 }
 
 const updateAdressetyper = (adresse: any, deltBosted: boolean) => {
-	if (adresse.vegadresse !== null) {
+	if (adresse.vegadresse) {
 		updateVegadressetype(adresse.vegadresse)
 		adresse.adressetype = 'VEGADRESSE'
-	} else if (adresse.matrikkeladresse !== null) {
+	} else if (adresse.matrikkeladresse) {
 		adresse.adressetype = 'MATRIKKELADRESSE'
 		adresse.matrikkeladresse.matrikkeladresseType = 'DETALJERT'
-	} else if (adresse.utenlandskAdresse !== null) {
+	} else if (adresse.utenlandskAdresse) {
 		adresse.adressetype = 'UTENLANDSK_ADRESSE'
-	} else if (adresse.ukjentBosted !== null) {
+	} else if (adresse.ukjentBosted) {
 		adresse.adressetype = 'UKJENT_BOSTED'
 	} else if (adresse.oppholdAnnetSted) {
 		adresse.adressetype = 'OPPHOLD_ANNET_STED'
-	} else if (adresse.postboksadresse !== null) {
+	} else if (adresse.postboksadresse) {
 		adresse.adressetype = 'POSTBOKSADRESSE'
 	} else if (deltBosted) {
 		adresse.adressetype = 'PARTNER_ADRESSE'
