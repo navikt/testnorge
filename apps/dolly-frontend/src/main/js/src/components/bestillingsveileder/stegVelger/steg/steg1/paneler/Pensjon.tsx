@@ -46,9 +46,12 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 		label: 'Har tjenestepensjonsforhold',
 		checked: has('pensjonforvalter.tp'),
 		add: () =>
-			set('pensjonforvalter.tp', {
-				ordning: '3010',
-			}),
+			set('pensjonforvalter.tp', [
+				{
+					ordning: '3010',
+					ytelser: [],
+				}
+			]),
 		remove: () => del('pensjonforvalter.tp'),
 	},
 })
