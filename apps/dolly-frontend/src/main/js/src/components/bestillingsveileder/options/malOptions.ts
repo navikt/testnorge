@@ -2,6 +2,12 @@ import { initialValues } from './utils'
 import _ from 'lodash'
 import { useSelector } from 'react-redux'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
+import {
+	BostedData,
+	Kontaktadresse,
+	Oppholdsadresse,
+} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export const initialValuesBasedOnMal = (mal: any) => {
 	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
@@ -156,20 +162,32 @@ const getUpdatedPdldata = (pdldata: any) => {
 			}
 		}
 	}
-	if (newPdldata?.person?.bostedsadresse) {
-		newPdldata.person.bostedsadresse = newPdldata.person.bostedsadresse.map((adresse: any) => {
+	const person = newPdldata?.person
+	if (person?.bostedsadresse) {
+		newPdldata.person.bostedsadresse = person.bostedsadresse.map((adresse: BostedData) => {
 			return updateAdressetyper(adresse, false)
 		})
 	}
-	if (newPdldata?.person?.oppholdsadresse) {
-		newPdldata.person.oppholdsadresse = newPdldata.person.oppholdsadresse.map((adresse: any) => {
+	if (person?.oppholdsadresse) {
+		newPdldata.person.oppholdsadresse = person.oppholdsadresse.map((adresse: Oppholdsadresse) => {
 			return updateAdressetyper(adresse, false)
 		})
 	}
-	if (newPdldata?.person?.kontaktadresse) {
-		newPdldata.person.kontaktadresse = newPdldata.person.kontaktadresse.map((adresse: any) => {
+	if (person?.kontaktadresse) {
+		newPdldata.person.kontaktadresse = person.kontaktadresse.map((adresse: Kontaktadresse) => {
 			return updateAdressetyper(adresse, false)
 		})
+	}
+
+	if (person?.forelderBarnRelasjon) {
+		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon
+			.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
+			.map((relasjon: ForeldreBarnRelasjon) => {
+				if (relasjon.deltBosted) {
+					relasjon.deltBosted = updateAdressetyper(relasjon.deltBosted, true)
+				}
+				return relasjon
+			})
 	}
 	return newPdldata
 }

@@ -85,6 +85,7 @@ export type ForeldreBarnRelasjon = {
 	relatertPerson?: string
 	relatertPersonsIdent: string
 	relatertPersonsRolle: Rolle
+	deltBosted?: any
 }
 
 export type DoedfoedtBarn = {
