@@ -51,7 +51,6 @@ public class PensjonData {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TpOrdning {
         @Schema(required = true,
                 description = "Tjenestepensjons leverandør")
@@ -65,21 +64,20 @@ public class PensjonData {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TpYtelse {
         @Schema(required = true,
                 description = "tjenestetype")
         private String type;
 
         @Schema(required = true,
-                description = "dato innmeldt fom")
+                description = "Dato innmeldt ytelse fom, kan være tidligere eller samme som iverksatt fom dato.")
         private LocalDate datoInnmeldtYtelseFom;
 
         @Schema(required = true,
-                description = "dato iverksatt fom")
+                description = "Dato iverksatt fom")
         private LocalDate datoYtelseIverksattFom;
 
-        @Schema(description = "dato iverksatt tom")
+        @Schema(description = "Dato iverksatt tom")
         private LocalDate datoYtelseIverksattTom;
     }
 }
