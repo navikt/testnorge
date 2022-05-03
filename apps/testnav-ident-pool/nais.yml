@@ -58,5 +58,6 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_14
+        name: testnav-identpool
         databases:
-          - name: testnav-ident-pool-db
+          - name: testnav-identpool

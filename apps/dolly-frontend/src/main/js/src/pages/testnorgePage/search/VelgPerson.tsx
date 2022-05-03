@@ -1,20 +1,23 @@
 import React from 'react'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
+import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 interface VelgPersonProps {
 	ident: string
-	valgtePersoner: Array<string>
-	setValgtePersoner: (personer: Array<string>) => void
+	data: PdlData
+	valgtePersoner: Array<ImportPerson>
+	setValgtePersoner: (personer: Array<ImportPerson>) => void
 }
 
-export const VelgPerson = ({ ident, valgtePersoner, setValgtePersoner }: VelgPersonProps) => {
-	const avhuket = valgtePersoner.includes(ident)
+export const VelgPerson = ({ ident, data, valgtePersoner, setValgtePersoner }: VelgPersonProps) => {
+	const avhuket = valgtePersoner.map((person) => person?.ident).includes(ident)
 
 	const handleOnChange = () => {
 		if (avhuket) {
-			setValgtePersoner(valgtePersoner.filter((valgtident) => valgtident !== ident))
+			setValgtePersoner(valgtePersoner.filter((valgtident) => valgtident.ident !== ident))
 		} else {
-			setValgtePersoner([...valgtePersoner, ident])
+			setValgtePersoner([...valgtePersoner, { ident: ident, data: data }])
 		}
 	}
 

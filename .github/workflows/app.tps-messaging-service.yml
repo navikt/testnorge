@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || 'refs/heads/feature/ident-pool-til-gcp'}}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/tps-messaging-service/nais.yml'
       app-name: 'tps-messaging-service'

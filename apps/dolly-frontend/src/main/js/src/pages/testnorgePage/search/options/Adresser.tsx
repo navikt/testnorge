@@ -1,71 +1,82 @@
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import React from 'react'
+import _get from 'lodash/get'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
+import { FormikProps } from 'formik'
+import { yesNoOptions } from '~/pages/testnorgePage/utils'
+
+type AdresserProps = {
+	formikBag: FormikProps<{}>
+}
 
 const bostedPath = 'adresser.bostedsadresse'
-const kontaktPath = 'adresser.kontaktadresse'
-const oppholdPath = 'adresser.oppholdsadresse'
+const utlandPath = 'adresser.harUtenlandskAdresse'
+const kontaktPath = 'adresser.harKontaktadresse'
+const oppholdPath = 'adresser.harOppholdsadresse'
 
-const oppholdAnnetStedOptions = [
-	{ value: 'MILITAER', label: 'Militær' },
-	{ value: 'UTENRIKS', label: 'Utenriks' },
-	{ value: 'PAA_SVALBARD', label: 'På Svalbard' },
-	{ value: 'PENDLER', label: 'Pendler' },
-]
-
-export const Adresser = () => (
-	<section>
-		<h4 className="subtittel">Boadresse</h4>
-		<FormikSelect
-			name={`${bostedPath}.postnummer`}
-			label="Postnummer"
-			kodeverk={AdresseKodeverk.Postnummer}
-			optionHeight={50}
-			size="medium"
-		/>
-		<FormikSelect
-			name={`${bostedPath}.kommunenummer`}
-			label="Kommunenummer"
-			kodeverk={AdresseKodeverk.Kommunenummer}
-			optionHeight={50}
-			size="medium"
-		/>
-		<h4 className="subtittel">Kontaktadresse</h4>
-		<FormikCheckbox name={`${kontaktPath}.norskAdresse`} label="Har norsk adresse" size="medium" />
-		<FormikCheckbox
-			name={`${kontaktPath}.utenlandskAdresse`}
-			label="Har utenlandsk adresse"
-			size="medium"
-		/>
-		<FormikCheckbox
-			name={`${kontaktPath}.kontaktadresseForDoedsbo`}
-			label="Har kontaktadresse for dødsbo"
-			size="medium"
-		/>
-		<h4 className="subtittel">Oppholdsadresse</h4>
-		<FormikCheckbox name={`${oppholdPath}.norskAdresse`} label="Har norsk adresse" size="medium" />
-		<FormikCheckbox
-			name={`${oppholdPath}.utenlandskAdresse`}
-			label="Har utenlandsk adresse"
-			size="medium"
-		/>
-		<FormikSelect
-			name={`${oppholdPath}.oppholdAnnetSted`}
-			label="Opphold annet sted"
-			options={oppholdAnnetStedOptions}
-			size="medium"
-		/>
-	</section>
-)
+export const Adresser = ({ formikBag }: AdresserProps) => {
+	const bostedOptions = [
+		{ value: 'Y', label: 'Ja' },
+		{
+			value: 'N',
+			label: 'Nei',
+			disabled:
+				_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
+				_get(formikBag.values, `${bostedPath}.postnummer`),
+		},
+	]
+	return (
+		<section>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Har bostedsadresse i Norge'}
+				path={`${bostedPath}.borINorge`}
+				options={bostedOptions}
+			/>
+			<FormikSelect
+				name={`${bostedPath}.postnummer`}
+				label="Bosted - Postnummer"
+				kodeverk={AdresseKodeverk.Postnummer}
+				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
+				optionHeight={50}
+				size="medium"
+			/>
+			<FormikSelect
+				name={`${bostedPath}.kommunenummer`}
+				label="Bosted - Kommunenummer"
+				kodeverk={AdresseKodeverk.Kommunenummer}
+				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
+				optionHeight={50}
+				size="medium"
+			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Har utenlandsk adresse'}
+				path={utlandPath}
+				options={yesNoOptions}
+			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Har kontaktadresse'}
+				path={kontaktPath}
+				options={yesNoOptions}
+			/>
+			<RadioGroupOptions
+				formikBag={formikBag}
+				name={'Har oppholdsadresse'}
+				path={oppholdPath}
+				options={yesNoOptions}
+			/>
+		</section>
+	)
+}
 
 export const AdresserPaths = {
+	[bostedPath + '.borINorge']: 'string',
 	[bostedPath + '.postnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
-	[kontaktPath + '.norskAdresse']: 'boolean',
-	[kontaktPath + '.utenlandskAdresse']: 'boolean',
-	[kontaktPath + '.kontaktadresseForDoedsbo']: 'boolean',
-	[oppholdPath + '.norskAdresse']: 'boolean',
-	[oppholdPath + '.utenlandskAdresse']: 'boolean',
-	[oppholdPath + '.oppholdAnnetSted']: 'string',
+	[utlandPath]: 'string',
+	[kontaktPath]: 'string',
+	[oppholdPath]: 'string',
 }

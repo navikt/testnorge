@@ -19,7 +19,7 @@ import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPe
 import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/PdlNasjonalitet'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
-export const TpsfVisning = ({ data, pdlData, environments }) => {
+export const TpsfVisning = ({ data, pdlData, environments, tmpPersoner }) => {
 	if (!data) return null
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
@@ -71,6 +71,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 						data={pdlData}
 						tpsMessagingData={tpsMessagingData}
 						tpsMessagingLoading={tpsMessagingLoading}
+						tmpPersoner={tmpPersoner}
 					/>
 				)}
 				{hasTpsfData ? (

@@ -108,6 +108,39 @@ const testForeldreansvar = (val) => {
 	})
 }
 
+const testDeltBostedAdressetype = (value) => {
+	return value.test('har-gyldig-adressetype', function harGyldigAdressetype(selected) {
+		let feilmelding = null
+		if (selected === 'PARTNER_ADRESSE') {
+			const values = this.options.context
+			const personFoerLeggTil = values.personFoerLeggTil
+
+			let fantPartner = false
+			const nyePartnere = _get(values, 'pdldata.person.sivilstand')
+			if (nyePartnere?.length > 0) {
+				fantPartner = nyePartnere[0].borIkkeSammen
+			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
+				const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
+					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'
+				)
+				if (partnere.length > 0) {
+					const partnerAdresseId =
+						partnere[0].relatertPerson?.bostedsadresse?.[0]?.adresseIdentifikatorFraMatrikkelen
+					const identAdresseId =
+						personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse?.[0]
+							?.adresseIdentifikatorFraMatrikkelen
+					if (partnerAdresseId && partnerAdresseId !== identAdresseId) {
+						fantPartner = true
+					}
+				}
+			}
+			feilmelding = fantPartner ? null : 'Fant ikke gyldig partner for delt bosted'
+		}
+
+		return feilmelding ? this.createError({ message: feilmelding }) : true
+	})
+}
+
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
 	mellomnavn: Yup.string(),
@@ -394,11 +427,9 @@ const kontaktDoedsbo = Yup.array().of(
 	})
 )
 
-const doedsfall = Yup.array().of(
-	Yup.object({
-		doedsdato: requiredDate.nullable(),
-	})
-)
+export const doedsfall = Yup.object({
+	doedsdato: requiredDate.nullable(),
+})
 
 const doedfoedtBarn = Yup.array().of(
 	Yup.object({
@@ -453,12 +484,31 @@ const sivilstand = Yup.array().of(
 	})
 )
 
+const deltBosted = Yup.object({
+	adressetype: testDeltBostedAdressetype(requiredString.nullable()),
+	startdatoForKontrakt: Yup.date().optional().nullable(),
+	sluttdatoForKontrakt: Yup.date().optional().nullable(),
+	vegadresse: vegadresse,
+	matrikkeladresse: matrikkeladresse,
+	ukjentBosted: Yup.mixed().when('adressetype', {
+		is: 'UKJENT_BOSTED',
+		then: Yup.object({
+			bostedskommune: requiredString.nullable(),
+		}),
+	}),
+})
+
 const forelderBarnRelasjon = Yup.array().of(
 	Yup.object({
 		minRolleForPerson: requiredString,
+		relatertPersonsRolle: requiredString,
 		relatertPerson: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
 		nyRelatertPerson: nyPerson,
+		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
+			is: 'BARN',
+			then: deltBosted.nullable(),
+		}),
 	})
 )
 
@@ -540,7 +590,7 @@ export const validation = {
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
-			doedsfall: ifPresent('$pdldata.person.doedsfall', doedsfall),
+			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
 			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
 			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),

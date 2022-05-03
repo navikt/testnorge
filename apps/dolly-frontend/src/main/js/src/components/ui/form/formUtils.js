@@ -17,7 +17,7 @@ export const panelError = (formikBag, attributtPath) => {
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
 
-export const erForste = (values, attributt) => {
+export const erForste = (values, attributter) => {
 	const rootPaths = [
 		'pdldata.opprettNyPerson.alder',
 		'pdldata.person.foedsel',
@@ -43,7 +43,8 @@ export const erForste = (values, attributt) => {
 		'pdldata.person.adressebeskyttelse',
 		'pdldata.person.sivilstand',
 		'pdldata.person.doedfoedtBarn',
-		'pdldata.person.foreldreBarnRelasjon',
+		'pdldata.person.forelderBarnRelasjon',
+		'pdldata.person.foreldreansvar',
 		'aareg',
 		'sigrunstub',
 		'inntektstub',
@@ -53,7 +54,8 @@ export const erForste = (values, attributt) => {
 		'krrstub',
 		'arenaforvalter',
 		'udistub',
-		'pensjonforvalter',
+		'pensjonforvalter.inntekt',
+		'pensjonforvalter.tp',
 		'inntektsmelding',
 		'dokarkiv',
 		'organisasjon.enhetstype',
@@ -76,5 +78,5 @@ export const erForste = (values, attributt) => {
 			valgteAttributter.push(path)
 		}
 	})
-	return attributt.includes(valgteAttributter[0])
+	return attributter.includes(valgteAttributter[0])
 }

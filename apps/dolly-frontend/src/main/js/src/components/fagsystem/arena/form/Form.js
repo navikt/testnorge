@@ -41,7 +41,7 @@ export const ArenaForm = ({ formikBag }) => {
 				heading="Arbeidsytelser"
 				hasErrors={panelError(formikBag, arenaAttributt)}
 				iconType="arena"
-				startOpen={() => erForste(formikBag.values, [arenaAttributt])}
+				startOpen={erForste(formikBag.values, [arenaAttributt])}
 			>
 				{personFoerLeggTil && (
 					<ArenaVisning

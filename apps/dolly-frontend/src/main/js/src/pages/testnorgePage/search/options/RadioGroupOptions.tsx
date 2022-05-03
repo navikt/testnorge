@@ -8,6 +8,7 @@ import _get from 'lodash/get'
 type Option = {
 	value: string
 	label: string
+	disabled?: boolean
 }
 
 type RadioOptionsProps = {
@@ -53,6 +54,7 @@ export const RadioGroupOptions = ({
 								key={idx}
 								value={option.value}
 								onChange={(event) => setSelected(event.target.value)}
+								disabled={option.disabled}
 							>
 								{option.label}
 							</Radio>

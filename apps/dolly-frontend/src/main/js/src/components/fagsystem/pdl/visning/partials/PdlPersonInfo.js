@@ -4,6 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
+import _get from 'lodash/get'
 
 const getCurrentPersonstatus = (data) => {
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
@@ -23,14 +24,15 @@ export const PdlPersonInfo = ({
 	tpsMessagingData,
 	tpsMessagingLoading = false,
 	visTittel = true,
+	tmpPersoner,
 }) => {
 	if (!data) {
 		return null
 	}
-
+	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
-	const personstatus = getCurrentPersonstatus(data)
+	const personstatus = getCurrentPersonstatus(redigertPerson || data)
 
 	return (
 		<ErrorBoundary>
@@ -44,7 +46,7 @@ export const PdlPersonInfo = ({
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 					<TitleValue
 						title="Personstatus"
-						value={Formatters.allCapsToCapitalized(personstatus?.status)}
+						value={Formatters.showLabel('personstatus', personstatus?.status)}
 					/>
 					<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />
 				</div>

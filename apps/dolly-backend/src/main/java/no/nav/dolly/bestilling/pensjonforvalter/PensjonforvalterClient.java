@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -31,6 +32,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     public static final String PENSJON_FORVALTER = "PensjonForvalter";
     public static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
+    public static final String TP_FORHOLD = "TpForhold";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final DollyPersonCache dollyPersonCache;
@@ -49,8 +51,12 @@ public class PensjonforvalterClient implements ClientRegister {
             if (!bestilteMiljoer.isEmpty()) {
                 opprettPerson(dollyPerson, bestilteMiljoer, status);
 
-                if (nonNull(bestilling.getPensjonforvalter())) {
+                if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getInntekt())) {
                     lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
+                }
+
+                if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getTp())) {
+                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
                 }
 
             } else if (nonNull(bestilling.getPensjonforvalter())) {
@@ -103,6 +109,23 @@ public class PensjonforvalterClient implements ClientRegister {
             lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
 
             decodeStatus(pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest), status);
+
+        } catch (RuntimeException e) {
+
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
+        }
+    }
+
+    private void lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
+
+        status.append('$').append(TP_FORHOLD).append('#');
+
+        try {
+            LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(pensjonData.getTp(), LagreTpForholdRequest.class);
+            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+            lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
+
+            decodeStatus(pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest), status);
 
         } catch (RuntimeException e) {
 

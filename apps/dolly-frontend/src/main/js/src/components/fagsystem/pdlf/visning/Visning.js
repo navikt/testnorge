@@ -17,6 +17,8 @@ import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partia
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
+import { DeltBosted } from '~/components/fagsystem/pdlf/visning/partials/DeltBosted'
+import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 
 export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
@@ -24,10 +26,12 @@ export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 
 	const {
 		foedsel,
+		doedsfall,
 		telefonnummer,
 		vergemaal,
 		tilrettelagtKommunikasjon,
 		bostedsadresse,
+		deltBosted,
 		oppholdsadresse,
 		kontaktadresse,
 		adressebeskyttelse,
@@ -45,10 +49,12 @@ export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 		<ErrorBoundary>
 			<div>
 				<Foedsel data={foedsel} tmpPersoner={tmpPersoner} ident={ident} />
+				<Doedsfall data={doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
+				<DeltBosted data={deltBosted} />
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
