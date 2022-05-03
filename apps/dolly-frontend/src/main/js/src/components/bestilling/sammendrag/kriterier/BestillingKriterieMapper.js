@@ -635,7 +635,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Sluttdato for kontrakt', Formatters.formatDate(deltBostedData.sluttdatoForKontrakt)),
 			]
 
-			if (deltBostedData.vegadresse !== undefined && deltBostedData.vegadresse) {
+			if (deltBostedData.vegadresse) {
 				return [
 					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 						...fellesVerdier,
@@ -648,7 +648,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						...vegadresse(deltBostedData.vegadresse),
 					]),
 				]
-			} else if (deltBostedData.matrikkeladresse !== undefined && deltBostedData.matrikkeladresse) {
+			} else if (deltBostedData.matrikkeladresse) {
 				return [
 					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 						...fellesVerdier,
@@ -661,7 +661,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						...matrikkeladresse(deltBostedData.matrikkeladresse),
 					]),
 				]
-			} else if (deltBostedData.ukjentBosted !== undefined && deltBostedData.ukjentBosted) {
+			} else if (deltBostedData.ukjentBosted) {
 				return [
 					expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 						...fellesVerdier,
