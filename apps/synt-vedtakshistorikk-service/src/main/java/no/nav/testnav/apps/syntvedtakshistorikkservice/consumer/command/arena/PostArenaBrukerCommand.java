@@ -59,6 +59,6 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
                 .retrieve()
                 .bodyToMono(NyeBrukereResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(10))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is555Exception));
     }
 }
