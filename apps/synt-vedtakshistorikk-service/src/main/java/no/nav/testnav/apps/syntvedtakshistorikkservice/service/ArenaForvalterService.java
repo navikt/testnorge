@@ -3,8 +3,10 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.ArenaForvalterConsumer;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.ArbeidssoekerException;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.VedtakshistorikkException;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
@@ -20,7 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.checkNyeBrukereResponse;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.EIER;
 
@@ -36,6 +39,7 @@ public class ArenaForvalterService {
     private static final String IARBS_HOVEDMAAL = "BEHOLDEA";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final PdlProxyConsumer pdlProxyConsumer;
     private final Random random = new Random();
     private final ArenaBrukerUtils arenaBrukerUtils;
 
@@ -163,6 +167,20 @@ public class ArenaForvalterService {
         if (arbeidssoekerIkkeOpprettetIArena(personident)) {
             var nyeBrukereResponse = sendArbeidssoekereTilArenaForvalter(Collections.singletonList(personident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING, aktiveringsDato);
             checkNyeBrukereResponse(nyeBrukereResponse, personident);
+        }
+    }
+
+    private void checkNyeBrukereResponse(NyeBrukereResponse nyeBrukereResponse, String personident) {
+        String feilmelding = null;
+        if (isNull(nyeBrukereResponse)) {
+            feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, "Ukjent feil.");
+        } else if (nonNull(nyeBrukereResponse.getNyBrukerFeilList()) && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+            feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
+        }
+        if (feilmelding != null){
+            log.error(feilmelding);
+            pdlProxyConsumer.deleteTags(Collections.singletonList(personident), SYNT_TAGS);
+            throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
         }
     }
 
