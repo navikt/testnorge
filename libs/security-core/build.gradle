@@ -7,9 +7,9 @@ plugins {
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "testnav-secureity-core"
-        property "sonar.projectName", "testnav-secureity-core"
-        property "sonar.organization", "navit"
+        property "sonar.projectKey", "testnav-security-core"
+        property "sonar.projectName", "testnav-security-core"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
