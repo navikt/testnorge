@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util.WebClientFilter;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.core.ParameterizedTypeReference;
@@ -9,7 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,8 @@ public class PostArenaBrukerCommand implements Callable<Mono<NyeBrukereResponse>
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromPublisher(Mono.just(nyeBrukere), REQUEST_TYPE))
                 .retrieve()
-                .bodyToMono(NyeBrukereResponse.class);
+                .bodyToMono(NyeBrukereResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(10))
+                        .filter(WebClientFilter::is5xxException));
     }
 }
