@@ -45,6 +45,7 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 				onChange={(date) => {
 					settFormikDate(date, 'egenAnsattDatoFom')
 				}}
+				maxDate={new Date()}
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
@@ -54,6 +55,7 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 					onChange={(date) => {
 						settFormikDate(date, 'egenAnsattDatoTom')
 					}}
+					maxDate={new Date()}
 					visHvisAvhuket
 				/>
 			)}
