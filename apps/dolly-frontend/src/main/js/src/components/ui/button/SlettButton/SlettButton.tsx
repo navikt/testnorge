@@ -32,14 +32,14 @@ export const SlettButton = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const navigate = useNavigate()
 
+	const getTitle = () => {
+		if (title) return title
+		return disabled ? 'Sletting er midlertidig utilgjengelig' : ''
+	}
+
 	return (
 		<React.Fragment>
-			<Button
-				onClick={openModal}
-				disabled={disabled}
-				title={title ? title : disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
-				kind="trashcan"
-			>
+			<Button onClick={openModal} disabled={disabled} title={getTitle()} kind="trashcan">
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
