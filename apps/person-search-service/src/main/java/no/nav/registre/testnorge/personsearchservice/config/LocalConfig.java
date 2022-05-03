@@ -1,29 +1,21 @@
 package no.nav.registre.testnorge.personsearchservice.config;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.registre.testnorge.personsearchservice.config.credentials.PdlProxyProperties;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
 
 import java.net.URL;
 
 @Configuration
-@Import({
-        ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
-})
+@Profile("local")
 @RequiredArgsConstructor
-public class AppConfig {
+public class LocalConfig {
 
     private final PdlProxyProperties pdlProxyProperties;
 
