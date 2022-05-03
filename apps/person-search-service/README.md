@@ -13,7 +13,7 @@ Ha naisdevice kjørende og kjør PersonSearchServiceApplicationStarter med følg
 
 ```
 -Dspring.cloud.vault.token=[Kopi av token fra vault]
--Dspring.profiles.active=local
+-Dspring.profiles.active=dev
 ```
 
 og kjør opp en lokal version av en elasticsearch instance
