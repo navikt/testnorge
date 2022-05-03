@@ -488,8 +488,8 @@ const deltBosted = Yup.object({
 	adressetype: testDeltBostedAdressetype(requiredString.nullable()),
 	startdatoForKontrakt: Yup.date().optional().nullable(),
 	sluttdatoForKontrakt: Yup.date().optional().nullable(),
-	vegadresse: vegadresse,
-	matrikkeladresse: matrikkeladresse,
+	vegadresse: vegadresse.nullable(),
+	matrikkeladresse: matrikkeladresse.nullable(),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
 		then: Yup.object({
@@ -503,7 +503,11 @@ const forelderBarnRelasjon = Yup.array().of(
 		minRolleForPerson: requiredString,
 		relatertPersonsRolle: requiredString,
 		relatertPerson: Yup.string().nullable(),
-		borIkkeSammen: Yup.boolean(),
+		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
+			is: 'BARN',
+			then: Yup.mixed().notRequired(),
+			otherwise: Yup.boolean(),
+		}),
 		nyRelatertPerson: nyPerson,
 		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
