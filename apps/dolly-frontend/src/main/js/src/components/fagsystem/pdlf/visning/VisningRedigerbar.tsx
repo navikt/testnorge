@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
+import * as Yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
 import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
@@ -11,6 +12,9 @@ import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
+import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
+import { doedsfall } from '~/components/fagsystem/pdlf/form/validation'
+import { ifPresent } from '~/utils/YupValidations'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -30,6 +34,7 @@ enum Modus {
 
 enum Attributt {
 	Foedsel = 'foedsel',
+	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
 }
 
@@ -149,10 +154,19 @@ export const VisningRedigerbar = ({
 		switch (path) {
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
+			case Attributt.Doedsfall:
+				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
 				return <StatsborgerskapForm path={path} />
 		}
 	}
+
+	const validationSchema = Yup.object().shape(
+		{
+			doedsfall: ifPresent('doedsfall', doedsfall),
+		},
+		[['doedsfall', 'doedsfall']]
+	)
 
 	return (
 		<>
@@ -197,6 +211,7 @@ export const VisningRedigerbar = ({
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
+					validationSchema={validationSchema}
 				>
 					{(formikBag) => {
 						return (
@@ -208,7 +223,7 @@ export const VisningRedigerbar = ({
 											type="standard"
 											htmlType="reset"
 											onClick={() => setVisningModus(Modus.Les)}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
+											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
 										>
 											Avbryt

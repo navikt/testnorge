@@ -45,9 +45,10 @@ export type FoedselData = {
 	id?: number
 }
 
-export type Doedsfall = {
+export type DoedsfallData = {
 	doedsdato: string
 	metadata: Metadata
+	id?: number
 }
 
 export type Statsborgerskap = {

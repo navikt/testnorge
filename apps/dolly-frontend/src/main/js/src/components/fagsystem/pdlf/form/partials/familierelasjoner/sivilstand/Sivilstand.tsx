@@ -21,6 +21,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formikBag.setFieldValue(`${path}.type`, selected.value)
 		if (!gyldigeSivilstander.includes(selected.value)) {
+			formikBag.setFieldValue(`${path}.borIkkeSammen`, false)
 			formikBag.setFieldValue(`${path}.relatertVedSivilstand`, null)
 			formikBag.setFieldValue(`${path}.nyRelatertPerson`, initialPdlPerson)
 		}
@@ -61,7 +62,12 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							}
 							fastfield={false}
 						/>
-						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+						<FormikCheckbox
+							name={`${path}.borIkkeSammen`}
+							label="Bor ikke sammen"
+							checkboxMargin
+							disabled={!kanHaRelatertPerson}
+						/>
 						{kanHaRelatertPerson && (
 							<PdlPersonExpander
 								nyPersonPath={`${path}.nyRelatertPerson`}

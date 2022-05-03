@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
-import { differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
+import { differenceInWeeks, isAfter, isBefore, isEqual, isSameDay } from 'date-fns'
 
 const testTelefonnummer = () =>
 	Yup.string()
@@ -24,26 +24,28 @@ const testPrioritet = (val) => {
 	})
 }
 
-const testFoedtEtter = (val) => {
+export const testDatoFom = (val, tomPath, feilmelding) => {
 	return val.test(
-		'is-before-foedt-foer',
-		'Dato må være før født før-dato',
-		function isBeforeFoedtFoer(value) {
-			const foedtFoer = _get(this, 'parent.foedtFoer')
-			if (!value || !foedtFoer) return true
-			return isBefore(new Date(value), new Date(foedtFoer))
+		'is-before-tom',
+		feilmelding || 'Dato må være før til-dato',
+		function isBeforeTom(value) {
+			const datoTom = _get(this, `parent.${tomPath}`)
+			if (!value || !datoTom) return true
+			if (isEqual(new Date(value), new Date(datoTom))) return true
+			return isBefore(new Date(value), new Date(datoTom))
 		}
 	)
 }
 
-const testFoedtFoer = (val) => {
+export const testDatoTom = (val, fomPath, feilmelding) => {
 	return val.test(
-		'is-after-foedt-etter',
-		'Dato må være etter født etter-dato',
-		function isAfterFoedtEtter(value) {
-			const foedtEtter = _get(this, 'parent.foedtEtter')
-			if (!value || !foedtEtter) return true
-			return isAfter(new Date(value), new Date(foedtEtter))
+		'is-after-fom',
+		feilmelding || 'Dato må være etter fra-dato',
+		function isAfterFom(value) {
+			const datoFom = _get(this, `parent.${fomPath}`)
+			if (!value || !datoFom) return true
+			if (isEqual(new Date(value), new Date(datoFom))) return true
+			return isAfter(new Date(value), new Date(datoFom))
 		}
 	)
 }
@@ -108,6 +110,39 @@ const testForeldreansvar = (val) => {
 	})
 }
 
+const testDeltBostedAdressetype = (value) => {
+	return value.test('har-gyldig-adressetype', function harGyldigAdressetype(selected) {
+		let feilmelding = null
+		if (selected === 'PARTNER_ADRESSE') {
+			const values = this.options.context
+			const personFoerLeggTil = values.personFoerLeggTil
+
+			let fantPartner = false
+			const nyePartnere = _get(values, 'pdldata.person.sivilstand')
+			if (nyePartnere?.length > 0) {
+				fantPartner = nyePartnere[0].borIkkeSammen
+			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
+				const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
+					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'
+				)
+				if (partnere.length > 0) {
+					const partnerAdresseId =
+						partnere[0].relatertPerson?.bostedsadresse?.[0]?.adresseIdentifikatorFraMatrikkelen
+					const identAdresseId =
+						personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse?.[0]
+							?.adresseIdentifikatorFraMatrikkelen
+					if (partnerAdresseId && partnerAdresseId !== identAdresseId) {
+						fantPartner = true
+					}
+				}
+			}
+			feilmelding = fantPartner ? null : 'Fant ikke gyldig partner for delt bosted'
+		}
+
+		return feilmelding ? this.createError({ message: feilmelding }) : true
+	})
+}
+
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
 	mellomnavn: Yup.string(),
@@ -120,8 +155,8 @@ const nyPerson = Yup.object({
 	alder: Yup.number()
 		.transform((i, j) => (j === '' ? null : i))
 		.nullable(),
-	foedtEtter: testFoedtEtter(Yup.date().nullable()),
-	foedtFoer: testFoedtFoer(Yup.date().nullable()),
+	foedtEtter: testDatoFom(Yup.date().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
+	foedtFoer: testDatoTom(Yup.date().nullable(), 'foedtEtter', 'Dato må være etter født etter-dato'),
 	syntetisk: Yup.boolean(),
 	nyttNavn: Yup.object({
 		hasMellomnavn: Yup.boolean(),
@@ -180,8 +215,8 @@ const bostedsadresse = Yup.array().of(
 	Yup.object({
 		adressetype: Yup.string().nullable(),
 		angittFlyttedato: Yup.string().nullable(),
-		gyldigFraOgMed: Yup.string().nullable(),
-		gyldigTilOgMed: Yup.string().nullable(),
+		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
 		vegadresse: Yup.mixed().when('adressetype', {
 			is: 'VEGADRESSE',
 			then: vegadresse,
@@ -204,8 +239,8 @@ const bostedsadresse = Yup.array().of(
 const oppholdsadresse = Yup.array().of(
 	Yup.object({
 		adressetype: Yup.string().nullable(),
-		gyldigFraOgMed: Yup.string().nullable(),
-		gyldigTilOgMed: Yup.string().nullable(),
+		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
 		vegadresse: Yup.mixed().when('adressetype', {
 			is: 'VEGADRESSE',
 			then: vegadresse,
@@ -228,8 +263,8 @@ const oppholdsadresse = Yup.array().of(
 const kontaktadresse = Yup.array().of(
 	Yup.object({
 		adressetype: Yup.string().nullable(),
-		gyldigFraOgMed: Yup.string().nullable(),
-		gyldigTilOgMed: Yup.string().nullable(),
+		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
 		vegadresse: Yup.mixed().when('adressetype', {
 			is: 'VEGADRESSE',
 			then: vegadresse,
@@ -254,8 +289,8 @@ const adressebeskyttelse = Yup.array().of(
 const fullmakt = Yup.array().of(
 	Yup.object({
 		omraader: Yup.array().min(1, 'Velg minst ett område'),
-		gyldigFraOgMed: requiredDate,
-		gyldigTilOgMed: requiredDate,
+		gyldigFraOgMed: testDatoFom(requiredDate, 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(requiredDate, 'gyldigFraOgMed'),
 		motpartsPersonident: Yup.string().nullable(),
 		nyFullmektig: nyPerson,
 	})
@@ -394,11 +429,9 @@ const kontaktDoedsbo = Yup.array().of(
 	})
 )
 
-const doedsfall = Yup.array().of(
-	Yup.object({
-		doedsdato: requiredDate.nullable(),
-	})
-)
+export const doedsfall = Yup.object({
+	doedsdato: requiredDate.nullable(),
+})
 
 const doedfoedtBarn = Yup.array().of(
 	Yup.object({
@@ -410,8 +443,8 @@ const doedfoedtBarn = Yup.array().of(
 const statsborgerskap = Yup.array().of(
 	Yup.object({
 		landkode: requiredString.nullable(),
-		gyldigFraOgMed: Yup.date().optional().nullable(),
-		gyldigTilOgMed: Yup.date().optional().nullable(),
+		gyldigFraOgMed: testDatoFom(Yup.date().optional().nullable(), 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(Yup.date().optional().nullable(), 'gyldigFraOgMed'),
 		bekreftelsesdato: Yup.date().optional().nullable(),
 	})
 )
@@ -454,12 +487,39 @@ const sivilstand = Yup.array().of(
 	})
 )
 
+const deltBosted = Yup.object({
+	adressetype: testDeltBostedAdressetype(requiredString.nullable()),
+	startdatoForKontrakt: testDatoFom(
+		Yup.date().optional().nullable(),
+		'sluttdatoForKontrakt',
+		'Dato må være før sluttdato'
+	),
+	sluttdatoForKontrakt: testDatoTom(
+		Yup.date().optional().nullable(),
+		'startdatoForKontrakt',
+		'Dato må være etter startdato'
+	),
+	vegadresse: vegadresse,
+	matrikkeladresse: matrikkeladresse,
+	ukjentBosted: Yup.mixed().when('adressetype', {
+		is: 'UKJENT_BOSTED',
+		then: Yup.object({
+			bostedskommune: requiredString.nullable(),
+		}),
+	}),
+})
+
 const forelderBarnRelasjon = Yup.array().of(
 	Yup.object({
 		minRolleForPerson: requiredString,
+		relatertPersonsRolle: requiredString,
 		relatertPerson: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
 		nyRelatertPerson: nyPerson,
+		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
+			is: 'BARN',
+			then: deltBosted.nullable(),
+		}),
 	})
 )
 
@@ -482,8 +542,8 @@ const vergemaal = Yup.array().of(
 	Yup.object({
 		vergemaalEmbete: requiredString.nullable(),
 		sakType: requiredString.nullable(),
-		gyldigFraOgMed: Yup.string().nullable(),
-		gyldigTilOgMed: Yup.string().nullable(),
+		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
 		nyVergeIdent: nyPerson,
 		vergeIdent: Yup.string().nullable(),
 		mandatType: Yup.string().nullable(),
@@ -505,19 +565,23 @@ export const validation = {
 						is: null,
 						then: Yup.mixed().required(messages.required).nullable(),
 					}),
-					foedtEtter: testFoedtEtter(
+					foedtEtter: testDatoFom(
 						Yup.mixed().when(['alder', 'foedtFoer'], {
 							is: (alder, foedtFoer) =>
 								(alder === null || alder === '') && (foedtFoer === null || foedtFoer === ''),
 							then: requiredDate.nullable(),
-						})
+						}),
+						'foedtFoer',
+						'Dato må være før født før-dato'
 					),
-					foedtFoer: testFoedtFoer(
+					foedtFoer: testDatoTom(
 						Yup.mixed().when(['alder', 'foedtEtter'], {
 							is: (alder, foedtEtter) =>
 								(alder === null || alder === '') && (foedtEtter === null || foedtEtter === ''),
 							then: requiredDate.nullable(),
-						})
+						}),
+						'foedtEtter',
+						'Dato må være etter født etter-dato'
 					),
 				},
 				[
@@ -541,7 +605,7 @@ export const validation = {
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
-			doedsfall: ifPresent('$pdldata.person.doedsfall', doedsfall),
+			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
 			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
 			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),
@@ -565,29 +629,10 @@ export const validation = {
 		'$tpsMessaging',
 		Yup.object({
 			spraakKode: ifPresent('$tpsMessaging.spraakKode', requiredString),
-			egenAnsattDatoFom: ifPresent(
-				'$tpsMessaging.egenAnsattDatoFom',
-				Yup.string().test(
-					'is-before-today',
-					'Dato kan ikke være etter dagens dato',
-					function validDate(dato) {
-						return isBefore(new Date(dato), new Date())
-					}
-				)
-			),
+			egenAnsattDatoFom: ifPresent('$tpsMessaging.egenAnsattDatoFom', Yup.string()),
 			egenAnsattDatoTom: ifPresent(
 				'$tpsMessaging.egenAnsattDatoTom',
-				Yup.string().test(
-					'is-after-dato-fom',
-					'Dato må være etter fra-dato og senest dagens dato',
-					function validDate(dato) {
-						const values = this.options.context
-						return (
-							isAfter(new Date(dato), new Date(_get(values, 'tpsMessaging.egenAnsattDatoFom'))) &&
-							!isAfter(new Date(dato), new Date())
-						)
-					}
-				)
+				testDatoTom(Yup.string(), 'egenAnsattDatoFom')
 			),
 			utenlandskBankkonto: ifPresent(
 				'$tpsMessaging.utenlandskBankkonto',

@@ -66,12 +66,10 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(BostedadresseDTO.class, BoGateadresse.class)
+        factory.classMap(VegadresseDTO.class, BoGateadresse.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(BostedadresseDTO bostedadresseDTO, BoGateadresse boAdresse, MappingContext context) {
-
-                        VegadresseDTO vegadresse = bostedadresseDTO.getVegadresse();
+                    public void mapAtoB(VegadresseDTO vegadresse, BoGateadresse boAdresse, MappingContext context) {
 
                         boAdresse.setBolignr(vegadresse.getBruksenhetsnummer());
                         boAdresse.setKommunenr(vegadresse.getKommunenummer());
@@ -86,12 +84,10 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(BostedadresseDTO.class, BoMatrikkeladresse.class)
+        factory.classMap(MatrikkeladresseDTO.class, BoMatrikkeladresse.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(BostedadresseDTO bostedadresseDTO, BoMatrikkeladresse boMatrikkeladresse, MappingContext context) {
-
-                        MatrikkeladresseDTO matrikkeladresse = bostedadresseDTO.getMatrikkeladresse();
+                    public void mapAtoB(MatrikkeladresseDTO matrikkeladresse, BoMatrikkeladresse boMatrikkeladresse, MappingContext context) {
 
                         boMatrikkeladresse.setKommunenr(matrikkeladresse.getKommunenummer());
                         boMatrikkeladresse.setPostnr(matrikkeladresse.getPostnummer());
@@ -188,11 +184,15 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                         person.getBoadresse().addAll(Stream.of(
                                         mapperFacade.mapAsList(personDto.getBostedsadresse()
                                                         .stream()
-                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getVegadresse())).toList(),
+                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getVegadresse()))
+                                                        .map(BostedadresseDTO::getVegadresse)
+                                                        .toList(),
                                                 BoAdresse.class),
                                         mapperFacade.mapAsList(personDto.getBostedsadresse()
                                                         .stream()
-                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getMatrikkeladresse())).toList(),
+                                                        .filter(bostedadresseDTO -> nonNull(bostedadresseDTO.getMatrikkeladresse()))
+                                                        .map(BostedadresseDTO::getMatrikkeladresse)
+                                                        .toList(),
                                                 BoAdresse.class))
                                 .flatMap(Collection::stream)
                                 .toList());

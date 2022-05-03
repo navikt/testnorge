@@ -11,7 +11,7 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

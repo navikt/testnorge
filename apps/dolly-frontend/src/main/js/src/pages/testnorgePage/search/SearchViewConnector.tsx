@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import SearchView from '~/pages/testnorgePage/search/SearchView'
+import SearchView, { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
 
 const mapStateToProps = (state: any, ownProps: any) => ({
 	items: ownProps.items,
@@ -9,7 +9,7 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 const mapDispatchToProps = () => ({
-	importerPersoner: (valgtePersoner: string[], navigate: Function) => {
+	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => {
 		return navigate(`/importer`, {
 			state: {
 				importPersoner: valgtePersoner,

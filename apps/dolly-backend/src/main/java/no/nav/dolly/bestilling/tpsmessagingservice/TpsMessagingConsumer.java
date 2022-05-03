@@ -14,7 +14,7 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

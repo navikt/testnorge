@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import _isEmpty from 'lodash/isEmpty'
 import { ifPresent, requiredBoolean, requiredString } from '~/utils/YupValidations'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 const checkUndefined = (value) => {
 	if (value !== undefined) {
@@ -25,8 +26,8 @@ const arbeidsadgang = Yup.object({
 	arbeidsOmfang: Yup.string().nullable(),
 	harArbeidsAdgang: requiredString,
 	periode: Yup.object({
-		fra: Yup.date().nullable(),
-		til: Yup.date().nullable(),
+		fra: testDatoFom(Yup.date().nullable(), 'til'),
+		til: testDatoTom(Yup.date().nullable(), 'fra'),
 	}),
 	typeArbeidsadgang: Yup.string().nullable(),
 	hjemmel: ifPresent(
@@ -38,8 +39,8 @@ const arbeidsadgang = Yup.object({
 
 const oppholdSammeVilkaar = Yup.object({
 	oppholdSammeVilkaarPeriode: Yup.object({
-		fra: Yup.date().nullable(),
-		til: Yup.date().nullable(),
+		fra: testDatoFom(Yup.date().nullable(), 'til'),
+		til: testDatoTom(Yup.date().nullable(), 'fra'),
 	}),
 	oppholdSammeVilkaarEffektuering: Yup.date().nullable(),
 	oppholdstillatelseVedtaksDato: Yup.date().nullable(),

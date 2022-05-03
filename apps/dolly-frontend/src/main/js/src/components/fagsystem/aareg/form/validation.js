@@ -3,6 +3,7 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
@@ -65,8 +66,8 @@ const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 }
 
 const ansettelsesPeriode = Yup.object({
-	fom: requiredDate,
-	tom: Yup.date().nullable(),
+	fom: testDatoFom(requiredDate, 'tom'),
+	tom: testDatoTom(Yup.date().nullable(), 'fom'),
 	sluttaarsak: Yup.string().nullable(),
 })
 
@@ -242,8 +243,8 @@ export const validation = {
 			genererPeriode: ifPresent(
 				'$aareg[0].amelding',
 				Yup.object({
-					fom: requiredPeriode,
-					tom: requiredPeriode,
+					fom: testDatoFom(requiredPeriode, 'tom'),
+					tom: testDatoTom(requiredPeriode, 'fom'),
 				})
 			),
 		})

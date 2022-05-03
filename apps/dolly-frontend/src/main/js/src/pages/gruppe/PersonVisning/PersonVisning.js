@@ -52,6 +52,7 @@ export const PersonVisning = ({
 	leggTilPaaPerson,
 	iLaastGruppe,
 	setVisning,
+	tmpPersoner,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -103,6 +104,7 @@ export const PersonVisning = ({
 						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
 						pdlData={data.pdlforvalter?.person}
 						environments={bestilling?.environments}
+						tmpPersoner={tmpPersoner?.pdlforvalter}
 					/>
 				)}
 				{ident.master !== 'PDL' && (

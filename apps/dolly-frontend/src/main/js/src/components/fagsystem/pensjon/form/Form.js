@@ -10,20 +10,19 @@ import Formatters from '~/utils/DataFormatter'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-const pensjonAttributt = 'pensjonforvalter'
-const path = `${pensjonAttributt}.inntekt`
+const path = 'pensjonforvalter.inntekt'
 
 const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
 export const PensjonForm = ({ formikBag }) => (
-	<Vis attributt={pensjonAttributt}>
+	<Vis attributt={path}>
 		<Panel
 			heading="Pensjonsgivende inntekt (POPP)"
-			hasErrors={panelError(formikBag, pensjonAttributt)}
+			hasErrors={panelError(formikBag, path)}
 			iconType="pensjon"
-			startOpen={() => erForste(formikBag.values, [pensjonAttributt])}
+			startOpen={erForste(formikBag.values, [path])}
 			informasjonstekst={hjelpetekst}
 		>
 			<Kategori title="Pensjonsgivende inntekt" vis={path}>

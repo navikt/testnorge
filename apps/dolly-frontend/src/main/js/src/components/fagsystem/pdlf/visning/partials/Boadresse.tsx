@@ -5,7 +5,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '~/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { UkjentBosted } from '~/components/fagsystem/pdlf/visning/partials/UkjentBosted'
 
 type Data = {
 	data: Array<any>
@@ -22,17 +22,7 @@ export const Adresse = ({ adresse, idx }: AdresseProps) => {
 			{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}
 			{adresse.matrikkeladresse && <Matrikkeladresse adresse={adresse} idx={idx} />}
 			{adresse.utenlandskAdresse && <UtenlandskAdresse adresse={adresse} idx={idx} />}
-			{adresse.ukjentBosted && (
-				<>
-					<h4 style={{ marginTop: '0px' }}>Ukjent bosted</h4>
-					<div className="person-visning_content" key={idx}>
-						<TitleValue
-							title="Bostedskommune"
-							value={adresse.ukjentBosted.bostedskommune || 'Ikke oppgitt'}
-						/>
-					</div>
-				</>
-			)}
+			{adresse.ukjentBosted && <UkjentBosted adresse={adresse} idx={idx} />}
 		</>
 	)
 }

@@ -24,8 +24,7 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 					heading="Detaljer"
 					hasErrors={panelError(formikBag, detaljerPaths)}
 					iconType={'personinformasjon'}
-					// @ts-ignore
-					startOpen={() => erForste(formikBag.values, detaljerPaths)}
+					startOpen={erForste(formikBag.values, detaljerPaths)}
 				>
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
 				</Panel>

@@ -23,8 +23,7 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 				heading="Familierelasjoner"
 				hasErrors={panelError(formikBag, relasjonerAttributter)}
 				iconType={'relasjoner'}
-				// @ts-ignore
-				startOpen={() => erForste(formikBag.values, [relasjonerAttributter])}
+				startOpen={erForste(formikBag.values, relasjonerAttributter)}
 				checkAttributeArray={undefined}
 				uncheckAttributeArray={undefined}
 			>

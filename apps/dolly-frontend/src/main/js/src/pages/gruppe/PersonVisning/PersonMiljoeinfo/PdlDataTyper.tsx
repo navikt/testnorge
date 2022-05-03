@@ -36,6 +36,7 @@ export type Ident = {
 export type HentPerson = {
 	foedsel: [FoedselData]
 	bostedsadresse: Array<BostedData>
+	deltBosted: Array<DeltBosted>
 	oppholdsadresse: Array<Oppholdsadresse>
 	kontaktadresse: Array<Kontaktadresse>
 	adressebeskyttelse: Array<AdressebeskyttelseData>
@@ -74,13 +75,23 @@ export type BostedData = {
 	metadata?: Metadata
 }
 
+export type DeltBosted = {
+	startdatoForKontrakt?: Date
+	sluttdatoForKontrakt?: Date
+	coAdressenavn?: string
+	vegadresse?: Vegadresse
+	matrikkeladresse?: Matrikkeladresse
+	ukjentBosted?: UkjentBosted
+	metadata?: Metadata
+}
+
 export type Oppholdsadresse = {
 	utenlandskAdresse?: UtenlandskAdresse
 	vegadresse?: Vegadresse
 	matrikkeladresse?: Matrikkeladresse
 	oppholdAnnetSted?: string
 	coAdressenavn?: string
-	gyldigFraOgMe?: Date
+	gyldigFraOgMed?: Date
 	metadata?: Metadata
 }
 

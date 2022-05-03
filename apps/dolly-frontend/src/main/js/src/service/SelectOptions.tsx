@@ -123,6 +123,18 @@ const selectOptions: SelectOptions = {
 		{ value: 'UGRADERT', label: 'Ugradert' },
 	],
 
+	personstatus: [
+		{ value: 'BOSATT', label: 'Bosatt' },
+		{ value: 'UTFLYTTET', label: 'Utflyttet' },
+		{ value: 'FORSVUNNET', label: 'Forsvunnet' },
+		{ value: 'DOED', label: 'Død' },
+		{ value: 'OPPHOERT', label: 'Opphørt' },
+		{ value: 'FOEDSELSREGISTRERT', label: 'Fødselsregistert' },
+		{ value: 'IKKE_BOSATT', label: 'Ikke bosatt' },
+		{ value: 'MIDLERTIDIG', label: 'Midlertidig' },
+		{ value: 'INAKTIV', label: 'Inaktiv' },
+	],
+
 	//PDLF - adresser
 	adressetypeBostedsadresse: [
 		{ value: 'VEGADRESSE', label: 'Vegadresse' },
@@ -146,6 +158,13 @@ const selectOptions: SelectOptions = {
 		{ value: 'VEGADRESSE', label: 'Vegadresse' },
 		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
 		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
+	],
+
+	adressetypeDeltBosted: [
+		{ value: 'PARTNER_ADRESSE', label: 'Adresse fra partner' },
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
 	],
 
 	oppholdAnnetSted: [

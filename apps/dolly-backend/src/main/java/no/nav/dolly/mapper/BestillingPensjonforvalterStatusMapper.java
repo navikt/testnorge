@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
-import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
-import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP_FORHOLD;
+import static no.nav.dolly.domain.resultset.SystemTyper.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPensjonforvalterStatusMapper {
@@ -46,6 +46,7 @@ public final class BestillingPensjonforvalterStatusMapper {
 
         List<RsStatusRapport> statusRapporter = new ArrayList<>();
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, POPP_INNTEKTSREGISTER, PEN_INNTEKT));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, TP_FORHOLD, TP_FORVALTER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJON_FORVALTER, PEN_FORVALTER));
 
         return statusRapporter;
