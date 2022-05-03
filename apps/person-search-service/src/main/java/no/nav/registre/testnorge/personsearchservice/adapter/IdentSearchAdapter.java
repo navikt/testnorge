@@ -7,10 +7,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
+import no.nav.registre.testnorge.personsearchservice.config.credentials.PdlProxyProperties;
 import no.nav.registre.testnorge.personsearchservice.domain.PdlResponse;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.apache.lucene.search.TotalHits;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -35,6 +37,7 @@ import static no.nav.registre.testnorge.personsearchservice.adapter.utils.Identi
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.NasjonalitetUtils.addNasjonalitetQueries;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.RelasjonerUtils.addRelasjonerQueries;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.StatusUtils.addStatusQueries;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Component
@@ -43,6 +46,8 @@ public class IdentSearchAdapter {
 
     private final ObjectMapper objectMapper;
     private final RestHighLevelClient client;
+    private final TokenExchange tokenExchange;
+    private final PdlProxyProperties serverProperties;
 
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
@@ -88,7 +93,7 @@ public class IdentSearchAdapter {
     }
 
     @SneakyThrows
-    private SearchResponse getSearchResponse(PersonSearch search){
+    private SearchResponse getSearchResponse(PersonSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
         buildQuery(queryBuilder, search);
@@ -98,7 +103,10 @@ public class IdentSearchAdapter {
         searchRequest.indices("pdl-sok");
         searchRequest.source(searchSourceBuilder);
 
-        return client.search(searchRequest, RequestOptions.DEFAULT);
+        return client.search(searchRequest, RequestOptions.DEFAULT.toBuilder()
+                .addHeader(AUTHORIZATION, "Bearer " +
+                        tokenExchange.exchange(serverProperties).block().getTokenValue())
+                .build());
     }
 
     private void buildQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {

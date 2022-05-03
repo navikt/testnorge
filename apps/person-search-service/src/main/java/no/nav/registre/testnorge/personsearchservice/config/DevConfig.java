@@ -1,7 +1,10 @@
 package no.nav.registre.testnorge.personsearchservice.config;
 
-import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -13,23 +16,12 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
-import no.nav.registre.testnorge.personsearchservice.config.credentials.ElasticSearchCredentials;
+import java.net.URL;
 
 @Configuration
 @Profile("dev")
-@RequiredArgsConstructor
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class DevConfig extends AbstractVaultConfiguration {
-
-    @Bean
-    public RestHighLevelClient client(ElasticSearchCredentials elasticSearchCredentials) {
-        ClientConfiguration clientConfiguration
-                = ClientConfiguration.builder()
-                .connectedTo(elasticSearchCredentials.getHost() + ":" + elasticSearchCredentials.getPort())
-                .build();
-
-        return RestClients.create(clientConfiguration).rest();
-    }
 
     @Override
     public VaultEndpoint vaultEndpoint() {
