@@ -406,6 +406,7 @@ const doedfoedtBarn = Yup.array().of(
 	})
 )
 
+//TODO fix for edit
 const statsborgerskap = Yup.array().of(
 	Yup.object({
 		landkode: requiredString.nullable(),

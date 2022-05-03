@@ -13,23 +13,25 @@ type InnvandringData = {
 export const Innvandring = ({ data }: InnvandringData) => {
 	if (data.length < 1) return null
 	return (
-		<ErrorBoundary>
-			<DollyFieldArray data={data} header={'Innvandret'} nested>
-				{(innvandring: InnvandringValues) => (
-					<>
-						<TitleValue
-							title="Fraflyttingsland"
-							value={innvandring.fraflyttingsland}
-							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-						/>
-						<TitleValue title="Fraflyttingssted" value={innvandring.fraflyttingsstedIUtlandet} />
-						<TitleValue
-							title="Innflyttingsdato"
-							value={Formatters.formatDate(innvandring.innflyttingsdato)}
-						/>
-					</>
-				)}
-			</DollyFieldArray>
-		</ErrorBoundary>
+		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
+			<ErrorBoundary>
+				<DollyFieldArray data={data} header={'Innvandret'} nested>
+					{(innvandring: InnvandringValues) => (
+						<>
+							<TitleValue
+								title="Fraflyttingsland"
+								value={innvandring.fraflyttingsland}
+								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+							/>
+							<TitleValue title="Fraflyttingssted" value={innvandring.fraflyttingsstedIUtlandet} />
+							<TitleValue
+								title="Innflyttingsdato"
+								value={Formatters.formatDate(innvandring.innflyttingsdato)}
+							/>
+						</>
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
+		</div>
 	)
 }

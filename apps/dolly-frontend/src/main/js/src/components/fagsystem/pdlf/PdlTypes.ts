@@ -21,6 +21,8 @@ export type PersonData = {
 	sivilstand?: Array<Sivilstand>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
+	innflytting?: Array<Innflytting>
+	utflytting?: Array<Utflytting>
 }
 
 type Navn = {
@@ -48,8 +50,25 @@ export type Doedsfall = {
 	metadata: Metadata
 }
 
-type Statsborgerskap = {
+export type Statsborgerskap = {
 	landkode: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
+	id?: number
+}
+
+type Innflytting = {
+	fraflyttingsland: string
+	fraflyttingsstedIUtlandet: string
+	innflyttingsdato: string
+	id?: number
+}
+
+type Utflytting = {
+	tilflyttingsland: string
+	tilflyttingsstedIUtlandet: string
+	utflyttingsdato: string
+	id?: number
 }
 
 type Adressebeskyttelse = {

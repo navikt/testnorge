@@ -33,7 +33,7 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 
 	const FoedselLes = ({ foedsel, idx }: FoedselVisningTypes) => {
 		return (
-			<div className="person-visning_content" key={idx}>
+			<div className="person-visning_redigerbar" key={idx}>
 				<TitleValue title="Fødselsdato" value={Formatters.formatDate(foedsel.foedselsdato)} />
 				<TitleValue title="Fødselsår" value={foedsel.foedselsaar} />
 				<TitleValue title="Fødested" value={foedsel.foedested} />

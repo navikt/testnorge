@@ -6,6 +6,27 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { initialStatsborgerskap } from '~/components/fagsystem/pdlf/form/initialValues'
 
+type StatsborgerskapTypes = {
+	path: string
+}
+
+export const StatsborgerskapForm = ({ path }: StatsborgerskapTypes) => {
+	return (
+		<>
+			<FormikSelect
+				name={`${path}.landkode`}
+				label="Statsborgerskap"
+				kodeverk={AdresseKodeverk.StatsborgerskapLand}
+				size="large"
+				isClearable={false}
+			/>
+			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Statsborgerskap fra" />
+			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
+			<AvansertForm path={path} />
+		</>
+	)
+}
+
 export const Statsborgerskap = () => {
 	return (
 		<div className="flexbox--flex-wrap">
@@ -15,20 +36,7 @@ export const Statsborgerskap = () => {
 				newEntry={initialStatsborgerskap}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => (
-					<>
-						<FormikSelect
-							name={`${path}.landkode`}
-							label="Statsborgerskap"
-							kodeverk={AdresseKodeverk.StatsborgerskapLand}
-							size="large"
-							isClearable={false}
-						/>
-						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Statsborgerskap fra" />
-						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
-						<AvansertForm path={path} />
-					</>
-				)}
+				{(path: string, idx: number) => <StatsborgerskapForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

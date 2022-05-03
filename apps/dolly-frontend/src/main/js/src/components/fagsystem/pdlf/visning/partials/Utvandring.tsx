@@ -13,23 +13,25 @@ type UtvandringData = {
 export const Utvandring = ({ data }: UtvandringData) => {
 	if (data.length < 1) return null
 	return (
-		<ErrorBoundary>
-			<DollyFieldArray data={data} header={'Utvandret'} nested>
-				{(utvandring: UtvandringValues) => (
-					<>
-						<TitleValue
-							title="Tilflyttingsland"
-							value={utvandring.tilflyttingsland}
-							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-						/>
-						<TitleValue title="Tilflyttingssted" value={utvandring.tilflyttingsstedIUtlandet} />
-						<TitleValue
-							title="Utflyttingsdato"
-							value={Formatters.formatDate(utvandring.utflyttingsdato)}
-						/>
-					</>
-				)}
-			</DollyFieldArray>
-		</ErrorBoundary>
+		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
+			<ErrorBoundary>
+				<DollyFieldArray data={data} header={'Utvandret'} nested>
+					{(utvandring: UtvandringValues) => (
+						<>
+							<TitleValue
+								title="Tilflyttingsland"
+								value={utvandring.tilflyttingsland}
+								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+							/>
+							<TitleValue title="Tilflyttingssted" value={utvandring.tilflyttingsstedIUtlandet} />
+							<TitleValue
+								title="Utflyttingsdato"
+								value={Formatters.formatDate(utvandring.utflyttingsdato)}
+							/>
+						</>
+					)}
+				</DollyFieldArray>
+			</ErrorBoundary>
+		</div>
 	)
 }
