@@ -45,7 +45,7 @@ consumers:
   tps:
     messaging:
       service:
-        url: https://testnav-tps-messaging-service.dev.intern.nav.no
+        url: https://testnav-tps-messaging-service
         cluster: dev-gcp
         namespace: dolly
         name: testnav-tps-messaging-service
