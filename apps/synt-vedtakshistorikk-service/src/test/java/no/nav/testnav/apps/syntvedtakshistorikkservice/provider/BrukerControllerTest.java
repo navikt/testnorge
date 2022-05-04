@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
-public class BrukereControllerTest {
+public class BrukerControllerTest {
 
     @Mock
     private BrukerService brukerService;
