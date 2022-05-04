@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.util;
 
 import lombok.experimental.UtilityClass;
-import org.springframework.web.reactive.function.client.UnknownHttpStatusCodeException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @UtilityClass

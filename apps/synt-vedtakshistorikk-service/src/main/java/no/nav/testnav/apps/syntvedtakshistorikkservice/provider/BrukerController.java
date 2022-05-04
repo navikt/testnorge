@@ -23,7 +23,6 @@ public class BrukerController {
     private final BrukerService brukerService;
 
     @PostMapping("/bruker/oppfoelging")
-//    @ApiOperation(value = "Legg til identer med oppfoelging i Arena", notes = "Legger til oppgitt antall identer i Arena med oppfoelging.")
     public ResponseEntity<Map<String, NyeBrukereResponse>> registrerBrukereIArenaForvalterMedOppfoelging(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
