@@ -60,6 +60,15 @@ public class PensjonData {
         private List<TpYtelse> ytelser;
     }
 
+    public enum TpYtelseType {
+        ALDER,
+        UFORE,
+        GJENLEVENDE,
+        BARN,
+        AFP,
+        UKJENT
+    }
+
     @Getter
     @Setter
     @NoArgsConstructor
@@ -67,7 +76,7 @@ public class PensjonData {
     public static class TpYtelse {
         @Schema(required = true,
                 description = "tjenestetype")
-        private String type;
+        private TpYtelseType type;
 
         @Schema(required = true,
                 description = "Dato innmeldt ytelse fom, kan være tidligere eller samme som iverksatt fom dato.")
