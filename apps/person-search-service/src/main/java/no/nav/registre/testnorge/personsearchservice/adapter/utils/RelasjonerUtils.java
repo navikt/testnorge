@@ -65,7 +65,7 @@ public class RelasjonerUtils {
                         var script = new Script(
                                 ScriptType.INLINE,
                                 "painless",
-                                "def relasjoner = doc.hentPerson.forelderBarnRelasjon.values; if (relasjoner != null){ return relasjoner.filter(relasjon -> relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
+                                "def relasjoner = doc.hentPerson.value.forelderBarnRelasjon.values; if (relasjoner != null){ return relasjoner.filter(relasjon -> relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
                                 Collections.emptyMap(),
                                 params);
                         queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
