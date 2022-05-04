@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -15,8 +16,8 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query("from Bestilling b where b.id = :id")
     Optional<Bestilling> findById(@Param("id") Long id);
 
-    @Query(value = "select b.id from Bestilling b where cast(b.id as VARCHAR) like %:id%", nativeQuery = true)
-    Optional<List<Long>> findByIdContaining(String id);
+    @Query(value = "select b.id, g.navn from Bestilling b inner join Gruppe g on b.gruppe_id = g.id where cast(b.id as VARCHAR) like %:id% fetch first 20 rows only", nativeQuery = true)
+    Optional<List<RsBestillingFragment>> findByIdContaining(String id);
 
     Bestilling save(Bestilling bestilling);
 

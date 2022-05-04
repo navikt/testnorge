@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -69,7 +70,7 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
-    public List<Long> fetchBestillingByFragment(String bestillingId) {
+    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingId) {
         return bestillingRepository.findByIdContaining(bestillingId)
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke noen bestillinger som inneholdt ID %s", bestillingId)));
     }
