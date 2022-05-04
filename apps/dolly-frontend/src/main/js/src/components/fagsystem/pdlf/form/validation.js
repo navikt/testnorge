@@ -498,8 +498,8 @@ const deltBosted = Yup.object({
 		'startdatoForKontrakt',
 		'Dato må være etter startdato'
 	),
-	vegadresse: vegadresse,
-	matrikkeladresse: matrikkeladresse,
+	vegadresse: vegadresse.nullable(),
+	matrikkeladresse: matrikkeladresse.nullable(),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
 		then: Yup.object({
@@ -513,7 +513,11 @@ const forelderBarnRelasjon = Yup.array().of(
 		minRolleForPerson: requiredString,
 		relatertPersonsRolle: requiredString,
 		relatertPerson: Yup.string().nullable(),
-		borIkkeSammen: Yup.boolean(),
+		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
+			is: 'BARN',
+			then: Yup.mixed().notRequired(),
+			otherwise: Yup.boolean(),
+		}),
 		nyRelatertPerson: nyPerson,
 		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',

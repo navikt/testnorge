@@ -33,20 +33,20 @@ export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
 		const adresseClone = _cloneDeep(adresse)
 
 		if (!target || target?.value === 'PARTNER_ADRESSE') {
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'matrikkeladresse', undefined)
-			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'vegadresse', null)
+			_set(adresseClone, 'matrikkeladresse', null)
+			_set(adresseClone, 'ukjentBosted', null)
 		} else if (target?.value === 'VEGADRESSE') {
 			_set(adresseClone, 'vegadresse', initialVegadresse)
-			_set(adresseClone, 'matrikkeladresse', undefined)
-			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'matrikkeladresse', null)
+			_set(adresseClone, 'ukjentBosted', null)
 		} else if (target?.value === 'MATRIKKELADRESSE') {
-			_set(adresseClone, 'vegadresse', undefined)
+			_set(adresseClone, 'vegadresse', null)
 			_set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
-			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'ukjentBosted', null)
 		} else if (target?.value === 'UKJENT_BOSTED') {
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'matrikkeladresse', undefined)
+			_set(adresseClone, 'vegadresse', null)
+			_set(adresseClone, 'matrikkeladresse', null)
 			_set(adresseClone, 'ukjentBosted', initialUkjentBosted)
 		}
 

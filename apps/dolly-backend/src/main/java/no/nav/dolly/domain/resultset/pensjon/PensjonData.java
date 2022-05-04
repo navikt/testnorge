@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,7 +22,7 @@ public class PensjonData {
     private PoppInntekt inntekt;
 
     @Schema(description = "Data for tjenestepensjon (TP)")
-    private TpForhold tp;
+    private List<TpOrdning> tp;
 
     @Getter
     @Setter
@@ -48,10 +51,42 @@ public class PensjonData {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class TpForhold {
+    public static class TpOrdning {
         @Schema(required = true,
                 description = "Tjenestepensjons leverandør")
         private String ordning;
+
+        @Schema(description = "Tjenestepensjons ytelser")
+        private List<TpYtelse> ytelser;
+    }
+
+    public enum TpYtelseType {
+        ALDER,
+        UFORE,
+        GJENLEVENDE,
+        BARN,
+        AFP,
+        UKJENT
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TpYtelse {
+        @Schema(required = true,
+                description = "tjenestetype")
+        private TpYtelseType type;
+
+        @Schema(required = true,
+                description = "Dato innmeldt ytelse fom, kan være tidligere eller samme som iverksatt fom dato.")
+        private LocalDate datoInnmeldtYtelseFom;
+
+        @Schema(required = true,
+                description = "Dato iverksatt fom")
+        private LocalDate datoYtelseIverksattFom;
+
+        @Schema(description = "Dato iverksatt tom")
+        private LocalDate datoYtelseIverksattTom;
     }
 }
