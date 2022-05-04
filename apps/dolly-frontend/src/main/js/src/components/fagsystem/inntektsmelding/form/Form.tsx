@@ -31,6 +31,7 @@ import NaturalytelseForm from './partials/naturalytelseForm'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
@@ -247,6 +248,12 @@ InntektsmeldingForm.validation = {
 					beregnetInntekt: Yup.object({
 						beloep: requiredNumber.typeError(messages.required),
 					}),
+					avtaltFerieListe: Yup.array().of(
+						Yup.object({
+							fom: testDatoFom(Yup.string(), 'tom'),
+							tom: testDatoTom(Yup.string(), 'fom'),
+						})
+					),
 				}),
 				avsendersystem: Yup.object({
 					innsendingstidspunkt: requiredDate,
