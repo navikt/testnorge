@@ -3,8 +3,9 @@ package no.nav.testnav.identpool.providers.v1.support;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import no.nav.testnav.identpool.domain.Identtype;
 import no.nav.testnav.identpool.domain.Kjoenn;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +14,8 @@ import org.springframework.data.domain.Pageable;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
