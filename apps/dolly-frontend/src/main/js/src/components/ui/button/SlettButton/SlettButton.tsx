@@ -15,6 +15,7 @@ type Props = {
 	loading: boolean
 	children: any
 	disabled?: boolean
+	title?: string
 	navigateHome?: boolean
 }
 
@@ -24,20 +25,21 @@ export const SlettButton = ({
 	loading,
 	children,
 	disabled = false,
+	title,
 	navigateHome = false,
 }: Props) => {
 	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const navigate = useNavigate()
 
+	const getTitle = () => {
+		if (title) return title
+		return disabled ? 'Sletting er midlertidig utilgjengelig' : ''
+	}
+
 	return (
 		<React.Fragment>
-			<Button
-				onClick={openModal}
-				disabled={disabled}
-				title={disabled ? 'Sletting er midlertidig utilgjengelig' : ''}
-				kind="trashcan"
-			>
+			<Button onClick={openModal} disabled={disabled} title={getTitle()} kind="trashcan">
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
