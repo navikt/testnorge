@@ -108,8 +108,10 @@ export default function Gruppe({
 					<NavButton
 						type="hoved"
 						onClick={visStartBestilling}
-						disabled={erLaast}
-						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+						disabled
+						title={'Opprettelse av personer er midlertidig utilgjengelig pga vedlikehold'}
+						// disabled={erLaast}
+						// title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
 					>
 						Opprett personer
 					</NavButton>
