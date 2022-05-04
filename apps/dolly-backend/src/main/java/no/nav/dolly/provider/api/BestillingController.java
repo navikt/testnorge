@@ -52,6 +52,13 @@ public class BestillingController {
     }
 
     @Cacheable(value = CACHE_BESTILLING)
+    @GetMapping("/soekBestilling")
+    @Operation(description = "Hent Bestilling med bestillingsId")
+    public List<Long> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+        return bestillingService.fetchBestillingByFragment(fragment);
+    }
+
+    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
     public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {

@@ -69,6 +69,11 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
+    public List<Long> fetchBestillingByFragment(String bestillingId) {
+        return bestillingRepository.findByIdContaining(bestillingId)
+                .orElseThrow(() -> new NotFoundException(format("Fant ikke noen bestillinger som inneholdt ID %s", bestillingId)));
+    }
+
     public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         var bestillinger = nonNull(malNavn)

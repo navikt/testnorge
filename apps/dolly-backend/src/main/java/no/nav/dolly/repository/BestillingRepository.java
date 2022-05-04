@@ -15,6 +15,9 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query("from Bestilling b where b.id = :id")
     Optional<Bestilling> findById(@Param("id") Long id);
 
+    @Query(value = "select b.id from Bestilling b where cast(b.id as VARCHAR) like %:id%", nativeQuery = true)
+    Optional<List<Long>> findByIdContaining(String id);
+
     Bestilling save(Bestilling bestilling);
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
