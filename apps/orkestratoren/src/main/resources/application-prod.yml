@@ -42,7 +42,6 @@ batch:
 poppbatch.antallNyeIdenter:  ${POPP_ANTALL_NYE_IDENTER}
 aaregbatch.antallNyeIdenter:  ${AAREG_ANTALL_NYE_IDENTER}
 instbatch.antallNyeIdenter:  ${INST_ANTALL_NYE_IDENTER}
-bisysbatch.antallNyeIdenter:  ${BISYS_ANTALL_NYE_IDENTER}
 tpbatch.antallPersoner:  ${TP_ANTALL_NYE_IDENTER}
 sambatch.antallMeldinger:  ${SAM_ANTALL_NYE_IDENTER}
 arenabatch.antallNyeIdenter:  ${ARENA_ANTALL_NYE_IDENTER}
