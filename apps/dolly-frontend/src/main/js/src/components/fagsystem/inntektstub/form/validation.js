@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 import _get from 'lodash/get'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import { messages, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 const unikOrgMndTest = (unikValidation) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
@@ -79,8 +80,8 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 const inntektsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: Yup.string().nullable(),
-		sluttOpptjeningsperiode: Yup.string().nullable(),
+		startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
+		sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
 	})
 )
 
@@ -101,11 +102,14 @@ const forskuddstrekksliste = Yup.array().of(
 const arbeidsforholdsliste = Yup.array().of(
 	Yup.object({
 		arbeidsforholdstype: requiredString,
-		startdato: Yup.mixed().when('sluttdato', {
-			is: (val) => val !== undefined,
-			then: requiredDate,
-		}),
-		sluttdato: Yup.string().nullable(),
+		startdato: testDatoFom(
+			Yup.mixed().when('sluttdato', {
+				is: (val) => val !== undefined,
+				then: requiredDate,
+			}),
+			'sluttdato'
+		),
+		sluttdato: testDatoTom(Yup.string().nullable(), 'startdato'),
 		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
 			.transform((i, j) => (j === '' ? null : i))
 			.nullable(),
