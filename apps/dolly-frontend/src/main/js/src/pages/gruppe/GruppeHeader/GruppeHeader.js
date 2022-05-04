@@ -36,6 +36,7 @@ export default function GruppeHeader({
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'lockedGroup' : 'group'
+	const antallPersoner = gruppe.antallIdenter - slettedeIdenter?.[0]?.length
 
 	return (
 		<Fragment>
@@ -55,10 +56,7 @@ export default function GruppeHeader({
 						title="Eier"
 						value={gruppe.opprettetAv.brukernavn || gruppe.opprettetAv.navIdent}
 					/>
-					<Header.TitleValue
-						title="Antall personer"
-						value={gruppe.antallIdenter - slettedeIdenter?.[0]?.length}
-					/>
+					<Header.TitleValue title="Antall personer" value={antallPersoner} />
 					<Header.TitleValue
 						title="Sist endret"
 						value={Formatters.formatStringDates(gruppe.datoEndret)}
@@ -86,8 +84,8 @@ export default function GruppeHeader({
 					<Button
 						onClick={visGjenopprettModal}
 						kind="synchronize"
-						disabled={gruppe.antallIdenter < 1}
-						title={gruppe.antallIdenter < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
+						disabled={antallPersoner < 1}
+						title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
 					>
 						GJENOPPRETT
 					</Button>
@@ -106,7 +104,12 @@ export default function GruppeHeader({
 							action={deleteGruppe}
 							loading={isDeletingGruppe}
 							navigateHome={true}
-							disabled
+							disabled={antallPersoner > 15}
+							title={
+								antallPersoner > 15
+									? 'Sletting av større grupper er midlertidig utilgjengelig i påvente av en mer robust løsning'
+									: null
+							}
 						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>

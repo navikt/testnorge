@@ -13,12 +13,11 @@ import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-const arenaAttributt = 'arenaforvalter'
+const path = 'arenaforvalter'
 
 export const ArenaForm = ({ formikBag }) => {
-	const servicebehovAktiv =
-		_get(formikBag, 'values.arenaforvalter.arenaBrukertype') === 'MED_SERVICEBEHOV'
-	const dagpengerAktiv = _get(formikBag, 'values.arenaforvalter.dagpenger[0]')
+	const servicebehovAktiv = _get(formikBag.values, `${path}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
+	const dagpengerAktiv = _get(formikBag.values, `${path}.dagpenger[0]`)
 
 	const opts = useContext(BestillingsveilederContext)
 
@@ -27,21 +26,21 @@ export const ArenaForm = ({ formikBag }) => {
 
 	useEffect(() => {
 		servicebehovAktiv &&
-			!_get(formikBag, 'values.arenaforvalter.kvalifiseringsgruppe') &&
-			formikBag.setFieldValue('arenaforvalter.kvalifiseringsgruppe', null)
+			!_get(formikBag.values, `${path}.kvalifiseringsgruppe`) &&
+			formikBag.setFieldValue(`${path}.kvalifiseringsgruppe`, null)
 
 		servicebehovAktiv &&
 			!uregistrert &&
-			formikBag.setFieldValue('arenaforvalter.automatiskInnsendingAvMeldekort', null)
+			formikBag.setFieldValue(`${path}.automatiskInnsendingAvMeldekort`, null)
 	}, [])
 
 	return (
-		<Vis attributt={arenaAttributt}>
+		<Vis attributt={path}>
 			<Panel
 				heading="Arbeidsytelser"
-				hasErrors={panelError(formikBag, arenaAttributt)}
+				hasErrors={panelError(formikBag, path)}
 				iconType="arena"
-				startOpen={erForste(formikBag.values, [arenaAttributt])}
+				startOpen={erForste(formikBag.values, [path])}
 			>
 				{personFoerLeggTil && (
 					<ArenaVisning
@@ -65,15 +64,15 @@ export const ArenaForm = ({ formikBag }) => {
 				)}
 				{!servicebehovAktiv && (
 					<FormikDatepicker
-						name="arenaforvalter.inaktiveringDato"
+						name={`${path}.inaktiveringDato`}
 						label="Inaktiv fra dato"
 						disabled={servicebehovAktiv}
 					/>
 				)}
-				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} />}
+				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} path={path} />}
 				{(!servicebehovAktiv || uregistrert) && (
 					<FormikCheckbox
-						name="arenaforvalter.automatiskInnsendingAvMeldekort"
+						name={`${path}.automatiskInnsendingAvMeldekort`}
 						label="Automatisk innsending av meldekort"
 						size="large"
 					/>
