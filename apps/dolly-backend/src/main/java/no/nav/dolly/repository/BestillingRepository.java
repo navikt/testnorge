@@ -21,6 +21,16 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     Bestilling save(Bestilling bestilling);
 
+    @Query(value = "select position-1 " +
+            "from ( " +
+            "select b.id, row_number() over (order by b.id desc) as position " +
+            "from bestilling b " +
+            "where b.gruppe_id = :gruppeId" +
+            ") result " +
+            "where id = :bestillingId",
+            nativeQuery = true)
+    Optional<Integer> getPaginertBestillingIndex(@Param("bestillingId") Long bestillingId, @Param("gruppeId") Long gruppe);
+
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
 

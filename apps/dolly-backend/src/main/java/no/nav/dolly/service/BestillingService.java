@@ -102,10 +102,15 @@ public class BestillingService {
         return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
 
+    public Optional<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
+
+        return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
+    }
+
     @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
         Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
-        if (!bestillingKontroll.isPresent()) {
+        if (bestillingKontroll.isEmpty()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
                     .bestillingId(bestillingId)
                     .stoppet(true)

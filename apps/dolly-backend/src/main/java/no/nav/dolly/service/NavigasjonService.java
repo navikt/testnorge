@@ -19,12 +19,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
+
 @Service
 @RequiredArgsConstructor
 public class NavigasjonService {
 
     private final IdentRepository identRepository;
     private final IdentService identService;
+    private final BestillingService bestillingService;
     private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
     private final PdlDataConsumer pdlDataConsumer;
@@ -45,7 +48,7 @@ public class NavigasjonService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        var testident =  identRepository.findByIdentIn(miljoIdenter).stream().findFirst()
+        var testident = identRepository.findByIdentIn(miljoIdenter).stream().findFirst()
                 .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i database"));
 
         return RsWhereAmI.builder()
@@ -55,6 +58,23 @@ public class NavigasjonService {
                 .sidetall(Math.floorDiv(
                         identService.getPaginertIdentIndex(testident.getIdent(), testident.getTestgruppe().getId())
                                 .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i database")), 10))
+                .build();
+    }
+
+    public RsWhereAmI navigerTilBestilling(Long bestillingId) {
+
+        var bestilling = bestillingService.fetchBestillingById(bestillingId);
+
+        if (isNull(bestilling)) {
+            throw new NotFoundException(bestillingId + " ble ikke funnet i database");
+        }
+
+        return RsWhereAmI.builder()
+                .bestillingNavigerTil(bestillingId)
+                .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
+                .sidetall(Math.floorDiv(
+                        bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId())
+                                .orElseThrow(() -> new NotFoundException(bestillingId + " ble ikke funnet i database")), 10))
                 .build();
     }
 }
