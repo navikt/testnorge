@@ -28,9 +28,3 @@ spring:
 
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
-
-consumers:
-  tps:
-    messaging:
-      service:
-        url: https://testnav-tps-messaging-service.dev.intern.nav.no
