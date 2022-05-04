@@ -11,10 +11,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.ScriptType;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
@@ -70,11 +67,11 @@ public class RelasjonerUtils {
                         var script = new Script(
                                 ScriptType.INLINE,
                                 "painless",
-                                "def relasjoner = doc['hentPerson.forelderBarnRelasjon']; if (relasjoner != null){ return relasjoner.filter(relasjon => relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
+                                "def relasjoner = doc['hentPerson.forelderBarnRelasjon']; if (relasjoner != null){ return relasjoner.filter(relasjon -> relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
                                 Collections.emptyMap(),
                                 params);
-//                        queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
-                        queryBuilder.must(QueryBuilders.boolQuery().filter(QueryBuilders.scriptQuery(script)));
+                        queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
+//                        queryBuilder.must(QueryBuilders.boolQuery().filter(QueryBuilders.scriptQuery(script)));
                     }
                 });
     }
