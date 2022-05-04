@@ -114,14 +114,6 @@ public class QueryUtils {
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
     }
 
-    public static NestedQueryBuilder nestedScriptQuery(String path, Script script){
-        return QueryBuilders.nestedQuery(
-                path,
-                QueryBuilders.boolQuery().filter(QueryBuilders.scriptQuery(script)),
-                ScoreMode.Avg
-        );
-    }
-
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
         if (fom == null && tom == null) {
             return Optional.empty();

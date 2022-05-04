@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonRolle;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
@@ -68,8 +69,12 @@ public class RelasjonerUtils {
                                 "def relasjoner = doc['hentPerson']['forelderBarnRelasjon']; if (relasjoner != null){ return relasjoner.filter(relasjon -> relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
                                 Collections.emptyMap(),
                                 params);
-//                        queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
-                        queryBuilder.filter(QueryBuilders.boolQuery().must(QueryBuilders.scriptQuery(script)));
+                        queryBuilder.filter(QueryBuilders.nestedQuery(
+                                FORELDER_BARN_RELASJON_PATH,
+                                QueryBuilders.boolQuery().must(QueryBuilders.scriptQuery(script)),
+                                ScoreMode.Avg
+                        ));
+//                        queryBuilder.filter(QueryBuilders.boolQuery().must(QueryBuilders.scriptQuery(script)));
                     }
                 });
     }
