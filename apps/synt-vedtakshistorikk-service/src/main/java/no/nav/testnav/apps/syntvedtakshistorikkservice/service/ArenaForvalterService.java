@@ -25,6 +25,7 @@ import java.util.Random;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getFinnTiltakRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.EIER;
 
 import static java.util.Objects.isNull;
@@ -214,6 +215,16 @@ public class ArenaForvalterService {
     public void slettArbeidssoekerIArena(String ident, String miljoe) {
         if (arbeidssoekerOpprettetIArena(ident, miljoe)) {
             arenaForvalterConsumer.slettBrukerIArenaForvalteren(ident, miljoe);
+        }
+    }
+
+    public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+        var response = arenaForvalterConsumer.finnTiltak(getFinnTiltakRequest(personident, miljoe, tiltaksdeltakelse));
+        if (nonNull(response) && !response.getNyeRettigheterTiltak().isEmpty()) {
+            return response.getNyeRettigheterTiltak().get(0);
+        } else {
+            log.info("Fant ikke tiltak for tiltakdeltakelse.");
+            return null;
         }
     }
 }
