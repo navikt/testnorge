@@ -12,7 +12,7 @@ sonarqube {
         property "sonar.projectKey", "testnav-oversikt-frontend"
         property "sonar.projectName", "testnav-oversikt-frontend"
         property 'sonar.sources', 'src/main/java,src/main/js'
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
