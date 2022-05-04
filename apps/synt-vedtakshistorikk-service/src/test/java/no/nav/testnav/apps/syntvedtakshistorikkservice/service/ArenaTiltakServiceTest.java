@@ -37,7 +37,7 @@ public class ArenaTiltakServiceTest {
     @InjectMocks
     private ArenaTiltakService arenaTiltakService;
 
-    private NyttVedtakTiltak tiltaksdeltakelse1;
+    private NyttVedtakTiltak tiltaksdeltakelse;
     private NyttVedtakTiltak tiltakspenger;
     private NyttVedtakTiltak tiltak;
     private String fnr1 = "12345678910";
@@ -45,13 +45,13 @@ public class ArenaTiltakServiceTest {
 
     @Before
     public void setUp() {
-        tiltaksdeltakelse1 = NyttVedtakTiltak.builder()
+        tiltaksdeltakelse = NyttVedtakTiltak.builder()
                 .tiltakAdminKode("AMO")
                 .tiltakYtelse("J")
                 .tiltakKode("AMO")
                 .build();
-        tiltaksdeltakelse1.setFraDato(LocalDate.now());
-        tiltaksdeltakelse1.setTilDato(LocalDate.now().plusMonths(3));
+        tiltaksdeltakelse.setFraDato(LocalDate.now());
+        tiltaksdeltakelse.setTilDato(LocalDate.now().plusMonths(3));
 
         tiltak = NyttVedtakTiltak.builder()
                 .tiltakId(1)
@@ -72,30 +72,30 @@ public class ArenaTiltakServiceTest {
     @Test
     public void shouldFilterOutTiltaksdeltakelseWithoutTiltak() {
         when(arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(
-                fnr1, miljoe, tiltaksdeltakelse1.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
+                fnr1, miljoe, tiltaksdeltakelse.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
 
-        when(arenaForvalterService.finnTiltak(fnr1, miljoe, tiltaksdeltakelse1)).thenReturn(null);
+        when(arenaForvalterService.finnTiltak(fnr1, miljoe, tiltaksdeltakelse)).thenReturn(null);
 
         var historikk = Vedtakshistorikk.builder()
-                .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse1))
+                .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse))
                 .build();
-        arenaTiltakService.oppdaterTiltaksdeltakelse(historikk, fnr1, miljoe, Collections.emptyList(), tiltaksdeltakelse1, LocalDate.now());
+        arenaTiltakService.oppdaterTiltaksdeltakelse(historikk, fnr1, miljoe, Collections.emptyList(), tiltaksdeltakelse, LocalDate.now());
 
-        assertThat(historikk.getTiltaksdeltakelse()).hasSize(0);
+        assertThat(historikk.getTiltaksdeltakelse()).isEmpty();
     }
 
     @Test
     public void shouldUpdateTiltaksdeltakelse() {
         when(arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(
-                fnr1, miljoe, tiltaksdeltakelse1.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
+                fnr1, miljoe, tiltaksdeltakelse.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
 
-        when(arenaForvalterService.finnTiltak(fnr1, miljoe, tiltaksdeltakelse1)).thenReturn(tiltak);
+        when(arenaForvalterService.finnTiltak(fnr1, miljoe, tiltaksdeltakelse)).thenReturn(tiltak);
 
         var historikk = Vedtakshistorikk.builder()
-                .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse1))
+                .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse))
                 .build();
         List<NyttVedtakTiltak> tiltaksliste = new ArrayList<>();
-        arenaTiltakService.oppdaterTiltaksdeltakelse(historikk, fnr1, miljoe, tiltaksliste, tiltaksdeltakelse1, LocalDate.now());
+        arenaTiltakService.oppdaterTiltaksdeltakelse(historikk, fnr1, miljoe, tiltaksliste, tiltaksdeltakelse, LocalDate.now());
 
         assertThat(historikk.getTiltaksdeltakelse()).hasSize(1);
         assertThat(historikk.getTiltaksdeltakelse().get(0).getTiltakId()).isEqualTo(1);
@@ -106,7 +106,7 @@ public class ArenaTiltakServiceTest {
     @Test
     public void shouldOpprettTiltakspenger() {
         var historikk = Vedtakshistorikk.builder()
-                .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse1))
+                .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse))
                 .tiltakspenger(Arrays.asList(tiltakspenger, tiltakspenger))
                 .build();
 
@@ -126,7 +126,7 @@ public class ArenaTiltakServiceTest {
         List<RettighetRequest> rettigheter = new ArrayList<>();
         arenaTiltakService.opprettVedtakTiltakspenger(historikk, fnr1, miljoe, rettigheter);
 
-        assertThat(rettigheter).hasSize(0);
-        assertThat(historikk.getTiltakspenger()).hasSize(0);
+        assertThat(rettigheter).isEmpty();
+        assertThat(historikk.getTiltakspenger()).isEmpty();
     }
 }

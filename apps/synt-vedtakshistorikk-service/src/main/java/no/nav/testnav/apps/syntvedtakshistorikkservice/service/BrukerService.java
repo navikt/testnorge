@@ -7,6 +7,7 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Map;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
@@ -36,7 +37,7 @@ public class BrukerService {
                     identer,
                     syntetiserArenaRequest.getMiljoe());
         } else {
-            return null;
+            return Collections.emptyMap();
         }
 
     }
