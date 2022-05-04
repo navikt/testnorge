@@ -68,8 +68,8 @@ public class RelasjonerUtils {
                                 "def relasjoner = doc.hentPerson.forelderBarnRelasjon; if (relasjoner != null){ return relasjoner.filter(relasjon -> relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
                                 Collections.emptyMap(),
                                 params);
-//                        queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
-                        queryBuilder.must(QueryBuilders.boolQuery().filter(QueryBuilders.scriptQuery(script)));
+                        queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
+//                        queryBuilder.must(QueryBuilders.boolQuery().filter(QueryBuilders.scriptQuery(script)));
                     }
                 });
     }
