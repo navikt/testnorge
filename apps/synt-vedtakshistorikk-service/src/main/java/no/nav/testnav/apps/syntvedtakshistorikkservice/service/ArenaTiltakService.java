@@ -256,6 +256,9 @@ public class ArenaTiltakService {
         if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
+        if (isNull(tiltaksdeltakelser) || tiltaksdeltakelser.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         var deltakelser = tiltaksdeltakelser.stream()
                 .filter(t -> nonNull(t.getTiltakYtelse()) && t.getTiltakYtelse().equals("J")).toList();

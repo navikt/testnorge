@@ -70,7 +70,7 @@ public class ArenaTiltakServiceTest {
 
 
     @Test
-    public void shouldFilterOutTiltaksdeltakelseWithoutTiltak(){
+    public void shouldFilterOutTiltaksdeltakelseWithoutTiltak() {
         when(arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(
                 fnr1, miljoe, tiltaksdeltakelse1.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
 
@@ -85,7 +85,7 @@ public class ArenaTiltakServiceTest {
     }
 
     @Test
-    public void shouldUpdateTiltaksdeltakelse(){
+    public void shouldUpdateTiltaksdeltakelse() {
         when(arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(
                 fnr1, miljoe, tiltaksdeltakelse1.getRettighetType(), LocalDate.now())).thenReturn(Kvalifiseringsgrupper.BATT);
 
@@ -104,16 +104,29 @@ public class ArenaTiltakServiceTest {
     }
 
     @Test
-    public void shouldOpprettTiltakspenger(){
+    public void shouldOpprettTiltakspenger() {
         var historikk = Vedtakshistorikk.builder()
                 .tiltaksdeltakelse(Collections.singletonList(tiltaksdeltakelse1))
                 .tiltakspenger(Arrays.asList(tiltakspenger, tiltakspenger))
                 .build();
 
-        List<RettighetRequest > rettigheter = new ArrayList<>();
+        List<RettighetRequest> rettigheter = new ArrayList<>();
         arenaTiltakService.opprettVedtakTiltakspenger(historikk, fnr1, miljoe, rettigheter);
 
         assertThat(rettigheter).hasSize(1);
         assertThat(historikk.getTiltakspenger()).hasSize(1);
+    }
+
+    @Test
+    public void shouldNotOpprettTiltakspenger() {
+        var historikk = Vedtakshistorikk.builder()
+                .tiltakspenger(Arrays.asList(tiltakspenger, tiltakspenger))
+                .build();
+
+        List<RettighetRequest> rettigheter = new ArrayList<>();
+        arenaTiltakService.opprettVedtakTiltakspenger(historikk, fnr1, miljoe, rettigheter);
+
+        assertThat(rettigheter).hasSize(0);
+        assertThat(historikk.getTiltakspenger()).hasSize(0);
     }
 }
