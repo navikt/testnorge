@@ -13,7 +13,7 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { doedsfall } from '~/components/fagsystem/pdlf/form/validation'
+import { doedsfall, statsborgerskap } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
 
 type VisningTypes = {
@@ -164,8 +164,12 @@ export const VisningRedigerbar = ({
 	const validationSchema = Yup.object().shape(
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
+			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 		},
-		[['doedsfall', 'doedsfall']]
+		[
+			['doedsfall', 'doedsfall'],
+			['statsborgerskap', 'statsborgerskap'],
+		]
 	)
 
 	return (

@@ -20,7 +20,11 @@ export const StatsborgerskapForm = ({ path }: StatsborgerskapTypes) => {
 				size="large"
 				isClearable={false}
 			/>
-			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Statsborgerskap fra" />
+			<FormikDatepicker
+				name={`${path}.gyldigFraOgMed`}
+				label="Statsborgerskap fra"
+				maxDate={new Date()}
+			/>
 			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
 			<AvansertForm path={path} />
 		</>

@@ -439,15 +439,12 @@ const doedfoedtBarn = Yup.array().of(
 	})
 )
 
-//TODO fix for edit
-const statsborgerskap = Yup.array().of(
-	Yup.object({
-		landkode: requiredString.nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.date().optional().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.date().optional().nullable(), 'gyldigFraOgMed'),
-		bekreftelsesdato: Yup.date().optional().nullable(),
-	})
-)
+export const statsborgerskap = Yup.object({
+	landkode: requiredString.nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	bekreftelsesdato: Yup.date().optional().nullable(),
+})
 
 const telefonnummer = Yup.array().of(
 	Yup.object({
@@ -604,7 +601,10 @@ export const validation = {
 			),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
-			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
+			statsborgerskap: ifPresent(
+				'$pdldata.person.statsborgerskap',
+				Yup.array().of(statsborgerskap)
+			),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
 			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
