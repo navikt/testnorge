@@ -131,7 +131,9 @@ public class PensjonforvalterClient implements ClientRegister {
 
                         decodeStatus(pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest), status);
 
-                        lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer, status);
+                        if (nonNull(tp.getYtelser())) {
+                            lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer, status);
+                        }
                     });
         } catch (RuntimeException e) {
 
@@ -142,6 +144,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private void lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer, StringBuilder status) {
         ytelser.stream().forEach(ytelse -> {
             LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
+            lagreTpYtelseRequest.setYtelseType(ytelse.getType());
             lagreTpYtelseRequest.setOrdning(ordning);
             lagreTpYtelseRequest.setFnr(person);
             lagreTpYtelseRequest.setMiljoer(new ArrayList<>(miljoer));

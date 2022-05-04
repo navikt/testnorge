@@ -20,7 +20,7 @@ public class LagreTpYtelseRequest {
     private String fnr;
 
     private String ordning;
-    private PensjonData.TpYtelseType type;
+    private PensjonData.TpYtelseType ytelseType;
     private LocalDate datoInnmeldtYtelseFom;
     private LocalDate datoYtelseIverksattFom;
     private LocalDate datoYtelseIverksattTom;
