@@ -70,7 +70,7 @@ public class RelasjonerUtils {
                                 Collections.emptyMap(),
                                 params);
                         queryBuilder.filter(QueryBuilders.nestedQuery(
-                                FORELDER_BARN_RELASJON_PATH,
+                                "hentPerson",
                                 QueryBuilders.scriptQuery(script),
                                 ScoreMode.Avg
                         ));
