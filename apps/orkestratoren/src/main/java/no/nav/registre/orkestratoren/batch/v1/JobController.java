@@ -36,7 +36,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @Component
-@EnableScheduling
+//@EnableScheduling
 @Getter
 @Slf4j
 public class JobController {
@@ -124,6 +124,7 @@ public class JobController {
     @Scheduled(cron = "0 0 0 * * *")
     public void navSyntBatch() {
         log.info("Nav-endringsmeldinger batch midlertidig stanset.");
+        //Feil i innsending av nav-endringsmeldinger må fikses før denne eventuelt kan startes igjen.
 //        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
 //            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
 //                    .avspillergruppeId(entry.getKey())
@@ -201,8 +202,8 @@ public class JobController {
      */
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            log.info("Innsending til Arena er midlertidig stanset");
+        log.info("Innsending til Arena er midlertidig stanset pga prod-setting i Arena");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
 //            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
 //                    .avspillergruppeId(entry.getKey())
 //                    .miljoe(entry.getValue())
@@ -214,7 +215,7 @@ public class JobController {
 //                    .miljoe(entry.getValue())
 //                    .antallNyeIdenter(1)
 //                    .build(), true);
-        }
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
