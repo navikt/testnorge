@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +16,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class DbVersjonDTO implements Serializable {
 
     @Schema(description = "Versjon av informasjonselement. Fravær av denne eller 0 betyr nytt element")
