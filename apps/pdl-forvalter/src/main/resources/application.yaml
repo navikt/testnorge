@@ -3,12 +3,12 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 consumers:
   adresse-service:
-    url: http://testnav-adresse-service.dolly.svc.cluster.local
+    url: https://testnav-adresse-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-adresse-service
   generer-navn-service:
-    url: http://generer-navn-service.dolly.svc.cluster.local
+    url: https://generer-navn-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: generer-navn-service
@@ -18,17 +18,17 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
   ident-pool:
-    url:  http://testnav-ident-pool.dolly.svc.cluster.local
+    url:  https://testnav-ident-pool.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-ident-pool
   org-forvalter:
-    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+    url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-forvalter
   geografiske-kodeverk-service:
-    url: http://testnav-geografiske-kodeverk-service.dolly.svc.cluster.local
+    url: https://testnav-geografiske-kodeverk-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-geografiske-kodeverk-service
