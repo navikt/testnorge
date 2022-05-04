@@ -3,8 +3,6 @@ kind: Application
 metadata:
   name: testnav-pdl-forvalter-dev
   namespace: dolly
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
   labels:
     team: dolly
 spec:

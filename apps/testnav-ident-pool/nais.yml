@@ -46,8 +46,6 @@ spec:
           cluster: dev-gcp
         - application: testnorge-skd
           cluster: dev-fss
-        - application: team-dolly-lokal-app
-          cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: app-1
