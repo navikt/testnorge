@@ -121,7 +121,14 @@ export const Nasjonalitet = ({
 					erPdlVisning={erPdlVisning}
 				/>
 			)}
-			{utflytting?.length > 0 && <Utvandring data={utflytting} />}
+			{utflytting?.length > 0 && (
+				<Utvandring
+					data={utflytting}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+					erPdlVisning={erPdlVisning}
+				/>
+			)}
 		</div>
 	)
 }

@@ -17,9 +17,11 @@ import {
 	doedsfall,
 	innflytting,
 	statsborgerskap,
+	utflytting,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
 import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -42,6 +44,7 @@ enum Attributt {
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
+	Utvandring = 'utflytting',
 }
 
 const FieldArrayEdit = styled.div`
@@ -166,6 +169,8 @@ export const VisningRedigerbar = ({
 				return <StatsborgerskapForm path={path} />
 			case Attributt.Innvandring:
 				return <InnvandringForm path={path} />
+			case Attributt.Utvandring:
+				return <UtvandringForm path={path} />
 		}
 	}
 
@@ -174,11 +179,13 @@ export const VisningRedigerbar = ({
 			doedsfall: ifPresent('doedsfall', doedsfall),
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 			innflytting: ifPresent('innflytting', innflytting),
+			utflytting: ifPresent('utflytting', utflytting),
 		},
 		[
 			['doedsfall', 'doedsfall'],
 			['statsborgerskap', 'statsborgerskap'],
 			['innflytting', 'innflytting'],
+			['utflytting', 'utflytting'],
 		]
 	)
 

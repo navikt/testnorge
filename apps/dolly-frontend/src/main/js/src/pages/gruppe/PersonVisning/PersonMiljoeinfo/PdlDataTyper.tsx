@@ -305,6 +305,7 @@ export type UtvandringValues = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
+	id?: number
 }
 
 export type Folkeregisterpersonstatus = {

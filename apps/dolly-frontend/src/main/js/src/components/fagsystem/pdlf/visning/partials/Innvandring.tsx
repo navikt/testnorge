@@ -60,7 +60,7 @@ export const Innvandring = ({
 		if (slettetInnvandringPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 
 		const innvandringValues = redigertInnvandringPdlf ? redigertInnvandringPdlf : innvandringData
-		const redigertInnvvandringValues = redigertInnvandringPdlf
+		const redigertInnvandringValues = redigertInnvandringPdlf
 			? {
 					innflytting: Object.assign(_cloneDeep(initialInnvandring), redigertInnvandringPdlf),
 			  }
@@ -71,7 +71,7 @@ export const Innvandring = ({
 			<VisningRedigerbarConnector
 				dataVisning={<InnvandringLes innvandringData={innvandringValues} idx={idx} />}
 				initialValues={initialValues}
-				redigertAttributt={redigertInnvvandringValues}
+				redigertAttributt={redigertInnvandringValues}
 				path="innflytting"
 				ident={ident}
 			/>
