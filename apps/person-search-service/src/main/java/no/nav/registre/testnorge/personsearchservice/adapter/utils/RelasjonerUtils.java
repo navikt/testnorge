@@ -71,7 +71,7 @@ public class RelasjonerUtils {
                                 params);
                         queryBuilder.filter(QueryBuilders.nestedQuery(
                                 FORELDER_BARN_RELASJON_PATH,
-                                QueryBuilders.boolQuery().must(QueryBuilders.scriptQuery(script)),
+                                QueryBuilders.scriptQuery(script),
                                 ScoreMode.Avg
                         ));
 //                        queryBuilder.filter(QueryBuilders.boolQuery().must(QueryBuilders.scriptQuery(script)));
