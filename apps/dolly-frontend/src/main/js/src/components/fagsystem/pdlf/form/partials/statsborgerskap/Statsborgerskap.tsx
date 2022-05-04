@@ -5,6 +5,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { initialStatsborgerskap } from '~/components/fagsystem/pdlf/form/initialValues'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 type StatsborgerskapTypes = {
 	path: string
@@ -20,12 +21,14 @@ export const StatsborgerskapForm = ({ path }: StatsborgerskapTypes) => {
 				size="large"
 				isClearable={false}
 			/>
-			<FormikDatepicker
-				name={`${path}.gyldigFraOgMed`}
-				label="Statsborgerskap fra"
-				maxDate={new Date()}
-			/>
-			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
+			<DatepickerWrapper>
+				<FormikDatepicker
+					name={`${path}.gyldigFraOgMed`}
+					label="Statsborgerskap fra"
+					maxDate={new Date()}
+				/>
+				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
+			</DatepickerWrapper>
 			<AvansertForm path={path} />
 		</>
 	)
