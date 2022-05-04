@@ -5,6 +5,7 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.script.Script;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -111,6 +112,14 @@ public class QueryUtils {
         boolQuery.minimumShouldMatch(minimumShould);
 
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
+    }
+
+    public static NestedQueryBuilder nestedScriptQuery(String path, Script script){
+        return QueryBuilders.nestedQuery(
+                path,
+                QueryBuilders.boolQuery().filter(QueryBuilders.scriptQuery(script)),
+                ScoreMode.Avg
+        );
     }
 
     public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {

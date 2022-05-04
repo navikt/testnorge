@@ -4,16 +4,19 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonRolle;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
 
 @UtilityClass
 public class RelasjonerUtils {
@@ -28,6 +31,7 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     addRelasjonQueries(queryBuilder, value);
                     addBarnQuery(queryBuilder, value);
+                    addMinNumberBarnQuery(queryBuilder, value);
                     addDoedfoedtBarnQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
@@ -52,6 +56,23 @@ public class RelasjonerUtils {
                         } else if (NO.equalsIgnoreCase(value)) {
                             queryBuilder.mustNot(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString(), false));
                         }
+                    }
+                });
+    }
+
+    private static void addMinNumberBarnQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
+        Optional.ofNullable(search.getMinNumberBarn())
+                .ifPresent(value -> {
+                    if (value > 0) {
+                        Map<String, Object> params = new HashMap<>();
+                        params.put("limit", value);
+                        var script = new Script(
+                                ScriptType.INLINE,
+                                "painless",
+                                "def barn = doc['hentPerson.forelderBarnRelasjon'].filter(relasjon => relasjon.relatertPersonsRolle == 'BARN'); return barn.length == params.limit;",
+                                null,
+                                params);
+                        queryBuilder.must(nestedScriptQuery(FORELDER_BARN_RELASJON_PATH, script));
                     }
                 });
     }
