@@ -113,7 +113,14 @@ export const Nasjonalitet = ({
 					</ErrorBoundary>
 				</div>
 			)}
-			{innflytting?.length > 0 && <Innvandring data={innflytting} />}
+			{innflytting?.length > 0 && (
+				<Innvandring
+					data={innflytting}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+					erPdlVisning={erPdlVisning}
+				/>
+			)}
 			{utflytting?.length > 0 && <Utvandring data={utflytting} />}
 		</div>
 	)

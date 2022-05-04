@@ -13,8 +13,13 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { doedsfall, statsborgerskap } from '~/components/fagsystem/pdlf/form/validation'
+import {
+	doedsfall,
+	innflytting,
+	statsborgerskap,
+} from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
+import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -36,6 +41,7 @@ enum Attributt {
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
+	Innvandring = 'innflytting',
 }
 
 const FieldArrayEdit = styled.div`
@@ -158,6 +164,8 @@ export const VisningRedigerbar = ({
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
 				return <StatsborgerskapForm path={path} />
+			case Attributt.Innvandring:
+				return <InnvandringForm path={path} />
 		}
 	}
 
@@ -165,10 +173,12 @@ export const VisningRedigerbar = ({
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
+			innflytting: ifPresent('innflytting', innflytting),
 		},
 		[
 			['doedsfall', 'doedsfall'],
 			['statsborgerskap', 'statsborgerskap'],
+			['innflytting', 'innflytting'],
 		]
 	)
 

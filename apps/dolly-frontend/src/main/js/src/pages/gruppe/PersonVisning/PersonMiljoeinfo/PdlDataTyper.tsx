@@ -298,6 +298,7 @@ export type InnvandringValues = {
 	fraflyttingsland: string
 	fraflyttingsstedIUtlandet: string
 	innflyttingsdato: string
+	id?: number
 }
 
 export type UtvandringValues = {

@@ -454,13 +454,11 @@ const telefonnummer = Yup.array().of(
 	})
 )
 
-const innflytting = Yup.array().of(
-	Yup.object({
-		fraflyttingsland: requiredString,
-		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-		innflyttingsdato: requiredDate.nullable(),
-	})
-)
+export const innflytting = Yup.object({
+	fraflyttingsland: requiredString,
+	fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+	innflyttingsdato: requiredDate.nullable(),
+})
 
 const utflytting = Yup.array().of(
 	Yup.object({
@@ -607,7 +605,7 @@ export const validation = {
 			),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
-			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
+			innflytting: ifPresent('$pdldata.person.innflytting', Yup.array().of(innflytting)),
 			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
