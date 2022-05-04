@@ -34,7 +34,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @Component
-//@EnableScheduling
+@EnableScheduling
 @Getter
 @Slf4j
 public class JobController {
