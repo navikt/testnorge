@@ -49,14 +49,6 @@ export const ArenaForm = ({ formikBag }) => {
 						useStandard={false}
 					/>
 				)}
-				{!opts.is.leggTil && (
-					<AlertStripeInfo style={{ marginBottom: '20px' }}>
-						Oppretting av nye personer i TPS skjer asynkront og blir noen ganger ikke tilgjengelig
-						før etter oppretting av arbeidsytelser i Arena. Oppretting mot Arena vil da typisk
-						feile. Hvis dette skjer anbefales det å opprette personen først (uten arbeidsytelser) og
-						deretter bruke "LEGG TIL/ENDRE" for å legge til arbeidsytelsene.
-					</AlertStripeInfo>
-				)}
 				{dagpengerAktiv && (
 					<>
 						{!(
