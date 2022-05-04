@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.personsearchservice.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personsearchservice.service.IdentService;
 import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
@@ -17,7 +18,7 @@ public class IdentSearchController {
     private final IdentService identService;
 
     @GetMapping
-    public List<IdentdataDTO> getIdenter(String fragment) {
+    public List<JsonNode> getIdenter(String fragment) {
 
         return identService.getIdenter(fragment);
     }

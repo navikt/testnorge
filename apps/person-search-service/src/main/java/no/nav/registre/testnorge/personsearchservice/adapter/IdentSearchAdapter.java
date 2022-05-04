@@ -1,19 +1,19 @@
 package no.nav.registre.testnorge.personsearchservice.adapter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.config.credentials.PdlProxyProperties;
-import no.nav.registre.testnorge.personsearchservice.domain.PdlResponse;
+import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
+import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.apache.lucene.search.TotalHits;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -31,14 +31,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.AdresserUtils.addAdresserQueries;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.AlderUtils.addAlderQueries;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.IdentifikasjonUtils.addIdentifikasjonQueries;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.NasjonalitetUtils.addNasjonalitetQueries;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.RelasjonerUtils.addRelasjonerQueries;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.StatusUtils.addStatusQueries;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -46,8 +38,51 @@ public class IdentSearchAdapter {
 
     private final ObjectMapper objectMapper;
     private final RestHighLevelClient client;
-    private final TokenExchange tokenExchange;
-    private final PdlProxyProperties serverProperties;
+
+    private static void addNameQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
+
+        Optional.ofNullable(search.getNavn())
+                .ifPresent(values -> {
+                    if (values.size() == 1) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.navn",
+                                QueryBuilders.boolQuery()
+                                        .should(QueryBuilders.regexpQuery("hentPerson.navn.fornavn", ".*" + values.get(0) + ".*"))
+                                        .should(QueryBuilders.regexpQuery("hentPerson.navn.etternavn", ".*" + values.get(0) + ".*"))
+                                        .minimumShouldMatch(1),
+                                ScoreMode.Avg));
+
+                    } else if (values.size() > 1) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentPerson.navn",
+                                QueryBuilders.boolQuery()
+                                        .should(QueryBuilders.boolQuery()
+                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.fornavn", ".*" + values.get(0) + ".*"))
+                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.etternavn", ".*" + values.get(1) + ".*")))
+                                        .should(QueryBuilders.boolQuery()
+                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.fornavn", ".*" + values.get(1) + ".*"))
+                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.etternavn", ".*" + values.get(0) + ".*")))
+                                        .minimumShouldMatch(1),
+                                ScoreMode.Avg));
+                    }
+                });
+    }
+
+    private static void addIdentQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
+
+        Optional.ofNullable(search.getIdent())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(QueryBuilders.nestedQuery(
+                                "hentIdenter.identer",
+                                QueryBuilders.boolQuery()
+                                        .must(QueryBuilders.regexpQuery("hentIdenter.identer.ident", ".*" + value + ".*"))
+                                        .must(QueryBuilders.termQuery("hentIdenter.identer.gruppe", "FOLKEREGISTERIDENT"))
+                                ,
+                                ScoreMode.Avg));
+                    }
+                });
+    }
 
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
@@ -60,40 +95,18 @@ public class IdentSearchAdapter {
     }
 
     @SneakyThrows
-    public PersonList search(PersonSearch search) {
-        SearchResponse searchResponse = getSearchResponse(search);
+    public List<JsonNode> search(IdentSearch search) {
+
+        var searchResponse = getSearchResponse(search);
 
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);
 
-        List<Response> responses = convert(searchResponse.getHits().getHits(), Response.class);
-
-        return new PersonList(
-                searchResponse.getHits().getTotalHits().value,
-                responses.stream().map(Person::new).toList()
-        );
+        return convert(searchResponse.getHits().getHits(), JsonNode.class);
     }
 
     @SneakyThrows
-    public PdlResponse searchWithJsonStringResponse(PersonSearch search) {
-        SearchResponse searchResponse = getSearchResponse(search);
-
-        TotalHits totalHits = searchResponse.getHits().getTotalHits();
-        log.info("Fant {} personer i pdl.", totalHits.value);
-
-        var searchHits = searchResponse.getHits().getHits();
-
-        var listResponse = Arrays.stream(searchHits).map(SearchHit::getSourceAsString).toList();
-        var jsonResponse = JSONArray.toJSONString(listResponse);
-
-        return new PdlResponse(
-                searchResponse.getHits().getTotalHits().value,
-                jsonResponse
-        );
-    }
-
-    @SneakyThrows
-    private SearchResponse getSearchResponse(PersonSearch search) {
+    private SearchResponse getSearchResponse(IdentSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
         buildQuery(queryBuilder, search);
@@ -103,24 +116,17 @@ public class IdentSearchAdapter {
         searchRequest.indices("pdl-sok");
         searchRequest.source(searchSourceBuilder);
 
-        return client.search(searchRequest, RequestOptions.DEFAULT.toBuilder()
-                .addHeader(AUTHORIZATION, "Bearer " +
-                        tokenExchange.exchange(serverProperties).block().getTokenValue())
-                .build());
+        return client.search(searchRequest, RequestOptions.DEFAULT);
     }
 
-    private void buildQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        addRandomScoreQuery(queryBuilder, search);
+    private void buildQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
+
         addTagsQueries(queryBuilder, search);
-        addIdentifikasjonQueries(queryBuilder, search);
-        addAlderQueries(queryBuilder, search);
-        addAdresserQueries(queryBuilder, search);
-        addNasjonalitetQueries(queryBuilder, search);
-        addStatusQueries(queryBuilder, search);
-        addRelasjonerQueries(queryBuilder, search);
+        addIdentQuery(queryBuilder, search);
+        addNameQuery(queryBuilder, search);
     }
 
-    private SearchSourceBuilder getSearchSourceBuilder(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private SearchSourceBuilder getSearchSourceBuilder(BoolQueryBuilder queryBuilder, IdentSearch search) {
         var searchSourceBuilder = new SearchSourceBuilder();
         int page = search.getPage();
         int pageSize = search.getPageSize();
@@ -133,16 +139,7 @@ public class IdentSearchAdapter {
         return searchSourceBuilder;
     }
 
-    private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getRandomSeed())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(value)));
-                    }
-                });
-    }
-
-    private void addTagsQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private void addTagsQueries(BoolQueryBuilder queryBuilder, IdentSearch search) {
         queryBuilder.must(QueryBuilders.matchQuery("tags", search.getTag()));
 
         Optional.ofNullable(search.getExcludeTags())

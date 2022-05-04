@@ -5,3 +5,11 @@ elasticsearch:
   client:
     host: testnav-pdl-proxy.dev.intern.nav.no
     port: 443
+
+spring:
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints: ${elasticsearch.client.host}/pdl-elastic:${elasticsearch.client.port}
+    
