@@ -5,6 +5,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,5 +129,36 @@ public class ArenaTiltakServiceTest {
 
         assertThat(rettigheter).isEmpty();
         assertThat(historikk.getTiltakspenger()).isEmpty();
+    }
+
+    @Test
+    public void shouldRemoveOverlappingVedtak(){
+        var aap1 = NyttVedtakAap.builder().build();
+        aap1.setFraDato(LocalDate.now());
+        aap1.setTilDato(LocalDate.now().plusMonths(3));
+        aap1.setVedtaktype("O");
+
+        var aap2 = NyttVedtakAap.builder().build();
+        aap2.setFraDato(LocalDate.now().minusMonths(6));
+        aap2.setTilDato(LocalDate.now().minusMonths(3));
+        aap2.setVedtaktype("O");
+
+
+        var tiltak1 = NyttVedtakTiltak.builder().build();
+        tiltak1.setFraDato(LocalDate.now());
+        tiltak1.setTilDato(LocalDate.now().plusMonths(3));
+        tiltak1.setTiltakProsentDeltid(60.00);
+
+        var tiltak2 =  NyttVedtakTiltak.builder().build();
+        tiltak2.setFraDato(LocalDate.now().plusMonths(3));
+        tiltak2.setTilDato(LocalDate.now().plusMonths(4));
+        tiltak2.setTiltakProsentDeltid(100.00);
+
+        var response1 = arenaTiltakService.removeOverlappingTiltakVedtak(Arrays.asList(tiltak1), Arrays.asList(aap1));
+        var response2 = arenaTiltakService.removeOverlappingTiltakVedtak(Arrays.asList(tiltak1, tiltak2), Arrays.asList(aap2));
+
+        assertThat(response1).isEmpty();
+        assertThat(response2).hasSize(1);
+        assertThat(response2.get(0).getTiltakProsentDeltid()).isEqualTo(60.0);
     }
 }
