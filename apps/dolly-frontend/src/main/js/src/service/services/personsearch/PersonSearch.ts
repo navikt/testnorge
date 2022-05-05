@@ -22,7 +22,7 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
 	if (searchRequest?.relasjoner?.barn === 'M') {
 		searchRequest.terminateAfter = null
-		let initialResponse = await search(searchRequest)
+		const initialResponse = await search(searchRequest)
 		const numberOfItems = initialResponse.numberOfItems
 		const numberOfPages = Math.ceil(numberOfItems / searchRequest.pageSize)
 
@@ -30,11 +30,13 @@ const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl
 		let currentPage = 2
 		while (items.length < searchRequest.pageSize && currentPage <= numberOfPages) {
 			searchRequest.page = currentPage
-			let latestResponse = await search(searchRequest)
+			const latestResponse = await search(searchRequest)
 			items = items.concat(items, filterOutPersonerMedEtBarn(latestResponse.items))
 			currentPage++
 		}
-		if (items.length > searchRequest.pageSize) items = items.slice(0, searchRequest.pageSize)
+		if (items.length > searchRequest.pageSize) {
+			items = items.slice(0, searchRequest.pageSize)
+		}
 		return {
 			items: items,
 			numberOfItems: items.length,
