@@ -21,13 +21,14 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
 	if (searchRequest?.relasjoner?.barn === 'F') {
+		searchRequest.terminateAfter = null
 		let initialResponse = await search(searchRequest)
 		const numberOfItems = initialResponse.numberOfItems
-		const numberOfPages = numberOfItems / searchRequest.pageSize
+		const numberOfPages = Math.ceil(numberOfItems / searchRequest.pageSize)
 
 		let items = filterOutPersonerMedEtBarn(initialResponse.items)
 		let currentPage = 2
-		while (items.length < searchRequest.pageSize && currentPage < numberOfPages) {
+		while (items.length < searchRequest.pageSize && currentPage <= numberOfPages) {
 			searchRequest.page = currentPage
 			let latestResponse = await search(searchRequest)
 			items = items.concat(items, filterOutPersonerMedEtBarn(latestResponse.items))
