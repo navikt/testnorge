@@ -8,6 +8,7 @@ import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.providers.v1.support.MarkerBruktRequest;
 import no.nav.testnav.identpool.service.IdentpoolService;
 import no.nav.testnav.identpool.service.PoolService;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,6 +51,8 @@ public class IdentpoolController {
             @RequestParam(required = false, defaultValue = "true") boolean finnNaermesteLedigeDato,
             @RequestBody @Valid HentIdenterRequest hentIdenterRequest) {
 
+        var startTime = System.currentTimeMillis();
+
         validateDatesInRequest(hentIdenterRequest);
         if (isNull(hentIdenterRequest.getFoedtFoer())) {
             hentIdenterRequest.setFoedtFoer(LocalDate.now());
@@ -57,7 +60,11 @@ public class IdentpoolController {
         if (isNull(hentIdenterRequest.getFoedtEtter())) {
             hentIdenterRequest.setFoedtEtter(LocalDate.of(1900, 1, 1));
         }
-        return poolService.allocateIdenter(hentIdenterRequest);
+        var response = poolService.allocateIdenter(hentIdenterRequest);
+        log.info("rekvirer: {} medgått tid: {} sekunder", hentIdenterRequest.toString(),
+                (System.currentTimeMillis() - startTime)/1000);
+
+        return response;
     }
 
     @PostMapping("/bruk")
