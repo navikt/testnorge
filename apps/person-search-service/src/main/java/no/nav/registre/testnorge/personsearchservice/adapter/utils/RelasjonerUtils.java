@@ -22,6 +22,7 @@ public class RelasjonerUtils {
     private static final String RELATERT_PERSONS_ROLLE = ".relatertPersonsRolle";
     private static final String SIVILSTAND_PATH = "hentPerson.sivilstand";
     private static final String DOEDFOEDT_BARN_PATH = "hentPerson.doedfoedtBarn";
+    private static final String FORELDREANSVAR_PATH = "hentPerson.foreldreansvar";
 
     public static void addRelasjonerQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRelasjoner())
@@ -29,6 +30,7 @@ public class RelasjonerUtils {
                     addRelasjonQueries(queryBuilder, value);
                     addBarnQuery(queryBuilder, value);
                     addDoedfoedtBarnQuery(queryBuilder, value);
+                    addForeldreansvarQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
     }
@@ -75,6 +77,15 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value, false));
+                    }
+                });
+    }
+
+    private static void addForeldreansvarQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
+        Optional.ofNullable(search.getForeldreansvar())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(nestedMatchQuery(FORELDREANSVAR_PATH, ".ansvar", value, false));
                     }
                 });
     }

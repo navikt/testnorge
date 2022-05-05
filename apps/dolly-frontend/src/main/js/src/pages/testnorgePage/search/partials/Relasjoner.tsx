@@ -5,12 +5,14 @@ import { FormikProps } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const paths = {
 	sivistand: 'relasjoner.sivilstand',
 	harBarn: 'relasjoner.barn',
 	harDoedfoedtBarn: 'relasjoner.harDoedfoedtBarn',
 	forelderBarnRelasjoner: 'relasjoner.forelderBarnRelasjoner',
+	foreldreansvar: 'relasjoner.foreldreansvar',
 }
 
 type RelasjonerProps = {
@@ -89,6 +91,12 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 				checkboxMargin={false}
 				size="small"
 			/>
+			<FormikSelect
+				name={paths.foreldreansvar}
+				label="Hvem har foreldreansvar for person"
+				options={Options('foreldreansvar')}
+				size="medium"
+			/>
 		</section>
 	)
 }
@@ -98,4 +106,5 @@ export const RelasjonerPaths = {
 	[paths.harBarn]: 'string',
 	[paths.harDoedfoedtBarn]: 'string',
 	[paths.forelderBarnRelasjoner]: 'list',
+	[paths.foreldreansvar]: 'string',
 }
