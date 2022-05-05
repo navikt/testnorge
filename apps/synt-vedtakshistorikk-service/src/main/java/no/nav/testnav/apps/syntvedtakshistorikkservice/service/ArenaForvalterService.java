@@ -3,14 +3,17 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.ArenaForvalterConsumer;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.ArbeidssoekerException;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.VedtakshistorikkException;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,8 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.checkNyeBrukereResponse;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getFinnTiltakRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.EIER;
 
 import static java.util.Objects.isNull;
@@ -36,6 +41,7 @@ public class ArenaForvalterService {
     private static final String IARBS_HOVEDMAAL = "BEHOLDEA";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
+    private final PdlProxyConsumer pdlProxyConsumer;
     private final Random random = new Random();
     private final ArenaBrukerUtils arenaBrukerUtils;
 
@@ -166,6 +172,20 @@ public class ArenaForvalterService {
         }
     }
 
+    private void checkNyeBrukereResponse(NyeBrukereResponse nyeBrukereResponse, String personident) {
+        String feilmelding = null;
+        if (isNull(nyeBrukereResponse)) {
+            feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, "Ukjent feil.");
+        } else if (nonNull(nyeBrukereResponse.getNyBrukerFeilList()) && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+            feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
+        }
+        if (StringUtils.isNotBlank(feilmelding)){
+            log.error(feilmelding);
+            pdlProxyConsumer.deleteTags(Collections.singletonList(personident), SYNT_TAGS);
+            throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
+        }
+    }
+
     private Kvalifiseringsgrupper getKvalifiseringsgruppeForOppfoelging() {
         var r = random.nextDouble();
         if (r > 0.5) {
@@ -196,6 +216,16 @@ public class ArenaForvalterService {
     public void slettArbeidssoekerIArena(String ident, String miljoe) {
         if (arbeidssoekerOpprettetIArena(ident, miljoe)) {
             arenaForvalterConsumer.slettBrukerIArenaForvalteren(ident, miljoe);
+        }
+    }
+
+    public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+        var response = arenaForvalterConsumer.finnTiltak(getFinnTiltakRequest(personident, miljoe, tiltaksdeltakelse));
+        if (nonNull(response) && !response.getNyeRettigheterTiltak().isEmpty()) {
+            return response.getNyeRettigheterTiltak().get(0);
+        } else {
+            log.info("Fant ikke tiltak for tiltakdeltakelse.");
+            return null;
         }
     }
 }
