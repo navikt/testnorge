@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class RelasjonSearch {
     String harBarn;
-    Integer minNumberBarn;
     String harDoedfoedtBarn;
     List<String> forelderBarnRelasjoner;
 }

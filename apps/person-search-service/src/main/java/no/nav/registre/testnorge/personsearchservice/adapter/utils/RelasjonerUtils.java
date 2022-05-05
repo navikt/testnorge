@@ -4,11 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonRolle;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.script.ScriptType;
 
 import java.util.*;
 
@@ -28,7 +24,6 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     addRelasjonQueries(queryBuilder, value);
                     addBarnQuery(queryBuilder, value);
-                    addMinNumberBarnQuery(queryBuilder, value);
                     addDoedfoedtBarnQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
@@ -43,7 +38,6 @@ public class RelasjonerUtils {
         }
     }
 
-
     private static void addBarnQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
         Optional.ofNullable(search.getHarBarn())
                 .ifPresent(value -> {
@@ -53,28 +47,6 @@ public class RelasjonerUtils {
                         } else if (NO.equalsIgnoreCase(value)) {
                             queryBuilder.mustNot(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString(), false));
                         }
-                    }
-                });
-    }
-
-    private static void addMinNumberBarnQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
-        Optional.ofNullable(search.getMinNumberBarn())
-                .ifPresent(value -> {
-                    if (value > 0) {
-                        Map<String, Object> params = new HashMap<>();
-                        params.put("limit", value);
-                        var script = new Script(
-                                ScriptType.INLINE,
-                                "painless",
-                                "def relasjoner = doc['hentPerson']['forelderBarnRelasjon']; if (relasjoner != null){ return relasjoner.filter(relasjon -> relasjon.relatertPersonsRolle == 'BARN').length == params.limit; } return false;",
-                                Collections.emptyMap(),
-                                params);
-                        queryBuilder.filter(QueryBuilders.nestedQuery(
-                                "hentPerson",
-                                QueryBuilders.scriptQuery(script),
-                                ScoreMode.Avg
-                        ));
-//                        queryBuilder.filter(QueryBuilders.boolQuery().must(QueryBuilders.scriptQuery(script)));
                     }
                 });
     }
