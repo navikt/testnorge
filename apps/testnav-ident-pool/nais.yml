@@ -63,3 +63,5 @@ spec:
         name: testnav-identpool
         databases:
           - name: testnav-identpool
+        tier: db-custom-1-3840
+        autoBackupTime: "02:00"
