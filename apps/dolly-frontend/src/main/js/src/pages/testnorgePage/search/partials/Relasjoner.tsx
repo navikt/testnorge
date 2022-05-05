@@ -26,7 +26,7 @@ const foreldreRoller = {
 const barnOptions = [
 	{ value: 'Y', label: 'Ja' },
 	{ value: 'N', label: 'Nei' },
-	{ value: 'F', label: 'Har flere barn' },
+	{ value: 'M', label: 'Har flere barn' },
 ]
 
 export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
