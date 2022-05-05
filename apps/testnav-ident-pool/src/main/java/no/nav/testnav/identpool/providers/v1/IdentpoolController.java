@@ -61,7 +61,7 @@ public class IdentpoolController {
             hentIdenterRequest.setFoedtEtter(LocalDate.of(1900, 1, 1));
         }
         var response = poolService.allocateIdenter(hentIdenterRequest);
-        log.info("rekvirer: %s medgått tid: %d sekunder", hentIdenterRequest.toString(),
+        log.info("rekvirer: {} medgått tid: {} sekunder", hentIdenterRequest.toString(),
                 (System.currentTimeMillis() - startTime)/1000);
 
         return response;
