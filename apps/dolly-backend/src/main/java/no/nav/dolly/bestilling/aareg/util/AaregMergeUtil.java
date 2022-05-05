@@ -31,32 +31,32 @@ public class AaregMergeUtil {
         }
 
         List<Arbeidsforhold> arbeidsforhold = nyeArbeidsforhold.stream()
-                .filter(arbforhold -> eksisterendeArbeidsforhold.stream()
-                        .noneMatch(arbforhold2 ->
-                                isEqual(arbforhold, arbforhold2)))
+                .filter(arbForhold -> !alreadyExisting(arbForhold, eksisterendeArbeidsforhold))
                 .collect(Collectors.toList());
 
         return appendIds(arbeidsforhold, eksisterendeArbeidsforhold, ident);
     }
 
-    private static boolean isEqual(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
+    private static boolean alreadyExisting(Arbeidsforhold nytt, List<ArbeidsforholdResponse> eksisterendeListe) {
 
-        return (isEqualOrgnummer(nytt, eksisterende) || isEqualPersonnr(nytt, eksisterende)) &&
-                isEqualArbeidsAvtale(nytt, eksisterende);
+        return eksisterendeListe.stream().anyMatch(eksisterende ->
+                (isEqualOrgnummer(nytt, eksisterende) || isEqualPersonnr(nytt, eksisterende))
+                        && isEqualArbeidsAvtale(nytt, eksisterende));
     }
 
     private static boolean isEqualArbeidsAvtale(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
-        return eksisterende.getArbeidsavtaler().stream().anyMatch(arbeidsavtale ->
-                arbeidsavtale.getYrke().equals(nytt.getArbeidsavtale().getYrke()) &&
-                        arbeidsavtale.getArbeidstidsordning().equals(nytt.getArbeidsavtale().getArbeidstidsordning())
-        );
+        return eksisterende.getArbeidsavtaler().stream()
+                .filter(arbeidsavtale -> nonNull(arbeidsavtale.getYrke()))
+                .anyMatch(arbeidsavtale ->
+                        arbeidsavtale.getYrke().equals(nytt.getArbeidsavtale().getYrke())
+                );
     }
 
     private static boolean isEqualOrgnummer(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
         return "ORG".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType() == Aktoer.ORGANISASJON &&
+                eksisterende.getArbeidsgiver().getType().name().toUpperCase().equals(Aktoer.ORGANISASJON.name()) &&
                 ((RsOrganisasjon) nytt.getArbeidsgiver()).getOrgnummer()
                         .equals(eksisterende.getArbeidsgiver().getOrganisasjonsnummer());
     }
@@ -64,7 +64,7 @@ public class AaregMergeUtil {
     private static boolean isEqualPersonnr(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
         return "PERS".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType() == Aktoer.PERSON &&
+                eksisterende.getArbeidsgiver().getType().name().toUpperCase().equals(Aktoer.PERSON.name()) &&
                 ((RsAktoerPerson) nytt.getArbeidsgiver()).getIdent()
                         .equals(eksisterende.getArbeidsgiver().getOffentligIdent());
     }
