@@ -368,7 +368,9 @@ public class ArenaTiltakService {
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
     ) {
-        if (vedtaksliste.isEmpty()) return true;
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
+            return true;
+        }
         var prosent = vedtak.getTiltakProsentDeltid();
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
