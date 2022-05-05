@@ -4,7 +4,9 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonRolle;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.Optional;
 
@@ -12,6 +14,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.HISTORISK_PATH;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
 import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
 
@@ -85,7 +88,16 @@ public class RelasjonerUtils {
         Optional.ofNullable(search.getForeldreansvar())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(FORELDREANSVAR_PATH, ".ansvar", value, false));
+                        var query = QueryBuilders.nestedQuery(
+                                FORELDREANSVAR_PATH,
+                                QueryBuilders.boolQuery()
+                                        .must(QueryBuilders.matchQuery(FORELDREANSVAR_PATH + ".ansvar", value))
+                                        .must(QueryBuilders.existsQuery(FORELDREANSVAR_PATH + ".ansvarlig"))
+                                        .must(QueryBuilders.termQuery(FORELDREANSVAR_PATH + HISTORISK_PATH, false))
+                                ,
+                                ScoreMode.Avg);
+                        queryBuilder.must(query);
+//                        queryBuilder.must(nestedMatchQuery(FORELDREANSVAR_PATH, ".ansvar", value, false));
                     }
                 });
     }
