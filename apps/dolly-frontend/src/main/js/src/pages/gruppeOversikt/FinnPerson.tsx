@@ -136,6 +136,7 @@ export default function FinnPerson({ navigerTilPerson, navigerTilBestilling }: F
 
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
+			// @ts-ignore
 			<components.DropdownIndicator {...props}>
 				<Icon kind={'search'} size={20} />
 			</components.DropdownIndicator>
@@ -158,6 +159,7 @@ export default function FinnPerson({ navigerTilPerson, navigerTilBestilling }: F
 						IndicatorSeparator() {
 							return null
 						},
+						// @ts-ignore
 						DropdownIndicator,
 					}}
 					isClearable={true}
