@@ -74,10 +74,9 @@ public class IdentSearchAdapter {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(QueryBuilders.nestedQuery(
-                                "hentIdenter.identer",
+                                "hentPerson.folkeregisteridentifikator",
                                 QueryBuilders.boolQuery()
-                                        .must(QueryBuilders.regexpQuery("hentIdenter.identer.ident", ".*" + value + ".*"))
-                                        .must(QueryBuilders.termQuery("hentIdenter.identer.gruppe", "FOLKEREGISTERIDENT"))
+                                        .must(QueryBuilders.regexpQuery("hentPerson.folkeregisteridentifikator.identifikasjonsnummer", ".*" + value + ".*"))
                                 ,
                                 ScoreMode.Avg));
                     }
