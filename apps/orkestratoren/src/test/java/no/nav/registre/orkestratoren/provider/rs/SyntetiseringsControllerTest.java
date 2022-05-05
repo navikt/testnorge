@@ -13,7 +13,6 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -24,7 +23,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -49,9 +47,6 @@ public class SyntetiseringsControllerTest {
 
     @Mock
     private TestnorgeInstService testnorgeInstService;
-
-    @Mock
-    private TestnorgeBisysService testnorgeBisysService;
 
     @Mock
     private TestnorgeTpService testnorgeTpService;
@@ -163,21 +158,6 @@ public class SyntetiseringsControllerTest {
         syntetiseringsController.opprettInstitutjonsforholdIInst(syntetiserInstRequest);
 
         verify(testnorgeInstService).genererInstitusjonsforhold(syntetiserInstRequest);
-    }
-
-    /**
-     * Scenario: HVIS syntetiseringskontrolleren får et request om å generere bistandsforhold i bisys, skal metoden kalle på
-     * {@link TestnorgeBisysService#genererBistandsmeldinger}.
-     */
-    @Test
-    public void shouldProduceBistandsmeldingerInBisys() {
-        var antallNyeIdenter = 2;
-
-        var syntetiserBisysRequest = new SyntetiserBisysRequest(avspillergruppeId, miljoe, antallNyeIdenter);
-
-        syntetiseringsController.opprettBistandsmeldingerIBisys(syntetiserBisysRequest);
-
-        verify(testnorgeBisysService).genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
     /**

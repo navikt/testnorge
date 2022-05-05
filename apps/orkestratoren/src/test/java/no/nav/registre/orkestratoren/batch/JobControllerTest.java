@@ -26,7 +26,6 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -53,9 +52,6 @@ public class JobControllerTest {
 
     @Mock
     private TestnorgeInstService testnorgeInstService;
-
-    @Mock
-    private TestnorgeBisysService testnorgeBisysService;
 
     @Mock
     private TestnorgeTpService testnorgeTpService;
@@ -126,12 +122,6 @@ public class JobControllerTest {
     void shouldStartInstBatch() {
         jobController.instSyntBatch();
         verify(testnorgeInstService).genererInstitusjonsforhold(any());
-    }
-
-    @Test
-    void shouldStartBisysBatch() {
-        jobController.bisysSyntBatch();
-        verify(testnorgeBisysService).genererBistandsmeldinger(any());
     }
 
     @Test
