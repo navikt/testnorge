@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
 import { FormikProps } from 'formik'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
 
 const paths = {
 	sivistand: 'relasjoner.sivilstand',
-	harBarn: 'relasjoner.harBarn',
+	harBarn: 'relasjoner.barn',
 	harDoedfoedtBarn: 'relasjoner.harDoedfoedtBarn',
 	forelderBarnRelasjoner: 'relasjoner.forelderBarnRelasjoner',
 }
@@ -22,6 +22,12 @@ const foreldreRoller = {
 	MOR: 'MOR',
 	MEDMOR: 'MEDMOR',
 }
+
+const barnOptions = [
+	{ value: 'Y', label: 'Ja' },
+	{ value: 'N', label: 'Nei' },
+	{ value: 'F', label: 'Har flere barn' },
+]
 
 export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 	const [foreldre, setForeldre] = useState(_get(formikBag.values, paths.forelderBarnRelasjoner))
@@ -56,7 +62,7 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 				formikBag={formikBag}
 				name={'Har barn'}
 				path={paths.harBarn}
-				options={yesNoOptions}
+				options={barnOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}

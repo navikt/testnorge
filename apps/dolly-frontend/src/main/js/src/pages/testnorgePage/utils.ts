@@ -19,6 +19,7 @@ export const initialValues = {
 	relasjoner: {
 		sivilstand: '',
 		harBarn: '',
+		harFlereBarn: '',
 		harDoedfoedtBarn: '',
 		forelderBarnRelasjoner: [] as string[],
 	},
@@ -90,7 +91,13 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			},
 			identer: identer,
 			identifikasjon: values?.identifikasjon,
-			relasjoner: values?.relasjoner,
+			relasjoner: {
+				sivilstand: values?.relasjoner?.sivilstand,
+				harDoedfoedtBarn: values?.relasjoner?.harDoedfoedtBarn,
+				forelderBarnRelasjoner: values?.relasjoner?.forelderBarnRelasjoner,
+				barn: values?.relasjoner?.barn,
+				harBarn: values?.relasjoner?.barn === 'F' ? 'Y' : values?.relasjoner?.barn,
+			},
 			adresser: values?.adresser,
 			personstatus: {
 				status: personstatus,

@@ -43,7 +43,9 @@ export type Search = {
 		status?: string
 	}
 	relasjoner?: {
+		barn?: string
 		harBarn?: string
+		harFlereBarn?: string
 		harDoedfoedtBarn?: string
 		forelderBarnRelasjoner?: string[]
 	}
