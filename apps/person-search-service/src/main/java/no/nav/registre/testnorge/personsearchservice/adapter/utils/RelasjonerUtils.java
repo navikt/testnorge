@@ -6,10 +6,14 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.RelasjonSearch;
 import no.nav.registre.testnorge.personsearchservice.domain.PersonRolle;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
-import java.util.*;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.*;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
+import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
 
 @UtilityClass
 public class RelasjonerUtils {

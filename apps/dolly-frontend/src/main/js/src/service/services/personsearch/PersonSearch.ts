@@ -20,7 +20,7 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 	)
 
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
-	if (searchRequest?.relasjoner?.barn === 'F') {
+	if (searchRequest?.relasjoner?.barn === 'M') {
 		searchRequest.terminateAfter = null
 		let initialResponse = await search(searchRequest)
 		const numberOfItems = initialResponse.numberOfItems
