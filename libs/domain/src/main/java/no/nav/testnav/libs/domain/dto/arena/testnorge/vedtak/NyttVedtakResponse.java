@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -45,28 +45,28 @@ public class NyttVedtakResponse {
 
     public List<NyttVedtakAap> getNyeRettigheterAap() {
         if (isNull(nyeRettigheterAap)){
-            nyeRettigheterAap = Collections.emptyList();
+            nyeRettigheterAap = new ArrayList<>();
         }
         return nyeRettigheterAap;
     }
 
     public List<NyttVedtakTiltak> getNyeRettigheterTiltak() {
         if (isNull(nyeRettigheterTiltak)){
-            nyeRettigheterTiltak = Collections.emptyList();
+            nyeRettigheterTiltak = new ArrayList<>();
         }
         return nyeRettigheterTiltak;
     }
 
     public List<NyttVedtakTillegg> getNyeRettigheterTillegg() {
         if (isNull(nyeRettigheterTillegg)){
-            nyeRettigheterTillegg = Collections.emptyList();
+            nyeRettigheterTillegg = new ArrayList<>();
         }
         return nyeRettigheterTillegg;
     }
 
     public List<NyttVedtakFeil> getFeiledeRettigheter() {
         if (isNull(feiledeRettigheter)){
-            feiledeRettigheter = Collections.emptyList();
+            feiledeRettigheter = new ArrayList<>();
         }
         return feiledeRettigheter;
     }
