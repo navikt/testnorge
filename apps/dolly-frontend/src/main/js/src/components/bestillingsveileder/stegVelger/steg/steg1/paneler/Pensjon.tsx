@@ -49,7 +49,14 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 			set('pensjonforvalter.tp', [
 				{
 					ordning: '3010',
-					ytelser: [],
+					ytelser: [
+						{
+							type: 'ALDER',
+							datoInnmeldtYtelseFom: new Date().setDate(new Date().getDate() - 30),
+							datoYtelseIverksattFom: new Date().setDate(new Date().getDate() - 30),
+							datoYtelseIverksattTom: null,
+						}
+					],
 				}
 			]),
 		remove: () => del('pensjonforvalter.tp'),
