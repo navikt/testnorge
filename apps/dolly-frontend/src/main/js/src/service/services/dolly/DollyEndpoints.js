@@ -140,6 +140,10 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/gruppe/${gruppeId}`
 	}
 
+	static bestillingerFragment(fragment) {
+		return `${bestillingBase}/soekBestilling?fragment=${fragment}`
+	}
+
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}
@@ -196,8 +200,12 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
 
-	static naviger(ident) {
+	static navigerTilIdent(ident) {
 		return `${identBase}/naviger/${ident}`
+	}
+
+	static navigerTilBestilling(bestillingId) {
+		return `${bestillingBase}/naviger/${bestillingId}`
 	}
 
 	static ordre(ident) {

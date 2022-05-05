@@ -74,8 +74,6 @@ export default function PersonListe({
 	if (isFetching) return <Loading label="Laster personer" panel />
 
 	if (visPerson && personListe && window.sessionStorage.getItem('sidetall')) {
-		setSidetall(parseInt(window.sessionStorage.getItem('sidetall')))
-		setSideStoerrelse(10)
 		window.sessionStorage.removeItem('sidetall')
 	}
 

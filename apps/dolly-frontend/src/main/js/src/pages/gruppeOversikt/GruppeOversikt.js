@@ -11,6 +11,7 @@ import FinnPerson from './FinnPerson'
 export default function GruppeOversikt({
 	getGrupper,
 	navigerTilPerson,
+	navigerTilBestilling,
 	fetchMineGrupper,
 	isFetching,
 	gruppeListe,
@@ -65,7 +66,10 @@ export default function GruppeOversikt({
 						Alle
 					</ToggleKnapp>
 				</ToggleGruppe>
-				<FinnPerson naviger={navigerTilPerson} />
+				<FinnPerson
+					navigerTilPerson={navigerTilPerson}
+					navigerTilBestilling={navigerTilBestilling}
+				/>
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}

@@ -6,15 +6,19 @@ import { useAsyncFn } from 'react-use'
 import AsyncSelect from 'react-select/async'
 // @ts-ignore
 import { components } from 'react-select'
-import { PdlforvalterApi, TpsfApi } from '~/service/Api'
+import { DollyApi, PdlforvalterApi, TpsfApi } from '~/service/Api'
 import useBoolean from '~/utils/hooks/useBoolean'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import { Option } from '~/service/SelectOptionsOppslag'
+import { SoekTypeValg, VelgSoekTypeToggle } from '~/pages/gruppeOversikt/VelgSoekTypeToggle'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import styled from 'styled-components'
 
 type FinnPersonProps = {
-	naviger: Function
+	navigerTilPerson: Function
+	navigerTilBestilling: Function
 }
 
 type Person = {
@@ -24,7 +28,16 @@ type Person = {
 	etternavn: string
 }
 
-type Respons = {
+type ResponsBestilling = {
+	data: [
+		{
+			navn: string
+			id: number
+		}
+	]
+}
+
+type ResponsNavigering = {
 	value: {
 		data: {
 			gruppe?: {
@@ -37,11 +50,16 @@ type Respons = {
 	}
 }
 
-export default function FinnPerson({ naviger }: FinnPersonProps) {
+const StyledAsyncSelect = styled(AsyncSelect)`
+	width: 100%;
+`
+
+export default function FinnPerson({ navigerTilPerson, navigerTilBestilling }: FinnPersonProps) {
 	const [redirectToGruppe, setRedirect] = useBoolean()
 
 	const [gruppe, setGruppe] = useState(null)
 	const [feilmelding, setFeilmelding] = useState(null)
+	const [soekType, setValgtSoekType] = useState(SoekTypeValg.PERSON)
 
 	const navigate = useNavigate()
 
@@ -59,14 +77,33 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 			})
 	}
 
-	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async (tekst) => {
+	const soekBestillinger = async (tekst: string) => {
+		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
+			if (response?.data?.length < 1) return []
+			return response.data?.map((resp) => ({
+				value: resp.id,
+				label: `#${resp.id} - ${resp.navn}`,
+			}))
+		})
+	}
+
+	const soekPersoner = async (tekst: string) => {
 		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
 		const { data: pdlIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
 		const personer: Array<Option> = []
 		mapToPersoner(tpsfIdenter, personer)
 		mapToPersoner(pdlIdenter, personer)
 		return personer
-	}, [])
+	}
+
+	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(
+		async (tekst) => {
+			return soekType === SoekTypeValg.BESTILLING
+				? await soekBestillinger(tekst)
+				: await soekPersoner(tekst)
+		},
+		[soekType]
+	)
 
 	const handleChange = (tekst: string) => {
 		fetchOptions(tekst)
@@ -74,7 +111,19 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 	}
 
 	const navigerTilIdent = async (ident: string) => {
-		naviger(ident).then((response: Respons) => {
+		navigerTilPerson(ident).then((response: ResponsNavigering) => {
+			window.sessionStorage.setItem('sidetall', String(response.value.data.sidetall))
+			if (response.value.data.error) {
+				setFeilmelding(response.value.data.message)
+			} else {
+				setGruppe(response.value.data.gruppe.id)
+				setRedirect()
+			}
+		})
+	}
+
+	const navigerTilBestillingId = async (bestillingId: string) => {
+		navigerTilBestilling(bestillingId).then((response: ResponsNavigering) => {
 			window.sessionStorage.setItem('sidetall', String(response.value.data.sidetall))
 			if (response.value.data.error) {
 				setFeilmelding(response.value.data.message)
@@ -97,9 +146,10 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 		navigate(`/gruppe/${gruppe}`, { replace: true })
 
 	return (
-		<div>
+		<ErrorBoundary>
 			<div className="finnperson-container skjemaelement">
-				<AsyncSelect
+				<VelgSoekTypeToggle setValgtSoekType={setValgtSoekType} />
+				<StyledAsyncSelect
 					defaultOptions={false}
 					loadOptions={fetchOptions}
 					onInputChange={handleChange}
@@ -112,10 +162,16 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 					}}
 					isClearable={true}
 					options={options}
-					onChange={(e: Option) => (e ? navigerTilIdent(e.value) : null)}
+					onChange={(e: Option) => {
+						soekType === SoekTypeValg.PERSON
+							? navigerTilIdent(e.value)
+							: navigerTilBestillingId(e.value)
+					}}
 					cacheOptions={true}
 					label="Person"
-					placeholder="Søk etter navn eller ident"
+					placeholder={
+						soekType === SoekTypeValg.PERSON ? 'Søk etter navn eller ident' : 'Søk etter bestilling'
+					}
 				/>
 			</div>
 			{feilmelding && (
@@ -123,6 +179,6 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 					{feilmelding}
 				</div>
 			)}
-		</div>
+		</ErrorBoundary>
 	)
 }

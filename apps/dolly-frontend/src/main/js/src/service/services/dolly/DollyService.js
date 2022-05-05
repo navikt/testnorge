@@ -77,7 +77,11 @@ export default {
 	},
 
 	navigerTilPerson(ident) {
-		return Request.get(Endpoints.naviger(ident))
+		return Request.get(Endpoints.navigerTilIdent(ident))
+	},
+
+	navigerTilBestilling(bestillingId) {
+		return Request.get(Endpoints.navigerTilBestilling(bestillingId))
 	},
 
 	sendOrdre(ident) {
@@ -122,6 +126,10 @@ export default {
 	//* Bestilling
 	getBestillinger(gruppeId) {
 		return Request.get(Endpoints.bestillinger(gruppeId))
+	},
+
+	getBestillingerFragment(fragment) {
+		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
 	getBestillingMaler() {

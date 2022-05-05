@@ -43,9 +43,14 @@ export default function BestillingListe({
 	iLaastGruppe,
 	brukertype,
 	navigerBestillingId,
+	visBestilling,
 }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
+
+	if (visBestilling && bestillinger && window.sessionStorage.getItem('sidetall')) {
+		window.sessionStorage.removeItem('sidetall')
+	}
 
 	const searchIdent = sessionStorage.getItem(SEARCH_IDENT)
 	const searchInfo = `Søket er filtrert etter ident ${searchIdent}, trykk for å fjerne filtreringen`
@@ -123,7 +128,7 @@ export default function BestillingListe({
 				data={sortedBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
-				visBestilling={navigerBestillingId}
+				visBestilling={visBestilling || navigerBestillingId}
 				onExpand={(bestilling) => (
 					<BestillingDetaljer
 						bestilling={bestilling}

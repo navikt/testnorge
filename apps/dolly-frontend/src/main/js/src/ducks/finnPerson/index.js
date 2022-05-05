@@ -4,12 +4,14 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
 
-export const { navigerTilPerson } = createActions({
+export const { navigerTilPerson, navigerTilBestilling } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,
+	navigerTilBestilling: DollyApi.navigerTilBestilling,
 })
 
 const initialState = {
 	visPerson: null,
+	visBestilling: null,
 }
 
 export default handleActions(
@@ -19,6 +21,9 @@ export default handleActions(
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			state.visPerson = action.payload.data.identHovedperson
+		},
+		[onSuccess(navigerTilBestilling)](state, action) {
+			state.visBestilling = action.payload.data.bestillingNavigerTil
 		},
 	},
 	initialState

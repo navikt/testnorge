@@ -21,7 +21,9 @@ export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
 	navigerTilPerson,
+	navigerTilBestilling,
 	visPerson,
+	visBestilling,
 	laasGruppe,
 	getBestillinger,
 	grupper,
@@ -40,9 +42,9 @@ export default function Gruppe({
 	isFetchingExcel,
 	bestillingStatuser,
 }) {
-	const [visning, setVisning] = useState(VISNING_PERSONER)
+	const [visning, setVisning] = useState(visBestilling ? VISNING_BESTILLING : VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-	const [sidetall, setSidetall] = useState(0)
+	const [sidetall, setSidetall] = useState(parseInt(window.sessionStorage.getItem('sidetall')) || 0)
 	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 	const [gruppe, setGruppe] = useState(null)
@@ -140,7 +142,10 @@ export default function Gruppe({
 					</ToggleKnapp>
 				</ToggleGruppe>
 
-				<FinnPerson naviger={navigerTilPerson} />
+				<FinnPerson
+					navigerTilPerson={navigerTilPerson}
+					navigerTilBestilling={navigerTilBestilling}
+				/>
 			</div>
 
 			{startBestillingAktiv && (
@@ -165,7 +170,11 @@ export default function Gruppe({
 				/>
 			)}
 			{visning === VISNING_BESTILLING && (
-				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
+				<BestillingListeConnector
+					iLaastGruppe={erLaast}
+					brukertype={brukertype}
+					visBestilling={visBestilling}
+				/>
 			)}
 		</div>
 	)
