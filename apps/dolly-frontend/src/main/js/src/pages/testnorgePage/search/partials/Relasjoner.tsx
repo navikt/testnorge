@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
+import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
-import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
 

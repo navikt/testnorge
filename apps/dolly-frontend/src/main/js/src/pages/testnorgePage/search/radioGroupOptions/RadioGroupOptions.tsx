@@ -4,6 +4,7 @@ import { Radio, RadioGroup } from '@navikt/ds-react'
 import { FormikProps } from 'formik'
 import styled from 'styled-components'
 import _get from 'lodash/get'
+import './RadioGroupOptions.less'
 
 type Option = {
 	value: string
