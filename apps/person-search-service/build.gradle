@@ -57,6 +57,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
 
     implementation 'org.hibernate.validator:hibernate-validator'

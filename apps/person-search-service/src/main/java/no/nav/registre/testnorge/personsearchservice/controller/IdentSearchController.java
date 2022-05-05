@@ -18,7 +18,7 @@ public class IdentSearchController {
     private final IdentService identService;
 
     @GetMapping
-    public List<JsonNode> getIdenter(String fragment) {
+    public List<IdentdataDTO> getIdenter(String fragment) {
 
         return identService.getIdenter(fragment);
     }

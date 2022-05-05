@@ -6,12 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
-import no.nav.registre.testnorge.personsearchservice.domain.Person;
-import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
 import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
-import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.apache.lucene.search.TotalHits;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
@@ -21,7 +19,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
@@ -37,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class IdentSearchAdapter {
 
     private final ObjectMapper objectMapper;
+    private final MapperFacade mapperFacade;
     private final RestHighLevelClient client;
 
     private static void addNameQuery(BoolQueryBuilder queryBuilder, IdentSearch search) {
@@ -94,14 +92,15 @@ public class IdentSearchAdapter {
     }
 
     @SneakyThrows
-    public List<JsonNode> search(IdentSearch search) {
+    public List<IdentdataDTO> search(IdentSearch search) {
 
         var searchResponse = getSearchResponse(search);
 
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);
 
-        return convert(searchResponse.getHits().getHits(), JsonNode.class);
+        var response = convert(searchResponse.getHits().getHits(), Response.class);
+        return mapperFacade.mapAsList(response, IdentdataDTO.class);
     }
 
     @SneakyThrows

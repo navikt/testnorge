@@ -1,10 +1,9 @@
 package no.nav.registre.testnorge.personsearchservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personsearchservice.adapter.IdentSearchAdapter;
-import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
+import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class IdentService {
 
     private final IdentSearchAdapter identSearchAdapter;
 
-    public List<JsonNode> getIdenter(String query) {
+    public List<IdentdataDTO> getIdenter(String query) {
 
         return identSearchAdapter.search(getSearchCriteria(query));
     }
