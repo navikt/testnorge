@@ -97,7 +97,6 @@ public class RelasjonerUtils {
                                 ,
                                 ScoreMode.Avg);
                         queryBuilder.must(query);
-//                        queryBuilder.must(nestedMatchQuery(FORELDREANSVAR_PATH, ".ansvar", value, false));
                     }
                 });
     }
