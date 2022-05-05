@@ -156,9 +156,11 @@ public class ArenaTiltakServiceTest {
 
         var response1 = arenaTiltakService.removeOverlappingTiltakVedtak(Arrays.asList(tiltak1), Arrays.asList(aap1));
         var response2 = arenaTiltakService.removeOverlappingTiltakVedtak(Arrays.asList(tiltak1, tiltak2), Arrays.asList(aap2));
+        var response3 = arenaTiltakService.removeOverlappingTiltakVedtak(Arrays.asList(tiltak1), null);
 
         assertThat(response1).isEmpty();
         assertThat(response2).hasSize(1);
         assertThat(response2.get(0).getTiltakProsentDeltid()).isEqualTo(60.0);
+        assertThat(response3).hasSize(1);
     }
 }
