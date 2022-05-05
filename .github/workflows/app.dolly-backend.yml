@@ -1,7 +1,8 @@
 name: App dolly-backend
 
 env:
-  DEPLOY_BRANCH: bugfix/aareg-gjenopprett-duplicates
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  DEPLOY_DEV_BRANCH: bugfix/aareg-gjenopprett-duplicates
 
 on:
   push:
@@ -42,7 +43,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/$DEPLOY_BRANCH' }}
+    if: ${{ $BRANCH_NAME == 'master' || $BRANCH_NAME == $DEPLOY_DEV_BRANCH }}
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'
