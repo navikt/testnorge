@@ -18,8 +18,8 @@ export const initialValues = {
 	},
 	relasjoner: {
 		sivilstand: '',
+		barn: '',
 		harBarn: '',
-		harFlereBarn: '',
 		harDoedfoedtBarn: '',
 		forelderBarnRelasjoner: [] as string[],
 	},

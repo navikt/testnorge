@@ -90,7 +90,7 @@ public class PersonSearchAdapter {
     }
 
     @SneakyThrows
-    private SearchResponse getSearchResponse(PersonSearch search) {
+    private SearchResponse getSearchResponse(PersonSearch search){
         var queryBuilder = QueryBuilders.boolQuery();
 
         buildQuery(queryBuilder, search);
