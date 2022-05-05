@@ -13,6 +13,7 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrup
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -178,7 +179,7 @@ public class ArenaForvalterService {
         } else if (nonNull(nyeBrukereResponse.getNyBrukerFeilList()) && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
             feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
         }
-        if (feilmelding != null){
+        if (StringUtils.isNotBlank(feilmelding)){
             log.error(feilmelding);
             pdlProxyConsumer.deleteTags(Collections.singletonList(personident), SYNT_TAGS);
             throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");

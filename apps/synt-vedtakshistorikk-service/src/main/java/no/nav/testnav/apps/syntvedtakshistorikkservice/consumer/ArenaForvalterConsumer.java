@@ -93,7 +93,7 @@ public class ArenaForvalterConsumer {
                     responses.put(rettighet.getPersonident(), new ArrayList<>(Collections.singletonList(response)));
                 }
             }
-            if (isNull(response) || (nonNull(response.getFeiledeRettigheter()) && !response.getFeiledeRettigheter().isEmpty())) {
+            if (isNull(response) || !response.getFeiledeRettigheter().isEmpty()) {
                 log.info("Innsendt rettighet feilet. Stopper videre innsending av historikk for ident: "
                         + rettighet.getPersonident());
                 break;

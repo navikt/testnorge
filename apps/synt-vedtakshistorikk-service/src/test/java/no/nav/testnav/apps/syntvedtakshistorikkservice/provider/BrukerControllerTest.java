@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
@@ -55,11 +54,11 @@ public class BrukerControllerTest {
     public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
         when(brukerService.registrerArenaBrukereMedOppfoelging(syntetiserArenaRequestSingle)).thenReturn(oppfoelgingResponse);
 
-        ResponseEntity<Map<String, NyeBrukereResponse>> result = brukerController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
-        assertThat(result.getBody().keySet()).hasSize(1);
-        assertThat(result.getBody()).containsKey(fnr1);
-        assertThat(result.getBody().get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
-        assertThat(result.getBody().get(fnr1).getArbeidsoekerList()).hasSize(1);
+        Map<String, NyeBrukereResponse> result = brukerController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
+        assertThat(result.keySet()).hasSize(1);
+        assertThat(result).containsKey(fnr1);
+        assertThat(result.get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+        assertThat(result.get(fnr1).getArbeidsoekerList()).hasSize(1);
     }
 
     @Test
