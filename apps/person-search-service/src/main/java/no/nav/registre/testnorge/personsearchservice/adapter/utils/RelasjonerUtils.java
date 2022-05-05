@@ -42,6 +42,7 @@ public class RelasjonerUtils {
         }
     }
 
+
     private static void addBarnQuery(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
         Optional.ofNullable(search.getHarBarn())
                 .ifPresent(value -> {
