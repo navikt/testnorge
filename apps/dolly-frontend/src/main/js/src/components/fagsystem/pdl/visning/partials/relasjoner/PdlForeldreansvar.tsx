@@ -1,45 +1,44 @@
 import React from 'react'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import _capitalize from 'lodash/capitalize'
 import Formatters from '~/utils/DataFormatter'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { Foreldreansvar } from '~/components/fagsystem/pdlf/PdlTypes'
+import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
 
 type PdlForeldreansvarProps = {
 	data: Array<Foreldreansvar>
 }
 
 type VisningProps = {
-	item: Foreldreansvar
+	data: Foreldreansvar
 	idx: number
 }
 
-const PdlForeldreansvarVisning = ({ item, idx }: VisningProps) => {
+const PdlForeldreansvarVisning = ({ data, idx }: VisningProps) => {
 	return (
 		<div className="person-visning_content" key={idx}>
-			<TitleValue title="Hvem har ansvaret" value={_capitalize(item.ansvar)} />
-			<TitleValue title="Ansvarlig" value={item.ansvarlig} />
-			{item.ansvarligUtenIdentifikator && (
+			<TitleValue title="Hvem har ansvaret" value={_capitalize(data.ansvar)} />
+			<TitleValue title="Ansvarlig" value={data.ansvarlig} />
+			{data.ansvarligUtenIdentifikator && (
 				<div className="flexbox--full-width">
 					<h4 style={{ marginTop: '5px' }}>Ansvarlig uten identifikator</h4>
 					<div className="person-visning_content" key={idx}>
 						<TitleValue
 							title="Fødselsdato"
-							value={Formatters.formatDate(item.ansvarligUtenIdentifikator.foedselsdato)}
+							value={Formatters.formatDate(data.ansvarligUtenIdentifikator.foedselsdato)}
 						/>
-						<TitleValue title="Kjønn" value={item.ansvarligUtenIdentifikator.kjoenn} />
-						<TitleValue title="Fornavn" value={item.ansvarligUtenIdentifikator.navn?.fornavn} />
+						<TitleValue title="Kjønn" value={data.ansvarligUtenIdentifikator.kjoenn} />
+						<TitleValue title="Fornavn" value={data.ansvarligUtenIdentifikator.navn?.fornavn} />
 						<TitleValue
 							title="Mellomnavn"
-							value={item.ansvarligUtenIdentifikator.navn?.mellomnavn}
+							value={data.ansvarligUtenIdentifikator.navn?.mellomnavn}
 						/>
-						<TitleValue title="Etternavn" value={item.ansvarligUtenIdentifikator.navn?.etternavn} />
+						<TitleValue title="Etternavn" value={data.ansvarligUtenIdentifikator.navn?.etternavn} />
 						<TitleValue
 							title="Statsborgerskap"
-							value={item.ansvarligUtenIdentifikator.statsborgerskap}
+							value={data.ansvarligUtenIdentifikator.statsborgerskap}
 							kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						/>
 					</div>
@@ -52,18 +51,22 @@ const PdlForeldreansvarVisning = ({ item, idx }: VisningProps) => {
 export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 	if (!data || data.length === 0) return null
 
+	const gyldigeForeldreansvar = data.filter(
+		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk
+	)
+	const historiskeForeldreansvar = data.filter(
+		(foreldreansvar: Foreldreansvar) => foreldreansvar.metadata?.historisk
+	)
+
 	return (
 		<div>
 			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />
-			<div className="person-visning_content">
-				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
-						{(item: Foreldreansvar, idx: number) => (
-							<PdlForeldreansvarVisning item={item} idx={idx} />
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			</div>
+			<ArrayHistorikk
+				component={PdlForeldreansvarVisning}
+				data={gyldigeForeldreansvar}
+				historiskData={historiskeForeldreansvar}
+				header={''}
+			/>
 		</div>
 	)
 }

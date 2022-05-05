@@ -97,6 +97,7 @@ export type Foreldreansvar = {
 	ansvar: string
 	ansvarlig: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
+	metadata?: Metadata
 }
 
 export type ForeldreansvarUtenId = {
