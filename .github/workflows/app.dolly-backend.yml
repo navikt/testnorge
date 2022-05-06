@@ -42,10 +42,13 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: github.ref == 'refs/heads/master' || env.test == 'test'
-    with:
-      resource: 'apps/dolly-backend/config.dev.yml'
-      app-name: 'testnav-dolly-backend'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+    steps:
+      - run: echo NOT_FOUND=${{ inputs.resource }} >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+      if: github.ref == 'refs/heads/master' || env.NOT_FOUND == 'test'
+      with:
+        resource: 'apps/dolly-backend/config.dev.yml'
+        app-name: 'testnav-dolly-backend'
+        cluster: 'dev-fss'
+      secrets:
+        API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
