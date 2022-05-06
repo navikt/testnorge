@@ -84,7 +84,7 @@ class JobControllerTest {
         ReflectionTestUtils.setField(jobController, "miljoe", miljoe);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
-        ReflectionTestUtils.setField(jobController, "antallSkdmeldingerPerEndringskode", antallMeldingerPerEndringskode);
+        ReflectionTestUtils.setField(jobController, "antallSkdMeldingerPerEndringskode", antallMeldingerPerEndringskode);
     }
 
     @Test

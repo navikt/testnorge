@@ -28,7 +28,7 @@ consumers:
     url: dummy
 
 batch:
-  avspillergruppeId: dummy
+  avspillergruppeId: 000
   miljoe: test
   arena:
     antallNyeIdenter: 5
@@ -43,13 +43,14 @@ batch:
   sam:
     antallMeldinger: 1
   medl:
-    prosentfaktor:   0.1
+    prosentfaktor: 0.1
   frikort:
     antallNyeIdenter: 1
-  nav:
-    meldinger: {}
-  skd:
-    antallMeldingerPerEndringskode: {}
+  meldinger:
+    antallNavMeldingerPerEndringskode:
+      Z010: 1
+    antallSkdMeldingerPerEndringskode:
+      0110: 0
 
 queue.queueName: dummy
 ibm.mq.conn-name: dummy

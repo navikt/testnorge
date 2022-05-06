@@ -2,7 +2,7 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 batch:
-  avspillergruppeId: ${AVSPILLERGRUPPE}
+  avspillergruppeId: 100000445
   miljoe: q2
   arena:
     antallNyeIdenter: 1
@@ -20,9 +20,10 @@ batch:
     prosentfaktor: 0.1
   frikort:
     antallNyeIdenter: 1
-  nav:
-    meldinger: ${ANTALL_NAV_MELDINGER_PER_ENDRINGSKODE}
-  skd:
-    antallMeldingerPerEndringskode: ${ANTALL_SKD_MELDINGER_PER_ENDRINGSKODE}
+  meldinger:
+    antallNavMeldingerPerEndringskode:
+      Z010: 1
+    antallSkdMeldingerPerEndringskode:
+      0110: 0
 
 ibm.mq.user-authentication-m-q-c-s-p: false

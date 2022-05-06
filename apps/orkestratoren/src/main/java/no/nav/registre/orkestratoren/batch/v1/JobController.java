@@ -39,12 +39,6 @@ import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 @RequiredArgsConstructor
 public class JobController {
 
-    @Value("#{${batch.skd.antallMeldingerPerEndringskode}}")
-    private Map<String, Integer> antallSkdmeldingerPerEndringskode;
-
-    @Value("#{${batch.nav.meldinger}}")
-    private Map<String, Integer> antallNavmeldingerPerEndringskode;
-
     @Value("${batch.avspillergruppeId}")
     private long avspillergruppeId;
 
@@ -75,6 +69,9 @@ public class JobController {
     @Value("${batch.frikort.antallNyeIdenter}")
     private int frikortAntallNyeIdenter;
 
+    private final Map<String, Integer> antallSkdMeldingerPerEndringskode;
+    private final Map<String, Integer> antallNavMeldingerPerEndringskode;
+
     private final TestnorgeSkdService testnorgeSkdService;
     private final TestnorgeInntektService testnorgeInntektService;
     private final TestnorgeSigrunService testnorgeSigrunService;
@@ -93,7 +90,7 @@ public class JobController {
     //    @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
         try {
-            testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallSkdmeldingerPerEndringskode);
+            testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallSkdMeldingerPerEndringskode);
         } catch (HttpStatusCodeException e) {
             log.warn(e.getResponseBodyAsString(), e);
         }
@@ -107,7 +104,7 @@ public class JobController {
         var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
                 .avspillergruppeId(avspillergruppeId)
                 .miljoe(miljoe)
-                .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
+                .antallMeldingerPerEndringskode(antallNavMeldingerPerEndringskode)
                 .build();
         testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
     }
