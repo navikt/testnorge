@@ -41,6 +41,7 @@ jobs:
   deploy-dev:
     name: Deploy dev
     needs: build
+    runs-on: ubuntu-latest
     steps:
       - run: echo NOT_FOUND=${{ inputs.resource }} >> $GITHUB_ENV
       - uses: actions/checkout@v2
