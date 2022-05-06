@@ -1,6 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { subDays } from 'date-fns'
 
 export const PensjonPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -52,8 +53,8 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 					ytelser: [
 						{
 							type: 'ALDER',
-							datoInnmeldtYtelseFom: new Date().setDate(new Date().getDate() - 30),
-							datoYtelseIverksattFom: new Date().setDate(new Date().getDate() - 30),
+							datoInnmeldtYtelseFom: subDays(new Date(), 30),
+							datoYtelseIverksattFom: subDays(new Date(), 30),
 							datoYtelseIverksattTom: null,
 						}
 					],

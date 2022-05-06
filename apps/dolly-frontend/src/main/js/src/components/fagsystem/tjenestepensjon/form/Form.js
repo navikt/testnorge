@@ -6,14 +6,15 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { validation } from '~/components/fagsystem/tjenestepensjon/form/validation'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { YtelseForm } from '~/components/fagsystem/tjenestepensjon/form/partials/ytelseForm'
+import { subDays } from 'date-fns'
 
 const path = 'pensjonforvalter.tp'
 const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'
 
 const initialYtelser = {
 	type: 'ALDER',
-	datoInnmeldtYtelseFom: new Date().setDate(new Date().getDate() - 30),
-	datoYtelseIverksattFom: new Date().setDate(new Date().getDate() - 30),
+	datoInnmeldtYtelseFom: subDays(new Date(), 30),
+	datoYtelseIverksattFom: subDays(new Date(), 30),
 	datoYtelseIverksattTom: null,
 }
 
