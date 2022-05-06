@@ -27,16 +27,19 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortReque
 @RestClientTest(TestnorgeFrikortConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeFrikortConsumerTest {
+class TestnorgeFrikortConsumerTest {
+
+    @Value("${consumers.testnorge-inntekt.url}")
+    private String serverUrl;
+
+    @Autowired
+    private TestnorgeFrikortConsumer testnorgeFrikortConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
-    @Autowired
-    private TestnorgeFrikortConsumer testnorgeFrikortConsumer;
-    @Autowired
-    private MockRestServiceServer server;
-    @Value("${testnorge-frikort.rest.api.url}")
-    private String serverUrl;
     private SyntetiserFrikortRequest syntetiserFrikortRequest;
     private final int antallNyeIdenter = 2;
     private final String xml1 = "firstXml";

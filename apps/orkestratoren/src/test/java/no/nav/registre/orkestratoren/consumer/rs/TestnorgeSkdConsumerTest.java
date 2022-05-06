@@ -35,7 +35,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 @RestClientTest(TestnorgeSkdConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeSkdConsumerTest {
+class TestnorgeSkdConsumerTest {
 
     @Autowired
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
@@ -43,7 +43,7 @@ public class TestnorgeSkdConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-skd.rest.api.url}")
+    @Value("${consumers.testnorge-skd.url}")
     private String serverUrl;
 
     private final long avspillergruppeId = 10L;
@@ -70,7 +70,7 @@ public class TestnorgeSkdConsumerTest {
      * de lagrede skdmeldingene i TPSF - forventer at metoden kaller Testnorge-Skd med de rette parametrene (se stub)
      */
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubSkdConsumerStartSyntetisering(expectedUri);
 
@@ -83,7 +83,7 @@ public class TestnorgeSkdConsumerTest {
     }
 
     @Test
-    public void shouldDeleteIdenterFromAvspillergruppe() {
+    void shouldDeleteIdenterFromAvspillergruppe() {
         var expectedUri = serverUrl + "/v1/ident/{avspillergruppeId}?miljoer={miljoer}";
         stubSkdConsumerSlettIdenter(expectedUri);
 

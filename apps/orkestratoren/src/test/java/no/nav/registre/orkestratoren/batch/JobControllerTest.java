@@ -36,7 +36,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @ExtendWith(MockitoExtension.class)
-public class JobControllerTest {
+class JobControllerTest {
 
     @Mock
     private TestnorgeSkdService testnorgeSkdService;
@@ -79,9 +79,9 @@ public class JobControllerTest {
     void setUp() {
         String miljoe = "t1";
         miljoer = new ArrayList<>(Collections.singletonList(miljoe));
-        Map<Long, String> avspillergruppeIdMedMiljoe = new HashMap<>();
-        avspillergruppeIdMedMiljoe.put(avspillergruppeId, miljoe);
-        ReflectionTestUtils.setField(jobController, "avspillergruppeIdMedMiljoe", avspillergruppeIdMedMiljoe);
+
+        ReflectionTestUtils.setField(jobController, "avspillergruppeId", avspillergruppeId);
+        ReflectionTestUtils.setField(jobController, "miljoe", miljoe);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallSkdmeldingerPerEndringskode", antallMeldingerPerEndringskode);

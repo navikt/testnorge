@@ -30,16 +30,19 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 @RestClientTest(TestnorgeSamConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeSamConsumerTest {
+class TestnorgeSamConsumerTest {
+
+    @Value("${consumers.testnorge-sam.url}")
+    private String serverUrl;
+
+    @Autowired
+    private TestnorgeSamConsumer testnorgeSamConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
-    @Autowired
-    private TestnorgeSamConsumer testnorgeSamConsumer;
-    @Autowired
-    private MockRestServiceServer server;
-    @Value("${testnorge-sam.rest.api.url}")
-    private String serverUrl;
     private List<String> fnrs;
     private SyntetiserSamRequest syntetiserSamRequest;
     private final String fnr1 = "01010101010";
@@ -53,7 +56,7 @@ public class TestnorgeSamConsumerTest {
     }
 
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubSamSyntConsumer(expectedUri);
 

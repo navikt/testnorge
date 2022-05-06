@@ -30,7 +30,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 @RestClientTest(TestnorgeNavEndringsmeldingerConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeNavEndringsmeldingerConsumerTest {
+class TestnorgeNavEndringsmeldingerConsumerTest {
 
     @Autowired
     private TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
@@ -38,7 +38,7 @@ public class TestnorgeNavEndringsmeldingerConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-nav-endringsmeldinger.rest.api.url}")
+    @Value("${consumers.testnorge-nav-endringsmeldinger.url}")
     private String serverUrl;
 
     private final long gruppeId = 10L;
@@ -59,7 +59,7 @@ public class TestnorgeNavEndringsmeldingerConsumerTest {
     }
 
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubNavSyntConsumer(expectedUri);
 

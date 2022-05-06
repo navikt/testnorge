@@ -18,8 +18,7 @@ import java.util.*;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @ExtendWith(MockitoExtension.class)
-
-public class TestnorgeArenaServiceTest {
+class TestnorgeArenaServiceTest {
 
     @Mock
     private SyntVedtakshistorikkServiceConsumer syntVedtakshistorikkServiceConsumer;
@@ -33,7 +32,7 @@ public class TestnorgeArenaServiceTest {
     private final String fnr2 = "02020202020";
 
     @Test
-    public void shouldOppretteArbeidssokereMedOppfoelgingIArena() {
+    void shouldOppretteArbeidssokereMedOppfoelgingIArena() {
         var syntetiserArenaRequest = new SyntetiserArenaRequest(miljoe, antallNyeIdenter);
         Map<String, NyeBrukereResponse> expectedResponse = new HashMap<>();
         expectedResponse.put(fnr1, NyeBrukereResponse.builder().build() );
@@ -43,9 +42,7 @@ public class TestnorgeArenaServiceTest {
 
         var response = testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
 
-        assertThat(response).hasSize(2);
-        assertThat(response).containsKey(fnr1);
-        assertThat(response).containsKey(fnr2);
+        assertThat(response).hasSize(2).containsKey(fnr1).containsKey(fnr2);
         verify(syntVedtakshistorikkServiceConsumer).opprettArbeidsoekereMedOppfoelging(syntetiserArenaRequest);
     }
 }
