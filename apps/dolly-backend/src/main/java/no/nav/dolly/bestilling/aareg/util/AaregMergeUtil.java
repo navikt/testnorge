@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -32,7 +31,7 @@ public class AaregMergeUtil {
 
         List<Arbeidsforhold> arbeidsforhold = nyeArbeidsforhold.stream()
                 .filter(arbForhold -> !alreadyExisting(arbForhold, eksisterendeArbeidsforhold))
-                .collect(Collectors.toList());
+                .toList();
 
         return appendIds(arbeidsforhold, eksisterendeArbeidsforhold, ident);
     }
