@@ -8,7 +8,9 @@ import no.nav.registre.testnorge.personsearchservice.adapter.model.NavnModel;
 import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
 import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.NavnDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class IdentdataMappingStrategy implements MappingStrategy {
 
     @Override
