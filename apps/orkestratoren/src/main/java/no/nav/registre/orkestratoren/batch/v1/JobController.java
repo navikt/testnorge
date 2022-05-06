@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -25,7 +24,6 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -59,9 +57,6 @@ public class JobController {
     @Value("${instbatch.antallNyeIdenter}")
     private int instbatchAntallNyeIdenter;
 
-    @Value("${bisysbatch.antallNyeIdenter}")
-    private int bisysbatchAntallNyeIdenter;
-
     @Value("${tpbatch.antallPersoner}")
     private int tpAntallPersoner;
 
@@ -93,9 +88,6 @@ public class JobController {
     private TestnorgeInstService testnorgeInstService;
 
     @Autowired
-    private TestnorgeBisysService testnorgeBisysService;
-
-    @Autowired
     private TestnorgeTpService testnorgeTpService;
 
     @Autowired
@@ -110,7 +102,11 @@ public class JobController {
     @Autowired
     private TestnorgeFrikortService testnorgeFrikortService;
 
-    @Scheduled(cron = "0 0 0 * * *")
+
+    /**
+     * Feil i innsending av TPS-meldinger må fikses før denne eventuelt kan startes igjen
+     */
+    //    @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
             try {
@@ -121,17 +117,19 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    /**
+     * Feil i innsending av nav-endringmeldinger-meldinger må fikses før denne eventuelt kan startes igjen
+     */
+//    @Scheduled(cron = "0 0 0 * * *")
     public void navSyntBatch() {
-        log.info("Nav-endringsmeldinger batch midlertidig stanset.");
-//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-//            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
-//                    .avspillergruppeId(entry.getKey())
-//                    .miljoe(entry.getValue())
-//                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
-//                    .build();
-//            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
-//        }
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
+                    .avspillergruppeId(entry.getKey())
+                    .miljoe(entry.getValue())
+                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
+                    .build();
+            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
+        }
     }
 
     @Scheduled(cron = "0 0 1 1 * *")
@@ -168,14 +166,6 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
-    public void bisysSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserBisysRequest = new SyntetiserBisysRequest(entry.getKey(), entry.getValue(), bisysbatchAntallNyeIdenter);
-            testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
-        }
-    }
-
     @Scheduled(cron = "0 0 0 1 5 *")
     public void tpSyntBatch() {
         for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
@@ -201,8 +191,8 @@ public class JobController {
      */
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            log.info("Innsending til Arena er midlertidig stanset");
+        log.info("Innsending til Arena er midlertidig stanset pga prod-setting i Arena");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
 //            testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
 //                    .avspillergruppeId(entry.getKey())
 //                    .miljoe(entry.getValue())
@@ -214,7 +204,7 @@ public class JobController {
 //                    .miljoe(entry.getValue())
 //                    .antallNyeIdenter(1)
 //                    .build(), true);
-        }
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")

@@ -7,7 +7,6 @@ import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.ArenaForvalterConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.KodeMedSannsynlighet;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils;
@@ -39,8 +38,6 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoU
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.vedtakOverlapperIkkeVedtaksperioder;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getVedtakperioderForAapSekvenser;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.VedtakUtils.getTiltakSekvenser;
-
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getFinnTiltakRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTilleggsytelseRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTiltaksdeltakelseRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getRettighetTiltakspengerRequest;
@@ -56,7 +53,6 @@ public class ArenaTiltakService {
     private final Random rand = new Random();
     private final ServiceUtils serviceUtils;
     private final RequestUtils requestUtils;
-    private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final ArenaForvalterService arenaForvalterService;
 
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
@@ -113,7 +109,7 @@ public class ArenaTiltakService {
                 deltakelse.setTiltakYtelse("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
-                var tiltak = finnTiltak(personident, miljoe, deltakelse);
+                var tiltak = arenaForvalterService.finnTiltak(personident, miljoe, deltakelse);
 
                 if (nonNull(tiltak)) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
@@ -131,17 +127,6 @@ public class ArenaTiltakService {
             nyeTiltaksdeltakelser = removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
             historikk.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
-        }
-    }
-
-
-    private NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
-        var response = arenaForvalterConsumer.finnTiltak(getFinnTiltakRequest(personident, miljoe, tiltaksdeltakelse));
-        if (nonNull(response) && !response.getNyeRettigheterTiltak().isEmpty()) {
-            return response.getNyeRettigheterTiltak().get(0);
-        } else {
-            log.info("Fant ikke tiltak for tiltakdeltakelse.");
-            return null;
         }
     }
 
@@ -270,6 +255,9 @@ public class ArenaTiltakService {
     ) {
         if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
             return vedtaksliste;
+        }
+        if (isNull(tiltaksdeltakelser) || tiltaksdeltakelser.isEmpty()) {
+            return Collections.emptyList();
         }
 
         var deltakelser = tiltaksdeltakelser.stream()

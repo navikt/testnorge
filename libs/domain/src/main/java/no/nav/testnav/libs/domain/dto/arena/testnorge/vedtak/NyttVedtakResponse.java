@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+import static java.util.Objects.isNull;
+
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,4 +42,32 @@ public class NyttVedtakResponse {
             "nyeFinntiltakFeilList"
     })
     private List<NyttVedtakFeil> feiledeRettigheter;
+
+    public List<NyttVedtakAap> getNyeRettigheterAap() {
+        if (isNull(nyeRettigheterAap)){
+            nyeRettigheterAap = new ArrayList<>();
+        }
+        return nyeRettigheterAap;
+    }
+
+    public List<NyttVedtakTiltak> getNyeRettigheterTiltak() {
+        if (isNull(nyeRettigheterTiltak)){
+            nyeRettigheterTiltak = new ArrayList<>();
+        }
+        return nyeRettigheterTiltak;
+    }
+
+    public List<NyttVedtakTillegg> getNyeRettigheterTillegg() {
+        if (isNull(nyeRettigheterTillegg)){
+            nyeRettigheterTillegg = new ArrayList<>();
+        }
+        return nyeRettigheterTillegg;
+    }
+
+    public List<NyttVedtakFeil> getFeiledeRettigheter() {
+        if (isNull(feiledeRettigheter)){
+            feiledeRettigheter = new ArrayList<>();
+        }
+        return feiledeRettigheter;
+    }
 }

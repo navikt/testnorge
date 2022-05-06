@@ -9,7 +9,6 @@ spring:
 
 testnorge-aareg.rest.api.url: https://testnorge-aareg.nais.preprod.local/api
 testnorge-arena.rest.api.url: https://testnorge-arena.nais.preprod.local/api
-testnorge-bisys.rest.api.url: https://testnorge-bisys.nais.preprod.local/api
 testnorge-frikort.rest.api.url: https://testnorge-frikort.nais.preprod.local/api
 testnorge-hodejegeren.rest.api.url: https://testnorge-hodejegeren.nais.preprod.local/api
 testnorge-inntekt.rest.api.url: https://testnorge-inntekt.nais.preprod.local/api

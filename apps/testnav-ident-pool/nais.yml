@@ -46,6 +46,8 @@ spec:
           cluster: dev-gcp
         - application: testnorge-skd
           cluster: dev-fss
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: app-1
@@ -61,3 +63,5 @@ spec:
         name: testnav-identpool
         databases:
           - name: testnav-identpool
+        tier: db-custom-1-3840
+        autoBackupTime: "02:00"

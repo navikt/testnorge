@@ -7,7 +7,6 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsResp
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -19,7 +18,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeBisysService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -61,9 +59,6 @@ public class SyntetiseringsController {
 
     @Autowired
     private TestnorgeInstService testnorgeInstService;
-
-    @Autowired
-    private TestnorgeBisysService testnorgeBisysService;
 
     @Autowired
     private TestnorgeTpService testnorgeTpService;
@@ -125,13 +120,6 @@ public class SyntetiseringsController {
             @RequestBody SyntetiserInstRequest syntetiserInstRequest
     ) {
         return testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
-    }
-
-    @PostMapping(value = "/bisys/bistandsmeldinger/generer")
-    public Object opprettBistandsmeldingerIBisys(
-            @RequestBody SyntetiserBisysRequest syntetiserBisysRequest
-    ) {
-        return testnorgeBisysService.genererBistandsmeldinger(syntetiserBisysRequest);
     }
 
     @PostMapping(value = "/tp/ytelser/generer")
