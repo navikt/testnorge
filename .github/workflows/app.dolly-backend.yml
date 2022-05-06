@@ -39,7 +39,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' || contains(github.event.head_commit.message, '#deploy-backend-dev')}}
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'

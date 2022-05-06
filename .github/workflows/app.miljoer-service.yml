@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/oppdatere_miljoer'}}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/oppdatere_miljoer'  || contains(github.event.head_commit.message, '#deploy-miljoer-service-dev')}}
     with:
       resource: 'apps/miljoer-service/config.yml'
       app-name: 'miljoer-service'
