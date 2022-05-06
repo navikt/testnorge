@@ -6,7 +6,6 @@ rootProject.name = 'orkestratoren'
 
 includeBuild '../../libs/commands'
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/data-transfer-objects'
