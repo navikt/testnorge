@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @AllArgsConstructor
-public class OpprettVedtakshistorikkCommand implements Callable<Mono<Map<String, List<NyttVedtakResponse>>>> {
+public class OpprettVedtakshistorikkCommand implements Callable<Map<String, List<NyttVedtakResponse>>> {
 
     private static final ParameterizedTypeReference<Map<String, List<NyttVedtakResponse>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
@@ -24,7 +24,7 @@ public class OpprettVedtakshistorikkCommand implements Callable<Mono<Map<String,
     private final WebClient webClient;
 
     @Override
-    public Mono<Map<String, List<NyttVedtakResponse>>> call() {
+    public Map<String, List<NyttVedtakResponse>> call() {
         return webClient.post()
                 .uri(builder ->
                         builder.path("/api/v1/generer/vedtakshistorikk")
@@ -34,6 +34,7 @@ public class OpprettVedtakshistorikkCommand implements Callable<Mono<Map<String,
                 .header("Authorization", "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(RESPONSE_TYPE);
+                .bodyToMono(RESPONSE_TYPE)
+                .block();
     }
 }

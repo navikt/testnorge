@@ -47,9 +47,11 @@ public class SyntVedtakshistorikkServiceConsumer {
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         try{
-            return tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call())
-                    .block();
+            var accessToken = tokenExchange.exchange(serviceProperties).block();
+            return new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call();
+//            return tokenExchange.exchange(serviceProperties)
+//                    .flatMap(accessToken -> new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call())
+//                    .block();
         }catch (Exception e) {
             throw new ArenaSyntetiseringException("Feil under opprettelse av bruker i Arena.");
         }
@@ -61,9 +63,11 @@ public class SyntVedtakshistorikkServiceConsumer {
     ) {
         if (nonNull(request)){
             try {
-                var response = tokenExchange.exchange(serviceProperties)
-                        .flatMap(accessToken -> new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call())
-                        .block();
+                var accessToken = tokenExchange.exchange(serviceProperties).block();
+                var response = new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call();
+//                var response = tokenExchange.exchange(serviceProperties)
+//                        .flatMap(accessToken -> new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call())
+//                        .block();
 
                 List<NyttVedtakResponse> alleOpprettedeRettigheter = new ArrayList<>();
                 if (nonNull(response)) {

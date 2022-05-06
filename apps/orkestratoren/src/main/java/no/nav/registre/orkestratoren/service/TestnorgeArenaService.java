@@ -1,6 +1,5 @@
 package no.nav.registre.orkestratoren.service;
 
-import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.SyntVedtakshistorikkServiceConsumer;

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @AllArgsConstructor
-public class OpprettArbeissoekerCommand  implements Callable<Mono<Map<String, NyeBrukereResponse>>> {
+public class OpprettArbeissoekerCommand  implements Callable<Map<String, NyeBrukereResponse>> {
 
     private final SyntetiserArenaRequest request;
     private final String token;
@@ -23,7 +23,7 @@ public class OpprettArbeissoekerCommand  implements Callable<Mono<Map<String, Ny
     };
 
     @Override
-    public Mono<Map<String, NyeBrukereResponse>> call() {
+    public Map<String, NyeBrukereResponse> call() {
         return webClient.post()
                 .uri(builder ->
                         builder.path("/api/v1/generer/bruker/oppfoelging")
@@ -33,7 +33,8 @@ public class OpprettArbeissoekerCommand  implements Callable<Mono<Map<String, Ny
                 .header("Authorization", "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(RESPONSE_TYPE);
+                .bodyToMono(RESPONSE_TYPE)
+                .block();
     }
 
 }
