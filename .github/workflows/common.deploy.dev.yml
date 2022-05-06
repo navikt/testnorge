@@ -21,7 +21,7 @@ jobs:
   deploy:
     name: Deploy ${{ inputs.app-name }} to ${{ inputs.cluster }}
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
+#    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
     steps:
       - uses: actions/checkout@v2
       - run: inputs.resource
