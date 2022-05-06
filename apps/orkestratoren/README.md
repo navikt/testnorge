@@ -12,7 +12,7 @@ Orkestratoren er applikasjonen som orkestrerer opprettelse av syntetiske hendels
 Swagger finnes under [/swagger](https://orkestratoren.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Ha naisedevice kjørende og kjør ApplicationStarter med følgende argumenter:
+Ha naisedevice kjørende og kjør OrkestratorenApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[copy token fra vault]
 -Dspring.profiles.active=dev

@@ -27,7 +27,7 @@ import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 })
 public class AppConfig {
 
-    @Value("${testnorge-hodejegeren.rest.api.url}")
+    @Value("${consumers.testnorge-hodejegeren.url}")
     private String hodejegerenUrl;
 
     @Bean
