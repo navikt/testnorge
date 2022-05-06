@@ -24,15 +24,6 @@ jobs:
       app-name: 'testnav-dolly-backend'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  print-inputs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print the input resource to STDOUT
-        with:
-          resource: 'apps/dolly-backend/config.dev.yml'
-        uses: actions/checkout@v2
-      - run: echo The input resource is ${{ inputs }}
-      - run: echo The secrets resource is ${{ secrets }}
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
