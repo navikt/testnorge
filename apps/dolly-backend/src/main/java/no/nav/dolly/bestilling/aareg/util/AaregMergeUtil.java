@@ -56,7 +56,7 @@ public class AaregMergeUtil {
     private static boolean isEqualOrgnummer(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
         return "ORG".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType().name().toUpperCase().equals(Aktoer.ORGANISASJON.name()) &&
+                eksisterende.getArbeidsgiver().getType() == Aktoer.ORGANISASJON &&
                 ((RsOrganisasjon) nytt.getArbeidsgiver()).getOrgnummer()
                         .equals(eksisterende.getArbeidsgiver().getOrganisasjonsnummer());
     }
