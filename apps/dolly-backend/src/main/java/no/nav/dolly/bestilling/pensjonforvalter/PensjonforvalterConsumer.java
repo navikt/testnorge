@@ -188,7 +188,7 @@ public class PensjonforvalterConsumer {
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i pensjon-testdata-facade", lagreTpForholdRequest.getFnr()));
+            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
         }
 
         return response.getBody();
@@ -215,7 +215,7 @@ public class PensjonforvalterConsumer {
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra pensjon-testdata-facade", ident, miljoe));
+            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra TP (pensjon)", ident, miljoe));
         }
 
         return response.getBody();
@@ -241,7 +241,7 @@ public class PensjonforvalterConsumer {
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP ytelse for %s i pensjon-testdata-facade", lagreTpYtelseRequest.getFnr()));
+            throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
         }
 
         return response.getBody();
