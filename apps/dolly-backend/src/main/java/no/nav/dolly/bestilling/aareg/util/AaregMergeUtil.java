@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -31,26 +30,26 @@ public class AaregMergeUtil {
         }
 
         List<Arbeidsforhold> arbeidsforhold = nyeArbeidsforhold.stream()
-                .filter(arbforhold -> eksisterendeArbeidsforhold.stream()
-                        .noneMatch(arbforhold2 ->
-                                isEqual(arbforhold, arbforhold2)))
-                .collect(Collectors.toList());
+                .filter(arbForhold -> !alreadyExisting(arbForhold, eksisterendeArbeidsforhold))
+                .toList();
 
         return appendIds(arbeidsforhold, eksisterendeArbeidsforhold, ident);
     }
 
-    private static boolean isEqual(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
+    private static boolean alreadyExisting(Arbeidsforhold nytt, List<ArbeidsforholdResponse> eksisterendeListe) {
 
-        return (isEqualOrgnummer(nytt, eksisterende) || isEqualPersonnr(nytt, eksisterende)) &&
-                isEqualArbeidsAvtale(nytt, eksisterende);
+        return eksisterendeListe.stream().anyMatch(eksisterende ->
+                (isEqualOrgnummer(nytt, eksisterende) || isEqualPersonnr(nytt, eksisterende))
+                        && isEqualArbeidsAvtale(nytt, eksisterende));
     }
 
     private static boolean isEqualArbeidsAvtale(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
-        return eksisterende.getArbeidsavtaler().stream().anyMatch(arbeidsavtale ->
-                arbeidsavtale.getYrke().equals(nytt.getArbeidsavtale().getYrke()) &&
-                        arbeidsavtale.getArbeidstidsordning().equals(nytt.getArbeidsavtale().getArbeidstidsordning())
-        );
+        return eksisterende.getArbeidsavtaler().stream()
+                .filter(arbeidsavtale -> nonNull(arbeidsavtale.getYrke()))
+                .anyMatch(arbeidsavtale ->
+                        arbeidsavtale.getYrke().equals(nytt.getArbeidsavtale().getYrke())
+                );
     }
 
     private static boolean isEqualOrgnummer(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
