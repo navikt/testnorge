@@ -14,19 +14,27 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @Profile({"prod", "local"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable().and().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    public void configure(HttpSecurity http) throws Exception {
+        http
+                .httpBasic()
                 .and()
-                .csrf()
-                .disable()
-                .authorizeRequests()
-                .antMatchers("/api/**")
-                .fullyAuthenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+                .csrf().disable()
+                .formLogin().disable();
     }
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.headers().frameOptions().disable().and().sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .csrf()
+//                .disable()
+//                .authorizeRequests()
+//                .antMatchers("/api/**")
+//                .fullyAuthenticated()
+//                .and()
+//                .oauth2ResourceServer()
+//                .jwt();
+//    }
 }
