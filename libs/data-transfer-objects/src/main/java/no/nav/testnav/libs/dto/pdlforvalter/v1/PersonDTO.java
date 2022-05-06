@@ -13,8 +13,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
 import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 
 @Data
 @Builder
@@ -24,6 +28,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusD
 public class PersonDTO implements Serializable {
 
     private String ident;
+    private Identtype identtype;
 
     private List<NavnDTO> navn;
     private List<FoedselDTO> foedsel;
@@ -250,5 +255,16 @@ public class PersonDTO implements Serializable {
                         .status(FOEDSELSREGISTRERT)
                         .build())
                 .getStatus());
+    }
+
+    public Identtype getIdenttype() {
+
+        if (parseInt(ident.substring(2, 3)) % 4 >= 2) {
+            return NPID;
+        } else if (parseInt(ident.substring(0, 1)) >= 4) {
+            return DNR;
+        } else {
+            return FNR;
+        }
     }
 }
