@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TestnorgeArenaService {
+public class ArenaService {
 
     private final SyntVedtakshistorikkServiceConsumer syntVedtakshistorikkServiceConsumer;
 
@@ -24,11 +23,8 @@ public class TestnorgeArenaService {
         return syntVedtakshistorikkServiceConsumer.opprettArbeidsoekereMedOppfoelging(arenaRequest);
     }
 
-    public Map<String, List<NyttVedtakResponse>> opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest) {
-        return syntVedtakshistorikkServiceConsumer.opprettVedtakshistorikk(SyntetiserArenaRequest.builder()
-                .miljoe(vedtakshistorikkRequest.getMiljoe())
-                .antallNyeIdenter(vedtakshistorikkRequest.getAntallVedtakshistorikker())
-                .build());
+    public Map<String, List<NyttVedtakResponse>> opprettArenaVedtakshistorikk(SyntetiserArenaRequest vedtakshistorikkRequest) {
+        return syntVedtakshistorikkServiceConsumer.opprettVedtakshistorikk(vedtakshistorikkRequest);
     }
 
 }

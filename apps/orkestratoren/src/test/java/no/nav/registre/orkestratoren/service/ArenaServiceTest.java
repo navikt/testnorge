@@ -18,13 +18,13 @@ import java.util.*;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
 @ExtendWith(MockitoExtension.class)
-class TestnorgeArenaServiceTest {
+class ArenaServiceTest {
 
     @Mock
     private SyntVedtakshistorikkServiceConsumer syntVedtakshistorikkServiceConsumer;
 
     @InjectMocks
-    private TestnorgeArenaService testnorgeArenaService;
+    private ArenaService arenaService;
 
     private final String miljoe = "t1";
     private final int antallNyeIdenter = 2;
@@ -40,7 +40,7 @@ class TestnorgeArenaServiceTest {
 
         when(syntVedtakshistorikkServiceConsumer.opprettArbeidsoekereMedOppfoelging(syntetiserArenaRequest)).thenReturn(expectedResponse);
 
-        var response = testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
+        var response = arenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
 
         assertThat(response).hasSize(2).containsKey(fnr1).containsKey(fnr2);
         verify(syntVedtakshistorikkServiceConsumer).opprettArbeidsoekereMedOppfoelging(syntetiserArenaRequest);

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -23,7 +22,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
+import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -83,7 +82,7 @@ public class JobController {
     private final TestnorgeInstService testnorgeInstService;
     private final TestnorgeTpService testnorgeTpService;
     private final TestnorgeSamService testnorgeSamService;
-    private final TestnorgeArenaService testnorgeArenaService;
+    private final ArenaService arenaService;
     private final TestnorgeMedlService testnorgeMedlService;
     private final TestnorgeFrikortService testnorgeFrikortService;
 
@@ -160,11 +159,11 @@ public class JobController {
      */
     @Scheduled(cron = "0 0 0-23 * * *")
     public void arenaSyntBatch() {
-        testnorgeArenaService.opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest.builder()
+        arenaService.opprettArenaVedtakshistorikk(SyntetiserArenaRequest.builder()
                 .miljoe(miljoe)
-                .antallVedtakshistorikker(arenaAntallNyeIdenter)
+                .antallNyeIdenter(arenaAntallNyeIdenter)
                 .build());
-        testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(SyntetiserArenaRequest.builder()
+        arenaService.opprettArbeidssoekereMedOppfoelgingIArena(SyntetiserArenaRequest.builder()
                 .miljoe(miljoe)
                 .antallNyeIdenter(1)
                 .build());

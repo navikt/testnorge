@@ -25,7 +25,7 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
+import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -60,7 +60,7 @@ class JobControllerTest {
     private TestnorgeSamService testnorgeSamService;
 
     @Mock
-    private TestnorgeArenaService testnorgeArenaService;
+    private ArenaService arenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;

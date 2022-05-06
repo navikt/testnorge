@@ -7,7 +7,6 @@ import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageRespon
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -18,7 +17,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
+import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -55,7 +54,7 @@ public class SyntetiseringsController {
     private final TestnorgeInstService testnorgeInstService;
     private final TestnorgeTpService testnorgeTpService;
     private final TestnorgeSamService testnorgeSamService;
-    private final TestnorgeArenaService testnorgeArenaService;
+    private final ArenaService arenaService;
     private final TestnorgeMedlService testnorgeMedlService;
     private final TestnorgeFrikortService testnorgeFrikortService;
 
@@ -124,14 +123,14 @@ public class SyntetiseringsController {
     public Map<String, NyeBrukereResponse> opprettArbeidssoekereMedOppfoelgingIArena(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return testnorgeArenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
+        return arenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")
     public Map<String, List<NyttVedtakResponse>> opprettVedtakshistorikkIArena(
-            @RequestBody SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest
+            @RequestBody SyntetiserArenaRequest vedtakshistorikkRequest
     ) {
-        return testnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
+        return arenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")

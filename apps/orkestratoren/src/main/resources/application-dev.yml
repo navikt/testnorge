@@ -5,7 +5,7 @@ batch:
   avspillergruppeId: ${AVSPILLERGRUPPE}
   miljoe: q2
   arena:
-    antallNyeIdenter: 5
+    antallNyeIdenter: 1
   popp:
     antallNyeIdenter: 1
   aareg:
