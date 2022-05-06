@@ -18,11 +18,6 @@ env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
 
 jobs:
-  print-inputs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print the input resource to STDOUT
-        run: echo The input resource is ${{ inputs.resources }}
   deploy:
     name: Deploy ${{ inputs.app-name }} to ${{ inputs.cluster }}
     runs-on: ubuntu-latest
