@@ -7,9 +7,6 @@ on:
       - libs/data-transfer-objects/**
       - .github/workflows/app.dolly-backend.yml
 
-env:
-  DEPLOY_DEV_BRANCH: bugfix/aareg-gjenopprett-duplicates
-
 jobs:
   scan:
     name: Scan
@@ -40,6 +37,8 @@ jobs:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
     name: Deploy dev
+    env:
+      DEPLOY_DEV_BRANCH: bugfix/aareg-gjenopprett-duplicates
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
     if: ${{ github.ref == 'refs/heads/master' || github.ref_name == env.DEPLOY_DEV_BRANCH }}
