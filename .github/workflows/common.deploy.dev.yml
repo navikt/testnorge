@@ -24,7 +24,7 @@ jobs:
 #    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
     steps:
       - uses: actions/checkout@v2
-      - run: inputs.resource
+      - run: echo ${{ inputs.resource }}
       - uses: styfle/cancel-workflow-action@0.9.1
         with:
           access_token: ${{ github.token }}
