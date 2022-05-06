@@ -64,7 +64,7 @@ public class AaregMergeUtil {
     private static boolean isEqualPersonnr(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
         return "PERS".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType().name().toUpperCase().equals(Aktoer.PERSON.name()) &&
+                eksisterende.getArbeidsgiver().getType() == Aktoer.PERSON &&
                 ((RsAktoerPerson) nytt.getArbeidsgiver()).getIdent()
                         .equals(eksisterende.getArbeidsgiver().getOffentligIdent());
     }
