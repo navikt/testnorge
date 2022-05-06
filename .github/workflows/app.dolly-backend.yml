@@ -1,5 +1,8 @@
 name: App dolly-backend
 
+env:
+  DEPLOY_DEV_BRANCH: bugfix/aareg-gjenopprett-duplicates
+
 on:
   push:
     paths:
@@ -37,14 +40,14 @@ jobs:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
     name: Deploy dev
-    env:
-      DEPLOY_DEV_BRANCH: bugfix/aareg-gjenopprett-duplicates
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref_name == env.DEPLOY_DEV_BRANCH }}
-    with:
-      resource: 'apps/dolly-backend/config.dev.yml'
-      app-name: 'testnav-dolly-backend'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+    steps:
+      - name: "Deploy to dev"
+      if: ${{ github.ref == 'refs/heads/master' || github.ref_name == env.DEPLOY_DEV_BRANCH }}
+      with:
+        resource: 'apps/dolly-backend/config.dev.yml'
+        app-name: 'testnav-dolly-backend'
+        cluster: 'dev-fss'
+      secrets:
+        API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
