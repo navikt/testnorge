@@ -39,11 +39,10 @@ jobs:
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
-    name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
     steps:
-      - name: "Deploy to dev"
+      name: Deploy to dev
+      needs: build
       if: ${{ github.ref == 'refs/heads/master' || github.ref_name == env.DEPLOY_DEV_BRANCH }}
       with:
         resource: 'apps/dolly-backend/config.dev.yml'
