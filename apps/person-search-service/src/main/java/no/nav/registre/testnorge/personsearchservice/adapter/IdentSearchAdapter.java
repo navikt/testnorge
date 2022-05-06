@@ -129,7 +129,7 @@ public class IdentSearchAdapter {
         int page = search.getPage();
         int pageSize = search.getPageSize();
         searchSourceBuilder.from((page - 1) * pageSize);
-        searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.SECONDS));
+        searchSourceBuilder.timeout(new TimeValue(1, TimeUnit.SECONDS));
         searchSourceBuilder.size(pageSize);
         searchSourceBuilder.query(queryBuilder);
         Optional.ofNullable(search.getTerminateAfter())
