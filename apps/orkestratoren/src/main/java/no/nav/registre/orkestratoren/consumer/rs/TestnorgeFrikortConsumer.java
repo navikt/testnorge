@@ -23,7 +23,7 @@ public class TestnorgeFrikortConsumer {
 
     public TestnorgeFrikortConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-frikort.rest.api.url}") String frikortServerUrl
+            @Value("${consumers.testnorge-frikort.url}") String frikortServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(frikortServerUrl + "/v1/syntetisering/generer?leggPaaKoe=true");

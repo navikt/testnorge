@@ -28,7 +28,7 @@ public class TestnorgeAaregConsumer {
 
     public TestnorgeAaregConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-aareg.rest.api.url}") String aaregServerUrl
+            @Value("${consumers.testnorge-aareg.url}") String aaregServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/generer?sendAlleEksisterende={sendAlleEksisterende}");

@@ -7,21 +7,31 @@ spring:
     name: orkestratoren
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
 
-testnorge-aareg.rest.api.url: https://testnorge-aareg.nais.preprod.local/api
-testnorge-frikort.rest.api.url: https://testnorge-frikort.nais.preprod.local/api
-testnorge-hodejegeren.rest.api.url: https://testnorge-hodejegeren.nais.preprod.local/api
-testnorge-inntekt.rest.api.url: https://testnorge-inntekt.nais.preprod.local/api
-testnorge-inst.rest.api.url: https://testnorge-inst.nais.preprod.local/api
-testnorge-medl.rest.api.url: https://testnorge-medl.nais.preprod.local/api
-testnorge-nav-endringsmeldinger.rest.api.url: https://testnorge-nav-endringsmeldinger.nais.preprod.local/api
-testnorge-sam.rest.api.url: https://testnorge-sam.nais.preprod.local/api
-testnorge-sigrun.rest.api.url: https://testnorge-sigrun.nais.preprod.local/api
-testnorge-skd.rest.api.url: https://testnorge-skd.nais.preprod.local/api
-testnorge-tp.rest.api.url: https://testnorge-tp.nais.preprod.local/api
-
 consumers:
   synt-vedtakshistorikk-service:
     url: https://testnav-synt-vedtakshistorikk-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-synt-vedtakshistorikk-service
+  testnorge-aareg:
+    url: https://testnorge-aareg.nais.preprod.local/api
+  testnorge-frikort:
+    url: https://testnorge-frikort.nais.preprod.local/api
+  testnorge-hodejegeren:
+    url: https://testnorge-hodejegeren.nais.preprod.local/api
+  testnorge-inntekt:
+    url: https://testnorge-inntekt.nais.preprod.local/api
+  testnorge-inst:
+    url: https://testnorge-inst.nais.preprod.local/api
+  testnorge-medl:
+    url: https://testnorge-medl.nais.preprod.local/api
+  testnorge-nav-endringsmeldinger:
+    url: https://testnorge-nav-endringsmeldinger.nais.preprod.local/api
+  testnorge-sam:
+    url: https://testnorge-sam.nais.preprod.local/api
+  testnorge-sigrun:
+    url: https://testnorge-sigrun.nais.preprod.local/api
+  testnorge-skd:
+    url: https://testnorge-skd.nais.preprod.local/api
+  testnorge-tp:
+    url: https://testnorge-tp.nais.preprod.local/api

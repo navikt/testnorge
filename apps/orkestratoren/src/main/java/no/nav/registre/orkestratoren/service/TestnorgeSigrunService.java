@@ -1,21 +1,21 @@
 package no.nav.registre.orkestratoren.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class TestnorgeSigrunService {
 
-    @Autowired
-    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
+    private final TestnorgeSigrunConsumer testnorgeSigrunConsumer;
 
     public ResponseEntity<List<Integer>> genererSkattegrunnlag(SyntetiserPoppRequest syntetiserPoppRequest, String testdataEier) {
         var response = testnorgeSigrunConsumer.startSyntetisering(syntetiserPoppRequest, testdataEier);

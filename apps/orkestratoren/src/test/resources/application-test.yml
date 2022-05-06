@@ -4,18 +4,28 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: dummy
-
-testnorge-aareg.rest.api.url: dummy
-testnorge-frikort.rest.api.url: dummy
-testnorge-hodejegeren.rest.api.url: dummy
-testnorge-inntekt.rest.api.url: dummy
-testnorge-inst.rest.api.url: dummy
-testnorge-medl.rest.api.url: dummy
-testnorge-nav-endringsmeldinger.rest.api.url: dummy
-testnorge-sam.rest.api.url: dummy
-testnorge-sigrun.rest.api.url: dummy
-testnorge-skd.rest.api.url: http://localhost:${wiremock.server.port:0}/skd/api
-testnorge-tp.rest.api.url: dummy
+  testnorge-aareg:
+    url: dummy
+  testnorge-frikort:
+    url: dummy
+  testnorge-hodejegeren:
+    url: dummy
+  testnorge-inntekt:
+    url: dummy
+  testnorge-inst:
+    url: dummy
+  testnorge-medl:
+    url: dummy
+  testnorge-nav-endringemeldinger:
+    url: dummy
+  testnorge-sam:
+    url: dummy
+  testnorge-sigrun:
+    url: dummy
+  testnorge-skd:
+    url: http://localhost:${wiremock.server.port:0}/skd/api
+  testnorge-tp:
+    url: dummy
 
 batch:
   avspillergruppeId: dummy
