@@ -116,12 +116,20 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				} else {
 					setReset(false)
 				}
-				for (const [key, value] of Object.entries(values)) {
-					if (value === '') {
-						values[key] = undefined
+				const emptyableFields = Object.entries(fields).filter(
+					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2
+				)
+				for (const [key, val] of emptyableFields) {
+					if (!values[key] && key !== 'tilleggsinformasjonstype') {
+						values[key] = '<TOM>'
 					}
 				}
 				InntektstubService.validate(values).then((response) => setFields(response))
+				for (const [key, value] of Object.entries(values)) {
+					if (value === '' || value === '<TOM>') {
+						values[key] = undefined
+					}
+				}
 				setFormikBag(values)
 			}}
 			component={({ handleSubmit }) => (
