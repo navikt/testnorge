@@ -43,10 +43,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-#      if: ${{ github.ref == 'refs/heads/master' || env.test == 'test' }}
-      with:
-        resource: 'apps/dolly-backend/config.dev.yml'
-        app-name: 'testnav-dolly-backend'
-        cluster: 'dev-fss'
-      secrets:
-        API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+        if: ${{ github.ref == 'refs/heads/master' || env.test == 'test' }}
+        with:
+          resource: 'apps/dolly-backend/config.dev.yml'
+          app-name: 'testnav-dolly-backend'
+          cluster: 'dev-fss'
+        secrets:
+          API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
