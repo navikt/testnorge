@@ -38,7 +38,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/identtype_og_innut_vandret_fix'}}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt'}}
     with:
       resource: 'apps/pdl-forvalter/nais-dev.yaml'
       app-name: 'testnav-pdl-forvalter'
