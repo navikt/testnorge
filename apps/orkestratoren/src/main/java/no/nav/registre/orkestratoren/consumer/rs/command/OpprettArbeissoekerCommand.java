@@ -6,13 +6,15 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 @AllArgsConstructor
-public class OpprettArbeissoekerCommand  implements Callable<Map<String, NyeBrukereResponse>> {
+public class OpprettArbeissoekerCommand  implements Callable<Mono<Map<String, NyeBrukereResponse>>> {
 
     private final SyntetiserArenaRequest request;
     private final String token;
@@ -22,18 +24,17 @@ public class OpprettArbeissoekerCommand  implements Callable<Map<String, NyeBruk
     };
 
     @Override
-    public Map<String, NyeBrukereResponse> call() {
+    public Mono<Map<String, NyeBrukereResponse>> call() {
         return webClient.post()
                 .uri(builder ->
                         builder.path("/api/v1/generer/bruker/oppfoelging")
                                 .build()
                 )
-                .body(request, SyntetiserArenaRequest.class)
+                .body(BodyInserters.fromPublisher(Mono.just(request), SyntetiserArenaRequest.class))
                 .header("Authorization", "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(RESPONSE_TYPE)
-                .block();
+                .bodyToMono(RESPONSE_TYPE);
     }
 
 }

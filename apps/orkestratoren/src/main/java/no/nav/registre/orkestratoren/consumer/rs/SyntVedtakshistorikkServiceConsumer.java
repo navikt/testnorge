@@ -47,8 +47,9 @@ public class SyntVedtakshistorikkServiceConsumer {
             SyntetiserArenaRequest syntetiserArenaRequest
     ) {
         try{
-            var accessToken = tokenExchange.exchange(serviceProperties).block();
-            return new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call();
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call())
+                    .block();
         }catch (Exception e) {
             throw new ArenaSyntetiseringException("Feil under opprettelse av bruker i Arena.");
         }
@@ -60,8 +61,9 @@ public class SyntVedtakshistorikkServiceConsumer {
     ) {
         if (nonNull(request)){
             try {
-                var accessToken = tokenExchange.exchange(serviceProperties).block();
-                return new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call();
+                return tokenExchange.exchange(serviceProperties)
+                        .flatMap(accessToken -> new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call())
+                        .block();
             } catch (Exception e) {
                 log.error("Feil under syntetisering av vedtakshistorikk", e);
             }
