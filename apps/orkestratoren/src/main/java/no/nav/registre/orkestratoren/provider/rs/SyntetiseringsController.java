@@ -27,6 +27,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -145,11 +146,10 @@ public class SyntetiseringsController {
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")
-    public ResponseEntity<String> opprettVedtakshistorikkIArena(
+    public Map<String, List<NyttVedtakResponse>> opprettVedtakshistorikkIArena(
             @RequestBody SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest
     ) {
-        testnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
-        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+        return testnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")

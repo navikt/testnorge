@@ -1,9 +1,11 @@
 package no.nav.registre.orkestratoren.service;
 
+import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.orkestratoren.consumer.rs.SyntVedtakshistorikkServiceConsumer;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +24,8 @@ public class TestnorgeArenaService {
         return syntVedtakshistorikkServiceConsumer.opprettArbeidsoekereMedOppfoelging(arenaRequest);
     }
 
-    public void opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest) {
-        syntVedtakshistorikkServiceConsumer.opprettVedtakshistorikk(SyntetiserArenaRequest.builder()
+    public Map<String, List<NyttVedtakResponse>> opprettArenaVedtakshistorikk(SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest) {
+        return syntVedtakshistorikkServiceConsumer.opprettVedtakshistorikk(SyntetiserArenaRequest.builder()
                 .miljoe(vedtakshistorikkRequest.getMiljoe())
                 .antallNyeIdenter(vedtakshistorikkRequest.getAntallVedtakshistorikker())
                 .build());

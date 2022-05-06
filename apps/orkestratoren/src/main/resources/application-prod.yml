@@ -23,7 +23,7 @@ batch:
   navMeldinger: ${ANTALL_NAV_MELDINGER_PER_ENDRINGSKODE}
 
 arenabatch:
-  antallNyeIdenter:  15
+  antallNyeIdenter:  5
   miljoe: q2
 poppbatch:
   antallNyeIdenter:  ${POPP_ANTALL_NYE_IDENTER}

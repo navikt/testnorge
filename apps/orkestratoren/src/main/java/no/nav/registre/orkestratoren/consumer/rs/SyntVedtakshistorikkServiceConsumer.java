@@ -49,36 +49,24 @@ public class SyntVedtakshistorikkServiceConsumer {
         try{
             var accessToken = tokenExchange.exchange(serviceProperties).block();
             return new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call();
-//            return tokenExchange.exchange(serviceProperties)
-//                    .flatMap(accessToken -> new OpprettArbeissoekerCommand(syntetiserArenaRequest, accessToken.getTokenValue(), webClient).call())
-//                    .block();
         }catch (Exception e) {
             throw new ArenaSyntetiseringException("Feil under opprettelse av bruker i Arena.");
         }
     }
 
     @Timed(value = "orkestratoren.resource.latency", extraTags = { "operation", "arena" })
-    public List<NyttVedtakResponse> opprettVedtakshistorikk(
+    public Map<String, List<NyttVedtakResponse>> opprettVedtakshistorikk(
             SyntetiserArenaRequest request
     ) {
         if (nonNull(request)){
             try {
                 var accessToken = tokenExchange.exchange(serviceProperties).block();
-                var response = new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call();
-//                var response = tokenExchange.exchange(serviceProperties)
-//                        .flatMap(accessToken -> new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call())
-//                        .block();
-
-                List<NyttVedtakResponse> alleOpprettedeRettigheter = new ArrayList<>();
-                if (nonNull(response)) {
-                    response.values().forEach(alleOpprettedeRettigheter::addAll);
-                }
-                return alleOpprettedeRettigheter;
+                return new OpprettVedtakshistorikkCommand(request, accessToken.getTokenValue(), webClient).call();
             } catch (Exception e) {
                 log.error("Feil under syntetisering av vedtakshistorikk", e);
             }
         }
-        return Collections.emptyList();
+        return Collections.emptyMap();
     }
 
 }
