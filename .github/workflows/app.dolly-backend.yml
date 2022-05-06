@@ -37,7 +37,7 @@ jobs:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
     name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.dev.yml
+    uses: navikt/testnorge/.github/workflows/common.deploy.dev.yml@bugfix/aareg-gjenopprett-duplicates
     needs: build
     if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
     with:
