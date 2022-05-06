@@ -30,6 +30,7 @@ jobs:
       - name: Print the input resource to STDOUT
         with:
           resource: 'apps/dolly-backend/config.dev.yml'
+        uses: actions/checkout@v2
         run: echo The input resource is ${{ inputs.resource }}
   deploy:
     name: Deploy
