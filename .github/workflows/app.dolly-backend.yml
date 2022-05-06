@@ -43,8 +43,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy dev
-      uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+      - uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
       if: github.ref == 'refs/heads/master' || env.test == 'test'
       with:
         resource: 'apps/dolly-backend/config.dev.yml'
