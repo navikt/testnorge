@@ -73,6 +73,7 @@ export type BostedData = {
 	ukjentBosted?: UkjentBosted
 	utenlandskAdresse?: UtenlandskAdresse
 	metadata?: Metadata
+	id?: number
 }
 
 export type DeltBosted = {

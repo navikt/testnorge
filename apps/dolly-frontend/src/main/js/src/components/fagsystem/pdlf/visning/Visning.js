@@ -43,6 +43,7 @@ export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 		forelderBarnRelasjon,
 		doedfoedtBarn,
 		ident,
+		identtype,
 	} = data.person
 
 	return (
@@ -53,7 +54,12 @@ export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 				<Telefonnummer data={telefonnummer} />
 				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
-				<Boadresse data={bostedsadresse} />
+				<Boadresse
+					data={bostedsadresse}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<DeltBosted data={deltBosted} />
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />

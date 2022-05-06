@@ -178,8 +178,16 @@ const vegadresse = Yup.object({
 
 const matrikkeladresse = Yup.object({
 	kommunenummer: Yup.string().nullable(),
-	gaardsnummer: Yup.string().max(5, 'Gårdsnummeret må være under 99999').nullable(),
-	bruksnummer: Yup.string().max(4, 'Bruksnummeret må være under 9999').nullable(),
+	gaardsnummer: Yup.lazy((val) =>
+		isNaN(val)
+			? Yup.string().max(5, 'Gårdsnummeret må være under 99999').nullable()
+			: Yup.number().max(99999, 'Gårdsnummeret må være under 99999').nullable()
+	),
+	bruksnummer: Yup.lazy((val) =>
+		isNaN(val)
+			? Yup.string().max(4, 'Bruksnummeret må være under 9999').nullable()
+			: Yup.number().max(9999, 'Bruksnummeret må være under 9999').nullable()
+	),
 	postnummer: Yup.string().nullable(),
 	bruksenhetsnummer: Yup.string()
 		.matches(
@@ -211,30 +219,28 @@ const ukjentBosted = Yup.object({
 	bostedskommune: Yup.string().nullable(),
 })
 
-const bostedsadresse = Yup.array().of(
-	Yup.object({
-		adressetype: Yup.string().nullable(),
-		angittFlyttedato: Yup.string().nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		vegadresse: Yup.mixed().when('adressetype', {
-			is: 'VEGADRESSE',
-			then: vegadresse,
-		}),
-		matrikkeladresse: Yup.mixed().when('adressetype', {
-			is: 'MATRIKKELADRESSE',
-			then: matrikkeladresse,
-		}),
-		utenlandskAdresse: Yup.mixed().when('adressetype', {
-			is: 'UTENLANDSK_ADRESSE',
-			then: utenlandskAdresse,
-		}),
-		ukjentBosted: Yup.mixed().when('adressetype', {
-			is: 'UKJENT_BOSTED',
-			then: ukjentBosted,
-		}),
-	})
-)
+export const bostedsadresse = Yup.object({
+	adressetype: Yup.string().nullable(),
+	angittFlyttedato: Yup.string().nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
+	vegadresse: Yup.mixed().when('adressetype', {
+		is: 'VEGADRESSE',
+		then: vegadresse,
+	}),
+	matrikkeladresse: Yup.mixed().when('adressetype', {
+		is: 'MATRIKKELADRESSE',
+		then: matrikkeladresse,
+	}),
+	utenlandskAdresse: Yup.mixed().when('adressetype', {
+		is: 'UTENLANDSK_ADRESSE',
+		then: utenlandskAdresse,
+	}),
+	ukjentBosted: Yup.mixed().when('adressetype', {
+		is: 'UKJENT_BOSTED',
+		then: ukjentBosted,
+	}),
+})
 
 const oppholdsadresse = Yup.array().of(
 	Yup.object({
@@ -595,7 +601,7 @@ export const validation = {
 			)
 			.nullable(),
 		person: Yup.object({
-			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
+			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
 			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('$pdldata.person.adressebeskyttelse', adressebeskyttelse),

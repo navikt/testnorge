@@ -12,8 +12,9 @@ import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { doedsfall } from '~/components/fagsystem/pdlf/form/validation'
+import { bostedsadresse, doedsfall } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
+import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -22,6 +23,7 @@ type VisningTypes = {
 	redigertAttributt?: any
 	path: string
 	ident: string
+	identtype?: string
 }
 
 enum Modus {
@@ -34,6 +36,7 @@ enum Modus {
 enum Attributt {
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
+	Boadresse = 'bostedsadresse',
 }
 
 const FieldArrayEdit = styled.div`
@@ -70,6 +73,7 @@ export const VisningRedigerbar = ({
 	redigertAttributt = null,
 	path,
 	ident,
+	identtype,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -154,14 +158,20 @@ export const VisningRedigerbar = ({
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
+			case Attributt.Boadresse:
+				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 		}
 	}
 
 	const validationSchema = Yup.object().shape(
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
+			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 		},
-		[['doedsfall', 'doedsfall']]
+		[
+			['doedsfall', 'doedsfall'],
+			['bostedsadresse', 'bostedsadresse'],
+		]
 	)
 
 	return (
