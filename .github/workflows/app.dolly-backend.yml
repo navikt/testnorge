@@ -7,6 +7,9 @@ on:
       - libs/data-transfer-objects/**
       - .github/workflows/app.dolly-backend.yml
 
+env:
+  DEPLOY_DEV_BRANCH: bugfix/aareg-gjenopprett-duplicates
+
 jobs:
   scan:
     name: Scan
@@ -39,7 +42,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref_name == env.DEPLOY_DEV_BRANCH }}
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'
