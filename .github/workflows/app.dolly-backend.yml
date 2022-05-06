@@ -28,9 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print the input resource to STDOUT
+        with:
+          resource: 'apps/dolly-backend/config.dev.yml'
         run: echo The input resource is ${{ inputs.resource }}
-      with:
-        resource: 'apps/dolly-backend/config.dev.yml'
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
