@@ -28,7 +28,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeSamConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeSamConsumerTest {
 

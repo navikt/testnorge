@@ -22,7 +22,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeTpConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeTpConsumerTest {
 

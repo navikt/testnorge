@@ -28,7 +28,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeAaregConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeAaregConsumerTest {
 

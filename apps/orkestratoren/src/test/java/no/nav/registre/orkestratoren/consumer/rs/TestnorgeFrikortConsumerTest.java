@@ -25,7 +25,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortReque
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeFrikortConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeFrikortConsumerTest {
 

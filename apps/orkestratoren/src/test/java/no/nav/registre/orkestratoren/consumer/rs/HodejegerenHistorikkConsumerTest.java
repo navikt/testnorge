@@ -23,7 +23,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 
 @RestClientTest(HodejegerenHistorikkConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class HodejegerenHistorikkConsumerTest {
 

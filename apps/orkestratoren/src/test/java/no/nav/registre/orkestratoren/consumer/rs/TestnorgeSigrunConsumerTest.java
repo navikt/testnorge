@@ -31,7 +31,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeSigrunConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeSigrunConsumerTest {
 

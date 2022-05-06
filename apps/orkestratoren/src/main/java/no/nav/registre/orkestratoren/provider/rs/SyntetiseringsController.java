@@ -1,5 +1,6 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
@@ -28,7 +29,6 @@ import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,40 +42,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("api/v1/syntetisering")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("api/v1/syntetisering")
 public class SyntetiseringsController {
 
-    @Autowired
-    private TestnorgeSkdService testnorgeSkdService;
-
-    @Autowired
-    private TestnorgeInntektService testnorgeInntektService;
-
-    @Autowired
-    private TestnorgeSigrunService testnorgeSigrunService;
-
-    @Autowired
-    private TestnorgeAaregService testnorgeAaregService;
-
-    @Autowired
-    private TestnorgeInstService testnorgeInstService;
-
-    @Autowired
-    private TestnorgeTpService testnorgeTpService;
-
-    @Autowired
-    private TestnorgeSamService testnorgeSamService;
-
-    @Autowired
-    private TestnorgeArenaService testnorgeArenaService;
-
-    @Autowired
-    private TestnorgeMedlService testnorgeMedlService;
-
-    @Autowired
-    private TestnorgeFrikortService testnorgeFrikortService;
+    private final TestnorgeSkdService testnorgeSkdService;
+    private final TestnorgeInntektService testnorgeInntektService;
+    private final TestnorgeSigrunService testnorgeSigrunService;
+    private final TestnorgeAaregService testnorgeAaregService;
+    private final TestnorgeInstService testnorgeInstService;
+    private final TestnorgeTpService testnorgeTpService;
+    private final TestnorgeSamService testnorgeSamService;
+    private final TestnorgeArenaService testnorgeArenaService;
+    private final TestnorgeMedlService testnorgeMedlService;
+    private final TestnorgeFrikortService testnorgeFrikortService;
 
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity<SkdMeldingerTilTpsRespons> opprettSkdmeldingerITPS(

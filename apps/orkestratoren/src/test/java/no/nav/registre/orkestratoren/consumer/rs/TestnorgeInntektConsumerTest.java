@@ -27,7 +27,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeInntektConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeInntektConsumerTest {
 

@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/orkestratoren/oppdatere-innsending-arena' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/orkestratoren/config.yml'
       app-name: 'testnav-orkestratoren'

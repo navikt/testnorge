@@ -1,0 +1,53 @@
+consumers:
+  synt-vedtakshistorikk-service:
+    url: dummy
+    cluster: dev-gcp
+    namespace: dolly
+    name: dummy
+
+testnorge-aareg.rest.api.url: dummy
+testnorge-frikort.rest.api.url: dummy
+testnorge-hodejegeren.rest.api.url: dummy
+testnorge-inntekt.rest.api.url: dummy
+testnorge-inst.rest.api.url: dummy
+testnorge-medl.rest.api.url: dummy
+testnorge-nav-endringsmeldinger.rest.api.url: dummy
+testnorge-sam.rest.api.url: dummy
+testnorge-sigrun.rest.api.url: dummy
+testnorge-skd.rest.api.url: http://localhost:${wiremock.server.port:0}/skd/api
+testnorge-tp.rest.api.url: dummy
+
+batch:
+  avspillergruppeId: dummy
+  miljoe: test
+  arena:
+    antallNyeIdenter: 5
+  popp:
+    antallNyeIdenter: 1
+  aareg:
+    antallNyeIdenter: 1
+  inst:
+    antallNyeIdenter: 1
+  tp:
+    antallPersoner: 1
+  sam:
+    antallMeldinger: 1
+  medl:
+    prosentfaktor:   0.1
+  frikort:
+    antallNyeIdenter: 1
+  nav:
+    meldinger: {}
+  skd:
+    antallMeldingerPerEndringskode: {}
+
+queue.queueName: dummy
+ibm.mq.conn-name: dummy
+ibm.mq.channel: dummy
+
+spring.cloud.vault.enabled: false
+SERVICEUSER_PASSWORD: dummy
+SERVICEUSER_USERNAME: dummy
+
+azure.app.client.id: dummy
+azure.app.client.secret: dummy

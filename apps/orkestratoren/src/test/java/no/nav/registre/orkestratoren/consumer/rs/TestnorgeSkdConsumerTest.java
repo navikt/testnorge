@@ -33,7 +33,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldinger
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeSkdConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeSkdConsumerTest {
 

@@ -28,7 +28,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeNavEndringsmeldingerConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TestnorgeNavEndringsmeldingerConsumerTest {
 
