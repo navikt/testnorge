@@ -259,6 +259,9 @@ public class PersonDTO implements Serializable {
 
     public Identtype getIdenttype() {
 
+        if (isNull(ident)) {
+            return null;
+        }
         if (parseInt(ident.substring(2, 3)) % 4 >= 2) {
             return NPID;
         } else if (parseInt(ident.substring(0, 1)) >= 4) {
