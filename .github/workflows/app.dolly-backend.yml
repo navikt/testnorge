@@ -37,16 +37,12 @@ jobs:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
     name: Deploy dev
-    runs-on: ubuntu-latest
-    steps:
-      - uses: navikt/testnorge/.github/workflows/common.deploy.dev.yml
-      needs: build
-      env:
-        test: test
-      if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
-      with:
-        resource: 'apps/dolly-backend/config.dev.yml'
-        app-name: 'testnav-dolly-backend'
-        cluster: 'dev-fss'
-      secrets:
-        API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+    uses: navikt/testnorge/.github/workflows/common.deploy.dev.yml
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/fikse_maler_ved_tomme_felt' }}
+    with:
+      resource: 'apps/dolly-backend/config.dev.yml'
+      app-name: 'testnav-dolly-backend'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
