@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
@@ -187,7 +188,7 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (nonNull(response) && !response.hasBody()) {
+        if (isNull(response) || !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
         }
 
@@ -214,7 +215,7 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (nonNull(response) && !response.hasBody()) {
+        if (isNull(response) || !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra TP (pensjon)", ident, miljoe));
         }
 
@@ -240,7 +241,7 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (nonNull(response) && !response.hasBody()) {
+        if (isNull(response) || !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
         }
 
