@@ -191,7 +191,6 @@ public class ArtifactUpdateService {
 
         bostedAdresseService.validate(oppdatertAdresse, person.getPerson());
         bostedAdresseService.convert(person.getPerson(), false);
-        folkeregisterPersonstatusService.update(person.getPerson());
     }
 
     public void updateKontaktadresse(String ident, Integer id, KontaktadresseDTO oppdatertAdresse) {
@@ -225,7 +224,6 @@ public class ArtifactUpdateService {
 
         innflyttingService.validate(oppdatertInnflytting);
         innflyttingService.convert(person.getPerson().getInnflytting());
-        folkeregisterPersonstatusService.update(person.getPerson());
     }
 
     public void updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
@@ -237,7 +235,6 @@ public class ArtifactUpdateService {
 
         utflyttingService.validate(oppdatertUtflytting);
         utflyttingService.convert(person.getPerson().getUtflytting());
-        folkeregisterPersonstatusService.update(person.getPerson());
     }
 
     public void updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
