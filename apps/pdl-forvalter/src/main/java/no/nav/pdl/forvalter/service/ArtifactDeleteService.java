@@ -85,6 +85,8 @@ public class ArtifactDeleteService {
         dbPerson.getPerson().setBostedsadresse(dbPerson.getPerson().getBostedsadresse().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
+
+        folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
     public void deleteKontaktadresse(String ident, Integer id) {
@@ -115,6 +117,8 @@ public class ArtifactDeleteService {
         dbPerson.getPerson().setInnflytting(dbPerson.getPerson().getInnflytting().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
+
+        folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
     public void deleteUtflytting(String ident, Integer id) {
@@ -125,6 +129,8 @@ public class ArtifactDeleteService {
         dbPerson.getPerson().setUtflytting(dbPerson.getPerson().getUtflytting().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
+
+        folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
     public void deleteDeltBosted(String ident, Integer id) {

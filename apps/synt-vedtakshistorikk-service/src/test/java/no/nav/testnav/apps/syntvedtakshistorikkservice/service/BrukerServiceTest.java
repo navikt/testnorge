@@ -1,9 +1,7 @@
-package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
+package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
@@ -13,24 +11,19 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAKSIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 
-
 @RunWith(MockitoJUnitRunner.class)
-public class BrukereControllerTest {
-
+public class BrukerServiceTest {
     @Mock
     private ArenaForvalterService arenaForvalterService;
 
@@ -41,7 +34,7 @@ public class BrukereControllerTest {
     private PdlProxyConsumer pdlProxyConsumer;
 
     @InjectMocks
-    private BrukereController brukereController;
+    private BrukerService brukerService;
 
     private SyntetiserArenaRequest syntetiserArenaRequestSingle;
 
@@ -74,18 +67,10 @@ public class BrukereControllerTest {
                 .opprettArbeidssoekereUtenVedtak(identer, miljoe))
                 .thenReturn(oppfoelgingResponse);
 
-        ResponseEntity<Map<String, NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
-        assertThat(result.getBody().keySet()).hasSize(1);
-        assertThat(result.getBody()).containsKey(fnr1);
-        assertThat(result.getBody().get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
-        assertThat(result.getBody().get(fnr1).getArbeidsoekerList()).hasSize(1);
-    }
-
-    @Test
-    public void checkExceptionOccursOnBadMiljoe() {
-        var request = new SyntetiserArenaRequest("test", 1);
-        assertThrows(ResponseStatusException.class, () -> {
-            brukereController.registrerBrukereIArenaForvalterMedOppfoelging(request);
-        });
+        Map<String, NyeBrukereResponse> result = brukerService.registrerArenaBrukereMedOppfoelging(syntetiserArenaRequestSingle);
+        assertThat(result.keySet()).hasSize(1);
+        assertThat(result).containsKey(fnr1);
+        assertThat(result.get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+        assertThat(result.get(fnr1).getArbeidsoekerList()).hasSize(1);
     }
 }
