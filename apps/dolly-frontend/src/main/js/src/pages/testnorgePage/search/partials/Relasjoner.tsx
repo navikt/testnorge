@@ -93,9 +93,10 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 			/>
 			<FormikSelect
 				name={paths.foreldreansvar}
-				label="Hvem har foreldreansvar for person"
+				label="Hvem har foreldreansvar"
 				options={Options('foreldreansvar')}
 				size="medium"
+				info="Velg hvem som har foreldreansvaret for personen du søker etter."
 			/>
 		</section>
 	)
