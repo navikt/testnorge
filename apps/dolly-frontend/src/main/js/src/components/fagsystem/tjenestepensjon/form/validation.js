@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 import { testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 export const validation = {
@@ -14,21 +14,19 @@ export const validation = {
 					.typeError('Tast inn et gyldig TP nummer'),
 				ytelser: Yup.array().of(
 					Yup.object({
-						type: Yup.string().required().typeError('Tast inn et gyldig TP nummer'),
-						datoInnmeldtYtelseFom: Yup.string()
-							.required()
-							.typeError('Tast inn et gyldig innmeldt ytelse dato'),
+						type: requiredString,
+						datoInnmeldtYtelseFom: requiredDate,
 						datoYtelseIverksattFom: testDatoTom(
-							Yup.string(),
+							requiredDate,
 							'datoInnmeldtYtelseFom',
-							'Tast inn Ytelse Fom dato som er etter innmeldt ytelse dato'
+							'Velg ytelse f.o.m.-dato som er etter medlemskap f.o.m-dato'
 						)
 							.required()
 							.typeError('Tast inn et iverksatt Fom dato'),
 						datoYtelseIverksattTom: testDatoTom(
 							Yup.date().nullable(),
 							'datoYtelseIverksattFom',
-							'Tast inn Ytelse Tom dato som er etter Ytelse Fom dato eller fjern det'
+							'Velg ytelse t.o.m.-dato som er etter ytelse f.o.m-dato eller fjern den'
 						),
 					})
 				),

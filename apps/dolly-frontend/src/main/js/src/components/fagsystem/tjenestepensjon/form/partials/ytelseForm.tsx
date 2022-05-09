@@ -4,7 +4,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDatepicker } from "~/components/ui/form/inputs/datepicker/Datepicker";
 
-export const YtelseForm = ({path, header, initialYtelser, formikBag }: any) => {
+export const YtelseForm = ({path, header, initialYtelser }: any) => {
     return (
         <FormikDollyFieldArray name={path} header={header} newEntry={initialYtelser} nested>
             {(path: any, idx: React.Key) => (
@@ -14,12 +14,11 @@ export const YtelseForm = ({path, header, initialYtelser, formikBag }: any) => {
                         label="Ytelse"
                         size="grow"
                         isClearable={false}
-                        optionHeight={50}
                         options={Options('tjenestepensjonYtelseType')}
                     />
-                    <FormikDatepicker name={`${path}.datoInnmeldtYtelseFom`} label="Medlemskap FOM" />
-                    <FormikDatepicker name={`${path}.datoYtelseIverksattFom`} label="Ytelse FOM" />
-                    <FormikDatepicker name={`${path}.datoYtelseIverksattTom`} label="Ytelse TOM" />
+                    <FormikDatepicker name={`${path}.datoInnmeldtYtelseFom`} label="Medlemskap f.o.m." />
+                    <FormikDatepicker name={`${path}.datoYtelseIverksattFom`} label="Ytelse f.o.m." />
+                    <FormikDatepicker name={`${path}.datoYtelseIverksattTom`} label="Ytelse t.o.m." />
                 </React.Fragment>
             )}
         </FormikDollyFieldArray>

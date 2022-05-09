@@ -11,7 +11,7 @@ import { subDays } from 'date-fns'
 const path = 'pensjonforvalter.tp'
 const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'
 
-const initialYtelser = {
+export const initialYtelser = {
 	type: 'ALDER',
 	datoInnmeldtYtelseFom: subDays(new Date(), 30),
 	datoYtelseIverksattFom: subDays(new Date(), 30),
@@ -42,8 +42,6 @@ export const TjenestepensjonForm = ({ formikBag }) => (
 									path={`${formPath}.ytelser`}
 									header="Ytelser"
 									initialYtelser={initialYtelser}
-									ytelse="ALDER"
-									formikBag={formikBag}
 								/>
 							</div>
 						</React.Fragment>
