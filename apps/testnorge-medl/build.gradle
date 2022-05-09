@@ -85,3 +85,4 @@ dependencies {
 }
 
 description = 'testnorge-medl'
+java.sourceCompatibility = JavaVersion.VERSION_17

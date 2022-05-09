@@ -54,3 +54,4 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
+java.sourceCompatibility = JavaVersion.VERSION_17

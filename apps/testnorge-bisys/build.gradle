@@ -81,3 +81,4 @@ dependencies {
 }
 
 description = 'testnorge-bisys'
+java.sourceCompatibility = JavaVersion.VERSION_17
