@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.personsearchservice.adapter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -33,6 +32,9 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class IdentSearchAdapter {
 
+    private static final String PERSON_FORNAVN = "hentPerson.navn.fornavn";
+    private static final String PERSON_ETTERNAVN = "hentPerson.navn.etternavn";
+
     private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
     private final RestHighLevelClient client;
@@ -45,8 +47,8 @@ public class IdentSearchAdapter {
                         queryBuilder.must(QueryBuilders.nestedQuery(
                                 "hentPerson.navn",
                                 QueryBuilders.boolQuery()
-                                        .should(QueryBuilders.regexpQuery("hentPerson.navn.fornavn", ".*" + values.get(0) + ".*"))
-                                        .should(QueryBuilders.regexpQuery("hentPerson.navn.etternavn", ".*" + values.get(0) + ".*"))
+                                        .should(QueryBuilders.regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
+                                        .should(QueryBuilders.regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*"))
                                         .minimumShouldMatch(1),
                                 ScoreMode.Avg));
 
@@ -55,11 +57,11 @@ public class IdentSearchAdapter {
                                 "hentPerson.navn",
                                 QueryBuilders.boolQuery()
                                         .should(QueryBuilders.boolQuery()
-                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.fornavn", ".*" + values.get(0) + ".*"))
-                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.etternavn", ".*" + values.get(1) + ".*")))
+                                                .must(QueryBuilders.regexpQuery(PERSON_FORNAVN, ".*" + values.get(0) + ".*"))
+                                                .must(QueryBuilders.regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(1) + ".*")))
                                         .should(QueryBuilders.boolQuery()
-                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.fornavn", ".*" + values.get(1) + ".*"))
-                                                .must(QueryBuilders.regexpQuery("hentPerson.navn.etternavn", ".*" + values.get(0) + ".*")))
+                                                .must(QueryBuilders.regexpQuery(PERSON_FORNAVN, ".*" + values.get(1) + ".*"))
+                                                .must(QueryBuilders.regexpQuery(PERSON_ETTERNAVN, ".*" + values.get(0) + ".*")))
                                         .minimumShouldMatch(1),
                                 ScoreMode.Avg));
                     }
