@@ -171,7 +171,9 @@ const vegadresse = Yup.object({
 	tilleggsnavn: Yup.string().nullable(),
 	bruksenhetsnummer: Yup.string().nullable(),
 	husbokstav: Yup.string().nullable(),
-	husnummer: Yup.string().nullable(),
+	husnummer: Yup.lazy((val) =>
+		typeof val === 'string' ? Yup.string().nullable() : Yup.number().nullable()
+	),
 	kommunenummer: Yup.string().nullable(),
 	postnummer: Yup.string().nullable(),
 })
@@ -221,9 +223,19 @@ const ukjentBosted = Yup.object({
 
 export const bostedsadresse = Yup.object({
 	adressetype: Yup.string().nullable(),
-	angittFlyttedato: Yup.string().nullable(),
-	gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-	gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
+	angittFlyttedato: Yup.lazy((val) =>
+		val instanceof Date ? Yup.date().nullable() : Yup.string().nullable()
+	),
+	gyldigFraOgMed: Yup.lazy((val) =>
+		val instanceof Date
+			? testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed')
+			: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed')
+	),
+	gyldigTilOgMed: Yup.lazy((val) =>
+		val instanceof Date
+			? testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed')
+			: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed')
+	),
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
 		then: vegadresse,

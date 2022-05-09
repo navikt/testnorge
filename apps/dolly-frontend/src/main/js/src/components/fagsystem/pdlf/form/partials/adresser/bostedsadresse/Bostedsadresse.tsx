@@ -21,6 +21,7 @@ import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adre
 import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>
@@ -148,9 +149,11 @@ export const BostedsadresseForm = ({
 				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
 			)}
 			<div className="flexbox--flex-wrap">
-				<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				<DatepickerWrapper>
+					<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				</DatepickerWrapper>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null} />
 		</React.Fragment>
