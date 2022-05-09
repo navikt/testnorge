@@ -1,7 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { subDays } from 'date-fns'
+import { initialYtelser } from '../../../../../fagsystem/tjenestepensjon/form/Form'
 
 export const PensjonPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -50,14 +50,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 			set('pensjonforvalter.tp', [
 				{
 					ordning: '3010',
-					ytelser: [
-						{
-							type: 'ALDER',
-							datoInnmeldtYtelseFom: subDays(new Date(), 30),
-							datoYtelseIverksattFom: subDays(new Date(), 30),
-							datoYtelseIverksattTom: null,
-						}
-					],
+					ytelser: [initialYtelser],
 				}
 			]),
 		remove: () => del('pensjonforvalter.tp'),
