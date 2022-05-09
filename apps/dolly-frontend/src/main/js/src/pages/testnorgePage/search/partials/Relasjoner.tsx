@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/options/RadioGroupOptions'
+import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const paths = {
 	sivistand: 'relasjoner.sivilstand',
-	harBarn: 'relasjoner.harBarn',
+	harBarn: 'relasjoner.barn',
 	harDoedfoedtBarn: 'relasjoner.harDoedfoedtBarn',
 	forelderBarnRelasjoner: 'relasjoner.forelderBarnRelasjoner',
+	foreldreansvar: 'relasjoner.foreldreansvar',
 }
 
 type RelasjonerProps = {
@@ -22,6 +24,12 @@ const foreldreRoller = {
 	MOR: 'MOR',
 	MEDMOR: 'MEDMOR',
 }
+
+const barnOptions = [
+	{ value: 'Y', label: 'Ja' },
+	{ value: 'N', label: 'Nei' },
+	{ value: 'M', label: 'Har flere barn' },
+]
 
 export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 	const [foreldre, setForeldre] = useState(_get(formikBag.values, paths.forelderBarnRelasjoner))
@@ -56,7 +64,7 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 				formikBag={formikBag}
 				name={'Har barn'}
 				path={paths.harBarn}
-				options={yesNoOptions}
+				options={barnOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
@@ -83,6 +91,13 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 				checkboxMargin={false}
 				size="small"
 			/>
+			<FormikSelect
+				name={paths.foreldreansvar}
+				label="Hvem har foreldreansvar"
+				options={Options('foreldreansvar')}
+				size="medium"
+				info="Velg hvem som har foreldreansvaret for personen du søker etter."
+			/>
 		</section>
 	)
 }
@@ -92,4 +107,5 @@ export const RelasjonerPaths = {
 	[paths.harBarn]: 'string',
 	[paths.harDoedfoedtBarn]: 'string',
 	[paths.forelderBarnRelasjoner]: 'list',
+	[paths.foreldreansvar]: 'string',
 }

@@ -56,14 +56,20 @@ export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSear
 		setError(null)
 		const idnr = event.target.value
 		setIdent(event.target.value)
-		if (!validIdent(idnr)) setError('Ident må være et tall med 11 siffer')
-		if (identer.includes(idnr)) setError('Ident allerede valgt')
+		if (!validIdent(idnr)) {
+			setError('Ident må være et tall med 11 siffer')
+		}
+		if (identer.includes(idnr)) {
+			setError('Ident allerede valgt')
+		}
 	}
 
 	const handleKeyPress = (event: React.KeyboardEvent<any>) => {
 		if (event.key === 'Enter') {
 			const idnr = event.target?.value
-			if (idnr !== '' && validIdent(idnr)) addIdent()
+			if (idnr !== '' && validIdent(idnr)) {
+				addIdent()
+			}
 		}
 	}
 

@@ -1,6 +1,5 @@
 import React from 'react'
 import { useToggle } from 'react-use'
-import cn from 'classnames'
 import ExpandButton from '~/components/ui/button/ExpandButton'
 import './OptionsPanel.less'
 
@@ -18,26 +17,18 @@ export const OptionsPanel: React.FC<OptionsPanelProps> = ({
 	heading,
 	content,
 	children,
-	selectionColor,
-	numSelected,
+	selectionColor = 'blue',
+	numSelected = 0,
 }: OptionsPanelProps) => {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
-
-	const panelClass = cn('options-panel', {
-		'options-panel-open': isOpen,
-	})
-
 	const renderContent = children ? children : content
-	const circleClassName = selectionColor
-		? 'options-panel-heading_' + selectionColor + '-circle'
-		: 'circle'
 
 	return (
-		<div className={panelClass}>
+		<div className="options-panel">
 			<div className="options-panel-heading" onClick={toggleOpen}>
 				<h2>{heading}</h2>
-				{selectionColor && numSelected && (
-					<div className={circleClassName}>
+				{numSelected > 0 && (
+					<div className={`options-panel-heading_${selectionColor}-circle`}>
 						<p className="circle-text">{numSelected}</p>
 					</div>
 				)}

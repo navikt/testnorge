@@ -17,7 +17,7 @@ import static java.util.Objects.nonNull;
 public class QueryUtils {
 
     public static final String METADATA_FIELD = ".metadata";
-    private static final String HISTORISK_PATH = ".metadata.historisk";
+    public static final String HISTORISK_PATH = ".metadata.historisk";
 
     public static final String YES = "Y";
     public static final String NO = "N";
