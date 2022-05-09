@@ -43,7 +43,9 @@ public class PdlProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService,
                                            @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
-                                           @Value("${person.aktor.admin.api}") String aktoerAdminApiKey) {
+                                           @Value("${person.aktor.admin.api}") String aktoerAdminApiKey,
+                                           @Value("${elastic.username}") String elasticUsername,
+                                           @Value("${elastic.password}") String elasticPassword) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(stsOidcTokenService::getToken);
@@ -53,7 +55,8 @@ public class PdlProxyApplicationStarter {
                 .apiKeyAuthenticationHeaderFilter(hendelselagerApiKey);
         var addAktoerAdminApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(aktoerAdminApiKey);
-
+        var addElasticSearchBasicAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .basicAuthAuthenticationHeaderFilter(elasticUsername, elasticPassword);
 
         return builder
                 .routes()
@@ -61,6 +64,7 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute("pdl-testdata", "http://pdl-testdata.pdl.svc.nais.local", addAuthenticationHeaderFilter))
                 .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addHendelselagerApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-npid", "https://pdl-aktor.dev.intern.nav.no", addAktoerAdminApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
                 .build();
     }
 

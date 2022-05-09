@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 @EnableWebSecurity
 @Configuration
-@Profile({"dev", "prod"})
+@Profile({"prod", "dev"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
