@@ -19,14 +19,15 @@ public class OpprettBidragsmeldingCommand implements Runnable {
 
     @Override
     public void run() {
-        webClient
-                .post()
-                .uri("/api/v1/dummy")
-                .body(BodyInserters.fromPublisher(Mono.just(bidragsmelding), SyntetisertBidragsmelding.class))
-                .retrieve()
-                .bodyToMono(Void.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        log.info("Oppretting av bidragsmeldinger ikke ferdig implementert.");
+//        webClient
+//                .post()
+//                .uri("/api/v1/dummy")
+//                .body(BodyInserters.fromPublisher(Mono.just(bidragsmelding), SyntetisertBidragsmelding.class))
+//                .retrieve()
+//                .bodyToMono(Void.class)
+//                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+//                        .filter(WebClientFilter::is5xxException))
+//                .block();
     }
 }

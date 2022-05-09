@@ -19,9 +19,7 @@ public class BidragsmeldingConsumer {
 
     public BidragsmeldingConsumer(@Value("${consumers.bidragsmelding.url}") String url,
                                   ExchangeFilterFunction metricsWebClientFilterFunction) {
-
-        this.webClient = WebClient
-                .builder()
+        this.webClient = WebClient.builder()
                 .baseUrl(url)
                 .filter(metricsWebClientFilterFunction)
                 .build();

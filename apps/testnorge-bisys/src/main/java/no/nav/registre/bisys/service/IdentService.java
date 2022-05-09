@@ -78,9 +78,6 @@ public class IdentService {
     }
 
     private Barn getBarnInValidAgeRange(LocalDate bornFom, LocalDate bornTom) {
-        //TODO sjekk om det trengs norsk statsborgerskap eller foedt Norge
-        //TODO sjekk om det ikke kan sendes inn på samme barn flere ganger
-        //TODO sjekk at man ikke returnerer samme barn som tidligere
         var searchRequest = PersonSearch.builder()
                 .page(1)
                 .pageSize(10)

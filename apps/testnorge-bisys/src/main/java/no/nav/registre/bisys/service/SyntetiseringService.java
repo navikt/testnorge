@@ -63,9 +63,14 @@ public class SyntetiseringService {
         adjustSoktFra(bidragsmelding, barn.getFoedselsdato(), mottattdato);
 
         bidragsmelding.setBarn(barn.getFnr());
-        //TODO sjekke om mor alltid skal være bidragsmottaker
-        bidragsmelding.setBidragsmottaker(barn.getMorFnr());
-        bidragsmelding.setBidragspliktig(barn.getFarFnr());
+
+        if (rand.nextDouble() >= 0.5) {
+            bidragsmelding.setBidragsmottaker(barn.getMorFnr());
+            bidragsmelding.setBidragspliktig(barn.getFarFnr());
+        } else {
+            bidragsmelding.setBidragsmottaker(barn.getFarFnr());
+            bidragsmelding.setBidragspliktig(barn.getMorFnr());
+        }
         bidragsmelding.setMottattDato(mottattdato.format(DateTimeFormatter.ofPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST)));
     }
 
