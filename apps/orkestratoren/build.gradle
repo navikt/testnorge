@@ -82,3 +82,4 @@ dependencies {
 }
 
 description = 'orkestratoren'
+java.sourceCompatibility = JavaVersion.VERSION_17

@@ -75,3 +75,4 @@ dependencies {
 }
 
 description = 'testnorge-nav-endringsmeldinger'
+java.sourceCompatibility = JavaVersion.VERSION_17
