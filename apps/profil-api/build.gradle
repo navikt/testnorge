@@ -65,3 +65,4 @@ dependencies {
 }
 
 description = 'profil-api'
+java.sourceCompatibility = JavaVersion.VERSION_17

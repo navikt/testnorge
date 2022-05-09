@@ -65,3 +65,4 @@ dependencies {
 }
 
 description = 'geografiske-kodeverk-service'
+java.sourceCompatibility = JavaVersion.VERSION_17

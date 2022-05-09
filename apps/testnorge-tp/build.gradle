@@ -79,3 +79,4 @@ dependencies {
 }
 
 description = 'testnorge-tp'
+java.sourceCompatibility = JavaVersion.VERSION_17

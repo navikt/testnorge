@@ -94,3 +94,4 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
