@@ -9,7 +9,7 @@ import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
-@Profile("local")
+@Profile("dev")
 @VaultPropertySource(value = "kv/preprod/fss/orkestratoren/local", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class VaultConfig extends AbstractVaultConfiguration {

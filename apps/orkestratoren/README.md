@@ -15,7 +15,7 @@ Swagger finnes under [/swagger](https://orkestratoren.dev.intern.nav.no/swagger)
 Ha naisedevice kjørende og kjør OrkestratorenApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[copy token fra vault]
--Dspring.profiles.active=local
+-Dspring.profiles.active=dev
 ```
 
 ### Utviklerimage
