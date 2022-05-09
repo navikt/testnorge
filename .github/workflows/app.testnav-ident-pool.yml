@@ -23,7 +23,7 @@ jobs:
       app-name: 'testnav-ident-pool'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
+  deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build

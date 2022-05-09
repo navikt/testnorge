@@ -67,6 +67,9 @@ public abstract class TpsConsumer {
 
     private static boolean isPreprod(String miljoe) {
 
+        if (miljoe.length() == 1) {
+            log.warn("Ugyldig miljoe {} mottatt", miljoe);
+        }
         return "Q".equalsIgnoreCase(miljoe.substring(0, 1));
     }
 
