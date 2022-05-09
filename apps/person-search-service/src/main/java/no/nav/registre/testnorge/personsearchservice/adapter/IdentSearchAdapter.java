@@ -21,11 +21,14 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @Component
@@ -88,7 +91,7 @@ public class IdentSearchAdapter {
             try {
                 return objectMapper.readValue(json, clazz);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException("Feil med konvertering fra json: " + json, e);
+                throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Feil med konvertering fra json: " + json, e);
             }
         }).toList();
     }
