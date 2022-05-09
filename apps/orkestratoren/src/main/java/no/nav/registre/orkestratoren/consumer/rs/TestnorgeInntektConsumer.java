@@ -28,7 +28,7 @@ public class TestnorgeInntektConsumer {
 
     public TestnorgeInntektConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-inntekt.rest.api.url}") String inntektServerUrl
+            @Value("${consumers.testnorge-inntekt.url}") String inntektServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(inntektServerUrl + "/v1/syntetisering/generer");

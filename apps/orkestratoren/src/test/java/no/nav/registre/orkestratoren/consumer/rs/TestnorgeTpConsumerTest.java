@@ -22,9 +22,9 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeTpConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeTpConsumerTest {
+class TestnorgeTpConsumerTest {
 
     @Autowired
     private TestnorgeTpConsumer testnorgeTpConsumer;
@@ -32,7 +32,7 @@ public class TestnorgeTpConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-tp.rest.api.url}")
+    @Value("${consumers.testnorge-tp.url}")
     private String serverUrl;
 
     private final Long gruppeId = 10L;
@@ -40,7 +40,7 @@ public class TestnorgeTpConsumerTest {
     private final Integer antallPersoner = 3;
 
     @Test
-    public void startSyntetisering() {
+    void startSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer/";
         stubTp(expectedUri);
 

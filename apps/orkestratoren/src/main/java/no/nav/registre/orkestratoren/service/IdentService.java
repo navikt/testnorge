@@ -1,12 +1,11 @@
 package no.nav.registre.orkestratoren.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
@@ -15,27 +14,18 @@ import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterRespon
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
+@RequiredArgsConstructor
 public class IdentService {
 
     private static final String TESTDATAEIER = "orkestratoren";
 
-    @Autowired
-    private TestnorgeSkdConsumer testnorgeSkdConsumer;
+    private final TestnorgeSkdConsumer testnorgeSkdConsumer;
 
-    @Autowired
-    private TestnorgeInstConsumer testnorgeInstConsumer;
+    private final TestnorgeInstConsumer testnorgeInstConsumer;
 
-    @Autowired
-    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
+    private final TestnorgeSigrunConsumer testnorgeSigrunConsumer;
 
-    @Autowired
-    private TestnorgeAaregConsumer testnorgeAaregConsumer;
-
-    // @Autowired
-    // private TestnorgeArenaConsumer testnorgeArenaConsumer;
-
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
     public SlettedeIdenterResponse slettIdenterFraAdaptere(
             Long avspillergruppeId,

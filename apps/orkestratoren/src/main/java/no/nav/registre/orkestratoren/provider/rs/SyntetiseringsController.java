@@ -1,12 +1,12 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.RsPureXmlMessageResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
@@ -17,7 +17,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
+import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -26,7 +26,8 @@ import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,40 +41,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("api/v1/syntetisering")
 @Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("api/v1/syntetisering")
 public class SyntetiseringsController {
 
-    @Autowired
-    private TestnorgeSkdService testnorgeSkdService;
-
-    @Autowired
-    private TestnorgeInntektService testnorgeInntektService;
-
-    @Autowired
-    private TestnorgeSigrunService testnorgeSigrunService;
-
-    @Autowired
-    private TestnorgeAaregService testnorgeAaregService;
-
-    @Autowired
-    private TestnorgeInstService testnorgeInstService;
-
-    @Autowired
-    private TestnorgeTpService testnorgeTpService;
-
-    @Autowired
-    private TestnorgeSamService testnorgeSamService;
-
-    @Autowired
-    private TestnorgeArenaService testnorgeArenaService;
-
-    @Autowired
-    private TestnorgeMedlService testnorgeMedlService;
-
-    @Autowired
-    private TestnorgeFrikortService testnorgeFrikortService;
+    private final TestnorgeSkdService testnorgeSkdService;
+    private final TestnorgeInntektService testnorgeInntektService;
+    private final TestnorgeSigrunService testnorgeSigrunService;
+    private final TestnorgeAaregService testnorgeAaregService;
+    private final TestnorgeInstService testnorgeInstService;
+    private final TestnorgeTpService testnorgeTpService;
+    private final TestnorgeSamService testnorgeSamService;
+    private final ArenaService arenaService;
+    private final TestnorgeMedlService testnorgeMedlService;
+    private final TestnorgeFrikortService testnorgeFrikortService;
 
     @PostMapping(value = "/tps/skdmeldinger/generer")
     public ResponseEntity<SkdMeldingerTilTpsRespons> opprettSkdmeldingerITPS(
@@ -136,26 +119,18 @@ public class SyntetiseringsController {
         return testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
     }
 
-    @PostMapping(value = "/arena/arbeidsoeker/generer")
-    public List<String> opprettArbeidssoekereIArena(
-            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
-    ) {
-        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, false);
-    }
-
     @PostMapping(value = "/arena/arbeidsoeker/generer/oppfoelging")
-    public List<String> opprettArbeidssoekereMedOppfoelgingIArena(
+    public Map<String, NyeBrukereResponse> opprettArbeidssoekereMedOppfoelgingIArena(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return testnorgeArenaService.opprettArbeidssokereIArena(syntetiserArenaRequest, true);
+        return arenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
     }
 
     @PostMapping(value = "/arena/vedtakshistorikk/generer")
-    public ResponseEntity<String> opprettVedtakshistorikkIArena(
-            @RequestBody SyntetiserArenaVedtakshistorikkRequest vedtakshistorikkRequest
+    public Map<String, List<NyttVedtakResponse>> opprettVedtakshistorikkIArena(
+            @RequestBody SyntetiserArenaRequest vedtakshistorikkRequest
     ) {
-        testnorgeArenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
-        return ResponseEntity.ok().body("Opprettelsesrequest sendt til arena. Se logg til testnorge-arena for mer info.");
+        return arenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")
