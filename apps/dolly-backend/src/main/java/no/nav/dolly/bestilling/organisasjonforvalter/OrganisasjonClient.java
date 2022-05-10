@@ -15,6 +15,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
+import no.nav.dolly.util.EnvironmentsCrossConnect;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -36,9 +37,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class OrganisasjonClient {
 
-    private static final String FEIL_UGYLDIGE_ORGNUMRE = "FEIL= Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke";
     public static final String FEIL_STATUS_ORGFORVALTER_DEPLOY = "FEIL= Mottok ikke status fra Org-Forvalter deploy";
-
+    private static final String FEIL_UGYLDIGE_ORGNUMRE = "FEIL= Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke";
     private final OrganisasjonConsumer organisasjonConsumer;
     private final OrganisasjonProgressService organisasjonProgressService;
     private final OrganisasjonBestillingService organisasjonBestillingService;
@@ -47,18 +47,19 @@ public class OrganisasjonClient {
 
     @Async
     @Transactional
-    public void opprett(RsOrganisasjonBestilling rsBestilling, OrganisasjonBestilling bestilling) {
+    public void opprett(RsOrganisasjonBestilling request, OrganisasjonBestilling bestilling) {
 
         BestillingRequest bestillingRequest = BestillingRequest.builder()
-                .organisasjoner(List.of(mapperFacade.map(rsBestilling.getOrganisasjon(), BestillingRequest.SyntetiskOrganisasjon.class)))
+                .organisasjoner(List.of(mapperFacade.map(request.getOrganisasjon(), BestillingRequest.SyntetiskOrganisasjon.class)))
                 .build();
 
         Set<String> orgnumre = new HashSet<>();
 
+        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
                 .bestilling(bestilling)
                 .organisasjonsnummer("Ubestemt")
-                .organisasjonsforvalterStatus(rsBestilling.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
+                .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
                 .build());
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
@@ -73,11 +74,11 @@ public class OrganisasjonClient {
                     OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
                     organisasjonBestillingProgress.setBestilling(bestilling);
                     organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
-                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(rsBestilling.getEnvironments().stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
+                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
 
                     organisasjonProgressService.save(organisasjonBestillingProgress);
-                    saveErrorToDb(orgnumre, bestilling.getId(), rsBestilling.getEnvironments());
-                    deployOrganisasjon(orgnumre, bestilling, rsBestilling.getEnvironments());
+                    saveErrorToDb(orgnumre, bestilling.getId(), miljoer);
+                    deployOrganisasjon(orgnumre, bestilling, miljoer);
                 }
             } catch (RuntimeException e) {
 
@@ -91,13 +92,14 @@ public class OrganisasjonClient {
     @Async
     public void gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
 
+        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
                 .bestilling(bestilling)
                 .organisasjonsnummer(request.getOrgnumre().iterator().next())
-                .organisasjonsforvalterStatus(request.getEnvironments().stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
+                .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
                 .build());
 
-        deployOrganisasjon(request.getOrgnumre(), bestilling, request.getEnvironments());
+        deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer);
     }
 
     private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
