@@ -12,9 +12,14 @@ import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { bostedsadresse, doedsfall } from '~/components/fagsystem/pdlf/form/validation'
+import {
+	bostedsadresse,
+	doedsfall,
+	oppholdsadresse,
+} from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
+import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -37,6 +42,7 @@ enum Attributt {
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
 	Boadresse = 'bostedsadresse',
+	Oppholdsadresse = 'oppholdsadresse',
 }
 
 const FieldArrayEdit = styled.div`
@@ -160,6 +166,8 @@ export const VisningRedigerbar = ({
 				return <DoedsfallForm path={path} />
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
+			case Attributt.Oppholdsadresse:
+				return <OppholdsadresseForm formikBag={formikBag} path={path} />
 		}
 	}
 
@@ -167,10 +175,12 @@ export const VisningRedigerbar = ({
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
+			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 		},
 		[
 			['doedsfall', 'doedsfall'],
 			['bostedsadresse', 'bostedsadresse'],
+			['oppholdsadresse', 'oppholdsadresse'],
 		]
 	)
 

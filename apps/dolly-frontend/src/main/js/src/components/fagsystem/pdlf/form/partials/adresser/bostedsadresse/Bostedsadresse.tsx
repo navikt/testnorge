@@ -22,6 +22,7 @@ import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partial
 import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>
@@ -36,13 +37,6 @@ type BostedsadresseFormValues = {
 
 type Target = {
 	value: string
-}
-
-enum Adressetype {
-	Veg = 'VEGADRESSE',
-	Matrikkel = 'MATRIKKELADRESSE',
-	Utenlandsk = 'UTENLANDSK_ADRESSE',
-	Ukjent = 'UKJENT_BOSTED',
 }
 
 export const BostedsadresseForm = ({

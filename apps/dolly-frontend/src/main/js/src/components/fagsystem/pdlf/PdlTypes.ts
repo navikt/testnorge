@@ -137,3 +137,11 @@ export type SelectedValue = {
 	value: string
 	label: string
 }
+
+export enum Adressetype {
+	Veg = 'VEGADRESSE',
+	Matrikkel = 'MATRIKKELADRESSE',
+	Utenlandsk = 'UTENLANDSK_ADRESSE',
+	Ukjent = 'UKJENT_BOSTED',
+	Annet = 'OPPHOLD_ANNET_STED',
+}

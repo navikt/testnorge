@@ -23,7 +23,6 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 
 export const PdlBoadresse = ({ data }: PdlBoadresseProps) => {
 	if (!data || data.length === 0) return null
-	// console.log('data: ', data) //TODO - SLETT MEG
 	const gyldigeAdresser = data.filter((adresse: BostedData) => !adresse.metadata?.historisk)
 	const historiskeAdresser = data.filter((adresse: BostedData) => adresse.metadata?.historisk)
 
