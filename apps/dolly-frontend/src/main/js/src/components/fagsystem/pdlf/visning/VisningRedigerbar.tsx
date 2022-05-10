@@ -15,11 +15,13 @@ import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfa
 import {
 	bostedsadresse,
 	doedsfall,
+	kontaktadresse,
 	oppholdsadresse,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
+import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -43,6 +45,7 @@ enum Attributt {
 	Doedsfall = 'doedsfall',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
+	Kontaktadresse = 'kontaktadresse',
 }
 
 const FieldArrayEdit = styled.div`
@@ -168,6 +171,8 @@ export const VisningRedigerbar = ({
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
 				return <OppholdsadresseForm formikBag={formikBag} path={path} />
+			case Attributt.Kontaktadresse:
+				return <KontaktadresseForm formikBag={formikBag} path={path} />
 		}
 	}
 
@@ -176,11 +181,13 @@ export const VisningRedigerbar = ({
 			doedsfall: ifPresent('doedsfall', doedsfall),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
+			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 		},
 		[
 			['doedsfall', 'doedsfall'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
+			['kontaktadresse', 'kontaktadresse'],
 		]
 	)
 

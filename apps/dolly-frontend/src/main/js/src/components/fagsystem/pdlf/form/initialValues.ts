@@ -267,7 +267,7 @@ export const initialBarn = {
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
 	relatertPerson: null as string,
-	deltBosted: null,
+	deltBosted: null as any,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
@@ -304,7 +304,7 @@ export const initialNyIdent = {
 }
 
 export const initialFullmakt = {
-	omraader: [],
+	omraader: [] as any,
 	gyldigFraOgMed: null as string,
 	gyldigTilOgMed: null as string,
 	motpartsPersonident: null as string,

@@ -62,7 +62,7 @@ export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 				/>
 				<DeltBosted data={deltBosted} />
 				<Oppholdsadresse data={oppholdsadresse} tmpPersoner={tmpPersoner} ident={ident} />
-				<Kontaktadresse data={kontaktadresse} />
+				<Kontaktadresse data={kontaktadresse} tmpPersoner={tmpPersoner} ident={ident} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<SivilstandVisning data={sivilstand} relasjoner={data.relasjoner} />
 				<DoedfoedtBarnVisning data={doedfoedtBarn} />

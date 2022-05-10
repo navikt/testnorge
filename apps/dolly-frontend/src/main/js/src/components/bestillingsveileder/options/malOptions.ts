@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 import {
 	BostedData,
-	Kontaktadresse,
+	KontaktadresseData,
 	OppholdsadresseData,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
@@ -176,7 +176,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		)
 	}
 	if (person?.kontaktadresse) {
-		newPdldata.person.kontaktadresse = person.kontaktadresse.map((adresse: Kontaktadresse) => {
+		newPdldata.person.kontaktadresse = person.kontaktadresse.map((adresse: KontaktadresseData) => {
 			return updateAdressetyper(adresse, false)
 		})
 	}

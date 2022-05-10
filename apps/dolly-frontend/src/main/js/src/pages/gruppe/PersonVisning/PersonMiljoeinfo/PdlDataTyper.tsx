@@ -38,7 +38,7 @@ export type HentPerson = {
 	bostedsadresse: Array<BostedData>
 	deltBosted: Array<DeltBosted>
 	oppholdsadresse: Array<OppholdsadresseData>
-	kontaktadresse: Array<Kontaktadresse>
+	kontaktadresse: Array<KontaktadresseData>
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
@@ -97,7 +97,7 @@ export type OppholdsadresseData = {
 	id?: number
 }
 
-export type Kontaktadresse = {
+export type KontaktadresseData = {
 	gyldigFraOgMed?: Date
 	gyldigTilOgMed?: Date
 	type?: string
@@ -108,6 +108,7 @@ export type Kontaktadresse = {
 	utenlandskAdresse?: UtenlandskAdresse
 	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
 	metadata?: Metadata
+	id?: number
 }
 
 type Postboksadresse = {

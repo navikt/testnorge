@@ -141,6 +141,7 @@ export type SelectedValue = {
 export enum Adressetype {
 	Veg = 'VEGADRESSE',
 	Matrikkel = 'MATRIKKELADRESSE',
+	Postboks = 'POSTBOKSADRESSE',
 	Utenlandsk = 'UTENLANDSK_ADRESSE',
 	Ukjent = 'UKJENT_BOSTED',
 	Annet = 'OPPHOLD_ANNET_STED',

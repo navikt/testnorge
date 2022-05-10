@@ -26,6 +26,8 @@ type OppholdsadresseVisningTypes = {
 }
 
 export const Adresse = ({ oppholdsadresseData, idx }: OppholdsadresseVisningTypes) => {
+	if (!oppholdsadresseData) return null
+
 	return (
 		<>
 			{oppholdsadresseData.vegadresse && <Vegadresse adresse={oppholdsadresseData} idx={idx} />}

@@ -280,25 +280,23 @@ export const oppholdsadresse = Yup.object({
 	}),
 })
 
-const kontaktadresse = Yup.array().of(
-	Yup.object({
-		adressetype: Yup.string().nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		vegadresse: Yup.mixed().when('adressetype', {
-			is: 'VEGADRESSE',
-			then: vegadresse,
-		}),
-		utenlandskAdresse: Yup.mixed().when('adressetype', {
-			is: 'UTENLANDSK_ADRESSE',
-			then: utenlandskAdresse,
-		}),
-		postboksadresse: Yup.mixed().when('adressetype', {
-			is: 'POSTBOKSADRESSE',
-			then: postboksadresse,
-		}),
-	})
-)
+export const kontaktadresse = Yup.object({
+	adressetype: Yup.string().nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
+	vegadresse: Yup.mixed().when('adressetype', {
+		is: 'VEGADRESSE',
+		then: vegadresse,
+	}),
+	utenlandskAdresse: Yup.mixed().when('adressetype', {
+		is: 'UTENLANDSK_ADRESSE',
+		then: utenlandskAdresse,
+	}),
+	postboksadresse: Yup.mixed().when('adressetype', {
+		is: 'POSTBOKSADRESSE',
+		then: postboksadresse,
+	}),
+})
 
 const adressebeskyttelse = Yup.array().of(
 	Yup.object({
@@ -620,7 +618,7 @@ export const validation = {
 				'$pdldata.person.oppholdsadresse',
 				Yup.array().of(oppholdsadresse)
 			),
-			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', kontaktadresse),
+			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', Yup.array().of(kontaktadresse)),
 			adressebeskyttelse: ifPresent('$pdldata.person.adressebeskyttelse', adressebeskyttelse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
