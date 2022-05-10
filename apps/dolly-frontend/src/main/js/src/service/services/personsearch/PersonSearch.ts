@@ -19,6 +19,24 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 		})
 	)
 
+const searchPdlFragment = (fragment: string) =>
+	Api.fetch(`/person-search-service/api/v1/identer?fragment=${fragment}`, {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' },
+	}).then((response) =>
+		response.json().then((items) => ({
+			data: items.map(
+				(person: {
+					ident: string
+					navn: { fornavn: string; mellomnavn: string; etternavn: string }
+				}) => ({
+					ident: person.ident,
+					...person.navn,
+				})
+			),
+		}))
+	)
+
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
 	if (searchRequest?.relasjoner?.barn === 'M') {
 		searchRequest.terminateAfter = null
@@ -57,4 +75,5 @@ const filterOutPersonerMedEtBarn = (items: PdlData[]) => {
 
 export default {
 	searchPdlPerson,
+	searchPdlFragment,
 }
