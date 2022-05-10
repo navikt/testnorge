@@ -72,6 +72,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                             .toList(),
                                     person.getPerson().getForelderBarnRelasjon().stream()
                                             .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                            .filter(Objects::nonNull)
                                             .toList(),
                                     person.getPerson().getForeldreansvar().stream()
                                             .map(ForeldreansvarDTO::getAnsvarlig)
