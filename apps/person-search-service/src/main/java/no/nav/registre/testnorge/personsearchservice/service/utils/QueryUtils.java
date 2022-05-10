@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.utils;
+package no.nav.registre.testnorge.personsearchservice.service.utils;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.search.join.ScoreMode;

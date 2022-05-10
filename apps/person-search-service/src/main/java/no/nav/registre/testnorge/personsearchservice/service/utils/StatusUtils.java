@@ -1,13 +1,10 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.utils;
+package no.nav.registre.testnorge.personsearchservice.service.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
-
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
 
 @UtilityClass
 public class StatusUtils {
@@ -25,7 +22,7 @@ public class StatusUtils {
                 .flatMap(value -> Optional.ofNullable(value.getStatus()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(PERSONSTATUS_PATH, ".status", value, false));
+                        queryBuilder.must(QueryUtils.nestedMatchQuery(PERSONSTATUS_PATH, ".status", value, false));
                     }
                 });
     }
@@ -34,7 +31,7 @@ public class StatusUtils {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", true));
+                        queryBuilder.mustNot(QueryUtils.nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", true));
                     }
                 });
     }

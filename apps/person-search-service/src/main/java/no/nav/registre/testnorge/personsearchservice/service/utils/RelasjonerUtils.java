@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.utils;
+package no.nav.registre.testnorge.personsearchservice.service.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
@@ -11,12 +11,12 @@ import org.elasticsearch.index.query.QueryBuilders;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.nestedMatchQuery;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.METADATA_FIELD;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.HISTORISK_PATH;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.YES;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.NO;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.HISTORISK_PATH;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.YES;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
 
 @UtilityClass
 public class RelasjonerUtils {

@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.utils;
+package no.nav.registre.testnorge.personsearchservice.service.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.adapter.utils.QueryUtils.getBetween;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.getBetween;
 
 @UtilityClass
 public class AlderUtils {
