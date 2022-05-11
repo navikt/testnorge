@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.personsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import no.nav.registre.testnorge.personsearchservice.domain.PdlResponse;
+import no.nav.registre.testnorge.personsearchservice.service.utils.QueryBuilder;
 import org.elasticsearch.action.search.SearchRequest;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,6 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 @RequiredArgsConstructor
 public class PersonSearchService {
     private final PersonSearchAdapter personSearchAdapter;
-    private final QueryService queryService;
 
     @SneakyThrows
     public PersonList search(PersonSearch search){
@@ -29,7 +29,7 @@ public class PersonSearchService {
     }
 
     private SearchRequest createSearchRequest(PersonSearch search){
-        var queryBuilder = queryService.buildPersonSearchQuery(search);
-        return queryService.getSearchRequest(queryBuilder, search.getPage(), search.getPageSize(), search.getTerminateAfter());
+        var query = QueryBuilder.buildPersonSearchQuery(search);
+        return QueryBuilder.getSearchRequest(query, search.getPage(), search.getPageSize(), search.getTerminateAfter());
     }
 }

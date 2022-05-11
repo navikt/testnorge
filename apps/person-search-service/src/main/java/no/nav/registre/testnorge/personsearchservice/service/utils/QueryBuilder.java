@@ -1,6 +1,6 @@
-package no.nav.registre.testnorge.personsearchservice.service;
+package no.nav.registre.testnorge.personsearchservice.service.utils;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.apache.lucene.search.join.ScoreMode;
@@ -10,7 +10,6 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +22,13 @@ import static no.nav.registre.testnorge.personsearchservice.service.utils.Nasjon
 import static no.nav.registre.testnorge.personsearchservice.service.utils.RelasjonerUtils.addRelasjonerQueries;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.StatusUtils.addStatusQueries;
 
-@Service
-@RequiredArgsConstructor
-public class QueryService {
+@UtilityClass
+public class QueryBuilder {
 
     private static final String PERSON_FORNAVN = "hentPerson.navn.fornavn";
     private static final String PERSON_ETTERNAVN = "hentPerson.navn.etternavn";
 
-    public BoolQueryBuilder buildPersonSearchQuery(PersonSearch search) {
+    public static BoolQueryBuilder buildPersonSearchQuery(PersonSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
         addRandomScoreQuery(queryBuilder, search);
@@ -45,7 +43,7 @@ public class QueryService {
         return queryBuilder;
     }
 
-    public BoolQueryBuilder buildIdentSearchQuery(IdentSearch search) {
+    public static BoolQueryBuilder buildIdentSearchQuery(IdentSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
         addTagsQueries(queryBuilder, search.getTag(), search.getExcludeTags());
@@ -55,7 +53,7 @@ public class QueryService {
         return queryBuilder;
     }
 
-    private void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private static void addRandomScoreQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getRandomSeed())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
@@ -64,7 +62,7 @@ public class QueryService {
                 });
     }
 
-    private void addTagsQueries(BoolQueryBuilder queryBuilder, String tag, List<String> excludeTags) {
+    private static void addTagsQueries(BoolQueryBuilder queryBuilder, String tag, List<String> excludeTags) {
         queryBuilder.must(QueryBuilders.matchQuery("tags", tag));
 
         Optional.ofNullable(excludeTags)
@@ -117,7 +115,7 @@ public class QueryService {
                 });
     }
 
-    public SearchRequest getSearchRequest(BoolQueryBuilder queryBuilder, Integer page, Integer pageSize, Integer terminateAfter) {
+    public static SearchRequest getSearchRequest(BoolQueryBuilder queryBuilder, Integer page, Integer pageSize, Integer terminateAfter) {
         var searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.from((page - 1) * pageSize);
         searchSourceBuilder.timeout(new TimeValue(3, TimeUnit.SECONDS));
