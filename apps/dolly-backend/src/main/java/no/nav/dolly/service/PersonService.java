@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.Collection;
@@ -40,6 +41,7 @@ public class PersonService {
     private final IdentService identService;
 
     @Async
+    @Transactional
     public void recyclePersoner(List<TestidentDTO> testidenter) {
 
         var tpsfPersoner = tpsfService.hentTestpersoner(testidenter.stream()
@@ -109,9 +111,21 @@ public class PersonService {
                     .map(PdlPersonBolk.Data::getHentPersonBolk)
                     .flatMap(Flux::fromIterable)
                     .filter(personBolk -> nonNull(personBolk.getPerson()))
-                    .map(person -> person.getPerson().getSivilstand().stream()
-                            .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                            .filter(Objects::nonNull)
+                    .map(person -> Stream.of(
+                                    person.getPerson().getSivilstand().stream()
+                                            .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                            .filter(Objects::nonNull)
+                                            .toList(),
+                                    person.getPerson().getForelderBarnRelasjon().stream()
+                                            .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                            .filter(Objects::nonNull)
+                                            .toList(),
+                                    person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                            .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                            .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                            .filter(Objects::nonNull)
+                                            .toList())
+                            .flatMap(Collection::stream)
                             .toList())
                     .flatMap(Flux::fromIterable)
                     .distinct()

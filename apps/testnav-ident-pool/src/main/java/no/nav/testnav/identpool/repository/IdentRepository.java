@@ -42,9 +42,6 @@ public interface IdentRepository extends PagingAndSortingRepository<Ident, Long>
 
     long countByRekvireringsstatusAndIdenttype(Rekvireringsstatus rekvireringsstatus, Identtype identtype);
 
-    @Modifying
-    void deleteAll();
-
     @Query(value = "from Ident i where i.rekvireringsstatus = :rekvireringsstatus and i.foedselsdato > :foedtEtter")
     Page<Ident> findAll(@Param("rekvireringsstatus") Rekvireringsstatus rekvireringsstatus,
                         @Param("foedtEtter") LocalDate foedtEtter, Pageable pageable);

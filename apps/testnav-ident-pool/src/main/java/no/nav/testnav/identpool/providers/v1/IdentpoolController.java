@@ -111,13 +111,10 @@ public class IdentpoolController {
     @PostMapping("/frigjoer")
     @Operation(description = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerIdenter(
-            @RequestParam String rekvirertAv,
+            @RequestParam (required = false) String rekvirertAv,
             @RequestBody List<String> identer) {
 
-        if (isBlank(rekvirertAv)) {
-            throw new IllegalArgumentException("Felt 'rekvirertAv' må fylles ut");
-        }
-        return identpoolService.frigjoerIdenter(rekvirertAv, identer);
+        return identpoolService.frigjoerIdenter(identer);
     }
 
     @PostMapping("/frigjoerLedige")
