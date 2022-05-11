@@ -188,7 +188,7 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (isNull(response) || !response.hasBody()) {
+        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
         }
 
@@ -245,7 +245,7 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (isNull(response) || !response.hasBody()) {
+        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
         }
 
