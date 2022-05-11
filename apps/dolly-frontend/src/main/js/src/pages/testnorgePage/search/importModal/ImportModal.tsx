@@ -7,6 +7,7 @@ import { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
 import { DollyApi } from '~/service/Api'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import './ImportModal.less'
+import Icon from '~/components/ui/icon/Icon'
 
 type Props = {
 	valgtePersoner: ImportPerson[]
@@ -97,11 +98,12 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 			</div>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="importModal">
+					<Icon kind="personinformasjon" size={60} />
 					<div className="importModal importModal-content">
 						<h1>Import av partner</h1>
 						<h4>
-							En eller flere av dine valgte Test-Norge personer har en partner. Vil du inkludere
-							partnerne i importen?
+							En eller flere av dine valgte Test-Norge personer har en partner. <br /> Vil du
+							inkludere partnerne i importen?
 						</h4>
 					</div>
 					<div className="importModal-actions">
