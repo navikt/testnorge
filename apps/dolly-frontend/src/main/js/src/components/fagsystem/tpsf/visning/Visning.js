@@ -16,7 +16,6 @@ import {
 import { TpsMessagingApi } from '~/service/Api'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { PdlPersonInfo } from '~/components/fagsystem/pdl/visning/partials/PdlPersonInfo'
-import { PdlNasjonalitet } from '~/components/fagsystem/tpsf/visning/partials/PdlNasjonalitet'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
 export const TpsfVisning = ({ data, pdlData, environments, tmpPersoner }) => {
@@ -74,11 +73,7 @@ export const TpsfVisning = ({ data, pdlData, environments, tmpPersoner }) => {
 						tmpPersoner={tmpPersoner}
 					/>
 				)}
-				{hasTpsfData ? (
-					<Nasjonalitet data={data} pdlData={pdlData} />
-				) : (
-					<PdlNasjonalitet data={pdlData} />
-				)}
+				{hasTpsfData && <Nasjonalitet data={data} pdlData={pdlData} />}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}
 				{!harPdlAdresse && (

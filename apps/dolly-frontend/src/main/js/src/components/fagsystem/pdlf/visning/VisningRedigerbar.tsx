@@ -11,9 +11,17 @@ import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
+import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { doedsfall } from '~/components/fagsystem/pdlf/form/validation'
+import {
+	doedsfall,
+	innflytting,
+	statsborgerskap,
+	utflytting,
+} from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
+import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -34,6 +42,9 @@ enum Modus {
 enum Attributt {
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
+	Statsborgerskap = 'statsborgerskap',
+	Innvandring = 'innflytting',
+	Utvandring = 'utflytting',
 }
 
 const FieldArrayEdit = styled.div`
@@ -154,14 +165,28 @@ export const VisningRedigerbar = ({
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
+			case Attributt.Statsborgerskap:
+				return <StatsborgerskapForm path={path} />
+			case Attributt.Innvandring:
+				return <InnvandringForm path={path} />
+			case Attributt.Utvandring:
+				return <UtvandringForm path={path} />
 		}
 	}
 
 	const validationSchema = Yup.object().shape(
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
+			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
+			innflytting: ifPresent('innflytting', innflytting),
+			utflytting: ifPresent('utflytting', utflytting),
 		},
-		[['doedsfall', 'doedsfall']]
+		[
+			['doedsfall', 'doedsfall'],
+			['statsborgerskap', 'statsborgerskap'],
+			['innflytting', 'innflytting'],
+			['utflytting', 'utflytting'],
+		]
 	)
 
 	return (
