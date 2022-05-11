@@ -1,6 +1,6 @@
 package no.nav.registre.orkestratoren.provider.rs;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,14 +18,17 @@ import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterRespon
 import no.nav.registre.orkestratoren.service.IdentService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/ident")
 public class IdentController {
 
-    @Autowired
-    private IdentService identService;
+    private final IdentService identService;
 
-    @Value("#{${batch.avspillergruppeId.miljoe}}")
-    private Map<Long, String> avspillergruppeIdMedMiljoe;
+    @Value("${batch.avspillergruppeId}")
+    private long avspillergruppeId;
+
+    @Value("${batch.miljoe)")
+    private String miljoe;
 
     @DeleteMapping
     public SlettedeIdenterResponse slettIdenterFraAdaptere(
@@ -40,21 +43,17 @@ public class IdentController {
     @PostMapping("/synkronisering")
     @Scheduled(cron = "0 0 1 1 * *")
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
-        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.synkroniserMedTps(entry.getKey(), entry.getValue()));
+        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
+        avspillergruppeMedFjernedeIdenter.put(avspillergruppeId, identService.synkroniserMedTps(avspillergruppeId, miljoe));
 
-        }
         return avspillergruppeMedFjernedeIdenter;
     }
 
     @PostMapping("/rensAvspillergruppe")
     @Scheduled(cron = "0 0 2 * * *")
     public Map<Long, SlettedeIdenterResponse> rensAvspillergruppe() {
-        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>(avspillergruppeIdMedMiljoe.size());
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            avspillergruppeMedFjernedeIdenter.put(entry.getKey(), identService.fjernKolliderendeIdenter(entry.getKey(), entry.getValue()));
-        }
+        Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
+        avspillergruppeMedFjernedeIdenter.put(avspillergruppeId, identService.fjernKolliderendeIdenter(avspillergruppeId, miljoe));
         return avspillergruppeMedFjernedeIdenter;
     }
 }

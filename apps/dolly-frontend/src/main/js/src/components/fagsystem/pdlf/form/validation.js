@@ -455,14 +455,12 @@ const doedfoedtBarn = Yup.array().of(
 	})
 )
 
-const statsborgerskap = Yup.array().of(
-	Yup.object({
-		landkode: requiredString.nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.date().optional().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.date().optional().nullable(), 'gyldigFraOgMed'),
-		bekreftelsesdato: Yup.date().optional().nullable(),
-	})
-)
+export const statsborgerskap = Yup.object({
+	landkode: requiredString.nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	bekreftelsesdato: Yup.date().optional().nullable(),
+})
 
 const telefonnummer = Yup.array().of(
 	Yup.object({
@@ -472,21 +470,17 @@ const telefonnummer = Yup.array().of(
 	})
 )
 
-const innflytting = Yup.array().of(
-	Yup.object({
-		fraflyttingsland: requiredString,
-		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-		innflyttingsdato: requiredDate.nullable(),
-	})
-)
+export const innflytting = Yup.object({
+	fraflyttingsland: requiredString,
+	fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+	innflyttingsdato: requiredDate.nullable(),
+})
 
-const utflytting = Yup.array().of(
-	Yup.object({
-		tilflyttingsland: requiredString,
-		tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-		utflyttingsdato: requiredDate.nullable(),
-	})
-)
+export const utflytting = Yup.object({
+	tilflyttingsland: requiredString,
+	tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+	utflyttingsdato: requiredDate.nullable(),
+})
 
 const sivilstand = Yup.array().of(
 	Yup.object({
@@ -629,11 +623,14 @@ export const validation = {
 			),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
-			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
+			statsborgerskap: ifPresent(
+				'$pdldata.person.statsborgerskap',
+				Yup.array().of(statsborgerskap)
+			),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
-			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
-			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),
+			innflytting: ifPresent('$pdldata.person.innflytting', Yup.array().of(innflytting)),
+			utflytting: ifPresent('$pdldata.person.utflytting', Yup.array().of(utflytting)),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId

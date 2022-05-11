@@ -10,6 +10,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikProps } from 'formik'
 import { SelectedValue } from '~/components/fagsystem/pdlf/PdlTypes'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 type FoedselTypes = {
 	formikBag: FormikProps<{}>
@@ -31,25 +32,27 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 
 	return (
 		<>
-			<FormikDatepicker
-				name={`${path}.foedselsdato`}
-				label="Fødselsdato"
-				disabled={foedselsaar !== null && foedselsdato === null}
-				maxDate={new Date()}
-				fastfield={false}
-			/>
-			<Yearpicker
-				formikBag={formikBag}
-				name={`${path}.foedselsaar`}
-				label="Fødselsår"
-				date={foedselsaar ? new Date(foedselsaar, 0) : null}
-				handleDateChange={(val) =>
-					formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-				}
-				maxDate={new Date()}
-				// @ts-ignore
-				disabled={foedselsdato !== null && foedselsaar === null}
-			/>
+			<DatepickerWrapper>
+				<FormikDatepicker
+					name={`${path}.foedselsdato`}
+					label="Fødselsdato"
+					disabled={foedselsaar !== null && foedselsdato === null}
+					maxDate={new Date()}
+					fastfield={false}
+				/>
+				<Yearpicker
+					formikBag={formikBag}
+					name={`${path}.foedselsaar`}
+					label="Fødselsår"
+					date={foedselsaar ? new Date(foedselsaar, 0) : null}
+					handleDateChange={(val) =>
+						formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
+					}
+					maxDate={new Date()}
+					// @ts-ignore
+					disabled={foedselsdato !== null && foedselsaar === null}
+				/>
+			</DatepickerWrapper>
 			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
 			<FormikSelect
 				name={`${path}.foedekommune`}

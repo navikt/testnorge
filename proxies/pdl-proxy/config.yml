@@ -36,6 +36,8 @@ spec:
           cluster: dev-fss
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+        - application: person-search-service
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4

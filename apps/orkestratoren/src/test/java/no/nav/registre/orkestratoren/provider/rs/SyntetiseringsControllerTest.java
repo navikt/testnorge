@@ -22,7 +22,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
+import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -32,7 +32,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @ExtendWith(MockitoExtension.class)
-public class SyntetiseringsControllerTest {
+class SyntetiseringsControllerTest {
 
     @Mock
     private TestnorgeSkdService testnorgeSkdService;
@@ -52,7 +52,7 @@ public class SyntetiseringsControllerTest {
     private TestnorgeTpService testnorgeTpService;
 
     @Mock
-    private TestnorgeArenaService testnorgeArenaService;
+    private ArenaService arenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
@@ -71,7 +71,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeSkdService#genererSkdmeldinger}
      */
     @Test
-    public void shouldProduceSkdmeldinger() {
+    void shouldProduceSkdmeldinger() {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 20);
 
@@ -89,7 +89,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeSkdService#genererNavmeldinger}
      */
     @Test
-    public void shouldProduceNavmeldinger() {
+    void shouldProduceNavmeldinger() {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("Z010", 20);
 
@@ -107,7 +107,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeInntektService#genererInntektsmeldinger}
      */
     @Test
-    public void shouldProduceInntektsmeldinger() {
+    void shouldProduceInntektsmeldinger() {
         var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId, miljoe);
 
         syntetiseringsController.opprettSyntetiskInntektsmeldingIInntektstub(syntetiserInntektsmeldingRequest);
@@ -120,7 +120,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeSigrunService#genererSkattegrunnlag}.
      */
     @Test
-    public void shouldProduceSkattegrunnlagISigrun() {
+    void shouldProduceSkattegrunnlagISigrun() {
         var antallNyeIdenter = 20;
 
         var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -135,7 +135,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeAaregService#genererArbeidsforholdsmeldinger}.
      */
     @Test
-    public void shouldProduceArbeidsforholdIAareg() {
+    void shouldProduceArbeidsforholdIAareg() {
         var antallNyeIdenter = 20;
 
         var syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -150,7 +150,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeInstService#genererInstitusjonsforhold}.
      */
     @Test
-    public void shouldProduceInstitusjonsmeldingIInst() {
+    void shouldProduceInstitusjonsmeldingIInst() {
         var antallNyeIdenter = 20;
 
         var syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallNyeIdenter);
@@ -165,7 +165,7 @@ public class SyntetiseringsControllerTest {
      * {@link TestnorgeTpService#genererTp}
      */
     @Test
-    public void shouldProduceYtelserInTp() {
+    void shouldProduceYtelserInTp() {
         var antallIdenter = 10;
         var request = new SyntetiserTpRequest(avspillergruppeId, miljoe, antallIdenter);
         syntetiseringsController.opprettYtelserITp(request);
@@ -173,23 +173,15 @@ public class SyntetiseringsControllerTest {
     }
 
     @Test
-    public void shouldOppretteArbeidssoekereIArena() {
-        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
-        syntetiseringsController.opprettArbeidssoekereIArena(syntetiserArenaRequest);
-
-        verify(testnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest, false);
-    }
-
-    @Test
-    public void shouldOppretteArbeidssoekereMedOppfoelgingIArena() {
-        var syntetiserArenaRequest = new SyntetiserArenaRequest(avspillergruppeId, miljoe, 2);
+    void shouldOppretteArbeidssoekereMedOppfoelgingIArena() {
+        var syntetiserArenaRequest = new SyntetiserArenaRequest(miljoe, 2);
         syntetiseringsController.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
 
-        verify(testnorgeArenaService).opprettArbeidssokereIArena(syntetiserArenaRequest, true);
+        verify(arenaService).opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
     }
 
     @Test
-    public void shouldProduceMedlemskapInMedl() {
+    void shouldProduceMedlemskapInMedl() {
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 0.1);
         syntetiseringsController.opprettMedlemskapIMedl(syntetiserMedlRequest);
 
@@ -197,7 +189,7 @@ public class SyntetiseringsControllerTest {
     }
 
     @Test
-    public void shouldProduceEgenandelInFrikort() {
+    void shouldProduceEgenandelInFrikort() {
         var syntetiserFrikortRequest = new SyntetiserFrikortRequest(avspillergruppeId, miljoe, 2);
         syntetiseringsController.opprettEgenandelerIFrikort(syntetiserFrikortRequest);
 

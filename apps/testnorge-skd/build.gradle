@@ -83,3 +83,4 @@ dependencies {
 }
 
 description = 'testnorge-skd'
+java.sourceCompatibility = JavaVersion.VERSION_17

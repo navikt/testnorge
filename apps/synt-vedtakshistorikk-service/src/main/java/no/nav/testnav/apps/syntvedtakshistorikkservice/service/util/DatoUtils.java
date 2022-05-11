@@ -159,7 +159,7 @@ public class DatoUtils {
 
     public static boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
         try {
-            return fraDatoA.isBefore(tilDatoB) && fraDatoB.isBefore(tilDatoA);
+            return fraDatoA.isBefore(tilDatoB.plusDays(1)) && fraDatoB.isBefore(tilDatoA.plusDays(1));
         } catch (Exception e) {
             return false;
         }

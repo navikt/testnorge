@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -129,11 +130,27 @@ public class PensjonforvalterClient implements ClientRegister {
                         lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
 
                         decodeStatus(pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest), status);
+
+                        if (nonNull(tp.getYtelser())) {
+                            lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer, status);
+                        }
                     });
         } catch (RuntimeException e) {
 
             status.append(errorStatusDecoder.decodeRuntimeException(e));
         }
+    }
+
+    private void lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer, StringBuilder status) {
+        ytelser.stream().forEach(ytelse -> {
+            LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
+            lagreTpYtelseRequest.setYtelseType(ytelse.getType());
+            lagreTpYtelseRequest.setOrdning(ordning);
+            lagreTpYtelseRequest.setFnr(person);
+            lagreTpYtelseRequest.setMiljoer(new ArrayList<>(miljoer));
+
+            decodeStatus(pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest), status);
+        });
     }
 
     private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {

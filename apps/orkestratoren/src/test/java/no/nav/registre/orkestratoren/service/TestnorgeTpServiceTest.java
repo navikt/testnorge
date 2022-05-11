@@ -17,7 +17,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeTpConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeTpServiceTest {
+class TestnorgeTpServiceTest {
 
     @Mock
     private TestnorgeTpConsumer testnorgeTpConsumer;
@@ -26,7 +26,7 @@ public class TestnorgeTpServiceTest {
     private TestnorgeTpService testnorgeTpService;
 
     @Test
-    public void shouldGenerereTp() {
+    void shouldGenerereTp() {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;

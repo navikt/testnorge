@@ -28,18 +28,21 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeAaregConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeAaregConsumerTest {
+class TestnorgeAaregConsumerTest {
+
+    @Value("${consumers.testnorge-aareg.url}")
+    private String serverUrl;
+
+    @Autowired
+    private TestnorgeAaregConsumer testnorgeAaregConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
-    @Autowired
-    private TestnorgeAaregConsumer testnorgeAaregConsumer;
-    @Autowired
-    private MockRestServiceServer server;
-    @Value("${testnorge-aareg.rest.api.url}")
-    private String serverUrl;
     private List<String> fnrs;
     private SyntetiserAaregRequest syntetiserAaregRequest;
     private final String fnr1 = "01010101010";

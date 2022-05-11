@@ -1,7 +1,6 @@
 package no.nav.registre.orkestratoren.service;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +8,10 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeTpConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class TestnorgeTpService {
 
-    @Autowired
-    TestnorgeTpConsumer testnorgeTpConsumer;
+    private final TestnorgeTpConsumer testnorgeTpConsumer;
 
     public ResponseEntity<String> genererTp(SyntetiserTpRequest request) {
         return testnorgeTpConsumer.startSyntetisering(request);

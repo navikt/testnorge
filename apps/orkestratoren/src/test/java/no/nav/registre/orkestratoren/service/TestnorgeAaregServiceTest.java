@@ -17,8 +17,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeAaregConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 
 @ExtendWith(MockitoExtension.class)
-
-public class TestnorgeAaregServiceTest {
+class TestnorgeAaregServiceTest {
 
     @Mock
     private TestnorgeAaregConsumer testnorgeAaregConsumer;

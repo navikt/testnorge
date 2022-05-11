@@ -22,8 +22,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInntektConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 
 @ExtendWith(MockitoExtension.class)
-
-public class TestnorgeInntektServiceTest {
+class TestnorgeInntektServiceTest {
 
     @Mock
     private TestnorgeInntektConsumer testnorgeInntektConsumer;
@@ -41,7 +40,7 @@ public class TestnorgeInntektServiceTest {
     }
 
     @Test
-    public void shouldGenerereInntektsmeldinger() {
+    void shouldGenerereInntektsmeldinger() {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(avspillergruppeId, miljoe);

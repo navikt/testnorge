@@ -1,0 +1,2701 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AAREG API versjon 1",
+    "description": "API for arbeidsforholdsinformasjon i Arbeidsgiver- og arbeidstakerregisteret (AAREG)\n\nSe <a href=\"https://confluence.adeo.no/x/ShkoF\">https://confluence.adeo.no/x/ShkoF</a> for tilgangskontroll.",
+    "version": "22.1.0.SERVICES"
+  },
+  "servers": [
+    {
+      "url": "https://modapp-q2.adeo.no:443",
+      "description": "Inferred Url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "arbeidsforhold"
+    },
+    {
+      "name": "arbeidsgiver"
+    },
+    {
+      "name": "arbeidstaker"
+    },
+    {
+      "name": "opplysningspliktig"
+    }
+  ],
+  "paths": {
+    "/aareg-services/api/v1/arbeidsforhold/{navArbeidsforholdId}": {
+      "get": {
+        "tags": [
+          "arbeidsforhold"
+        ],
+        "summary": "Finn arbeidsforhold (detaljer)",
+        "operationId": "finnArbeidsforhold",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "navArbeidsforholdId",
+            "in": "path",
+            "description": "NAV arbeidsforhold-id eller arbeidsforhold-uuid i AAREG",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "historikk",
+            "in": "query",
+            "description": "Skal historikk inkluderes i respons? (default = true)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sporingsinformasjon",
+            "in": "query",
+            "description": "Skal sporingsinformasjon inkluderes i respons? (default = true)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Arbeidsforhold"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "arbeidsforhold"
+        ],
+        "summary": "Endre arbeidsforhold",
+        "description": "Se <a href=\"https://confluence.adeo.no/x/E4N4Bw\">https://confluence.adeo.no/x/E4N4Bw</a> for feilkoder.",
+        "operationId": "endreArbeidsforhold",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsforhold-Kildereferanse",
+            "in": "header",
+            "description": "Arkivreferanse for opprettelse/endring av arbeidsforhold",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsforhold-Periode",
+            "in": "header",
+            "description": "Rapporteringsperiode for endring av arbeidsforhold, format (ISO-8601): yyyy-MM",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "navArbeidsforholdId",
+            "in": "path",
+            "description": "NAV arbeidsforhold-id eller arbeidsforhold-uuid i AAREG",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArbeidsforholdReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArbeidsforholdRes"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "update"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/arbeidsforhold": {
+      "post": {
+        "tags": [
+          "arbeidsforhold"
+        ],
+        "summary": "Opprett arbeidsforhold",
+        "description": "Se <a href=\"https://confluence.adeo.no/x/E4N4Bw\">https://confluence.adeo.no/x/E4N4Bw</a> for feilkoder.",
+        "operationId": "opprettArbeidsforhold",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsforhold-Kildereferanse",
+            "in": "header",
+            "description": "Arkivreferanse for opprettelse/endring av arbeidsforhold",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArbeidsforholdReq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opprettet ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArbeidsforholdRes"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "create"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/arbeidsgiver/arbeidsforhold": {
+      "get": {
+        "tags": [
+          "arbeidsgiver"
+        ],
+        "summary": "Finn arbeidsforhold (detaljer) per arbeidsgiver [MERK: DEPREKERT]",
+        "operationId": "finnArbeidsforholdPrArbeidsgiver",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsgiverident",
+            "in": "header",
+            "description": "Identifikator for arbeidsgiver (organisasjonsnummer eller FNR/DNR/Aktør-id)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regelverk",
+            "in": "query",
+            "description": "Filter for regelverk (default = ALLE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALLE",
+                "A_ORDNINGEN",
+                "FOER_A_ORDNINGEN"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter for status (default = AKTIVE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AKTIVE",
+                "ALLE",
+                "AVSLUTTEDE"
+              ]
+            }
+          },
+          {
+            "name": "historikk",
+            "in": "query",
+            "description": "Skal historikk inkluderes i respons? (default = false)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sporingsinformasjon",
+            "in": "query",
+            "description": "Skal sporingsinformasjon inkluderes i respons? (default = false)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArbeidsgiverArbeidsforhold"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/arbeidsgiver/arbeidsforholdoversikt": {
+      "get": {
+        "tags": [
+          "arbeidsgiver"
+        ],
+        "summary": "Finn arbeidsforholdoversikter per arbeidsgiver",
+        "operationId": "finnArbeidsforholdoversikterPrArbeidsgiver",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsgiverident",
+            "in": "header",
+            "description": "Identifikator for arbeidsgiver (organisasjonsnummer eller FNR/DNR/Aktør-id)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Opplysningspliktigident",
+            "in": "header",
+            "description": "Identifikator for opplysningspliktig (organisasjonsnummer eller FNR/DNR/Aktør-id)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regelverk",
+            "in": "query",
+            "description": "Filter for regelverk (default = ALLE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALLE",
+                "A_ORDNINGEN",
+                "FOER_A_ORDNINGEN"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter for status (default = AKTIVE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AKTIVE",
+                "ALLE",
+                "AVSLUTTEDE"
+              ]
+            }
+          },
+          {
+            "name": "arbeidsforholdtype",
+            "in": "query",
+            "description": "Filter for arbeidsforholdtype - kommaseparert hvis mer enn 1 (default = ordinaertArbeidsforhold,maritimtArbeidsforhold,forenkletOppgjoersordning)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "forenkletOppgjoersordning",
+                "frilanserOppdragstakerHonorarPersonerMm",
+                "maritimtArbeidsforhold",
+                "ordinaertArbeidsforhold"
+              ]
+            }
+          },
+          {
+            "name": "antall",
+            "in": "query",
+            "description": "Antall rader, -1 betyr ingen grense (default = -1)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startrad",
+            "in": "query",
+            "description": "Startrad (0-based), -1 betyr alle rader (default = -1)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArbeidsgiverArbeidsforholdoversikter"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/arbeidsgiver/arbeidsforholdoversikt/totalantall": {
+      "get": {
+        "tags": [
+          "arbeidsgiver"
+        ],
+        "summary": "Finn total antall arbeidsforholdoversikter per arbeidsgiver",
+        "operationId": "finnTotalAntallArbeidsforholdoversikterPrArbeidsgiver",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsgiverident",
+            "in": "header",
+            "description": "Identifikator for arbeidsgiver (organisasjonsnummer eller FNR/DNR/Aktør-id)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Opplysningspliktigident",
+            "in": "header",
+            "description": "Identifikator for opplysningspliktig (organisasjonsnummer eller FNR/DNR/Aktør-id)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regelverk",
+            "in": "query",
+            "description": "Filter for regelverk (default = ALLE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALLE",
+                "A_ORDNINGEN",
+                "FOER_A_ORDNINGEN"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter for status (default = AKTIVE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AKTIVE",
+                "ALLE",
+                "AVSLUTTEDE"
+              ]
+            }
+          },
+          {
+            "name": "arbeidsforholdtype",
+            "in": "query",
+            "description": "Filter for arbeidsforholdtype - kommaseparert hvis mer enn 1 (default = ordinaertArbeidsforhold,maritimtArbeidsforhold,forenkletOppgjoersordning)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "forenkletOppgjoersordning",
+                "frilanserOppdragstakerHonorarPersonerMm",
+                "maritimtArbeidsforhold",
+                "ordinaertArbeidsforhold"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArbeidsgiverArbeidsforholdoversikter"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/arbeidstaker/arbeidsforhold": {
+      "get": {
+        "tags": [
+          "arbeidstaker"
+        ],
+        "summary": "Finn arbeidsforhold (detaljer) per arbeidstaker",
+        "operationId": "finnArbeidsforholdPrArbeidstaker",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Personident",
+            "in": "header",
+            "description": "Identifikator for arbeidstaker (FNR/DNR/Aktør-id)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regelverk",
+            "in": "query",
+            "description": "Filter for regelverk (default = ALLE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALLE",
+                "A_ORDNINGEN",
+                "FOER_A_ORDNINGEN"
+              ]
+            }
+          },
+          {
+            "name": "arbeidsforholdtype",
+            "in": "query",
+            "description": "Filter for arbeidsforholdtype - kommaseparert hvis mer enn 1 (default = ordinaertArbeidsforhold,maritimtArbeidsforhold,forenkletOppgjoersordning)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "forenkletOppgjoersordning",
+                "frilanserOppdragstakerHonorarPersonerMm",
+                "maritimtArbeidsforhold",
+                "ordinaertArbeidsforhold"
+              ]
+            }
+          },
+          {
+            "name": "ansettelsesperiodeFom",
+            "in": "query",
+            "description": "Filter for fra-og-med-dato for ansettelsesperiode, format (ISO-8601): yyyy-MM-dd",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ansettelsesperiodeTom",
+            "in": "query",
+            "description": "Filter for til-og-med-dato for ansettelsesperiode, format (ISO-8601): yyyy-MM-dd",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "historikk",
+            "in": "query",
+            "description": "Skal historikk inkluderes i respons? (default = false)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "sporingsinformasjon",
+            "in": "query",
+            "description": "Skal sporingsinformasjon inkluderes i respons? (default = true)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Arbeidsforhold"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/opplysningspliktig/arbeidsforholdoversikt": {
+      "get": {
+        "tags": [
+          "opplysningspliktig"
+        ],
+        "summary": "Finn arbeidsforholdoversikter per opplysningspliktig",
+        "operationId": "finnArbeidsforholdoversikterPrOpplysningspliktig",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Opplysningspliktigident",
+            "in": "header",
+            "description": "Identifikator for opplysningspliktig (organisasjonsnummer)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Arbeidsgiverident",
+            "in": "header",
+            "description": "Identifikator for arbeidsgiver (organisasjonsnummer)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "regelverk",
+            "in": "query",
+            "description": "Filter for regelverk (default = ALLE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ALLE",
+                "A_ORDNINGEN",
+                "FOER_A_ORDNINGEN"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter for status (default = AKTIVE)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "AKTIVE",
+                "ALLE",
+                "AVSLUTTEDE"
+              ]
+            }
+          },
+          {
+            "name": "arbeidsforholdtype",
+            "in": "query",
+            "description": "Filter for arbeidsforholdtype - kommaseparert hvis mer enn 1 (default = ordinaertArbeidsforhold,maritimtArbeidsforhold,forenkletOppgjoersordning)",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "forenkletOppgjoersordning",
+                "frilanserOppdragstakerHonorarPersonerMm",
+                "maritimtArbeidsforhold",
+                "ordinaertArbeidsforhold"
+              ]
+            }
+          },
+          {
+            "name": "antall",
+            "in": "query",
+            "description": "Antall rader, -1 betyr ingen grense (default = -1)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "startrad",
+            "in": "query",
+            "description": "Startrad (0-based), -1 betyr alle rader (default = -1)",
+            "required": false,
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArbeidsgiverArbeidsforholdoversikter"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      }
+    },
+    "/aareg-services/api/v1/opplysningspliktig/arbeidsgiveroversikt": {
+      "get": {
+        "tags": [
+          "opplysningspliktig"
+        ],
+        "summary": "Finn arbeidsgiveroversikter per opplysningspliktig",
+        "operationId": "finnArbeidsgiveroversikterPrOpplysningspliktig",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Open ID Connect (OIDC) token - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Call-Id",
+            "in": "header",
+            "description": "Identifikator for kjeden av tjenestekall",
+            "required": false,
+            "allowReserved": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Consumer-Token",
+            "in": "header",
+            "description": "Token for konsument fra Nav Security Token Service (STS) - brukes til autentisering og autorisasjon for tjenestekall - angis med 'Bearer + mellomrom + token'",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Nav-Opplysningspliktigident",
+            "in": "header",
+            "description": "Identifikator for opplysningspliktig (organisasjonsnummer)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vellykket forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Arbeidsgiveroversikt"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ugyldig(e) parameter(e) eller dataelement(er) i forespørsel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token mangler eller er ugyldig",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Ingen tilgang til forespurt ressurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fant ikke forespurt(e) ressurs(er)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Noe gikk galt",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TjenestefeilResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oidc": [
+              "read"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Ansettelsesperiode": {
+        "title": "Ansettelsesperiode",
+        "type": "object",
+        "properties": {
+          "bruksperiode": {
+            "description": "Bruksperiode for ansettelsesperiode",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "periode": {
+            "description": "Ansettelsesperiode",
+            "$ref": "#/components/schemas/Periode"
+          },
+          "sluttaarsak": {
+            "type": "string",
+            "description": "&Aring;rsak for avsluttet ansettelsesperiode (kodeverk: Slutt%C3%A5rsakAareg)",
+            "example": "arbeidstakerHarSagtOppSelv"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "varslingskode": {
+            "type": "string",
+            "description": "Varslingskode (kodeverk: Varslingskode_5fAa-registeret) - benyttes hvis ansettelsesperiode er lukket maskinelt",
+            "example": "ERKONK"
+          }
+        },
+        "description": "Informasjon knyttet til ansettelsesperioden"
+      },
+      "AntallTimerForTimeloennet": {
+        "title": "AntallTimerForTimeloennet",
+        "type": "object",
+        "properties": {
+          "antallTimer": {
+            "type": "number",
+            "description": "Antall timer",
+            "format": "double",
+            "example": 37.5
+          },
+          "periode": {
+            "description": "Periode for antall timer med timel&oslash;nn",
+            "$ref": "#/components/schemas/Periode"
+          },
+          "rapporteringsperiode": {
+            "type": "string",
+            "description": "Rapporteringsperiode for antall timer med timel&oslash;nn, format (ISO-8601): yyyy-MM",
+            "example": "2018-05"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          }
+        },
+        "description": "Informasjon om antall timer med timel&oslash;nn"
+      },
+      "Arbeidsavtale": {
+        "title": "Arbeidsavtale",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "type": {
+            "type": "string",
+            "description": "Type for arbeidsavtale",
+            "enum": [
+              "Forenklet",
+              "Frilanser",
+              "Maritim",
+              "Ordinaer"
+            ]
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Informasjon om arbeidsavtale/ansettelsesdetaljer"
+      },
+      "ArbeidsavtaleReq": {
+        "title": "ArbeidsavtaleReq",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Informasjon om arbeidsavtale/ansettelsesdetaljer"
+      },
+      "ArbeidsavtaleRes": {
+        "title": "ArbeidsavtaleRes",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "type": {
+            "type": "string",
+            "description": "Type for arbeidsavtale",
+            "enum": [
+              "Forenklet",
+              "Frilanser",
+              "Maritim",
+              "Ordinaer"
+            ]
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Informasjon om arbeidsavtale/ansettelsesdetaljer"
+      },
+      "Arbeidsforhold": {
+        "title": "Arbeidsforhold",
+        "type": "object",
+        "properties": {
+          "ansettelsesperiode": {
+            "description": "Ansettelsesperiode",
+            "$ref": "#/components/schemas/Ansettelsesperiode"
+          },
+          "antallTimerForTimeloennet": {
+            "type": "array",
+            "description": "Liste av antall timer med timel&oslash;nn",
+            "items": {
+              "$ref": "#/components/schemas/AntallTimerForTimeloennet"
+            }
+          },
+          "arbeidsavtaler": {
+            "type": "array",
+            "description": "Liste av arbeidsavtaler - gjeldende og evt. med historikk",
+            "items": {
+              "$ref": "#/components/schemas/Arbeidsavtale"
+            }
+          },
+          "arbeidsforholdId": {
+            "type": "string",
+            "description": "Arbeidsforhold-id fra opplysningspliktig",
+            "example": "abc-321"
+          },
+          "arbeidsgiver": {
+            "description": "Arbeidsgiver - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiver"
+          },
+          "arbeidstaker": {
+            "description": "Arbeidstaker",
+            "$ref": "#/components/schemas/Person"
+          },
+          "innrapportertEtterAOrdningen": {
+            "type": "boolean",
+            "description": "Er arbeidsforholdet innrapportert via a-ordningen?",
+            "example": false
+          },
+          "navArbeidsforholdId": {
+            "type": "integer",
+            "description": "Arbeidsforhold-id i AAREG",
+            "format": "int64",
+            "example": 123456
+          },
+          "opplysningspliktig": {
+            "description": "Opplysningspliktig - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiver"
+          },
+          "permisjonPermitteringer": {
+            "type": "array",
+            "description": "Liste av permisjoner og/eller permitteringer",
+            "items": {
+              "$ref": "#/components/schemas/PermisjonPermittering"
+            }
+          },
+          "registrert": {
+            "type": "string",
+            "description": "Tidspunkt for registrering av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-18T11:12:29"
+          },
+          "sistBekreftet": {
+            "type": "string",
+            "description": "Tidspunkt for siste bekreftelse av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-19T12:10:31"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "type": {
+            "type": "string",
+            "description": "Arbeidsforholdtype (kodeverk: Arbeidsforholdtyper)",
+            "example": "ordinaertArbeidsforhold"
+          },
+          "utenlandsopphold": {
+            "type": "array",
+            "description": "Liste av utenlandsopphold",
+            "items": {
+              "$ref": "#/components/schemas/Utenlandsopphold"
+            }
+          },
+          "varsler": {
+            "type": "array",
+            "description": "Liste av unike varsler for ulike entiter",
+            "items": {
+              "$ref": "#/components/schemas/Varsel"
+            }
+          }
+        },
+        "description": "Informasjon om arbeidsforhold"
+      },
+      "ArbeidsforholdReq": {
+        "title": "ArbeidsforholdReq",
+        "type": "object",
+        "properties": {
+          "ansettelsesperiode": {
+            "description": "Ansettelsesperiode",
+            "$ref": "#/components/schemas/Ansettelsesperiode"
+          },
+          "antallTimerForTimeloennet": {
+            "type": "array",
+            "description": "Liste av antall timer med timel&oslash;nn",
+            "items": {
+              "$ref": "#/components/schemas/AntallTimerForTimeloennet"
+            }
+          },
+          "arbeidsavtaler": {
+            "type": "array",
+            "description": "Liste av arbeidsavtaler - gjeldende og evt. med historikk",
+            "items": {
+              "$ref": "#/components/schemas/ArbeidsavtaleReq"
+            }
+          },
+          "arbeidsforholdId": {
+            "type": "string",
+            "description": "Arbeidsforhold-id fra opplysningspliktig",
+            "example": "abc-321"
+          },
+          "arbeidsgiver": {
+            "description": "Arbeidsgiver - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiverReq"
+          },
+          "arbeidstaker": {
+            "description": "Arbeidstaker",
+            "$ref": "#/components/schemas/Person"
+          },
+          "innrapportertEtterAOrdningen": {
+            "type": "boolean",
+            "description": "Er arbeidsforholdet innrapportert via a-ordningen?",
+            "example": false
+          },
+          "navArbeidsforholdId": {
+            "type": "integer",
+            "description": "Arbeidsforhold-id i AAREG",
+            "format": "int64",
+            "example": 123456
+          },
+          "opplysningspliktig": {
+            "description": "Opplysningspliktig - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiverReq"
+          },
+          "permisjonPermitteringer": {
+            "type": "array",
+            "description": "Liste av permisjoner og/eller permitteringer",
+            "items": {
+              "$ref": "#/components/schemas/PermisjonPermittering"
+            }
+          },
+          "registrert": {
+            "type": "string",
+            "description": "Tidspunkt for registrering av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-18T11:12:29"
+          },
+          "sistBekreftet": {
+            "type": "string",
+            "description": "Tidspunkt for siste bekreftelse av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-19T12:10:31"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "type": {
+            "type": "string",
+            "description": "Arbeidsforholdtype (kodeverk: Arbeidsforholdtyper)",
+            "example": "ordinaertArbeidsforhold"
+          },
+          "utenlandsopphold": {
+            "type": "array",
+            "description": "Liste av utenlandsopphold",
+            "items": {
+              "$ref": "#/components/schemas/Utenlandsopphold"
+            }
+          },
+          "varsler": {
+            "type": "array",
+            "description": "Liste av unike varsler for ulike entiter",
+            "items": {
+              "$ref": "#/components/schemas/VarselReq"
+            }
+          }
+        },
+        "description": "Informasjon om arbeidsforhold"
+      },
+      "ArbeidsforholdRes": {
+        "title": "ArbeidsforholdRes",
+        "type": "object",
+        "properties": {
+          "ansettelsesperiode": {
+            "description": "Ansettelsesperiode",
+            "$ref": "#/components/schemas/Ansettelsesperiode"
+          },
+          "antallTimerForTimeloennet": {
+            "type": "array",
+            "description": "Liste av antall timer med timel&oslash;nn",
+            "items": {
+              "$ref": "#/components/schemas/AntallTimerForTimeloennet"
+            }
+          },
+          "arbeidsavtaler": {
+            "type": "array",
+            "description": "Liste av arbeidsavtaler - gjeldende og evt. med historikk",
+            "items": {
+              "$ref": "#/components/schemas/ArbeidsavtaleRes"
+            }
+          },
+          "arbeidsforholdId": {
+            "type": "string",
+            "description": "Arbeidsforhold-id fra opplysningspliktig",
+            "example": "abc-321"
+          },
+          "arbeidsgiver": {
+            "description": "Arbeidsgiver - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiverRes"
+          },
+          "arbeidstaker": {
+            "description": "Arbeidstaker",
+            "$ref": "#/components/schemas/Person"
+          },
+          "innrapportertEtterAOrdningen": {
+            "type": "boolean",
+            "description": "Er arbeidsforholdet innrapportert via a-ordningen?",
+            "example": false
+          },
+          "navArbeidsforholdId": {
+            "type": "integer",
+            "description": "Arbeidsforhold-id i AAREG",
+            "format": "int64",
+            "example": 123456
+          },
+          "opplysningspliktig": {
+            "description": "Opplysningspliktig - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiverRes"
+          },
+          "permisjonPermitteringer": {
+            "type": "array",
+            "description": "Liste av permisjoner og/eller permitteringer",
+            "items": {
+              "$ref": "#/components/schemas/PermisjonPermittering"
+            }
+          },
+          "registrert": {
+            "type": "string",
+            "description": "Tidspunkt for registrering av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-18T11:12:29"
+          },
+          "sistBekreftet": {
+            "type": "string",
+            "description": "Tidspunkt for siste bekreftelse av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-19T12:10:31"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "type": {
+            "type": "string",
+            "description": "Arbeidsforholdtype (kodeverk: Arbeidsforholdtyper)",
+            "example": "ordinaertArbeidsforhold"
+          },
+          "utenlandsopphold": {
+            "type": "array",
+            "description": "Liste av utenlandsopphold",
+            "items": {
+              "$ref": "#/components/schemas/Utenlandsopphold"
+            }
+          },
+          "varsler": {
+            "type": "array",
+            "description": "Liste av unike varsler for ulike entiter",
+            "items": {
+              "$ref": "#/components/schemas/VarselRes"
+            }
+          }
+        },
+        "description": "Informasjon om arbeidsforhold"
+      },
+      "Arbeidsforholdoversikt": {
+        "title": "Arbeidsforholdoversikt",
+        "type": "object",
+        "properties": {
+          "ansattFom": {
+            "type": "string",
+            "description": "Fra-og-med-dato for ansettelsesperiode, format (ISO-8601): yyyy-MM-dd",
+            "example": "2014-07-01"
+          },
+          "ansattTom": {
+            "type": "string",
+            "description": "Til-og-med-dato for ansettelsesperiode, format (ISO-8601): yyyy-MM-dd",
+            "example": "2015-12-31"
+          },
+          "arbeidsgiver": {
+            "description": "Arbeidsgiver - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiver"
+          },
+          "arbeidstaker": {
+            "description": "Arbeidstaker",
+            "$ref": "#/components/schemas/Person"
+          },
+          "innrapportertEtterAOrdningen": {
+            "type": "boolean",
+            "description": "Er arbeidsforholdet innrapportert via a-ordningen?",
+            "example": false
+          },
+          "navArbeidsforholdId": {
+            "type": "integer",
+            "description": "Arbeidsforhold-id i AAREG",
+            "format": "int64",
+            "example": 123456
+          },
+          "opplysningspliktig": {
+            "description": "Opplysningspliktig - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiver"
+          },
+          "permisjonPermitteringsprosent": {
+            "type": "number",
+            "description": "Prosent for permisjon eller permittering (aggregert)",
+            "format": "double",
+            "example": 50.5
+          },
+          "sistBekreftet": {
+            "type": "string",
+            "description": "Tidspunkt for siste bekreftelse av arbeidsforhold, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-19T12:10:31"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "type": {
+            "type": "string",
+            "description": "Arbeidsforholdtype (kodeverk: Arbeidsforholdtyper)",
+            "example": "ordinaertArbeidsforhold"
+          },
+          "varsler": {
+            "type": "array",
+            "description": "Liste av unike varsler for ulike entiter",
+            "items": {
+              "$ref": "#/components/schemas/Varsel"
+            }
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Informasjon om arbeidsforhold (overordnet)"
+      },
+      "ArbeidsgiverArbeidsforhold": {
+        "title": "ArbeidsgiverArbeidsforhold",
+        "type": "object",
+        "properties": {
+          "antall": {
+            "type": "integer",
+            "description": "Totalt antall arbeidsforhold",
+            "format": "int32"
+          },
+          "arbeidsforhold": {
+            "type": "array",
+            "description": "Liste av arbeidsforhold",
+            "items": {
+              "$ref": "#/components/schemas/Arbeidsforhold"
+            }
+          }
+        },
+        "description": "Resultatobjekt for finn-arbeidsforhold-per-arbeidsgiver\nEn tom liste og antall > 0 betyr at s&oslash;ket gir for mange treff\nArbeidsforhold er filtrert grunnet tilgangskontroll hvis st&oslash;rrelse p&aring; liste er mindre enn (total) antall"
+      },
+      "ArbeidsgiverArbeidsforholdoversikter": {
+        "title": "ArbeidsgiverArbeidsforholdoversikter",
+        "type": "object",
+        "properties": {
+          "antall": {
+            "type": "integer",
+            "description": "Antall arbeidsforholdoversikter i resultatsett - der det er siste resultatsett hvis antall er mindre enn forespurt antall",
+            "format": "int32"
+          },
+          "arbeidsforholdoversikter": {
+            "type": "array",
+            "description": "Liste av arbeidsforholdoversikter",
+            "items": {
+              "$ref": "#/components/schemas/Arbeidsforholdoversikt"
+            }
+          },
+          "startrad": {
+            "type": "integer",
+            "description": "Nummer for f&oslash;rste rad i resultatsett (ikke angitt hvis antall er 0)",
+            "format": "int32"
+          },
+          "totalAntall": {
+            "type": "integer",
+            "description": "Total antall arbeidsforholdoversikter",
+            "format": "int32"
+          }
+        },
+        "description": "Resultatobjekt for finn-arbeidsforholdoversikter-per-arbeidsgiver\nArbeidsforholdoversikter er filtrert grunnet tilgangskontroll hvis st&oslash;rrelse p&aring; liste er mindre enn (total) antall (forutsatt at antall- og/eller startrad-filter ikke er angitt)"
+      },
+      "Arbeidsgiveroversikt": {
+        "title": "Arbeidsgiveroversikt",
+        "type": "object",
+        "properties": {
+          "aktiveArbeidsforhold": {
+            "type": "integer",
+            "description": "Antall aktive arbeidsforhold, dvs. de som har en gjeldende ansettelsesperiode",
+            "format": "int32"
+          },
+          "arbeidsgiver": {
+            "description": "Arbeidsgiver - organisasjon eller person",
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiver"
+          },
+          "inaktiveArbeidsforhold": {
+            "type": "integer",
+            "description": "Antall inaktive arbeidsforhold, dvs. de som har en historisk ansettelsesperiode",
+            "format": "int32"
+          }
+        },
+        "description": "Informasjon knyttet til arbeidsgiver (overordnet)"
+      },
+      "Bruksperiode": {
+        "title": "Bruksperiode",
+        "type": "object",
+        "properties": {
+          "fom": {
+            "type": "string",
+            "description": "Fra-tidsstempel for bruksperiode, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2015-01-06T21:44:04.748"
+          },
+          "tom": {
+            "type": "string",
+            "description": "Til-tidsstempel for bruksperiode, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2015-12-06T19:45:04"
+          }
+        }
+      },
+      "ForenkletOppgjoersordningArbeidsavtale": {
+        "title": "ForenkletOppgjoersordningArbeidsavtale",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Arbeidsavtale/ansettelsesdetaljer for forenklet oppgj&oslash;rsordning arbeidsforhold"
+      },
+      "FrilanserArbeidsavtale": {
+        "title": "FrilanserArbeidsavtale",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Arbeidsavtale/ansettelsesdetaljer for frilanser arbeidsforhold"
+      },
+      "Gyldighetsperiode": {
+        "title": "Gyldighetsperiode",
+        "type": "object",
+        "properties": {
+          "fom": {
+            "type": "string",
+            "description": "Fra-og-med-dato for periode, format (ISO-8601): yyyy-MM-dd",
+            "example": "2014-07-01"
+          },
+          "tom": {
+            "type": "string",
+            "description": "Til-og-med-dato for periode, format (ISO-8601): yyyy-MM-dd",
+            "example": "2015-12-31"
+          }
+        }
+      },
+      "MaritimArbeidsavtale": {
+        "title": "MaritimArbeidsavtale",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "fartsomraade": {
+            "type": "string",
+            "description": "Fartsomr&aring;de (kodeverk: Fartsomraader)",
+            "example": "utenriks"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "skipsregister": {
+            "type": "string",
+            "description": "Skipsregister (kodeverk: Skipsregistre)",
+            "example": "nis"
+          },
+          "skipstype": {
+            "type": "string",
+            "description": "Skipstype (kodeverk: Skipstyper)",
+            "example": "turist"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Arbeidsavtale/ansettelsesdetaljer for maritime arbeidsforhold"
+      },
+      "OpplysningspliktigArbeidsgiver": {
+        "title": "OpplysningspliktigArbeidsgiver",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type: Organisasjon eller Person",
+            "enum": [
+              "Organisasjon",
+              "Person"
+            ]
+          }
+        },
+        "description": "Informasjon om opplysningspliktig eller arbeidsgiver (organisasjon eller person)"
+      },
+      "OpplysningspliktigArbeidsgiverReq": {
+        "title": "OpplysningspliktigArbeidsgiverReq",
+        "type": "object",
+        "description": "Informasjon om opplysningspliktig eller arbeidsgiver (organisasjon eller person)"
+      },
+      "OpplysningspliktigArbeidsgiverRes": {
+        "title": "OpplysningspliktigArbeidsgiverRes",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Type: Organisasjon eller Person",
+            "enum": [
+              "Organisasjon",
+              "Person"
+            ]
+          }
+        },
+        "description": "Informasjon om opplysningspliktig eller arbeidsgiver (organisasjon eller person)"
+      },
+      "OrdinaerArbeidsavtale": {
+        "title": "OrdinaerArbeidsavtale",
+        "type": "object",
+        "properties": {
+          "ansettelsesform": {
+            "type": "string",
+            "description": "Ansettelsesform (kodeverk: AnsettelsesformAareg)",
+            "example": "fast"
+          },
+          "antallTimerPrUke": {
+            "type": "number",
+            "description": "Antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "arbeidstidsordning": {
+            "type": "string",
+            "description": "Arbeidstidsordning (kodeverk: Arbeidstidsordninger)",
+            "example": "ikkeSkift"
+          },
+          "beregnetAntallTimerPrUke": {
+            "type": "number",
+            "description": "Beregnet antall timer per uke",
+            "format": "double",
+            "example": 37.5
+          },
+          "bruksperiode": {
+            "description": "Bruksperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Bruksperiode"
+          },
+          "gyldighetsperiode": {
+            "description": "Gyldighetsperiode for arbeidsavtalen",
+            "$ref": "#/components/schemas/Gyldighetsperiode"
+          },
+          "sistLoennsendring": {
+            "type": "string"
+          },
+          "sistStillingsendring": {
+            "type": "string"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "stillingsprosent": {
+            "type": "number",
+            "description": "Stillingsprosent",
+            "format": "double",
+            "example": 49.5
+          },
+          "yrke": {
+            "type": "string",
+            "description": "Yrke (kodeverk: Yrker)",
+            "example": "2130123"
+          }
+        },
+        "description": "Arbeidsavtale/ansettelsesdetaljer for ordin&aelig;re arbeidsforhold"
+      },
+      "Organisasjon": {
+        "title": "Organisasjon",
+        "properties": {
+          "organisasjonsnummer": {
+            "type": "string",
+            "description": "Organisasjonsnummer fra Enhetsregisteret",
+            "example": "987654321"
+          }
+        },
+        "description": "Informasjon om organisasjon (arbeidsgiver/opplysningspliktig)",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OpplysningspliktigArbeidsgiver"
+          },
+          {
+            "title": "Organisasjon",
+            "type": "object",
+            "properties": {
+              "organisasjonsnummer": {
+                "type": "string",
+                "description": "Organisasjonsnummer fra Enhetsregisteret",
+                "example": "987654321"
+              }
+            },
+            "description": "Informasjon om organisasjon (arbeidsgiver/opplysningspliktig)"
+          }
+        ]
+      },
+      "Periode": {
+        "title": "Periode",
+        "type": "object",
+        "properties": {
+          "fom": {
+            "type": "string",
+            "description": "Fra-og-med-dato for periode, format (ISO-8601): yyyy-MM-dd",
+            "example": "2014-07-01"
+          },
+          "tom": {
+            "type": "string",
+            "description": "Til-og-med-dato for periode, format (ISO-8601): yyyy-MM-dd",
+            "example": "2015-12-31"
+          }
+        }
+      },
+      "PermisjonPermittering": {
+        "title": "PermisjonPermittering",
+        "type": "object",
+        "properties": {
+          "periode": {
+            "description": "Periode for permisjon eller permittering",
+            "$ref": "#/components/schemas/Periode"
+          },
+          "permisjonPermitteringId": {
+            "type": "string",
+            "description": "Id fra opplysningspliktig",
+            "example": "123-xyz"
+          },
+          "prosent": {
+            "type": "number",
+            "description": "Prosent for permisjon eller permittering",
+            "format": "double",
+            "example": 50.5
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          },
+          "type": {
+            "type": "string",
+            "description": "Permisjon-/permitteringstype (kodeverk: PermisjonsOgPermitteringsBeskrivelse)",
+            "example": "permisjonMedForeldrepenger"
+          },
+          "varslingskode": {
+            "type": "string",
+            "description": "Varslingskode (kodeverk: Varslingskode_5fAa-registeret) - benyttes hvis permisjon/permittering er lukket maskinelt"
+          }
+        },
+        "description": "Informasjon om permisjon eller permittering"
+      },
+      "Person": {
+        "title": "Person",
+        "type": "object",
+        "properties": {
+          "aktoerId": {
+            "type": "string",
+            "description": "Akt&oslash;r-id",
+            "example": "1234567890"
+          },
+          "offentligIdent": {
+            "type": "string",
+            "description": "Gjeldende offentlig ident",
+            "example": "31126700000"
+          }
+        },
+        "description": "Informasjon om person (arbeidstaker/arbeidsgiver/opplysningspliktig)"
+      },
+      "Sporingsinformasjon": {
+        "title": "Sporingsinformasjon",
+        "type": "object",
+        "properties": {
+          "endretAv": {
+            "type": "string",
+            "description": "Brukernavn for endring",
+            "example": "Z990693"
+          },
+          "endretKilde": {
+            "type": "string",
+            "description": "Kilde for endring",
+            "example": "AAREG"
+          },
+          "endretKildereferanse": {
+            "type": "string",
+            "description": "Kildereferanse for endring",
+            "example": "referanse-fra-kilde"
+          },
+          "endretTidspunkt": {
+            "type": "string",
+            "description": "Tidspunkt for endring, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-19T12:11:20.79"
+          },
+          "opprettetAv": {
+            "type": "string",
+            "description": "Brukernavn for opprettelse",
+            "example": "srvappserver"
+          },
+          "opprettetKilde": {
+            "type": "string",
+            "description": "Kilde for opprettelse",
+            "example": "EDAG"
+          },
+          "opprettetKildereferanse": {
+            "type": "string",
+            "description": "Kildereferanse for opprettelse",
+            "example": "22a26849-aeef-4b81-9174-e238c11e1081"
+          },
+          "opprettetTidspunkt": {
+            "type": "string",
+            "description": "Tidspunkt for opprettelse, format (ISO-8601): yyyy-MM-dd'T'HH:mm[:ss[.SSSSSSSSS]]",
+            "example": "2018-09-19T12:10:58.059"
+          }
+        },
+        "description": "Informasjon om opprettelse og endring av objekt. MERK: Skal IKKE eksponeres i selvbetjeningssonen (SBS)."
+      },
+      "TjenestefeilResponse": {
+        "title": "TjenestefeilResponse",
+        "type": "object",
+        "properties": {
+          "melding": {
+            "type": "string",
+            "description": "Informasjon om hva som er feil"
+          }
+        },
+        "description": "Responsobjekt ved feil i tjeneste"
+      },
+      "Utenlandsopphold": {
+        "title": "Utenlandsopphold",
+        "type": "object",
+        "properties": {
+          "landkode": {
+            "type": "string",
+            "description": "Landkode (kodeverk: Landkoder)",
+            "example": "JPN"
+          },
+          "periode": {
+            "description": "Periode for utenlandsopphold",
+            "$ref": "#/components/schemas/Periode"
+          },
+          "rapporteringsperiode": {
+            "type": "string",
+            "description": "Rapporteringsperiode for utenlandsopphold, format (ISO-8601): yyyy-MM",
+            "example": "2017-12"
+          },
+          "sporingsinformasjon": {
+            "description": "Informasjon om opprettelse og endring av objekt",
+            "$ref": "#/components/schemas/Sporingsinformasjon"
+          }
+        },
+        "description": "Informasjon om utenlandsopphold"
+      },
+      "Varsel": {
+        "title": "Varsel",
+        "type": "object",
+        "properties": {
+          "entitet": {
+            "type": "string",
+            "description": "Entitet for varsel",
+            "enum": [
+              "ANSETTELSESPERIODE",
+              "ARBEIDSFORHOLD",
+              "PERMISJONPERMITTERING"
+            ]
+          },
+          "varslingskode": {
+            "type": "string",
+            "description": "Varslingskode (kodeverk: Varslingskode_5fAa-registeret)"
+          }
+        },
+        "description": "Informasjon om varsel"
+      },
+      "VarselReq": {
+        "title": "VarselReq",
+        "type": "object",
+        "properties": {
+          "entitet": {
+            "type": "string",
+            "description": "Entitet for varsel",
+            "enum": [
+              "ANSETTELSESPERIODE",
+              "ARBEIDSFORHOLD",
+              "PERMISJONPERMITTERING"
+            ]
+          },
+          "varslingskode": {
+            "type": "string",
+            "description": "Varslingskode (kodeverk: Varslingskode_5fAa-registeret)"
+          }
+        },
+        "description": "Informasjon om varsel"
+      },
+      "VarselRes": {
+        "title": "VarselRes",
+        "type": "object",
+        "properties": {
+          "entitet": {
+            "type": "string",
+            "description": "Entitet for varsel",
+            "enum": [
+              "ANSETTELSESPERIODE",
+              "ARBEIDSFORHOLD",
+              "PERMISJONPERMITTERING"
+            ]
+          },
+          "varslingskode": {
+            "type": "string",
+            "description": "Varslingskode (kodeverk: Varslingskode_5fAa-registeret)"
+          }
+        },
+        "description": "Informasjon om varsel"
+      }
+    }
+  }
+}

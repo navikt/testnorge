@@ -18,8 +18,8 @@ import org.springframework.web.util.UriTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 @Slf4j
+@Component
 public class HodejegerenHistorikkConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -31,7 +31,7 @@ public class HodejegerenHistorikkConsumer {
 
     public HodejegerenHistorikkConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-hodejegeren.rest.api.url}") String hodejegerenServerUrl
+            @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.sendTilHodejegerenUrl = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/skd/oppdaterDokument/{ident}");

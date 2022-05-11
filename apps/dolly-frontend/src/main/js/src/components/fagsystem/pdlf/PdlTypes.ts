@@ -16,11 +16,13 @@ export type PersonData = {
 	navn?: Array<Navn>
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
-	statsborgerskap?: Array<Statsborgerskap>
+	statsborgerskap?: Array<StatsborgerskapData>
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<Sivilstand>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
+	innflytting?: Array<Innflytting>
+	utflytting?: Array<Utflytting>
 }
 
 type Navn = {
@@ -49,8 +51,25 @@ export type DoedsfallData = {
 	id?: number
 }
 
-type Statsborgerskap = {
+export type StatsborgerskapData = {
 	landkode: string
+	gyldigFraOgMed: string
+	gyldigTilOgMed: string
+	id?: number
+}
+
+type Innflytting = {
+	fraflyttingsland: string
+	fraflyttingsstedIUtlandet: string
+	innflyttingsdato: string
+	id?: number
+}
+
+type Utflytting = {
+	tilflyttingsland: string
+	tilflyttingsstedIUtlandet: string
+	utflyttingsdato: string
+	id?: number
 }
 
 export type AdressebeskyttelseData = {
@@ -98,6 +117,7 @@ export type Foreldreansvar = {
 	ansvar: string
 	ansvarlig: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
+	metadata?: Metadata
 }
 
 export type ForeldreansvarUtenId = {

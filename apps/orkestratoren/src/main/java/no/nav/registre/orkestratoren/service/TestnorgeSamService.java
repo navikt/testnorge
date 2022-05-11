@@ -1,6 +1,6 @@
 package no.nav.registre.orkestratoren.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,10 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TestnorgeSamService {
 
-    @Autowired
-    private TestnorgeSamConsumer testnorgeSamConsumer;
+    private final TestnorgeSamConsumer testnorgeSamConsumer;
 
     public ResponseEntity<List<Object>> genererSamordningsmeldinger(SyntetiserSamRequest syntetiserSamRequest) {
         return testnorgeSamConsumer.startSyntetisering(syntetiserSamRequest);

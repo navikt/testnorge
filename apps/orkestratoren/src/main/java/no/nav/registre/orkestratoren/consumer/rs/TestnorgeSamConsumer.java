@@ -26,7 +26,7 @@ public class TestnorgeSamConsumer {
 
     public TestnorgeSamConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-sam.rest.api.url}") String samServerUrl
+            @Value("${consumers.testnorge-sam.url}") String samServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.url = new UriTemplate(samServerUrl + "/v1/syntetisering/generer");

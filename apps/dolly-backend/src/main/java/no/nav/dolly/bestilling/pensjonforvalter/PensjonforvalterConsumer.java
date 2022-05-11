@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
@@ -44,6 +46,7 @@ public class PensjonforvalterConsumer {
     private static final String MILJOER_HENT_TILGJENGELIGE_URL = API_VERSJON + "/miljo";
     private static final String PENSJON_INNTEKT_URL = API_VERSJON + "/inntekt";
     private static final String PENSJON_TP_FORHOLD_URL = API_VERSJON + "/tp/forhold";
+    private static final String PENSJON_TP_YTELSE_URL = API_VERSJON + "/tp/ytelse";
     private static final String FNR_QUERY = "fnr";
     private static final String MILJO_QUERY = "miljo";
 
@@ -185,8 +188,8 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i pensjon-testdata-facade", lagreTpForholdRequest.getFnr()));
+        if (isNull(response) || !response.hasBody()) {
+            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
         }
 
         return response.getBody();
@@ -212,8 +215,34 @@ public class PensjonforvalterConsumer {
                         .filter(WebClientFilter::is5xxException))
                 .block();
 
-        if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra pensjon-testdata-facade", ident, miljoe));
+        if (isNull(response) || !response.hasBody()) {
+            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra TP (pensjon)", ident, miljoe));
+        }
+
+        return response.getBody();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
+    public PensjonforvalterResponse lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest) {
+
+        ResponseEntity<PensjonforvalterResponse> response = webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(PENSJON_TP_YTELSE_URL)
+                        .build())
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .bodyValue(lagreTpYtelseRequest)
+                .retrieve()
+                .toEntity(PensjonforvalterResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .block();
+
+        if (isNull(response) || !response.hasBody()) {
+            throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
         }
 
         return response.getBody();

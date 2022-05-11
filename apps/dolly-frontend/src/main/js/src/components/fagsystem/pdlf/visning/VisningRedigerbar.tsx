@@ -11,19 +11,25 @@ import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
+import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import {
-	adressebeskyttelse,
-	bostedsadresse,
-	doedsfall,
-	kontaktadresse,
-	oppholdsadresse,
-} from '~/components/fagsystem/pdlf/form/validation'
-import { ifPresent } from '~/utils/YupValidations'
+import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { AdressebeskyttelseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import {
+	doedsfall,
+	innflytting,
+	statsborgerskap,
+	utflytting,
+	adressebeskyttelse,
+	bostedsadresse,
+	kontaktadresse,
+	oppholdsadresse,
+} from '~/components/fagsystem/pdlf/form/validation'
+import { ifPresent } from '~/utils/YupValidations'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -45,6 +51,9 @@ enum Modus {
 enum Attributt {
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
+	Statsborgerskap = 'statsborgerskap',
+	Innvandring = 'innflytting',
+	Utvandring = 'utflytting',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -170,6 +179,12 @@ export const VisningRedigerbar = ({
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
+			case Attributt.Statsborgerskap:
+				return <StatsborgerskapForm path={path} />
+			case Attributt.Innvandring:
+				return <InnvandringForm path={path} />
+			case Attributt.Utvandring:
+				return <UtvandringForm path={path} />
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
@@ -184,6 +199,9 @@ export const VisningRedigerbar = ({
 	const validationSchema = Yup.object().shape(
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
+			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
+			innflytting: ifPresent('innflytting', innflytting),
+			utflytting: ifPresent('utflytting', utflytting),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
@@ -191,6 +209,9 @@ export const VisningRedigerbar = ({
 		},
 		[
 			['doedsfall', 'doedsfall'],
+			['statsborgerskap', 'statsborgerskap'],
+			['innflytting', 'innflytting'],
+			['utflytting', 'utflytting'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
