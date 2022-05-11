@@ -118,7 +118,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private void lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
-
+        List<String> exceptions = new ArrayList<>();
         status.append('$').append(TP_FORHOLD).append('#');
         PensjonforvalterResponse response = new PensjonforvalterResponse();
 
@@ -134,18 +134,23 @@ public class PensjonforvalterClient implements ClientRegister {
                             mergePensjonforvalterResponses(forholdResponse, response);
 
                             if (nonNull(tp.getYtelser())) {
-                                var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer, status);
+                                var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
                                 mergePensjonforvalterResponses(ytelseResponse, response);
                             }
                         } catch (RuntimeException e) {
-                            status.append(errorStatusDecoder.decodeRuntimeException(e));
+                            exceptions.add(errorStatusDecoder.decodeRuntimeException(e));
                         }
                     });
-            decodeStatus(response, status);
+
+            if (exceptions.isEmpty()) {
+                decodeStatus(response, status);
+            } else {
+                status.append(exceptions.get(0));
+            }
 
     }
 
-    private PensjonforvalterResponse lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer, StringBuilder status) {
+    private PensjonforvalterResponse lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer) {
         PensjonforvalterResponse response = new PensjonforvalterResponse();
 
         ytelser.stream().forEach(ytelse -> {

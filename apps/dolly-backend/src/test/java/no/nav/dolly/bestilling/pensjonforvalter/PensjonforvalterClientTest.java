@@ -10,7 +10,9 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,11 +42,17 @@ public class PensjonforvalterClientTest {
     private DollyPersonCache dollyPersonCache;
     @Mock
     private MapperFacade mapperFacade;
+
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
 
     @InjectMocks
     private PensjonforvalterClient pensjonforvalterClient;
+
+    @BeforeEach
+    public void setup() {
+        when(errorStatusDecoder.decodeRuntimeException(any())).thenReturn("Teknisk feil. Se logg!");
+    }
 
     // empty new response list to empty previous list
     // none empty new response list to empty previous list
@@ -310,6 +318,63 @@ public class PensjonforvalterClientTest {
 
         assertThat("progress not null", progress != null);
         assertThat("TpForhold have Feil for TEST2 environment", progress.getPensjonforvalterStatus().contains("TpForhold#TEST1:OK,TEST2:Feil= ytelse2 feil on TEST2"));
+    }
+
+    @Test
+    public void testLagreTpForhold_withException() {
+        PensjonData.TpOrdning tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
+        PensjonData.TpOrdning tp2 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
+
+        PensjonData pensjonData = new PensjonData();
+        pensjonData.setTp(Arrays.asList(tp1, tp2));
+
+        RsDollyUtvidetBestilling bestilling = new RsDollyUtvidetBestilling();
+        bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
+        bestilling.setPensjonforvalter(pensjonData);
+
+        Person person = new Person();
+        DollyPerson dollyPerson = new DollyPerson();
+        dollyPerson.setHovedperson("000");
+        dollyPerson.setPersondetaljer(List.of(person));
+
+        BestillingProgress progress = new BestillingProgress();
+
+        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
+
+        var test1EnvResponse = new PensjonforvalterResponse.Response();
+        test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
+        var test2EnvResponse = new PensjonforvalterResponse.Response();
+        test2EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
+
+        PensjonforvalterResponse lagreTpForholdResponse = new PensjonforvalterResponse();
+        lagreTpForholdResponse.setStatus(List.of(
+                new PensjonforvalterResponse.ResponseEnvironment("TEST1", test1EnvResponse),
+                new PensjonforvalterResponse.ResponseEnvironment("TEST2", test2EnvResponse)
+        ));
+
+        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class)))
+                .thenReturn(lagreTpForholdResponse);
+
+        var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
+        test2EnvYtelseResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 500));
+        test2EnvYtelseResponse.setMessage("ytelse2 feil on TEST2");
+
+        PensjonforvalterResponse lagreTpYtelseResponse = new PensjonforvalterResponse();
+        lagreTpYtelseResponse.setStatus(List.of(
+                new PensjonforvalterResponse.ResponseEnvironment("TEST1", test1EnvResponse),
+                new PensjonforvalterResponse.ResponseEnvironment("TEST2", test2EnvYtelseResponse)
+        ));
+
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class)))
+                .thenThrow(new DollyFunctionalException(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", "12345")));
+
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+
+        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
+
+        assertThat("progress not null", progress != null);
+        assertThat("Teknisk feil. Se logg!", progress.getPensjonforvalterStatus().contains("Teknisk feil. Se logg!"));
     }
 
     public static class PensjonforvalterClientTestUtil {
