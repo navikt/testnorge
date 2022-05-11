@@ -158,10 +158,16 @@ export const Kontaktadresse = ({
 	ident,
 	erPdlVisning = false,
 }: KontaktadresseTypes) => {
-	if (!data || data.length === 0) return null
+	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1))
+		return null
+
+	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
 
 	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
-		const initKontaktadresse = Object.assign(_cloneDeep(initialKontaktadresse), data[idx])
+		const initKontaktadresse = Object.assign(
+			_cloneDeep(initialKontaktadresse),
+			data?.[idx] || tmpData?.[idx]
+		)
 		const initialValues = { kontaktadresse: initKontaktadresse }
 
 		const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
@@ -200,7 +206,7 @@ export const Kontaktadresse = ({
 			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
+					<DollyFieldArray data={data || tmpData} header="" nested>
 						{(adresse: any, idx: number) => (
 							<KontaktadresseVisning kontaktadresseData={adresse} idx={idx} />
 						)}

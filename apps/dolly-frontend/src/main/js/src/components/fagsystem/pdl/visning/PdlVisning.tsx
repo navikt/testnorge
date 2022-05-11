@@ -112,7 +112,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse data={kontaktadresse} />
-				<Adressebeskyttelse data={adressebeskyttelse} />
+				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
