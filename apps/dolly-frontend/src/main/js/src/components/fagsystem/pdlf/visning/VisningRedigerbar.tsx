@@ -13,6 +13,7 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import {
+	adressebeskyttelse,
 	bostedsadresse,
 	doedsfall,
 	kontaktadresse,
@@ -22,6 +23,7 @@ import { ifPresent } from '~/utils/YupValidations'
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
+import { AdressebeskyttelseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -46,6 +48,7 @@ enum Attributt {
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
+	Adressebeskyttelse = 'adressebeskyttelse',
 }
 
 const FieldArrayEdit = styled.div`
@@ -173,6 +176,8 @@ export const VisningRedigerbar = ({
 				return <OppholdsadresseForm formikBag={formikBag} path={path} />
 			case Attributt.Kontaktadresse:
 				return <KontaktadresseForm formikBag={formikBag} path={path} />
+			case Attributt.Adressebeskyttelse:
+				return <AdressebeskyttelseForm formikBag={formikBag} path={path} identtype={identtype} />
 		}
 	}
 
@@ -182,12 +187,14 @@ export const VisningRedigerbar = ({
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
+			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
 		},
 		[
 			['doedsfall', 'doedsfall'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
+			['adressebeskyttelse', 'adressebeskyttelse'],
 		]
 	)
 

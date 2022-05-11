@@ -298,11 +298,9 @@ export const kontaktadresse = Yup.object({
 	}),
 })
 
-const adressebeskyttelse = Yup.array().of(
-	Yup.object({
-		gradering: requiredString.nullable(),
-	})
-)
+export const adressebeskyttelse = Yup.object({
+	gradering: requiredString.nullable(),
+})
 
 const fullmakt = Yup.array().of(
 	Yup.object({
@@ -619,7 +617,10 @@ export const validation = {
 				Yup.array().of(oppholdsadresse)
 			),
 			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', Yup.array().of(kontaktadresse)),
-			adressebeskyttelse: ifPresent('$pdldata.person.adressebeskyttelse', adressebeskyttelse),
+			adressebeskyttelse: ifPresent(
+				'$pdldata.person.adressebeskyttelse',
+				Yup.array().of(adressebeskyttelse)
+			),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
 			tilrettelagtKommunikasjon: ifPresent(

@@ -17,7 +17,7 @@ export type PersonData = {
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<Statsborgerskap>
-	adressebeskyttelse?: Array<Adressebeskyttelse>
+	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<Sivilstand>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
@@ -53,8 +53,9 @@ type Statsborgerskap = {
 	landkode: string
 }
 
-type Adressebeskyttelse = {
+export type AdressebeskyttelseData = {
 	gradering: string
+	id?: number
 }
 
 export type Sivilstand = {
