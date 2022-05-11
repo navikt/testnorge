@@ -94,7 +94,9 @@ export const PersonVisning = ({
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
-							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
+							personen og via Dolly vil bli slettet og personen vil bli frigjort fra gruppen. Dette
+							gjelder også for eventuell partner til personen som også er blitt importert til
+							gruppen.
 						</FrigjoerButton>
 					)}
 				</div>
