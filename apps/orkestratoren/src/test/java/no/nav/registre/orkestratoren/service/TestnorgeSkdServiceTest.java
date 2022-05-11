@@ -26,7 +26,7 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldinger
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeSkdServiceTest {
+class TestnorgeSkdServiceTest {
 
     @Mock
     private TestnorgeSkdConsumer testnorgeSkdConsumer;
@@ -58,7 +58,7 @@ public class TestnorgeSkdServiceTest {
     }
 
     @Test
-    public void shouldGenerereSkdmeldinger() {
+    void shouldGenerereSkdmeldinger() {
         when(testnorgeSkdConsumer.startSyntetisering(any(SyntetiserSkdmeldingerRequest.class))).thenReturn(expectedResponseSkd);
 
         var response = (SkdMeldingerTilTpsRespons) testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskodeSkd).getBody();
@@ -71,7 +71,7 @@ public class TestnorgeSkdServiceTest {
     }
 
     @Test
-    public void shouldGenerereNavmeldinger() {
+    void shouldGenerereNavmeldinger() {
         var syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskodeNav);
 
         when(testnorgeNavEndringsmeldingerConsumer.startSyntetisering(syntetiserNavmeldingerRequest)).thenReturn(expectedResponseNav);

@@ -1,20 +1,3 @@
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-CLIENT_ID: ${azure.app.client.id}
-CLIENT_SECRET: ${azure.app.client.secret}
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
-        tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-adresse-service
-
 management:
   endpoints:
     web:
@@ -33,17 +16,59 @@ ibm:
 queue:
   queueName: ${QUEUE_NAME}
 
-
 batch:
-  avspillergruppeId.miljoe: ${AVSPILLERGRUPPEID_MILJOE}
-  antallMeldingerPerEndringskode: ${ANTALL_SKD_MELDINGER_PER_ENDRINGSKODE}
-  navMeldinger: ${ANTALL_NAV_MELDINGER_PER_ENDRINGSKODE}
-
-poppbatch.antallNyeIdenter:  ${POPP_ANTALL_NYE_IDENTER}
-aaregbatch.antallNyeIdenter:  ${AAREG_ANTALL_NYE_IDENTER}
-instbatch.antallNyeIdenter:  ${INST_ANTALL_NYE_IDENTER}
-tpbatch.antallPersoner:  ${TP_ANTALL_NYE_IDENTER}
-sambatch.antallMeldinger:  ${SAM_ANTALL_NYE_IDENTER}
-arenabatch.antallNyeIdenter:  ${ARENA_ANTALL_NYE_IDENTER}
-medlbatch.prosentfaktor:  ${MEDL_PROSENTFAKTOR}
-frikortbatch.antallNyeIdenter:  ${FRIKORT_ANTALL_NYE_IDENTER}
+  avspillergruppeId: 100000883
+  miljoe: q2
+  arena:
+    antallNyeIdenter: 5
+  popp:
+    antallNyeIdenter: 500
+  aareg:
+    antallNyeIdenter: 10
+  inst:
+    antallNyeIdenter: 30
+  tp:
+    antallPersoner: 10000
+  sam:
+    antallMeldinger: 5
+  medl:
+    prosentfaktor:  0.1
+  frikort:
+    antallNyeIdenter: 10000
+  meldinger:
+    antallNavMeldingerPerEndringskode:
+      Z010: 500
+      Z510: 340
+      Z310: 260
+      ZM10: 100
+      Z610: 100
+      ZV10: 50
+      ZD10: 40
+      Z810: 10
+    antallSkdMeldingerPerEndringskode:
+      0110: 10
+      0211: 275
+      0610: 40
+      0710: 35
+      1010: 3
+      1110: 10
+      1410: 4
+      1810: 4
+      2410: 300
+      2510: 3
+      2610: 580
+      2810: 30
+      2910: 5
+      3210: 25
+      3410: 10
+      3810: 40
+      3910: 6
+      4010: 60
+      4110: 80
+      4310: 25
+      4410: 210
+      4710: 210
+      4910: 80
+      5110: 5
+      5610: 20
+      9110: 10

@@ -431,6 +431,14 @@ const selectOptions: SelectOptions = {
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'ORGNR', label: 'ORGNR' },
 	],
+
+	tjenestepensjonYtelseType : [
+		{ value: 'ALDER', label: 'Alderspensjon' },
+		{ value: 'UFORE', label: 'Uførepensjon' },
+		{ value: 'GJENLEVENDE', label: 'Gjenlevendepensjon' },
+		{ value: 'BARN', label: 'Barnepensjon' },
+		{ value: 'AFP', label: 'AFP-pensjon' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId: keyof SelectOptions) => selectOptions[attributeId]

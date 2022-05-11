@@ -55,7 +55,7 @@ export default function Gruppe({
 	useEffect(() => {
 		getGruppe(gruppeId, sidetall, sideStoerrelse)
 		getBestillinger(gruppeId)
-	}, [sidetall, sideStoerrelse])
+	}, [sidetall, sideStoerrelse, gruppeId])
 
 	useEffect(() => {
 		setGruppe(selectGruppe(grupper, gruppeId))

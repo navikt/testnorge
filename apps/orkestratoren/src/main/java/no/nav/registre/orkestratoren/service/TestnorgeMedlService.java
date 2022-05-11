@@ -1,16 +1,16 @@
 package no.nav.registre.orkestratoren.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeMedlConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 
 @Service
+@RequiredArgsConstructor
 public class TestnorgeMedlService {
 
-    @Autowired
-    private TestnorgeMedlConsumer testnorgeMedlConsumer;
+    private final TestnorgeMedlConsumer testnorgeMedlConsumer;
 
     public Object genererMedlemskap(SyntetiserMedlRequest syntetiserMedlRequest) {
         if (syntetiserMedlRequest.getProsentfaktor() < 0 || syntetiserMedlRequest.getProsentfaktor() > 1) {

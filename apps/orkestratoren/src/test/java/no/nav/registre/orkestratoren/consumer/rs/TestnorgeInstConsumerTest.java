@@ -30,18 +30,21 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeInstConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeInstConsumerTest {
+class TestnorgeInstConsumerTest {
+
+    @Value("${consumers.testnorge-inst.url}")
+    private String serverUrl;
+
+    @Autowired
+    private TestnorgeInstConsumer testnorgeInstConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "q2";
-    @Autowired
-    private TestnorgeInstConsumer testnorgeInstConsumer;
-    @Autowired
-    private MockRestServiceServer server;
-    @Value("${testnorge-inst.rest.api.url}")
-    private String serverUrl;
     private SyntetiserInstRequest syntetiserInstRequest;
     private List<String> identer;
 
@@ -52,7 +55,7 @@ public class TestnorgeInstConsumerTest {
     }
 
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer?miljoe={miljoe}";
         stubInstConsumerStartSyntetisering(expectedUri);
 
@@ -62,7 +65,7 @@ public class TestnorgeInstConsumerTest {
     }
 
     @Test
-    public void shouldDeleteIdenterFromInst() {
+    void shouldDeleteIdenterFromInst() {
         var expectedUri = serverUrl + "/v1/ident/batch?miljoe={miljoe}&identer={identer}";
         stubInstConsumerSlettIdenter(expectedUri);
 

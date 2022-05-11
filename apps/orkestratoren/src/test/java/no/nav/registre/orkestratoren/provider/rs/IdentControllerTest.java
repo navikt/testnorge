@@ -19,7 +19,7 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.service.IdentService;
 
 @ExtendWith(MockitoExtension.class)
-public class IdentControllerTest {
+class IdentControllerTest {
 
     @Mock
     private IdentService identService;
@@ -34,14 +34,12 @@ public class IdentControllerTest {
     @BeforeEach
     public void setUp() {
         identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
-
-        Map<Long, String> avspillergruppeIdMedMiljoe = new HashMap<>();
-        avspillergruppeIdMedMiljoe.put(avspillergruppeId, miljoe);
-        ReflectionTestUtils.setField(identController, "avspillergruppeIdMedMiljoe", avspillergruppeIdMedMiljoe);
+        ReflectionTestUtils.setField(identController, "avspillergruppeId", avspillergruppeId);
+        ReflectionTestUtils.setField(identController, "miljoe", miljoe);
     }
 
     @Test
-    public void shouldSletteIdenterFraAdaptere() {
+    void shouldSletteIdenterFraAdaptere() {
         var testdataEier = "orkestratoren";
         identController.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
@@ -49,14 +47,14 @@ public class IdentControllerTest {
     }
 
     @Test
-    public void shouldSynkronisereMedTps() {
+    void shouldSynkronisereMedTps() {
         identController.synkroniserMedTps();
 
         verify(identService).synkroniserMedTps(avspillergruppeId, miljoe);
     }
 
     @Test
-    public void shouldRenseAvspillergruppe() {
+    void shouldRenseAvspillergruppe() {
         identController.rensAvspillergruppe();
 
         verify(identService).fjernKolliderendeIdenter(avspillergruppeId, miljoe);

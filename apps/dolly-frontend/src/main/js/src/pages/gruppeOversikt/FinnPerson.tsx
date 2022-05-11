@@ -12,6 +12,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import { Option } from '~/service/SelectOptionsOppslag'
+import PersonSearch from '~/service/services/personsearch/PersonSearch'
 
 type FinnPersonProps = {
 	naviger: Function
@@ -61,9 +62,11 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 
 	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async (tekst) => {
 		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
-		const { data: pdlIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
+		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
+		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
 		const personer: Array<Option> = []
 		mapToPersoner(tpsfIdenter, personer)
+		mapToPersoner(pdlfIdenter, personer)
 		mapToPersoner(pdlIdenter, personer)
 		return personer
 	}, [])
@@ -87,6 +90,7 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
+			// @ts-ignore
 			<components.DropdownIndicator {...props}>
 				<Icon kind={'search'} size={20} />
 			</components.DropdownIndicator>
@@ -108,6 +112,7 @@ export default function FinnPerson({ naviger }: FinnPersonProps) {
 						IndicatorSeparator() {
 							return null
 						},
+						// @ts-ignore
 						DropdownIndicator,
 					}}
 					isClearable={true}

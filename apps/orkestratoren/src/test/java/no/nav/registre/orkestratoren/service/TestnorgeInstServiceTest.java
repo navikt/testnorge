@@ -13,7 +13,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeInstServiceTest {
+class TestnorgeInstServiceTest {
 
     @Mock
     private TestnorgeInstConsumer testnorgeInstConsumer;
@@ -22,7 +22,7 @@ public class TestnorgeInstServiceTest {
     private TestnorgeInstService testnorgeInstService;
 
     @Test
-    public void shouldGenerereInstitusjonsforhold() {
+    void shouldGenerereInstitusjonsforhold() {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;

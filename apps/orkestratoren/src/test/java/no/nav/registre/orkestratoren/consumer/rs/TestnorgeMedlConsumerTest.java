@@ -23,23 +23,26 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeMedlConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeMedlConsumerTest {
+class TestnorgeMedlConsumerTest {
+
+    @Value("${consumers.testnorge-medl.url}")
+    private String serverUrl;
+
+    @Autowired
+    private TestnorgeMedlConsumer testnorgeMedlConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
-    @Autowired
-    private TestnorgeMedlConsumer testnorgeMedlConsumer;
-    @Autowired
-    private MockRestServiceServer server;
-    @Value("${testnorge-medl.rest.api.url}")
-    private String serverUrl;
     private final double prosentfaktor = 0.1;
     private final String expectedBody = "mockBody";
 
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer/";
         stubMedlConsumer(expectedUri);
 

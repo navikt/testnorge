@@ -27,9 +27,9 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeld
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeInntektConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeInntektConsumerTest {
+class TestnorgeInntektConsumerTest {
 
     @Autowired
     private TestnorgeInntektConsumer testnorgeInntektConsumer;
@@ -37,7 +37,7 @@ public class TestnorgeInntektConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-inntekt.rest.api.url}")
+    @Value("${consumers.testnorge-inntekt.url}")
     private String serverUrl;
 
     private final long gruppeId = 10L;

@@ -44,6 +44,8 @@ public class RsAareg {
 
     private RsAktoer arbeidsgiver;
 
+    private List<RsAmeldingRequest> amelding;
+
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {
             antallTimerForTimeloennet = new ArrayList<>();
@@ -79,6 +81,10 @@ public class RsAareg {
         return utenlandsopphold;
     }
 
-    private List<RsAmeldingRequest> amelding;
-
+    public List<RsAmeldingRequest> getAmelding() {
+        if (isNull(amelding)) {
+            amelding = new ArrayList<>();
+        }
+        return amelding;
+    }
 }

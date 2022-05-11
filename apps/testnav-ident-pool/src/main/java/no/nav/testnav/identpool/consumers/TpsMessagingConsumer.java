@@ -3,6 +3,7 @@ package no.nav.testnav.identpool.consumers;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.config.credentials.TpsMessagingServiceProperties;
 import no.nav.testnav.identpool.consumers.command.TpsMessagingGetCommand;
+import no.nav.testnav.identpool.consumers.command.TpsValidation;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Service
 public class TpsMessagingConsumer {
 
+    private static final String NO_ENV = "pp";
     private static final int PAGESIZE = 80;
 
     private final WebClient webClient;
@@ -38,15 +40,15 @@ public class TpsMessagingConsumer {
 
     public Set<TpsStatusDTO> getIdenterStatuser(Set<String> identer) {
 
-        return new HashSet<>(getIdenterStatus(new ArrayList<>(identer), null, true));
+        return new HashSet<>(getIdenterStatus(new ArrayList<>(identer), null, status -> !status.getMiljoer().isEmpty()));
     }
 
     public List<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
 
-        return getIdenterStatus(new ArrayList<>(identer), Set.of("p"), true);
+        return getIdenterStatus(new ArrayList<>(identer), Set.of(NO_ENV), status -> status.getMiljoer().contains("p"));
     }
 
-    private List<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, boolean includeProd) {
+    private List<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, TpsValidation validation) {
 
         var startTid = System.currentTimeMillis();
 
@@ -54,15 +56,15 @@ public class TpsMessagingConsumer {
                 .flatMapMany(token -> Flux.range(0, identer.size() / PAGESIZE + 1)
                         .flatMap(page -> new TpsMessagingGetCommand(webClient, token.getTokenValue(),
                                 identer.subList(page * PAGESIZE, Math.min(identer.size(), (page + 1) * PAGESIZE)),
-                                miljoer, includeProd).call()
+                                miljoer, true).call()
                                 .map(status -> TpsStatusDTO.builder()
                                         .ident(status.getIdent())
-                                        .inUse(!status.getMiljoer().isEmpty())
+                                        .inUse(validation.apply(status))
                                         .build())))
                 .collectList()
                 .block();
 
-        log.info("Kall til TPS med {} identer tok {} sekunder", identer.size(), (System.currentTimeMillis() - startTid) / 1000);
+        log.info("Kall til TPS med {} identer tok {} ms", identer.size(), System.currentTimeMillis() - startTid);
 
         return response;
     }
