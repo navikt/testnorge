@@ -9,14 +9,13 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.dto.TestidentDTO;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -98,55 +97,37 @@ public class PersonService {
                     .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", pdlfIdenter.size()));
         }
 
-        if (testidenter.stream().anyMatch((TestidentDTO::isPdl))) {
+        var testnorgeIdenter = testidenter.stream()
+                .filter(TestidentDTO::isPdl)
+                .map(TestidentDTO::getIdent)
+                .toList();
 
-            var testnorgeIdenter = testidenter.stream()
-                    .filter(TestidentDTO::isPdl)
-                    .map(TestidentDTO::getIdent)
-                    .toList();
+        if (!testidenter.isEmpty()) {
+            var testnorgeRelasjoner = pdlPersonConsumer.getPdlPersoner(testnorgeIdenter)
+                    .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                    .map(PdlPersonBolk::getData)
+                    .map(PdlPersonBolk.Data::getHentPersonBolk)
+                    .flatMap(Flux::fromIterable)
+                    .filter(personBolk -> nonNull(personBolk.getPerson()))
+                    .map(person -> person.getPerson().getSivilstand().stream()
+                            .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                            .filter(Objects::nonNull)
+                            .toList())
+                    .flatMap(Flux::fromIterable)
+                    .distinct()
+                    .collectList()
+                    .block();
 
-            if (!testidenter.isEmpty()) {
-                var testnorgeRelasjoner = pdlPersonConsumer.getPdlPersoner(testnorgeIdenter)
-                        .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                        .map(PdlPersonBolk::getData)
-                        .map(PdlPersonBolk.Data::getHentPersonBolk)
-                        .flatMap(Flux::fromIterable)
-                        .filter(personBolk -> nonNull(personBolk.getPerson()))
-                        .map(person -> Stream.of(
-                                        person.getPerson().getSivilstand().stream()
-                                                .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                                .filter(Objects::nonNull)
-                                                .toList(),
-                                        person.getPerson().getForelderBarnRelasjon().stream()
-                                                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                .filter(Objects::nonNull)
-                                                .toList(),
-                                        person.getPerson().getForeldreansvar().stream()
-                                                .map(ForeldreansvarDTO::getAnsvarlig)
-                                                .filter(Objects::nonNull)
-                                                .toList(),
-                                        person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
-                                                .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                                .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                                .filter(Objects::nonNull)
-                                                .toList(),
-                                        person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                                .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                                .filter(Objects::nonNull)
-                                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                                .filter(Objects::nonNull)
-                                                .toList())
-                                .flatMap(Collection::stream)
-                                .toList())
-                        .flatMap(Flux::fromIterable)
-                        .distinct()
-                        .collectList()
-                        .block();
+            if (nonNull(testnorgeRelasjoner)) {
+                testnorgeRelasjoner.forEach(bestillingService::slettBestillingByTestIdent);
+                testnorgeRelasjoner.forEach(identService::slettTestident);
 
-                if (nonNull(testnorgeRelasjoner)) {
-                    testnorgeRelasjoner.forEach(bestillingService::slettBestillingByTestIdent);
-                    testnorgeRelasjoner.forEach(identService::slettTestident);
-                }
+                testidenter.addAll(testnorgeRelasjoner.stream()
+                        .map(ident -> TestidentDTO.builder()
+                                .ident(ident)
+                                .master(Testident.Master.PDL)
+                                .build())
+                        .toList());
             }
         }
 

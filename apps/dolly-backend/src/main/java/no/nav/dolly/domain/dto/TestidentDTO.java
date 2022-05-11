@@ -1,10 +1,12 @@
 package no.nav.dolly.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Data;
 import no.nav.dolly.domain.jpa.Testident.Master;
 
 @Data
+@Builder
 public class TestidentDTO {
 
     private String ident;
