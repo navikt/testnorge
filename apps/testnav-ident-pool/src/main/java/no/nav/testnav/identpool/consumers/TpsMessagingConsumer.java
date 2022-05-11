@@ -20,6 +20,7 @@ import java.util.Set;
 @Service
 public class TpsMessagingConsumer {
 
+    private static final String NO_ENV = "pp";
     private static final int PAGESIZE = 80;
 
     private final WebClient webClient;
@@ -44,7 +45,7 @@ public class TpsMessagingConsumer {
 
     public List<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {
 
-        return getIdenterStatus(new ArrayList<>(identer), Set.of("q2"), status -> status.getMiljoer().contains("p"));
+        return getIdenterStatus(new ArrayList<>(identer), Set.of(NO_ENV), status -> status.getMiljoer().contains("p"));
     }
 
     private List<TpsStatusDTO> getIdenterStatus(List<String> identer, Set<String> miljoer, TpsValidation validation) {
