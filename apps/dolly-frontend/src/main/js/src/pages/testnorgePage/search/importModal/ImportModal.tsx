@@ -23,20 +23,12 @@ const getPdlPersoner = async (identer: string[]) => {
 				}),
 				{}
 			)
-			const geografiskTilknytningBolk = response.data?.data?.hentGeografiskTilknytningBolk?.reduce(
-				(map: any, person: any) => ({
-					...map,
-					[person.ident]: person.geografiskTilknytning,
-				}),
-				{}
-			)
 			return response.data?.data?.hentPersonBolk?.map((ident: any) => {
 				return {
 					ident: ident.ident,
 					data: {
-						hentIdenter: { identer: identerBolk?.[ident.ident] },
-						hentGeografiskTilknytning: geografiskTilknytningBolk?.[ident.ident],
 						hentPerson: ident.person,
+						hentIdenter: { identer: identerBolk?.[ident.ident] },
 					},
 				}
 			})
