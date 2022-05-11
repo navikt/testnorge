@@ -77,12 +77,32 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 	})
 }
 
+const requiredStringWhenFieldPresent = (field) =>
+	Yup.string()
+		.optional()
+		.nullable()
+		.when(field, {
+			is: (value) => value === null,
+			then: (rule) => rule.required(),
+		})
+
 const inntektsliste = Yup.array().of(
-	Yup.object({
-		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
-		sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
-	})
+	Yup.object().shape(
+		{
+			beloep: requiredNumber.typeError(messages.required),
+			inntektstype: requiredString.nullable(),
+			startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
+			sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
+			inngaarIGrunnlagForTrekk: Yup.boolean().required().nullable(),
+			utloeserArbeidsgiveravgift: Yup.boolean().required().nullable(),
+			fordel: requiredStringWhenFieldPresent('fordel'),
+			beskrivelse: requiredStringWhenFieldPresent('beskrivelse'),
+		},
+		[
+			['fordel', 'fordel'],
+			['beskrivelse', 'beskrivelse'],
+		]
+	)
 )
 
 const fradragsliste = Yup.array().of(
