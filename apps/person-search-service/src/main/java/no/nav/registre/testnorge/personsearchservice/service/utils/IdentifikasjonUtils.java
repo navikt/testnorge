@@ -8,6 +8,10 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedTermsQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
 
 @UtilityClass
 public class IdentifikasjonUtils {
@@ -33,17 +37,17 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdenttype())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryUtils.nestedMatchQuery(IDENTIFIKATOR_PATH, ".type", value, false));
+                        queryBuilder.must(nestedMatchQuery(IDENTIFIKATOR_PATH, ".type", value, false));
                     }
                 });
     }
 
     private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
         if (nonNull(search.getFalskIdentitet()) && search.getFalskIdentitet()) {
-            queryBuilder.must(QueryUtils.nestedExistsQuery("hentPerson.falskIdentitet", QueryUtils.METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, true));
         }
         if (nonNull(search.getUtenlandskIdentitet()) && search.getUtenlandskIdentitet()) {
-            queryBuilder.must(QueryUtils.nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", QueryUtils.METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, true));
         }
     }
 
@@ -52,9 +56,9 @@ public class IdentifikasjonUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         if (value.equals(NO_VALUE)) {
-                            queryBuilder.mustNot(QueryUtils.nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, QueryUtils.METADATA_FIELD, true));
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD, true));
                         } else {
-                            queryBuilder.must(QueryUtils.nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, ".gradering", value, false));
+                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, ".gradering", value, false));
                         }
                     }
                 });
@@ -64,7 +68,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(QueryUtils.nestedMatchQuery(KJOENN_PATH, ".kjoenn", value, false));
+                        queryBuilder.must(nestedMatchQuery(KJOENN_PATH, ".kjoenn", value, false));
                     }
                 });
     }
@@ -73,7 +77,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdenter())
                 .ifPresent(values -> {
                     if (!values.isEmpty()) {
-                        queryBuilder.must(QueryUtils.nestedTermsQuery("hentIdenter.identer", ".ident", values, true));
+                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", ".ident", values, true));
                     }
                 });
     }
