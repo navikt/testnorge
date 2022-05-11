@@ -316,7 +316,7 @@ public class ArenaTiltakService {
         return null;
     }
 
-    private List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
+    public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakAap> aapVedtak
     ) {
@@ -330,8 +330,8 @@ public class ArenaTiltakService {
 
         for (var vedtak : vedtaksliste) {
             var vedtaksperiode = new Vedtaksperiode(vedtak.getFraDato(), vedtak.getTilDato());
-            if (nyeVedtak.isEmpty() || (vedtakOverlapperIkkeVedtaksperioder(vedtaksperiode, relatedVedtak) &&
-                    vedtakHarIkkeOverlappOver100Prosent(vedtak, nyeVedtak))) {
+            if (vedtakOverlapperIkkeVedtaksperioder(vedtaksperiode, relatedVedtak) &&
+                    vedtakHarIkkeOverlappOver100Prosent(vedtak, nyeVedtak)) {
                 nyeVedtak.add(vedtak);
             }
         }
@@ -368,6 +368,9 @@ public class ArenaTiltakService {
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
     ) {
+        if (isNull(vedtaksliste) || vedtaksliste.isEmpty()) {
+            return true;
+        }
         var prosent = vedtak.getTiltakProsentDeltid();
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();

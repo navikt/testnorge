@@ -15,3 +15,11 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-fss:dolly:person-search-service
+
+consumers:
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    #url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    url: https://testnav-pdl-proxy.dev.intern.nav.no
+    cluster: dev-fss

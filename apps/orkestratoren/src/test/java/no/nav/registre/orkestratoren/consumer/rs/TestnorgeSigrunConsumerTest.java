@@ -31,18 +31,21 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeSigrunConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class TestnorgeSigrunConsumerTest {
+class TestnorgeSigrunConsumerTest {
+
+    @Value("${consumers.testnorge-sigrun.url}")
+    private String serverUrl;
+
+    @Autowired
+    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
+
+    @Autowired
+    private MockRestServiceServer server;
 
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
-    @Autowired
-    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
-    @Autowired
-    private MockRestServiceServer server;
-    @Value("${testnorge-sigrun.rest.api.url}")
-    private String serverUrl;
     private List<String> identer;
     private SyntetiserPoppRequest syntetiserPoppRequest;
     private final String testdataEier = "test";
@@ -58,7 +61,7 @@ public class TestnorgeSigrunConsumerTest {
      * gitt av sigrun-skd-stub. Forventer at metoden kaller Testnorge-Sigrun med de rette parametrene (se stub)
      */
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         var expectedUri = serverUrl + "/v1/syntetisering/generer";
         stubPoppConsumerStartSyntetisering(expectedUri);
 
@@ -68,7 +71,7 @@ public class TestnorgeSigrunConsumerTest {
     }
 
     @Test
-    public void shouldDeleteIdenterFromSigrun() {
+    void shouldDeleteIdenterFromSigrun() {
         var expectedUri = serverUrl + "/v1/ident?miljoe={miljoe}";
         stubPoppConsumerSlettIdenter(expectedUri);
 

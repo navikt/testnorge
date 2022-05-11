@@ -1,6 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialYtelser } from '../../../../../fagsystem/tjenestepensjon/form/Form'
 
 export const PensjonPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -49,7 +50,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 			set('pensjonforvalter.tp', [
 				{
 					ordning: '3010',
-					ytelser: [],
+					ytelser: [initialYtelser],
 				}
 			]),
 		remove: () => del('pensjonforvalter.tp'),

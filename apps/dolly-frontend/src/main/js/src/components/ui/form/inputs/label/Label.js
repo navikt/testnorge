@@ -3,13 +3,15 @@ import cn from 'classnames'
 import _isNil from 'lodash/isNil'
 import _isEmpty from 'lodash/isEmpty'
 import styled from 'styled-components'
+import NavHjelpeTekst from 'nav-frontend-hjelpetekst'
+import './Label.less'
 
 const StyledLabel = styled.label`
 	font-size: 0.75em;
 	text-transform: uppercase;
 `
 
-export const Label = ({ name, label, feil, containerClass, children }) => {
+export const Label = ({ name, label, feil, info = null, containerClass, children }) => {
 	const wrapClass = cn('skjemaelement', containerClass, {
 		error: Boolean(feil && !_isEmpty(feil.feilmelding)),
 		'label-offscreen': _isNil(label),
@@ -17,9 +19,20 @@ export const Label = ({ name, label, feil, containerClass, children }) => {
 
 	return (
 		<div className={wrapClass}>
-			<StyledLabel htmlFor={name} className="skjemaelement__label">
-				{label}
-			</StyledLabel>
+			{info ? (
+				<div className="flexbox--align-center--justify-start">
+					<StyledLabel htmlFor={name} className="skjemaelement__label">
+						{label}
+					</StyledLabel>
+					<div className="label-hjelpetekst">
+						<NavHjelpeTekst>{info}</NavHjelpeTekst>
+					</div>
+				</div>
+			) : (
+				<StyledLabel htmlFor={name} className="skjemaelement__label">
+					{label}
+				</StyledLabel>
+			)}
 			{children}
 			{feil && !_isEmpty(feil.feilmelding) && (
 				<div role="alert" aria-live="assertive">

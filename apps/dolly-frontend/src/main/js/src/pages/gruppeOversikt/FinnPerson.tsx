@@ -15,6 +15,7 @@ import { Option } from '~/service/SelectOptionsOppslag'
 import { SoekTypeValg, VelgSoekTypeToggle } from '~/pages/gruppeOversikt/VelgSoekTypeToggle'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
+import PersonSearch from '~/service/services/personsearch/PersonSearch'
 
 type FinnPersonProps = {
 	navigerTilPerson: Function
@@ -89,9 +90,11 @@ export default function FinnPerson({ navigerTilPerson, navigerTilBestilling }: F
 
 	const soekPersoner = async (tekst: string) => {
 		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
-		const { data: pdlIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
+		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
+		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
 		const personer: Array<Option> = []
 		mapToPersoner(tpsfIdenter, personer)
+		mapToPersoner(pdlfIdenter, personer)
 		mapToPersoner(pdlIdenter, personer)
 		return personer
 	}

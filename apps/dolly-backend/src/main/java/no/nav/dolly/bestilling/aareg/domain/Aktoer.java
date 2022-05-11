@@ -4,6 +4,4 @@ public enum Aktoer {
 
     ORGANISASJON,
     PERSON,
-    Organisasjon,
-    Person
 }

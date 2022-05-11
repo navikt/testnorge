@@ -1,7 +1,7 @@
 package no.nav.registre.orkestratoren.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,18 +17,16 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsResp
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class TestnorgeSkdService {
 
-    @Autowired
-    private TestnorgeSkdConsumer testnorgeSkdConsumer;
+    private final TestnorgeSkdConsumer testnorgeSkdConsumer;
 
-    @Autowired
-    private TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
+    private final TestnorgeNavEndringsmeldingerConsumer testnorgeNavEndringsmeldingerConsumer;
 
-    @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     public ResponseEntity<SkdMeldingerTilTpsRespons> genererSkdmeldinger(
             Long avspillergruppeId,

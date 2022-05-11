@@ -6,6 +6,7 @@ import { DollyApi } from '~/service/Api'
 import { createLoadingSelector } from '~/ducks/loading'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { LOCATION_CHANGE } from 'redux-first-history'
 
 export const actions = createActions(
 	{
@@ -42,6 +43,9 @@ const initialState = {
 
 export default handleActions(
 	{
+		[LOCATION_CHANGE](state, action) {
+			return initialState
+		},
 		[onSuccess(actions.getById)](state, action) {
 			const gruppe = action.payload.data
 			state.gruppeInfo = action.payload.data

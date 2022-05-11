@@ -1,0 +1,29 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+batch:
+  avspillergruppeId: 100000445
+  miljoe: q2
+  arena:
+    antallNyeIdenter: 1
+  popp:
+    antallNyeIdenter: 1
+  aareg:
+    antallNyeIdenter: 1
+  inst:
+    antallNyeIdenter: 1
+  tp:
+    antallPersoner: 1
+  sam:
+    antallMeldinger: 1
+  medl:
+    prosentfaktor: 0.1
+  frikort:
+    antallNyeIdenter: 1
+  meldinger:
+    antallNavMeldingerPerEndringskode:
+      Z010: 1
+    antallSkdMeldingerPerEndringskode:
+      0110: 0
+
+ibm.mq.user-authentication-m-q-c-s-p: false

@@ -17,7 +17,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSamConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeSamServiceTest {
+class TestnorgeSamServiceTest {
 
     @Mock
     private TestnorgeSamConsumer testnorgeSamConsumer;
@@ -28,7 +28,7 @@ public class TestnorgeSamServiceTest {
     private final ResponseEntity expectedResponse = ResponseEntity.ok().build();
 
     @Test
-    public void shouldGenerereSamordningsmeldinger() {
+    void shouldGenerereSamordningsmeldinger() {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;

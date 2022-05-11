@@ -25,7 +25,7 @@ import java.util.Map;
 
 import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.TestnorgeArenaService;
+import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
@@ -36,7 +36,7 @@ import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @ExtendWith(MockitoExtension.class)
-public class JobControllerTest {
+class JobControllerTest {
 
     @Mock
     private TestnorgeSkdService testnorgeSkdService;
@@ -60,7 +60,7 @@ public class JobControllerTest {
     private TestnorgeSamService testnorgeSamService;
 
     @Mock
-    private TestnorgeArenaService testnorgeArenaService;
+    private ArenaService arenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
@@ -79,12 +79,12 @@ public class JobControllerTest {
     void setUp() {
         String miljoe = "t1";
         miljoer = new ArrayList<>(Collections.singletonList(miljoe));
-        Map<Long, String> avspillergruppeIdMedMiljoe = new HashMap<>();
-        avspillergruppeIdMedMiljoe.put(avspillergruppeId, miljoe);
-        ReflectionTestUtils.setField(jobController, "avspillergruppeIdMedMiljoe", avspillergruppeIdMedMiljoe);
+
+        ReflectionTestUtils.setField(jobController, "avspillergruppeId", avspillergruppeId);
+        ReflectionTestUtils.setField(jobController, "miljoe", miljoe);
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
-        ReflectionTestUtils.setField(jobController, "antallSkdmeldingerPerEndringskode", antallMeldingerPerEndringskode);
+        ReflectionTestUtils.setField(jobController, "antallSkdMeldingerPerEndringskode", antallMeldingerPerEndringskode);
     }
 
     @Test

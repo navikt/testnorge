@@ -74,3 +74,4 @@ dependencies {
 }
 
 description = 'testnorge-sigrun'
+java.sourceCompatibility = JavaVersion.VERSION_17

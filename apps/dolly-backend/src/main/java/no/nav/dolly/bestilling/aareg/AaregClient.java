@@ -25,6 +25,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.dolly.util.EnvironmentsCrossConnect;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.core.annotation.Order;
@@ -76,8 +77,10 @@ public class AaregClient implements ClientRegister {
         StringBuilder result = new StringBuilder();
 
         if (!bestilling.getAareg().isEmpty()) {
-            bestilling.getEnvironments().forEach(env -> {
-                if (nonNull(bestilling.getAareg().get(0).getAmelding()) && !bestilling.getAareg().get(0).getAmelding().isEmpty()) {
+
+            var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
+            miljoer.forEach(env -> {
+                if (!bestilling.getAareg().get(0).getAmelding().isEmpty()) {
                     sendAmelding(bestilling, dollyPerson, progress, result, env);
                 } else {
                     sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, result, env);

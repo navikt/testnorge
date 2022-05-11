@@ -32,7 +32,7 @@ const ingenOverlappFraTildato = (tildato, values) => {
 		for (let bestilling of arenaBestillinger) {
 			let arenaInfo = bestilling.data.arenaforvalter
 			for (let key of ikkeOverlappendeVedtak) {
-				if (arenaInfo[key].length > 0) {
+				if (arenaInfo[key]?.length > 0) {
 					const fraDatoBestilling = arenaInfo[key]?.[0].fraDato
 					if (isBefore(new Date(fraDato), new Date(fraDatoBestilling))) return false
 				}

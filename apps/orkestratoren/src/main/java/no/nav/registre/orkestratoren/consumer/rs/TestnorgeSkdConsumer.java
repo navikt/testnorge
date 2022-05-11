@@ -28,7 +28,7 @@ public class TestnorgeSkdConsumer {
 
     public TestnorgeSkdConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-skd.rest.api.url}") String skdServerUrl
+            @Value("${consumers.testnorge-skd.url}") String skdServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.startSyntetiseringUrl = new UriTemplate(skdServerUrl + "/v1/syntetisering/generer");

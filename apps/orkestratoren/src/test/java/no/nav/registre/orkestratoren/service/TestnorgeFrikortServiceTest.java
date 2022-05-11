@@ -20,7 +20,7 @@ import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeFrikortServiceTest {
+class TestnorgeFrikortServiceTest {
 
     @Mock
     private TestnorgeFrikortConsumer testnorgeFrikortConsumer;
@@ -36,7 +36,7 @@ public class TestnorgeFrikortServiceTest {
     }
 
     @Test
-    public void shouldGenerereSamordningsmeldinger() {
+    void shouldGenerereSamordningsmeldinger() {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;

@@ -12,6 +12,7 @@ Swagger finnes under [/swagger](https://person-search-service.dev.intern.nav.no/
 Ha naisdevice kjørende og kjør PersonSearchServiceApplicationStarter med følgende argumenter:
 
 ```
+--add-opens java.base/java.lang=ALL-UNNAMED
 -Dspring.cloud.vault.token=[Kopi av token fra vault]
 -Dspring.profiles.active=dev
 ```

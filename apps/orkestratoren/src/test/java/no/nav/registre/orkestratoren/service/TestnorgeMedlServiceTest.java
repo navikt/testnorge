@@ -14,7 +14,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeMedlConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeMedlServiceTest {
+class TestnorgeMedlServiceTest {
 
     @Mock
     private TestnorgeMedlConsumer testnorgeMedlConsumer;
@@ -26,7 +26,7 @@ public class TestnorgeMedlServiceTest {
     private final String miljoe = "t1";
 
     @Test
-    public void shouldGenerereMedlemskap() {
+    void shouldGenerereMedlemskap() {
         var prosentfaktor = 0.1;
         var expectedResponse = "someResponse";
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, prosentfaktor);
@@ -39,7 +39,7 @@ public class TestnorgeMedlServiceTest {
     }
 
     @Test
-    public void shouldThrowExceptionOnUgyldigProsentfaktor() {
+    void shouldThrowExceptionOnUgyldigProsentfaktor() {
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 1.2);
         Assertions.assertThrows(IllegalArgumentException.class, () -> testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest));
     }

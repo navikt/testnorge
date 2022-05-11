@@ -17,7 +17,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class TestnorgeSigrunServiceTest {
+class TestnorgeSigrunServiceTest {
 
     @Mock
     private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
@@ -26,7 +26,7 @@ public class TestnorgeSigrunServiceTest {
     private TestnorgeSigrunService testnorgeSigrunService;
 
     @Test
-    public void shouldGenerereSkattegrunnlag() {
+    void shouldGenerereSkattegrunnlag() {
         var avspillergruppeId = 123L;
         var miljoe = "t1";
         var antallNyeIdenter = 2;
