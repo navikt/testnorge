@@ -120,28 +120,34 @@ public class PensjonforvalterClient implements ClientRegister {
     private void lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
 
         status.append('$').append(TP_FORHOLD).append('#');
+        PensjonforvalterResponse response = new PensjonforvalterResponse();
 
-        try {
             pensjonData.getTp()
                     .stream()
                     .forEach(tp -> {
-                        LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
-                        lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-                        lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
+                        try {
+                            LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                            lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
 
-                        decodeStatus(pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest), status);
+                            var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
+                            mergePensjonforvalterResponses(forholdResponse, response);
 
-                        if (nonNull(tp.getYtelser())) {
-                            lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer, status);
+                            if (nonNull(tp.getYtelser())) {
+                                var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer, status);
+                                mergePensjonforvalterResponses(ytelseResponse, response);
+                            }
+                        } catch (RuntimeException e) {
+                            status.append(errorStatusDecoder.decodeRuntimeException(e));
                         }
                     });
-        } catch (RuntimeException e) {
+            decodeStatus(response, status);
 
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
-        }
     }
 
-    private void lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer, StringBuilder status) {
+    private PensjonforvalterResponse lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer, StringBuilder status) {
+        PensjonforvalterResponse response = new PensjonforvalterResponse();
+
         ytelser.stream().forEach(ytelse -> {
             LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
             lagreTpYtelseRequest.setYtelseType(ytelse.getType());
@@ -149,7 +155,38 @@ public class PensjonforvalterClient implements ClientRegister {
             lagreTpYtelseRequest.setFnr(person);
             lagreTpYtelseRequest.setMiljoer(new ArrayList<>(miljoer));
 
-            decodeStatus(pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest), status);
+            var ytelseResponse = pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest);
+            mergePensjonforvalterResponses(ytelseResponse, response);
+        });
+
+        return response;
+    }
+
+    private static boolean isResponse2xx(PensjonforvalterResponse.Response status) {
+        return status.getHttpStatus().getStatus() >= 200 && status.getHttpStatus().getStatus() < 300;
+    }
+
+    public static void mergePensjonforvalterResponses(PensjonforvalterResponse response, PensjonforvalterResponse responseTil) {
+        response.getStatus().forEach( status -> {
+            var miljo = status.getMiljo();
+            var miljoResponse = status.getResponse();
+
+            if (responseTil.getStatus() == null) {
+                responseTil.setStatus(new ArrayList<>());
+            }
+
+            var mergingTilMiljo = responseTil.getStatus().stream()
+                    .filter( s -> s.getMiljo().equalsIgnoreCase(miljo))
+                    .findFirst();
+
+            if (mergingTilMiljo.isPresent()) {
+                if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
+                    mergingTilMiljo.get().setResponse(miljoResponse);
+                }
+            } else {
+                // det var ingen miljø response tidligere
+                responseTil.getStatus().add(status);
+            }
         });
     }
 

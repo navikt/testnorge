@@ -192,6 +192,10 @@ public class PensjonforvalterConsumer {
             throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
         }
 
+        if (isNull(response.getBody().getStatus()) || response.getBody().getStatus().isEmpty()) {
+            throw new DollyFunctionalException(String.format("Klarte ikke å få TP forhold respons for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
+        }
+
         return response.getBody();
     }
 
@@ -243,6 +247,10 @@ public class PensjonforvalterConsumer {
 
         if (isNull(response) || !response.hasBody()) {
             throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
+        }
+
+        if (isNull(response.getBody().getStatus()) || response.getBody().getStatus().isEmpty()) {
+            throw new DollyFunctionalException(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
         }
 
         return response.getBody();
