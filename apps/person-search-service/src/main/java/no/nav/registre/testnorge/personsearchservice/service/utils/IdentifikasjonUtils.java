@@ -43,10 +43,10 @@ public class IdentifikasjonUtils {
     }
 
     private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
-        if (nonNull(search.getFalskIdentitet()) && search.getFalskIdentitet()) {
+        if (nonNull(search.getFalskIdentitet()) && Boolean.TRUE.equals(search.getFalskIdentitet())) {
             queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, true));
         }
-        if (nonNull(search.getUtenlandskIdentitet()) && search.getUtenlandskIdentitet()) {
+        if (nonNull(search.getUtenlandskIdentitet()) && Boolean.TRUE.equals(search.getUtenlandskIdentitet())) {
             queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, true));
         }
     }
