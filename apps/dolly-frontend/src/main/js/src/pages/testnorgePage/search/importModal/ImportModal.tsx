@@ -43,6 +43,8 @@ const getPdlPersoner = async (identer: string[]) => {
 		})
 }
 
+const partnerSivilstander = ['GIFT', 'SEPARERT']
+
 export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	const navigate = useNavigate()
 
@@ -56,7 +58,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 			.map((person) => person?.hentPerson?.sivilstand)
 			.map((sivilstand) => {
 				let giftSivilstand = sivilstand.filter(
-					(siv) => !siv?.metadata?.historisk && siv?.type === 'GIFT'
+					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type)
 				)
 				if (giftSivilstand !== null && giftSivilstand.length > 0) {
 					return giftSivilstand[0].relatertVedSivilstand
