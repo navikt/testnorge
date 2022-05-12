@@ -1,26 +1,39 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import useBoolean from '~/utils/hooks/useBoolean'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import Button from '~/components/ui/button/Button'
 import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
-
+import { DollyApi } from '~/service/Api'
 import './PartnerImportButton.less'
 
 type Props = {
-	action: Function
-	loading: boolean
 	partnerIdent: string
+	gruppeId: string
 	gruppeIdenter: string[]
 }
 
-export const PartnerImportButton = ({ action, loading, partnerIdent, gruppeIdenter }: Props) => {
+export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: Props) => {
 	if (!partnerIdent) return null
-	if (loading) return <Loading label="importerer..." />
+	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const disabled = gruppeIdenter.includes(partnerIdent)
+
+	const handleImport = async (gruppeId: string, ident: string) => {
+		setLoading(true)
+		await DollyApi.importerPartner(gruppeId, ident)
+			.then((response) => {
+				setLoading(false)
+				window.location.reload()
+			})
+			.catch((error) => {
+				setLoading(false)
+			})
+	}
+
+	if (loading) return <Loading label="importerer..." />
 
 	return (
 		<React.Fragment>
@@ -46,7 +59,7 @@ export const PartnerImportButton = ({ action, loading, partnerIdent, gruppeIdent
 						<NavButton
 							onClick={() => {
 								closeModal()
-								action(partnerIdent)
+								handleImport(gruppeId, partnerIdent)
 							}}
 							type="hoved"
 						>

@@ -230,6 +230,6 @@ export default {
 	},
 
 	importerPartner(groupId, ident) {
-		return Request.put(Endpoints.leggTilPersonIGruppe(groupId, ident, 'PDL'))
+		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, 'PDL'))
 	},
 }

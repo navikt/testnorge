@@ -18,7 +18,6 @@ const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
-const loadingSelectionImporterPartner = createLoadingSelector(actions.importerPartner)
 
 const loadingSelector = createSelector(
 	(state) => state.loading,
@@ -35,7 +34,6 @@ const loadingSelector = createSelector(
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			pensjonforvalter: loadingSelectorPensjon({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
-			importerPartner: loadingSelectionImporterPartner({ loading }),
 		}
 	}
 )
@@ -65,9 +63,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					identtype: type,
 				},
 			}),
-		importerPartner: (gruppeId, ident) => {
-			return dispatch(actions.importerPartner(gruppeId, ident))
-		},
 	}
 }
 

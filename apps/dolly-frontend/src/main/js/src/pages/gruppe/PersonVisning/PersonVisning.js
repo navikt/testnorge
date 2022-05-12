@@ -52,7 +52,6 @@ export const PersonVisning = ({
 	loading,
 	slettPerson,
 	leggTilPaaPerson,
-	importerPartner,
 	iLaastGruppe,
 	tmpPersoner,
 }) => {
@@ -101,12 +100,9 @@ export const PersonVisning = ({
 
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<PartnerImportButton
-							action={(partnerIdent) => {
-								importerPartner(gruppeId, partnerIdent)
-							}}
+							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
 							gruppeIdenter={gruppeIdenter}
-							loading={loading.importerPartner}
 						/>
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
