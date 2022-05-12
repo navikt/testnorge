@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -63,6 +64,7 @@ public class TpsMessagingClient implements ClientRegister {
         return respons.toString();
     }
 
+    @SneakyThrows
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -92,7 +94,7 @@ public class TpsMessagingClient implements ClientRegister {
                             future.get(90, TimeUnit.SECONDS)
                                     .forEach((key, value) -> status.append(getResponse(key, value)));
 
-                        } catch (InterruptedException | ExecutionException e) {
+                        } catch (ExecutionException e) {
 
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
