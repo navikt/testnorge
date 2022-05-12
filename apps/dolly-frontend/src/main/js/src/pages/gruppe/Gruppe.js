@@ -9,10 +9,11 @@ import GruppeHeader from './GruppeHeader/GruppeHeader'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
-import FinnPerson from '~/pages/gruppeOversikt/FinnPerson'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { resetSearch } from '~/ducks/search'
+import { resetNavigation } from '~/ducks/finnPerson'
+import FinnPersonConnector from '~/pages/gruppeOversikt/FinnPersonConnector'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -20,15 +21,14 @@ const VISNING_BESTILLING = 'bestilling'
 export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
-	navigerTilPerson,
-	navigerTilBestilling,
+	sidetall,
+	sideStoerrelse,
 	visPerson,
 	visBestilling,
 	laasGruppe,
 	getBestillinger,
 	grupper,
 	selectGruppe,
-	identer,
 	brukernavn,
 	brukerBilde,
 	brukerProfil,
@@ -42,10 +42,8 @@ export default function Gruppe({
 	isFetchingExcel,
 	bestillingStatuser,
 }) {
-	const [visning, setVisning] = useState(visBestilling ? VISNING_BESTILLING : VISNING_PERSONER)
+	const [visning, setVisning] = useState(VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-	const [sidetall, setSidetall] = useState(parseInt(window.sessionStorage.getItem('sidetall')) || 0)
-	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 	const [gruppe, setGruppe] = useState(null)
 	const slettedeIdenter = useState([])
@@ -54,10 +52,15 @@ export default function Gruppe({
 	const navigate = useNavigate()
 	const { gruppeId } = useParams()
 
+	useEffect(
+		() => setVisning(visBestilling ? VISNING_BESTILLING : VISNING_PERSONER),
+		[visBestilling]
+	)
+
 	useEffect(() => {
 		getGruppe(gruppeId, sidetall, sideStoerrelse)
 		getBestillinger(gruppeId)
-	}, [sidetall, sideStoerrelse, gruppeId])
+	}, [gruppeId])
 
 	useEffect(() => {
 		setGruppe(selectGruppe(grupper, gruppeId))
@@ -69,12 +72,9 @@ export default function Gruppe({
 		if (event?.target?.value === 'personer') {
 			dispatch(resetSearch())
 		}
+		dispatch(resetNavigation())
 		setVisning(typeof event === 'string' ? event : event.target.value)
 	}
-
-	const identArray = Object.values(identer).filter(
-		(ident) => ident.bestillingId != null && ident.bestillingId.length > 0
-	)
 
 	const startBestilling = (values) => navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
@@ -87,7 +87,6 @@ export default function Gruppe({
 			<GruppeHeader
 				gruppe={gruppe}
 				slettedeIdenter={slettedeIdenter}
-				identArray={identArray}
 				deleteGruppe={deleteGruppe}
 				isDeletingGruppe={isDeletingGruppe}
 				sendTags={sendTags}
@@ -142,10 +141,7 @@ export default function Gruppe({
 					</ToggleKnapp>
 				</ToggleGruppe>
 
-				<FinnPerson
-					navigerTilPerson={navigerTilPerson}
-					navigerTilBestilling={navigerTilBestilling}
-				/>
+				<FinnPersonConnector />
 			</div>
 
 			{startBestillingAktiv && (
@@ -161,8 +157,6 @@ export default function Gruppe({
 					iLaastGruppe={erLaast}
 					sideStoerrelse={sideStoerrelse}
 					slettedeIdenter={slettedeIdenter}
-					setSidetall={setSidetall}
-					setSideStoerrelse={setSideStoerrelse}
 					brukertype={brukertype}
 					setVisning={byttVisning}
 					visPerson={visPerson}

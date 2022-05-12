@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { malerApi } from './MalerApi'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import Button from '~/components/ui/button/Button'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'

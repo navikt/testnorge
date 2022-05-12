@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import _orderBy from 'lodash/orderBy'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
@@ -48,12 +48,6 @@ export default function BestillingListe({
 }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
-
-	console.log('sidetall: ', sidetall) //TODO - SLETT MEG
-
-	if (visBestilling && bestillinger && window.sessionStorage.getItem('sidetall')) {
-		window.sessionStorage.removeItem('sidetall')
-	}
 
 	const searchIdent = sessionStorage.getItem(SEARCH_IDENT)
 	const searchInfo = `Søket er filtrert etter ident ${searchIdent}, trykk for å fjerne filtreringen`

@@ -1,16 +1,8 @@
 import React from 'react'
-import Pagination from './pagination/Pagination'
 import Table from './table/Table'
+import { Pagination } from '~/components/ui/dollyTable/pagination/Pagination'
 
-export default function DollyTable({
-	data,
-	pagination,
-	gruppeDetaljer,
-	setSidetall,
-	setSideStoerrelse,
-	visSide,
-	...props
-}) {
+export const DollyTable = ({ data, pagination, gruppeDetaljer = {}, visSide, ...props }) => {
 	if (!pagination) return <Table data={data} {...props} />
 
 	return (
@@ -18,8 +10,6 @@ export default function DollyTable({
 			items={data}
 			visSide={visSide}
 			gruppeDetaljer={gruppeDetaljer}
-			setSidetall={setSidetall}
-			setSideStoerrelse={setSideStoerrelse}
 			render={(items) => <Table data={items} {...props} />}
 		/>
 	)

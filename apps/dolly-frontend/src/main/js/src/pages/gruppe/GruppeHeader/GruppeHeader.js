@@ -16,7 +16,6 @@ import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 
 export default function GruppeHeader({
 	gruppe,
-	identArray,
 	isDeletingGruppe,
 	deleteGruppe,
 	slettedeIdenter,
@@ -60,10 +59,6 @@ export default function GruppeHeader({
 					<Header.TitleValue
 						title="Sist endret"
 						value={Formatters.formatStringDates(gruppe.datoEndret)}
-					/>
-					<Header.TitleValue
-						title="Antall brukt"
-						value={identArray.map((p) => p.ibruk).filter(Boolean).length}
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 					{gruppe.tags && (

@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { actions, selectGruppeById } from '~/ducks/gruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
-import { navigerTilBestilling, navigerTilPerson } from '~/ducks/finnPerson'
 import { createLoadingSelector } from '~/ducks/loading'
 import Gruppe from './Gruppe'
 
@@ -22,7 +21,8 @@ const mapStateToProps = (state, ownProps) => ({
 	grupper: state.gruppe,
 	visPerson: state.finnPerson.visPerson,
 	visBestilling: state.finnPerson.visBestilling,
-	identer: state.gruppe.ident,
+	sidetall: state.finnPerson.sidetall,
+	sideStoerrelse: state.finnPerson.sideStoerrelse,
 	brukernavn: state.bruker.brukerData.brukernavn,
 	brukertype: state.bruker.brukerData.brukertype,
 	bestillingStatuser: state.bestillingStatuser.byId,
@@ -30,8 +30,6 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch) => ({
 	getGruppe: (gruppeId, pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
-	navigerTilPerson: (ident) => dispatch(navigerTilPerson(ident)),
-	navigerTilBestilling: (bestillingId) => dispatch(navigerTilBestilling(bestillingId)),
 	deleteGruppe: (gruppeId) => dispatch(actions.remove(gruppeId)),
 	sendTags: (gruppeId, tags) => dispatch(actions.sendGruppeTags(gruppeId, tags)),
 	laasGruppe: (gruppeId) =>

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
@@ -33,14 +33,13 @@ export default function PersonListe({
 	identer,
 	sidetall,
 	slettedeIdenter,
-	setSidetall,
 	sideStoerrelse,
-	setSideStoerrelse,
 	brukertype,
 	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
+	fetchIdenterById,
 	setVisning,
 	tmpPersoner,
 }) {
@@ -52,6 +51,10 @@ export default function PersonListe({
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
 		[identer, search, fagsystem, visPerson]
 	)
+
+	useEffect(() => {
+		fetchIdenterById(gruppeInfo.id, sidetall, sideStoerrelse)
+	}, [gruppeInfo.id, sidetall, sideStoerrelse])
 
 	useEffect(() => {
 		const idents = Object.values(identer)
@@ -199,8 +202,6 @@ export default function PersonListe({
 				pagination
 				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 				visSide={sidetall}
-				setSidetall={setSidetall}
-				setSideStoerrelse={setSideStoerrelse}
 				visPerson={visPerson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector

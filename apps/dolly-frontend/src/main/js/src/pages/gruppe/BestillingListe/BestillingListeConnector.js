@@ -11,6 +11,7 @@ const mapStateToProps = (state, ownProps) => ({
 	bestillinger: sokSelector(state, state.search),
 	navigerBestillingId: state.finnPerson.visBestilling,
 	sidetall: state.finnPerson.sidetall,
+	sideStoerrelse: state.finnPerson.sideStoerrelse,
 })
 
 export default connect(mapStateToProps)(BestillingListe)
