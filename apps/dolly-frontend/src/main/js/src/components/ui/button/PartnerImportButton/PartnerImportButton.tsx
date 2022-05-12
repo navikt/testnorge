@@ -46,7 +46,7 @@ export const PartnerImportButton = ({ action, loading, partnerIdent, gruppeIdent
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action(partnerIdent)
+								action(partnerIdent)
 							}}
 							type="hoved"
 						>
