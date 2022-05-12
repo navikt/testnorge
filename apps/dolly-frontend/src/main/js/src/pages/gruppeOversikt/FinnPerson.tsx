@@ -115,7 +115,6 @@ export default function FinnPerson({ navigerTilPerson, navigerTilBestilling }: F
 
 	const navigerTilIdent = async (ident: string) => {
 		navigerTilPerson(ident).then((response: ResponsNavigering) => {
-			window.sessionStorage.setItem('sidetall', String(response.value.data.sidetall))
 			if (response.value.data.error) {
 				setFeilmelding(response.value.data.message)
 			} else {
@@ -127,7 +126,7 @@ export default function FinnPerson({ navigerTilPerson, navigerTilBestilling }: F
 
 	const navigerTilBestillingId = async (bestillingId: string) => {
 		navigerTilBestilling(bestillingId).then((response: ResponsNavigering) => {
-			window.sessionStorage.setItem('sidetall', String(response.value.data.sidetall))
+			console.log('response: ', response) //TODO - SLETT MEG
 			if (response.value.data.error) {
 				setFeilmelding(response.value.data.message)
 			} else {

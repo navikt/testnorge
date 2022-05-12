@@ -12,6 +12,7 @@ export const { navigerTilPerson, navigerTilBestilling } = createActions({
 const initialState = {
 	visPerson: null,
 	visBestilling: null,
+	visSide: null,
 }
 
 export default handleActions(
@@ -21,9 +22,11 @@ export default handleActions(
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			state.visPerson = action.payload.data.identHovedperson
+			state.sidetall = action.payload.data.sidetall
 		},
 		[onSuccess(navigerTilBestilling)](state, action) {
 			state.visBestilling = action.payload.data.bestillingNavigerTil
+			state.sidetall = action.payload.data.sidetall
 		},
 	},
 	initialState

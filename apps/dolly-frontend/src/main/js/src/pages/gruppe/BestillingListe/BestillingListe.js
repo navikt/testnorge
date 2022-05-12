@@ -44,9 +44,12 @@ export default function BestillingListe({
 	brukertype,
 	navigerBestillingId,
 	visBestilling,
+	sidetall,
 }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
+
+	console.log('sidetall: ', sidetall) //TODO - SLETT MEG
 
 	if (visBestilling && bestillinger && window.sessionStorage.getItem('sidetall')) {
 		window.sessionStorage.removeItem('sidetall')
@@ -129,6 +132,7 @@ export default function BestillingListe({
 				columns={columns}
 				iconItem={<BestillingIconItem />}
 				visBestilling={visBestilling || navigerBestillingId}
+				visSide={sidetall}
 				onExpand={(bestilling) => (
 					<BestillingDetaljer
 						bestilling={bestilling}

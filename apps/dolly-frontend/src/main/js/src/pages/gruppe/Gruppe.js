@@ -159,7 +159,6 @@ export default function Gruppe({
 			{visning === VISNING_PERSONER && (
 				<PersonListeConnector
 					iLaastGruppe={erLaast}
-					sidetall={sidetall}
 					sideStoerrelse={sideStoerrelse}
 					slettedeIdenter={slettedeIdenter}
 					setSidetall={setSidetall}
@@ -170,11 +169,7 @@ export default function Gruppe({
 				/>
 			)}
 			{visning === VISNING_BESTILLING && (
-				<BestillingListeConnector
-					iLaastGruppe={erLaast}
-					brukertype={brukertype}
-					visBestilling={visBestilling}
-				/>
+				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
 			)}
 		</div>
 	)

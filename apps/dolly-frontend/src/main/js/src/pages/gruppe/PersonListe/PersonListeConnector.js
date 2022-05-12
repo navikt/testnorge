@@ -20,6 +20,7 @@ const mapStateToProps = (state, ownProps) => ({
 	gruppeInfo: state.gruppe.gruppeInfo,
 	identer: state.gruppe.ident,
 	isFetching: loadingSelector(state),
+	sidetall: state.finnperson.sidetall,
 	tmpPersoner: state.redigertePersoner,
 })
 
