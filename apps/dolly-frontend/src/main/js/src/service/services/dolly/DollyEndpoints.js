@@ -233,4 +233,8 @@ export default class DollyEndpoints {
 	static getArbeidsforhold(ident, miljoe) {
 		return `${uri}/aareg/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
 	}
+
+	static leggTilPersonIGruppe(gruppeId, ident, master) {
+		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
+	}
 }

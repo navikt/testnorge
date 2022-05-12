@@ -28,6 +28,7 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
+import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -47,9 +48,11 @@ export const PersonVisning = ({
 	brukertype,
 	bestilling,
 	bestillingsListe,
+	gruppeIdenter,
 	loading,
 	slettPerson,
 	leggTilPaaPerson,
+	importerPartner,
 	iLaastGruppe,
 	tmpPersoner,
 }) => {
@@ -63,6 +66,16 @@ export const PersonVisning = ({
 			mountedRef.current = false
 		}
 	}, [])
+
+	const pdlPartner = () => {
+		if (ident.master === 'PDL') {
+			return data.pdl?.hentPerson?.sivilstand?.filter(
+				(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
+			)?.[0]?.relatertVedSivilstand
+		} else {
+			return null
+		}
+	}
 
 	return (
 		<ErrorBoundary>
@@ -85,6 +98,17 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
+
+					{!iLaastGruppe && ident.master === 'PDL' && (
+						<PartnerImportButton
+							action={(partnerIdent) => {
+								importerPartner(gruppeId, partnerIdent)
+							}}
+							partnerIdent={pdlPartner()}
+							gruppeIdenter={gruppeIdenter}
+							loading={loading.importerPartner}
+						/>
+					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
@@ -92,12 +116,7 @@ export const PersonVisning = ({
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
-							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
-							personen og via Dolly vil bli slettet og personen vil bli frigjort fra gruppen. Dette
-							gjelder også for eventuell partner til personen som også er blitt importert til
-							gruppen.
-						</FrigjoerButton>
+						<FrigjoerButton action={slettPerson} loading={loading.slettPerson} />
 					)}
 				</div>
 				{ident.master !== 'PDL' && (

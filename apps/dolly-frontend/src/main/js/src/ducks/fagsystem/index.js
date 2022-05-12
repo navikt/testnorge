@@ -115,6 +115,7 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		importerPartner: DollyApi.importerPartner,
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type

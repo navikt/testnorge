@@ -228,4 +228,8 @@ export default {
 	getExcelFil(groupId) {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
+
+	importerPartner(groupId, ident) {
+		return Request.put(Endpoints.leggTilPersonIGruppe(groupId, ident, 'PDL'))
+	},
 }

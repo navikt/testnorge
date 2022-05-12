@@ -6,48 +6,51 @@ import Button from '~/components/ui/button/Button'
 import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 
-import './FrigjoerModal.less'
+import './PartnerImportButton.less'
 
 type Props = {
 	action: Function
 	loading: boolean
-	disabled?: boolean
+	partnerIdent: string
+	gruppeIdenter: string[]
 }
 
-export const FrigjoerButton = ({ action, loading, disabled = false }: Props) => {
-	if (loading) return <Loading label="frigjører..." />
+export const PartnerImportButton = ({ action, loading, partnerIdent, gruppeIdenter }: Props) => {
+	if (!partnerIdent) return null
+	if (loading) return <Loading label="importerer..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+
+	const disabled = gruppeIdenter.includes(partnerIdent)
 
 	return (
 		<React.Fragment>
 			<Button
 				onClick={openModal}
 				disabled={disabled}
-				title={disabled ? 'Frigjøring/sletting er midlertidig utilgjengelig' : ''}
-				kind="trashcan"
+				title={disabled ? 'Partner er allerede i gruppen' : ''}
+				kind="relasjoner"
 			>
-				FRIGJØR/SLETT
+				IMPORTER PARTNER
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-				<div className="frigjoerModal">
-					<div className="frigjoerModal frigjoerModal-content">
-						<Icon size={50} kind="report-problem-circle" />
-						<h1>Frigjør/slett</h1>
+				<div className="partnerImportModal">
+					<div className="partnerImportModal partnerImportModal-content">
+						<Icon size={50} kind="personinformasjon" />
+						<h1>Importer partner</h1>
 						<h4>
-							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
-							personen og via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
+							Er du sikker på at du vil importere og legge til valgt persons partner i gruppen?
 						</h4>
 					</div>
-					<div className="frigjoerModal-actions">
+					<div className="partnerImportModal-actions">
 						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action()
+								return action(partnerIdent)
 							}}
 							type="hoved"
 						>
-							Ja, jeg er sikker
+							Ja
 						</NavButton>
 					</div>
 				</div>

@@ -58,16 +58,11 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 		return data
 			.map((person) => person?.hentPerson?.sivilstand)
 			.map((sivilstand) => {
-				let giftSivilstand = sivilstand.filter(
+				return sivilstand.filter(
 					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type)
-				)
-				if (giftSivilstand !== null && giftSivilstand.length > 0) {
-					return giftSivilstand[0].relatertVedSivilstand
-				} else {
-					return null
-				}
+				)?.[0]?.relatertVedSivilstand
 			})
-			.filter((partnerIdent) => partnerIdent !== null)
+			.filter((partnerIdent) => partnerIdent)
 	}
 
 	const handleImport = () => {
@@ -107,6 +102,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 						</h4>
 					</div>
 					<div className="importModal-actions">
+						<NavButton onClick={() => importer(valgtePersoner)}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								getPdlPersoner(partnerIdenter).then((response: ImportPerson[]) => {
@@ -118,7 +114,6 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 						>
 							Ja
 						</NavButton>
-						<NavButton onClick={() => importer(valgtePersoner)}>Nei</NavButton>
 					</div>
 				</div>
 			</DollyModal>
