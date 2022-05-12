@@ -117,6 +117,7 @@ public class PersonExcelService {
         return foreldre.stream()
                 .filter(forelder -> PdlPerson.Rolle.BARN == forelder.getMinRolleForPerson())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -125,6 +126,7 @@ public class PersonExcelService {
         return barn.stream()
                 .filter(barnet -> PdlPerson.Rolle.BARN == barnet.getRelatertPersonsRolle())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(",\n"));
     }
 

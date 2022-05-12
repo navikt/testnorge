@@ -139,14 +139,13 @@ public class IdentpoolService {
     }
 
     @Transactional
-    public List<String> frigjoerIdenter(String rekvirertAv, List<String> identer) {
+    public List<String> frigjoerIdenter(List<String> identer) {
 
         var personidentifikatore = identRepository.findByPersonidentifikatorIn(identer);
 
         personidentifikatore
                 .forEach(personidentifikator -> {
-                    if (rekvirertAv.equals(personidentifikator.getRekvirertAv()) &&
-                            !personidentifikator.isFinnesHosSkatt()) {
+                    if (!personidentifikator.isFinnesHosSkatt()) {
 
                         personidentifikator.setRekvireringsstatus(LEDIG);
                         personidentifikator.setRekvirertAv(null);
