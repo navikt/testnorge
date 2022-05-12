@@ -30,10 +30,10 @@ spec:
     max: 1
   resources:
     limits:
-      cpu: 4000m
+      cpu: 8000m
       memory: 2048Mi
     requests:
-      cpu: 2500m
+      cpu: 4000m
       memory: 1024Mi
   envFrom:
     - secret: testnav-tps-messaging-service

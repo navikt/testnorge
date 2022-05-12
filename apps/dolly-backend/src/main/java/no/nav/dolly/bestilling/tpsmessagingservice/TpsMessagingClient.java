@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -26,8 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -64,7 +61,6 @@ public class TpsMessagingClient implements ClientRegister {
         return respons.toString();
     }
 
-    @SneakyThrows
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -90,19 +86,19 @@ public class TpsMessagingClient implements ClientRegister {
                     .map(completable -> supplyAsync(() -> completable.apply(bestilling, dollyPerson), dollyForkJoinPool))
                     .forEach(future -> {
                         try {
-
-                            future.get(90, TimeUnit.SECONDS)
+                            future.get()
                                     .forEach((key, value) -> status.append(getResponse(key, value)));
+
+                        } catch (InterruptedException e) {
+
+                            log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
 
                         } catch (ExecutionException e) {
 
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
 
-                        } catch (TimeoutException e) {
-
-                            log.warn("Kommunikasjon med TPS timet ut, status på oppretting er ukjent ...");
-                            Thread.interrupted();
                         }
                     });
 
