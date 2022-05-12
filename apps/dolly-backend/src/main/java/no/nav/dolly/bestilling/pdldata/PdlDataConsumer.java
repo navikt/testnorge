@@ -60,8 +60,8 @@ public class PdlDataConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(400))
                         .map(index -> new PdlDataSlettCommand(webClient, identer.get(index), token.getTokenValue()).call())
-                        .delayElements(Duration.ofMillis(500))
                         .flatMap(Flux::from))
                 .collectList();
     }
@@ -71,10 +71,10 @@ public class PdlDataConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                        .delayElements(Duration.ofMillis(1000))
                         .map(count -> new PdlDataSlettUtenomCommand(webClient,
                                 identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()).call())
-                        .delayElements(Duration.ofMillis(1000))
                         .flatMap(Flux::from))
                 .collectList();
     }
