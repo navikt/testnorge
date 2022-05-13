@@ -1,7 +1,13 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
-import { messages, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
+import {
+	ifPresent,
+	messages,
+	requiredDate,
+	requiredNumber,
+	requiredString,
+} from '~/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 const unikOrgMndTest = (unikValidation) => {
@@ -78,11 +84,22 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 }
 
 const inntektsliste = Yup.array().of(
-	Yup.object({
-		beloep: requiredNumber.typeError(messages.required),
-		startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
-		sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
-	})
+	Yup.object().shape(
+		{
+			beloep: requiredNumber.typeError(messages.required),
+			inntektstype: requiredString.nullable(),
+			startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
+			sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
+			inngaarIGrunnlagForTrekk: Yup.boolean().required().nullable(),
+			utloeserArbeidsgiveravgift: Yup.boolean().required().nullable(),
+			fordel: ifPresent('fordel', requiredString.nullable()),
+			beskrivelse: ifPresent('beskrivelse', requiredString.nullable()),
+		},
+		[
+			['fordel', 'fordel'],
+			['beskrivelse', 'beskrivelse'],
+		]
+	)
 )
 
 const fradragsliste = Yup.array().of(

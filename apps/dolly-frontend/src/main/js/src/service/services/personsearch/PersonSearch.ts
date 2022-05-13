@@ -3,10 +3,16 @@ import { Search } from './types'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 export type SearchResponsePdl = { numberOfItems: number; items: PdlData[] }
+type PdlPerson = {
+	ident: string
+	navn: { fornavn: string; mellomnavn: string; etternavn: string }
+}
+
+const PDL_SEARCH_URL = `/person-search-service/api/v1`
 
 const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 	Api.fetch(
-		'/person-search-service/api/v1/pdlPerson',
+		`${PDL_SEARCH_URL}/pdlPerson`,
 		{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 		searchRequest
 	).then((response) =>
@@ -17,6 +23,19 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 				numberOfItems: parseInt(response.headers.get('number_of_items')),
 			}
 		})
+	)
+
+const searchPdlFragment = (fragment: string) =>
+	Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' },
+	}).then((response) =>
+		response.json().then((items: [PdlPerson]) => ({
+			data: items.map((person) => ({
+				ident: person.ident,
+				...person.navn,
+			})),
+		}))
 	)
 
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
@@ -57,4 +76,5 @@ const filterOutPersonerMedEtBarn = (items: PdlData[]) => {
 
 export default {
 	searchPdlPerson,
+	searchPdlFragment,
 }

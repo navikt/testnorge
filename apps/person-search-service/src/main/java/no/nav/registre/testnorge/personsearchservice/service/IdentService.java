@@ -3,8 +3,10 @@ package no.nav.registre.testnorge.personsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personsearchservice.adapter.IdentSearchAdapter;
 import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
+import no.nav.registre.testnorge.personsearchservice.service.utils.QueryBuilder;
 import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.search.SearchRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class IdentService {
     private final IdentSearchAdapter identSearchAdapter;
 
     public List<IdentdataDTO> getIdenter(String query) {
-
-        return identSearchAdapter.search(getSearchCriteria(query));
+        var searchRequest = createSearchRequest(getSearchCriteria(query));
+        return identSearchAdapter.search(searchRequest);
     }
 
     private IdentSearch getSearchCriteria(String query) {
@@ -42,5 +44,10 @@ public class IdentService {
                 .ident(ident)
                 .navn(navn)
                 .build();
+    }
+
+    private SearchRequest createSearchRequest(IdentSearch search) {
+        var query = QueryBuilder.buildIdentSearchQuery(search);
+        return QueryBuilder.getSearchRequest(query, search.getPage(), search.getPageSize(), search.getTerminateAfter());
     }
 }

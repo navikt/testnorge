@@ -7,6 +7,30 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+
+type UtvandringTypes = {
+	path: string
+}
+
+export const UtvandringForm = ({ path }: UtvandringTypes) => {
+	return (
+		<>
+			<FormikSelect
+				name={`${path}.tilflyttingsland`}
+				label="Utvandret til"
+				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+				size="large"
+				isClearable={false}
+			/>
+			<FormikTextInput name={`${path}.tilflyttingsstedIUtlandet`} label="Tilflyttingssted" />
+			<DatepickerWrapper>
+				<FormikDatepicker name={`${path}.utflyttingsdato`} label="Utflyttingsdato" />
+			</DatepickerWrapper>
+			<AvansertForm path={path} kanVelgeMaster={false} />
+		</>
+	)
+}
 
 export const Utvandring = () => {
 	return (
@@ -17,20 +41,7 @@ export const Utvandring = () => {
 				newEntry={initialUtvandring}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => (
-					<>
-						<FormikSelect
-							name={`${path}.tilflyttingsland`}
-							label="Utvandret til"
-							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-							size="large"
-							isClearable={false}
-						/>
-						<FormikTextInput name={`${path}.tilflyttingsstedIUtlandet`} label="Tilflyttingssted" />
-						<FormikDatepicker name={`${path}.utflyttingsdato`} label="Utflyttingsdato" />
-						<AvansertForm path={path} kanVelgeMaster={false} />
-					</>
-				)}
+				{(path: string, idx: number) => <UtvandringForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

@@ -7,13 +7,19 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import texts from '../texts'
 import tilleggsinformasjonPaths from '../paths'
 
-const sjekkFelt = (field, options, values, path) => {
+const sjekkFelt = (formik, field, options, values, path) => {
 	const fieldValue = _get(values, path)
 	const fieldPath = tilleggsinformasjonPaths(field)
-	if (!options.includes('<TOM>')) {
-		if (fieldValue && !_get(fieldValue, fieldPath) && _get(fieldValue, fieldPath) !== false) {
-			return { feilmelding: 'Feltet er påkrevd' }
+	if (
+		!options.includes('<TOM>') &&
+		fieldValue &&
+		!_get(fieldValue, fieldPath) &&
+		_get(fieldValue, fieldPath) !== false
+	) {
+		if (fieldValue['inntektstype'] !== '' && !formik.errors?.hasOwnProperty('inntektstub')) {
+			formik.setFieldError(`inntektstub.${field}`, 'Feltet er påkrevd')
 		}
+		return { feilmelding: 'Feltet er påkrevd' }
 	}
 }
 
@@ -65,7 +71,7 @@ const fieldResolver = (
 				name={field}
 				label={texts(field)}
 				afterChange={handleChange}
-				feil={sjekkFelt(field, options, values, path)}
+				feil={sjekkFelt(formik, field, options, values, path)}
 			/>
 		)
 	} else if (field === 'skattemessigBosattILand' || field === 'opptjeningsland') {
@@ -78,7 +84,7 @@ const fieldResolver = (
 				fastfield={false}
 				afterChange={handleChange}
 				size="large"
-				feil={sjekkFelt(field, options, values, path)}
+				feil={sjekkFelt(formik, field, options, values, path)}
 			/>
 		)
 	} else if (optionsUtfylt(options)) {
@@ -90,7 +96,7 @@ const fieldResolver = (
 				label={texts(field)}
 				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
-				feil={sjekkFelt(field, options, values, path)}
+				feil={sjekkFelt(formik, field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)
@@ -98,13 +104,13 @@ const fieldResolver = (
 	const filteredOptions = options.map((option) => ({ label: texts(option), value: option }))
 	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
 	const tomTilleggsinformasjonFieldPath =
-		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
-		`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`
+		tilleggsinformasjonAttributter[filteredOptions?.[0]?.value] &&
+		`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions?.[0]?.value]}`
 
 	if (
 		!resetForm &&
 		filteredOptions.length === 1 &&
-		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
+		tilleggsinformasjonAttributter[filteredOptions?.[0]?.value] &&
 		!_get(values, tomTilleggsinformasjonFieldPath)
 	) {
 		useEffect(() => {
@@ -112,17 +118,17 @@ const fieldResolver = (
 				`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`,
 				{}
 			)
-			formik.setFieldValue(`${path}.tilleggsinformasjonstype`, filteredOptions[0].value)
-		})
+			formik.setFieldValue(`${path}.tilleggsinformasjonstype`, filteredOptions?.[0]?.value)
+		}, [])
 	} else if (
 		!resetForm &&
 		filteredOptions.length === 1 &&
-		_get(values, fieldPath) !== filteredOptions[0].value &&
+		_get(values, fieldPath) !== filteredOptions?.[0]?.value &&
 		!tilleggsinformasjonAttributter[filteredOptions[0].value]
 	) {
 		useEffect(() => {
 			formik.setFieldValue(fieldPath, filteredOptions[0].value)
-		})
+		}, [])
 	}
 
 	return (
@@ -135,7 +141,7 @@ const fieldResolver = (
 			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
-			feil={sjekkFelt(field, options, values, path)}
+			feil={sjekkFelt(formik, field, options, values, path)}
 			isClearable={field !== 'inntektstype'}
 		/>
 	)
