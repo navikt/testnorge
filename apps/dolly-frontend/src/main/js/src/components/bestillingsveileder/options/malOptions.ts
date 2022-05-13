@@ -31,7 +31,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		initialValuesMal.pdlforvalter = getUpdatedPdlfData(initialValuesMal.pdlforvalter)
 	}
 	if (initialValuesMal.tpsf) {
-		initialValuesMal.tpsf = getUpdatedTpsfData(initialValuesMal.tpsf)
+		initialValuesMal.tpsf = null
 	}
 	if (initialValuesMal.udistub) {
 		initialValuesMal.udistub = getUpdatedUdistubData(initialValuesMal.udistub)
@@ -84,37 +84,6 @@ const getUpdatedPdlfData = (pdlfData: any) => {
 	return newPdlfData
 }
 
-const getUpdatedTpsfData = (tpsfData: any) => {
-	let newTpsfData = Object.assign({}, tpsfData)
-	if (tpsfData.statsborgerskap) {
-		newTpsfData = updateData(newTpsfData, initialValues.statborgerskap)
-	}
-	if (tpsfData.innvandretFraLand) {
-		newTpsfData = updateData(newTpsfData, initialValues.innvandretFra)
-	}
-	if (tpsfData.utvandretTilLand) {
-		newTpsfData = updateData(newTpsfData, initialValues.utvandretTil)
-	}
-	if (tpsfData.relasjoner) {
-		if (tpsfData.relasjoner.barn) {
-			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map((barn: any) => {
-				if (barn.identtype === 'FDAT') {
-					const newData = updateData(barn, initialValues.barnDoedfoedt)
-					newData.foedselsdato = newData.doedsdato
-					return newData
-				} else {
-					return updateData(barn, initialValues.barn)
-				}
-			})
-		}
-	}
-	if (tpsfData.boadresse) {
-		newTpsfData.boadresse = updateData(newTpsfData.boadresse, initialValues.boadresse)
-	}
-
-	return newTpsfData
-}
-
 const getUpdatedUdistubData = (udistubData: any) => {
 	const newUdistubData = Object.assign({}, udistubData)
 	const oppholdStatus = udistubData.oppholdStatus
@@ -161,6 +130,8 @@ const getUpdatedPdldata = (pdldata: any) => {
 				syntetisk: nyPerson.syntetisk,
 			}
 		}
+	} else {
+		newPdldata.opprettNyPerson = {}
 	}
 	const person = newPdldata?.person
 	if (person?.bostedsadresse) {
