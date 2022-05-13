@@ -18,14 +18,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Import({
-        CoreConfig.class,
-        DevConfig.class,
-        SecurityConfig.class
+    CoreConfig.class,
+    DevConfig.class,
+    SecurityConfig.class
 })
 @SpringBootApplication
 public class AaregProxyApplicationStarter {
+
+    @Value("${app.modapp.uri.pattern:https://modapp-{{ENV}}.adeo.no}")
+    private String modappUriPattern;
 
     public static void main(String[] args) {
         SpringApplication.run(AaregProxyApplicationStarter.class, args);
@@ -33,54 +37,63 @@ public class AaregProxyApplicationStarter {
 
     @Bean
     public StsOidcTokenService stsPreprodOidcTokenService(
-            @Value("${sts.preprod.token.provider.url}") String url,
-            @Value("${sts.preprod.token.provider.username}") String username,
-            @Value("${sts.preprod.token.provider.password}") String password
+        @Value("${sts.preprod.token.provider.url}") String url,
+        @Value("${sts.preprod.token.provider.username}") String username,
+        @Value("${sts.preprod.token.provider.password}") String password
     ) {
         return new StsOidcTokenService(url, username, password);
     }
 
     @Bean
     public StsOidcTokenService stsTestOidcTokenService(
-            @Value("${sts.test.token.provider.url}") String url,
-            @Value("${sts.test.token.provider.username}") String username,
-            @Value("${sts.test.token.provider.password}") String password
+        @Value("${sts.test.token.provider.url}") String url,
+        @Value("${sts.test.token.provider.username}") String username,
+        @Value("${sts.test.token.provider.password}") String password
     ) {
         return new StsOidcTokenService(url, username, password);
     }
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
+        RouteLocatorBuilder.Builder routes = builder.routes();
 
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
+            .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
+        Stream.of("q0", "q1", "q2", "q4", "q5", "qx")
+            .forEach(env -> routes
+                .route(createRoute(env, preprodFilter))
+                .route(env, createQueryBasedRoute(env, preprodFilter)));
+
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
-        return builder
-                .routes()
-                .route(createRoute("q0", preprodFilter))
-                .route(createRoute("q1", preprodFilter))
-                .route(createRoute("q2", preprodFilter))
-                .route(createRoute("q4", preprodFilter))
-                .route(createRoute("q5", preprodFilter))
-                .route(createRoute("qx", preprodFilter))
-                .route(createRoute("t0", testFilter))
-                .route(createRoute("t1", testFilter))
-                .route(createRoute("t2", testFilter))
-                .route(createRoute("t3", testFilter))
-                .route(createRoute("t4", testFilter))
-                .route(createRoute("t5", testFilter))
-                .route(createRoute("t6", testFilter))
-                .route(createRoute("t13", testFilter))
-                .build();
+            .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
+        Stream.of("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t13")
+            .forEach(env -> routes
+                .route(createRoute(env, testFilter))
+                .route(env, createQueryBasedRoute(env, testFilter)));
+
+        return routes.build();
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
         return spec -> spec
-                .path("/api/" + miljo + "/**")
-                .filters(filterSpec -> filterSpec
-                        .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/aareg-services/api/${segment}")
-                        .filter(filter)
-                ).uri("https://modapp-" + miljo + ".adeo.no");
+            .path("/api/" + miljo + "/**")
+            .filters(filterSpec -> filterSpec
+                .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/aareg-services/api/${segment}")
+                .filter(filter)
+            ).uri("https://modapp-" + miljo + ".adeo.no");
     }
+
+    private Function<PredicateSpec, Buildable<Route>> createQueryBasedRoute(String env, GatewayFilter addRequiredAuthHeaders) {
+        return spec -> spec
+            .path("/api/v1/**")
+            .and()
+            .query("miljoe", env)
+            .filters(f -> f
+                .rewritePath("^(/api/v1/)", "/aareg-services/api/v1/")
+                .removeRequestParameter("miljoe")
+                .addRequestHeader("miljoe", env)
+                .filter(addRequiredAuthHeaders))
+            .uri(modappUriPattern.replace("{{ENV}}", env));
+    }
+
 }
