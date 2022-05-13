@@ -23,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,7 @@ public class PdlDataConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(400))
                         .map(index -> new PdlDataSlettCommand(webClient, identer.get(index), token.getTokenValue()).call())
                         .flatMap(Flux::from))
                 .collectList();
@@ -69,6 +71,7 @@ public class PdlDataConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                        .delayElements(Duration.ofMillis(1000))
                         .map(count -> new PdlDataSlettUtenomCommand(webClient,
                                 identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()).call())

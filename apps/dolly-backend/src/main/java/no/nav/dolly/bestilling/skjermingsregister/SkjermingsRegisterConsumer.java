@@ -116,6 +116,7 @@ public class SkjermingsRegisterConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(100))
                         .map(index -> new SkjermingsregisterDeleteCommand(webClient,
                                 identer.get(index), token.getTokenValue()).call())
                         .flatMap(Flux::from))

@@ -81,6 +81,7 @@ public class KrrstubConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(100))
                         .map(idx -> new GetKontaktdataCommand(webClient, identer.get(idx), token.getTokenValue()).call())
                         .flatMap(Flux::from)
                         .filter(resp -> nonNull(resp.getId()))

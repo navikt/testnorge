@@ -72,6 +72,7 @@ public class InntektstubConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                        .delayElements(Duration.ofMillis(100))
                         .map(index -> new InbtektstubDeleteCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()).call())

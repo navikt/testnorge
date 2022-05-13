@@ -53,38 +53,37 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
     public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSikkerhetstiltak" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSikkerhetstiltak"})
     public List<TpsMeldingResponseDTO> deleteSikkerhetstiltakRequest(String ident, List<String> miljoer) {
 
         return new DeleteSikkerhetstiltakCommand(webClient, ident, miljoer, SIKKERHETSTILTAK_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSikkerhetstiltak" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSikkerhetstiltak"})
     public List<TpsMeldingResponseDTO> sendSikkerhetstiltakRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, SIKKERHETSTILTAK_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSkjerming"})
     public List<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
         return new SendEgenansattCommand(webClient, ident, miljoer, fraOgMed, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSkjerming" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSkjerming"})
     public List<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
 
         return new DeleteEgenansattCommand(webClient, ident, miljoer, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
@@ -108,7 +107,7 @@ public class TpsMessagingConsumer {
         return new DeleteTelefonnummerCommand(webClient, ident, miljoer, TELEFONTYPER_LISTE, TELEFONNUMMER_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSpraakkode" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSpraakkode"})
     public List<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, serviceProperties.getAccessToken(tokenService)).call();
@@ -118,7 +117,7 @@ public class TpsMessagingConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_getIdenter" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_getIdenter"})
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer) {
 
         return new HentIdenterCommand(webClient, miljoer, identer, serviceProperties.getAccessToken(tokenService)).call();

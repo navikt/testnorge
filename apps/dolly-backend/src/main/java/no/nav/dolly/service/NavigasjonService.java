@@ -3,7 +3,6 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -98,6 +97,7 @@ public class NavigasjonService {
                                         .toList(),
                                 personBolk.getPerson().getForelderBarnRelasjon().stream()
                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
                                         .toList(),
                                 personBolk.getPerson().getForeldreansvar().stream()
                                         .map(ForeldreansvarDTO::getAnsvarlig)
