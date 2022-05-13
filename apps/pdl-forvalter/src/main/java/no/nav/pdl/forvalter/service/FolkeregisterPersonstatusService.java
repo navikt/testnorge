@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
@@ -18,6 +19,7 @@ import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.IKKE_BOSATT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.INAKTIV;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.MIDLERTIDIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
@@ -81,8 +83,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setGyldigFraOgMed(person.getDoedsfall().stream().findFirst().orElse(new DoedsfallDTO())
                     .getDoedsdato());
 
-        } else if (!person.getFalskIdentitet().isEmpty() && person.getFalskIdentitet().stream()
-                .anyMatch(FalskIdentitetDTO::isFalskIdentitet)) {
+        } else if (person.getFalskIdentitet().stream().anyMatch(FalskIdentitetDTO::isFalskIdentitet)) {
 
             personstatus.setStatus(OPPHOERT);
             personstatus.setGyldigFraOgMed(person.getFalskIdentitet().stream()
@@ -104,15 +105,21 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
             personstatus.setStatus(MIDLERTIDIG);
 
-        } else if (!person.getBostedsadresse().isEmpty() &&
-                (person.getBostedsadresse().stream().findFirst().get().countAdresser() == 0 ||
-                        (nonNull(person.getBostedsadresse().stream().findFirst().get().getVegadresse()) ||
-                                nonNull(person.getBostedsadresse().stream().findFirst().get().getMatrikkeladresse())))) {
+        } else if (!person.getBostedsadresse().isEmpty()) {
 
-            personstatus.setStatus(BOSATT);
-            personstatus.setGyldigFraOgMed(person.getBostedsadresse().stream()
-                    .findFirst().orElse(new BostedadresseDTO())
-                    .getGyldigFraOgMed());
+            if (person.getBostedsadresse().get(0).isAdresseUtland()) {
+                personstatus.setStatus(IKKE_BOSATT);
+
+            } else if (nonNull(person.getBostedsadresse().get(0).getUkjentBosted())) {
+                personstatus.setStatus(FOEDSELSREGISTRERT);
+
+            } else {
+                personstatus.setStatus(BOSATT);
+            }
+
+            personstatus.setGyldigFraOgMed(nonNull(person.getBostedsadresse().get(0).getGyldigFraOgMed()) ?
+                    person.getBostedsadresse().get(0).getGyldigFraOgMed() :
+                    DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
 
         } else if (FNR != getIdenttype(person.getIdent()) &&
                 person.getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()).countAdresser() == 0 ||
