@@ -57,7 +57,7 @@ public class BestillingController {
 
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/soekBestilling")
-    @Operation(description = "Hent Bestilling med bestillingsId")
+    @Operation(description = "Hent Bestillinger basert på fragment")
     public List<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
         return bestillingService.fetchBestillingByFragment(fragment);
     }
