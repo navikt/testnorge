@@ -19,6 +19,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-vedtakshistorikk
+  synt-dagpenger:
+    url: https://synthdata-arena-dagpenger.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-dagpenger
   testnav-arena-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly
