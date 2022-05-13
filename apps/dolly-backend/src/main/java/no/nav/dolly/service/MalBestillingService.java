@@ -48,7 +48,7 @@ public class MalBestillingService {
         var malBestillinger = bestillinger.parallelStream()
                 .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
                 .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().parallelStream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .map(bestilling1 -> RsMalBestilling.builder()
                                 .bestilling(mapperFacade.map(bestilling1, RsMalBestillingWrapper.RsBestilling.class))
                                 .malNavn(bestilling1.getMalBestillingNavn())
