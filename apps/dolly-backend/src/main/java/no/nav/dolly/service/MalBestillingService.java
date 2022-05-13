@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,6 +62,7 @@ public class MalBestillingService {
         malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
+                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                         .toList());
 
         return malBestillingWrapper;
