@@ -162,6 +162,7 @@ export const Kontaktadresse = ({
 		return null
 
 	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) return null
 
 	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
 		const initKontaktadresse = Object.assign(
