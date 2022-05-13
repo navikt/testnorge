@@ -44,10 +44,10 @@ public class MalBestillingService {
 
         List<Bestilling> bestillinger = bestillingService.fetchMalBestillinger();
 
-        var malBestillinger = bestillinger.stream()
+        var malBestillinger = bestillinger.parallelStream()
                 .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
                 .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().parallelStream()
                         .map(bestilling1 -> RsMalBestilling.builder()
                                 .bestilling(mapperFacade.map(bestilling1, RsMalBestillingWrapper.RsBestilling.class))
                                 .malNavn(bestilling1.getMalBestillingNavn())
