@@ -9,13 +9,14 @@ import Icon from '~/components/ui/icon/Icon'
 import { Option } from '~/service/SelectOptionsOppslag'
 import { SoekTypeValg, VelgSoekTypeToggle } from '~/pages/gruppeOversikt/VelgSoekTypeToggle'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
 import PersonSearch from '~/service/services/personsearch/PersonSearch'
 
 type FinnPersonProps = {
 	feilmelding: string
 	gruppe: number
-	resetFeilmelding: Function
+	resetNavigering: Function
 	navigerTilPerson: Function
 	navigerTilBestilling: Function
 }
@@ -40,26 +41,25 @@ const StyledAsyncSelect = styled(AsyncSelect)`
 	width: 100%;
 `
 
-const FinnPerson = ({
+const FinnPersonBestilling = ({
 	feilmelding,
 	gruppe,
-	resetFeilmelding,
+	resetNavigering,
 	navigerTilPerson,
 	navigerTilBestilling,
 }: FinnPersonProps) => {
-	const [ident, setIdent] = useState(null)
-	const [bestilling, setBestilling] = useState(null)
 	const [soekType, setValgtSoekType] = useState(SoekTypeValg.PERSON)
+	const [searchQuery, setSearchQuery] = useState(null)
+	const [fragment, setFragment] = useState('')
 
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		if (ident) {
-			navigerTilPerson(ident)
-		} else if (bestilling) {
-			navigerTilBestilling(bestilling)
-		}
-	}, [ident, bestilling])
+		if (!searchQuery) return null
+		soekType === SoekTypeValg.PERSON
+			? navigerTilPerson(searchQuery)
+			: navigerTilBestilling(searchQuery)
+	}, [searchQuery])
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
 		personList
@@ -107,8 +107,22 @@ const FinnPerson = ({
 
 	const handleChange = (tekst: string) => {
 		fetchOptions(tekst)
-		resetFeilmelding()
+		setFragment(tekst)
+		resetNavigering()
 	}
+
+	// @ts-ignore
+	const Option = ({ children, ...props }) => (
+		// @ts-ignore
+		<components.Option {...props}>
+			<Highlighter
+				textToHighlight={children}
+				searchWords={fragment.split(' ')}
+				autoEscape={true}
+				caseSensitive={false}
+			/>
+		</components.Option>
+	)
 
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
@@ -131,14 +145,13 @@ const FinnPerson = ({
 					loadOptions={fetchOptions}
 					onInputChange={handleChange}
 					components={{
+						Option,
 						// @ts-ignore
 						DropdownIndicator,
 					}}
 					isClearable={true}
 					options={options}
-					onChange={(e: Option) => {
-						soekType === SoekTypeValg.PERSON ? setIdent(e.value) : setBestilling(e.value)
-					}}
+					onChange={(e: Option) => setSearchQuery(e?.value)}
 					cacheOptions={true}
 					label="Person"
 					placeholder={
@@ -154,4 +167,4 @@ const FinnPerson = ({
 		</ErrorBoundary>
 	)
 }
-export default FinnPerson
+export default FinnPersonBestilling

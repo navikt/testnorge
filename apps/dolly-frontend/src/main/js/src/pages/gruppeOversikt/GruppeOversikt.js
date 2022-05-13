@@ -6,7 +6,7 @@ import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConn
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
-import FinnPersonConnector from '~/pages/gruppeOversikt/FinnPersonConnector'
+import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 
 export default function GruppeOversikt({
 	getGrupper,
@@ -64,7 +64,7 @@ export default function GruppeOversikt({
 						Alle
 					</ToggleKnapp>
 				</ToggleGruppe>
-				<FinnPersonConnector />
+				<FinnPersonBestillingConnector />
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}

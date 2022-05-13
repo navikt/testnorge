@@ -3,16 +3,17 @@ import React from 'react'
 import './TidligereBestillinger.less'
 import Button from '~/components/ui/button/Button'
 import styled from 'styled-components'
-
-export const NAVIGER_BESTILLING_ID = 'NAVIGER_BESTILLING_ID'
-export const SEARCH_IDENT = 'SEARCH_IDENT'
+import { useDispatch } from 'react-redux'
+import { navigerTilBestilling } from '~/ducks/finnPerson'
 
 const NavigerTilBestillingButton = styled(Button)`
 	align-self: center;
 `
 
-export const TidligereBestillinger = ({ ids, setVisning, ident }) => {
+export const TidligereBestillinger = ({ ids }) => {
 	if (ids.length <= 1) return false
+
+	const dispatch = useDispatch()
 
 	return (
 		<div className="tidligere-bestilling-panel">
@@ -23,9 +24,7 @@ export const TidligereBestillinger = ({ ids, setVisning, ident }) => {
 					<NavigerTilBestillingButton
 						key={id}
 						onClick={() => {
-							setVisning('bestilling')
-							sessionStorage.setItem(NAVIGER_BESTILLING_ID, id)
-							sessionStorage.setItem(SEARCH_IDENT, ident)
+							dispatch(navigerTilBestilling(id))
 						}}
 					>
 						{id}

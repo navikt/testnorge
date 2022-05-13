@@ -13,7 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { resetSearch } from '~/ducks/search'
 import { resetNavigation } from '~/ducks/finnPerson'
-import FinnPersonConnector from '~/pages/gruppeOversikt/FinnPersonConnector'
+import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 
 const VISNING_PERSONER = 'personer'
 const VISNING_BESTILLING = 'bestilling'
@@ -21,8 +21,6 @@ const VISNING_BESTILLING = 'bestilling'
 export default function Gruppe({
 	getGruppe,
 	deleteGruppe,
-	sidetall,
-	sideStoerrelse,
 	visPerson,
 	visBestilling,
 	laasGruppe,
@@ -58,7 +56,7 @@ export default function Gruppe({
 	)
 
 	useEffect(() => {
-		getGruppe(gruppeId, sidetall, sideStoerrelse)
+		getGruppe(gruppeId, 0, 10)
 		getBestillinger(gruppeId)
 	}, [gruppeId])
 
@@ -141,7 +139,7 @@ export default function Gruppe({
 					</ToggleKnapp>
 				</ToggleGruppe>
 
-				<FinnPersonConnector />
+				<FinnPersonBestillingConnector />
 			</div>
 
 			{startBestillingAktiv && (
@@ -155,10 +153,8 @@ export default function Gruppe({
 			{visning === VISNING_PERSONER && (
 				<PersonListeConnector
 					iLaastGruppe={erLaast}
-					sideStoerrelse={sideStoerrelse}
 					slettedeIdenter={slettedeIdenter}
 					brukertype={brukertype}
-					setVisning={byttVisning}
 					visPerson={visPerson}
 				/>
 			)}

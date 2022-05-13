@@ -20,6 +20,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
+import { isNil } from 'lodash'
 
 export const actions = createActions(
 	{
@@ -259,11 +260,13 @@ export default handleActions(
 
 // Thunk
 export const fetchTpsfPersoner = (identer) => (dispatch) => {
-	const tpsIdenter = identer.map((person) => {
-		if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
-			return person.ident
-		}
-	})
+	const tpsIdenter = identer
+		.map((person) => {
+			if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
+				return person.ident
+			}
+		})
+		.filter((person) => !isNil(person))
 
 	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
 }

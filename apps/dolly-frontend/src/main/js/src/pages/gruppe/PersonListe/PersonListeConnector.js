@@ -10,6 +10,7 @@ const loadingSelector = createLoadingSelector([
 	actionList.getTpsf,
 	actionList.getPDLPersoner,
 	actionList.getPdlForvalter,
+	actions.getIdenterById,
 	getBestillinger,
 ])
 

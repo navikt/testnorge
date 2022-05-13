@@ -51,7 +51,6 @@ export const PersonVisning = ({
 	slettPerson,
 	leggTilPaaPerson,
 	iLaastGruppe,
-	setVisning,
 	tmpPersoner,
 }) => {
 	useMount(fetchDataFraFagsystemer)
@@ -137,11 +136,7 @@ export const PersonVisning = ({
 				<DokarkivVisning ident={ident.ident} />
 				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
 				<PdlPersonMiljoeInfo ident={ident.ident} />
-				<TidligereBestillinger
-					ids={ident.bestillingId}
-					setVisning={setVisning}
-					ident={ident.ident}
-				/>
+				<TidligereBestillinger ids={ident.bestillingId} />
 				<BeskrivelseConnector ident={ident} />
 			</div>
 		</ErrorBoundary>

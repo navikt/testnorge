@@ -10,14 +10,12 @@ export const {
 	setSideStoerrelse,
 	setSidetall,
 	resetNavigation,
-	resetFeilmelding,
 } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,
 	navigerTilBestilling: DollyApi.navigerTilBestilling,
 	setSidetall: (sidetall) => sidetall,
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
 	resetNavigation: () => {},
-	resetFeilmelding: () => {},
 })
 
 const initialState = {
@@ -46,7 +44,7 @@ export default handleActions(
 			}
 			state.visPerson = action.payload.data.identHovedperson
 			state.sidetall = action.payload.data.sidetall
-			state.navigerTilGruppe = action.payload.data.gruppe.id
+			state.navigerTilGruppe = action.payload.data.gruppe?.id
 		},
 		[onSuccess(navigerTilBestilling)](state, action) {
 			if (action.payload.data.error) {
@@ -54,7 +52,7 @@ export default handleActions(
 			}
 			state.visBestilling = action.payload.data.bestillingNavigerTil
 			state.sidetall = action.payload.data.sidetall
-			state.navigerTilGruppe = action.payload.data.gruppe.id
+			state.navigerTilGruppe = action.payload.data.gruppe?.id
 		},
 		[setSidetall](state, action) {
 			state.sidetall = action.payload
@@ -64,9 +62,6 @@ export default handleActions(
 		},
 		[resetNavigation](state, action) {
 			return initialState
-		},
-		[resetFeilmelding](state, action) {
-			state.feilmelding = null
 		},
 	},
 	initialState

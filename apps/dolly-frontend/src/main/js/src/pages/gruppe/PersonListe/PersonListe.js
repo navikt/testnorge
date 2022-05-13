@@ -13,7 +13,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { KommentarModal } from '~/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
 
@@ -40,7 +40,6 @@ export default function PersonListe({
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
 	fetchIdenterById,
-	setVisning,
 	tmpPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
@@ -49,11 +48,12 @@ export default function PersonListe({
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, visPerson]
+		[identer, search, fagsystem, bestillingStatuser, visPerson]
 	)
 
 	useEffect(() => {
 		fetchIdenterById(gruppeInfo.id, sidetall, sideStoerrelse)
+		setIdentListe([])
 	}, [gruppeInfo.id, sidetall, sideStoerrelse])
 
 	useEffect(() => {
@@ -70,17 +70,17 @@ export default function PersonListe({
 	}, [identer, slettedeIdenter[0]])
 
 	useEffect(() => {
+		if (isEmpty(identListe)) {
+			return null
+		}
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe)
-	}, [identListe, sidetall, sideStoerrelse, visPerson])
+	}, [identListe, visPerson])
 
-	if (isFetching) return <Loading label="Laster personer" panel />
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer)))
+		return <Loading label="Laster personer" panel />
 
-	if (visPerson && personListe && window.sessionStorage.getItem('sidetall')) {
-		window.sessionStorage.removeItem('sidetall')
-	}
-
-	if (!personListe || personListe.length === 0) {
+	if (isEmpty(identer)) {
 		const infoTekst =
 			brukertype === 'BANKID'
 				? 'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
@@ -212,7 +212,6 @@ export default function PersonListe({
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
-						setVisning={setVisning}
 					/>
 				)}
 			/>
