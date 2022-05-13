@@ -56,6 +56,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 
 	const getPartnere = (data: PdlData[]) => {
 		return data
+			.filter((person) => !person.hentPerson?.doedsfall?.[0]?.doedsdato)
 			.map((person) => person?.hentPerson?.sivilstand)
 			.map((sivilstand) => {
 				return sivilstand.filter(

@@ -44,6 +44,7 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	isAlive,
 	gruppeId,
 	brukertype,
 	bestilling,
@@ -98,7 +99,7 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && ident.master === 'PDL' && (
+					{!iLaastGruppe && ident.master === 'PDL' && isAlive && (
 						<PartnerImportButton
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
