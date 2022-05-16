@@ -14,4 +14,9 @@ export default {
 		const endpoint = `${getPensjonUrl()}/miljo`
 		return Request.get(endpoint, headers)
 	},
+
+	getTpOrdninger() {
+		const endpoint = `${getPensjonUrl()}/tp/ordning`
+		return Request.get(endpoint, headers)
+	},
 }
