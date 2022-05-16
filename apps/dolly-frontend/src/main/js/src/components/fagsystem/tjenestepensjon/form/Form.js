@@ -27,8 +27,7 @@ export const initialOrdning = {
 
 export const fetchTpOrdninger = () => {
 	if (!Options('tpOrdninger').length) {
-		const ordninger = PensjonApi.getTpOrdninger()
-		ordninger.then((json) => {
+		PensjonApi.getTpOrdninger().then((json) => {
 			const tpOrdninger = json.data.map((data) => {
 				return { value: data.tpnr, label: `${data.tpnr} ${data.navn}` }
 			})
