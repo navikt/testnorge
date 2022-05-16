@@ -16,7 +16,7 @@ import PersonSearch from '~/service/services/personsearch/PersonSearch'
 type FinnPersonProps = {
 	feilmelding: string
 	gruppe: number
-	resetNavigering: Function
+	resetFeilmelding: Function
 	navigerTilPerson: Function
 	navigerTilBestilling: Function
 }
@@ -44,7 +44,7 @@ const StyledAsyncSelect = styled(AsyncSelect)`
 const FinnPersonBestilling = ({
 	feilmelding,
 	gruppe,
-	resetNavigering,
+	resetFeilmelding,
 	navigerTilPerson,
 	navigerTilBestilling,
 }: FinnPersonProps) => {
@@ -59,6 +59,7 @@ const FinnPersonBestilling = ({
 		soekType === SoekTypeValg.PERSON
 			? navigerTilPerson(searchQuery)
 			: navigerTilBestilling(searchQuery)
+		setSearchQuery(null)
 	}, [searchQuery])
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
@@ -102,13 +103,13 @@ const FinnPersonBestilling = ({
 			soekType === SoekTypeValg.BESTILLING
 				? await soekBestillinger(tekst)
 				: await soekPersoner(tekst),
-		[soekType]
+		[soekType, fragment]
 	)
 
 	const handleChange = (tekst: string) => {
 		fetchOptions(tekst)
 		setFragment(tekst)
-		resetNavigering()
+		resetFeilmelding()
 	}
 
 	// @ts-ignore

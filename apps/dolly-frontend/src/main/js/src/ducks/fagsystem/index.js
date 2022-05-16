@@ -271,11 +271,18 @@ export const fetchTpsfPersoner = (identer) => (dispatch) => {
 	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
 }
 
-export const fetchPdlPersoner = (identer) => (dispatch) => {
-	const pdlIdenter = identer.map((person) => {
-		return person.ident
-	})
-	if (identer && identer.length >= 1) {
+export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
+	const pdlIdenter = identer
+		.filter(
+			(person) =>
+				!fagsystem.pdl[person.ident] &&
+				!fagsystem.pdlforvalter[person.ident] &&
+				!fagsystem.tpsf[person.ident]
+		)
+		.map((person) => {
+			return person.ident
+		})
+	if (pdlIdenter && pdlIdenter.length >= 1) {
 		dispatch(actions.getPdlForvalter(pdlIdenter))
 		dispatch(actions.getPDLPersoner(pdlIdenter))
 	}

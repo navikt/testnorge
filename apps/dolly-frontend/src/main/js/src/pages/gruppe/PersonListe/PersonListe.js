@@ -74,7 +74,7 @@ export default function PersonListe({
 			return null
 		}
 		fetchTpsfPersoner(identListe)
-		fetchPdlPersoner(identListe)
+		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson])
 
 	if (isFetching || (personListe?.length === 0 && !isEmpty(identer)))

@@ -22,6 +22,7 @@ const mapStateToProps = (state, ownProps) => ({
 	identer: state.gruppe.ident,
 	isFetching: loadingSelector(state),
 	sidetall: state.finnPerson.sidetall,
+	visPerson: state.finnPerson.visPerson,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
 	tmpPersoner: state.redigertePersoner,
 })

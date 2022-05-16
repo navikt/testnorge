@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
@@ -11,36 +11,60 @@ import { BestillingsveilederModal } from '~/components/bestillingsveileder/start
 import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { resetSearch } from '~/ducks/search'
-import { resetNavigation } from '~/ducks/finnPerson'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
+import { resetNavigering } from '~/ducks/finnPerson'
 
-const VISNING_PERSONER = 'personer'
-const VISNING_BESTILLING = 'bestilling'
+export type GruppeProps = {
+	visBestilling: string
+	getGruppe: (arg0: string, arg1: number, arg2: number) => void
+	getBestillinger: (arg0: string) => void
+	selectGruppe: (arg0: Object[], arg1: string) => any
+	grupper: Object[]
+	isFetching: boolean
+	deleteGruppe: Function
+	isDeletingGruppe: boolean
+	sendTags: Function
+	isSendingTags: boolean
+	visning: string
+	setVisning: Function
+	laasGruppe: Function
+	isLockingGruppe: boolean
+	bestillingStatuser: {}
+	getGruppeExcelFil: Function
+	isFetchingExcel: boolean
+	brukerBilde: Object
+	brukerProfil: Object
+	brukertype: string
+	brukernavn: string
+}
+
+export enum VisningType {
+	VISNING_PERSONER = 'personer',
+	VISNING_BESTILLING = 'bestilling',
+}
 
 export default function Gruppe({
-	getGruppe,
-	deleteGruppe,
-	visPerson,
-	visBestilling,
-	laasGruppe,
-	getBestillinger,
-	grupper,
-	selectGruppe,
-	brukernavn,
+	bestillingStatuser,
 	brukerBilde,
 	brukerProfil,
+	brukernavn,
 	brukertype,
-	isFetching,
-	isDeletingGruppe,
-	sendTags,
-	isSendingTags,
-	isLockingGruppe,
+	deleteGruppe,
+	getBestillinger,
+	getGruppe,
 	getGruppeExcelFil,
+	grupper,
+	visning,
+	setVisning,
+	isDeletingGruppe,
+	isFetching,
 	isFetchingExcel,
-	bestillingStatuser,
-}) {
-	const [visning, setVisning] = useState(VISNING_PERSONER)
+	isLockingGruppe,
+	isSendingTags,
+	laasGruppe,
+	selectGruppe,
+	sendTags,
+}: GruppeProps) {
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 	const [gruppe, setGruppe] = useState(null)
@@ -49,11 +73,6 @@ export default function Gruppe({
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 	const { gruppeId } = useParams()
-
-	useEffect(
-		() => setVisning(visBestilling ? VISNING_BESTILLING : VISNING_PERSONER),
-		[visBestilling]
-	)
 
 	useEffect(() => {
 		getGruppe(gruppeId, 0, 10)
@@ -66,15 +85,13 @@ export default function Gruppe({
 
 	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
 
-	const byttVisning = (event) => {
-		if (event?.target?.value === 'personer') {
-			dispatch(resetSearch())
-		}
-		dispatch(resetNavigation())
+	const byttVisning = (event: BaseSyntheticEvent) => {
+		dispatch(resetNavigering())
 		setVisning(typeof event === 'string' ? event : event.target.value)
 	}
 
-	const startBestilling = (values) => navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
+	const startBestilling = (values: {}) =>
+		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	if (redirectToSoek) return navigate(`/soek`)
 
@@ -126,14 +143,20 @@ export default function Gruppe({
 				)}
 
 				<ToggleGruppe onChange={byttVisning} name="toggler">
-					<ToggleKnapp value={VISNING_PERSONER} checked={visning === VISNING_PERSONER}>
-						<Icon size={13} kind={visning === VISNING_PERSONER ? 'manLight' : 'man'} />
+					<ToggleKnapp
+						value={VisningType.VISNING_PERSONER}
+						checked={visning === VisningType.VISNING_PERSONER}
+					>
+						<Icon size={13} kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'} />
 						{`Personer (${gruppe.antallIdenter})`}
 					</ToggleKnapp>
-					<ToggleKnapp value={VISNING_BESTILLING} checked={visning === VISNING_BESTILLING}>
+					<ToggleKnapp
+						value={VisningType.VISNING_BESTILLING}
+						checked={visning === VisningType.VISNING_BESTILLING}
+					>
 						<Icon
 							size={13}
-							kind={visning === VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+							kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 						/>
 						{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
 					</ToggleKnapp>
@@ -150,15 +173,14 @@ export default function Gruppe({
 				/>
 			)}
 
-			{visning === VISNING_PERSONER && (
+			{visning === VisningType.VISNING_PERSONER && (
 				<PersonListeConnector
 					iLaastGruppe={erLaast}
 					slettedeIdenter={slettedeIdenter}
 					brukertype={brukertype}
-					visPerson={visPerson}
 				/>
 			)}
-			{visning === VISNING_BESTILLING && (
+			{visning === VisningType.VISNING_BESTILLING && (
 				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
 			)}
 		</div>

@@ -9,16 +9,21 @@ export const {
 	navigerTilBestilling,
 	setSideStoerrelse,
 	setSidetall,
-	resetNavigation,
+	setVisning,
+	resetNavigering,
+	resetFeilmelding,
 } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,
 	navigerTilBestilling: DollyApi.navigerTilBestilling,
 	setSidetall: (sidetall) => sidetall,
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
-	resetNavigation: () => {},
+	setVisning: (visning) => visning,
+	resetNavigering: () => {},
+	resetFeilmelding: () => {},
 })
 
 const initialState = {
+	visning: 'personer',
 	visPerson: null,
 	visBestilling: null,
 	navigerTilGruppe: null,
@@ -60,8 +65,14 @@ export default handleActions(
 		[setSideStoerrelse](state, action) {
 			state.sideStoerrelse = action.payload
 		},
-		[resetNavigation](state, action) {
-			return initialState
+		[resetNavigering](state, action) {
+			return { ...initialState, visning: state.visning }
+		},
+		[resetFeilmelding](state, action) {
+			state.feilmelding = null
+		},
+		[setVisning](state, action) {
+			state.visning = action.payload
 		},
 	},
 	initialState

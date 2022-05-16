@@ -2,7 +2,10 @@ import { connect } from 'react-redux'
 import { actions, selectGruppeById } from '~/ducks/gruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
-import Gruppe from './Gruppe'
+import Gruppe, { VisningType } from './Gruppe'
+import { FormikProps } from 'formik'
+import { Dispatch } from 'redux'
+import { setVisning } from '~/ducks/finnPerson'
 
 const loadingSelector = createLoadingSelector([actions.getById, getBestillinger])
 const loadingSelectorSlettGruppe = createLoadingSelector(actions.remove)
@@ -10,7 +13,22 @@ const loadingSelectorSendTags = createLoadingSelector(actions.sendTags)
 const loadingSelectorLaasGruppe = createLoadingSelector(actions.laas)
 const loadingSelectorGetExcel = createLoadingSelector(actions.getGruppeExcelFil)
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (
+	state: {
+		gruppe: Object
+		visning: string
+		finnPerson: {
+			visPerson: string
+			visBestilling: string
+			sidetall: number
+			sideStoerrelse: number
+			visning: string
+		}
+		bruker: { brukerData: { brukernavn: string; brukertype: string } }
+		bestillingStatuser: { byId: number }
+	},
+	ownProps: FormikProps<any>
+) => ({
 	...ownProps,
 	isFetching: loadingSelector(state),
 	isDeletingGruppe: loadingSelectorSlettGruppe(state),
@@ -19,8 +37,8 @@ const mapStateToProps = (state, ownProps) => ({
 	isFetchingExcel: loadingSelectorGetExcel(state),
 	selectGruppe: selectGruppeById,
 	grupper: state.gruppe,
+	visning: state.finnPerson.visning,
 	visPerson: state.finnPerson.visPerson,
-	visBestilling: state.finnPerson.visBestilling,
 	sidetall: state.finnPerson.sidetall,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
 	brukernavn: state.bruker.brukerData.brukernavn,
@@ -28,14 +46,17 @@ const mapStateToProps = (state, ownProps) => ({
 	bestillingStatuser: state.bestillingStatuser.byId,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-	getGruppe: (gruppeId, pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
-	deleteGruppe: (gruppeId) => dispatch(actions.remove(gruppeId)),
-	sendTags: (gruppeId, tags) => dispatch(actions.sendGruppeTags(gruppeId, tags)),
-	laasGruppe: (gruppeId) =>
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	getGruppe: (gruppeId: number, pageNo: number, pageSize: number) =>
+		dispatch(actions.getById(gruppeId, pageNo, pageSize)),
+	deleteGruppe: (gruppeId: number) => dispatch(actions.remove(gruppeId)),
+	sendTags: (gruppeId: number, tags: string[]) => dispatch(actions.sendGruppeTags(gruppeId, tags)),
+	laasGruppe: (gruppeId: number) =>
 		dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
-	getBestillinger: (gruppeId) => dispatch(getBestillinger(gruppeId)),
-	getGruppeExcelFil: (gruppeId) => dispatch(actions.getGruppeExcelFil(gruppeId)),
+	getBestillinger: (gruppeId: number) => dispatch(getBestillinger(gruppeId)),
+	getGruppeExcelFil: (gruppeId: number) => dispatch(actions.getGruppeExcelFil(gruppeId)),
+	setVisning: (visning: VisningType) => dispatch(setVisning(visning)),
 })
 
+// @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)(Gruppe)

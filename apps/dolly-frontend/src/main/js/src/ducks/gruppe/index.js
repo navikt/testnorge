@@ -7,6 +7,7 @@ import { createLoadingSelector } from '~/ducks/loading'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
+import { current } from 'immer'
 
 export const actions = createActions(
 	{
@@ -28,11 +29,16 @@ export const actions = createActions(
 		updateIdentIbruk: DollyApi.updateIdentIbruk,
 		updateBeskrivelse: DollyApi.updateIdentBeskrivelse,
 		importZIdent: DollyApi.importZIdent,
+		setVisning: (visning) => visning,
 	},
 	{
 		prefix: 'gruppe', // String used to prefix each type
 	}
 )
+
+function identerAlleredeHentet(hentedeIdenter, lagredeIdenter) {
+	return Object.values(hentedeIdenter).every((person) => lagredeIdenter[person.ident])
+}
 
 const initialState = {
 	ident: {},
@@ -40,6 +46,7 @@ const initialState = {
 	gruppeInfo: {},
 	mineIds: [],
 	importerteZIdenter: null,
+	visning: 'personer',
 }
 
 export default handleActions(
@@ -49,6 +56,9 @@ export default handleActions(
 		},
 		[onSuccess(actions.getIdenterById)](state, action) {
 			const gruppe = action.payload.data
+			if (identerAlleredeHentet(gruppe.identer, current(state)?.ident)) {
+				return
+			}
 			state.ident =
 				gruppe.identer &&
 				gruppe.identer.reduce((acc, curr) => {
