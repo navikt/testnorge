@@ -1,7 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialYtelser } from '../../../../../fagsystem/tjenestepensjon/form/Form'
+import { fetchTpOrdninger, initialOrdning } from '../../../../../fagsystem/tjenestepensjon/form/Form'
 
 export const PensjonPanel = ({ stateModifier }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -46,13 +46,10 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => ({
 	tp: {
 		label: 'Har tjenestepensjonsforhold',
 		checked: has('pensjonforvalter.tp'),
-		add: () =>
-			set('pensjonforvalter.tp', [
-				{
-					ordning: '3010',
-					ytelser: [initialYtelser],
-				}
-			]),
+		add: () => {
+			fetchTpOrdninger()
+			set('pensjonforvalter.tp', [initialOrdning])
+		},
 		remove: () => del('pensjonforvalter.tp'),
 	},
 })

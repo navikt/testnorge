@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -33,8 +32,6 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Bostedsadresse: kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
-    private static final String VALIDATION_PROTECTED_ADDRESS = "Bostedsadresse: Personer med adressebeskyttelse == " +
-            "STRENGT_FORTROLIG skal ikke ha bostedsadresse";
     private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
@@ -69,12 +66,6 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
-        }
-        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
-                STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
-                adresse.countAdresser() > 0) {
-            throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
         if (Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
