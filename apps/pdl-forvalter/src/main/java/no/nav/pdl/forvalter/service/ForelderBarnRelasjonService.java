@@ -124,6 +124,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
             request.setRelatertPerson(relasjon.getRelatertPerson());
+            request.setRelatertPersonUtenFolkeregisteridentifikator(relasjon.getRelatertPersonUtenFolkeregisteridentifikator());
             request.setNyRelatertPerson(null);
             request.setBorIkkeSammen(null);
             request.setMinRolleForPerson(switch (request.getMinRolleForPerson()) {
@@ -179,7 +180,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
         setRolle(relasjon, hovedperson);
         if (isNull(relasjon.getRelatertPerson())) {
-            return null;
+            return relasjon;
         }
         relasjonService.setRelasjoner(hovedperson.getIdent(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
