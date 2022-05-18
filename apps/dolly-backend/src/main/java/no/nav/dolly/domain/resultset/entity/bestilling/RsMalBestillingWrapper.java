@@ -27,20 +27,20 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import static java.util.Objects.isNull;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsMalBestillingWrapper {
 
-    private Map<String, Set<RsMalBestilling>> malbestillinger;
+    private Map<String, List<RsMalBestilling>> malbestillinger;
 
-    public Map<String, Set<RsMalBestilling>> getMalbestillinger() {
+    public Map<String, List<RsMalBestilling>> getMalbestillinger() {
 
         if (isNull(malbestillinger)) {
             malbestillinger = new TreeMap<>();
