@@ -43,7 +43,5 @@ public class TagsOpprettingCommand implements Callable<Flux<String>> {
                 .body(BodyInserters.fromValue(identer))
                 .retrieve()
                 .bodyToFlux(String.class);
-//                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-//                        .filter(WebClientFilter::is5xxException));
     }
 }
