@@ -10,6 +10,7 @@ import {
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1582,10 +1583,37 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (pensjonKriterier.tp) {
+			const hentTpOrdningNavn = (tpnr) => {
+				if (Options('tpOrdninger').length) {
+					return Options('tpOrdninger').find((ordning) => ordning.value === tpnr)?.label
+				}
+				return tpnr
+			}
+
 			const pensjonforvalterTp = {
 				header: 'Tjenestepensjon (TP)',
-				items: [obj('Ordning', pensjonKriterier.tp.ordning)],
+				itemRows: [],
 			}
+
+			pensjonKriterier.tp.forEach((ordning) => {
+				const ordningNavn = hentTpOrdningNavn(ordning.ordning)
+
+				if (ordning.ytelser?.length) {
+					ordning.ytelser.forEach((ytelse) => {
+						pensjonforvalterTp.itemRows.push([
+							{ numberHeader: `${ordningNavn}` },
+							obj('Ytelse', ytelse.type),
+							obj('datoInnmeldtYtelseFom', Formatters.formatDate(ytelse.datoInnmeldtYtelseFom)),
+							obj('datoYtelseIverksattFom', Formatters.formatDate(ytelse.datoYtelseIverksattFom)),
+							obj('datoYtelseIverksattTom', Formatters.formatDate(ytelse.datoYtelseIverksattTom)),
+						])
+					})
+				} else {
+					pensjonforvalterTp.itemRows.push([
+						{ numberHeader: `${ordningNavn} bare forhold (uten ytelser)` },
+					])
+				}
+			})
 
 			data.push(pensjonforvalterTp)
 		}
