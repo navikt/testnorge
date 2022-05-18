@@ -59,7 +59,7 @@ class AaregProxyApplicationStarterTest {
         }
 
     )
-    public void getOnUrlWithQueryParamShouldBeRoutedToNewURLWithHeader(String env) {
+    void getOnUrlWithQueryParamShouldBeRoutedToNewURLWithHeader(String env) {
 
         final var ID = RANDOM.nextInt(10000, 99999);
         final var FROM_ACTUAL_URI = "/api/v1/arbeidsforhold/" + ID + "?miljoe=" + env;
