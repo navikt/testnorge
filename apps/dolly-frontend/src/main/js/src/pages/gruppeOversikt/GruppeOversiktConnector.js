@@ -16,6 +16,8 @@ const mapStateToProps = (state, ownProps) => ({
 	gruppeInfo: state.gruppe.gruppeInfo,
 	importerteZIdenter: state.gruppe.importerteZIdenter,
 	brukerProfil: ownProps?.brukerProfil,
+	sidetall: state.finnPerson.sidetall,
+	sideStoerrelse: state.finnPerson.sideStoerrelse,
 })
 
 const mapDispatchToProps = {

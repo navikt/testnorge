@@ -41,16 +41,16 @@ type GruppeHeaderProps = {
 }
 
 const GruppeHeader = ({
+	gruppe,
 	bestillingStatuser,
 	deleteGruppe,
-	getGruppeExcelFil,
-	gruppe,
 	isDeletingGruppe,
+	getGruppeExcelFil,
 	isFetchingExcel,
-	isLockingGruppe,
-	isSendingTags,
 	laasGruppe,
+	isLockingGruppe,
 	sendTags,
+	isSendingTags,
 	antallSlettet,
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)

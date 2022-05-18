@@ -21,21 +21,14 @@ export type GruppeProps = {
 	selectGruppe: (arg0: Object[], arg1: string) => any
 	grupper: Object[]
 	isFetching: boolean
-	deleteGruppe: Function
-	isDeletingGruppe: boolean
-	sendTags: Function
-	isSendingTags: boolean
 	visning: string
 	setVisning: Function
-	laasGruppe: Function
-	isLockingGruppe: boolean
 	bestillingStatuser: any
-	getGruppeExcelFil: Function
-	isFetchingExcel: boolean
 	brukerBilde: Object
 	brukerProfil: Object
 	brukertype: string
 	brukernavn: string
+	antallSlettet: number
 }
 
 export enum VisningType {
@@ -49,26 +42,18 @@ export default function Gruppe({
 	brukerProfil,
 	brukernavn,
 	brukertype,
-	deleteGruppe,
 	getBestillinger,
 	getGruppe,
-	getGruppeExcelFil,
 	grupper,
 	visning,
 	setVisning,
-	isDeletingGruppe,
 	isFetching,
-	isFetchingExcel,
-	isLockingGruppe,
-	isSendingTags,
-	laasGruppe,
 	selectGruppe,
-	sendTags,
+	antallSlettet,
 }: GruppeProps) {
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 	const [gruppe, setGruppe] = useState(null)
-	const slettedeIdenter = useState([])
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
@@ -136,7 +121,7 @@ export default function Gruppe({
 						checked={visning === VisningType.VISNING_PERSONER}
 					>
 						<Icon size={13} kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'} />
-						{`Personer (${gruppe.antallIdenter})`}
+						{`Personer (${gruppe.antallIdenter - antallSlettet})`}
 					</ToggleKnapp>
 					<ToggleKnapp
 						value={VisningType.VISNING_BESTILLING}

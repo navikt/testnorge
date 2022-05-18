@@ -16,8 +16,6 @@ export default function Liste({
 	isFetching,
 	gruppeDetaljer,
 	visSide,
-	setSidetall,
-	setSideStoerrelse,
 	brukerProfil,
 }) {
 	const navigate = useNavigate()
@@ -108,8 +106,6 @@ export default function Liste({
 				pagination
 				gruppeDetaljer={gruppeDetaljer}
 				visSide={visSide}
-				setSidetall={setSidetall}
-				setSideStoerrelse={setSideStoerrelse}
 			/>
 		</ErrorBoundary>
 	)

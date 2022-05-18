@@ -18,10 +18,10 @@ export default function GruppeOversikt({
 	searchActive,
 	importerteZIdenter,
 	brukerProfil,
+	sidetall,
+	sideStoerrelse,
 }) {
 	const [visning, setVisning] = useState('mine')
-	const [sidetall, setSidetall] = useState(0)
-	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
@@ -75,9 +75,7 @@ export default function GruppeOversikt({
 				isFetching={isFetching}
 				searchActive={searchActive}
 				visSide={sidetall}
-				setSidetall={setSidetall}
 				sideStoerrelse={sideStoerrelse}
-				setSideStoerrelse={setSideStoerrelse}
 				brukerProfil={brukerProfil}
 			/>
 		</div>

@@ -50,7 +50,13 @@ const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
 			headers: { ...config.headers, 'Content-Type': 'application/json' },
 		},
 		body
-	).then((response: Response) => response.json() as Promise<T>)
+	)
+		.then((response) => {
+			return response.text()
+		})
+		.then((data) => {
+			return data ? JSON.parse(data) : {}
+		})
 
 export default {
 	fetch: _fetch,

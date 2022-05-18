@@ -22,6 +22,9 @@ const mapStateToProps = (
 		}
 		bruker: { brukerData: { brukernavn: string; brukertype: string } }
 		bestillingStatuser: any
+		redigertePersoner: {
+			antallSlettedePersoner: number
+		}
 	},
 	ownProps: FormikProps<any>
 ) => ({
@@ -36,6 +39,7 @@ const mapStateToProps = (
 	brukernavn: state.bruker.brukerData.brukernavn,
 	brukertype: state.bruker.brukerData.brukertype,
 	bestillingStatuser: state.bestillingStatuser.byId,
+	antallSlettet: state.redigertePersoner.antallSlettedePersoner,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
