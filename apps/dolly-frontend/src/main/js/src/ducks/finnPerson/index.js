@@ -3,6 +3,7 @@ import { createActions } from 'redux-actions'
 import { onFailure, onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
+import { VisningType } from '~/pages/gruppe/Gruppe'
 
 export const {
 	navigerTilPerson,
@@ -50,6 +51,7 @@ export default handleActions(
 			state.visPerson = action.payload.data.identHovedperson
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data.gruppe?.id
+			state.visning = VisningType.VISNING_PERSONER
 		},
 		[onSuccess(navigerTilBestilling)](state, action) {
 			if (action.payload.data.error) {
@@ -58,6 +60,7 @@ export default handleActions(
 			state.visBestilling = action.payload.data.bestillingNavigerTil
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data.gruppe?.id
+			state.visning = VisningType.VISNING_BESTILLING
 		},
 		[setSidetall](state, action) {
 			state.sidetall = action.payload

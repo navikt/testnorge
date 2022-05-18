@@ -5,7 +5,6 @@ import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
-import GruppeHeader from './GruppeHeader/GruppeHeader'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
@@ -13,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering } from '~/ducks/finnPerson'
+import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 
 export type GruppeProps = {
 	visBestilling: string
@@ -29,7 +29,7 @@ export type GruppeProps = {
 	setVisning: Function
 	laasGruppe: Function
 	isLockingGruppe: boolean
-	bestillingStatuser: {}
+	bestillingStatuser: any
 	getGruppeExcelFil: Function
 	isFetchingExcel: boolean
 	brukerBilde: Object
@@ -99,19 +99,7 @@ export default function Gruppe({
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeader
-				gruppe={gruppe}
-				slettedeIdenter={slettedeIdenter}
-				deleteGruppe={deleteGruppe}
-				isDeletingGruppe={isDeletingGruppe}
-				sendTags={sendTags}
-				isSendingTags={isSendingTags}
-				laasGruppe={laasGruppe}
-				isLockingGruppe={isLockingGruppe}
-				bestillingStatuser={bestillingStatuser}
-				getGruppeExcelFil={getGruppeExcelFil}
-				isFetchingExcel={isFetchingExcel}
-			/>
+			<GruppeHeaderConnector gruppe={gruppe} bestillingStatuser={bestillingStatuser} />
 
 			<StatusListeConnector
 				gruppeId={gruppe.id}
@@ -174,11 +162,7 @@ export default function Gruppe({
 			)}
 
 			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector
-					iLaastGruppe={erLaast}
-					slettedeIdenter={slettedeIdenter}
-					brukertype={brukertype}
-				/>
+				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (
 				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />

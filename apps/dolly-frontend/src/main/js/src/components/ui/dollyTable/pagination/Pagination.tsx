@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Icon from '~/components/ui/icon/Icon'
 import ItemCountSelect from './ItemCountSelect/ItemCountSelect'
@@ -8,7 +8,7 @@ import { setSideStoerrelse, setSidetall } from '~/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 
 type PaginationProps = {
-	visSide: number
+	visSide?: number
 	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer: number }
 	items: any[]
 	render: (arg0: any) => boolean | React.ReactChild | React.ReactFragment | React.ReactPortal
@@ -24,17 +24,20 @@ export const Pagination = ({
 	const [currentPage, setCurrentPage] = useState(visSide)
 	const [currentPageSize, setCurrentPageSize] = useState(pageSize || ITEM_PER_PAGE)
 
+	useEffect(() => setCurrentPage(visSide))
+
 	const dispatch = useDispatch()
 
 	const pageChangeHandler = (event: { selected: number }) => {
-		setCurrentPage(event.selected)
 		dispatch(setSidetall(event.selected))
+		setCurrentPage(event.selected)
 	}
 
 	const itemCountHandler = (event: { value: number }) => {
+		dispatch(setSideStoerrelse(event.value))
+		dispatch(setSidetall(0))
 		setCurrentPage(0)
 		setCurrentPageSize(event.value)
-		dispatch(setSideStoerrelse(event.value))
 	}
 
 	const calculatePageCount = () => {

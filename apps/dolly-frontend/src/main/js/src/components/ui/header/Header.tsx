@@ -4,7 +4,21 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './header.less'
 
-export const Header = ({ icon = 'man', iconSize = 36, className, iconClassName, children }) => {
+type HeaderProps = {
+	icon?: string
+	iconSize?: number
+	className: string
+	iconClassName?: string
+	children: any
+}
+
+export const Header = ({
+	children,
+	className,
+	icon = 'man',
+	iconClassName,
+	iconSize = 36,
+}: HeaderProps) => {
 	return (
 		<header className={cn('content-header', className)}>
 			<div className={`content-header_icon ${iconClassName}`}>
@@ -15,7 +29,7 @@ export const Header = ({ icon = 'man', iconSize = 36, className, iconClassName, 
 	)
 }
 
-Header.TitleValue = ({ title, value }) => (
+Header.TitleValue = ({ title, value }: { title: string; value: string | number }) => (
 	<dl>
 		<dt>{title}</dt>
 		<dd>{value}</dd>

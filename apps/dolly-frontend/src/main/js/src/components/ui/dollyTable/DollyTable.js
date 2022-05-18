@@ -7,8 +7,8 @@ export const DollyTable = ({ data, pagination, gruppeDetaljer = {}, visSide, ...
 
 	return (
 		<Pagination
-			items={data}
 			visSide={visSide}
+			items={data}
 			gruppeDetaljer={gruppeDetaljer}
 			render={(items) => <Table data={items} {...props} />}
 		/>
