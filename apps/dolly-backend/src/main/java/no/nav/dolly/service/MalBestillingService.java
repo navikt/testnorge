@@ -62,8 +62,9 @@ public class MalBestillingService {
         malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
-                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
-                        .toList());
+                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn)
+                        .thenComparing(RsMalBestilling::getId))
+                .toList());
 
         return malBestillingWrapper;
     }
