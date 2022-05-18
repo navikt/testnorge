@@ -1,4 +1,5 @@
 import React, { lazy } from 'react'
+import { Navigate } from 'react-router-dom'
 
 const Gruppe = lazy(() => import('./pages/gruppe/GruppeConnector'))
 const GruppeOversikt = lazy(() => import('./pages/gruppeOversikt/GruppeOversiktConnector'))
@@ -13,7 +14,7 @@ const TestnorgePage = lazy(() => import('./pages/testnorgePage/TestnorgePage'))
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
 const allRoutes = [
-	{ path: '/', breadcrumb: 'Hjem', element: MinSide },
+	{ path: '/', breadcrumb: 'Hjem', element: () => <Navigate to="/gruppe" replace /> },
 	{ path: '/gruppe', breadcrumb: 'Personer', element: GruppeOversikt },
 	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: Gruppe },
 	{
