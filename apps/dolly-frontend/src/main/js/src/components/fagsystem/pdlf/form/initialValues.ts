@@ -116,7 +116,7 @@ export const initialSikkerhetstiltak = {
 		personident: '',
 		enhet: '',
 	},
-	gyldigFraOgMed: new Date(),
+	gyldigFraOgMed: new Date(new Date().setHours(0, 0, 0, 0)),
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
@@ -125,7 +125,7 @@ export const initialSikkerhetstiltak = {
 export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
-	gyldigFraOgMed: new Date(),
+	gyldigFraOgMed: new Date(new Date().setHours(0, 0, 0, 0)),
 	gyldigTilOgMed: null as string,
 }
 
