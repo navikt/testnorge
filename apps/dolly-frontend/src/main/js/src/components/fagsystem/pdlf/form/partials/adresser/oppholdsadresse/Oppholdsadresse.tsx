@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
@@ -20,16 +20,49 @@ import { OppholdAnnetSted } from '~/components/fagsystem/pdlf/form/partials/adre
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 import { FormikProps } from 'formik'
+import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>
+}
+
+type OppholdsadresseFormValues = {
+	formikBag: FormikProps<{}>
+	path: string
+	idx?: number
 }
 
 type Target = {
 	value: string
 }
 
-export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
+export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFormValues) => {
+	useEffect(() => {
+		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const oppholdsadresse = _get(formikBag.values, path)
+		if (_get(oppholdsadresse, 'vegadresse') && _get(oppholdsadresse, 'vegadresse') !== null) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+		} else if (
+			_get(oppholdsadresse, 'matrikkeladresse') &&
+			_get(oppholdsadresse, 'matrikkeladresse') !== null
+		) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Matrikkel)
+		} else if (
+			_get(oppholdsadresse, 'utenlandskAdresse') &&
+			_get(oppholdsadresse, 'utenlandskAdresse') !== null
+		) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+		} else if (
+			_get(oppholdsadresse, 'oppholdAnnetSted') &&
+			_get(oppholdsadresse, 'oppholdAnnetSted') !== null
+		) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Annet)
+		}
+	}, [])
+
+	const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
+
 	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
@@ -75,6 +108,46 @@ export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
 	}
 
 	return (
+		<React.Fragment key={idx}>
+			<div className="flexbox--full-width">
+				<FormikSelect
+					name={`${path}.adressetype`}
+					label="Adressetype"
+					options={Options('adressetypeOppholdsadresse')}
+					onChange={(target: Target) => handleChangeAdressetype(target, path)}
+					size="large"
+				/>
+			</div>
+			{valgtAdressetype === 'VEGADRESSE' && (
+				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+			)}
+			{valgtAdressetype === 'MATRIKKELADRESSE' && (
+				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+			)}
+			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
+				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+			)}
+			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
+				<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
+			)}
+			<div className="flexbox--flex-wrap">
+				<DatepickerWrapper>
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				</DatepickerWrapper>
+			</div>
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={
+					valgtAdressetype !== 'MATRIKKELADRESSE' && valgtAdressetype !== 'OPPHOLD_ANNET_STED'
+				}
+			/>
+		</React.Fragment>
+	)
+}
+
+export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
+	return (
 		<Kategori title="Oppholdsadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
@@ -82,50 +155,9 @@ export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
 				newEntry={initialOppholdsadresse}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => {
-					const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
-
-					return (
-						<React.Fragment key={idx}>
-							<div className="flexbox--full-width">
-								<FormikSelect
-									name={`${path}.adressetype`}
-									label="Adressetype"
-									options={Options('adressetypeOppholdsadresse')}
-									onChange={(target: Target) => handleChangeAdressetype(target, path)}
-									size="large"
-								/>
-							</div>
-							{valgtAdressetype === 'VEGADRESSE' && (
-								<VegadresseVelger
-									formikBag={formikBag}
-									path={`${path}.vegadresse`}
-									key={`veg_${idx}`}
-								/>
-							)}
-							{valgtAdressetype === 'MATRIKKELADRESSE' && (
-								<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
-							)}
-							{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-								<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
-							)}
-							{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
-								<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
-							)}
-							<div className="flexbox--flex-wrap">
-								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-							</div>
-							<AvansertForm
-								path={path}
-								kanVelgeMaster={
-									valgtAdressetype !== 'MATRIKKELADRESSE' &&
-									valgtAdressetype !== 'OPPHOLD_ANNET_STED'
-								}
-							/>
-						</React.Fragment>
-					)
-				}}
+				{(path: string, idx: number) => (
+					<OppholdsadresseForm formikBag={formikBag} path={path} idx={idx} />
+				)}
 			</FormikDollyFieldArray>
 		</Kategori>
 	)

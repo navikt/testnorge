@@ -1,22 +1,22 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { Adresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
-import { Kontaktadresse } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { KontaktadresseData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
 
 type PdlKontaktadresseProps = {
-	data: Array<Kontaktadresse>
+	data: Array<KontaktadresseData>
 }
 
 type AdresseProps = {
-	data: Kontaktadresse
+	data: KontaktadresseData
 	idx?: number
 }
 
 const AdresseVisning = ({ data, idx }: AdresseProps) => {
 	return (
 		<div className="person-visning_content">
-			<Adresse adresse={data} idx={idx} />
+			<Adresse kontaktadresseData={data} idx={idx} />
 		</div>
 	)
 }
@@ -24,8 +24,10 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
 	if (!data || data.length === 0) return null
 
-	const gyldigeAdresser = data.filter((adresse: Kontaktadresse) => !adresse.metadata?.historisk)
-	const historiskeAdresser = data.filter((adresse: Kontaktadresse) => adresse.metadata?.historisk)
+	const gyldigeAdresser = data.filter((adresse: KontaktadresseData) => !adresse.metadata?.historisk)
+	const historiskeAdresser = data.filter(
+		(adresse: KontaktadresseData) => adresse.metadata?.historisk
+	)
 
 	return (
 		<>

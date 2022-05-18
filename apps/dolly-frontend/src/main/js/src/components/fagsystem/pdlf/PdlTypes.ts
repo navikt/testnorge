@@ -17,7 +17,7 @@ export type PersonData = {
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<StatsborgerskapData>
-	adressebeskyttelse?: Array<Adressebeskyttelse>
+	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<Sivilstand>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
@@ -72,8 +72,9 @@ type Utflytting = {
 	id?: number
 }
 
-type Adressebeskyttelse = {
+export type AdressebeskyttelseData = {
 	gradering: string
+	id?: number
 }
 
 export type Sivilstand = {
@@ -156,4 +157,13 @@ export type NyIdent = {
 export type SelectedValue = {
 	value: string
 	label: string
+}
+
+export enum Adressetype {
+	Veg = 'VEGADRESSE',
+	Matrikkel = 'MATRIKKELADRESSE',
+	Postboks = 'POSTBOKSADRESSE',
+	Utenlandsk = 'UTENLANDSK_ADRESSE',
+	Ukjent = 'UKJENT_BOSTED',
+	Annet = 'OPPHOLD_ANNET_STED',
 }
