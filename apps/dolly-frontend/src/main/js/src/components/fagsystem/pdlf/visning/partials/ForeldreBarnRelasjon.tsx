@@ -6,6 +6,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { ForeldreBarnRelasjon, Relasjon } from '~/components/fagsystem/pdlf/PdlTypes'
+import { RelatertPersonUtenId } from '~/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
 
 type FamilieRelasjonerData = {
 	data: Array<ForeldreBarnRelasjon>
@@ -20,6 +21,7 @@ type VisningData = {
 export const Visning = ({ data, relasjoner }: VisningData) => {
 	const relatertPersonIdent = data.relatertPerson || data.relatertPersonsIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
+	const relatertPersonUtenId = data.relatertPersonUtenFolkeregisteridentifikator
 
 	return (
 		<>
@@ -33,6 +35,12 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 				{relasjon && (
 					<RelatertPerson
 						data={relasjon.relatertPerson}
+						tittel={Formatters.showLabel('pdlRelasjonTyper', data.relatertPersonsRolle)}
+					/>
+				)}
+				{relatertPersonUtenId && (
+					<RelatertPersonUtenId
+						data={relatertPersonUtenId}
 						tittel={Formatters.showLabel('pdlRelasjonTyper', data.relatertPersonsRolle)}
 					/>
 				)}

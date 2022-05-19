@@ -25,6 +25,13 @@ export type PersonData = {
 	utflytting?: Array<Utflytting>
 }
 
+export type PersonUtenIdData = {
+	foedselsdato?: string
+	kjoenn?: string
+	navn?: Navn
+	statsborgerskap: string
+}
+
 type Navn = {
 	fornavn: string
 	mellomnavn: string
@@ -99,10 +106,17 @@ export enum Rolle {
 	MEDMOR = 'MEDMOR',
 }
 
+export enum TypeAnsvarlig {
+	EKSISTERENDE = 'EKSISTERENDE',
+	UTEN_ID = 'UTEN_ID',
+	NY = 'NY',
+}
+
 export type ForeldreBarnRelasjon = {
 	id?: number
 	minRolleForPerson: Rolle
 	relatertPerson?: string
+	relatertPersonUtenFolkeregisteridentifikator?: PersonUtenIdData
 	relatertPersonsIdent: string
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
