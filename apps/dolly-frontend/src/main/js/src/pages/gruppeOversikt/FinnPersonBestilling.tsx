@@ -93,7 +93,9 @@ const FinnPersonBestilling = ({
 
 	const soekBestillinger = async (tekst: string): Promise<Option[]> => {
 		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
-			if (response?.data?.length < 1) return []
+			if (response?.data?.length < 1) {
+				return []
+			}
 			return response.data?.map((resp) => ({
 				value: resp.id,
 				label: `#${resp.id} - ${resp.navn}`,
@@ -115,9 +117,7 @@ const FinnPersonBestilling = ({
 	// @ts-ignore
 	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
 		async (tekst) => {
-			return soekType === SoekTypeValg.BESTILLING
-				? await soekBestillinger(tekst)
-				: await soekPersoner(tekst)
+			return soekType === SoekTypeValg.BESTILLING ? soekBestillinger(tekst) : soekPersoner(tekst)
 		},
 		[soekType]
 	)
@@ -129,7 +129,7 @@ const FinnPersonBestilling = ({
 	}
 
 	// @ts-ignore
-	const Option = ({ children, ...props }) => (
+	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
 			<Highlighter
@@ -166,7 +166,7 @@ const FinnPersonBestilling = ({
 						loadOptions={fetchOptions}
 						onInputChange={handleChange}
 						components={{
-							Option,
+							Option: CustomOption,
 							// @ts-ignore
 							DropdownIndicator,
 						}}
