@@ -116,7 +116,7 @@ export default function Gruppe({
 						onClick={() => setRedirectToSoek(true)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '3px' }}
+						style={{ marginTop: '4px' }}
 					>
 						Importer personer
 					</NavButton>
