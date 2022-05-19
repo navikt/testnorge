@@ -103,7 +103,7 @@ const FinnPersonBestilling = ({
 			soekType === SoekTypeValg.BESTILLING
 				? await soekBestillinger(tekst)
 				: await soekPersoner(tekst),
-		[soekType, fragment]
+		[soekType]
 	)
 
 	const handleChange = (tekst: string) => {
@@ -149,6 +149,7 @@ const FinnPersonBestilling = ({
 						Option,
 						// @ts-ignore
 						DropdownIndicator,
+						IndicatorSeparator: () => null,
 					}}
 					isClearable={true}
 					options={options}
