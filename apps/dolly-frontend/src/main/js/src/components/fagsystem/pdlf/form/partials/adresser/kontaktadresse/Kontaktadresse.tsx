@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
@@ -18,16 +18,44 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import { Postboksadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Postboksadresse'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikProps } from 'formik'
+import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
+}
+
+type KontaktadresseFormValues = {
+	formikBag: FormikProps<{}>
+	path: string
+	idx?: number
 }
 
 type Target = {
 	value: string
 }
 
-export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
+export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormValues) => {
+	useEffect(() => {
+		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const kontaktadresse = _get(formikBag.values, path)
+		if (_get(kontaktadresse, 'vegadresse') && _get(kontaktadresse, 'vegadresse') !== null) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+		} else if (
+			_get(kontaktadresse, 'utenlandskAdresse') &&
+			_get(kontaktadresse, 'utenlandskAdresse') !== null
+		) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+		} else if (
+			_get(kontaktadresse, 'postboksadresse') &&
+			_get(kontaktadresse, 'postboksadresse') !== null
+		) {
+			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Postboks)
+		}
+	}, [])
+
+	const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
+
 	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
@@ -61,6 +89,43 @@ export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
 	}
 
 	return (
+		<React.Fragment key={idx}>
+			<div className="flexbox--full-width">
+				<FormikSelect
+					name={`${path}.adressetype`}
+					label="Adressetype"
+					options={Options('adressetypeKontaktadresse')}
+					onChange={(target: Target) => handleChangeAdressetype(target, path)}
+					size="large"
+				/>
+			</div>
+			{valgtAdressetype === 'VEGADRESSE' && (
+				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+			)}
+			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
+				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+			)}
+			{valgtAdressetype === 'POSTBOKSADRESSE' && (
+				<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
+			)}
+			<div className="flexbox--flex-wrap">
+				<DatepickerWrapper>
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				</DatepickerWrapper>
+			</div>
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={
+					valgtAdressetype !== 'VEGADRESSE' && valgtAdressetype !== 'UTENLANDSK_ADRESSE'
+				}
+			/>
+		</React.Fragment>
+	)
+}
+
+export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
+	return (
 		<Kategori title="Kontaktadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.kontaktadresse"
@@ -68,46 +133,9 @@ export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
 				newEntry={initialKontaktadresse}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => {
-					const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
-
-					return (
-						<React.Fragment key={idx}>
-							<div className="flexbox--full-width">
-								<FormikSelect
-									name={`${path}.adressetype`}
-									label="Adressetype"
-									options={Options('adressetypeKontaktadresse')}
-									onChange={(target: Target) => handleChangeAdressetype(target, path)}
-									size="large"
-								/>
-							</div>
-							{valgtAdressetype === 'VEGADRESSE' && (
-								<VegadresseVelger
-									formikBag={formikBag}
-									path={`${path}.vegadresse`}
-									key={`veg_${idx}`}
-								/>
-							)}
-							{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-								<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
-							)}
-							{valgtAdressetype === 'POSTBOKSADRESSE' && (
-								<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
-							)}
-							<div className="flexbox--flex-wrap">
-								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-							</div>
-							<AvansertForm
-								path={path}
-								kanVelgeMaster={
-									valgtAdressetype !== 'VEGADRESSE' && valgtAdressetype !== 'UTENLANDSK_ADRESSE'
-								}
-							/>
-						</React.Fragment>
-					)
-				}}
+				{(path: string, idx: number) => (
+					<KontaktadresseForm formikBag={formikBag} path={path} idx={idx} />
+				)}
 			</FormikDollyFieldArray>
 		</Kategori>
 	)

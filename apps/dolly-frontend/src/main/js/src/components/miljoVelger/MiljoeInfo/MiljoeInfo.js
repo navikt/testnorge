@@ -52,23 +52,15 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							endepunkt={ArenaApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}
 						/>
-						{' (Test-Norge identer er foreløpig kun støttet i Q1)'}
 					</li>
 				)}
 
-				{pensjonforvalter?.inntekt && (
+				{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) && (
 					<li>
-						POPP:&nbsp;
-						<TilgjengeligeMiljoer
-							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
-							dollyEnvironments={dollyEnvironments}
-						/>
-					</li>
-				)}
-
-				{pensjonforvalter?.tp && (
-					<li>
-						TP:&nbsp;
+						Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
+						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
+						{pensjonforvalter?.tp && 'TP'}
+						):&nbsp;
 						<TilgjengeligeMiljoer
 							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}

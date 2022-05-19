@@ -439,6 +439,8 @@ const selectOptions: SelectOptions = {
 		{ value: 'BARN', label: 'Barnepensjon' },
 		{ value: 'AFP', label: 'AFP-pensjon' },
 	],
+
+	tpOrdninger: [],
 }
 
 export const SelectOptionsManager = (attributeId: keyof SelectOptions) => selectOptions[attributeId]
