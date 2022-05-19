@@ -47,7 +47,8 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                                          ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                          PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer, pdlDataConsumer);
+                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
+                pdlDataConsumer, errorStatusDecoder);
 
         this.tpsfService = tpsfService;
         this.dollyPersonCache = dollyPersonCache;
