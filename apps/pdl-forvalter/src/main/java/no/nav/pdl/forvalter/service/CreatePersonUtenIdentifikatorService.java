@@ -47,7 +47,7 @@ public class CreatePersonUtenIdentifikatorService {
             relatertPerson.setNavn(mapperFacade.map(navn, PersonnavnDTO.class));
         }
 
-        if (isNull(request.getStatsborgerskap())) {
+        if (isBlank(request.getStatsborgerskap())) {
 
             relatertPerson.setStatsborgerskap(geografiskeKodeverkConsumer.getTilfeldigLand());
         }
