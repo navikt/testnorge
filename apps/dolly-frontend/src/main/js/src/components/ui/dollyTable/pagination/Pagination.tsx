@@ -11,7 +11,7 @@ type PaginationProps = {
 	visSide?: number
 	gruppeDetaljer?: { pageSize: number; antallPages: number; antallElementer: number }
 	items: any[]
-	render: (arg0: any) => boolean | React.ReactChild | React.ReactFragment | React.ReactPortal
+	render: (arg0: any) => boolean | React.ReactChild
 }
 const ITEM_PER_PAGE = 10
 
@@ -52,15 +52,17 @@ export const Pagination = ({
 		if (antallElementer) {
 			return items.slice(0, currentPageSize)
 		}
-		const startIndex = calculateStartIndex()
-		return items.slice(startIndex, startIndex + currentPageSize)
+		const startIdx = calculateStartIndex()
+		return items.slice(startIdx, startIdx + currentPageSize)
 	}
 
 	const calculateStartIndex = () => {
 		return currentPage * currentPageSize
 	}
 
-	if (!items) return null
+	if (!items) {
+		return null
+	}
 
 	const pageCount = calculatePageCount()
 	const itemsToRender = calculateItemsToRender()

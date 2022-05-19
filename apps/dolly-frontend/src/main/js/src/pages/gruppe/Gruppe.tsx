@@ -68,7 +68,9 @@ export default function Gruppe({
 		setGruppe(selectGruppe(grupper, gruppeId))
 	}, [grupper])
 
-	if (isFetching || !gruppe) return <Loading label="Laster personer" panel />
+	if (isFetching || !gruppe) {
+		return <Loading label="Laster personer" panel />
+	}
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
 		dispatch(resetNavigering())
@@ -78,7 +80,9 @@ export default function Gruppe({
 	const startBestilling = (values: {}) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
-	if (redirectToSoek) return navigate(`/soek`)
+	if (redirectToSoek) {
+		return navigate(`/soek`)
+	}
 
 	const erLaast = gruppe.erLaast
 

@@ -68,11 +68,13 @@ const FinnPersonBestilling = ({
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		if (!searchQuery) return null
+		if (!searchQuery) {
+			return null
+		}
 		soekType === SoekTypeValg.PERSON
 			? navigerTilPerson(searchQuery)
 			: navigerTilBestilling(searchQuery)
-		setSearchQuery(null)
+		return setSearchQuery(null)
 	}, [searchQuery])
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
@@ -113,7 +115,6 @@ const FinnPersonBestilling = ({
 	// @ts-ignore
 	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
 		async (tekst) => {
-			console.log('soekType: ', soekType) //TODO - SLETT MEG
 			return soekType === SoekTypeValg.BESTILLING
 				? await soekBestillinger(tekst)
 				: await soekPersoner(tekst)
@@ -149,8 +150,9 @@ const FinnPersonBestilling = ({
 		)
 	}
 
-	if (gruppe && !window.location.pathname.includes(`/${gruppe}`))
+	if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
 		navigate(`/gruppe/${gruppe}`, { replace: true })
+	}
 
 	return (
 		<ErrorBoundary>
@@ -170,8 +172,9 @@ const FinnPersonBestilling = ({
 						}}
 						isClearable={true}
 						options={options}
+						value={null}
 						onChange={(e: Option) => setSearchQuery(e?.value)}
-						cacheOptions={true}
+						backspaceRemovesValue={true}
 						label="Person"
 						placeholder={
 							soekType === SoekTypeValg.PERSON

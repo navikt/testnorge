@@ -19,8 +19,8 @@ export const {
 	setSidetall: (sidetall) => sidetall,
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
 	setVisning: (visning) => visning,
-	resetNavigering: () => {},
-	resetFeilmelding: () => {},
+	resetNavigering() {},
+	resetFeilmelding() {},
 })
 
 const initialState = {
@@ -68,10 +68,10 @@ export default handleActions(
 		[setSideStoerrelse](state, action) {
 			state.sideStoerrelse = action.payload
 		},
-		[resetNavigering](state, action) {
+		[resetNavigering](state) {
 			return { ...initialState, visning: state.visning }
 		},
-		[resetFeilmelding](state, action) {
+		[resetFeilmelding](state) {
 			state.feilmelding = null
 		},
 		[setVisning](state, action) {

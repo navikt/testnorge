@@ -14,7 +14,7 @@ export const { hentPdlforvalterPersoner, incrementSlettedePersoner } = createAct
 			identer,
 		}),
 	],
-	incrementSlettedePersoner: () => {},
+	incrementSlettedePersoner() {},
 })
 
 const initialState = {
