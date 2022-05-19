@@ -11,12 +11,14 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.Arena
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.DagpengerResponseDTO;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.NyeDagpenger;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengesoknadDTO;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengevedtakDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -213,12 +215,23 @@ public class ArenaForvalterConsumer {
         return arbeidssoekere;
     }
 
-    private void opprettDagpengerSoknad(DagpengesoknadDTO soknad){
+    public DagpengerResponseDTO opprettDagpengerSoknad(DagpengerRequestDTO soknad){
         log.info("Innsending av dagpengesoknad ikke implementert");
+        var response = Collections.singletonList(NyeDagpenger.builder()
+                        .personident(soknad.getPersonident())
+                        .oppgaveId(1)
+                        .arenaSakId(1)
+                .build());
+        return new DagpengerResponseDTO(response, null);
     }
 
-    private void opprettDagpengerVedtak(DagpengevedtakDTO vedtak){
+    public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak){
         log.info("Innsending av dagpengevedtak ikke implementert");
+        var response = Collections.singletonList(NyeDagpenger.builder()
+                .personident(vedtak.getPersonident())
+                .vedtakId(1)
+                .build());
+        return new DagpengerResponseDTO(response, null);
     }
 
 }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.HentDagpengevedtakCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntDagpengerProperties;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengevedtakDTO;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger.Dagpengerettighet;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class SyntDagpengerConsumer {
                 .build();
     }
 
-    public DagpengevedtakDTO syntetiserDagpengevedtak(String rettighet) {
+    public DagpengevedtakDTO syntetiserDagpengevedtak(Dagpengerettighet rettighet) {
         var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now()))));
         var request = Collections.singletonList(dato.toString());
 

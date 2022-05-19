@@ -5,19 +5,25 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DagpengevedtakDTO {
+
+    private Integer sakId;
+    private Integer oppgaveId;
+
     @JsonProperty
-    private String rettighetKode;
+    private Dagpengerettighet rettighetKode;
 
     @JsonProperty
     private String vedtaktypeKode;
