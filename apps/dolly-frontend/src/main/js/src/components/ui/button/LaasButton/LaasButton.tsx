@@ -10,8 +10,8 @@ import './LaasModal.less'
 type LaasButtonProps = {
 	action: Function
 	loading: boolean
-	gruppeId: string
-	children: string
+	gruppeId: string | number
+	children: any
 }
 
 export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {

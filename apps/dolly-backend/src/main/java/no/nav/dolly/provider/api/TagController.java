@@ -10,6 +10,7 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
+import no.nav.dolly.domain.resultset.Tags.TagBeskrivelse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
@@ -51,11 +52,11 @@ public class TagController {
     @GetMapping()
     @Transactional
     @Operation(description = "Hent alle gyldige Tags")
-    public Set<Tags.TagBeskrivelse> hentAlleTags() {
+    public Set<TagBeskrivelse> hentAlleTags() {
 
         return Arrays.stream(Tags.values())
                 .filter(tags -> !tags.name().equals(Tags.DOLLY.name()))
-                .map(tag -> Tags.TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
+                .map(tag -> TagBeskrivelse.builder().tag(tag.name()).beskrivelse(tag.getBeskrivelse()).build())
                 .collect(Collectors.toSet());
     }
 
@@ -71,8 +72,8 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public String sendTagsPaaGruppe(@RequestBody List<Tags> tags,
-                                    @PathVariable("gruppeId") Long gruppeId) {
+    public Flux<String> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
+                                          @PathVariable("gruppeId") Long gruppeId) {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));
@@ -139,8 +140,6 @@ public class TagController {
                     .subscribe();
         }
 
-        return tagsHendelseslagerConsumer.createTags(pdlPersonBolk, tags)
-                .collect(Collectors.joining(", "))
-                .block();
+        return tagsHendelseslagerConsumer.createTags(pdlPersonBolk, tags);
     }
 }

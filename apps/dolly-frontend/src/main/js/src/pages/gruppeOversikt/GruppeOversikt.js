@@ -6,11 +6,10 @@ import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConn
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
-import FinnPerson from './FinnPerson'
+import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 
 export default function GruppeOversikt({
 	getGrupper,
-	navigerTilPerson,
 	fetchMineGrupper,
 	isFetching,
 	gruppeListe,
@@ -19,10 +18,10 @@ export default function GruppeOversikt({
 	searchActive,
 	importerteZIdenter,
 	brukerProfil,
+	sidetall,
+	sideStoerrelse,
 }) {
 	const [visning, setVisning] = useState('mine')
-	const [sidetall, setSidetall] = useState(0)
-	const [sideStoerrelse, setSideStoerrelse] = useState(10)
 	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
@@ -65,7 +64,7 @@ export default function GruppeOversikt({
 						Alle
 					</ToggleKnapp>
 				</ToggleGruppe>
-				<FinnPerson naviger={navigerTilPerson} />
+				<FinnPersonBestillingConnector />
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
@@ -76,9 +75,7 @@ export default function GruppeOversikt({
 				isFetching={isFetching}
 				searchActive={searchActive}
 				visSide={sidetall}
-				setSidetall={setSidetall}
 				sideStoerrelse={sideStoerrelse}
-				setSideStoerrelse={setSideStoerrelse}
 				brukerProfil={brukerProfil}
 			/>
 		</div>

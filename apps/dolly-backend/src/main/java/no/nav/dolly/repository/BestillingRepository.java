@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -15,7 +16,26 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query("from Bestilling b where b.id = :id")
     Optional<Bestilling> findById(@Param("id") Long id);
 
+    @Query(value = "select b.id, g.navn " +
+            "from Bestilling b " +
+            "inner join Gruppe g " +
+            "on b.gruppe_id = g.id " +
+            "where cast(b.id as VARCHAR) " +
+            "like %:id% fetch first 10 rows only",
+            nativeQuery = true)
+    Optional<List<RsBestillingFragment>> findByIdContaining(String id);
+
     Bestilling save(Bestilling bestilling);
+
+    @Query(value = "select position-1 " +
+            "from ( " +
+            "select b.id, row_number() over (order by b.id desc) as position " +
+            "from bestilling b " +
+            "where b.gruppe_id = :gruppeId" +
+            ") result " +
+            "where id = :bestillingId",
+            nativeQuery = true)
+    Optional<Integer> getPaginertBestillingIndex(@Param("bestillingId") Long bestillingId, @Param("gruppeId") Long gruppe);
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);

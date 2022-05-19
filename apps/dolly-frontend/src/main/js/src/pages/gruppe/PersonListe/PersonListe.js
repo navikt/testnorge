@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
@@ -13,7 +13,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { KommentarModal } from '~/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
 
@@ -32,16 +32,13 @@ export default function PersonListe({
 	gruppeInfo,
 	identer,
 	sidetall,
-	slettedeIdenter,
-	setSidetall,
 	sideStoerrelse,
-	setSideStoerrelse,
 	brukertype,
 	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
-	setVisning,
+	fetchIdenterById,
 	tmpPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
@@ -50,36 +47,37 @@ export default function PersonListe({
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, visPerson]
+		[identer, search, fagsystem, bestillingStatuser, visPerson]
 	)
 
 	useEffect(() => {
-		const idents = Object.values(identer)
-			.filter((ident) => !slettedeIdenter?.[0]?.includes(ident.ident))
-			.map((ident) => {
-				if (ident) {
-					return { ident: ident.ident, master: ident.master }
-				}
-			})
+		fetchIdenterById(gruppeInfo.id, sidetall, sideStoerrelse)
+		setIdentListe([])
+	}, [gruppeInfo.id, sidetall, sideStoerrelse, tmpPersoner.antallSlettedePersoner])
+
+	useEffect(() => {
+		const idents = Object.values(identer).map((ident) => {
+			if (ident) {
+				return { ident: ident.ident, master: ident.master }
+			}
+		})
 		if (!isEqual(idents, identListe)) {
 			setIdentListe(idents)
 		}
-	}, [identer, slettedeIdenter[0]])
+	}, [identer])
 
 	useEffect(() => {
+		if (isEmpty(identListe)) {
+			return null
+		}
 		fetchTpsfPersoner(identListe)
-		fetchPdlPersoner(identListe)
-	}, [identListe, sidetall, sideStoerrelse, visPerson])
+		fetchPdlPersoner(identListe, fagsystem)
+	}, [identListe, visPerson])
 
-	if (isFetching) return <Loading label="Laster personer" panel />
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer)))
+		return <Loading label="Laster personer" panel />
 
-	if (visPerson && personListe && window.sessionStorage.getItem('sidetall')) {
-		setSidetall(parseInt(window.sessionStorage.getItem('sidetall')))
-		setSideStoerrelse(10)
-		window.sessionStorage.removeItem('sidetall')
-	}
-
-	if (!personListe || personListe.length === 0) {
+	if (isEmpty(identer)) {
 		const infoTekst =
 			brukertype === 'BANKID'
 				? 'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
@@ -195,25 +193,21 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter,
+					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallSlettedePersoner,
 					pageSize: sideStoerrelse,
 				}}
 				pagination
 				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 				visSide={sidetall}
-				setSidetall={setSidetall}
-				setSideStoerrelse={setSideStoerrelse}
 				visPerson={visPerson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}
-						slettedeIdenter={slettedeIdenter}
 						bestillingId={bruker.ident.bestillingId[0]}
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
-						setVisning={setVisning}
 					/>
 				)}
 			/>

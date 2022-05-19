@@ -1,5 +1,5 @@
 import React from 'react'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import styled from 'styled-components'

@@ -68,6 +68,12 @@ public class TransaksjonMappingService {
         transaksjonMappingRepository.save(entry);
     }
 
+    @Transactional
+    public void slettTransaksjonMappingByTestident(String ident) {
+
+        transaksjonMappingRepository.deleteAllByIdent(ident);
+    }
+
     private String hentSystemFeilFraBestillingProgress(List<BestillingProgress> progress, String system) {
 
         String status = "";

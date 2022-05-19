@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Column from './TableColumn'
 import ExpandButton from '~/components/ui/button/ExpandButton'
+import { resetNavigering } from '~/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
 
 export default function TableRow({
 	children,
@@ -11,9 +13,13 @@ export default function TableRow({
 	expandPerson = false,
 	expandBestilling = false,
 }) {
-	const [isExpanded, setIsExpanded] = useState(expandPerson || expandBestilling)
+	const [isExpanded, setIsExpanded] = useState(false)
+	const dispatch = useDispatch()
 
-	const onRowClick = (event) => {
+	useEffect(() => setIsExpanded(expandPerson || expandBestilling), [expandPerson, expandBestilling])
+
+	const onRowClick = () => {
+		if (isExpanded) dispatch(resetNavigering())
 		if (expandComponent) return setIsExpanded(!isExpanded)
 
 		if (navLink) return navLink()

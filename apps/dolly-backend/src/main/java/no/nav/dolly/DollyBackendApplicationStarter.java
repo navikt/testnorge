@@ -20,4 +20,3 @@ public class DollyBackendApplicationStarter {
                 .sources(ApplicationConfig.class)
                 .run(args);
     }
-}

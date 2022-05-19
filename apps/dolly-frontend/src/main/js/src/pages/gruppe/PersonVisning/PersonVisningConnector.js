@@ -5,6 +5,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
+import { incrementSlettedePersoner } from '~/ducks/redigertePersoner'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -50,7 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 		slettPerson: () => {
-			ownProps.slettedeIdenter?.[1]?.([...ownProps.slettedeIdenter[0], ownProps.personId])
+			dispatch(incrementSlettedePersoner())
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>

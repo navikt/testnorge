@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -69,6 +70,11 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
+    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingId) {
+        return bestillingRepository.findByIdContaining(bestillingId)
+                .orElse(emptyList());
+    }
+
     public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         var bestillinger = nonNull(malNavn)
@@ -96,10 +102,15 @@ public class BestillingService {
         return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
 
+    public Optional<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
+
+        return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
+    }
+
     @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
-        Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
-        if (!bestillingKontroll.isPresent()) {
+        var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
+        if (bestillingKontroll.isEmpty()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
                     .bestillingId(bestillingId)
                     .stoppet(true)

@@ -20,6 +20,7 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrdreService;
 import no.nav.dolly.service.PersonService;
+import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 public class TestpersonController {
 
     private final BestillingService bestillingService;
+    private final TransaksjonMappingService transaksjonMappingService;
     private final DollyBestillingService dollyBestillingService;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
@@ -56,7 +58,7 @@ public class TestpersonController {
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
+    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
@@ -90,7 +92,7 @@ public class TestpersonController {
     @Operation(description = "Koble eksisterende personer i Dolly ")
     @PutMapping("/{ident}/relasjon")
     @ResponseStatus(HttpStatus.OK)
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
+    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
     public RsBestillingStatus koblePerson(@Parameter(description = "Ident for hovedperson", required = true)
                                           @PathVariable("ident") String ident,
                                           @RequestBody RsDollyRelasjonRequest request) {
@@ -102,7 +104,7 @@ public class TestpersonController {
     }
 
     @Operation(description = "Slett test ident")
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {
@@ -110,11 +112,15 @@ public class TestpersonController {
         if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
-        personService.recyclePersoner(mapperFacade.mapAsList(
-                List.of(identService.getTestIdent(ident)), TestidentDTO.class));
+        var testIdenter = mapperFacade.mapAsList(
+                List.of(identService.getTestIdent(ident)), TestidentDTO.class);
 
+        transaksjonMappingService.slettTransaksjonMappingByTestident(ident);
         bestillingService.slettBestillingByTestIdent(ident);
         identService.slettTestident(ident);
+
+        personService.recyclePersoner(testIdenter);
+
     }
 
     @Operation(description = "Naviger til ønsket testperson")

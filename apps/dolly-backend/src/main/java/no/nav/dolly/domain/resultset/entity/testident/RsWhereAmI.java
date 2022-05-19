@@ -11,5 +11,6 @@ public class RsWhereAmI {
     private RsTestgruppe gruppe;
     private String identHovedperson;
     private String identNavigerTil;
+    private Long bestillingNavigerTil;
     private int sidetall;
 }
