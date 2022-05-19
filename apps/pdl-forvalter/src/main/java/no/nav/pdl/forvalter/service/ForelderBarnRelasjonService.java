@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.dto.PersonUtenIdentifikatorRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
@@ -15,6 +16,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelasjonDTO> {
 
+    private static final String INVALID_PERSON_ID_EXCEPTION = "ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
+            "ikke begge deler";
     private static final String INVALID_EMPTY_MIN_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle for person må oppgis";
     private static final String INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: relatert persons rolle må oppgis";
     private static final String AMBIGUOUS_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle og relatert persons " +
@@ -54,6 +58,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
+    private final CreatePersonUtenIdentifikatorService createPersonUtenIdentifikatorService;
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
     private final DeltBostedService deltBostedService;
@@ -76,6 +81,11 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     @Override
     public void validate(ForelderBarnRelasjonDTO relasjon) {
+
+        if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) &&
+                (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
+            throw new InvalidRequestException(INVALID_PERSON_ID_EXCEPTION);
+        }
 
         if (isNull(relasjon.getMinRolleForPerson())) {
             throw new InvalidRequestException(INVALID_EMPTY_MIN_ROLLE_EXCEPTION);
@@ -114,6 +124,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
             request.setRelatertPerson(relasjon.getRelatertPerson());
+            request.setRelatertPersonUtenFolkeregisteridentifikator(relasjon.getRelatertPersonUtenFolkeregisteridentifikator());
             request.setNyRelatertPerson(null);
             request.setBorIkkeSammen(null);
             request.setMinRolleForPerson(switch (request.getMinRolleForPerson()) {
@@ -143,7 +154,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
             ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                    .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
+                    .kjoenn(getKjoenn(relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == MANN ? KVINNE : MANN)
                     .build());
             forelderRelasjon.setRelatertPerson(null);
 
@@ -158,9 +169,19 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         return emptyList();
     }
 
+    private KjoennDTO.Kjoenn getKjoenn(String relatertPerson, RelatertBiPersonDTO utenIdentifikator) {
+
+        return isNotBlank(relatertPerson) ?
+                KjoennFraIdentUtility.getKjoenn(relatertPerson) :
+                utenIdentifikator.getKjoenn();
+    }
+
     private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
-        getRolle(relasjon, hovedperson);
+        setRolle(relasjon, hovedperson);
+        if (isNull(relasjon.getRelatertPerson())) {
+            return relasjon;
+        }
         relasjonService.setRelasjoner(hovedperson.getIdent(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
                 relasjon.getRelatertPerson(),
@@ -174,7 +195,16 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
         relasjon.setEksisterendePerson(isNotBlank(relasjon.getRelatertPerson()));
 
-        if (isBlank(relasjon.getRelatertPerson())) {
+        if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
+
+            var request = mapperFacade.map(relasjon.getRelatertPersonUtenFolkeregisteridentifikator(),
+                    PersonUtenIdentifikatorRequest.class);
+
+            request.setMinRolle(relasjon.getMinRolleForPerson());
+            relasjon.setRelatertPersonUtenFolkeregisteridentifikator(
+                    createPersonUtenIdentifikatorService.execute(request));
+
+        } else if (isBlank(relasjon.getRelatertPerson())) {
 
             if (isNull(relasjon.getNyRelatertPerson())) {
                 relasjon.setNyRelatertPerson(new PersonRequestDTO());
@@ -215,14 +245,14 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         return relasjon.getRelatertPerson();
     }
 
-    private void getRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
+    private void setRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (Rolle.FORELDER == relasjon.getMinRolleForPerson()) {
             relasjon.setMinRolleForPerson(KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? Rolle.FAR : Rolle.MOR);
 
         } else if (Rolle.FORELDER == relasjon.getRelatertPersonsRolle()) {
-            relasjon.setRelatertPersonsRolle(
-                    KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == KVINNE ? Rolle.MOR : Rolle.FAR);
+            relasjon.setRelatertPersonsRolle(getKjoenn(
+                    relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == KVINNE ? Rolle.MOR : Rolle.FAR);
         }
     }
 
