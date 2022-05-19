@@ -138,13 +138,12 @@ public class VedtakshistorikkService {
         try {
             var aapVedtak = vedtakshistorikk.getAlleAapVedtak();
             var maaVaereBosatt = nonNull(aapVedtak) && !aapVedtak.isEmpty();
-            LocalDate tidligsteDatoBosatt = maaVaereBosatt ? finnTidligsteDatoAap(aapVedtak) : null;
 
             List<PersonDTO> identer;
             if (nonNull(tidligsteDatoBarnetillegg)) {
-                identer = identService.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(1, minimumAlder, maksimumAlder, tidligsteDatoBosatt, tidligsteDatoBarnetillegg);
+                identer = identService.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(1, minimumAlder, maksimumAlder, tidligsteDatoBarnetillegg, maaVaereBosatt);
             } else {
-                identer = identService.getUtvalgteIdenterIAldersgruppe(1, minimumAlder, maksimumAlder, tidligsteDatoBosatt);
+                identer = identService.getUtvalgteIdenterIAldersgruppe(1, minimumAlder, maksimumAlder, maaVaereBosatt);
             }
 
             return identer.isEmpty() ? null : identer.get(0);
