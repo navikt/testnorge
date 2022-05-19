@@ -37,6 +37,7 @@ public class ArenaDagpengerService {
 
     public Map<String, List<DagpengerResponseDTO>> registrerArenaBrukereMedDagpenger(int antall, String miljoe){
         //TODO må være bosatt? min/max alder?
+        //TODO ident må ha korrekt alder for vedtak dato
         var utvalgteIdenter = identService.getUtvalgteIdenterIAldersgruppe(antall, 18, 66, false);
 
         Map<String, List<DagpengerResponseDTO>> responses = new HashMap<>();
@@ -46,6 +47,8 @@ public class ArenaDagpengerService {
             var response = sendDagpenger(ident.getIdent(), miljoe, rand.nextDouble() > 0.2);
             responses.put(ident.getIdent(), response);
         }
+
+        //TODO registrer tags på identer.
         return responses;
     }
 
