@@ -60,7 +60,7 @@ public class IdentService {
             int antallNyeIdenter,
             int minimumAlder,
             int maksimumAlder,
-            LocalDate tidligsteDatoBosatt
+            boolean maaVaereBosatt
 
     ) {
         List<PersonDTO> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
@@ -68,14 +68,13 @@ public class IdentService {
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
-            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, null);
+            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, maaVaereBosatt ? BOSATT_STATUS : null, null);
             var response = personSearchConsumer.search(request);
 
             var numberOfPages = 0;
             if (nonNull(response)) {
                 numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
                 for (PersonDTO person : response.getItems()) {
-                    //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
                     if (arenaForvalterService.arbeidssoekerIkkeOpprettetIArena(person.getIdent())){
                         utvalgteIdenter.add(person);
                         if (utvalgteIdenter.size() >= antallNyeIdenter) break;
@@ -94,22 +93,21 @@ public class IdentService {
             int antallNyeIdenter,
             int minimumAlder,
             int maksimumAlder,
-            LocalDate tidligsteDatoBosatt,
-            LocalDate tidligsteDatoBarnetillegg
+            LocalDate tidligsteDatoBarnetillegg,
+            boolean maaVaereBosatt
     ) {
         List<PersonDTO> utvalgteIdenter = new ArrayList<>();
 
         var randomSeed = rand.nextFloat() + "";
         var page = 1;
         while (page < MAX_SEARCH_REQUESTS && utvalgteIdenter.size() < antallNyeIdenter) {
-            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, BOSATT_STATUS, true);
+            var request = getSearchRequest(randomSeed, page, minimumAlder, maksimumAlder, maaVaereBosatt ? BOSATT_STATUS:  null, true);
             var response = personSearchConsumer.search(request);
 
             var numberOfPages = 0;
             if (nonNull(response)){
                 numberOfPages = response.getNumberOfItems() / PAGE_SIZE;
                 for (PersonDTO person : response.getItems()) {
-                    //TODO: legg til validering bosatt når data kvalitet på gyldighetsdato er bedre
                     if (validBarn(person.getForelderBarnRelasjoner().getBarn(), tidligsteDatoBarnetillegg)){
                         utvalgteIdenter.add(person);
                         if (utvalgteIdenter.size() >= antallNyeIdenter) break;
@@ -122,15 +120,6 @@ public class IdentService {
         }
 
         return utvalgteIdenter;
-    }
-
-    private boolean validBosattdato(PersonDTO person, LocalDate tidligsteDatoBosatt) {
-        var gyldigeBosattstatuser = person.getFolkeregisterpersonstatus().stream()
-                .filter(status -> status.getStatus().equals(BOSATT_STATUS))
-                .map(FolkeregisterpersonstatusDTO::getGyldighetstidspunkt)
-                .filter(bosattdato -> bosattdato.isBefore(tidligsteDatoBosatt) || bosattdato.equals(tidligsteDatoBosatt))
-                .toList();
-        return !gyldigeBosattstatuser.isEmpty();
     }
 
     private boolean validBarn(List<String> barn, LocalDate tidligsteDatoBarnetillegg) {

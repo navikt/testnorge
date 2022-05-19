@@ -29,7 +29,8 @@ public class BrukerService {
                         syntetiserArenaRequest.getAntallNyeIdenter(),
                         MINIMUM_ALDER,
                         MAKSIMUM_ALDER,
-                        null)
+                        false
+                )
                 .stream().map(PersonDTO::getIdent).toList();
 
         if (pdlProxyConsumer.createTags(identer, SYNT_TAGS)) {
