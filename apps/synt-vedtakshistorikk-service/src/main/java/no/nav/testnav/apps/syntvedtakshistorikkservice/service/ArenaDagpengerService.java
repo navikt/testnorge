@@ -3,15 +3,19 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.ArenaForvalterConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntDagpengerConsumer;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.DagpengerResponseDTO;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.NyeDagpenger;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.NyeDagpenger;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengevedtakDTO;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger.Dagpengerettighet;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengesoknadDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -31,8 +35,21 @@ public class ArenaDagpengerService {
         return syntDagpengerConsumer.syntetiserDagpengevedtak(rettighet);
     }
 
-    public DagpengerResponseDTO sendDagpenger(String miljoe, Boolean sendVedtak) {
-        var ident = "12345678910";
+    public Map<String, List<DagpengerResponseDTO>> registrerArenaBrukereMedDagpenger(int antall, String miljoe){
+        //TODO må være bosatt? min/max alder?
+        var utvalgteIdenter = identService.getUtvalgteIdenterIAldersgruppe(antall, 18, 66, false);
+
+        Map<String, List<DagpengerResponseDTO>> responses = new HashMap<>();
+        for (var ident: utvalgteIdenter){
+            // TODO registrer ident i Arena forst?
+            // TODO registrer inntektsmeldinger på ident
+            var response = sendDagpenger(ident.getIdent(), miljoe, rand.nextDouble() > 0.2);
+            responses.put(ident.getIdent(), response);
+        }
+        return responses;
+    }
+
+    public List<DagpengerResponseDTO> sendDagpenger(String ident, String miljoe, Boolean sendVedtak) {
         var rettighetKode = rand.nextDouble() > 0.13 ? Dagpengerettighet.DAGO : Dagpengerettighet.PERM;
 
         var soknadRequest = getDagpengesoknadRequest(ident, miljoe, rettighetKode);
@@ -40,9 +57,10 @@ public class ArenaDagpengerService {
 
         if (soknadResponse.getFeiledeDagpenger().isEmpty() && !soknadResponse.getNyeDagpenger().isEmpty() && sendVedtak) {
             var vedtakRequest = getDagpengevedtakRequest(ident, miljoe, rettighetKode, soknadResponse.getNyeDagpenger().get(0));
-            return arenaForvalterConsumer.opprettDagpengerVedtak(vedtakRequest);
+            var vedtakResponse = arenaForvalterConsumer.opprettDagpengerVedtak(vedtakRequest);
+            return Arrays.asList(soknadResponse, vedtakResponse);
         } else {
-            return soknadResponse;
+            return Collections.singletonList(soknadResponse);
         }
     }
 

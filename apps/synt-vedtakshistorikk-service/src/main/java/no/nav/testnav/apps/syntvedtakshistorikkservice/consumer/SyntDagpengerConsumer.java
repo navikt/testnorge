@@ -45,6 +45,7 @@ public class SyntDagpengerConsumer {
     }
 
     public DagpengevedtakDTO syntetiserDagpengevedtak(Dagpengerettighet rettighet) {
+        //TODO sjekk hvilket dato-intervall som skal brukes for dagpenger
         var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now()))));
         var request = Collections.singletonList(dato.toString());
 
