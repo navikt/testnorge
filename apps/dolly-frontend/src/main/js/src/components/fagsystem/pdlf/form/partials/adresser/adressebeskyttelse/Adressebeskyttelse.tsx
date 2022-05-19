@@ -14,17 +14,33 @@ interface AdressebeskyttelseValues {
 	formikBag: FormikProps<{}>
 }
 
+type AdressebeskyttelseFormValues = {
+	formikBag: FormikProps<{}>
+	path: string
+	idx?: number
+	identtype?: string
+}
+
 type Target = {
+	label: string
 	value: string
 }
 
-export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
-	const harFnr = _get(formikBag.values, 'pdldata.opprettNyPerson.identtype') === 'FNR'
+export const AdressebeskyttelseForm = ({
+	formikBag,
+	path,
+	idx,
+	identtype,
+}: AdressebeskyttelseFormValues) => {
+	const harFnr =
+		identtype === 'FNR' || _get(formikBag.values, 'pdldata.opprettNyPerson.identtype') === 'FNR'
 	const adressebeskyttelseOptions = harFnr
 		? Options('gradering')
-		: Options('gradering').filter((v) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value))
+		: Options('gradering').filter(
+				(v: Target) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value)
+		  )
 
-	const handleChangeGradering = (target: Target, path: string) => {
+	const handleChangeGradering = (target: Target) => {
 		const adressebeskyttelse = _get(formikBag.values, path)
 		const adressebeskyttelseClone = _cloneDeep(adressebeskyttelse)
 		_set(adressebeskyttelseClone, 'gradering', target?.value || null)
@@ -35,7 +51,23 @@ export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 		}
 		formikBag.setFieldValue(path, adressebeskyttelseClone)
 	}
+	return (
+		<React.Fragment key={idx}>
+			<div className="flexbox--full-width">
+				<FormikSelect
+					name={`${path}.gradering`}
+					label="Gradering"
+					options={adressebeskyttelseOptions}
+					onChange={(target: Target) => handleChangeGradering(target)}
+					size="large"
+				/>
+			</div>
+			<AvansertForm path={path} kanVelgeMaster={false} />
+		</React.Fragment>
+	)
+}
 
+export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 	return (
 		<Kategori title="Adressebeskyttelse">
 			<FormikDollyFieldArray
@@ -44,22 +76,9 @@ export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 				newEntry={initialAdressebeskyttelse}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => {
-					return (
-						<React.Fragment key={idx}>
-							<div className="flexbox--full-width">
-								<FormikSelect
-									name={`${path}.gradering`}
-									label="Gradering"
-									options={adressebeskyttelseOptions}
-									onChange={(target: Target) => handleChangeGradering(target, path)}
-									size="large"
-								/>
-							</div>
-							<AvansertForm path={path} kanVelgeMaster={false} />
-						</React.Fragment>
-					)
-				}}
+				{(path: string, idx: number) => (
+					<AdressebeskyttelseForm formikBag={formikBag} path={path} idx={idx} />
+				)}
 			</FormikDollyFieldArray>
 		</Kategori>
 	)

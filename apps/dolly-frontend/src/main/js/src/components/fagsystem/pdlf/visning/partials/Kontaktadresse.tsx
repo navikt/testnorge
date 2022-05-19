@@ -9,100 +9,142 @@ import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
+	KontaktadresseData,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { initialKontaktadresse } from '~/components/fagsystem/pdlf/form/initialValues'
+import _cloneDeep from 'lodash/cloneDeep'
+import _get from 'lodash/get'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import Formatters from '~/utils/DataFormatter'
 
-type Data = {
+type KontaktadresseTypes = {
 	data: Array<any>
+	tmpPersoner?: Array<KontaktadresseData>
+	ident?: number
+	erPdlVisning?: boolean
 }
 
-type AdresseProps = {
-	adresse: any
+type KontaktadresseVisningTypes = {
+	kontaktadresseData: any
 	idx: number
 }
 
-export const Adresse = ({ adresse, idx }: AdresseProps) => {
+const Adressedatoer = ({ kontaktadresseData }: any) => (
+	<>
+		<TitleValue
+			title="Gyldig fra og med"
+			value={Formatters.formatDate(kontaktadresseData.gyldigFraOgMed)}
+		/>
+		<TitleValue
+			title="Gyldig til og med"
+			value={Formatters.formatDate(kontaktadresseData.gyldigTilOgMed)}
+		/>
+	</>
+)
+
+export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
+	if (!kontaktadresseData) return null
+
 	return (
 		<>
-			{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}
-			{adresse.utenlandskAdresse && <UtenlandskAdresse adresse={adresse} idx={idx} />}
-			{adresse.postboksadresse && (
+			{kontaktadresseData.vegadresse && <Vegadresse adresse={kontaktadresseData} idx={idx} />}
+			{kontaktadresseData.utenlandskAdresse && (
+				<UtenlandskAdresse adresse={kontaktadresseData} idx={idx} />
+			)}
+			{kontaktadresseData.postboksadresse && (
 				<>
 					<h4 style={{ marginTop: '0px' }}>Postboksadresse</h4>
 					<div className="person-visning_content" key={idx}>
-						<TitleValue title="Postbokseier" value={adresse.postboksadresse.postbokseier} />
-						<TitleValue title="Postboks" value={adresse.postboksadresse.postboks} />
+						<TitleValue
+							title="Postbokseier"
+							value={kontaktadresseData.postboksadresse.postbokseier}
+						/>
+						<TitleValue title="Postboks" value={kontaktadresseData.postboksadresse.postboks} />
 						<TitleValue title="Postnummer">
-							{adresse.postboksadresse.postnummer && (
-								<KodeverkConnector navn="Postnummer" value={adresse.postboksadresse.postnummer}>
+							{kontaktadresseData.postboksadresse.postnummer && (
+								<KodeverkConnector
+									navn="Postnummer"
+									value={kontaktadresseData.postboksadresse.postnummer}
+								>
 									{(v: Kodeverk, verdi: KodeverkValues) => (
-										<span>{verdi ? verdi.label : adresse.postboksadresse.postnummer}</span>
+										<span>
+											{verdi ? verdi.label : kontaktadresseData.postboksadresse.postnummer}
+										</span>
 									)}
 								</KodeverkConnector>
 							)}
 						</TitleValue>
+						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 					</div>
 				</>
 			)}
-			{adresse.postadresseIFrittFormat && (
+			{kontaktadresseData.postadresseIFrittFormat && (
 				<>
 					<h4 style={{ marginTop: '0px' }}>Postadresse i fritt format</h4>
 					<div className="person-visning_content" key={idx}>
-						{adresse.postadresseIFrittFormat.adresselinjer ? (
+						{kontaktadresseData.postadresseIFrittFormat.adresselinjer ? (
 							<TitleValue title="Adresselinjer">
-								<div>{adresse.postadresseIFrittFormat.adresselinjer[0]}</div>
-								<div>{adresse.postadresseIFrittFormat.adresselinjer[1]}</div>
-								<div>{adresse.postadresseIFrittFormat.adresselinjer[2]}</div>
+								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinjer[0]}</div>
+								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinjer[1]}</div>
+								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinjer[2]}</div>
 							</TitleValue>
 						) : (
 							<TitleValue title="Adresselinjer">
-								<div>{adresse.postadresseIFrittFormat.adresselinje1}</div>
-								<div>{adresse.postadresseIFrittFormat.adresselinje2}</div>
-								<div>{adresse.postadresseIFrittFormat.adresselinje3}</div>
+								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinje1}</div>
+								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinje2}</div>
+								<div>{kontaktadresseData.postadresseIFrittFormat.adresselinje3}</div>
 							</TitleValue>
 						)}
 						<TitleValue title="Postnummer">
-							{adresse.postadresseIFrittFormat.postnummer && (
+							{kontaktadresseData.postadresseIFrittFormat.postnummer && (
 								<KodeverkConnector
 									navn="Postnummer"
-									value={adresse.postadresseIFrittFormat.postnummer}
+									value={kontaktadresseData.postadresseIFrittFormat.postnummer}
 								>
 									{(v: Kodeverk, verdi: KodeverkValues) => (
-										<span>{verdi ? verdi.label : adresse.postadresseIFrittFormat.postnummer}</span>
+										<span>
+											{verdi ? verdi.label : kontaktadresseData.postadresseIFrittFormat.postnummer}
+										</span>
 									)}
 								</KodeverkConnector>
 							)}
 						</TitleValue>
+						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 					</div>
 				</>
 			)}
-			{adresse.utenlandskAdresseIFrittFormat && (
+			{kontaktadresseData.utenlandskAdresseIFrittFormat && (
 				<>
 					<h4 style={{ marginTop: '0px' }}>Utenlandsk adresse i fritt format</h4>
 					<div className="person-visning_content" key={idx}>
-						{adresse.utenlandskAdresseIFrittFormat.adresselinjer ? (
+						{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer ? (
 							<TitleValue title="Adresselinjer">
-								<div>{adresse.utenlandskAdresseIFrittFormat.adresselinjer[0]}</div>
-								<div>{adresse.utenlandskAdresseIFrittFormat.adresselinjer[1]}</div>
-								<div>{adresse.utenlandskAdresseIFrittFormat.adresselinjer[2]}</div>
+								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer[0]}</div>
+								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer[1]}</div>
+								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinjer[2]}</div>
 							</TitleValue>
 						) : (
 							<TitleValue title="Adresselinjer">
-								<div>{adresse.utenlandskAdresseIFrittFormat.adresselinje1}</div>
-								<div>{adresse.utenlandskAdresseIFrittFormat.adresselinje2}</div>
-								<div>{adresse.utenlandskAdresseIFrittFormat.adresselinje3}</div>
+								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinje1}</div>
+								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinje2}</div>
+								<div>{kontaktadresseData.utenlandskAdresseIFrittFormat.adresselinje3}</div>
 							</TitleValue>
 						)}
-						<TitleValue title="Postkode" value={adresse.utenlandskAdresseIFrittFormat.postkode} />
+						<TitleValue
+							title="Postkode"
+							value={kontaktadresseData.utenlandskAdresseIFrittFormat.postkode}
+						/>
 						<TitleValue
 							title="By eller sted"
-							value={adresse.utenlandskAdresseIFrittFormat.byEllerStedsnavn}
+							value={kontaktadresseData.utenlandskAdresseIFrittFormat.byEllerStedsnavn}
 						/>
 						<TitleValue
 							title="Land"
-							value={adresse.utenlandskAdresseIFrittFormat.landkode}
+							value={kontaktadresseData.utenlandskAdresseIFrittFormat.landkode}
 							kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						/>
+						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 					</div>
 				</>
 			)}
@@ -110,16 +152,65 @@ export const Adresse = ({ adresse, idx }: AdresseProps) => {
 	)
 }
 
-export const Kontaktadresse = ({ data }: Data) => {
-	if (!data || data.length === 0) return null
+export const Kontaktadresse = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning = false,
+}: KontaktadresseTypes) => {
+	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1))
+		return null
+
+	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) return null
+
+	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
+		const initKontaktadresse = Object.assign(
+			_cloneDeep(initialKontaktadresse),
+			data?.[idx] || tmpData?.[idx]
+		)
+		const initialValues = { kontaktadresse: initKontaktadresse }
+
+		const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
+			(a: KontaktadresseData) => a.id === kontaktadresseData.id
+		)
+		const slettetKontaktadressePdlf =
+			tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
+		if (slettetKontaktadressePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+
+		const kontaktadresseValues = redigertKontaktadressePdlf
+			? redigertKontaktadressePdlf
+			: kontaktadresseData
+		const redigertKontaktadresseValues = redigertKontaktadressePdlf
+			? {
+					kontaktadresse: Object.assign(
+						_cloneDeep(initialKontaktadresse),
+						redigertKontaktadressePdlf
+					),
+			  }
+			: null
+		return erPdlVisning ? (
+			<Adresse kontaktadresseData={kontaktadresseData} idx={idx} />
+		) : (
+			<VisningRedigerbarConnector
+				dataVisning={<Adresse kontaktadresseData={kontaktadresseValues} idx={idx} />}
+				initialValues={initialValues}
+				redigertAttributt={redigertKontaktadresseValues}
+				path="kontaktadresse"
+				ident={ident}
+			/>
+		)
+	}
 
 	return (
 		<>
 			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => <Adresse adresse={adresse} idx={idx} />}
+					<DollyFieldArray data={data || tmpData} header="" nested>
+						{(adresse: any, idx: number) => (
+							<KontaktadresseVisning kontaktadresseData={adresse} idx={idx} />
+						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

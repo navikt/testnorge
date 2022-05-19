@@ -1,22 +1,22 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { Adresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
-import { Oppholdsadresse } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { OppholdsadresseData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
 
 type PdlOppholdsadresseProps = {
-	data: Array<Oppholdsadresse>
+	data: Array<OppholdsadresseData>
 }
 
 type AdresseProps = {
-	data: Oppholdsadresse
+	data: OppholdsadresseData
 	idx?: number
 }
 
 const AdresseVisning = ({ data, idx }: AdresseProps) => {
 	return (
 		<div className="person-visning_content">
-			<Adresse adresse={data} idx={idx} />
+			<Adresse oppholdsadresseData={data} idx={idx} />
 		</div>
 	)
 }
@@ -24,8 +24,12 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 export const PdlOppholdsadresse = ({ data }: PdlOppholdsadresseProps) => {
 	if (!data || data.length === 0) return null
 
-	const gyldigeAdresser = data.filter((adresse: Oppholdsadresse) => !adresse.metadata?.historisk)
-	const historiskeAdresser = data.filter((adresse: Oppholdsadresse) => adresse.metadata?.historisk)
+	const gyldigeAdresser = data.filter(
+		(adresse: OppholdsadresseData) => !adresse.metadata?.historisk
+	)
+	const historiskeAdresser = data.filter(
+		(adresse: OppholdsadresseData) => adresse.metadata?.historisk
+	)
 
 	return (
 		<>

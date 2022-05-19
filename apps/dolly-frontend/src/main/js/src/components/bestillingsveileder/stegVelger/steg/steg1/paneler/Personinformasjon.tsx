@@ -10,8 +10,10 @@ import {
 	initialFullmakt,
 	initialKjoenn,
 	initialNavn,
+	initialSikkerhetstiltak,
 	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
+	initialTpsSikkerhetstiltak,
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
@@ -295,34 +297,8 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('pdldata.person.sikkerhetstiltak'),
 			add: () =>
 				setMulti(
-					[
-						'pdldata.person.sikkerhetstiltak',
-						[
-							{
-								tiltakstype: '',
-								beskrivelse: '',
-								kontaktperson: {
-									personident: '',
-									enhet: '',
-								},
-								gyldigFraOgMed: new Date(),
-								gyldigTilOgMed: null,
-								kilde: 'Dolly',
-								master: 'PDL',
-							},
-						],
-					],
-					[
-						'tpsMessaging.sikkerhetstiltak',
-						[
-							{
-								tiltakstype: '',
-								beskrivelse: '',
-								gyldigFraOgMed: new Date(),
-								gyldigTilOgMed: null,
-							},
-						],
-					]
+					['pdldata.person.sikkerhetstiltak', [initialSikkerhetstiltak]],
+					['tpsMessaging.sikkerhetstiltak', [initialTpsSikkerhetstiltak]]
 				),
 			remove: () => del(['pdldata.person.sikkerhetstiltak', 'tpsMessaging.sikkerhetstiltak']),
 		},
