@@ -1,6 +1,7 @@
 import Api from '~/api'
 import { Search } from './types'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import useSWR from 'swr'
 
 export type SearchResponsePdl = { numberOfItems: number; items: PdlData[] }
 type PdlPerson = {
@@ -25,8 +26,15 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 		})
 	)
 
-const searchPdlFragment = (fragment: string) =>
-	Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
+const searchPdlFragment = (fragment: string) => {
+	const fetcher = (...args) => fetch(...args).then((res) => res.json())
+
+	const { data, error } = useSWR(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, fetcher)
+
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('error: ', error) //TODO - SLETT MEG
+
+	return Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
 	}).then((response) =>
@@ -37,6 +45,7 @@ const searchPdlFragment = (fragment: string) =>
 			})),
 		}))
 	)
+}
 
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
 	if (searchRequest?.relasjoner?.barn === 'M') {
