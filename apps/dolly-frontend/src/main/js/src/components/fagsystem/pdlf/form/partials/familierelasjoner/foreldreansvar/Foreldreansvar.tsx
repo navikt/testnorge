@@ -133,7 +133,10 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 							)}
 
 							{typeAnsvarlig === TypeAnsvarlig.UTEN_ID && (
-								<PdlPersonUtenIdentifikator path={`${path}.ansvarligUtenIdentifikator`} />
+								<PdlPersonUtenIdentifikator
+									formikBag={formikBag}
+									path={`${path}.ansvarligUtenIdentifikator`}
+								/>
 							)}
 
 							{typeAnsvarlig === TypeAnsvarlig.NY && (

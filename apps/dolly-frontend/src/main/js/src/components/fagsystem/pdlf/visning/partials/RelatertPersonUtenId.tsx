@@ -13,20 +13,18 @@ export const RelatertPersonUtenId = ({ data, tittel }: RelatertPersonUtenIdData)
 	if (!data) return null
 
 	return (
-		<>
-			<div className="person-visning_content">
-				<h4 style={{ width: '100%', marginTop: '0' }}>{tittel}</h4>
-				<TitleValue title="Fornavn" value={data.navn?.fornavn} />
-				<TitleValue title="Mellomnavn" value={data.navn?.mellomnavn} />
-				<TitleValue title="Etternavn" value={data.navn?.etternavn} />
-				<TitleValue title="Kjønn" value={data.kjoenn} />
-				<TitleValue title="Fødselsdato" value={Formatters.formatDate(data.foedselsdato)} />
-				<TitleValue
-					title="Statsborgerskap"
-					value={data.statsborgerskap}
-					kodeverk={AdresseKodeverk.StatsborgerskapLand}
-				/>
-			</div>
-		</>
+		<div className="person-visning_content">
+			<h4 style={{ width: '100%', marginTop: '0' }}>{tittel}</h4>
+			<TitleValue title="Fornavn" value={data.navn?.fornavn} />
+			<TitleValue title="Mellomnavn" value={data.navn?.mellomnavn} />
+			<TitleValue title="Etternavn" value={data.navn?.etternavn} />
+			<TitleValue title="Kjønn" value={data.kjoenn} />
+			<TitleValue title="Fødselsdato" value={Formatters.formatDate(data.foedselsdato)} />
+			<TitleValue
+				title="Statsborgerskap"
+				value={data.statsborgerskap}
+				kodeverk={AdresseKodeverk.StatsborgerskapLand}
+			/>
+		</div>
 	)
 }
