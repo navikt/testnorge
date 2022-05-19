@@ -4,8 +4,18 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '~/config/kodeverk'
 import * as React from 'react'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { FormikProps } from 'formik'
+import _get from 'lodash/get'
 
-export const PdlPersonUtenIdentifikator = ({ path }) => {
+interface PdlPersonUtenIdentifikatorValues {
+	formikBag: FormikProps<{}>
+	path: string
+}
+
+export const PdlPersonUtenIdentifikator = ({
+	formikBag,
+	path,
+}: PdlPersonUtenIdentifikatorValues) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	//@ts-ignore
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
@@ -14,8 +24,10 @@ export const PdlPersonUtenIdentifikator = ({ path }) => {
 	//@ts-ignore
 	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
 
+	const { fornavn, mellomnavn, etternavn } = _get(formikBag?.values, `${path}.navn`)
+
 	return (
-		<>
+		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
 			<FormikSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
 			<FormikDatepicker name={`${path}.foedselsdato`} label="Fødselsdato" maxDate={new Date()} />
 			<FormikSelect
@@ -24,13 +36,24 @@ export const PdlPersonUtenIdentifikator = ({ path }) => {
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 				size="large"
 			/>
-			<FormikSelect name={`${path}.navn.fornavn`} label="Fornavn" options={fornavnOptions} />
+			<FormikSelect
+				name={`${path}.navn.fornavn`}
+				label="Fornavn"
+				placeholder={fornavn ? fornavn : 'Velg...'}
+				options={fornavnOptions}
+			/>
 			<FormikSelect
 				name={`${path}.navn.mellomnavn`}
 				label="Mellomnavn"
+				placeholder={mellomnavn ? mellomnavn : 'Velg...'}
 				options={mellomnavnOptions}
 			/>
-			<FormikSelect name={`${path}.navn.etternavn`} label="Etternavn" options={etternavnOptions} />
-		</>
+			<FormikSelect
+				name={`${path}.navn.etternavn`}
+				label="Etternavn"
+				placeholder={etternavn ? etternavn : 'Velg...'}
+				options={etternavnOptions}
+			/>
+		</div>
 	)
 }

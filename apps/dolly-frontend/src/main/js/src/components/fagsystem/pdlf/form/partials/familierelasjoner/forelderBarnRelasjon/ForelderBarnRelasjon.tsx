@@ -10,12 +10,10 @@ import {
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 import { BarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
@@ -103,29 +101,31 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 								</ToggleKnapp>
 							</ToggleGruppe>
 						</div>
-						{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
-						{!erBarn && (
-							<>
-								<FormikSelect
-									name={`${path}.relatertPersonsRolle`}
-									label="Foreldretype"
-									options={Options('foreldreTypePDL')}
-									isClearable={false}
-								/>
-								<FormikCheckbox
-									name={`${path}.borIkkeSammen`}
-									label="Bor ikke sammen"
-									checkboxMargin
-								/>
-							</>
-						)}
-						<FormikSelect
-							name={`${path}.typeForelderBarn`}
-							label={erBarn ? 'Type barn' : 'Type forelder'}
-							options={Options('typeAnsvarlig')}
-							onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
-							size="medium"
-						/>
+						<div className="flexbox--flex-wrap">
+							{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
+							{!erBarn && (
+								<>
+									<FormikSelect
+										name={`${path}.relatertPersonsRolle`}
+										label="Foreldretype"
+										options={Options('foreldreTypePDL')}
+										isClearable={false}
+									/>
+									<FormikCheckbox
+										name={`${path}.borIkkeSammen`}
+										label="Bor ikke sammen"
+										checkboxMargin
+									/>
+								</>
+							)}
+							<FormikSelect
+								name={`${path}.typeForelderBarn`}
+								label={erBarn ? 'Type barn' : 'Type forelder'}
+								options={Options('typeAnsvarlig')}
+								onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
+								size="medium"
+							/>
+						</div>
 
 						{forelderBarnType === TypeAnsvarlig.EKSISTERENDE && (
 							<PdlEksisterendePerson
@@ -136,6 +136,7 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 
 						{forelderBarnType === TypeAnsvarlig.UTEN_ID && (
 							<PdlPersonUtenIdentifikator
+								formikBag={formikBag}
 								path={`${path}.relatertPersonUtenFolkeregisteridentifikator`}
 							/>
 						)}
