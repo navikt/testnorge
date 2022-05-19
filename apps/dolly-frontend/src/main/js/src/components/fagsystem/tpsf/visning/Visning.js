@@ -59,20 +59,23 @@ export const TpsfVisning = ({ data, pdlData, environments, tmpPersoner }) => {
 	const harPdlFullmakt = pdlData && _has(pdlData, 'fullmakt')
 
 	const hasTpsfData = data.ident
-
+	// console.log('pdlData: ', pdlData) //TODO - SLETT MEG
 	return (
 		<div>
 			<>
-				{hasTpsfData ? (
-					<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
-				) : (
-					<PdlPersonInfo
-						data={pdlData}
-						tpsMessagingData={tpsMessagingData}
-						tpsMessagingLoading={tpsMessagingLoading}
-						tmpPersoner={tmpPersoner}
-					/>
-				)}
+				{
+					hasTpsfData && (
+						<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
+					)
+					// 	: (
+					// 	<PdlPersonInfo
+					// 		data={pdlData}
+					// 		tpsMessagingData={tpsMessagingData}
+					// 		tpsMessagingLoading={tpsMessagingLoading}
+					// 		tmpPersoner={tmpPersoner}
+					// 	/>
+					// )
+				}
 				{hasTpsfData && <Nasjonalitet data={data} pdlData={pdlData} />}
 				{hasTpsfData && <Vergemaal data={data.vergemaal} />}
 				{!harPdlFullmakt && <Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />}

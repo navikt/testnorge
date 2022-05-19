@@ -20,6 +20,7 @@ import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/parti
 import { DeltBosted } from '~/components/fagsystem/pdlf/visning/partials/DeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { Nasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/Nasjonalitet'
+import { Persondetaljer } from '~/components/fagsystem/pdlf/visning/partials/Persondetaljer'
 
 export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
@@ -49,6 +50,7 @@ export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
 	return (
 		<ErrorBoundary>
 			<div>
+				<Persondetaljer data={data.person} tmpPersoner={tmpPersoner} ident={ident} />
 				<Nasjonalitet data={data.person} tmpPersoner={tmpPersoner} />
 				<Foedsel data={foedsel} tmpPersoner={tmpPersoner} ident={ident} />
 				<Doedsfall data={doedsfall} tmpPersoner={tmpPersoner} ident={ident} />

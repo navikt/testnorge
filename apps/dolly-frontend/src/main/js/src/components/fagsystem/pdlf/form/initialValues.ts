@@ -320,3 +320,11 @@ export const initialOpphold = {
 	kilde: 'Dolly',
 	master: 'FREG',
 }
+
+export const initialPersonstatus = {
+	status: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+}

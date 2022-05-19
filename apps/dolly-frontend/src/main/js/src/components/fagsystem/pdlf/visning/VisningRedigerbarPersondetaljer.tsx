@@ -40,15 +40,6 @@ enum Modus {
 	LoadingPdl = 'LOADING_PDL',
 }
 
-enum Attributt {
-	Persondetaljer = 'person',
-	Foedsel = 'foedsel',
-	Doedsfall = 'doedsfall',
-	Statsborgerskap = 'statsborgerskap',
-	Innvandring = 'innflytting',
-	Utvandring = 'utflytting',
-}
-
 const FieldArrayEdit = styled.div`
 	&&& {
 		button {
@@ -76,7 +67,7 @@ const Knappegruppe = styled.div`
 	align-content: baseline;
 `
 
-export const VisningRedigerbar = ({
+export const VisningRedigerbarPersondetaljer = ({
 	getPdlForvalter,
 	dataVisning,
 	initialValues,
@@ -105,15 +96,24 @@ export const VisningRedigerbar = ({
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
+		// console.log('data: ', data) //TODO - SLETT MEG
+		// console.log('path: ', path) //TODO - SLETT MEG
+		// return Object.keys(data).forEach((attr) => {
 		const submit = async () => {
-			const id = _get(data, `${path}.id`)
-			const itemData = _get(data, path)
+			// const id = _get(data, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-				.catch((error) => {
-					pdlfError(error)
+			await Promise.allSettled(
+				Object.keys(data).map((attr) => {
+					console.log('attr: ', attr) //TODO - SLETT MEG
+					console.log('data: ', data) //TODO - SLETT MEG
+					const itemData = _get(data, `${attr}[0]`)
+					PdlforvalterApi.putAttributt(ident, attr, itemData?.id, itemData).catch((error) => {
+						pdlfError(error)
+					})
 				})
+			)
 				.then((putResponse) => {
+					console.log('putResponse: ', putResponse) //TODO - SLETT MEG
 					if (putResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -128,9 +128,29 @@ export const VisningRedigerbar = ({
 				.catch((error) => {
 					pdlError(error)
 				})
+
+			// await Object.keys(data).forEach((attr) => {
+			// 	const itemData = _get(data, `${attr}[0]`)
+			// 	PdlforvalterApi.putAttributt(ident, attr, 0, itemData).catch((error) => {
+			// 		pdlfError(error)
+			// 	})
+			// })
+			// setVisningModus(Modus.LoadingPdl)
+			// DollyApi.sendOrdre(ident)
+			// 	.then(() => {
+			// 		getPdlForvalter().then(() => {
+			// 			if (mountedRef.current) {
+			// 				setVisningModus(Modus.Les)
+			// 			}
+			// 		})
+			// 	})
+			// 	.catch((error) => {
+			// 		pdlError(error)
+			// 	})
 		}
 		mountedRef.current = false
 		return submit()
+		// })
 	}, [])
 
 	const handleDelete = useCallback(() => {
@@ -160,23 +180,6 @@ export const VisningRedigerbar = ({
 		mountedRef.current = false
 		return slett()
 	}, [])
-
-	const getForm = (formikBag: FormikProps<{}>) => {
-		switch (path) {
-			case Attributt.Persondetaljer:
-				return <PersondetaljerSamlet path={path} formikBag={formikBag} />
-			case Attributt.Foedsel:
-				return <FoedselForm formikBag={formikBag} path={path} />
-			case Attributt.Doedsfall:
-				return <DoedsfallForm path={path} />
-			case Attributt.Statsborgerskap:
-				return <StatsborgerskapForm path={path} />
-			case Attributt.Innvandring:
-				return <InnvandringForm path={path} />
-			case Attributt.Utvandring:
-				return <UtvandringForm path={path} />
-		}
-	}
 
 	const validationSchema = Yup.object().shape(
 		{
@@ -244,7 +247,9 @@ export const VisningRedigerbar = ({
 						return (
 							<>
 								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
+									<div className="flexbox--flex-wrap">
+										<PersondetaljerSamlet path={path} formikBag={formikBag} />
+									</div>
 									<Knappegruppe>
 										<NavButton
 											type="standard"

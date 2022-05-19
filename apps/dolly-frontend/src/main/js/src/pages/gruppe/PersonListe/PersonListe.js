@@ -52,7 +52,8 @@ export default function PersonListe({
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
 		[identer, search, fagsystem, visPerson]
 	)
-
+	// console.log('personListe: ', personListe) //TODO - SLETT MEG
+	// console.log('tmpPersoner: ', tmpPersoner) //TODO - SLETT MEG
 	useEffect(() => {
 		const idents = Object.values(identer)
 			.filter((ident) => !slettedeIdenter?.[0]?.includes(ident.ident))
@@ -70,6 +71,20 @@ export default function PersonListe({
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe)
 	}, [identListe, sidetall, sideStoerrelse, visPerson])
+
+	// useEffect(() => {
+	// 	personListe.map((person) => {
+	// 		const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+	// 		const mellomnavn = `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.` || ''
+	// 		if (redigertPerson) {
+	// 			if (!redigertPerson.doedsfall) {
+	// 				person.alder = person.alder.split(' ')[0]
+	// 			}
+	// 			person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+	// 			person.navn = `${redigertPerson.navn?.[0]?.fornavn} ${mellomnavn} ${redigertPerson.navn?.[0]?.etternavn}`
+	// 		}
+	// 	})
+	// }, [tmpPersoner?.pdlforvalter])
 
 	if (isFetching) return <Loading label="Laster personer" panel />
 
@@ -96,16 +111,31 @@ export default function PersonListe({
 		)
 	}
 
-	const updateAlder = () => {
+	// const updateAlder = () => {
+	// 	personListe.map((person) => {
+	// 		const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+	// 		if (redigertPerson && !redigertPerson.doedsfall) {
+	// 			person.alder = person.alder.split(' ')[0]
+	// 		}
+	// 	})
+	// }
+
+	const updatePersonHeader = () => {
 		personListe.map((person) => {
 			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			if (redigertPerson && !redigertPerson.doedsfall) {
-				person.alder = person.alder.split(' ')[0]
+			const mellomnavn = `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.` || ''
+			if (redigertPerson) {
+				if (!redigertPerson.doedsfall) {
+					person.alder = person.alder.split(' ')[0]
+				}
+				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+				person.navn = `${redigertPerson.navn?.[0]?.fornavn} ${mellomnavn} ${redigertPerson.navn?.[0]?.etternavn}`
 			}
 		})
 	}
 
-	if (tmpPersoner) updateAlder()
+	// if (tmpPersoner?.pdlforvalter?.length > 0) updatePersonHeader()
+	if (tmpPersoner) updatePersonHeader()
 
 	const columns = [
 		{

@@ -39,7 +39,7 @@ export const PdlPersonInfo = ({
 			<div>
 				{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 				<div className="person-visning_content">
-					<TitleValue title="Ident" value={data?.ident} />
+					<TitleValue title="Identtttt" value={data?.ident} />
 					<TitleValue title="Fornavn" value={personNavn?.fornavn} />
 					<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 					<TitleValue title="Etternavn" value={personNavn?.etternavn} />
