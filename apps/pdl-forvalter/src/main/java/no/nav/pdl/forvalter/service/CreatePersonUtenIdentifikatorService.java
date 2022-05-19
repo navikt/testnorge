@@ -18,6 +18,7 @@ import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -33,9 +34,15 @@ public class CreatePersonUtenIdentifikatorService {
 
         var relatertPerson = mapperFacade.map(request, RelatertBiPersonDTO.class);
 
+
         if (isNull(request.getNavn())) {
 
-            var navn = new NavnDTO();
+            request.setNavn(new PersonnavnDTO());
+        }
+
+        if (isBlank(request.getNavn().getEtternavn()) || isBlank(request.getNavn().getFornavn())) {
+
+            var navn = mapperFacade.map(request.getNavn(), NavnDTO.class);
             navnService.handle(navn);
             relatertPerson.setNavn(mapperFacade.map(navn, PersonnavnDTO.class));
         }
