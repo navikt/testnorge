@@ -38,7 +38,7 @@ type ResponsBestilling = {
 }
 
 const StyledAsyncSelect = styled(AsyncSelect)`
-	width: 100%;
+	width: 78%;
 `
 
 const FinnPersonBestilling = ({
@@ -48,9 +48,22 @@ const FinnPersonBestilling = ({
 	navigerTilPerson,
 	navigerTilBestilling,
 }: FinnPersonProps) => {
-	const [soekType, setValgtSoekType] = useState(SoekTypeValg.PERSON)
+	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
+
+	const customAsyncSelectStyles = {
+		control: (provided: any, state: { isFocused: boolean }) => ({
+			...provided,
+			borderRadius: 0,
+			borderWidth: 0,
+			borderStyle: 'none',
+			boxShadow: state.isFocused ? 'inset 0px 0px 2px 1px #5684ff' : null,
+		}),
+		indicatorSeparator: () => ({
+			visibility: 'hidden',
+		}),
+	}
 
 	const navigate = useNavigate()
 
@@ -99,10 +112,12 @@ const FinnPersonBestilling = ({
 
 	// @ts-ignore
 	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
-		async (tekst) =>
-			soekType === SoekTypeValg.BESTILLING
+		async (tekst) => {
+			console.log('soekType: ', soekType) //TODO - SLETT MEG
+			return soekType === SoekTypeValg.BESTILLING
 				? await soekBestillinger(tekst)
-				: await soekPersoner(tekst),
+				: await soekPersoner(tekst)
+		},
 		[soekType]
 	)
 
@@ -139,33 +154,38 @@ const FinnPersonBestilling = ({
 
 	return (
 		<ErrorBoundary>
-			<div className="finnperson-container skjemaelement">
-				<VelgSoekTypeToggle setValgtSoekType={setValgtSoekType} />
-				<StyledAsyncSelect
-					defaultOptions={false}
-					loadOptions={fetchOptions}
-					onInputChange={handleChange}
-					components={{
-						Option,
-						// @ts-ignore
-						DropdownIndicator,
-						IndicatorSeparator: () => null,
-					}}
-					isClearable={true}
-					options={options}
-					onChange={(e: Option) => setSearchQuery(e?.value)}
-					cacheOptions={true}
-					label="Person"
-					placeholder={
-						soekType === SoekTypeValg.PERSON ? 'Søk etter navn eller ident' : 'Søk etter bestilling'
-					}
-				/>
-			</div>
-			{feilmelding && (
-				<div className="error-message" style={{ marginTop: '10px' }}>
-					{feilmelding}
+			<div>
+				<div className="finnperson-container skjemaelement">
+					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
+					{/*@ts-ignore*/}
+					<StyledAsyncSelect
+						defaultOptions={false}
+						styles={customAsyncSelectStyles}
+						loadOptions={fetchOptions}
+						onInputChange={handleChange}
+						components={{
+							Option,
+							// @ts-ignore
+							DropdownIndicator,
+						}}
+						isClearable={true}
+						options={options}
+						onChange={(e: Option) => setSearchQuery(e?.value)}
+						cacheOptions={true}
+						label="Person"
+						placeholder={
+							soekType === SoekTypeValg.PERSON
+								? 'Søk etter navn eller ident'
+								: 'Søk etter bestilling'
+						}
+					/>
 				</div>
-			)}
+				{feilmelding && (
+					<div className="error-message" style={{ marginTop: '10px' }}>
+						{feilmelding}
+					</div>
+				)}
+			</div>
 		</ErrorBoundary>
 	)
 }

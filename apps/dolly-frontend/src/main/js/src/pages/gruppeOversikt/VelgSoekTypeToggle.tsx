@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 
 type Props = {
+	soekValg: SoekTypeValg
 	setValgtSoekType: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -14,11 +15,8 @@ export enum SoekTypeValg {
 	BESTILLING = 'Bestilling',
 }
 
-export const VelgSoekTypeToggle = ({ setValgtSoekType }: Props) => {
-	const [soekValg, setSoekValg] = useState(SoekTypeValg.PERSON)
-
+export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 	const handleToggleChange = (e: React.ChangeEvent<any>) => {
-		setSoekValg(e.target.value)
 		setValgtSoekType(e.target.value)
 	}
 	return (
