@@ -65,7 +65,7 @@ public class BestillingController {
     @Operation(description = "Naviger til ønsket bestilling")
     @Transactional
     @GetMapping("/naviger/{bestillingId}")
-    public RsWhereAmI navigerTilTestident(@PathVariable Long bestillingId) {
+    public RsWhereAmI navigerTilBestilling(@PathVariable Long bestillingId) {
 
         return navigasjonService.navigerTilBestilling(bestillingId);
     }

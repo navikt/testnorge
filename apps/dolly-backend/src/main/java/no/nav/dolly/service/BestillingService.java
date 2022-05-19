@@ -72,7 +72,7 @@ public class BestillingService {
 
     public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingId) {
         return bestillingRepository.findByIdContaining(bestillingId)
-                .orElseThrow(() -> new NotFoundException(format("Fant ikke noen bestillinger som inneholdt ID %s", bestillingId)));
+                .orElse(emptyList());
     }
 
     public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
@@ -109,7 +109,7 @@ public class BestillingService {
 
     @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
-        Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
+        var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
         if (bestillingKontroll.isEmpty()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
                     .bestillingId(bestillingId)

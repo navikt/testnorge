@@ -124,7 +124,7 @@ public class TestgruppeService {
 
     public void deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
-        List<TestidentDTO> testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
+        var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
         transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
                 .map(Testident::getIdent)

@@ -112,7 +112,7 @@ public class TestpersonController {
         if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
-        List<TestidentDTO> testIdenter = mapperFacade.mapAsList(
+        var testIdenter = mapperFacade.mapAsList(
                 List.of(identService.getTestIdent(ident)), TestidentDTO.class);
 
         transaksjonMappingService.slettTransaksjonMappingByTestident(ident);

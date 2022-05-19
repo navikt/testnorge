@@ -16,7 +16,13 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query("from Bestilling b where b.id = :id")
     Optional<Bestilling> findById(@Param("id") Long id);
 
-    @Query(value = "select b.id, g.navn from Bestilling b inner join Gruppe g on b.gruppe_id = g.id where cast(b.id as VARCHAR) like %:id% fetch first 20 rows only", nativeQuery = true)
+    @Query(value = "select b.id, g.navn " +
+            "from Bestilling b " +
+            "inner join Gruppe g " +
+            "on b.gruppe_id = g.id " +
+            "where cast(b.id as VARCHAR) " +
+            "like %:id% fetch first 10 rows only",
+            nativeQuery = true)
     Optional<List<RsBestillingFragment>> findByIdContaining(String id);
 
     Bestilling save(Bestilling bestilling);
