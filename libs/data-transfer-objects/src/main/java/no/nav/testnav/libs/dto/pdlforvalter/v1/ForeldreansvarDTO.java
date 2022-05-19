@@ -1,13 +1,11 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -33,28 +31,5 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     public boolean isEksisterendePerson() {
 
         return isTrue(eksisterendePerson);
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class RelatertBiPersonDTO implements Serializable {
-
-        private LocalDateTime foedselsdato;
-        private KjoennDTO.Kjoenn kjoenn;
-        private PersonnavnDTO navn;
-        private String statsborgerskap;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PersonnavnDTO implements Serializable {
-
-        private String etternavn;
-        private String fornavn;
-        private String mellomnavn;
     }
 }

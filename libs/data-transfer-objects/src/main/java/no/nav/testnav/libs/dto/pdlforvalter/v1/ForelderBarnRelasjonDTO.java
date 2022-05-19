@@ -20,6 +20,8 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     private String relatertPerson;
     private Rolle relatertPersonsRolle;
 
+    private RelatertBiPersonDTO relatertPersonUtenFolkeregisteridentifikator;
+
     private Boolean borIkkeSammen;
     private PersonRequestDTO nyRelatertPerson;
     private Boolean partnerErIkkeForelder;

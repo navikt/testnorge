@@ -4,6 +4,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -131,5 +132,22 @@ class ForelderBarnRelasjonServiceTest {
                 forelderBarnRelasjonService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Delt bosted: kun én adresse skal være satt (vegadresse, ukjentBosted, matrikkeladresse)"));
+    }
+
+    @Test
+    void whenDualIdentifikatorExists_thenThrowExecption() {
+
+        var request = ForelderBarnRelasjonDTO.builder()
+                .minRolleForPerson(FORELDER)
+                .relatertPersonsRolle(BARN)
+                .relatertPerson(IDENT)
+                .relatertPersonUtenFolkeregisteridentifikator(new RelatertBiPersonDTO())
+                .build();
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                forelderBarnRelasjonService.validate(request));
+
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
+                "ikke begge deler"));
     }
 }

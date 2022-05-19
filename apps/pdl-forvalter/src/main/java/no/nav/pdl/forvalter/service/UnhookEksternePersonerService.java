@@ -131,6 +131,7 @@ public class UnhookEksternePersonerService {
         partnere.stream()
                 .map(DbPerson::getPerson)
                 .forEach(person -> person.setSivilstand(person.getSivilstand().stream()
+                        .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
                         .filter(sivilstand -> !sivilstand.getRelatertVedSivilstand().equals(hovedperson.getIdent()))
                         .toList()));
 
@@ -147,6 +148,7 @@ public class UnhookEksternePersonerService {
         relasjoner.stream()
                 .map(DbPerson::getPerson)
                 .forEach(person -> person.setForelderBarnRelasjon(person.getForelderBarnRelasjon().stream()
+                        .filter(relasjon -> nonNull(relasjon.getRelatertPerson()))
                         .filter(relasjon -> !relasjon.getRelatertPerson().equals(hovedperson.getIdent()))
                         .toList()));
 
