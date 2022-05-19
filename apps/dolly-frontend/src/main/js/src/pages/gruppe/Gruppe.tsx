@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
+import '~/pages/gruppeOversikt/Toggle.less'
 
 export type GruppeProps = {
 	visBestilling: string
@@ -103,6 +104,7 @@ export default function Gruppe({
 						onClick={visStartBestilling}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+						style={{ marginTop: '4px' }}
 					>
 						Opprett personer
 					</NavButton>
@@ -114,30 +116,36 @@ export default function Gruppe({
 						onClick={() => setRedirectToSoek(true)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+						style={{ marginTop: '3px' }}
 					>
 						Importer personer
 					</NavButton>
 				)}
 
-				<ToggleGruppe onChange={byttVisning} name="toggler">
-					<ToggleKnapp
-						value={VisningType.VISNING_PERSONER}
-						checked={visning === VisningType.VISNING_PERSONER}
-					>
-						<Icon size={13} kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'} />
-						{`Personer (${gruppe.antallIdenter - antallSlettet})`}
-					</ToggleKnapp>
-					<ToggleKnapp
-						value={VisningType.VISNING_BESTILLING}
-						checked={visning === VisningType.VISNING_BESTILLING}
-					>
-						<Icon
-							size={13}
-							kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
-						/>
-						{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
-					</ToggleKnapp>
-				</ToggleGruppe>
+				<div className="toggle-container">
+					<ToggleGruppe onChange={byttVisning} name="toggler">
+						<ToggleKnapp
+							value={VisningType.VISNING_PERSONER}
+							checked={visning === VisningType.VISNING_PERSONER}
+						>
+							<Icon
+								size={13}
+								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
+							/>
+							{`Personer (${gruppe.antallIdenter - antallSlettet})`}
+						</ToggleKnapp>
+						<ToggleKnapp
+							value={VisningType.VISNING_BESTILLING}
+							checked={visning === VisningType.VISNING_BESTILLING}
+						>
+							<Icon
+								size={13}
+								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+							/>
+							{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
+						</ToggleKnapp>
+					</ToggleGruppe>
+				</div>
 
 				<FinnPersonBestillingConnector />
 			</div>
