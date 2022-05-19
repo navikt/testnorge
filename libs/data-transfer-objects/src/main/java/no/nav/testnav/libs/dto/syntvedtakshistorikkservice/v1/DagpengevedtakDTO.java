@@ -3,8 +3,10 @@ package no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,113 +16,53 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DagpengevedtakDTO {
-
+    @JsonProperty
     private String rettighetKode;
 
+    @JsonProperty
     private String vedtaktypeKode;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonProperty
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate datoMottatt;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonProperty
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate beregningsdato;
 
+    @JsonProperty
     private String automatiseringsgrad;
 
+    @JsonProperty
     private String saksbehandlersTilleggsbegrunnelseForVedtaket;
 
-    private Vedtaksperiode vedtaktsperiode;
+    @JsonProperty
+    private Vedtaksperiode vedtaksperiode;
 
+    @JsonProperty
     private TaptArbeidstid taptArbeidstid;
 
+    @JsonProperty
     private Dagpengeperiode dagpengeperiode;
 
+    @JsonProperty
     private GodkjenningerReellArbeidssoker godkjenningerReellArbeidssoker;
 
+    @JsonProperty
     private Beregningsregler beregningsregler;
 
+    @JsonProperty
     private BruktInntektsperiode bruktInntektsperiode;
 
+    @JsonProperty
     private List<Vilkaar> vilkaar;
 
+    @JsonProperty
     private List<KodeVerdi> reelArbeidssoker;
 
+    @JsonProperty
     private List<Barn> barnListe;
 
+    @JsonProperty
     private List<KodeVerdi> permittering;
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class Vedtaksperiode {
-        @JsonFormat(pattern="yyyy-MM-dd")
-        private LocalDate fom;
-        @JsonFormat(pattern="yyyy-MM-dd")
-        private LocalDate tom;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class TaptArbeidstid {
-        private String anvendtRegelKode;
-        private Double fastansattArbeidstid;
-        private Double naavaerendeArbeidstid;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class Dagpengeperiode {
-        private Integer antallUkerPermittering;
-        @JsonFormat(pattern="yyyy-MM-dd")
-        private LocalDate justertFomDato;
-        private Integer antallUker;
-        private String endringVentedagsteller;
-        private String endringPeriodeteller;
-        private String endringPermitteringsteller;
-        private String begrunnelseTellerendring;
-        private String nullstillPeriodeteller;
-        private String nullstillPermitteringsteller;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class Vilkaar {
-        private String kode;
-        private String status;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class GodkjenningerReellArbeidssoker {
-        private String godkjentLokalArbeidssoker;
-        private String godkjentDeltidssoker;
-        private String godkjentUtdanning;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class Beregningsregler {
-        private String oppfyllerKravTilFangstOgFiske;
-        private String harAvtjentVernepliktSiste3Av12Mnd;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class BruktInntektsperiode {
-        private String forsteManed;
-        private String sisteManed;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class KodeVerdi {
-        private String kode;
-        private String verdi;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor(force = true)
-    public class Barn {
-        private List<KodeVerdi> barn;
-    }
-
 }

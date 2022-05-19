@@ -16,6 +16,9 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengesoknadDTO;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengevedtakDTO;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -209,4 +212,13 @@ public class ArenaForvalterConsumer {
 
         return arbeidssoekere;
     }
+
+    private void opprettDagpengerSoknad(DagpengesoknadDTO soknad){
+        log.info("Innsending av dagpengesoknad ikke implementert");
+    }
+
+    private void opprettDagpengerVedtak(DagpengevedtakDTO vedtak){
+        log.info("Innsending av dagpengevedtak ikke implementert");
+    }
+
 }

@@ -2,7 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.HentDagpengevedtakCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntDagpengerProperties;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengevedtakDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -15,6 +15,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Random;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Component
 public class SyntDagpengerConsumer {
@@ -26,10 +28,10 @@ public class SyntDagpengerConsumer {
     private final Random rand = new Random();
 
     public SyntDagpengerConsumer(
-            SyntVedtakshistorikkProperties syntVedtakshistorikkProperties,
+            SyntDagpengerProperties properties,
             TokenExchange tokenExchange
     ) {
-        this.serviceProperties = syntVedtakshistorikkProperties;
+        this.serviceProperties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
@@ -37,7 +39,7 @@ public class SyntDagpengerConsumer {
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(syntVedtakshistorikkProperties.getUrl())
+                .baseUrl(properties.getUrl())
                 .build();
     }
 
@@ -49,7 +51,7 @@ public class SyntDagpengerConsumer {
             var response = tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new HentDagpengevedtakCommand(webClient, request, rettighet, accessToken.getTokenValue()).call())
                     .block();
-            if (!response.isEmpty()) {
+            if (nonNull(response) && !response.isEmpty()) {
                 return response.get(0);
             } else {
                 return null;
