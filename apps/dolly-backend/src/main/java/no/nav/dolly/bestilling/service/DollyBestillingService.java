@@ -19,6 +19,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -44,6 +45,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 
 @Slf4j
@@ -66,6 +68,12 @@ public class DollyBestillingService {
     private final CounterCustomRegistry counterCustomRegistry;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
+    private final ErrorStatusDecoder errorStatusDecoder;
+
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
+    }
 
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
@@ -85,13 +93,20 @@ public class DollyBestillingService {
                         .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())));
 
             } else if (originator.isPdlf()) {
-                var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
-                        PersonUpdateRequestDTO.builder()
-                                .person(originator.getPdlBestilling().getPerson())
-                                .build());
+                try {
+                    var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                            PersonUpdateRequestDTO.builder()
+                                    .person(originator.getPdlBestilling().getPerson())
+                                    .build());
 
-                var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
-                dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
+                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
+                    dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
+
+                } catch (WebClientResponseException e) {
+
+                    dollyPerson = DollyPerson.builder().hovedperson(bestilling.getIdent()).master(PDLF).build();
+                    progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
+                }
 
             } else {
                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
@@ -106,8 +121,9 @@ public class DollyBestillingService {
             }
 
             counterCustomRegistry.invoke(request);
+            DollyPerson finalDollyPerson = dollyPerson;
             clientRegisters.forEach(clientRegister ->
-                    clientRegister.gjenopprett(request, dollyPerson, progress, true));
+                    clientRegister.gjenopprett(request, finalDollyPerson, progress, true));
 
             oppdaterProgress(bestilling, progress);
 
@@ -165,11 +181,6 @@ public class DollyBestillingService {
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
             requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
-    }
-
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
     }
 
     protected RsDollyBestillingRequest getDollyBestillingRequest(Bestilling bestilling) {
