@@ -50,8 +50,11 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
-		slettPerson: () => {
+		slettPerson: (includesPartner) => {
 			dispatch(incrementSlettedePersoner())
+			if (includesPartner) {
+				dispatch(incrementSlettedePersoner())
+			}
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>

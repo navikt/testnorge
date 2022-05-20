@@ -11,12 +11,33 @@ import './FrigjoerModal.less'
 type Props = {
 	action: Function
 	loading: boolean
+	harImportertPartner: boolean
 	disabled?: boolean
 }
 
-export const FrigjoerButton = ({ action, loading, disabled = false }: Props) => {
+export const FrigjoerButton = ({
+	action,
+	loading,
+	harImportertPartner,
+	disabled = false,
+}: Props) => {
 	if (loading) return <Loading label="frigjører..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+
+	const infoTekst = () => {
+		if (harImportertPartner) {
+			return (
+				'Er du sikker på at du vil frigjøre denne personen og dens partner? All ekstra informasjon ' +
+				'lagt til på personen og partneren via Dolly vil bli slettet og personen og partneren vil bli ' +
+				'frigjort fra gruppen.'
+			)
+		} else {
+			return (
+				'Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på ' +
+				'personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.'
+			)
+		}
+	}
 
 	return (
 		<React.Fragment>
@@ -33,19 +54,14 @@ export const FrigjoerButton = ({ action, loading, disabled = false }: Props) => 
 					<div className="frigjoerModal frigjoerModal-content">
 						<Icon size={50} kind="report-problem-circle" />
 						<h1>Frigjør/slett</h1>
-						<h4>
-							Er du sikker på at du vil frigjøre denne personen og eventuell partner? <br /> All
-							ekstra informasjon lagt til på personen via Dolly vil bli slettet og personen vil bli
-							frigjort fra gruppen. Dette gjelder også for eventuell partner av personen som har
-							også blitt importert til Dolly.
-						</h4>
+						<h4>{infoTekst()}</h4>
 					</div>
 					<div className="frigjoerModal-actions">
 						<NavButton onClick={closeModal}>Nei</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action()
+								return action(harImportertPartner)
 							}}
 							type="hoved"
 						>
