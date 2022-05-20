@@ -88,6 +88,17 @@ public class PersonService {
                     .subscribe(response -> log.info("Slettet antall {} identer (master TPS) mot PDL-forvalter", identerInkludertRelasjoner.size()));
         }
 
+        if (testidenter.stream().anyMatch(TestidentDTO::isPdlf)) {
+
+            var pdlfIdenter = testidenter.stream()
+                    .filter(TestidentDTO::isPdlf)
+                    .map(TestidentDTO::getIdent)
+                    .toList();
+
+            pdlDataConsumer.slettPdl(pdlfIdenter)
+                    .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", pdlfIdenter.size()));
+        }
+
         slettTestnorgeRelasjonerIntern(testidenter);
         releaseArtifacts(testidenter);
     }
