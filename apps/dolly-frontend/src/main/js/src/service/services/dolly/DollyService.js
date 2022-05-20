@@ -156,7 +156,7 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
-	slettPersonOgPartner(ident, partnerident) {
+	slettPersonOgPartner(ident, _partnerident) {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
