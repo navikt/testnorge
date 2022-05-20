@@ -16,6 +16,7 @@ const loadingSelectorArena = createLoadingSelector(actions.getArena)
 const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
+const loadingSelectorSlettPersonOgPartner = createLoadingSelector(actions.slettPersonOgPartner)
 const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 
@@ -32,6 +33,7 @@ const loadingSelector = createSelector(
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
+			slettPersonOgPartner: loadingSelectorSlettPersonOgPartner({ loading }),
 			pensjonforvalter: loadingSelectorPensjon({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
 		}
@@ -50,12 +52,14 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
-		slettPerson: (includesPartner) => {
+		slettPerson: () => {
 			dispatch(incrementSlettedePersoner())
-			if (includesPartner) {
-				dispatch(incrementSlettedePersoner())
-			}
 			return dispatch(actions.slettPerson(ownProps.personId))
+		},
+		slettPersonOgPartner: (partnerident) => {
+			dispatch(incrementSlettedePersoner())
+			dispatch(incrementSlettedePersoner())
+			return dispatch(actions.slettPersonOgPartner(ownProps.personId, partnerident))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
 			navigate(`/gruppe/${gruppeId}/bestilling/${ownProps.personId}`, {

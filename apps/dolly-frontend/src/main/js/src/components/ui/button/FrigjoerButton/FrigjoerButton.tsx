@@ -9,23 +9,25 @@ import Loading from '~/components/ui/loading/Loading'
 import './FrigjoerModal.less'
 
 type Props = {
-	action: Function
+	slettPerson: Function
+	slettPersonOgPartner: Function
 	loading: boolean
-	harImportertPartner: boolean
+	importertPartner: boolean
 	disabled?: boolean
 }
 
 export const FrigjoerButton = ({
-	action,
+	slettPerson,
+	slettPersonOgPartner,
 	loading,
-	harImportertPartner,
+	importertPartner,
 	disabled = false,
 }: Props) => {
 	if (loading) return <Loading label="frigjører..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const infoTekst = () => {
-		if (harImportertPartner) {
+		if (importertPartner) {
 			return (
 				'Er du sikker på at du vil frigjøre denne personen og dens partner? All ekstra informasjon ' +
 				'lagt til på personen og partneren via Dolly vil bli slettet og personen og partneren vil bli ' +
@@ -61,7 +63,11 @@ export const FrigjoerButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								return action(harImportertPartner)
+								if (importertPartner) {
+									return slettPersonOgPartner(importertPartner)
+								} else {
+									return slettPerson()
+								}
 							}}
 							type="hoved"
 						>

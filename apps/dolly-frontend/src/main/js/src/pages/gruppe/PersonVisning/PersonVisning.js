@@ -52,6 +52,7 @@ export const PersonVisning = ({
 	gruppeIdenter,
 	loading,
 	slettPerson,
+	slettPersonOgPartner,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
@@ -108,15 +109,16 @@ export const PersonVisning = ({
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
-						<SlettButton action={() => slettPerson(false)} loading={loading.slettPerson}>
+						<SlettButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil slette denne personen?
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton
-							action={slettPerson}
-							loading={loading.slettPerson}
-							harImportertPartner={gruppeIdenter.includes(pdlPartner())}
+							slettPerson={slettPerson}
+							slettPersonOgPartner={slettPersonOgPartner}
+							loading={loading.slettPerson || loading.slettPersonOgPartner}
+							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
 						/>
 					)}
 				</div>
