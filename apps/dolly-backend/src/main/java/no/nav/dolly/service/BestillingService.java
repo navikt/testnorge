@@ -43,6 +43,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.micrometer.core.instrument.util.StringUtils.isNotBlank;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -76,11 +77,16 @@ public class BestillingService {
 
     public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
         var searchQueries = bestillingFragment.split(" ");
-        String bestillingID = Arrays.stream(searchQueries).filter(word -> word.matches("\\d+")).findFirst().orElse("");
-        String gruppeNavn = Arrays.stream(searchQueries).filter(word -> !word.equals(bestillingID)).collect(Collectors.joining(" "));
+        String bestillingID = Arrays.stream(searchQueries)
+                .filter(word -> word.matches("\\d+"))
+                .findFirst()
+                .orElse("");
+        String gruppeNavn = Arrays.stream(searchQueries)
+                .filter(word -> !word.equals(bestillingID))
+                .collect(Collectors.joining(" "));
         return Stream.concat(
-                        bestillingRepository.findByIdContaining(bestillingID).stream(),
-                        bestillingRepository.findByGruppenavnContaining(gruppeNavn).stream())
+                        bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),
+                        bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)).stream())
                 .filter(distinctByKey(RsBestillingFragment::getid))
                 .toList();
     }
@@ -343,6 +349,10 @@ public class BestillingService {
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
         bestillingRepository.swapIdent(oldIdent, newIdent);
+    }
+
+    private String wrapSearchString(String searchString) {
+        return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
     }
 
     private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
