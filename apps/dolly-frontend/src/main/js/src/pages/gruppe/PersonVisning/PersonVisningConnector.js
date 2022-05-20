@@ -5,7 +5,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
-import { incrementSlettedePersoner } from '~/ducks/redigertePersoner'
+import { incrementSlettedePersoner, incrementImportertePersoner } from '~/ducks/redigertePersoner'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -70,6 +70,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					identtype: type,
 				},
 			}),
+		updateAntallImporterte: () => {
+			dispatch(incrementImportertePersoner())
+		},
 	}
 }
 

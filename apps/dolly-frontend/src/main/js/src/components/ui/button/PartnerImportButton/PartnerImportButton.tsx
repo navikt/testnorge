@@ -9,12 +9,13 @@ import { DollyApi } from '~/service/Api'
 import './PartnerImportButton.less'
 
 type Props = {
+	action: Function
 	partnerIdent: string
 	gruppeId: string
 	gruppeIdenter: string[]
 }
 
-export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: Props) => {
+export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIdenter }: Props) => {
 	if (!partnerIdent) return null
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
@@ -26,7 +27,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: P
 		await DollyApi.importerPartner(gruppeId, ident)
 			.then((response) => {
 				setLoading(false)
-				window.location.reload()
+				action()
 			})
 			.catch((error) => {
 				setLoading(false)

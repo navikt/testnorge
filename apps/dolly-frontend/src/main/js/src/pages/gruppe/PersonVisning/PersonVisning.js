@@ -53,6 +53,7 @@ export const PersonVisning = ({
 	loading,
 	slettPerson,
 	slettPersonOgPartner,
+	updateAntallImporterte,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
@@ -102,6 +103,7 @@ export const PersonVisning = ({
 
 					{!iLaastGruppe && ident.master === 'PDL' && isAlive && (
 						<PartnerImportButton
+							action={updateAntallImporterte}
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
 							gruppeIdenter={gruppeIdenter}

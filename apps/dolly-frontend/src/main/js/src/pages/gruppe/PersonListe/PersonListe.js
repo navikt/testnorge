@@ -53,7 +53,7 @@ export default function PersonListe({
 	useEffect(() => {
 		fetchIdenterById(gruppeInfo.id, sidetall, sideStoerrelse)
 		setIdentListe([])
-	}, [gruppeInfo.id, sidetall, sideStoerrelse, tmpPersoner.antallSlettedePersoner])
+	}, [gruppeInfo.id, sidetall, sideStoerrelse, tmpPersoner.antallPersonerFjernet])
 
 	useEffect(() => {
 		const idents = Object.values(identer).map((ident) => {
@@ -193,7 +193,7 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallSlettedePersoner,
+					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallPersonerFjernet,
 					pageSize: sideStoerrelse,
 				}}
 				pagination
