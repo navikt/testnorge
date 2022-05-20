@@ -103,6 +103,7 @@ export default function Gruppe({
 						onClick={visStartBestilling}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+						style={{ marginTop: '4px' }}
 					>
 						Opprett personer
 					</NavButton>
@@ -114,30 +115,36 @@ export default function Gruppe({
 						onClick={() => setRedirectToSoek(true)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+						style={{ marginTop: '4px' }}
 					>
 						Importer personer
 					</NavButton>
 				)}
 
-				<ToggleGruppe onChange={byttVisning} name="toggler">
-					<ToggleKnapp
-						value={VisningType.VISNING_PERSONER}
-						checked={visning === VisningType.VISNING_PERSONER}
-					>
-						<Icon size={13} kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'} />
-						{`Personer (${gruppe.antallIdenter - antallSlettet})`}
-					</ToggleKnapp>
-					<ToggleKnapp
-						value={VisningType.VISNING_BESTILLING}
-						checked={visning === VisningType.VISNING_BESTILLING}
-					>
-						<Icon
-							size={13}
-							kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
-						/>
-						{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
-					</ToggleKnapp>
-				</ToggleGruppe>
+				<div style={{ marginTop: '9px' }}>
+					<ToggleGruppe onChange={byttVisning} name="toggler">
+						<ToggleKnapp
+							value={VisningType.VISNING_PERSONER}
+							checked={visning === VisningType.VISNING_PERSONER}
+						>
+							<Icon
+								size={13}
+								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
+							/>
+							{`Personer (${gruppe.antallIdenter - antallSlettet})`}
+						</ToggleKnapp>
+						<ToggleKnapp
+							value={VisningType.VISNING_BESTILLING}
+							checked={visning === VisningType.VISNING_BESTILLING}
+						>
+							<Icon
+								size={13}
+								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+							/>
+							{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
+						</ToggleKnapp>
+					</ToggleGruppe>
+				</div>
 
 				<FinnPersonBestillingConnector />
 			</div>
