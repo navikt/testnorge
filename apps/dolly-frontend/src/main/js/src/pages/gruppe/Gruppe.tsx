@@ -13,7 +13,6 @@ import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
-import '~/pages/gruppeOversikt/Toggle.less'
 
 export type GruppeProps = {
 	visBestilling: string
@@ -122,7 +121,7 @@ export default function Gruppe({
 					</NavButton>
 				)}
 
-				<div className="toggle-container">
+				<div style={{ marginTop: '9px' }}>
 					<ToggleGruppe onChange={byttVisning} name="toggler">
 						<ToggleKnapp
 							value={VisningType.VISNING_PERSONER}

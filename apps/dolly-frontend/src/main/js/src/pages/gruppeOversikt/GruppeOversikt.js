@@ -7,7 +7,6 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
-import './Toggle.less'
 
 export default function GruppeOversikt({
 	getGrupper,
@@ -55,7 +54,7 @@ export default function GruppeOversikt({
 				<NavButton type="hoved" onClick={visNyGruppe} style={{ marginTop: '4px' }}>
 					Ny gruppe
 				</NavButton>
-				<div className="toggle-container">
+				<div style={{ marginTop: '9px' }}>
 					<ToggleGruppe onChange={byttVisning} name="toggler">
 						<ToggleKnapp value="mine" checked={visning === 'mine'}>
 							<Icon size={16} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
