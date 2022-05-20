@@ -33,18 +33,6 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
 
-    private static void appendErrorText(StringBuilder status, RuntimeException e) {
-
-        status.append("Feil: ")
-                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
-
-        if (e instanceof HttpClientErrorException) {
-            status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
-                    .append(')');
-        }
-    }
-
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -52,9 +40,9 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            List<String> environments = arenaForvalterConsumer.getEnvironments();
+            var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
 
-            List<String> availEnvironments = new ArrayList<>(environments);
+            var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
 
             availEnvironments.retainAll(bestilling.getEnvironments());
 
@@ -82,15 +70,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
                 sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
                 dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
-
             }
-
-            List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
-            notSupportedEnvironments.removeAll(environments);
-            notSupportedEnvironments.forEach(environment ->
-                    status.append(',')
-                            .append(environment)
-                            .append("$Feil: Miljø ikke støttet"));
 
             if (status.length() > 1) {
                 progress.setArenaforvalterStatus(status.substring(1));
@@ -107,7 +87,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å slette mot Arena-forvalteren: ", identer.stream().collect(Collectors.joining(", ")), e);
+            log.error("Feilet å slette identer mot Arena-forvalteren: {}", String.join(", ", identer), e);
         }
     }
 
@@ -209,5 +189,17 @@ public class ArenaForvalterClient implements ClientRegister {
                 .filter(arenaNyBruker ->
                         (!isNull(arenaNyBruker.getKvalifiseringsgruppe()) || !isNull(arenaNyBruker.getUtenServicebehov())))
                 .collect(Collectors.toList()));
+    }
+
+    private static void appendErrorText(StringBuilder status, RuntimeException e) {
+
+        status.append("Feil: ")
+                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
+
+        if (e instanceof HttpClientErrorException) {
+            status.append(" (")
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
+                    .append(')');
+        }
     }
 }

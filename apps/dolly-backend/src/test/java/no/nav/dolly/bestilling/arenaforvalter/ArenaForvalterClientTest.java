@@ -126,7 +126,7 @@ public class ArenaForvalterClientTest {
         request.setEnvironments(singletonList("t3"));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("t3$Feil: Miljø ikke støttet")));
+        assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
     }
 
     @Test
