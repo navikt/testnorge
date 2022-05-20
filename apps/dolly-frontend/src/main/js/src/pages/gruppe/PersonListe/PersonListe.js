@@ -208,7 +208,6 @@ export default function PersonListe({
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
-						setVisning={setVisning}
 						isAlive={!bruker.alder.includes('død')}
 						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
