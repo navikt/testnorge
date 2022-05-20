@@ -99,6 +99,18 @@ public class PersonService {
                     .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", pdlfIdenter.size()));
         }
 
+        slettTestnorgeRelasjonerIntern(testidenter);
+        releaseArtifacts(testidenter);
+    }
+
+    @Transactional
+    public void slettTestnorgeRelasjoner(List<TestidentDTO> testidenter) {
+
+        slettTestnorgeRelasjonerIntern(testidenter);
+    }
+
+    private void slettTestnorgeRelasjonerIntern(List<TestidentDTO> testidenter) {
+
         var testnorgeIdenter = testidenter.stream()
                 .filter(TestidentDTO::isPdl)
                 .map(TestidentDTO::getIdent)
@@ -144,8 +156,6 @@ public class PersonService {
                         .toList());
             }
         }
-
-        releaseArtifacts(testidenter);
     }
 
     private void releaseArtifacts(List<TestidentDTO> identer) {
