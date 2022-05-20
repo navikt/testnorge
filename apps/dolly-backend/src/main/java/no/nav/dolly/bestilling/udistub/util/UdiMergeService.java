@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.udistub.util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.bestilling.udistub.domain.RsAliasRequest;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson.UdiAlias;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -30,7 +28,6 @@ import static java.util.Objects.nonNull;
 public class UdiMergeService {
 
     private final DollyPersonCache dollyPersonCache;
-    private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
 
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
@@ -47,16 +44,10 @@ public class UdiMergeService {
 
     public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments, DollyPerson dollyPerson) {
 
-        if (dollyPerson.isPdlMaster() && !dollyPerson.getIdenthistorikk().isEmpty()) {
+        if (dollyPerson.isPdlfMaster() && !dollyPerson.getIdenthistorikk().isEmpty()) {
             return dollyPerson.getIdenthistorikk().stream()
                     .map(historikk -> UdiAlias.builder().fnr(historikk).build())
                     .collect(Collectors.toList());
-        } else if (dollyPerson.isTpsfMaster() && nonNull(request)) {
-            request.setEnvironments(environments);
-            var response = tpsfService.createAliases(request);
-            return nonNull(response) ?
-                    mapperFacade.mapAsList(response.getAliaser(), UdiAlias.class) :
-                    emptyList();
         } else {
             return emptyList();
         }

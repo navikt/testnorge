@@ -1,13 +1,11 @@
 package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.RsIdentBeskrivelse;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -58,7 +56,7 @@ public class TestpersonController {
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
@@ -89,22 +87,8 @@ public class TestpersonController {
         return mapperFacade.map(identService.saveIdentIBruk(ident, iBruk), IdentAttributesResponse.class);
     }
 
-    @Operation(description = "Koble eksisterende personer i Dolly ")
-    @PutMapping("/{ident}/relasjon")
-    @ResponseStatus(HttpStatus.OK)
-    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
-    public RsBestillingStatus koblePerson(@Parameter(description = "Ident for hovedperson", required = true)
-                                          @PathVariable("ident") String ident,
-                                          @RequestBody RsDollyRelasjonRequest request) {
-
-        Bestilling bestilling = bestillingService.saveBestilling(ident, request);
-        dollyBestillingService.relasjonPersonAsync(ident, request, bestilling);
-
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
-    }
-
     @Operation(description = "Slett test ident")
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {

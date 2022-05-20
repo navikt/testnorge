@@ -64,8 +64,9 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            var tilgjengeligeIdenter = new AvailCheckCommand(bestilling.getOpprettFraIdenter(),
-                    bestKriterier.getPdldata(), tpsfService, pdlDataConsumer).call();
+            var tilgjengeligeIdenter = new AvailCheckCommand(
+                    bestilling.getOpprettFraIdenter(),
+                    pdlDataConsumer).call();
 
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.parallelStream()
@@ -77,14 +78,14 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             try {
                                 if (identStatus.isAvailable()) {
 
-                                    var leverteIdenter = new OpprettCommand(identStatus, bestKriterier, tpsfService,
+                                    var opprettetIdent = new OpprettCommand(identStatus, bestKriterier,
                                             pdlDataConsumer, mapperFacade).call();
 
                                     identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
                                             identStatus.getMaster(), bestKriterier.getBeskrivelse());
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
-                                            .hovedperson(leverteIdenter.get(0))
+                                            .hovedperson(opprettetIdent)
                                             .master(identStatus.getMaster())
                                             .tags(bestilling.getGruppe().getTags())
                                             .build();

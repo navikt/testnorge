@@ -13,14 +13,11 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -36,7 +33,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -46,7 +42,6 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 
 @Slf4j
 @Service
@@ -129,44 +124,6 @@ public class DollyBestillingService {
 
         } catch (Exception e) {
             log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), bestilling.getIdent(), e.getMessage(), e);
-            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
-
-        } finally {
-            oppdaterBestillingFerdig(bestilling);
-        }
-    }
-
-    @Async
-    public void relasjonPersonAsync(String ident, RsDollyRelasjonRequest request, Bestilling bestilling) {
-
-        try {
-            var testident = identService.getTestIdent(bestilling.getIdent());
-            if (testident.isPdl()) {
-                throw new DollyFunctionalException("Importert person fra TESTNORGE kan ikke endres.");
-            }
-            var progress = new BestillingProgress(bestilling, ident, TPSF);
-            var tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
-            tpsfService.relasjonPerson(ident, tpsfBestilling);
-
-            RsDollyBestillingRequest utvidetBestilling = getDollyBestillingRequest(bestilling);
-
-            var dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
-            gjenopprettNonTpsf(dollyPerson, utvidetBestilling, progress, true);
-
-            oppdaterProgress(bestilling, progress);
-
-        } catch (WebClientResponseException e) {
-            try {
-                var message = (String) objectMapper.readValue(e.getResponseBodyAsString(), Map.class).get("message");
-                log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
-                bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
-
-            } catch (JsonProcessingException jme) {
-                log.error("Json kunne ikke hentes ut.", jme);
-            }
-
-        } catch (Exception e) {
-            log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
 
         } finally {
