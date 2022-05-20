@@ -36,9 +36,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
@@ -70,9 +72,15 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
-    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingId) {
-        return bestillingRepository.findByIdContaining(bestillingId)
-                .orElse(emptyList());
+    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+        var searchQueries = bestillingFragment.split(" ");
+        String bestillingID = Arrays.stream(searchQueries).filter(word -> word.matches("[/d]+")).findFirst().orElse("");
+        String gruppeNavn = Arrays.stream(searchQueries).filter(word -> !word.equals(bestillingID)).findFirst().orElse("");
+        return Stream.concat(
+                        bestillingRepository.findByIdContaining(bestillingID).stream(),
+                        bestillingRepository.findByGruppenavnContaining(gruppeNavn).stream())
+                .distinct()
+                .toList();
     }
 
     public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
