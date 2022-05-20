@@ -55,7 +55,6 @@ public class BestillingController {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 
-    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/soekBestilling")
     @Operation(description = "Hent Bestillinger basert på fragment")
     public List<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {

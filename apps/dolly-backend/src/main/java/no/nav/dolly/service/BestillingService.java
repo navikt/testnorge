@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -51,6 +52,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 
 @Slf4j
 @Service
@@ -74,12 +76,12 @@ public class BestillingService {
 
     public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
         var searchQueries = bestillingFragment.split(" ");
-        String bestillingID = Arrays.stream(searchQueries).filter(word -> word.matches("[/d]+")).findFirst().orElse("");
-        String gruppeNavn = Arrays.stream(searchQueries).filter(word -> !word.equals(bestillingID)).findFirst().orElse("");
+        String bestillingID = Arrays.stream(searchQueries).filter(word -> word.matches("\\d+")).findFirst().orElse("");
+        String gruppeNavn = Arrays.stream(searchQueries).filter(word -> !word.equals(bestillingID)).collect(Collectors.joining(" "));
         return Stream.concat(
                         bestillingRepository.findByIdContaining(bestillingID).stream(),
                         bestillingRepository.findByGruppenavnContaining(gruppeNavn).stream())
-                .distinct()
+                .filter(distinctByKey(RsBestillingFragment::getid))
                 .toList();
     }
 

@@ -20,7 +20,7 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
             "from Bestilling b " +
             "inner join Gruppe g " +
             "on b.gruppe_id = g.id " +
-            "where char_length(:id) > 0 " +
+            "where length(:id) > 0 " +
             "and cast(b.id as VARCHAR) " +
             "like %:id% fetch first 10 rows only",
             nativeQuery = true)
@@ -30,7 +30,7 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
             "from Bestilling b " +
             "inner join Gruppe g " +
             "on b.gruppe_id = g.id " +
-            "where char_length(:id) > 0 " +
+            "where length(:gruppenavn) > 0 " +
             "and g.navn " +
             "like %:gruppenavn% fetch first 10 rows only",
             nativeQuery = true)
