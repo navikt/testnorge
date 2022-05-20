@@ -44,6 +44,11 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+  testnav-inntektstub-proxy:
+    name: testnav-inntektstub-proxy
+    namespace: dolly
+    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 management:
   endpoints:
