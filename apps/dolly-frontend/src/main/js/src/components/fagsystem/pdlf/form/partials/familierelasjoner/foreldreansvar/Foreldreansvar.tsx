@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { FormikProps } from 'formik'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import {
 	initialForeldreansvar,
 	initialPdlBiPerson,
@@ -12,13 +11,13 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
-import { AdresseKodeverk } from '~/config/kodeverk'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
-import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreBarnRelasjon, TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
@@ -30,14 +29,6 @@ type Target = {
 }
 
 export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
-	//@ts-ignore
-	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
-	//@ts-ignore
-	const mellomnavnOptions = SelectOptionsOppslag.formatOptions('mellomnavn', navnInfo)
-	//@ts-ignore
-	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
-
 	const ansvarlig = 'ansvarlig'
 	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
 	const nyAnsvarlig = 'nyAnsvarlig'
@@ -53,17 +44,17 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
 			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
-		if (target?.value === 'EKSISTERENDE') {
+		if (target?.value === TypeAnsvarlig.EKSISTERENDE) {
 			_set(foreldreansvarClone, ansvarlig, null)
 			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
 			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
-		if (target?.value === 'UTEN_ID') {
+		if (target?.value === TypeAnsvarlig.UTEN_ID) {
 			_set(foreldreansvarClone, ansvarlig, undefined)
 			_set(foreldreansvarClone, ansvarligUtenIdentifikator, initialPdlBiPerson)
 			_set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
-		if (target?.value === 'NY') {
+		if (target?.value === TypeAnsvarlig.NY) {
 			_set(foreldreansvarClone, ansvarlig, undefined)
 			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
 			_set(foreldreansvarClone, nyAnsvarlig, initialPdlPerson)
@@ -134,50 +125,21 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 								/>
 							)}
 
-							{typeAnsvarlig === 'EKSISTERENDE' && (
+							{typeAnsvarlig === TypeAnsvarlig.EKSISTERENDE && (
 								<PdlEksisterendePerson
 									eksisterendePersonPath={`${path}.ansvarlig`}
 									label="Ansvarlig"
 								/>
 							)}
 
-							{typeAnsvarlig === 'UTEN_ID' && (
-								<>
-									<FormikSelect
-										name={`${path}.ansvarligUtenIdentifikator.kjoenn`}
-										label="Kjønn"
-										options={Options('kjoenn')}
-									/>
-									<FormikDatepicker
-										name={`${path}.ansvarligUtenIdentifikator.foedselsdato`}
-										label="Fødselsdato"
-										maxDate={new Date()}
-									/>
-									<FormikSelect
-										name={`${path}.ansvarligUtenIdentifikator.statsborgerskap`}
-										label="Statsborgerskap"
-										kodeverk={AdresseKodeverk.StatsborgerskapLand}
-										size="large"
-									/>
-									<FormikSelect
-										name={`${path}.ansvarligUtenIdentifikator.navn.fornavn`}
-										label="Fornavn"
-										options={fornavnOptions}
-									/>
-									<FormikSelect
-										name={`${path}.ansvarligUtenIdentifikator.navn.mellomnavn`}
-										label="Mellomnavn"
-										options={mellomnavnOptions}
-									/>
-									<FormikSelect
-										name={`${path}.ansvarligUtenIdentifikator.navn.etternavn`}
-										label="Etternavn"
-										options={etternavnOptions}
-									/>
-								</>
+							{typeAnsvarlig === TypeAnsvarlig.UTEN_ID && (
+								<PdlPersonUtenIdentifikator
+									formikBag={formikBag}
+									path={`${path}.ansvarligUtenIdentifikator`}
+								/>
 							)}
 
-							{typeAnsvarlig === 'NY' && (
+							{typeAnsvarlig === TypeAnsvarlig.NY && (
 								<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formikBag={formikBag} />
 							)}
 

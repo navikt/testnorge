@@ -528,7 +528,7 @@ const forelderBarnRelasjon = Yup.array().of(
 			then: Yup.mixed().notRequired(),
 			otherwise: Yup.boolean(),
 		}),
-		nyRelatertPerson: nyPerson,
+		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
 			then: deltBosted.nullable(),
