@@ -7,6 +7,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 export default function GruppeOversikt({
 	getGrupper,
@@ -21,12 +22,15 @@ export default function GruppeOversikt({
 	sidetall,
 	sideStoerrelse,
 }) {
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
 	const [visning, setVisning] = useState('mine')
 	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 
 	useEffect(() => {
-		visning === 'mine' ? fetchMineGrupper() : getGrupper(sidetall, sideStoerrelse)
+		visning === 'mine' ? fetchMineGrupper(brukerId) : getGrupper(sidetall, sideStoerrelse)
 	}, [visning, sidetall, sideStoerrelse])
 
 	const byttVisning = (event) => {

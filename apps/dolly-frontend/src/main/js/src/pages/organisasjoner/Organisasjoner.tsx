@@ -17,6 +17,7 @@ import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
 import { PopoverOrientering } from 'nav-frontend-popover'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 type OrganisasjonerProps = {
 	history: History
@@ -53,12 +54,14 @@ export default function Organisasjoner({
 	isFetching,
 	bestillinger,
 	organisasjoner,
-	brukerId,
-	brukertype,
 	getOrganisasjonBestillingStatus,
 	getOrganisasjonBestilling,
 	fetchOrganisasjoner,
 }: OrganisasjonerProps) {
+	const {
+		currentBruker: { brukerId, brukertype },
+	} = useCurrentBruker()
+
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 	const navigate = useNavigate()

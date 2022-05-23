@@ -15,13 +15,11 @@ const loadingCancelSelector = createLoadingSelector(cancelBestilling)
 const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
 const loadingOrgBestillingSelector = createLoadingSelector(getOrganisasjonBestilling)
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state) => ({
 	isFetchingBestillinger: loadingBestillingerSelector(state),
 	isFetchingOrgBestillinger: loadingOrgBestillingSelector(state),
 	nyeBestillinger: nyeBestillingerSelector(state),
 	isCanceling: loadingCancelSelector(state),
-	brukerBilde: ownProps?.brukerBilde,
-	brukerId: state.bruker.brukerData.brukerId,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {

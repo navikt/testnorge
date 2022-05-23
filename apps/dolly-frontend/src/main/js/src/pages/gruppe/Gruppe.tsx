@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 export type GruppeProps = {
 	visBestilling: string
@@ -24,8 +25,6 @@ export type GruppeProps = {
 	visning: string
 	setVisning: Function
 	bestillingStatuser: any
-	brukerBilde: Object
-	brukerProfil: Object
 	brukertype: string
 	brukernavn: string
 	antallSlettet: number
@@ -38,10 +37,6 @@ export enum VisningType {
 
 export default function Gruppe({
 	bestillingStatuser,
-	brukerBilde,
-	brukerProfil,
-	brukernavn,
-	brukertype,
 	getBestillinger,
 	getGruppe,
 	grupper,
@@ -51,6 +46,10 @@ export default function Gruppe({
 	selectGruppe,
 	antallSlettet,
 }: GruppeProps) {
+	const {
+		currentBruker: { brukernavn, brukertype },
+	} = useCurrentBruker()
+
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
 	const [gruppe, setGruppe] = useState(null)
@@ -90,11 +89,7 @@ export default function Gruppe({
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppe={gruppe} bestillingStatuser={bestillingStatuser} />
 
-			<StatusListeConnector
-				gruppeId={gruppe.id}
-				brukerBilde={brukerBilde}
-				brukerProfil={brukerProfil}
-			/>
+			<StatusListeConnector gruppeId={gruppe.id} />
 
 			<div className="toolbar">
 				{brukertype === 'AZURE' && (

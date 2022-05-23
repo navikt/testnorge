@@ -11,7 +11,7 @@ import GjenopprettConnector from '~/components/bestilling/gjenopprett/Gjenoppret
 import useBoolean from '~/utils/hooks/useBoolean'
 
 export default function BestillingResultat(props) {
-	const { bestilling, onCloseButton, brukerBilde } = props
+	const { bestilling, onCloseButton } = props
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
@@ -33,7 +33,6 @@ export default function BestillingResultat(props) {
 			<Feedback
 				label="Hvordan var din opplevelse med bruk av Dolly?"
 				feedbackFor="Bruk av Dolly etter bestilling"
-				brukerBilde={brukerBilde}
 			/>
 			<div className="flexbox--all-center">
 				<BestillingSammendragModal bestilling={bestilling} />

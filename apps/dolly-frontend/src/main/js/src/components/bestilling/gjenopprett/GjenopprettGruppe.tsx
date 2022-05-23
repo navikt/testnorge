@@ -3,6 +3,7 @@ import Formatters from '~/utils/DataFormatter'
 import React from 'react'
 import { GjenopprettModal } from '~/components/bestilling/gjenopprett/GjenopprettModal'
 import { DollyApi } from '~/service/Api'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 type GjenopprettGruppeProps = {
 	onClose: any
@@ -29,8 +30,9 @@ export const GjenopprettGruppe = ({
 	gruppe,
 	bestillingStatuser,
 	getBestillinger,
-	brukertype,
 }: GjenopprettGruppeProps) => {
+	const { currentBruker } = useCurrentBruker()
+	const brukertype = currentBruker?.brukertype
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()
 		Object.values(bestillingStatuser).forEach((bestillingstatus: BestillingStatus) =>

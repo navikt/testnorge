@@ -1,7 +1,14 @@
 import React from 'react'
 import Button from '../Button'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
-export default function FavoriteButton({ isFavorite, hideLabel, addFavorite, removeFavorite }) {
+export default function FavoriteButton({ hideLabel, addFavorite, removeFavorite, groupId }) {
+	const {
+		currentBruker: { favoritter },
+	} = useCurrentBruker()
+
+	const isFavorite = favoritter.some((fav) => fav.id === groupId)
+
 	return (
 		<Button
 			title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}

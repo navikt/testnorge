@@ -6,11 +6,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-type Props = {
-	brukerBilde: Response
-}
-
-export const Forbedring = ({ brukerBilde }: Props) => {
+export const Forbedring = () => {
 	const [isForbedringModalOpen, openForbedringModal, closeForbedringModal] = useBoolean(false)
 
 	return (
@@ -18,9 +14,7 @@ export const Forbedring = ({ brukerBilde }: Props) => {
 			<button className="btn-modal" onClick={openForbedringModal}>
 				<Icon kind="krr" size={33} />
 			</button>
-			{isForbedringModalOpen && (
-				<ForbedringModal closeModal={closeForbedringModal} brukerBilde={brukerBilde} />
-			)}
+			{isForbedringModalOpen && <ForbedringModal closeModal={closeForbedringModal} />}
 		</ErrorBoundary>
 	)
 }

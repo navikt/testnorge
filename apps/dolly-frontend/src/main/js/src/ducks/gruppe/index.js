@@ -116,8 +116,7 @@ export default handleActions(
 )
 
 // Thunk
-export const fetchMineGrupper = () => async (dispatch, getState) => {
-	const { brukerId } = getState().bruker.brukerData
+export const fetchMineGrupper = (brukerId) => async (dispatch) => {
 	return dispatch(actions.getByUserId(brukerId))
 }
 

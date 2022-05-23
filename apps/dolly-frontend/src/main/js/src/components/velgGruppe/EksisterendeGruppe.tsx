@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Loading from '~/components/ui/loading/Loading'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 interface EksisterendeGruppe {
-	fetchMineGrupper: () => void
+	fetchMineGrupper: (brukerId: string) => void
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
 	isFetching: boolean
 	valgtGruppe: string
@@ -28,9 +29,12 @@ export default ({
 	valgtGruppe,
 	gruppeListe,
 }: EksisterendeGruppe) => {
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
 	useEffect(() => {
-		fetchMineGrupper()
-	}, [])
+		fetchMineGrupper(brukerId)
+	}, [brukerId])
 
 	const gruppeliste = gruppeListe.map((v: Gruppe) => ({
 		value: v.id,

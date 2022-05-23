@@ -3,9 +3,8 @@ import { combineActions, createActions } from 'redux-actions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 
-export const { getCurrentBruker, addFavorite, removeFavorite } = createActions(
+export const { addFavorite, removeFavorite } = createActions(
 	{
-		getCurrentBruker: DollyApi.getCurrentBruker,
 		addFavorite: DollyApi.addFavorite,
 		removeFavorite: DollyApi.removeFavorite,
 	},
@@ -16,11 +15,7 @@ const initialState = {
 	brukerData: null,
 }
 
-const successActions = combineActions(
-	onSuccess(getCurrentBruker),
-	onSuccess(addFavorite),
-	onSuccess(removeFavorite)
-)
+const successActions = combineActions(onSuccess(addFavorite), onSuccess(removeFavorite))
 
 export default handleActions(
 	{

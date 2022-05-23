@@ -3,10 +3,9 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingProgresjon from './BestillingProgresjon/BestillingProgresjon'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 export default function StatusListe({
-	brukerBilde,
-	brukerId,
 	cancelBestilling,
 	getBestillinger,
 	getGruppe,
@@ -17,6 +16,10 @@ export default function StatusListe({
 	nyeBestillinger,
 	removeNyBestillingStatus,
 }) {
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
+
 	const _onCloseBestillingResultat = (bestillingId) => {
 		removeNyBestillingStatus(bestillingId)
 		getBestillinger()
@@ -40,11 +43,7 @@ export default function StatusListe({
 		return (
 			<div className="bestilling-status" key={bestilling.id}>
 				{bestilling.ferdig ? (
-					<BestillingResultat
-						bestilling={bestilling}
-						onCloseButton={_onCloseBestillingResultat}
-						brukerBilde={brukerBilde}
-					/>
+					<BestillingResultat bestilling={bestilling} onCloseButton={_onCloseBestillingResultat} />
 				) : (
 					<BestillingProgresjon
 						bestilling={bestilling}

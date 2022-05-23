@@ -1,7 +1,13 @@
 import { NotFoundError } from '~/error'
+import { Argument } from 'classnames'
 
 const originalFetch = require('isomorphic-fetch')
 const fetch = require('fetch-retry')(originalFetch)
+
+export const fetcher = (...args: Argument[]) => fetch(...args).then((res: Response) => res.json())
+
+export const imageFetcher = (...args: Argument[]) =>
+	fetch(...args).then((res: Response) => res.blob().then((blob: Blob) => URL.createObjectURL(blob)))
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 
@@ -55,7 +61,7 @@ const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
 			return response.text()
 		})
 		.then((data) => {
-			return data ? JSON.parse(data) : {}
+			return data ? JSON.parse(data) : { data }
 		})
 
 export default {

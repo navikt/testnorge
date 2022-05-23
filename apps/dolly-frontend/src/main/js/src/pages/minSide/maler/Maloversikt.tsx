@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { malerApi } from './MalerApi'
+import React, { useState } from 'react'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
@@ -10,25 +9,22 @@ import { EndreMalnavn } from './EndreMalnavn'
 import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
+import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
 
-export default ({ brukerId }) => {
-	const [loading, setLoading] = useState(true)
-	const [maler, setMaler] = useState([])
+export default ({ brukernavn }: { brukernavn: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
 
-	useEffect(() => {
-		malerApi
-			.hentMaler()
-			.then((data) => {
-				setMaler(data.malbestillinger[`${brukerId}`] || [])
-			})
-			.then(() => setLoading(false))
-	}, [])
+	const { maler, loading } = useDollyMaler()
 
-	const erUnderRedigering = (id) => underRedigering.includes(id)
+	if (loading) return <Loading label="Loading" />
 
-	const avbrytRedigering = (id) => {
+	// @ts-ignore
+	const egneMaler = maler[brukernavn] || []
+
+	const erUnderRedigering = (id: string) => underRedigering.includes(id)
+
+	const avbrytRedigering = (id: string) => {
 		setUnderRedigering((underRedigering) => underRedigering.filter((number) => number !== id))
 	}
 
@@ -37,9 +33,9 @@ export default ({ brukerId }) => {
 			text: 'Malnavn',
 			width: '80',
 			dataField: 'malNavn',
-			formatter: (cell, row) =>
+			formatter: (cell: any, row: { id: string; malNavn: string }) =>
 				erUnderRedigering(row.id) ? (
-					<EndreMalnavn malInfo={row} setMaler={setMaler} avbrytRedigering={avbrytRedigering} />
+					<EndreMalnavn malInfo={row} setMaler={null} avbrytRedigering={avbrytRedigering} />
 				) : (
 					row.malNavn
 				),
@@ -47,7 +43,7 @@ export default ({ brukerId }) => {
 		{
 			text: 'Rediger malnavn',
 			width: '13',
-			formatter: (cell, row) => {
+			formatter: (cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
 						AVBRYT
@@ -63,15 +59,13 @@ export default ({ brukerId }) => {
 			text: 'Slett',
 			width: '10',
 			dataField: 'status',
-			formatter: (cell, row) => (
-				<SlettButton action={() => slettMal(row.id, setMaler)} loading={loading}>
+			formatter: (cell: any, row: { id: any }) => (
+				<SlettButton action={() => slettMal(row.id, null)} loading={loading}>
 					Er du sikker på at du vil slette denne malen?
 				</SlettButton>
 			),
 		},
 	]
-
-	if (loading) return <Loading label="Loading" />
 
 	return (
 		<div className="maloversikt">
@@ -80,11 +74,11 @@ export default ({ brukerId }) => {
 				<h2>Mine maler</h2>
 				<SearchField placeholder={'Søk etter mal'} setText={setSearchText} />
 			</div>
-			{maler.length > 0 ? (
-				malerFiltrert(maler, searchText).length > 0 ? (
+			{egneMaler.length > 0 ? (
+				malerFiltrert(egneMaler, searchText).length > 0 ? (
 					<ErrorBoundary>
 						<DollyTable
-							data={malerFiltrert(maler, searchText)}
+							data={malerFiltrert(egneMaler, searchText)}
 							columns={columns}
 							header={false}
 							iconItem={<MalIconItem />}
@@ -104,5 +98,5 @@ export default ({ brukerId }) => {
 	)
 }
 
-const malerFiltrert = (maler, searchText) =>
-	maler.filter((mal) => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))
+const malerFiltrert = (malListe: Mal[], searchText: string) =>
+	malListe.filter((mal) => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))

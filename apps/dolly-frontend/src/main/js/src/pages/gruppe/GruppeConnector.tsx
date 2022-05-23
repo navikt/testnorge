@@ -20,7 +20,6 @@ const mapStateToProps = (
 			sideStoerrelse: number
 			visning: string
 		}
-		bruker: { brukerData: { brukernavn: string; brukertype: string } }
 		bestillingStatuser: any
 		redigertePersoner: {
 			antallSlettedePersoner: number
@@ -36,8 +35,6 @@ const mapStateToProps = (
 	visPerson: state.finnPerson.visPerson,
 	sidetall: state.finnPerson.sidetall,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
-	brukernavn: state.bruker.brukerData.brukernavn,
-	brukertype: state.bruker.brukerData.brukertype,
 	bestillingStatuser: state.bestillingStatuser.byId,
 	antallSlettet: state.redigertePersoner.antallSlettedePersoner,
 })
