@@ -210,7 +210,8 @@ public class PersonExcelService {
     private static Map<String, Integer> createLinkReferanser(List<Object[]> personData) {
 
         return IntStream.range(0, personData.size()).boxed()
-                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> row));
+                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> row,
+                        (row1, row2) -> row1));
     }
 
     private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
