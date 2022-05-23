@@ -21,7 +21,6 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @Component
 public class SyntDagpengerConsumer {
-    private static final LocalDate MINIMUM_DATE = LocalDate.of(2015, 1, 1);
 
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
@@ -44,10 +43,8 @@ public class SyntDagpengerConsumer {
                 .build();
     }
 
-    public DagpengevedtakDTO syntetiserDagpengevedtak(Dagpengerettighet rettighet) {
-        //TODO sjekk hvilket dato-intervall som skal brukes for dagpenger
-        var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now()))));
-        var request = Collections.singletonList(dato.toString());
+    public DagpengevedtakDTO syntetiserDagpengevedtak(Dagpengerettighet rettighet, LocalDate startdato) {
+        var request = Collections.singletonList(startdato.toString());
 
         try {
             var response = tokenExchange.exchange(serviceProperties)

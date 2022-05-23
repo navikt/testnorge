@@ -49,6 +49,11 @@ consumers:
     namespace: dolly
     url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-organisasjon-faste-data-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-faste-data-service
+    url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
 
 management:
   endpoints:

@@ -1,9 +1,13 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.provider;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.provider.request.SyntetiserArenaRequest;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.service.BrukerService;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaDagpengerService;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.ArenaForvalterService;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.IdentService;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAKSIMUM_ALDER;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MINIMUM_ALDER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -25,7 +31,16 @@ import static org.mockito.Mockito.when;
 public class BrukerControllerTest {
 
     @Mock
-    private BrukerService brukerService;
+    private IdentService identService;
+
+    @Mock
+    private ArenaDagpengerService arenaDagpengerService;
+
+    @Mock
+    private TagsService tagsService;
+
+    @Mock
+    private ArenaForvalterService arenaForvalterService;
 
     @InjectMocks
     private BrukerController brukerController;
@@ -52,13 +67,28 @@ public class BrukerControllerTest {
 
     @Test
     public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
-        when(brukerService.registrerArenaBrukereMedOppfoelging(syntetiserArenaRequestSingle)).thenReturn(oppfoelgingResponse);
+        var identer = Collections.singletonList(fnr1);
+        var personer = Collections.singletonList(PersonDTO.builder().ident(fnr1).build());
+
+        when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, false)).thenReturn(personer);
+        when(tagsService.opprettetTagsPaaIdenter(identer)).thenReturn(true);
+        when(arenaForvalterService
+                .opprettArbeidssoekereUtenVedtak(identer, miljoe))
+                .thenReturn(oppfoelgingResponse);
 
         Map<String, NyeBrukereResponse> result = brukerController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
         assertThat(result.keySet()).hasSize(1);
         assertThat(result).containsKey(fnr1);
         assertThat(result.get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
         assertThat(result.get(fnr1).getArbeidsoekerList()).hasSize(1);
+
+//        when(brukerService.registrerArenaBrukereMedOppfoelging(syntetiserArenaRequestSingle)).thenReturn(oppfoelgingResponse);
+//
+//        Map<String, NyeBrukereResponse> result = brukerController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
+//        assertThat(result.keySet()).hasSize(1);
+//        assertThat(result).containsKey(fnr1);
+//        assertThat(result.get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+//        assertThat(result.get(fnr1).getArbeidsoekerList()).hasSize(1);
     }
 
     @Test
