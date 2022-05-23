@@ -234,7 +234,9 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                                 .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
                                 .build());
                 fellesAdresse.setGyldigFraOgMed(getMaxDato(getLastFlyttedato(hovedperson), getLastFlyttedato(relatertPerson)));
-                relatertPerson.getBostedsadresse().set(0, fellesAdresse);
+                if (!relatertPerson.getBostedsadresse().isEmpty()) {
+                    relatertPerson.getBostedsadresse().set(0, fellesAdresse);
+                }
             }
 
             relasjon.setRelatertPerson(relatertPerson.getIdent());

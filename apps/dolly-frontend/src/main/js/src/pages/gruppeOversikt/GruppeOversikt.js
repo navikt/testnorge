@@ -51,19 +51,21 @@ export default function GruppeOversikt({
 				</div>
 			</div>
 			<div className="toolbar">
-				<NavButton type="hoved" onClick={visNyGruppe}>
+				<NavButton type="hoved" onClick={visNyGruppe} style={{ marginTop: '4px' }}>
 					Ny gruppe
 				</NavButton>
-				<ToggleGruppe onChange={byttVisning} name="toggler">
-					<ToggleKnapp value="mine" checked={visning === 'mine'}>
-						<Icon size={16} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
-						Mine
-					</ToggleKnapp>
-					<ToggleKnapp value="alle" checked={visning === 'alle'}>
-						<Icon size={16} kind={visning === 'alle' ? 'groupLight' : 'groupDark'} />
-						Alle
-					</ToggleKnapp>
-				</ToggleGruppe>
+				<div style={{ marginTop: '9px' }}>
+					<ToggleGruppe onChange={byttVisning} name="toggler">
+						<ToggleKnapp value="mine" checked={visning === 'mine'}>
+							<Icon size={16} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
+							Mine
+						</ToggleKnapp>
+						<ToggleKnapp value="alle" checked={visning === 'alle'}>
+							<Icon size={16} kind={visning === 'alle' ? 'groupLight' : 'groupDark'} />
+							Alle
+						</ToggleKnapp>
+					</ToggleGruppe>
+				</div>
 				<FinnPersonBestillingConnector />
 			</div>
 

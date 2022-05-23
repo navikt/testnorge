@@ -18,12 +18,23 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
 
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +
-            "inner join Gruppe g " +
+            "join Gruppe g " +
             "on b.gruppe_id = g.id " +
-            "where cast(b.id as VARCHAR) " +
-            "like %:id% fetch first 10 rows only",
+            "where length(:id) > 0 " +
+            "and cast(b.id as VARCHAR) " +
+            "ilike :id fetch first 10 rows only",
             nativeQuery = true)
-    Optional<List<RsBestillingFragment>> findByIdContaining(String id);
+    List<RsBestillingFragment> findByIdContaining(String id);
+
+    @Query(value = "select b.id, g.navn " +
+            "from Bestilling b " +
+            "join Gruppe g " +
+            "on b.gruppe_id = g.id " +
+            "where length(:gruppenavn) > 0 " +
+            "and g.navn " +
+            "ilike :gruppenavn fetch first 10 rows only",
+            nativeQuery = true)
+    List<RsBestillingFragment> findByGruppenavnContaining(String gruppenavn);
 
     Bestilling save(Bestilling bestilling);
 

@@ -45,8 +45,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -457,8 +455,8 @@ public class PersonExcelService {
         var personBolker = new ArrayList<Object[]>();
         for (var future : futures) {
             try {
-                personBolker.addAll(future.get(1, TimeUnit.MINUTES));
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                personBolker.addAll(future.get());
+            } catch (InterruptedException | ExecutionException e) {
                 log.error("Future task exception {}", e.getMessage(), e);
                 throw e;
             }
