@@ -7,9 +7,10 @@ import { PersonUtenIdData } from '~/components/fagsystem/pdlf/PdlTypes'
 type RelatertPersonUtenIdData = {
 	data: PersonUtenIdData
 	tittel: string
+	rolle?: string
 }
 
-export const RelatertPersonUtenId = ({ data, tittel }: RelatertPersonUtenIdData) => {
+export const RelatertPersonUtenId = ({ data, tittel, rolle = null }: RelatertPersonUtenIdData) => {
 	if (!data) return null
 
 	return (
@@ -25,6 +26,7 @@ export const RelatertPersonUtenId = ({ data, tittel }: RelatertPersonUtenIdData)
 				value={data.statsborgerskap}
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
+			<TitleValue title="Rolle for barn" value={rolle} size="medium" />
 		</div>
 	)
 }
