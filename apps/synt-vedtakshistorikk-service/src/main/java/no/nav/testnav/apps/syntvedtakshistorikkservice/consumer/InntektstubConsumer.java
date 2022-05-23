@@ -9,6 +9,7 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,7 +37,7 @@ public class InntektstubConsumer {
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke opprette inntektstub inntekt", e);
-            return null;
+            return Collections.emptyList();
         }
     }
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -35,8 +34,7 @@ public class InntektService {
             return false;
         }
 
-        var response = inntektstubConsumer.postInntekter(inntekter);
-        return nonNull(response) && !response.isEmpty();
+        return !inntektstubConsumer.postInntekter(inntekter).isEmpty();
     }
 
     private List<Inntektsinformasjon> getInntektinformasjoner(String ident, LocalDate dato) {

@@ -27,6 +27,7 @@ public class ArenaDagpengerService {
     private final InntektService inntektService;
     private final TagsService tagsService;
     private final Random rand = new Random();
+
     private static final String DAGO_ENHETSNR = "4450";
     private static final String DAGO_KOMMENTAR = "Hoveddokument: Søknad om dagpenger (ikke permittert)";
     private static final String PERM_ENHETSNR = "4455";

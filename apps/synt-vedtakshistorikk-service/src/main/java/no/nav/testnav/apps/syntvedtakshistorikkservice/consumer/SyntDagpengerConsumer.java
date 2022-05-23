@@ -25,7 +25,6 @@ public class SyntDagpengerConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
-    private final Random rand = new Random();
 
     public SyntDagpengerConsumer(
             SyntDagpengerProperties properties,
