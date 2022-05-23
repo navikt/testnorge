@@ -5,6 +5,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
+import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
@@ -68,6 +69,14 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				path={oppholdPath}
 				options={yesNoOptions}
 			/>
+			<AdvancedOptions>
+				<RadioGroupOptions
+					formikBag={formikBag}
+					name={'Har bostedshistorikk'}
+					path={`${bostedPath}.harHistorikk`}
+					options={yesNoOptions}
+				/>
+			</AdvancedOptions>
 		</section>
 	)
 }
@@ -76,6 +85,7 @@ export const AdresserPaths = {
 	[bostedPath + '.borINorge']: 'string',
 	[bostedPath + '.postnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
+	[bostedPath + '.harHistorikk']: 'string',
 	[utlandPath]: 'string',
 	[kontaktPath]: 'string',
 	[oppholdPath]: 'string',

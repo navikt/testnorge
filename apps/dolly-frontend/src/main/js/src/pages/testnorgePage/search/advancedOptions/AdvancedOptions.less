@@ -1,0 +1,42 @@
+@import (reference) '~lessVars';
+
+.advanced-panel {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0 10px 0;
+  padding: 10px;
+  border-left: solid @color-bg-grey-border-darker;
+
+  .advanced-panel-heading {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0 0 0 0;
+      font-size: 0.95em;
+      color: @color-lightblue;
+    }
+    .dolly-button {
+      border: none !important;
+      .svg-icon {
+        fill: @color-lightblue;
+      }
+    }
+
+    &_buttons {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      padding: 0 5px 0 0;
+    }
+  }
+
+  .advanced-panel-content {
+    border-top: 2px solid @color-bg-grey-border;
+    padding-top: 10px;
+  }
+}
