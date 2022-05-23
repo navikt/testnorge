@@ -38,7 +38,7 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
     }
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "identPoll_postVoid"})
+    @Timed(name = "providers", tags = {"operation", "identPool_postVoid"})
     public Mono<Void> call() {
 
         return webClient
