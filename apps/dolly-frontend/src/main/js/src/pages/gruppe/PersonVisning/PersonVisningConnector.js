@@ -5,7 +5,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
-import { incrementSlettedePersoner, incrementImportertePersoner } from '~/ducks/redigertePersoner'
+import { increaseAntallFjernet, decreaseAntallFjernet } from '~/ducks/redigertePersoner'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -53,12 +53,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 		slettPerson: () => {
-			dispatch(incrementSlettedePersoner())
+			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
 		slettPersonOgPartner: (partnerident) => {
-			dispatch(incrementSlettedePersoner())
-			dispatch(incrementSlettedePersoner())
+			dispatch(increaseAntallFjernet())
+			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPersonOgPartner(ownProps.personId, partnerident))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
@@ -71,7 +71,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 				},
 			}),
 		updateAntallImporterte: () => {
-			dispatch(incrementImportertePersoner())
+			dispatch(decreaseAntallFjernet())
 		},
 	}
 }
