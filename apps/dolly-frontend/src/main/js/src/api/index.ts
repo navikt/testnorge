@@ -61,7 +61,7 @@ const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
 			return response.text()
 		})
 		.then((data) => {
-			return data ? JSON.parse(data) : { data }
+			return data ? JSON.parse(data) : {}
 		})
 
 export default {
