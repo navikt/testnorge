@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
@@ -30,6 +31,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
     private final Integer id;
 
     @Override
+    @Timed(name = "providers", tags = {"operation", "pdl_bestilling_personopplysning"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

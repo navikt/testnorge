@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
@@ -26,6 +27,8 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
     private final String npid;
     private final String token;
 
+    @Override
+    @Timed(name = "providers", tags = {"operation", "pdl_opprett_npid_person"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient
