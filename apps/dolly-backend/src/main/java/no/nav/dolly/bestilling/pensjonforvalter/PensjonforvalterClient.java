@@ -133,7 +133,7 @@ public class PensjonforvalterClient implements ClientRegister {
                             var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
                             mergePensjonforvalterResponses(forholdResponse, response);
 
-                            if (nonNull(tp.getYtelser())) {
+                            if (nonNull(tp.getYtelser()) && !tp.getYtelser().isEmpty()) {
                                 var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
                                 mergePensjonforvalterResponses(ytelseResponse, response);
                             }
@@ -172,27 +172,29 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     public static void mergePensjonforvalterResponses(PensjonforvalterResponse response, PensjonforvalterResponse responseTil) {
-        response.getStatus().forEach( status -> {
-            var miljo = status.getMiljo();
-            var miljoResponse = status.getResponse();
+        if (response.getStatus() != null) {
+            response.getStatus().forEach(status -> {
+                var miljo = status.getMiljo();
+                var miljoResponse = status.getResponse();
 
-            if (responseTil.getStatus() == null) {
-                responseTil.setStatus(new ArrayList<>());
-            }
-
-            var mergingTilMiljo = responseTil.getStatus().stream()
-                    .filter( s -> s.getMiljo().equalsIgnoreCase(miljo))
-                    .findFirst();
-
-            if (mergingTilMiljo.isPresent()) {
-                if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
-                    mergingTilMiljo.get().setResponse(miljoResponse);
+                if (responseTil.getStatus() == null) {
+                    responseTil.setStatus(new ArrayList<>());
                 }
-            } else {
-                // det var ingen miljø response tidligere
-                responseTil.getStatus().add(status);
-            }
-        });
+
+                var mergingTilMiljo = responseTil.getStatus().stream()
+                        .filter(s -> s.getMiljo().equalsIgnoreCase(miljo))
+                        .findFirst();
+
+                if (mergingTilMiljo.isPresent()) {
+                    if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
+                        mergingTilMiljo.get().setResponse(miljoResponse);
+                    }
+                } else {
+                    // det var ingen miljø response tidligere
+                    responseTil.getStatus().add(status);
+                }
+            });
+        }
     }
 
     private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {
