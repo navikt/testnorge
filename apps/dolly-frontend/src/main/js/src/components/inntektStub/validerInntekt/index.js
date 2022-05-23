@@ -29,7 +29,11 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	}, [formikBag.values])
 
 	useEffect(() => {
-		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
+		if (
+			inntektValues.inntektstype &&
+			inntektValues.inntektstype !== '' &&
+			Object.keys(fields).length < 1
+		) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
 				(response) => {
 					setFields(response)
