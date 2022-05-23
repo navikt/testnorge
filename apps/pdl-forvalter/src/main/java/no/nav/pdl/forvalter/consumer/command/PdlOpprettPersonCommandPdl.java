@@ -32,7 +32,7 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "pdl_opprett_person"})
+    @Timed(name = "providers", tags = {"operation", "pdl_opprettPerson"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

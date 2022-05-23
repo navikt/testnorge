@@ -26,7 +26,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "pdl_slett_alle_personopplysninger"})
+    @Timed(name = "providers", tags = {"operation", "pdl_slettAllePersonopplysninger"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

@@ -28,7 +28,7 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "pdl_opprett_npid_person"})
+    @Timed(name = "providers", tags = {"operation", "pdl_opprettNpidPperson"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

@@ -31,7 +31,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
     private final Integer id;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "pdl_bestilling_personopplysning"})
+    @Timed(name = "providers", tags = {"operation", "pdl_bestillingPersonopplysning"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

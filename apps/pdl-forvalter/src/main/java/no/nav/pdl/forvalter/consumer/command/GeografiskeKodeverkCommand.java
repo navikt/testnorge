@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ public class GeografiskeKodeverkCommand implements Callable<Flux<GeografiskeKode
     private final String token;
 
     @Override
+    @Timed(name = "providers", tags = {"operation", "geografiskKodeverk_get"})
     public Flux<GeografiskeKodeverkDTO> call() {
         log.info("Henter geografiske kodeverk...");
         return webClient
