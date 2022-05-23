@@ -21,6 +21,7 @@ public class AdresserSearch {
         String borINorge;
         String kommunenummer;
         String postnummer;
+        String historiskKommunenummer;
     }
 
     @Value

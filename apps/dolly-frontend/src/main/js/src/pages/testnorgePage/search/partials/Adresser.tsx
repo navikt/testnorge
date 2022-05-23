@@ -70,11 +70,12 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				options={yesNoOptions}
 			/>
 			<AdvancedOptions>
-				<RadioGroupOptions
-					formikBag={formikBag}
-					name={'Har bostedshistorikk'}
-					path={`${bostedPath}.harHistorikk`}
-					options={yesNoOptions}
+				<FormikSelect
+					name={`${bostedPath}.historiskKommunenummer`}
+					label="Har tidligere bodd i kommune"
+					kodeverk={AdresseKodeverk.Kommunenummer}
+					optionHeight={50}
+					size="medium"
 				/>
 			</AdvancedOptions>
 		</section>
@@ -85,7 +86,7 @@ export const AdresserPaths = {
 	[bostedPath + '.borINorge']: 'string',
 	[bostedPath + '.postnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
-	[bostedPath + '.harHistorikk']: 'string',
+	[bostedPath + '.historiskKommunenummer']: 'string',
 	[utlandPath]: 'string',
 	[kontaktPath]: 'string',
 	[oppholdPath]: 'string',

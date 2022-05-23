@@ -34,6 +34,7 @@ export type Search = {
 			borINorge?: string
 			postnummer?: string
 			kommunenummer?: string
+			historiskKommunenummer?: string
 		}
 		harUtenlandskAdresse?: string
 		harKontaktadresse?: string

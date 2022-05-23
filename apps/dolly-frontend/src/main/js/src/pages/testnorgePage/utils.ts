@@ -38,6 +38,7 @@ export const initialValues = {
 		bostedsadresse: {
 			borINorge: '',
 			kommunenummer: '',
+			historiskKommunenummer: '',
 			postnummer: '',
 		},
 		harUtenlandskAdresse: '',
