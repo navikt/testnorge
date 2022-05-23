@@ -27,10 +27,10 @@ public class ArenaDagpengerService {
     private final InntektService inntektService;
     private final TagsService tagsService;
     private final Random rand = new Random();
-    private final String DAGO_ENHETSNR = "4450";
-    private final String DAGO_KOMMENTAR = "Hoveddokument: Søknad om dagpenger (ikke permittert)";
-    private final String PERM_ENHETSNR = "4455";
-    private final String PERM_KOMMENTAR = "Hoveddokument: Søknad om dagpenger ved permittering";
+    private static final String DAGO_ENHETSNR = "4450";
+    private static final String DAGO_KOMMENTAR = "Hoveddokument: Søknad om dagpenger (ikke permittert)";
+    private static final String PERM_ENHETSNR = "4455";
+    private static final String PERM_KOMMENTAR = "Hoveddokument: Søknad om dagpenger ved permittering";
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2015, 1, 1);
 
     public Map<String, List<DagpengerResponseDTO>> registrerArenaBrukereMedDagpenger(int antall, String miljoe) {
@@ -60,7 +60,7 @@ public class ArenaDagpengerService {
         return responses;
     }
 
-    public List<DagpengerResponseDTO> sendDagpenger(String ident, String miljoe, LocalDate vedtakdato) {
+    private List<DagpengerResponseDTO> sendDagpenger(String ident, String miljoe, LocalDate vedtakdato) {
         var rettighetKode = rand.nextDouble() > 0.13 ? Dagpengerettighet.DAGO : Dagpengerettighet.PERM;
 
         var soknadRequest = getDagpengesoknadRequest(ident, miljoe, rettighetKode);
