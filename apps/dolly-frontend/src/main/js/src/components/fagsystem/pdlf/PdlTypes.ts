@@ -120,6 +120,7 @@ export type ForeldreBarnRelasjon = {
 	relatertPersonsIdent: string
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
+	typeForelderBarn?: string
 }
 
 export type DoedfoedtBarn = {
