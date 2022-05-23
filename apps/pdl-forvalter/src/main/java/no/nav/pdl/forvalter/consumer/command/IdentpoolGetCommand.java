@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
     }
 
     @Override
+    @Timed(name = "providers", tags = {"operation", "identPool_checkStatus"})
     public Mono<IdentpoolStatusDTO> call() {
 
         return webClient

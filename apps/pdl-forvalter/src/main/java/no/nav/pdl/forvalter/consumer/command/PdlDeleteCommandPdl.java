@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import org.springframework.boot.web.server.WebServerException;
@@ -25,6 +26,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
     private final String token;
 
     @Override
+    @Timed(name = "providers", tags = {"operation", "pdl_slettAllePersonopplysninger"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

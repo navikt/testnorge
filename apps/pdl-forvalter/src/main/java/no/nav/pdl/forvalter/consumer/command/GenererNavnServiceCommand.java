@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,7 @@ public class GenererNavnServiceCommand implements Callable<Mono<NavnDTO[]>> {
     private final String token;
 
     @Override
+    @Timed(name = "providers", tags = {"operation", "genererNavnService_get"})
     public Mono<NavnDTO[]> call() {
 
         return webClient

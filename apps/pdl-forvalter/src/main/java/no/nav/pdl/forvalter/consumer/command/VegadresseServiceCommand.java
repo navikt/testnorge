@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +52,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
     }
 
     @Override
+    @Timed(name = "providers", tags = {"operation", "adresseService_vegAdresse"})
     public Mono<VegadresseDTO[]> call() {
 
         return webClient

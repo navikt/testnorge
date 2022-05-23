@@ -1,4 +1,4 @@
-package no.nav.dolly.metrics;
+package no.nav.pdl.forvalter.metrics;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
@@ -7,12 +7,11 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
-public class TimedMethodInterceptor implements MethodInterceptor, Serializable {
+public class TimedMethodInterceptor implements MethodInterceptor {
     private final MeterRegistry registry;
 
     @Override
