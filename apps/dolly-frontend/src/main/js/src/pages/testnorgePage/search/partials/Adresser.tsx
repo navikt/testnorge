@@ -23,7 +23,8 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			label: 'Nei',
 			disabled:
 				_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
-				_get(formikBag.values, `${bostedPath}.postnummer`),
+				_get(formikBag.values, `${bostedPath}.postnummer`) ||
+				_get(formikBag.values, `${bostedPath}.bydelsnummer`),
 		},
 	]
 	return (
@@ -46,6 +47,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={`${bostedPath}.bydelsnummer`}
 				label="Bosted - Bydel"
 				kodeverk={GtKodeverk.BYDEL}
+				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
