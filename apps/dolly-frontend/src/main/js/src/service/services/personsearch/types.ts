@@ -35,6 +35,7 @@ export type Search = {
 			postnummer?: string
 			kommunenummer?: string
 			historiskKommunenummer?: string
+			historiskPostnummer?: string
 		}
 		harUtenlandskAdresse?: string
 		harKontaktadresse?: string

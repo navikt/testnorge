@@ -71,11 +71,20 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<AdvancedOptions>
 				<FormikSelect
+					name={`${bostedPath}.historiskPostnummer`}
+					label="Har tidligere hatt postnummer"
+					kodeverk={AdresseKodeverk.Postnummer}
+					optionHeight={50}
+					size="medium"
+					info="Velg postnummer tilknyttet tidligere bostedsadresse."
+				/>
+				<FormikSelect
 					name={`${bostedPath}.historiskKommunenummer`}
 					label="Har tidligere bodd i kommune"
 					kodeverk={AdresseKodeverk.Kommunenummer}
 					optionHeight={50}
 					size="medium"
+					info="Velg kommunenummer tilknyttet tidligere bostedsadresse."
 				/>
 			</AdvancedOptions>
 		</section>
@@ -87,6 +96,7 @@ export const AdresserPaths = {
 	[bostedPath + '.postnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
 	[bostedPath + '.historiskKommunenummer']: 'string',
+	[bostedPath + '.historiskPostnummer']: 'string',
 	[utlandPath]: 'string',
 	[kontaktPath]: 'string',
 	[oppholdPath]: 'string',
