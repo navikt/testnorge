@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class HentGeografiskTilknytningModal {
+public class HentGeografiskTilknytningModel {
     private String gtType;
     private String gtLand;
     private String gtKommune;
