@@ -38,8 +38,6 @@ export type Search = {
 			historiskBydelsnummer?: string
 			historiskPostnummer?: string
 			historiskKommunenummer?: string
-			historiskBydelsnummer?: string
-			historiskPostnummer?: string
 		}
 		harUtenlandskAdresse?: string
 		harKontaktadresse?: string
