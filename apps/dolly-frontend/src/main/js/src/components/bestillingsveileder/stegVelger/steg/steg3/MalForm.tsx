@@ -23,12 +23,10 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		}))
 	}
 
-	const [malOptions, setMalOptions] = useState([])
+	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
 	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
 
 	if (loading) return <Loading label="Laster maler..." />
-
-	setMalOptions(getMalOptions(maler))
 
 	const toggleValues = [
 		{
@@ -44,7 +42,6 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 			label: 'Overskriv eksisterende mal',
 		},
 	]
-	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
 
 	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
@@ -79,7 +76,7 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 					name={'malBestillingNavn'}
 					size={'xlarge'}
 					label="Malnavn"
-					options={malOptions}
+					options={getMalOptions(maler)}
 					fastfield={false}
 				/>
 			) : (

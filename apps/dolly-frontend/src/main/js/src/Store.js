@@ -9,7 +9,6 @@ import loadingReducer from './ducks/loading'
 import errorsReducer from './ducks/errors'
 import bestillingReducer from './ducks/bestilling'
 import bestillingStatusReducer from './ducks/bestillingStatus'
-import environmentsReducer from './ducks/environments'
 import kodeverkReducer from './ducks/kodeverk'
 import varslingerReducer from './ducks/varslinger'
 import finnPersonReducer from './ducks/finnPerson'
@@ -55,7 +54,6 @@ const rootReducer = () =>
 		loading: loadingReducer,
 		errors: errorsReducer,
 		common: commonReducer,
-		environments: environmentsReducer,
 		kodeverk: kodeverkReducer,
 		varslinger: varslingerReducer,
 		finnPerson: finnPersonReducer,

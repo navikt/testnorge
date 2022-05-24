@@ -25,8 +25,8 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 		})
 	)
 
-const searchPdlFragment = (fragment: string) => {
-	return Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
+const searchPdlFragment = (fragment: string) =>
+	Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
 	}).then((response) =>
@@ -37,7 +37,6 @@ const searchPdlFragment = (fragment: string) => {
 			})),
 		}))
 	)
-}
 
 const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
 	if (searchRequest?.relasjoner?.barn === 'M') {

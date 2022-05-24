@@ -9,25 +9,15 @@ import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton'
 import { Header } from '~/components/ui/header/Header'
 import Formatters from '~/utils/DataFormatter'
-import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/GjenopprettGruppeConnector'
 
 import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
-import { InferProps, Requireable } from 'prop-types'
 import { PopoverOrientering } from 'nav-frontend-popover'
+import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/GjenopprettGruppe'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type GruppeHeaderProps = {
-	gruppe: InferProps<{
-		erLaast: boolean
-		id: Requireable<number>
-		navn: Requireable<string>
-		hensikt: Requireable<string>
-		antallIdenter: Requireable<number>
-		opprettetAv: {}
-		tags: []
-		datoEndret: Date
-		erEierAvGruppe: boolean
-	}>
+	gruppe: Gruppe
 	antallSlettet: number
 	laasGruppe: Function
 	isLockingGruppe: boolean
@@ -37,12 +27,10 @@ type GruppeHeaderProps = {
 	isFetchingExcel: boolean
 	isSendingTags: boolean
 	sendTags: Function
-	bestillingStatuser: any
 }
 
 const GruppeHeader = ({
 	gruppe,
-	bestillingStatuser,
 	deleteGruppe,
 	isDeletingGruppe,
 	getGruppeExcelFil,
@@ -152,11 +140,7 @@ const GruppeHeader = ({
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
-				<GjenopprettGruppeConnector
-					onClose={skjulGjenopprettModal}
-					gruppe={gruppe}
-					bestillingStatuser={bestillingStatuser}
-				/>
+				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppe={gruppe} />
 			)}
 		</Fragment>
 	)

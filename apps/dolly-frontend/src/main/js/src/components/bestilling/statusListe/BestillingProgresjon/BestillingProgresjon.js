@@ -119,7 +119,6 @@ export default class BestillingProgresjon extends PureComponent {
 		if (data.ferdig) {
 			setTimeout(async () => {
 				await this.props.getBestillinger() // state.ferdig = true
-				await this.props.getGruppe()
 			}, this.TIMEOUT_BEFORE_HIDE)
 		} else {
 			this.harBestillingFeilet(data.sistOppdatert)

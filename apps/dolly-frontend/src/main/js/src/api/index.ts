@@ -4,7 +4,8 @@ import { Argument } from 'classnames'
 const originalFetch = require('isomorphic-fetch')
 const fetch = require('fetch-retry')(originalFetch)
 
-export const fetcher = (...args: Argument[]) => fetch(...args).then((res: Response) => res.json())
+export const fetcher = (...args: Argument[]) =>
+	originalFetch(...args).then((res: Response) => res.json())
 
 export const imageFetcher = (...args: Argument[]) =>
 	fetch(...args).then((res: Response) => res.blob().then((blob: Blob) => URL.createObjectURL(blob)))

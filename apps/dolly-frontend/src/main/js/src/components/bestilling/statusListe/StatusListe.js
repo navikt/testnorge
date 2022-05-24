@@ -8,7 +8,6 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 export default function StatusListe({
 	cancelBestilling,
 	getBestillinger,
-	getGruppe,
 	getOrganisasjoner,
 	isCanceling,
 	isFetchingBestillinger,
@@ -47,7 +46,6 @@ export default function StatusListe({
 				) : (
 					<BestillingProgresjon
 						bestilling={bestilling}
-						getGruppe={getGruppe}
 						getOrganisasjoner={getOrganisasjoner}
 						getBestillinger={getBestillinger}
 						cancelBestilling={cancelBestilling}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -8,41 +8,47 @@ import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useGruppeAlle } from '~/utils/hooks/useGruppe'
+import { useDispatch } from 'react-redux'
+import { setSidetall } from '~/ducks/finnPerson'
+
+type GruppeOversiktProps = {
+	importerteZIdenter: any
+	sidetall: number
+	sideStoerrelse: number
+	gruppeInfo: any
+	searchActive: boolean
+}
+
+enum VisningType {
+	MINE = 'mine',
+	ALLE = 'alle',
+}
 
 export default function GruppeOversikt({
-	getGrupper,
-	fetchMineGrupper,
-	isFetching,
-	gruppeListe,
 	gruppeInfo,
-	mineIds,
-	searchActive,
 	importerteZIdenter,
-	brukerProfil,
-	sidetall,
+	searchActive,
 	sideStoerrelse,
-}) {
+	sidetall,
+}: GruppeOversiktProps) {
 	const {
-		currentBruker: { brukerId },
+		currentBruker: { brukerId, brukertype },
 	} = useCurrentBruker()
-	const [visning, setVisning] = useState('mine')
+	const [visning, setVisning] = useState(VisningType.MINE)
 	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
+	const { grupper, loading } = useGruppeAlle(visning === VisningType.MINE ? brukerId : null)
+	const dispatch = useDispatch()
 
-	useEffect(() => {
-		visning === 'mine' ? fetchMineGrupper(brukerId) : getGrupper(sidetall, sideStoerrelse)
-	}, [visning, sidetall, sideStoerrelse])
-
-	const byttVisning = (event) => {
+	const byttVisning = (event: BaseSyntheticEvent) => {
 		setVisning(event.target.value)
+		dispatch(setSidetall(0))
 	}
 
 	if (importerteZIdenter !== importerte) {
-		fetchMineGrupper()
 		setImporterte(importerteZIdenter)
 	}
-
-	const items = visning === 'mine' ? gruppeListe.filter((v) => mineIds.includes(v.id)) : gruppeListe
 
 	return (
 		<div className="oversikt-container">
@@ -60,12 +66,12 @@ export default function GruppeOversikt({
 				</NavButton>
 				<div style={{ marginTop: '9px' }}>
 					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp value="mine" checked={visning === 'mine'}>
-							<Icon size={16} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
+						<ToggleKnapp value="mine" checked={visning === VisningType.MINE}>
+							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
 							Mine
 						</ToggleKnapp>
-						<ToggleKnapp value="alle" checked={visning === 'alle'}>
-							<Icon size={16} kind={visning === 'alle' ? 'groupLight' : 'groupDark'} />
+						<ToggleKnapp value="alle" checked={visning === VisningType.ALLE}>
+							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
 							Alle
 						</ToggleKnapp>
 					</ToggleGruppe>
@@ -76,13 +82,12 @@ export default function GruppeOversikt({
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
-				gruppeDetaljer={visning === 'alle' ? gruppeInfo : { pageSize: sideStoerrelse }}
-				items={items}
-				isFetching={isFetching}
+				gruppeDetaljer={visning === VisningType.ALLE ? gruppeInfo : { pageSize: sideStoerrelse }}
+				items={grupper}
+				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}
-				sideStoerrelse={sideStoerrelse}
-				brukerProfil={brukerProfil}
+				brukertype={brukertype}
 			/>
 		</div>
 	)

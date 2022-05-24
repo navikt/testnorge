@@ -120,19 +120,12 @@ export const fetchMineGrupper = (brukerId) => async (dispatch) => {
 	return dispatch(actions.getByUserId(brukerId))
 }
 
-export const fetchIdenterById = (gruppeId, sidetall, sideStoerrelse) => async (dispatch) => {
-	return dispatch(actions.getIdenterById(gruppeId, sidetall, sideStoerrelse))
-}
-
 // Selector
 export const loadingGrupper = createLoadingSelector([
 	actions.getById,
 	actions.getAlle,
 	actions.getByUserId,
 ])
-
-export const selectGruppeById = (gruppe, gruppeId) => gruppe.byId[gruppeId]
-export const selectIdentById = (state, ident) => state.gruppe.ident[ident]
 
 export const sokSelectorGruppeOversikt = (state) => {
 	const { search, gruppe } = state

@@ -1,11 +1,10 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
-import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
 import { incrementSlettedePersoner } from '~/ducks/redigertePersoner'
+import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -40,16 +39,15 @@ const loadingSelector = createSelector(
 
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
-	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
-	bestilling: getBestillingById(state, ownProps.bestillingId),
-	bestillingsListe: getBestillingsListe(state, ownProps.bestillingsIdListe),
+	bestilling: getBestillingById(state, ownProps.bestillingsIdListe[0]),
+	bestillingListe: getBestillingsListe(state, ownProps.bestillingsIdListe),
 	tmpPersoner: state.redigertePersoner,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
+		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.ident)),
 		slettPerson: () => {
 			dispatch(incrementSlettedePersoner())
 			return dispatch(actions.slettPerson(ownProps.personId))

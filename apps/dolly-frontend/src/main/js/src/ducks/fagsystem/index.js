@@ -16,7 +16,6 @@ import {
 	TpsMessagingApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
-import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
@@ -292,11 +291,9 @@ export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
+export const fetchDataFraFagsystemer = (person) => (dispatch, getState) => {
 	const state = getState()
-
-	// Person fra gruppe
-	const person = selectIdentById(state, personId)
+	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
 	const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
@@ -412,7 +409,10 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 }
 
 export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
-	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+	if (
+		!identer ||
+		(_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+	)
 		return null
 
 	// Sortert etter bestillingsId

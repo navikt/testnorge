@@ -43,16 +43,16 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
-	gruppeId,
 	brukertype,
-	bestilling,
-	bestillingsListe,
 	loading,
 	slettPerson,
+	bestilling,
+	bestillingListe,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
 }) => {
+	const { gruppeId } = ident
 	useMount(fetchDataFraFagsystemer)
 
 	const mountedRef = useRef(true)
@@ -73,7 +73,7 @@ export const PersonVisning = ({
 							onClick={() =>
 								leggTilPaaPerson(
 									data,
-									bestillingsListe,
+									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
@@ -100,7 +100,7 @@ export const PersonVisning = ({
 				</div>
 				{ident.master !== 'PDL' && (
 					<TpsfVisning
-						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+						data={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
 						pdlData={data.pdlforvalter?.person}
 						environments={bestilling?.environments}
 						tmpPersoner={tmpPersoner?.pdlforvalter}
@@ -117,16 +117,16 @@ export const PersonVisning = ({
 				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
+					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
-				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
 				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 				<InstVisning data={data.instdata} loading={loading.instdata} />
 				<ArenaVisning
 					data={data.arenaforvalteren}
-					bestillinger={bestillingsListe}
+					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 				/>
 				<UdiVisning

@@ -8,7 +8,6 @@ import Loading from '~/components/ui/loading/Loading'
 import './TagsButton.less'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { actions } from '~/ducks/gruppe'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { useDispatch } from 'react-redux'
 
@@ -16,7 +15,7 @@ type Props = {
 	action: Function
 	loading: boolean
 	gruppeId: number
-	eksisterendeTags: [string]
+	eksisterendeTags: string[]
 }
 
 export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Props) => {
@@ -61,7 +60,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 						<NavButton
 							onClick={() => {
 								action(gruppeId, tags).then(() => {
-									dispatch(actions.getById(gruppeId, 0, 10))
+									// dispatch(actions.getById(gruppeId, 0, 10))
 									closeModal()
 								})
 							}}

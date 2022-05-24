@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
@@ -14,19 +14,12 @@ import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBest
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useGruppeAlle } from '~/utils/hooks/useGruppe'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 
 export type GruppeProps = {
-	visBestilling: string
-	getGruppe: (arg0: string, arg1: number, arg2: number) => void
-	getBestillinger: (arg0: string) => void
-	selectGruppe: (arg0: Object[], arg1: string) => any
-	grupper: Object[]
-	isFetching: boolean
 	visning: string
 	setVisning: Function
-	bestillingStatuser: any
-	brukertype: string
-	brukernavn: string
 	antallSlettet: number
 }
 
@@ -35,41 +28,25 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default function Gruppe({
-	bestillingStatuser,
-	getBestillinger,
-	getGruppe,
-	grupper,
-	visning,
-	setVisning,
-	isFetching,
-	selectGruppe,
-	antallSlettet,
-}: GruppeProps) {
+export default function Gruppe({ visning, setVisning, antallSlettet }: GruppeProps) {
+	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
+	const { grupperById, loading } = useGruppeAlle()
+	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(Number(gruppeId))
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
-	const [gruppe, setGruppe] = useState(null)
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	const { gruppeId } = useParams()
 
-	useEffect(() => {
-		getGruppe(gruppeId, 0, 10)
-		getBestillinger(gruppeId)
-	}, [gruppeId])
-
-	useEffect(() => {
-		setGruppe(selectGruppe(grupper, gruppeId))
-	}, [grupper])
-
-	if (isFetching || !gruppe) {
+	if (loading || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
+	// @ts-ignore
+	const gruppe = grupperById[gruppeId]
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
 		dispatch(resetNavigering())
@@ -87,7 +64,7 @@ export default function Gruppe({
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppe={gruppe} bestillingStatuser={bestillingStatuser} />
+			<GruppeHeaderConnector gruppe={gruppe} />
 
 			<StatusListeConnector gruppeId={gruppe.id} />
 
@@ -136,7 +113,7 @@ export default function Gruppe({
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
-							{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
+							{`Bestillinger (${Object.keys(bestillingerById).length})`}
 						</ToggleKnapp>
 					</ToggleGruppe>
 				</div>
@@ -153,10 +130,14 @@ export default function Gruppe({
 			)}
 
 			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
+				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} gruppeId={gruppeId} />
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (
-				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
+				<BestillingListeConnector
+					iLaastGruppe={erLaast}
+					brukertype={brukertype}
+					gruppeId={gruppeId}
+				/>
 			)}
 		</div>
 	)
