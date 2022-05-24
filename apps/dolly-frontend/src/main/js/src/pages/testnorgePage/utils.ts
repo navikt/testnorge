@@ -37,12 +37,12 @@ export const initialValues = {
 	adresser: {
 		bostedsadresse: {
 			borINorge: '',
-			kommunenummer: '',
-			historiskKommunenummer: '',
 			postnummer: '',
-			historiskPostnummer: '',
 			bydelsnummer: '',
+			kommunenummer: '',
+			historiskPostnummer: '',
 			historiskBydelsnummer: '',
+			historiskKommunenummer: '',
 		},
 		harUtenlandskAdresse: '',
 		harKontaktadresse: '',
