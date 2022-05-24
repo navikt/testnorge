@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Response {
-    HentPersonModel hentPerson;
-    HentIdenterModel hentIdenter;
-    HentGeografiskTilknytningModal hentGeografiskTilknytning;
-    List<String> tags;
+public class HentGeografiskTilknytningModal {
+    private String gtType;
+    private String gtLand;
+    private String gtKommune;
+    private String gtBydel;
+    private String regel;
 }
