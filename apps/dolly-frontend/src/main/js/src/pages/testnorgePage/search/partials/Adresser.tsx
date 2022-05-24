@@ -5,7 +5,6 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
-import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
@@ -85,24 +84,6 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				path={oppholdPath}
 				options={yesNoOptions}
 			/>
-			{/*<AdvancedOptions>*/}
-			{/*	<FormikSelect*/}
-			{/*		name={`${bostedPath}.historiskPostnummer`}*/}
-			{/*		label="Har tidligere hatt postnummer"*/}
-			{/*		kodeverk={AdresseKodeverk.Postnummer}*/}
-			{/*		optionHeight={50}*/}
-			{/*		size="medium"*/}
-			{/*		info="Velg postnummer tilknyttet tidligere bostedsadresse."*/}
-			{/*	/>*/}
-			{/*	<FormikSelect*/}
-			{/*		name={`${bostedPath}.historiskKommunenummer`}*/}
-			{/*		label="Har tidligere bodd i kommune"*/}
-			{/*		kodeverk={AdresseKodeverk.Kommunenummer}*/}
-			{/*		optionHeight={50}*/}
-			{/*		size="medium"*/}
-			{/*		info="Velg kommunenummer tilknyttet tidligere bostedsadresse."*/}
-			{/*	/>*/}
-			{/*</AdvancedOptions>*/}
 		</section>
 	)
 }
