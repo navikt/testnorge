@@ -25,15 +25,17 @@ brukes. Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp idente
 søkeløsning og deretter importere dem til ønsket Dolly gruppe. 
 
 ### Import av partner
-Det er også mulig å inkludere valgte personers partnere i import. Hvis en eller flere av valgte identer har partner så vil man bli spurt om man
-ønsker å inkludere dem i importen eller ikke. Videoen under viser en demo for dette.
+Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd. Hvis valgt person har en 
+partner som ikke allerede er valgt for import blir man nå spurt om man ønsker å inkludere dem eller ikke.
+Videoen under viser en demo for dette.
 
 <video src="https://user-images.githubusercontent.com/58416744/169964310-ca58536f-210f-4b00-ae91-ec7bf8ecded4.mov"
        controls="controls" style="max-width: 730px;" >
 
 </video>
 
-Det er også mulig å importere partnere etter import. Dette kan gjøres direkte i personvisning. Videoen under viser en demo for dette.
+Det er også mulig å importere partner etter opprinnelig import av person. Dette kan gjøres direkte i personvisning. 
+Videoen under viser en demo for dette.
 
 <video src="https://user-images.githubusercontent.com/58416744/169964561-975783ea-3279-467b-8448-7aba3fecbac0.mov"
        controls="controls" style="max-width: 730px;" >
