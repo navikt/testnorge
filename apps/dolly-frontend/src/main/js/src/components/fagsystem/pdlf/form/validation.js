@@ -577,7 +577,11 @@ export const validation = {
 					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
 						is: null,
 						then: Yup.mixed()
-							.test('max', 'Alder må være mindre enn 123 år', (val) => val && parseInt(val) < 123)
+							.test(
+								'max',
+								`Alder må være mindre enn ${new Date().getFullYear() - 1899} år`,
+								(val) => val && new Date().getFullYear() - parseInt(val) >= 1900
+							)
 							.test('min', 'Alder må være minst 0 år', (val) => val && parseInt(val) >= 0)
 							.required(messages.required)
 							.nullable(),
