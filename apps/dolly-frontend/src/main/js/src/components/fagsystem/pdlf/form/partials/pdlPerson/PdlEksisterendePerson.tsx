@@ -9,6 +9,7 @@ import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
 import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
@@ -49,9 +50,9 @@ export const PdlEksisterendePerson = ({
 		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
 
 	return (
-		<>
+		<div className={'flexbox--full-width'}>
 			{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
-			{identOptions?.length > 0 && (
+			{identOptions?.length > 0 ? (
 				<FormikSelect
 					name={eksisterendePersonPath}
 					label={label}
@@ -59,7 +60,13 @@ export const PdlEksisterendePerson = ({
 					size={'xlarge'}
 					disabled={hasNyPersonValues || disabled}
 				/>
+			) : (
+				!loadingIdentOptions && (
+					<AlertStripeInfo style={{ marginBottom: '15px' }}>
+						Det finnes ingen eksisterende personer i denne gruppen.
+					</AlertStripeInfo>
+				)
 			)}
-		</>
+		</div>
 	)
 }
