@@ -80,7 +80,7 @@ public class QueryUtils {
         for (String field : fields) {
             boolQuery.should(QueryBuilders.matchQuery(path + field, value));
         }
-        if (historisk) {
+        if (!historisk) {
             boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, false));
         }
         boolQuery.minimumShouldMatch(minimumShould);
