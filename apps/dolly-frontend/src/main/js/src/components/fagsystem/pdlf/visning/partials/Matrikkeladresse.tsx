@@ -21,8 +21,15 @@ interface MatrikkeladresseValues {
 }
 
 export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
-	const { kommunenummer, gaardsnummer, bruksnummer, postnummer, bruksenhetsnummer, tilleggsnavn } =
-		adresse.matrikkeladresse
+	const {
+		kommunenummer,
+		gaardsnummer,
+		bruksnummer,
+		postnummer,
+		bruksenhetsnummer,
+		tilleggsnavn,
+		bydelsnummer,
+	} = adresse.matrikkeladresse
 	const {
 		angittFlyttedato,
 		gyldigFraOgMed,
@@ -44,6 +51,15 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 						<KodeverkConnector navn="Postnummer" value={postnummer}>
 							{(v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : postnummer}</span>
+							)}
+						</KodeverkConnector>
+					)}
+				</TitleValue>
+				<TitleValue title="Bydelsnummer">
+					{bydelsnummer && (
+						<KodeverkConnector navn="Bydeler" value={bydelsnummer}>
+							{(v: Kodeverk, verdi: KodeverkValues) => (
+								<span>{verdi ? bydelsnummer + ' - ' + verdi.label : bydelsnummer}</span>
 							)}
 						</KodeverkConnector>
 					)}
