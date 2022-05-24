@@ -22,6 +22,7 @@ public class AdresserSearch {
         String kommunenummer;
         String postnummer;
         String historiskKommunenummer;
+        String historiskPostnummer;
     }
 
     @Value
