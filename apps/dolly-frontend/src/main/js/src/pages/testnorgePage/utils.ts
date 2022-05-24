@@ -97,7 +97,6 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			identer: identer,
 			identifikasjon: values?.identifikasjon,
 			relasjoner: {
-				sivilstand: values?.relasjoner?.sivilstand,
 				harDoedfoedtBarn: values?.relasjoner?.harDoedfoedtBarn,
 				forelderBarnRelasjoner: values?.relasjoner?.forelderBarnRelasjoner,
 				barn: values?.relasjoner?.barn,

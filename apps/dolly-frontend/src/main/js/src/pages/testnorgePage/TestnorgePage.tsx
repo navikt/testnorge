@@ -30,7 +30,7 @@ export default () => {
 				setItems(response.items)
 				setLoading(false)
 			})
-			.catch((e: Exception) => {
+			.catch((_e: Exception) => {
 				setLoading(false)
 				setError('Noe gikk galt med søket. Ta kontakt med Dolly hvis feilen vedvarer.')
 			})
