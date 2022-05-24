@@ -33,8 +33,10 @@ export type Search = {
 		bostedsadresse?: {
 			borINorge?: string
 			postnummer?: string
+			bydelsnummer?: string
 			kommunenummer?: string
 			historiskKommunenummer?: string
+			historiskBydelsnummer?: string
 			historiskPostnummer?: string
 		}
 		harUtenlandskAdresse?: string

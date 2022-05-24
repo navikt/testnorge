@@ -1,7 +1,7 @@
 import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
@@ -43,6 +43,13 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				size="medium"
 			/>
 			<FormikSelect
+				name={`${bostedPath}.bydelsnummer`}
+				label="Bosted - Bydel"
+				kodeverk={GtKodeverk.BYDEL}
+				optionHeight={50}
+				size="medium"
+			/>
+			<FormikSelect
 				name={`${bostedPath}.kommunenummer`}
 				label="Bosted - Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
@@ -57,6 +64,14 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				optionHeight={50}
 				size="medium"
 				info="Velg postnummer tilknyttet tidligere bostedsadresse."
+			/>
+			<FormikSelect
+				name={`${bostedPath}.historiskBydelsnummer`}
+				label="Har tidligere bodd i bydel"
+				kodeverk={GtKodeverk.BYDEL}
+				optionHeight={50}
+				size="medium"
+				info="Velg bydel tilknyttet tidligere bostedsadresse."
 			/>
 			<FormikSelect
 				name={`${bostedPath}.historiskKommunenummer`}
@@ -91,8 +106,10 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 export const AdresserPaths = {
 	[bostedPath + '.borINorge']: 'string',
 	[bostedPath + '.postnummer']: 'string',
+	[bostedPath + '.bydelsnummer']: 'string',
 	[bostedPath + '.kommunenummer']: 'string',
 	[bostedPath + '.historiskKommunenummer']: 'string',
+	[bostedPath + '.historiskBydelsnummer']: 'string',
 	[bostedPath + '.historiskPostnummer']: 'string',
 	[utlandPath]: 'string',
 	[kontaktPath]: 'string',

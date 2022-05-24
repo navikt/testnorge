@@ -41,6 +41,8 @@ export const initialValues = {
 			historiskKommunenummer: '',
 			postnummer: '',
 			historiskPostnummer: '',
+			bydelsnummer: '',
+			historiskBydelsnummer: '',
 		},
 		harUtenlandskAdresse: '',
 		harKontaktadresse: '',
