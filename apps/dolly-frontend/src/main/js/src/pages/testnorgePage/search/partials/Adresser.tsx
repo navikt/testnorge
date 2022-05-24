@@ -29,6 +29,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 	]
 	return (
 		<section>
+			<div className="options-title-bold">Nåværende bostedsadresse</div>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har bostedsadresse i Norge'}
@@ -37,7 +38,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<FormikSelect
 				name={`${bostedPath}.postnummer`}
-				label="Bosted - Postnummer"
+				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
 				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
 				optionHeight={50}
@@ -45,7 +46,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<FormikSelect
 				name={`${bostedPath}.bydelsnummer`}
-				label="Bosted - Bydel"
+				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
 				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
 				optionHeight={50}
@@ -53,12 +54,13 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<FormikSelect
 				name={`${bostedPath}.kommunenummer`}
-				label="Bosted - Kommunenummer"
+				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
+			<div className="options-title-bold">Tidligere bostedsadresse</div>
 			<FormikSelect
 				name={`${bostedPath}.historiskPostnummer`}
 				label="Har tidligere hatt postnummer"
@@ -83,6 +85,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				size="medium"
 				info="Velg kommunenummer tilknyttet tidligere bostedsadresse."
 			/>
+			<div className="options-title-bold">Annet</div>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har utenlandsk adresse'}
