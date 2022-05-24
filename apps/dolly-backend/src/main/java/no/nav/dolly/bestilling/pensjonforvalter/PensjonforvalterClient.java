@@ -122,31 +122,31 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(TP_FORHOLD).append('#');
         PensjonforvalterResponse response = new PensjonforvalterResponse();
 
-            pensjonData.getTp()
-                    .stream()
-                    .forEach(tp -> {
-                        try {
-                            LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
-                            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-                            lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
+        pensjonData.getTp()
+                .stream()
+                .forEach(tp -> {
+                    try {
+                        LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                        lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                        lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
 
-                            var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
-                            mergePensjonforvalterResponses(forholdResponse, response);
+                        var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
+                        mergePensjonforvalterResponses(forholdResponse, response);
 
-                            if (nonNull(tp.getYtelser()) && !tp.getYtelser().isEmpty()) {
-                                var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
-                                mergePensjonforvalterResponses(ytelseResponse, response);
-                            }
-                        } catch (RuntimeException e) {
-                            exceptions.add(errorStatusDecoder.decodeRuntimeException(e));
+                        if (!tp.getYtelser().isEmpty()) {
+                            var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
+                            mergePensjonforvalterResponses(ytelseResponse, response);
                         }
-                    });
+                    } catch (RuntimeException e) {
+                        exceptions.add(errorStatusDecoder.decodeRuntimeException(e));
+                    }
+                });
 
-            if (exceptions.isEmpty()) {
-                decodeStatus(response, status);
-            } else {
-                status.append(exceptions.get(0));
-            }
+        if (exceptions.isEmpty()) {
+            decodeStatus(response, status);
+        } else {
+            status.append(exceptions.get(0));
+        }
 
     }
 
