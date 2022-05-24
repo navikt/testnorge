@@ -18,7 +18,6 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 	).then((response) =>
 		(response.json() as Promise<string[]>).then((items) => {
 			const pdlResponse = items.map((item) => JSON.parse(item))
-			console.log('pdlResponse: ', pdlResponse) //TODO - SLETT MEG
 			return {
 				items: pdlResponse,
 				numberOfItems: parseInt(response.headers.get('number_of_items')),
