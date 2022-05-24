@@ -26,6 +26,7 @@ public class AdresserUtils {
     private static final String OPPHOLDSADRESSE_PATH = "hentPerson.oppholdsadresse";
     private static final List<String> KOMMUNEMNR_FIELDS = Arrays.asList(".vegadresse.kommunenummer", ".matrikkeladresse.kommunenummer");
     private static final List<String> POSTNR_FIELDS = Arrays.asList(".vegadresse.postnummer", ".matrikkeladresse.postnummer");
+    private static final List<String> BYDELSNR_FIELDS = Arrays.asList(".vegadresse.bydelsnummer", ".matrikkeladresse.bydelsnummer");
 
     public static void addAdresserQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getAdresser())
@@ -35,6 +36,8 @@ public class AdresserUtils {
                         addHistoriskKommunenrBostedQuery(queryBuilder, adresser.getBostedsadresse());
                         addPostnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
                         addHistoriskPostnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
+                        addBydelsnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
+                        addHistoriskBydelsnrBostedQuery(queryBuilder, adresser.getBostedsadresse());
                         addBorINorgeQuery(queryBuilder, adresser.getBostedsadresse());
                     }
                     if (nonNull(adresser.getOppholdsadresse())) {
@@ -78,6 +81,24 @@ public class AdresserUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, YES));
+                    }
+                });
+    }
+
+    private static void addBydelsnrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
+        Optional.ofNullable(bostedsadresse.getBydelsnummer())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, NO));
+                    }
+                });
+    }
+
+    private static void addHistoriskBydelsnrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
+        Optional.ofNullable(bostedsadresse.getHistoriskBydelsnummer())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, YES));
                     }
                 });
     }

@@ -20,8 +20,10 @@ public class AdresserSearch {
     public class BostedsadresseSearch {
         String borINorge;
         String kommunenummer;
+        String bydelsnummer;
         String postnummer;
         String historiskKommunenummer;
+        String historiskBydelsnummer;
         String historiskPostnummer;
     }
 

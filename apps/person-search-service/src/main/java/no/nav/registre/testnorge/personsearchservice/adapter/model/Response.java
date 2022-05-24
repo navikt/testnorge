@@ -12,6 +12,5 @@ import java.util.List;
 public class Response {
     HentPersonModel hentPerson;
     HentIdenterModel hentIdenter;
-    HentGeografiskTilknytningModel hentGeografiskTilknytning;
     List<String> tags;
 }
