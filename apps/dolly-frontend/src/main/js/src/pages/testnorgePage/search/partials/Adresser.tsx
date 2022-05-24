@@ -51,6 +51,22 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				optionHeight={50}
 				size="medium"
 			/>
+			<FormikSelect
+				name={`${bostedPath}.historiskPostnummer`}
+				label="Har tidligere hatt postnummer"
+				kodeverk={AdresseKodeverk.Postnummer}
+				optionHeight={50}
+				size="medium"
+				info="Velg postnummer tilknyttet tidligere bostedsadresse."
+			/>
+			<FormikSelect
+				name={`${bostedPath}.historiskKommunenummer`}
+				label="Har tidligere bodd i kommune"
+				kodeverk={AdresseKodeverk.Kommunenummer}
+				optionHeight={50}
+				size="medium"
+				info="Velg kommunenummer tilknyttet tidligere bostedsadresse."
+			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har utenlandsk adresse'}
@@ -69,24 +85,24 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				path={oppholdPath}
 				options={yesNoOptions}
 			/>
-			<AdvancedOptions>
-				<FormikSelect
-					name={`${bostedPath}.historiskPostnummer`}
-					label="Har tidligere hatt postnummer"
-					kodeverk={AdresseKodeverk.Postnummer}
-					optionHeight={50}
-					size="medium"
-					info="Velg postnummer tilknyttet tidligere bostedsadresse."
-				/>
-				<FormikSelect
-					name={`${bostedPath}.historiskKommunenummer`}
-					label="Har tidligere bodd i kommune"
-					kodeverk={AdresseKodeverk.Kommunenummer}
-					optionHeight={50}
-					size="medium"
-					info="Velg kommunenummer tilknyttet tidligere bostedsadresse."
-				/>
-			</AdvancedOptions>
+			{/*<AdvancedOptions>*/}
+			{/*	<FormikSelect*/}
+			{/*		name={`${bostedPath}.historiskPostnummer`}*/}
+			{/*		label="Har tidligere hatt postnummer"*/}
+			{/*		kodeverk={AdresseKodeverk.Postnummer}*/}
+			{/*		optionHeight={50}*/}
+			{/*		size="medium"*/}
+			{/*		info="Velg postnummer tilknyttet tidligere bostedsadresse."*/}
+			{/*	/>*/}
+			{/*	<FormikSelect*/}
+			{/*		name={`${bostedPath}.historiskKommunenummer`}*/}
+			{/*		label="Har tidligere bodd i kommune"*/}
+			{/*		kodeverk={AdresseKodeverk.Kommunenummer}*/}
+			{/*		optionHeight={50}*/}
+			{/*		size="medium"*/}
+			{/*		info="Velg kommunenummer tilknyttet tidligere bostedsadresse."*/}
+			{/*	/>*/}
+			{/*</AdvancedOptions>*/}
 		</section>
 	)
 }

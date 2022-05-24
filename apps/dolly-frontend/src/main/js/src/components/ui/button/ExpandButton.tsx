@@ -4,14 +4,9 @@ import Button from './Button'
 interface ExpandButtonProps {
 	onClick: () => void
 	expanded?: boolean
-	iconSize?: number
 }
 
-export default function ExpandButton({
-	expanded = false,
-	iconSize = 14,
-	onClick,
-}: ExpandButtonProps) {
+export default function ExpandButton({ expanded = false, onClick }: ExpandButtonProps) {
 	const iconType = expanded ? 'chevron-up' : 'chevron-down'
-	return <Button iconSize={iconSize} kind={iconType} onClick={onClick} />
+	return <Button iconSize={14} kind={iconType} onClick={onClick} />
 }
