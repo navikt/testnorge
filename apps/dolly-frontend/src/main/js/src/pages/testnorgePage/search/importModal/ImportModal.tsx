@@ -63,7 +63,10 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type)
 				)?.[0]?.relatertVedSivilstand
 			})
-			.filter((partnerIdent) => partnerIdent)
+			.filter(
+				(partnerIdent) =>
+					partnerIdent && !valgtePersoner.map((person) => person.ident).includes(partnerIdent)
+			)
 	}
 
 	const handleImport = () => {
