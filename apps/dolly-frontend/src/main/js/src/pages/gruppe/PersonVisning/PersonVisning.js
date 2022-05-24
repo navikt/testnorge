@@ -28,6 +28,7 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
+import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -43,12 +44,16 @@ export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
 	ident,
+	isAlive,
 	gruppeId,
 	brukertype,
 	bestilling,
 	bestillingsListe,
+	gruppeIdenter,
 	loading,
 	slettPerson,
+	slettPersonOgPartner,
+	updateAntallImporterte,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
@@ -63,6 +68,16 @@ export const PersonVisning = ({
 			mountedRef.current = false
 		}
 	}, [])
+
+	const pdlPartner = () => {
+		if (ident.master === 'PDL') {
+			return data.pdl?.hentPerson?.sivilstand?.filter(
+				(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
+			)?.[0]?.relatertVedSivilstand
+		} else {
+			return null
+		}
+	}
 
 	return (
 		<ErrorBoundary>
@@ -85,6 +100,15 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
+
+					{!iLaastGruppe && ident.master === 'PDL' && isAlive && (
+						<PartnerImportButton
+							action={updateAntallImporterte}
+							gruppeId={gruppeId}
+							partnerIdent={pdlPartner()}
+							gruppeIdenter={gruppeIdenter}
+						/>
+					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
@@ -92,10 +116,12 @@ export const PersonVisning = ({
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
-							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
-							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
-						</FrigjoerButton>
+						<FrigjoerButton
+							slettPerson={slettPerson}
+							slettPersonOgPartner={slettPersonOgPartner}
+							loading={loading.slettPerson || loading.slettPersonOgPartner}
+							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
+						/>
 					)}
 				</div>
 				{ident.master !== 'PDL' && (

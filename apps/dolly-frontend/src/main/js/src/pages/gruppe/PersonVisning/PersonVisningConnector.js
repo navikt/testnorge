@@ -5,7 +5,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
-import { incrementSlettedePersoner } from '~/ducks/redigertePersoner'
+import { increaseAntallFjernet, decreaseAntallFjernet } from '~/ducks/redigertePersoner'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -16,6 +16,7 @@ const loadingSelectorArena = createLoadingSelector(actions.getArena)
 const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
+const loadingSelectorSlettPersonOgPartner = createLoadingSelector(actions.slettPersonOgPartner)
 const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 
@@ -32,6 +33,7 @@ const loadingSelector = createSelector(
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
+			slettPersonOgPartner: loadingSelectorSlettPersonOgPartner({ loading }),
 			pensjonforvalter: loadingSelectorPensjon({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
 		}
@@ -51,8 +53,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 		slettPerson: () => {
-			dispatch(incrementSlettedePersoner())
+			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPerson(ownProps.personId))
+		},
+		slettPersonOgPartner: (partnerident) => {
+			dispatch(increaseAntallFjernet())
+			dispatch(increaseAntallFjernet())
+			return dispatch(actions.slettPersonOgPartner(ownProps.personId, partnerident))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
 			navigate(`/gruppe/${gruppeId}/bestilling/${ownProps.personId}`, {
@@ -63,6 +70,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					identtype: type,
 				},
 			}),
+		updateAntallImporterte: () => {
+			dispatch(decreaseAntallFjernet())
+		},
 	}
 }
 

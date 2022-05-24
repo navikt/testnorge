@@ -28,7 +28,7 @@ export type GruppeProps = {
 	brukerProfil: Object
 	brukertype: string
 	brukernavn: string
-	antallSlettet: number
+	antallFjernet: number
 }
 
 export enum VisningType {
@@ -49,7 +49,7 @@ export default function Gruppe({
 	setVisning,
 	isFetching,
 	selectGruppe,
-	antallSlettet,
+	antallFjernet,
 }: GruppeProps) {
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
@@ -131,7 +131,7 @@ export default function Gruppe({
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
-							{`Personer (${gruppe.antallIdenter - antallSlettet})`}
+							{`Personer (${gruppe.antallIdenter - antallFjernet})`}
 						</ToggleKnapp>
 						<ToggleKnapp
 							value={VisningType.VISNING_BESTILLING}

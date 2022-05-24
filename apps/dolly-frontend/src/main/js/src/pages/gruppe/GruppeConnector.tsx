@@ -23,7 +23,7 @@ const mapStateToProps = (
 		bruker: { brukerData: { brukernavn: string; brukertype: string } }
 		bestillingStatuser: any
 		redigertePersoner: {
-			antallSlettedePersoner: number
+			antallPersonerFjernet: number
 		}
 	},
 	ownProps: FormikProps<any>
@@ -39,7 +39,7 @@ const mapStateToProps = (
 	brukernavn: state.bruker.brukerData.brukernavn,
 	brukertype: state.bruker.brukerData.brukertype,
 	bestillingStatuser: state.bestillingStatuser.byId,
-	antallSlettet: state.redigertePersoner.antallSlettedePersoner,
+	antallFjernet: state.redigertePersoner.antallPersonerFjernet,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

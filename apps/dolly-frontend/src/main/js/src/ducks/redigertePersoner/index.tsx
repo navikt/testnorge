@@ -7,19 +7,21 @@ import { Person } from '~/components/fagsystem/pdlf/PdlTypes'
 import { RootStateOrAny } from 'react-redux'
 import { LOCATION_CHANGE } from 'redux-first-history'
 
-export const { hentPdlforvalterPersoner, incrementSlettedePersoner } = createActions({
-	hentPdlforvalterPersoner: [
-		PdlforvalterApi.getPersoner,
-		(identer: Array<string>) => ({
-			identer,
-		}),
-	],
-	incrementSlettedePersoner() {},
-})
+export const { hentPdlforvalterPersoner, increaseAntallFjernet, decreaseAntallFjernet } =
+	createActions({
+		hentPdlforvalterPersoner: [
+			PdlforvalterApi.getPersoner,
+			(identer: Array<string>) => ({
+				identer,
+			}),
+		],
+		increaseAntallFjernet() {},
+		decreaseAntallFjernet() {},
+	})
 
 const initialState = {
 	pdlforvalter: {},
-	antallSlettedePersoner: 0,
+	antallPersonerFjernet: 0,
 }
 
 export default handleActions(
@@ -33,8 +35,12 @@ export default handleActions(
 			})
 		},
 		// @ts-ignore
-		[incrementSlettedePersoner](state: RootStateOrAny) {
-			state.antallSlettedePersoner++
+		[increaseAntallFjernet](state: RootStateOrAny) {
+			state.antallPersonerFjernet++
+		},
+		// @ts-ignore
+		[decreaseAntallFjernet](state: RootStateOrAny) {
+			state.antallPersonerFjernet--
 		},
 	},
 	initialState
