@@ -14,10 +14,11 @@ Under "Test-Norge" fanen i Dolly er mulig å søke opp Test-Norge identer i Doll
 velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket gruppe i Dolly. Videon under viser en demo for 
 hvordan dette kan gjøres.
 
-<video src="https://user-images.githubusercontent.com/58416744/158974273-c3343258-b133-41bc-b1c5-33f7f4e97870.mov"
+<video src="https://user-images.githubusercontent.com/58416744/169970311-42ec4332-e50f-449e-815f-0a5d1fb146c1.mov"
        controls="controls" style="max-width: 730px;" >
 
 </video>
+
 
 For å finne mer spesifikke identer kan Skatteetaten sin testdatasøkeløsning [Tenor](https://www.skatteetaten.no/skjema/testdata) 
 brukes. Tenor er ikke koblet opp mot Dolly, men det er mulig å søke opp identer du fant i Tenor via Dolly sin 
@@ -38,6 +39,8 @@ Det er også mulig å importere partnere etter import. Dette kan gjøres direkte
        controls="controls" style="max-width: 730px;" >
 
 </video>
+
+NB: Når man frigjør/sletter en Test-norge person fra Dolly så vil også eventuell importert partner også bli frigjort/slettet fra Dolly.
 
 ### ID-Porten
 Vi anbefaler bruk av TestID når man skal teste ID-porten ved bruk av importert Test-Norge-ident. 
