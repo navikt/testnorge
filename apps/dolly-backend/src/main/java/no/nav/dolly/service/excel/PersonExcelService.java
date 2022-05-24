@@ -393,6 +393,7 @@ public class PersonExcelService {
                         getIdenterForRelasjon(personer, FULLMEKTIG))
                 .flatMap(Collection::stream)
                 .filter(ident -> !hovedpersoner.contains(ident))
+                .distinct()
                 .toList()));
         log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
