@@ -10,6 +10,7 @@ import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -43,6 +44,8 @@ export default function BestillingListe({
 	}
 
 	const sortedBestillinger = _orderBy(bestillingListe, ['id'], ['desc'])
+
+	const statusBestillinger = bestillingStatusMapper(Object.values(sortedBestillinger))
 
 	const columns = [
 		{
@@ -83,7 +86,7 @@ export default function BestillingListe({
 	return (
 		<ErrorBoundary>
 			<DollyTable
-				data={sortedBestillinger}
+				data={statusBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
 				visBestilling={visBestilling || navigerBestillingId}

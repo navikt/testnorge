@@ -70,21 +70,21 @@ export default handleActions(
 
 /**
  * Finner bestilling som matcher ID
- * @param {array} bestillingStatuser
+ * @param state
  * @param {string|number} id
  */
 export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id]
 
 // Henter alle bestillinger som er gjort på en ident
-export const getBestillingsListe = (state, IDer) => {
+export const getBestillingsListe = (bestillinger, IDer) => {
 	const bestillingsListe = []
 	for (let id of IDer) {
 		const bestilling = {
-			data: state.bestillingStatuser.byId[id].bestilling,
+			data: bestillinger[id].bestilling,
 			id: id,
-			erGjenopprettet: state.bestillingStatuser.byId[id].hasOwnProperty('opprettetFraId'),
+			erGjenopprettet: bestillinger[id].hasOwnProperty('opprettetFraId'),
 		}
-		const suksessMiljoer = successMiljoSelector(state.bestillingStatuser.byId[id].status)
+		const suksessMiljoer = successMiljoSelector(bestillinger[id].status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
 		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiljoer.hasOwnProperty('ARENA')) {
 			bestillingsListe.push(bestilling)

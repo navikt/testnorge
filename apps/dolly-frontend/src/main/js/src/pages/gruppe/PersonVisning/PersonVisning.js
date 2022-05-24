@@ -28,6 +28,8 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import { getBestillingsListe } from '~/ducks/bestillingStatus'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -46,14 +48,17 @@ export const PersonVisning = ({
 	brukertype,
 	loading,
 	slettPerson,
-	bestilling,
-	bestillingListe,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
 	useMount(fetchDataFraFagsystemer)
+
+	const { bestillingerById } = useBestillingerGruppe(gruppeId)
+
+	const bestillingListe = getBestillingsListe(Object.values(bestillingerById), gruppeId)
+	const bestilling = bestillingListe[0]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()

@@ -4,7 +4,6 @@ import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fa
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
 import { incrementSlettedePersoner } from '~/ducks/redigertePersoner'
-import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -40,8 +39,6 @@ const loadingSelector = createSelector(
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
 	data: selectDataForIdent(state, ownProps.personId),
-	bestilling: getBestillingById(state, ownProps.bestillingsIdListe[0]),
-	bestillingListe: getBestillingsListe(state, ownProps.bestillingsIdListe),
 	tmpPersoner: state.redigertePersoner,
 })
 
