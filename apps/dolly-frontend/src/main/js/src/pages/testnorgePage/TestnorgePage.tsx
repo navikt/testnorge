@@ -25,7 +25,8 @@ export default () => {
 		setError(null)
 		setStartedSearch(true)
 		setLoading(true)
-		PersonSearch.searchPdlPerson(getSearchValues(seed, values))
+		const harFlereBarn = values?.relasjoner?.harBarn === 'M'
+		PersonSearch.searchPdlPerson(getSearchValues(seed, values), harFlereBarn)
 			.then((response) => {
 				setItems(response.items)
 				setLoading(false)

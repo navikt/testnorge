@@ -5,8 +5,8 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 const paths = {
 	fra: 'alder.fra',
 	til: 'alder.til',
-	fom: 'alder.foedselsdato.fom',
-	tom: 'alder.foedselsdato.tom',
+	fom: 'foedsel.fom',
+	tom: 'foedsel.tom',
 }
 
 export const Alder = () => (

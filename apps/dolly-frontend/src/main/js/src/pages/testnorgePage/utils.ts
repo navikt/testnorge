@@ -5,10 +5,10 @@ export const initialValues = {
 	alder: {
 		fra: '',
 		til: '',
-		foedselsdato: {
-			fom: '',
-			tom: '',
-		},
+	},
+	foedsel: {
+		fom: '',
+		tom: '',
 	},
 	kjoenn: '',
 	nasjonalitet: {
@@ -16,9 +16,10 @@ export const initialValues = {
 		utflyttingFraNorge: false,
 		innflyttingTilNorge: false,
 	},
+	sivilstand: {
+		type: '',
+	},
 	relasjoner: {
-		sivilstand: '',
-		barn: '',
 		harBarn: '',
 		harDoedfoedtBarn: '',
 		forelderBarnRelasjoner: [] as string[],
@@ -48,7 +49,17 @@ export const initialValues = {
 		harKontaktadresse: '',
 		harOppholdsadresse: '',
 	},
-	personstatus: '',
+	personstatus: {
+		status: '',
+	},
+}
+
+const fellesSearchValues = {
+	page: 1,
+	pageSize: 100,
+	terminateAfter: 100,
+	tag: 'TESTNORGE',
+	excludeTags: ['DOLLY'],
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
@@ -58,58 +69,25 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		identer = identer.filter((item: string) => item)
 	}
 
-	const personstatus = values?.personstatus
-	let kunLevende = true
-	if (personstatus === 'DOED' || values?.adresser?.kontaktadresse?.kontaktadresseForDoedsbo) {
-		kunLevende = false
-	}
+	const kunLevende = values?.personstatus?.status !== 'DOED'
 
 	if (identer.length > 0) {
-		return {
-			page: 1,
-			pageSize: 100,
-			randomSeed: randomSeed,
-			terminateAfter: 100,
-			identer: identer,
-			tag: 'TESTNORGE',
-			excludeTags: ['DOLLY'],
-		}
+		return Object.assign({}, fellesSearchValues, { identer: identer, randomSeed: randomSeed })
 	} else {
-		return {
-			page: 1,
-			pageSize: 100,
-			randomSeed: randomSeed,
-			terminateAfter: 100,
-			kunLevende: kunLevende,
-			kjoenn: values?.kjoenn,
-			foedsel: {
-				fom: values?.alder?.foedselsdato?.fom,
-				tom: values?.alder?.foedselsdato?.tom,
-			},
-			nasjonalitet: values?.nasjonalitet,
-			sivilstand: {
-				type: values?.relasjoner?.sivilstand,
-			},
-			alder: {
-				fra: values?.alder?.fra,
-				til: values?.alder?.til,
-			},
-			identer: identer,
-			identifikasjon: values?.identifikasjon,
-			relasjoner: {
-				harDoedfoedtBarn: values?.relasjoner?.harDoedfoedtBarn,
-				forelderBarnRelasjoner: values?.relasjoner?.forelderBarnRelasjoner,
-				barn: values?.relasjoner?.barn,
-				harBarn: values?.relasjoner?.barn === 'M' ? 'Y' : values?.relasjoner?.barn,
-				foreldreansvar: values?.relasjoner?.foreldreansvar,
-			},
-			adresser: values?.adresser,
-			personstatus: {
-				status: personstatus,
-			},
-			tag: 'TESTNORGE',
-			excludeTags: ['DOLLY'],
+		const searchValues = Object.assign(
+			{},
+			JSON.parse(JSON.stringify(fellesSearchValues)),
+			JSON.parse(JSON.stringify(values))
+		)
+
+		searchValues['randomSeed'] = randomSeed
+		searchValues['kunLevende'] = kunLevende
+		if (searchValues.relasjoner.harBarn === 'M') {
+			searchValues.relasjoner.harBarn = 'Y'
 		}
+
+		delete searchValues.ident
+		return searchValues
 	}
 }
 
