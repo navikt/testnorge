@@ -12,10 +12,6 @@ type OptionsPanelProps = {
 	disabled?: boolean
 }
 
-const disabledStyle = {
-	cursor: 'auto!important',
-}
-
 export const OptionsPanel: React.FC<OptionsPanelProps> = ({
 	startOpen = false,
 	heading,
@@ -36,7 +32,7 @@ export const OptionsPanel: React.FC<OptionsPanelProps> = ({
 	const headerCn = disabled ? 'options-panel__header--disabled' : 'options-panel__header'
 	return (
 		<div className="options-panel">
-			<div className={headerCn} onClick={handleClick} style={disabled ? disabledStyle : {}}>
+			<div className={headerCn} onClick={handleClick}>
 				<h2>{heading}</h2>
 				{numSelected > 0 && !disabled && (
 					<div className="options-panel__header__circle">
