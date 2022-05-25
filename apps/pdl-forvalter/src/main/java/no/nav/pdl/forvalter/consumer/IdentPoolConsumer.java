@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.dto.AllokerIdentRequest;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,6 @@ public class IdentPoolConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "identPool_acquireIdents"})
     public Flux<List<IdentDTO>> acquireIdents(HentIdenterRequest request) {
 
         return Flux.from(tokenExchange.exchange(properties).flatMap(
@@ -51,7 +49,6 @@ public class IdentPoolConsumer {
                         token.getTokenValue()).call()));
     }
 
-    @Timed(name = "providers", tags = {"operation", "identPool_releaseIdents"})
     public Flux<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {
 
         return Flux.from(tokenExchange.exchange(properties).flatMap(
@@ -59,7 +56,6 @@ public class IdentPoolConsumer {
                         token.getTokenValue()).call()));
     }
 
-    @Timed(name = "providers", tags = {"operation", "identPool_getIdents"})
     public Flux<IdentpoolStatusDTO> getIdents(Set<String> identer) {
 
         return tokenExchange.exchange(properties)
@@ -70,7 +66,6 @@ public class IdentPoolConsumer {
 
     }
 
-    @Timed(name = "providers", tags = {"operation", "identPool_allokerIdent"})
     public Mono<Void> allokerIdent(String ident) {
 
         return Mono.from(tokenExchange.exchange(properties).flatMap(

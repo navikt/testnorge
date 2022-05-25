@@ -1,18 +1,18 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
-import no.nav.pdl.forvalter.metrics.Timed;
-import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.security.SecureRandom;
 import java.time.Duration;
+
+import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServiceProperties;
+import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
+import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service
@@ -47,7 +47,6 @@ public class GeografiskeKodeverkConsumer {
                 .cache(Duration.ofDays(7));
     }
 
-    @Timed(name = "providers", tags = {"operation", "geografiskKodeverk_getTilfeldigKommune"})
     public String getTilfeldigKommune() {
         if (kommuneKodeverkFlux == null) {
             this.kommuneKodeverkFlux = cache(KOMMUNE_URL);
@@ -60,7 +59,6 @@ public class GeografiskeKodeverkConsumer {
                 .orElse(null);
     }
 
-    @Timed(name = "providers", tags = {"operation", "geografiskKodeverk_getTilfeldigLand"})
     public String getTilfeldigLand() {
         if (landkodeverkFlux == null) {
             this.landkodeverkFlux = cache(LAND_URL);
@@ -73,7 +71,6 @@ public class GeografiskeKodeverkConsumer {
                 .orElse(null);
     }
 
-    @Timed(name = "providers", tags = {"operation", "geografiskKodeverk_getPoststedNavn"})
     public String getPoststedNavn(String postnummer) {
         return tokenExchange
                 .exchange(properties)
@@ -84,7 +81,6 @@ public class GeografiskeKodeverkConsumer {
                 .orElse("UKJENT");
     }
 
-    @Timed(name = "providers", tags = {"operation", "geografiskKodeverk_getEmbeteNavn"})
     public String getEmbeteNavn(String embete) {
         return tokenExchange
                 .exchange(properties)
