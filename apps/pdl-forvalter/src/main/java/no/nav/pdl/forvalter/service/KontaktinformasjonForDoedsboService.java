@@ -204,7 +204,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
     private Flux<Void> setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
             organisasjonDto) {
 
-        var organisasjon = organisasjonForvalterConsumer.get(organisasjonDto.getOrganisasjonsnummer())
+        var organisasjon = organisasjonForvalterConsumer.getOrganisasjon(organisasjonDto.getOrganisasjonsnummer())
                 .entrySet().stream()
                 .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
@@ -297,7 +297,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         if (isBlank(pdlOrganisasjon.getOrganisasjonsnummer())) {
             return false;
         }
-        var organisasjoner = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer());
+        var organisasjoner = organisasjonForvalterConsumer.getOrganisasjon(pdlOrganisasjon.getOrganisasjonsnummer());
         if (organisasjoner.isEmpty() || !organisasjoner.containsKey("q1") && !organisasjoner.containsKey("q2")) {
             return false;
         }

@@ -188,7 +188,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     void whenAdvokatSomAddressatHasNonExistingOrgNumber_thenThrowExecption() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(true);
-        when(organisasjonForvalterConsumer.get(anyString())).thenReturn(new HashMap<>());
+        when(organisasjonForvalterConsumer.getOrganisasjon(anyString())).thenReturn(new HashMap<>());
 
         var request = KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
@@ -210,7 +210,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     void whenAdvokatSomAddressatHasNonExistingOrgNavn_thenThrowExecption() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(true);
-        when(organisasjonForvalterConsumer.get(anyString())).thenReturn(Map.of("q1",
+        when(organisasjonForvalterConsumer.getOrganisasjon(anyString())).thenReturn(Map.of("q1",
                 Map.of("organisasjonsnavn", "Toys")));
 
         var request = KontaktinformasjonForDoedsboDTO.builder()

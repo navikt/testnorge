@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommandService;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.Ordre;
@@ -39,10 +36,12 @@ public class PdlTestdataConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties properties;
     private final ObjectMapper objectMapper;
+    private final PdlTestdataCommandService pdlTestdataCommandService;
 
     public PdlTestdataConsumer(TokenExchange tokenExchange,
                                PdlServiceProperties properties,
-                               ObjectMapper objectMapper) {
+                               ObjectMapper objectMapper,
+                               PdlTestdataCommandService pdlTestdataCommandService) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
@@ -50,9 +49,11 @@ public class PdlTestdataConsumer {
                 .baseUrl(properties.getUrl())
                 .build();
         this.objectMapper = objectMapper;
+        this.pdlTestdataCommandService = pdlTestdataCommandService;
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(List<Ordre> orders) {
+
         return tokenExchange
                 .exchange(properties)
                 .flatMapMany(accessToken -> Flux.concat(orders
@@ -68,7 +69,8 @@ public class PdlTestdataConsumer {
                 .exchange(properties)
                 .flatMapMany(accessToken -> identer
                         .stream()
-                        .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
+                        .map(ident -> Flux.from(pdlTestdataCommandService.deletePerson(webClient,
+                                getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue())))
                         .reduce(Flux.empty(), Flux::concat))
                 .collectList());
     }
@@ -96,40 +98,35 @@ public class PdlTestdataConsumer {
         switch (value.getArtifact()) {
             case PDL_SLETTING:
                 return Flux.from(
-                        new PdlDeleteCommandPdl(webClient,
+                        pdlTestdataCommandService.deletePerson(webClient,
                                 getBestillingUrl().get(value.getArtifact()),
                                 value.getIdent(),
-                                accessToken.getTokenValue()
-                        ).call());
+                                accessToken.getTokenValue()));
 
             case PDL_OPPRETT_PERSON:
-
                 return Identtype.NPID == getIdenttype(value.getIdent()) ?
 
                         Flux.from(
-                                new PdlAktoerNpidCommand(webClient,
+                                pdlTestdataCommandService.opprettNpidPerson(webClient,
                                         value.getIdent(),
-                                        accessToken.getTokenValue()
-                                ).call()) :
+                                        accessToken.getTokenValue())) :
 
                         Flux.from(
-                                new PdlOpprettPersonCommandPdl(webClient,
+                                pdlTestdataCommandService.opprettPerson(webClient,
                                         getBestillingUrl().get(value.getArtifact()),
                                         value.getIdent(),
                                         (HistoriskIdent) value.getBody(),
-                                        accessToken.getTokenValue()
-                                ).call());
+                                        accessToken.getTokenValue()));
 
             default:
                 return Flux.from(
-                        new PdlOpprettArtifactCommandPdl(
+                        pdlTestdataCommandService.opprettPersonopplysning(
                                 webClient,
                                 getBestillingUrl().get(value.getArtifact()),
                                 value.getIdent(),
                                 body,
                                 accessToken.getTokenValue(),
-                                value.getBody().getId()
-                        ).call());
+                                value.getBody().getId()));
         }
     }
 }

@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import org.springframework.http.HttpHeaders;
@@ -58,7 +57,6 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
     }
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "adresseService_matrikkelAdresse"})
     public Mono<MatrikkeladresseDTO[]> call() {
 
         return webClient
