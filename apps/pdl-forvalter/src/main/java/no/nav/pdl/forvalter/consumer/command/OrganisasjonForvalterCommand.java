@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -24,7 +23,6 @@ public class OrganisasjonForvalterCommand implements Callable<Mono<Map>> {
     private final String token;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "organisasjonsForvalter_get"})
     public Mono<Map> call() {
 
         return webClient

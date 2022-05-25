@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +24,6 @@ public class VerifiserNavnServiceCommand implements Callable<Mono<Boolean>> {
     private final String token;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "genererNavnService_verifiserNavn"})
     public Mono<Boolean> call() {
 
         return webClient

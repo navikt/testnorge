@@ -1,15 +1,15 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Map;
-
 import no.nav.pdl.forvalter.config.credentials.OrgForvalterServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -22,13 +22,15 @@ public class OrganisasjonForvalterConsumer {
     private final ServerProperties properties;
 
     public OrganisasjonForvalterConsumer(TokenExchange tokenExchange,
-                                         OrgForvalterServiceProperties properties) {
+                                         OrgForvalterServiceProperties properties,
+                                         ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

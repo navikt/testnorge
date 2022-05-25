@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,6 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
     }
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "identPool_postVoid"})
     public Mono<Void> call() {
 
         return webClient

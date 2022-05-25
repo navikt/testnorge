@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,7 +41,6 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
     }
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "identPool_post"})
     public Mono<List<IdentDTO>> call() {
         return webClient
                 .post()

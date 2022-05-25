@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
@@ -32,7 +31,6 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "pdl_opprettPerson"})
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient
@@ -48,8 +46,8 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
                 .retrieve()
                 .bodyToMono(PdlBestillingResponse.class)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
-                                .status(PdlStatus.OK)
-                                .build()))
+                        .status(PdlStatus.OK)
+                        .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
