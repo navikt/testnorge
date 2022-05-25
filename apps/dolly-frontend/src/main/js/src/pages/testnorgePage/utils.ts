@@ -24,9 +24,7 @@ export const initialValues = {
 		forelderBarnRelasjoner: [] as string[],
 		foreldreansvar: '',
 	},
-	ident: {
-		ident: '',
-	},
+	ident: '',
 	identer: [] as string[],
 	identifikasjon: {
 		adressebeskyttelse: '',

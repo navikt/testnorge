@@ -19,7 +19,7 @@ const ListItem = styled.li`
 	list-style-type: circle;
 `
 
-const identPath = 'ident.ident'
+const identPath = 'ident'
 const identerPath = 'identer'
 
 export const IdentSearch: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchProps) => {
