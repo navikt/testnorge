@@ -32,17 +32,14 @@ export const getCount = (values: Record<string, string>, formikBag: FormikProps<
 	return count
 }
 
-const getSelectionColor = (formikBag: FormikProps<{}>) => {
-	return getCount(IdentSearchPaths, formikBag) > 0 ? 'grey' : 'blue'
-}
-
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
+	const disabled = getCount(IdentSearchPaths, props.formikBag) > 0
 	return (
 		<>
 			<h2>Personinformasjon</h2>
 			<OptionsPanel
 				heading={'Fødsels- eller D-nummer'}
-				startOpen={true}
+				startOpen
 				numSelected={getCount(IdentSearchPaths, props.formikBag)}
 			>
 				<IdentSearch formikBag={props.formikBag} />
@@ -50,42 +47,42 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 			<OptionsPanel
 				heading={'Identifikasjon'}
 				numSelected={getCount(IdentifikasjonPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
+				disabled={disabled}
 			>
 				<Identifikasjon formikBag={props.formikBag} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Personstatus'}
 				numSelected={getCount(PersonstatusPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
+				disabled={disabled}
 			>
 				<Personstatus />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Alder'}
 				numSelected={getCount(AlderPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
+				disabled={disabled}
 			>
 				<Alder />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Adresser'}
 				numSelected={getCount(AdresserPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
+				disabled={disabled}
 			>
 				<Adresser formikBag={props.formikBag} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Nasjonalitet'}
 				numSelected={getCount(NasjonalitetPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
+				disabled={disabled}
 			>
 				<Nasjonalitet />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Relasjoner'}
 				numSelected={getCount(RelasjonerPaths, props.formikBag)}
-				selectionColor={getSelectionColor(props.formikBag)}
+				disabled={disabled}
 			>
 				<Relasjoner formikBag={props.formikBag} />
 			</OptionsPanel>
