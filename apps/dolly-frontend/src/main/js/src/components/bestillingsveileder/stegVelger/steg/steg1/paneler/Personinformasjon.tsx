@@ -17,6 +17,23 @@ import {
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
+const ignoreKeysTestnorge = [
+	'alder',
+	'foedsel',
+	'doedsdato',
+	'statsborgerskap',
+	'innvandretFraLand',
+	'utvandretTilLand',
+	'identtype',
+	'kjonn',
+	'navn',
+	'telefonnummer',
+	'vergemaal',
+	'fullmakt',
+	'sikkerhetstiltak',
+	'tilrettelagtKommunikasjon',
+]
+
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -33,7 +50,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			<Panel
 				heading={PersoninformasjonPanel.heading}
 				startOpen
-				checkAttributeArray={() => sm.batchAdd('identtype')}
+				checkAttributeArray={() => {
+					if (sm.attrs.utenlandskBankkonto.checked) {
+						sm.batchAdd([...ignoreKeysTestnorge, 'norskBankkonto'])
+					} else {
+						sm.batchAdd([...ignoreKeysTestnorge, 'utenlandskBankkonto'])
+					}
+				}}
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
@@ -58,7 +81,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		<Panel
 			heading={PersoninformasjonPanel.heading}
 			startOpen
-			checkAttributeArray={() => sm.batchAdd('identtype')}
+			checkAttributeArray={() => {
+				if (sm.attrs.utenlandskBankkonto.checked) {
+					sm.batchAdd(['identtype', 'norskBankkonto'])
+				} else {
+					sm.batchAdd(['identtype', 'utenlandskBankkonto'])
+				}
+			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
