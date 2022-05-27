@@ -1,9 +1,15 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { fetchTpOrdninger, initialOrdning } from '../../../../../fagsystem/tjenestepensjon/form/Form'
+import {
+	fetchTpOrdninger,
+	initialOrdning,
+	tpPath,
+} from '~/components/fagsystem/tjenestepensjon/form/Form'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { pensjonPath } from '~/components/fagsystem/pensjon/form/Form'
 
-export const PensjonPanel = ({ stateModifier }: any) => {
+export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 
 	const infoTekst =
@@ -17,6 +23,7 @@ export const PensjonPanel = ({ stateModifier }: any) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="pensjon"
+			startOpen={harValgtAttributt(formikBag.values, [pensjonPath, tpPath])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
 				<Attributt attr={sm.attrs.inntekt} />

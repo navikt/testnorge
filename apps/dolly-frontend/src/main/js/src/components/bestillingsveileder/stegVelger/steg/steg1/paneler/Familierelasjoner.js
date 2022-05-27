@@ -7,8 +7,10 @@ import {
 	initialForeldreansvar,
 	initialSivilstand,
 } from '~/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { relasjonerAttributter } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 
-export const FamilierelasjonPanel = ({ stateModifier }) => {
+export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
 
 	return (
@@ -17,6 +19,7 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
+			startOpen={harValgtAttributt(formikBag.values, relasjonerAttributter)}
 		>
 			<AttributtKategori title="Sivilstand">
 				<Attributt attr={sm.attrs.sivilstand} />

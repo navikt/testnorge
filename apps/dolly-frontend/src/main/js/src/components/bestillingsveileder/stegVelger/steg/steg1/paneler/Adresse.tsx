@@ -10,8 +10,10 @@ import {
 	initialKontaktadresse,
 	initialOppholdsadresse,
 } from '~/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { adresseAttributter } from '~/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 
-export const AdressePanel = ({ stateModifier }: any) => {
+export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
 	return (
 		// @ts-ignore
@@ -20,6 +22,7 @@ export const AdressePanel = ({ stateModifier }: any) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="adresse"
+			startOpen={harValgtAttributt(formikBag.values, adresseAttributter)}
 		>
 			<AttributtKategori title="Adresser">
 				<Attributt attr={sm.attrs.bostedsadresse} />
