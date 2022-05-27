@@ -50,11 +50,7 @@ export const TjenestepensjonForm = ({ formikBag }) => {
 				startOpen={erForste(formikBag.values, [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>
-				<FormikDollyFieldArray
-					name="pensjonforvalter.tp"
-					header="Ordning"
-					newEntry={initialOrdning}
-				>
+				<FormikDollyFieldArray name={tpPath} header="Ordning" newEntry={initialOrdning}>
 					{(formPath, idx) => (
 						<React.Fragment key={idx}>
 							<React.Fragment>
