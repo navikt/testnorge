@@ -146,6 +146,11 @@ public class ArenaForvalterService {
         } else {
             var formidlingsgruppe = arenaBrukerUtils.velgFormidlingsgruppeBasertPaaAktivitetsfase(aktivitetsfase);
             var kvalifiseringsgruppe = arenaBrukerUtils.velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
+
+            // Arbeidssoker uten oppfolging kan ikke ha kvalifiseringsgruppe BKART
+            while (kvalifiseringsgruppe == Kvalifiseringsgrupper.BKART){
+                kvalifiseringsgruppe = arenaBrukerUtils.velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
+            }
             opprettArbeidssoeker(personident, miljoe, kvalifiseringsgruppe, aktiveringsDato);
 
             if (formidlingsgruppe.equals("IARBS")) {
