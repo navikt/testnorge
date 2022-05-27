@@ -87,13 +87,6 @@ export const IdentVelger = ({ formikBag }: Form) => {
 					handleIdentTypeChange((e.target as HTMLTextAreaElement).value as IdentType)
 				}
 			/>
-
-			{erArenaBestilling && type === IdentType.SYNTETISK && (
-				<AlertStripeAdvarsel>
-					Syntetisk ident er foreløpig ikke støttet for Arbeidsytelser (Arena), velg standard ident
-					for gyldig bestilling.
-				</AlertStripeAdvarsel>
-			)}
 		</IdentVelgerField>
 	)
 }
