@@ -5,7 +5,7 @@ import { panelError, erForste } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { ArbeidsforholdToggle } from './partials/arbeidsforholdToggle'
 
-const aaregAttributt = 'aareg'
+export const aaregAttributt = 'aareg'
 
 export const AaregForm = ({ formikBag }) => (
 	<Vis attributt={aaregAttributt}>

@@ -12,7 +12,7 @@ interface IdentifikasjonValues {
 	formikBag: FormikProps<{}>
 }
 
-const identifikasjonAttributter = [
+export const identifikasjonAttributter = [
 	'pdldata.person.falskIdentitet',
 	'pdldata.person.utenlandskIdentifikasjonsnummer',
 	'pdldata.person.nyident',

@@ -17,7 +17,7 @@ const attrPaths = [
 	'udistub.soeknadOmBeskyttelseUnderBehandling',
 ]
 
-const udiAttributt = 'udistub'
+export const udiAttributt = 'udistub'
 
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>

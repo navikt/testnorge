@@ -10,7 +10,7 @@ import { PensjonApi } from '~/service/Api'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
-const path = 'pensjonforvalter.tp'
+export const tpPath = 'pensjonforvalter.tp'
 const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'
 
 export const initialYtelser = {
@@ -42,12 +42,12 @@ export const TjenestepensjonForm = ({ formikBag }) => {
 	}, [Options('tpOrdninger')])
 
 	return (
-		<Vis attributt={path}>
+		<Vis attributt={tpPath}>
 			<Panel
 				heading="Tjenestepensjon"
-				hasErrors={panelError(formikBag, path)}
+				hasErrors={panelError(formikBag, tpPath)}
 				iconType="pensjon"
-				startOpen={erForste(formikBag.values, [path])}
+				startOpen={erForste(formikBag.values, [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				<FormikDollyFieldArray

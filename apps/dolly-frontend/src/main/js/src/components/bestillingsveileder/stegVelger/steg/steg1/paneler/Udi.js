@@ -2,8 +2,10 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialOpphold } from '~/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { udiAttributt } from '~/components/fagsystem/udistub/form/Form'
 
-export const UdiPanel = ({ stateModifier, testnorgeIdent }) => {
+export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
 
 	const infoTekst =
@@ -16,6 +18,7 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="udi"
+			startOpen={harValgtAttributt(formikBag.values, [udiAttributt])}
 		>
 			<AttributtKategori title="Gjeldende oppholdstatus">
 				<Attributt attr={sm.attrs.oppholdStatus} />

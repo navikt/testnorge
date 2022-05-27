@@ -1,8 +1,10 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { brregAttributt } from '~/components/fagsystem/brregstub/form/Form'
 
-export const BrregPanel = ({ stateModifier }) => {
+export const BrregPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(BrregPanel.initialValues)
 
 	return (
@@ -11,6 +13,7 @@ export const BrregPanel = ({ stateModifier }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="brreg"
+			startOpen={harValgtAttributt(formikBag.values, [brregAttributt])}
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.brregstub} />
