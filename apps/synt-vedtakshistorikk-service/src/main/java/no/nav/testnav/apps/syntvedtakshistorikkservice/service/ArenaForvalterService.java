@@ -170,7 +170,6 @@ public class ArenaForvalterService {
             String miljoe,
             LocalDate aktiveringsDato
     ) {
-        //TODO oppdatere valg av kvalifiseringsgruppe når mottatt fordeling.
         var kvalifiseringsgruppe = Kvalifiseringsgrupper.IKVAL;
         opprettArbeidssoeker(personident, miljoe, kvalifiseringsgruppe, aktiveringsDato);
     }
