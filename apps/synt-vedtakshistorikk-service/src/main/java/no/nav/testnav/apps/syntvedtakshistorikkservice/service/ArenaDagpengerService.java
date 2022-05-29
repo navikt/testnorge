@@ -48,6 +48,7 @@ public class ArenaDagpengerService {
                     arenaForvalterService.opprettArbeidssoekerDagpenger(ident.getIdent(), miljoe, dato);
                 } catch (Exception e) {
                     log.error(e.getMessage());
+                    inntektService.deleteInntekterPaaIdent(ident.getIdent());
                     continue;
                 }
 

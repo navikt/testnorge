@@ -37,6 +37,10 @@ public class InntektService {
         return !inntektstubConsumer.postInntekter(inntekter).isEmpty();
     }
 
+    public void deleteInntekterPaaIdent(String ident){
+        inntektstubConsumer.deleteInntekter(Collections.singletonList(ident));
+    }
+
     private List<Inntektsinformasjon> getInntektinformasjoner(String ident, LocalDate dato) {
         var organisasjon = getTilfeldigOrganisasjon();
         if (isNull(organisasjon)) {

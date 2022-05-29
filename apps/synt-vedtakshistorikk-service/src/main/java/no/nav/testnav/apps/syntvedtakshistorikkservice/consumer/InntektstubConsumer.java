@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntektstub.DeleteInntekterCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.inntektstub.PostInntekterCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.InntektstubProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.inntektstub.Inntektsinformasjon;
@@ -11,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -38,6 +40,16 @@ public class InntektstubConsumer {
         } catch (Exception e) {
             log.error("Klarte ikke opprette inntektstub inntekt", e);
             return Collections.emptyList();
+        }
+    }
+
+    public void deleteInntekter(List<String> identer) {
+        try {
+            tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new DeleteInntekterCommand(identer, accessToken.getTokenValue(), webClient).call())
+                    .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
+        } catch (Exception e) {
+            log.error("Klarte ikke slette identer fra Inntektstub: ", identer.stream().collect(Collectors.joining(", ")), e);
         }
     }
 }
