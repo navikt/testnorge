@@ -465,7 +465,7 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 		return {
 			ident,
 			identNr: ident.ident,
-			bestillingId: '',
+			bestillingId: ident.bestillingId,
 			importFra: '',
 			identtype: '',
 			kilde: 'TPS',
