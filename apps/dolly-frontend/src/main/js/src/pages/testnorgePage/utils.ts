@@ -61,8 +61,8 @@ const fellesSearchValues = {
 
 export const getSearchValues = (randomSeed: string, values: any) => {
 	let identer = values?.identer ? [...values.identer] : []
-	if (values?.ident?.ident) {
-		identer.push(values?.ident?.ident)
+	if (values?.ident) {
+		identer.push(values?.ident)
 		identer = identer.filter((item: string) => item)
 	}
 
