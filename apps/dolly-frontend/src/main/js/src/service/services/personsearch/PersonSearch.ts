@@ -38,8 +38,11 @@ const searchPdlFragment = (fragment: string) =>
 		}))
 	)
 
-const searchPdlPerson = async (searchRequest: Search): Promise<SearchResponsePdl> => {
-	if (searchRequest?.relasjoner?.barn === 'M') {
+const searchPdlPerson = async (
+	searchRequest: Search,
+	harFlereBarn: boolean
+): Promise<SearchResponsePdl> => {
+	if (harFlereBarn && searchRequest.relasjoner) {
 		searchRequest.terminateAfter = null
 		const initialResponse = await search(searchRequest)
 		const numberOfItems = initialResponse.numberOfItems

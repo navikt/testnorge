@@ -8,9 +8,9 @@ import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
 import Loading from '~/components/ui/loading/Loading'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { getAlder } from '~/ducks/fagsystem'
+import { getAlder, getKjoenn } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
-import { getEtternavn, getFornavn, getIdent, getPdlKjoenn } from '~/pages/testnorgePage/utils'
+import { getIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
@@ -34,6 +34,20 @@ const getImportPerson = (data: PdlData) => {
 		ident: ident,
 		data: data,
 	}
+}
+
+const getFornavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].fornavn : ''
+}
+
+const getEtternavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].etternavn : ''
+}
+
+const getPdlKjoenn = (person: PdlData) => {
+	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
 }
 
 const SearchView = styled.div`

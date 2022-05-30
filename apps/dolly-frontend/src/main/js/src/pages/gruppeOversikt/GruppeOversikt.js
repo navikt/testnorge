@@ -7,6 +7,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
+import { PopoverOrientering } from 'nav-frontend-popover'
 
 export default function GruppeOversikt({
 	getGrupper,
@@ -45,7 +46,7 @@ export default function GruppeOversikt({
 			<div className="toolbar">
 				<div className="page-header flexbox--align-center--justify-start">
 					<h1>Grupper</h1>
-					<Hjelpetekst hjelpetekstFor="Grupper">
+					<Hjelpetekst hjelpetekstFor="Grupper" type={PopoverOrientering.Under}>
 						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
 					</Hjelpetekst>
 				</div>
