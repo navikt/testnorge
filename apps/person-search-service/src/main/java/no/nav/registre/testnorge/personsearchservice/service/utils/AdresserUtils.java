@@ -67,7 +67,6 @@ public class AdresserUtils {
                 });
     }
 
-
     private static void addPostnrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
         Optional.ofNullable(bostedsadresse.getPostnummer())
                 .ifPresent(value -> {
