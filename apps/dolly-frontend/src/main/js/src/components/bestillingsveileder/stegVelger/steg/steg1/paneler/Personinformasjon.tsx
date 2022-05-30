@@ -44,19 +44,26 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const harFnr = opts.identtype === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
+	const getIgnoreKeys = () => {
+		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		if (sm.attrs.utenlandskBankkonto.checked) {
+			ignoreKeys.push('norskBankkonto')
+		} else {
+			ignoreKeys.push('utenlandskBankkonto')
+		}
+		if (!testnorgeIdent && !harFnr) {
+			ignoreKeys.push('utvandretTilLand')
+		}
+		return ignoreKeys
+	}
+
 	if (testnorgeIdent) {
 		return (
 			// @ts-ignore
 			<Panel
 				heading={PersoninformasjonPanel.heading}
 				startOpen
-				checkAttributeArray={() => {
-					if (sm.attrs.utenlandskBankkonto.checked) {
-						sm.batchAdd([...ignoreKeysTestnorge, 'norskBankkonto'])
-					} else {
-						sm.batchAdd([...ignoreKeysTestnorge, 'utenlandskBankkonto'])
-					}
-				}}
+				checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
@@ -81,13 +88,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		<Panel
 			heading={PersoninformasjonPanel.heading}
 			startOpen
-			checkAttributeArray={() => {
-				if (sm.attrs.utenlandskBankkonto.checked) {
-					sm.batchAdd(['identtype', 'norskBankkonto'])
-				} else {
-					sm.batchAdd(['identtype', 'utenlandskBankkonto'])
-				}
-			}}
+			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
