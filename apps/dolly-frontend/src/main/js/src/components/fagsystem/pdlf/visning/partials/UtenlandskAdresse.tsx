@@ -1,7 +1,6 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
