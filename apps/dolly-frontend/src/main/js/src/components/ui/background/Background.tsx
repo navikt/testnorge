@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 // @ts-ignore
-import Summer from '~/components/ui/background/backgrounds/Summer.svg'
+import Default from '~/components/ui/background/backgrounds/Default.svg'
 // @ts-ignore
 import Christmas from '~/components/ui/background/backgrounds/Christmas.svg'
 // @ts-ignore
@@ -16,9 +16,11 @@ import Fall from '~/components/ui/background/backgrounds/Fall.svg'
 import Spring from '~/components/ui/background/backgrounds/Spring.svg'
 // @ts-ignore
 import Paaske from '~/components/ui/background/backgrounds/Paaske.svg'
+// @ts-ignore
+import Sommer from '~/components/ui/background/backgrounds/Sommer.svg'
 
 export const SummerBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
+	background-image: url(data:image/svg+xml;base64,${btoa(Default)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
@@ -75,6 +77,14 @@ export const SpringBackground = styled.div`
 
 export const PaaskeBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Paaske)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #cce4ee;
+`
+
+export const SommerBackground = styled.div`
+	background-image: url(data:image/svg+xml;base64,${btoa(Sommer)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
