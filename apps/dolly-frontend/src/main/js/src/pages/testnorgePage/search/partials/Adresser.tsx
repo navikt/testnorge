@@ -5,6 +5,8 @@ import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
 import { yesNoOptions } from '~/pages/testnorgePage/utils'
+import Button from '~/components/ui/button/Button'
+import useBoolean from '~/utils/hooks/useBoolean'
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
@@ -16,6 +18,8 @@ const kontaktPath = 'adresser.harKontaktadresse'
 const oppholdPath = 'adresser.harOppholdsadresse'
 
 export const Adresser = ({ formikBag }: AdresserProps) => {
+	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
+
 	const bostedOptions = [
 		{ value: 'Y', label: 'Ja' },
 		{
@@ -29,7 +33,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 	]
 	return (
 		<section>
-			<div className="options-title-bold">Nåværende bostedsadresse</div>
+			<div className="options-title-bold">Bostedsadresse</div>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har bostedsadresse i Norge'}
@@ -60,31 +64,43 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				optionHeight={50}
 				size="medium"
 			/>
-			<div className="options-title-bold">Tidligere bostedsadresse</div>
-			<FormikSelect
-				name={`${bostedPath}.historiskPostnummer`}
-				label="Har tidligere hatt postnummer"
-				kodeverk={AdresseKodeverk.Postnummer}
-				optionHeight={50}
-				size="medium"
-				info="Velg postnummer tilknyttet tidligere bostedsadresse."
-			/>
-			<FormikSelect
-				name={`${bostedPath}.historiskBydelsnummer`}
-				label="Har tidligere bodd i bydel"
-				kodeverk={GtKodeverk.BYDEL}
-				optionHeight={50}
-				size="medium"
-				info="Velg bydel tilknyttet tidligere bostedsadresse."
-			/>
-			<FormikSelect
-				name={`${bostedPath}.historiskKommunenummer`}
-				label="Har tidligere bodd i kommune"
-				kodeverk={AdresseKodeverk.Kommunenummer}
-				optionHeight={50}
-				size="medium"
-				info="Velg kommunenummer tilknyttet tidligere bostedsadresse."
-			/>
+			{visAvansert ? (
+				<Button onClick={setSkjulAvansert} kind={'collapse'}>
+					SKJUL AVANSERTE VALG
+				</Button>
+			) : (
+				<Button onClick={setVisAvansert} kind={'expand'}>
+					VIS AVANSERTE VALG
+				</Button>
+			)}
+			{visAvansert && (
+				<>
+					<FormikSelect
+						name={`${bostedPath}.historiskPostnummer`}
+						label="Har tidligere hatt postnummer"
+						kodeverk={AdresseKodeverk.Postnummer}
+						optionHeight={50}
+						size="medium"
+						info="Velg postnummer tilknyttet tidligere bostedsadresse."
+					/>
+					<FormikSelect
+						name={`${bostedPath}.historiskBydelsnummer`}
+						label="Har tidligere bodd i bydel"
+						kodeverk={GtKodeverk.BYDEL}
+						optionHeight={50}
+						size="medium"
+						info="Velg bydel tilknyttet tidligere bostedsadresse."
+					/>
+					<FormikSelect
+						name={`${bostedPath}.historiskKommunenummer`}
+						label="Har tidligere bodd i kommune"
+						kodeverk={AdresseKodeverk.Kommunenummer}
+						optionHeight={50}
+						size="medium"
+						info="Velg kommunenummer tilknyttet tidligere bostedsadresse."
+					/>
+				</>
+			)}
 			<div className="options-title-bold">Annet</div>
 			<RadioGroupOptions
 				formikBag={formikBag}
