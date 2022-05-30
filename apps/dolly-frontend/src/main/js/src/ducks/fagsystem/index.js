@@ -170,7 +170,7 @@ export default handleActions(
 	{
 		[onSuccess(actions.getTpsf)](state, action) {
 			action.payload.data.forEach((ident) => {
-				state.tpsf[ident.ident] = ident
+				// state.tpsf[ident.ident] = ident
 			})
 		},
 		[onSuccess(actions.getSigrun)](state, action) {
@@ -465,14 +465,14 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 		return {
 			ident,
 			identNr: ident.ident,
-			bestillingId: 'N/A',
-			importFra: 'N/A',
-			identtype: 'N/A',
+			bestillingId: '',
+			importFra: '',
+			identtype: '',
 			kilde: 'TPS',
-			navn: 'N/A',
-			kjonn: 'N/A',
-			alder: 'N/A',
-			status: 'N/A',
+			navn: '',
+			kjonn: '',
+			alder: '',
+			status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
 		}
 	}
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
