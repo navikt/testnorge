@@ -81,7 +81,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
 				),
 				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
-				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
+				obj('Sist Oppdatert', Formatters.formatDateTime(bestillingsinformasjon.sistOppdatert)),
 				obj(
 					'Gjenopprettet fra',
 					bestillingsinformasjon.opprettetFraId
