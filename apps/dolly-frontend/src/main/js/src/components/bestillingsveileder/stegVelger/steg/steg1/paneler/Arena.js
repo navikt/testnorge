@@ -16,7 +16,11 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	return (
 		<Panel
 			heading={ArenaPanel.heading}
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => {
+				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
+					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser'])
+				}
+			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
 			startOpen={harValgtAttributt(formikBag.values, [arenaPath])}
