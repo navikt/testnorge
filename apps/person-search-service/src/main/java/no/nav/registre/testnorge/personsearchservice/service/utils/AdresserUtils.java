@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.AdresserSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
@@ -15,7 +14,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.YES;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.HISTORISK_PATH;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldExistQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
@@ -69,19 +67,6 @@ public class AdresserUtils {
                 });
     }
 
-    private static void addHistoriskKommunenrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
-        Optional.ofNullable(bostedsadresse.getHistoriskKommunenummer())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        var boolQuery = QueryBuilders.boolQuery()
-                                .should(QueryBuilders.matchQuery(BOSTEDSADRESSE_PATH + ".vegadresse.kommunenummer", value))
-                                .should(QueryBuilders.matchQuery(BOSTEDSADRESSE_PATH + ".matrikkeladresse.kommunenummer", value))
-                                .must(QueryBuilders.termQuery(BOSTEDSADRESSE_PATH + HISTORISK_PATH, true))
-                                .minimumShouldMatch(1);
-                        queryBuilder.must(QueryBuilders.nestedQuery(BOSTEDSADRESSE_PATH, boolQuery, ScoreMode.Avg));
-                    }
-                });
-    }
 
     private static void addPostnrBostedQuery(BoolQueryBuilder queryBuilder, AdresserSearch.BostedsadresseSearch bostedsadresse) {
         Optional.ofNullable(bostedsadresse.getPostnummer())
