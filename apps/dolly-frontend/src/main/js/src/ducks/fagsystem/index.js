@@ -461,7 +461,20 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 }
 
 const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
-	if (!tpsfIdent) return null
+	if (!tpsfIdent) {
+		return {
+			ident,
+			identNr: ident.ident,
+			bestillingId: ident.bestillingId,
+			importFra: '',
+			identtype: '',
+			kilde: 'TPS',
+			navn: '',
+			kjonn: '',
+			alder: '',
+			status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		}
+	}
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 	return {
 		ident,
