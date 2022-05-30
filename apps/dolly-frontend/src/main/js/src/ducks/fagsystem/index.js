@@ -170,7 +170,7 @@ export default handleActions(
 	{
 		[onSuccess(actions.getTpsf)](state, action) {
 			action.payload.data.forEach((ident) => {
-				// state.tpsf[ident.ident] = ident
+				state.tpsf[ident.ident] = ident
 			})
 		},
 		[onSuccess(actions.getSigrun)](state, action) {
