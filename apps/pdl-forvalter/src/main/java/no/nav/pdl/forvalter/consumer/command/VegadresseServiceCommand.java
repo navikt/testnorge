@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.metrics.Timed;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
@@ -52,7 +51,6 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
     }
 
     @Override
-    @Timed(name = "providers", tags = {"operation", "adresseService_vegAdresse"})
     public Mono<VegadresseDTO[]> call() {
 
         return webClient
@@ -74,13 +72,13 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
 
         return new LinkedMultiValueMap<>(
                 new LinkedHashMap<>(Map.of(
-                        "matrikkelId", filterArtifact(matrikkelId),
-                        "adressenavn", filterArtifact(query.getAdressenavn()),
-                        "husnummer", filterArtifact(query.getHusnummer()),
-                        "husbokstav", filterArtifact(query.getHusbokstav()),
-                        "postnummer", filterArtifact(query.getPostnummer()),
-                        "kommunenummer", filterArtifact(query.getKommunenummer()),
-                        "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
+                                "matrikkelId", filterArtifact(matrikkelId),
+                                "adressenavn", filterArtifact(query.getAdressenavn()),
+                                "husnummer", filterArtifact(query.getHusnummer()),
+                                "husbokstav", filterArtifact(query.getHusbokstav()),
+                                "postnummer", filterArtifact(query.getPostnummer()),
+                                "kommunenummer", filterArtifact(query.getKommunenummer()),
+                                "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                         .entrySet().stream()
                         .filter(entry -> isNotBlank(entry.getValue()))
                         .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));
