@@ -60,7 +60,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 	if (!items || items.length === 0) {
 		return (
 			<ContentContainer>
-				Ingen resultat. Resultatet inkluderer ikke identer som allerede er importert til Dolly.
+				Fant ingen identer. Resultatet inkluderer ikke identer som allerede er importert til Dolly.
 			</ContentContainer>
 		)
 	}
