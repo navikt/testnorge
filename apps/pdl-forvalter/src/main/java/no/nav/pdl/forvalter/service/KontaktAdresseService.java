@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
@@ -82,10 +81,6 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
-        }
-        if (isNull(adresse.getAdresseIdentifikatorFraMatrikkelen()) &&
-                nonNull(adresse.getVegadresse()) && nonNull(adresse.getVegadresse().getAdressenavn())) {
-            validateMasterPdl(adresse);
         }
         if (nonNull(adresse.getPostboksadresse())) {
             validatePostBoksAdresse(adresse.getPostboksadresse());
