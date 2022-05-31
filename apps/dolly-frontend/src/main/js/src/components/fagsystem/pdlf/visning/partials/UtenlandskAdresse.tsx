@@ -47,7 +47,7 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="By eller sted" value={bySted} />
 				<TitleValue title="Land">
 					{landkode && (
-						<KodeverkConnector navn="StatsborgerskapFreg" value={landkode}>
+						<KodeverkConnector navn="Landkoder" value={landkode}>
 							{(v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : landkode}</span>
 							)}
