@@ -1,0 +1,27 @@
+@import (reference) '~lessVars';
+@headerHoverColor: darken(@color-lightblue, 7%);
+
+.endringsmelding-tekst{
+  padding: 5px 15px 20px 15px;
+  background-color: white;
+  display: inline-block;
+  p {
+    margin-bottom: 15px;
+    display: inline-block;
+  }
+  a {
+    display: inline-block;
+    border-radius: 0.125em;
+    padding: 10px 30px 10px 30px;
+    background-color: @color-lightblue;
+    color: white;
+    letter-spacing: 0.0625em;
+    line-height: 1.375rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1em;
+    &:hover {
+      background-color: @headerHoverColor;
+    }
+  }
+}
