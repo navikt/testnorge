@@ -68,6 +68,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 tilleggsnavn,
                 postnummer,
                 kommunenummer,
+                bydelsnummer,
                 koordinater {
                     x,
                     y,
@@ -126,6 +127,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 tilleggsnavn,
                 postnummer,
                 kommunenummer,
+                bydelsnummer,
                 koordinater {
                     x,
                     y,
@@ -169,6 +171,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 tilleggsnavn,
                 postnummer,
                 kommunenummer,
+                bydelsnummer,
                 koordinater {
                     x,
                     y,
@@ -239,6 +242,7 @@ query($ident: ID!, $historikk: Boolean!) {
                 tilleggsnavn,
                 postnummer,
                 kommunenummer,
+                bydelsnummer,
                 koordinater {
                     x,
                     y,
