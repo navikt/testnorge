@@ -12,8 +12,8 @@ export default () => {
 					Endringsmelding er en egen applikasjon separat fra Dolly som brukes til å sende inn
 					fødsels- og dødsmeldinger til ønsket testmiljø.
 					<br />
-					For å ta i bruk Endringsmelding må man ha spesifikk tilgang som man kan få ved å ta
-					kontakt med Team Dolly.
+					Tilgang til Endringsmelding er begrenset. Hvis man trenger tilgang kan man ta kontakt med
+					Team Dolly.
 					<br />
 					<br />
 					Trykk på knappen under for å gå direkte til Endringmelding.
