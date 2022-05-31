@@ -10,7 +10,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { getAlder, getKjoenn } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
-import { getIdent } from '~/pages/testnorgePage/utils'
+import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
@@ -29,7 +29,7 @@ export type ImportPerson = {
 }
 
 const getImportPerson = (data: PdlData) => {
-	const ident = getIdent(data)
+	const ident = getPdlIdent(data)
 	return {
 		ident: ident,
 		data: data,
@@ -70,7 +70,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			text: 'Ident',
 			width: '25',
 			formatter: (_cell: any, row: PdlData) => {
-				return <CopyButton value={getIdent(row)} />
+				return <CopyButton value={getPdlIdent(row)} />
 			},
 		},
 		{
@@ -127,7 +127,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			},
 			formatter: (_cell: any, row: PdlData) => (
 				<VelgPerson
-					ident={getIdent(row)}
+					ident={getPdlIdent(row)}
 					data={row}
 					valgtePersoner={valgtePersoner}
 					setValgtePersoner={setValgtePersoner}

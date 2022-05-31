@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Title from '~/components/Title'
 import { Formik } from 'formik'
 import SearchContainer from '~/components/SearchContainer'
@@ -13,6 +13,9 @@ import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTy
 import Hjelpetekst from '~/components/hjelpetekst'
 import { PopoverOrientering } from 'nav-frontend-popover'
 import './TestnorgePage.less'
+import { ifPresent, validate } from '~/utils/YupValidations'
+import * as Yup from 'yup'
+import DisplayFormikState from '~/utils/DisplayFormikState'
 
 export default () => {
 	const [items, setItems] = useState<PdlData[]>([])
@@ -49,6 +52,8 @@ export default () => {
 		</a>
 	)
 
+	const _validate = (values: any) => validate(values, validation)
+
 	return (
 		<div>
 			<div className="testnorge-page-header flexbox--align-center--justify-start">
@@ -71,28 +76,50 @@ export default () => {
 				</Hjelpetekst>
 			</div>
 
-			<Formik initialValues={initialValues} onSubmit={onSubmit}>
-				{(formikBag) => (
-					<SearchContainer
-						left={<SearchOptions formikBag={formikBag} />}
-						right={
-							<>
-								{error && <ContentContainer>{error}</ContentContainer>}
-								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
-								{startedSearch && !error && (
-									<SearchViewConnector
-										items={items}
-										loading={loading}
-										valgtePersoner={valgtePersoner}
-										setValgtePersoner={setValgtePersoner}
-									/>
-								)}
-							</>
-						}
-						onSubmit={formikBag.handleSubmit}
-					/>
-				)}
+			<Formik initialValues={initialValues} validate={_validate} onSubmit={onSubmit}>
+				{(formikBag) => {
+					const devEnabled =
+						window.location.hostname.includes('localhost') ||
+						window.location.hostname.includes('dolly-frontend-dev')
+
+					return (
+						<Fragment>
+							{devEnabled && <DisplayFormikState {...formikBag} />}
+							<SearchContainer
+								left={<SearchOptions formikBag={formikBag} />}
+								right={
+									<>
+										{error && <ContentContainer>{error}</ContentContainer>}
+										{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
+										{startedSearch && !error && (
+											<SearchViewConnector
+												items={items}
+												loading={loading}
+												valgtePersoner={valgtePersoner}
+												setValgtePersoner={setValgtePersoner}
+											/>
+										)}
+									</>
+								}
+								onSubmit={formikBag.handleSubmit}
+							/>
+						</Fragment>
+					)
+				}}
 			</Formik>
 		</div>
 	)
 }
+
+const validation = Yup.object({
+	identer: ifPresent(
+		'$identer',
+		Yup.array().of(
+			Yup.string()
+				.nullable()
+				.transform((curr, orig) => (orig === '' ? null : curr))
+				.matches(/^\d*$/, 'Ident må være et tall med 11 siffer')
+				.test('len', 'Ident må være et tall med 11 siffer', (val) => !val || val.length === 11)
+		)
+	),
+})

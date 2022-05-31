@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Alder, AlderPaths } from './partials/Alder'
 import { Identifikasjon, IdentifikasjonPaths } from './partials/Identifikasjon'
-import { IdentSearch, IdentSearchPaths } from '~/pages/testnorgePage/search/partials/IdentSearch'
+import { Identer, IdenterPaths } from '~/pages/testnorgePage/search/partials/Identer'
 import { Adresser, AdresserPaths } from '~/pages/testnorgePage/search/partials/Adresser'
 import { Nasjonalitet, NasjonalitetPaths } from '~/pages/testnorgePage/search/partials/Nasjonalitet'
 import { Relasjoner, RelasjonerPaths } from '~/pages/testnorgePage/search/partials/Relasjoner'
@@ -11,7 +11,6 @@ import { Personstatus, PersonstatusPaths } from '~/pages/testnorgePage/search/pa
 import { OptionsPanel } from './optionsPanel/OptionsPanel'
 import styled from 'styled-components'
 import Icon from '~/components/ui/icon/Icon'
-import { initialValues } from '~/pages/testnorgePage/utils'
 
 export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
@@ -30,9 +29,7 @@ export const getCount = (values: Record<string, string>, formikBag: FormikProps<
 		if (valueType === 'string' && value && value !== '') {
 			count++
 		} else if (valueType === 'list' && value) {
-			count += value.length
-		} else if (valueType === 'ident' && value && value.match(/^\d{11}$/) != null) {
-			count++
+			count += [...value].filter((n) => n).length
 		} else if (value) {
 			count++
 		}
@@ -41,7 +38,7 @@ export const getCount = (values: Record<string, string>, formikBag: FormikProps<
 }
 
 const getNumSelected = (formikBag: FormikProps<{}>) => {
-	let count = getCount(IdentSearchPaths, formikBag)
+	let count = getCount(IdenterPaths, formikBag)
 	if (count > 0) {
 		return count
 	}
@@ -55,7 +52,7 @@ const getNumSelected = (formikBag: FormikProps<{}>) => {
 }
 
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
-	const disabled = getCount(IdentSearchPaths, props.formikBag) > 0
+	const disabled = getCount(IdenterPaths, props.formikBag) > 0
 	const numSelected = getNumSelected(props.formikBag)
 
 	return (
@@ -75,9 +72,9 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 			<OptionsPanel
 				heading={'Fødsels- eller D-nummer'}
 				startOpen
-				numSelected={getCount(IdentSearchPaths, props.formikBag)}
+				numSelected={getCount(IdenterPaths, props.formikBag)}
 			>
-				<IdentSearch formikBag={props.formikBag} />
+				<Identer formikBag={props.formikBag} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Identifikasjon'}
