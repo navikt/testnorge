@@ -101,7 +101,7 @@ const extractValuesForBestillingListe = (
 	const values = {
 		id: data.id.toString(),
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
-		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
+		sistOppdatert: Formatters.formatDateTimeWithSeconds(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
 		statusKode,
 		identer: Formatters.arrayToString(identer),

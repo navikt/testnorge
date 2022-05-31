@@ -77,11 +77,18 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			header: 'Bestillingsinformasjon',
 			items: [
 				obj(
-					'Antall',
+					'Antall bestillt',
 					bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
 				),
+				obj(
+					'Antall levert',
+					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString()
+				),
 				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
-				obj('Sist Oppdatert', Formatters.formatDateTime(bestillingsinformasjon.sistOppdatert)),
+				obj(
+					'Sist oppdatert',
+					Formatters.formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)
+				),
 				obj(
 					'Gjenopprettet fra',
 					bestillingsinformasjon.opprettetFraId
