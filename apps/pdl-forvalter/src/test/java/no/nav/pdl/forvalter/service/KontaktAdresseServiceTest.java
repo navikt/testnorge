@@ -90,23 +90,6 @@ class KontaktAdresseServiceTest {
     }
 
     @Test
-    void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
-
-        var request = KontaktadresseDTO.builder()
-                .vegadresse(VegadresseDTO.builder()
-                        .adressenavn("Denne veien")
-                        .build())
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString(
-                "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
-    }
-
-    @Test
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
