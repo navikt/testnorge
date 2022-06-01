@@ -61,7 +61,7 @@ export default ({ left, right, formikBag, onSubmit, onEmpty }: Props) => {
 				>
 					{'Søk'}
 				</Button>
-				<Button onClick={() => onEmpty()} disabled={getNumSelected() == 0}>
+				<Button onClick={() => onEmpty()} disabled={getNumSelected() === 0}>
 					{'Tøm'}
 				</Button>
 			</Left>

@@ -16,7 +16,7 @@ export type SearchOptionsProps = {
 
 export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
 	let count = 0
-	for (let path of paths) {
+	for (const path of paths) {
 		const value = _get(formikBag.values, path)
 		const valueType = typeof value
 		if (valueType === 'string') {

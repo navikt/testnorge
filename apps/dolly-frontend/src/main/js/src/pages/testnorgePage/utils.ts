@@ -59,8 +59,7 @@ const fellesSearchValues = {
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
-	let identer = values?.identer ? [...values.identer].filter((n) => n) : []
-
+	const identer = values?.identer ? [...values.identer].filter((n) => n) : []
 	const kunLevende = values?.personstatus?.status !== 'DOED'
 
 	if (identer.length > 0) {
