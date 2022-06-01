@@ -78,6 +78,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                                 "husbokstav", filterArtifact(query.getHusbokstav()),
                                 "postnummer", filterArtifact(query.getPostnummer()),
                                 "kommunenummer", filterArtifact(query.getKommunenummer()),
+                                "bydelsnummer", filterArtifact(query.getBydelsnummer()),
                                 "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                         .entrySet().stream()
                         .filter(entry -> isNotBlank(entry.getValue()))
