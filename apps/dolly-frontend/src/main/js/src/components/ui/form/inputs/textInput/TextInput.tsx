@@ -5,6 +5,7 @@ import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Icon from '~/components/ui/icon/Icon'
 import UncontrolledFormikTextInput from '~/components/ui/form/inputs/textInput/UncontrolledFormikTextInput'
+import ControlledFormikTextInput from '~/components/ui/form/inputs/textInput/ControlledFormikTextInput'
 
 export const TextInput = React.forwardRef(
 	(
@@ -54,6 +55,7 @@ export const DollyTextInput = (props: {
 
 export const FormikTextInput = ({
 	visHvisAvhuket = true,
+	useControlled = false,
 	...props
 }: {
 	visHvisAvhuket?: boolean
@@ -62,10 +64,15 @@ export const FormikTextInput = ({
 	size?: string
 	type?: string
 	useOnChange?: boolean
+	useControlled?: boolean
 	disabled?: boolean
 	onKeyPress?: Function
 }) => {
-	const component = <UncontrolledFormikTextInput {...props} />
+	const component = useControlled ? (
+		<ControlledFormikTextInput {...props} />
+	) : (
+		<UncontrolledFormikTextInput {...props} />
+	)
 	// @ts-ignore
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

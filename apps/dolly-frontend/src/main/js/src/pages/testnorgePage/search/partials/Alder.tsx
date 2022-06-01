@@ -11,8 +11,20 @@ const paths = {
 
 export const Alder = () => (
 	<section>
-		<FormikTextInput name={paths.fra} label="Alder fra" visHvisAvhuket={false} size="medium" />
-		<FormikTextInput name={paths.til} label="Alder til" visHvisAvhuket={false} size="medium" />
+		<FormikTextInput
+			name={paths.fra}
+			label="Alder fra"
+			visHvisAvhuket={false}
+			size="medium"
+			useControlled
+		/>
+		<FormikTextInput
+			name={paths.til}
+			label="Alder til"
+			visHvisAvhuket={false}
+			size="medium"
+			useControlled
+		/>
 		<FormikDatepicker
 			name={paths.fom}
 			label="Fødselsdato fom"
