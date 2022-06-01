@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PdlWebClientTagsProvider implements WebClientExchangeTagsProvider {
 
-    private static String stripRequestParanms(Tag uriTag) {
+    private static String stripRequestParams(Tag uriTag) {
 
         return uriTag.getValue().replaceFirst("\\?.*", "");
     }
@@ -20,7 +20,7 @@ public class PdlWebClientTagsProvider implements WebClientExchangeTagsProvider {
 
         return List.of(
                 WebClientExchangeTags.method(request),
-                Tag.of("uri", stripRequestParanms(WebClientExchangeTags.uri(request))),
+                Tag.of("uri", stripRequestParams(WebClientExchangeTags.uri(request))),
                 WebClientExchangeTags.status(response, throwable),
                 WebClientExchangeTags.outcome(response));
     }
