@@ -1,6 +1,5 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
@@ -16,6 +15,7 @@ import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConne
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useGruppeAlle } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
 export type GruppeProps = {
 	visning: string
@@ -64,9 +64,11 @@ export default function Gruppe({ visning, setVisning, antallSlettet }: GruppePro
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppe={gruppe} />
+			<GruppeHeaderConnector gruppeId={gruppe.id} />
 
-			<StatusListeConnector gruppeId={gruppe.id} />
+			{bestillingerById && (
+				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
+			)}
 
 			<div className="toolbar">
 				{brukertype === 'AZURE' && (

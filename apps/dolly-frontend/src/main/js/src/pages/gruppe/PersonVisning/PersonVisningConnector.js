@@ -44,7 +44,8 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.ident)),
+		fetchDataFraFagsystemer: (bestillinger) =>
+			dispatch(fetchDataFraFagsystemer(ownProps.ident, bestillinger)),
 		slettPerson: () => {
 			dispatch(incrementSlettedePersoner())
 			return dispatch(actions.slettPerson(ownProps.personId))

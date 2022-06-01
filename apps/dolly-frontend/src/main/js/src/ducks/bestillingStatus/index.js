@@ -93,14 +93,6 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 	return bestillingsListe
 }
 
-// Henter bestilling objecter basert på nye bestillinger (Array av ID'er)
-export const nyeBestillingerSelector = (state) => {
-	// Filter() -> Fjerner non-truthy values hvis find funksjon feiler
-	return state.bestillingStatuser.ny
-		.map((id) => getBestillingById(state, id))
-		.filter((x) => Boolean(x))
-}
-
 // Filtrer bestillinger basert på søkestreng
 export const sokSelector = (state, searchStr) => {
 	const items = Object.values(state.bestillingStatuser.byId)
@@ -115,23 +107,25 @@ export const sokSelector = (state, searchStr) => {
 // Object med system som key, og OK-miljøer som value
 // StatusArray = state.bestillingStatus[0].status
 export const successMiljoSelector = (statusArray) => {
-	const success_list = statusArray.reduce((acc, curr) => {
-		const statuser = curr.statuser.filter((v) => v.melding === 'OK')
+	const success_list = statusArray
+		.filter((curr) => !_isNil(curr))
+		.reduce((acc, curr) => {
+			const statuser = curr.statuser.filter((v) => v.melding === 'OK')
 
-		if (statuser.length) {
-			// Dette er statuser som er OK
-			const detaljert = statuser[0].detaljert
-			const envs = detaljert && detaljert.map((v) => v.miljo)
+			if (statuser.length) {
+				// Dette er statuser som er OK
+				const detaljert = statuser[0].detaljert
+				const envs = detaljert && detaljert.map((v) => v.miljo)
 
-			if (acc[curr.id]) {
-				acc[curr.id] = acc[curr.id].concat(envs)
-			} else {
-				acc[curr.id] = envs
+				if (acc[curr.id]) {
+					acc[curr.id] = acc[curr.id].concat(envs)
+				} else {
+					acc[curr.id] = envs
+				}
 			}
-		}
 
-		return acc
-	}, {})
+			return acc
+		}, {})
 
 	// Filtrer og sorter miljøer
 	return _mapValues(success_list, (v) => _uniq(v).sort())

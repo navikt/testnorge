@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -44,6 +43,7 @@ const getIdenttype = (ident) => {
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
+	bestillingIdListe,
 	ident,
 	brukertype,
 	loading,
@@ -53,12 +53,15 @@ export const PersonVisning = ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
-	useMount(fetchDataFraFagsystemer)
 
 	const { bestillingerById } = useBestillingerGruppe(gruppeId)
 
-	const bestillingListe = getBestillingsListe(Object.values(bestillingerById), gruppeId)
-	const bestilling = bestillingListe[0]
+	useEffect(() => {
+		fetchDataFraFagsystemer(bestillingerById)
+	}, [])
+
+	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
+	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()

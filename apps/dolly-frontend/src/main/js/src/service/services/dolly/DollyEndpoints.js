@@ -160,8 +160,8 @@ export default class DollyEndpoints {
 		return `${openamBase}/bestilling/${bestillingId}?bestillingId=${bestillingId}`
 	}
 
-	static removeBestilling(bestillingId) {
-		return `${bestillingBase}/stop/${bestillingId}`
+	static removeBestilling(bestillingId, erOrganisasjon) {
+		return `${bestillingBase}/stop/${bestillingId}?organisasjonBestilling=${erOrganisasjon}`
 	}
 
 	static personoppslag(ident) {

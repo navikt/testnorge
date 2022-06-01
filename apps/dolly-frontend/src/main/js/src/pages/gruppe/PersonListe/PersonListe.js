@@ -201,7 +201,7 @@ export default function PersonListe({
 					<PersonVisningConnector
 						ident={bruker.ident}
 						personId={bruker.identNr}
-						bestillingsIdListe={bruker.ident.bestillingId}
+						bestillingIdListe={bruker.ident.bestillingId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
 					/>

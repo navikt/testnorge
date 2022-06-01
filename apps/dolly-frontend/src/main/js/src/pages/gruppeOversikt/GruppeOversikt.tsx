@@ -26,8 +26,6 @@ enum VisningType {
 }
 
 export default function GruppeOversikt({
-	gruppeInfo,
-	importerteZIdenter,
 	searchActive,
 	sideStoerrelse,
 	sidetall,
@@ -36,7 +34,6 @@ export default function GruppeOversikt({
 		currentBruker: { brukerId, brukertype },
 	} = useCurrentBruker()
 	const [visning, setVisning] = useState(VisningType.MINE)
-	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
 	const { grupper, loading } = useGruppeAlle(visning === VisningType.MINE ? brukerId : null)
 	const dispatch = useDispatch()
@@ -44,10 +41,6 @@ export default function GruppeOversikt({
 	const byttVisning = (event: BaseSyntheticEvent) => {
 		setVisning(event.target.value)
 		dispatch(setSidetall(0))
-	}
-
-	if (importerteZIdenter !== importerte) {
-		setImporterte(importerteZIdenter)
 	}
 
 	return (
@@ -82,7 +75,7 @@ export default function GruppeOversikt({
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
-				gruppeDetaljer={visning === VisningType.ALLE ? gruppeInfo : { pageSize: sideStoerrelse }}
+				gruppeDetaljer={{ pageSize: sideStoerrelse }}
 				items={grupper}
 				isFetching={loading}
 				searchActive={searchActive}

@@ -22,10 +22,10 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 	const navigate = useNavigate()
 
 	const { loading, error: userError } = useCurrentBruker()
-	const { error: environmentError } = useDollyEnvironments()
+	useDollyEnvironments()
 
-	if (userError || environmentError) {
-		setCriticalError(userError || environmentError)
+	if (userError) {
+		setCriticalError(userError)
 	}
 
 	function extractFeilmelding(stackTrace: string) {

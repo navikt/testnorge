@@ -16,7 +16,7 @@ import {
 	TpsMessagingApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
-import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
+import { successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
 import { isNil } from 'lodash'
@@ -291,12 +291,13 @@ export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = (person) => (dispatch, getState) => {
+export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch, getState) => {
 	const state = getState()
 	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
-	const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
+	// const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
+	const bestillinger = person.bestillingId.map((id) => bestillingerById?.[id])
 
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])

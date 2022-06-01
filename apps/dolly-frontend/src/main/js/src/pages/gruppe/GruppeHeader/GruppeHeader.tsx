@@ -14,10 +14,10 @@ import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 import { PopoverOrientering } from 'nav-frontend-popover'
 import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/GjenopprettGruppe'
-import { Gruppe } from '~/utils/hooks/useGruppe'
+import { useGruppeById } from '~/utils/hooks/useGruppe'
 
 type GruppeHeaderProps = {
-	gruppe: Gruppe
+	gruppeId: number
 	antallSlettet: number
 	laasGruppe: Function
 	isLockingGruppe: boolean
@@ -30,7 +30,7 @@ type GruppeHeaderProps = {
 }
 
 const GruppeHeader = ({
-	gruppe,
+	gruppeId,
 	deleteGruppe,
 	isDeletingGruppe,
 	getGruppeExcelFil,
@@ -43,6 +43,11 @@ const GruppeHeader = ({
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
+	const { gruppe, loading } = useGruppeById(gruppeId)
+
+	if (loading) {
+		return null
+	}
 
 	const erLaast = gruppe.erLaast
 
@@ -50,6 +55,8 @@ const GruppeHeader = ({
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'lockedGroup' : 'group'
 	const antallPersoner = gruppe.antallIdenter - antallSlettet
+
+	console.log('gruppe: ', gruppe) //TODO - SLETT MEG
 
 	return (
 		<Fragment>

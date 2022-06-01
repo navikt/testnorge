@@ -18,10 +18,17 @@ export type Gruppe = {
 	tags: string[]
 }
 
-export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10) => {
+export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10, autoRefresh = false) => {
+	if (!gruppeId) {
+		return {
+			loading: false,
+			error: 'GruppeId mangler!',
+		}
+	}
 	const { data, error } = useSWR<Gruppe, Error>(
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
-		fetcher
+		fetcher,
+		autoRefresh && { refreshInterval: 1000 }
 	)
 
 	return {

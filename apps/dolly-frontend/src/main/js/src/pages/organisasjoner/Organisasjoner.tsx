@@ -18,6 +18,7 @@ import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
 import { PopoverOrientering } from 'nav-frontend-popover'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 
 type OrganisasjonerProps = {
 	history: History
@@ -65,6 +66,7 @@ export default function Organisasjoner({
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 	const navigate = useNavigate()
+	const { bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
 
 	useEffect(() => {
 		getOrganisasjonBestillingStatus(brukerId)
@@ -166,7 +168,10 @@ export default function Organisasjoner({
 					</div>
 				</div>
 
-				<StatusListeConnector brukerId={brukerId} />
+				{bestillingerById && (
+					// @ts-ignore
+					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
+				)}
 
 				<div className="toolbar">
 					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>

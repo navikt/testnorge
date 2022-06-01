@@ -148,8 +148,8 @@ export default {
 		return Request.post(Endpoints.openAmBestilling(bestillingId))
 	},
 
-	cancelBestilling(bestillingId) {
-		return Request.delete(Endpoints.removeBestilling(bestillingId))
+	cancelBestilling(bestillingId, erOrganisasjon) {
+		return Request.delete(Endpoints.removeBestilling(bestillingId, erOrganisasjon))
 	},
 
 	slettPerson(ident) {
