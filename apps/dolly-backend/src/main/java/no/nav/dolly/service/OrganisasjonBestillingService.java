@@ -193,7 +193,8 @@ public class OrganisasjonBestillingService {
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
     }
 
-    private OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
+    @Transactional
+    public OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
 
         bestilling.setFeil(orgStatus.getError());
         bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));

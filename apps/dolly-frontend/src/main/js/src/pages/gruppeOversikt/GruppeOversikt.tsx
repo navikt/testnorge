@@ -11,6 +11,7 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useGruppeAlle } from '~/utils/hooks/useGruppe'
 import { useDispatch } from 'react-redux'
 import { setSidetall } from '~/ducks/finnPerson'
+import { PopoverOrientering } from 'nav-frontend-popover'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -48,7 +49,7 @@ export default function GruppeOversikt({
 			<div className="toolbar">
 				<div className="page-header flexbox--align-center--justify-start">
 					<h1>Grupper</h1>
-					<Hjelpetekst hjelpetekstFor="Grupper">
+					<Hjelpetekst hjelpetekstFor="Grupper" type={PopoverOrientering.Under}>
 						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
 					</Hjelpetekst>
 				</div>

@@ -6,10 +6,11 @@ import { BestillingProgresjon } from '~/components/bestilling/statusListe/Bestil
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
+	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '~/utils/hooks/useMutate'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import { Bestillingsstatus, useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 
 type StatusProps = {
@@ -27,21 +28,32 @@ const StatusListe = ({
 	isCanceling,
 }: StatusProps) => {
 	const mutate = useMatchMutate()
+	const [nyeBestillinger, setNyeBestillinger] = useState([])
 	const [autoRefresh, setAutoRefresh] = useState(true)
 	useBestillingerGruppe(gruppeId, autoRefresh)
 	useOrganisasjonBestilling(brukerId, autoRefresh)
 
-	const uferdigeBestillinger = Object.values(bestillingListe).filter(
-		(bestilling) => !bestilling.ferdig
-	)
-
-	console.log('uferdigeBestillinger: ', uferdigeBestillinger) //TODO - SLETT MEG
+	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
+		Object.values(bestillinger)
+			.filter(
+				(bestilling) =>
+					!bestilling.ferdig && nyeBestillinger.every((nyeBest) => !isEqual(bestilling, nyeBest))
+			)
+			.forEach((bestilling) => {
+				setNyeBestillinger(nyeBestillinger.concat(bestilling))
+			})
+	}
 
 	useEffect(() => {
-		setAutoRefresh(!isEmpty(uferdigeBestillinger))
+		filtrerNyeBestillinger(bestillingListe)
+	}, [bestillingListe])
+
+	useEffect(() => {
+		setAutoRefresh(!isEmpty(nyeBestillinger))
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_BESTILLINGER)
-	}, [uferdigeBestillinger])
+		mutate(REGEX_BACKEND_ORGANISASJONER)
+	}, [nyeBestillinger])
 
 	if (isCanceling) {
 		return (
@@ -51,17 +63,14 @@ const StatusListe = ({
 		)
 	}
 
-	return uferdigeBestillinger?.map((bestilling) => {
-		console.log('bestilling: ', bestilling) //TODO - SLETT MEG
-		return (
-			<div className="bestilling-status" key={bestilling.id}>
-				{bestilling.ferdig ? (
-					<BestillingResultat bestilling={bestilling} />
-				) : (
-					<BestillingProgresjon bestilling={bestilling} cancelBestilling={cancelBestilling} />
-				)}
-			</div>
-		)
-	})
+	return nyeBestillinger?.map((bestilling) => (
+		<div className="bestilling-status" key={bestilling.id}>
+			{bestilling.ferdig ? (
+				<BestillingResultat bestilling={bestilling} />
+			) : (
+				<BestillingProgresjon bestilling={bestilling} cancelBestilling={cancelBestilling} />
+			)}
+		</div>
+	))
 }
 export default StatusListe

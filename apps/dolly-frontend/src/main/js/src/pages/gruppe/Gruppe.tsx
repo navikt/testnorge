@@ -20,7 +20,7 @@ import StatusListeConnector from '~/components/bestilling/statusListe/StatusList
 export type GruppeProps = {
 	visning: string
 	setVisning: Function
-	antallSlettet: number
+	antallPersonerFjernet: number
 }
 
 export enum VisningType {
@@ -28,7 +28,7 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default function Gruppe({ visning, setVisning, antallSlettet }: GruppeProps) {
+export default function Gruppe({ visning, setVisning, antallPersonerFjernet }: GruppeProps) {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -45,7 +45,6 @@ export default function Gruppe({ visning, setVisning, antallSlettet }: GruppePro
 	if (loading || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
-	// @ts-ignore
 	const gruppe = grupperById[gruppeId]
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
@@ -67,6 +66,7 @@ export default function Gruppe({ visning, setVisning, antallSlettet }: GruppePro
 			<GruppeHeaderConnector gruppeId={gruppe.id} />
 
 			{bestillingerById && (
+				// @ts-ignore
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
 			)}
 
@@ -105,7 +105,7 @@ export default function Gruppe({ visning, setVisning, antallSlettet }: GruppePro
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
-							{`Personer (${gruppe.antallIdenter - antallSlettet})`}
+							{`Personer (${gruppe.antallIdenter - antallPersonerFjernet})`}
 						</ToggleKnapp>
 						<ToggleKnapp
 							value={VisningType.VISNING_BESTILLING}

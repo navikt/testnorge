@@ -5,6 +5,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Icon from '~/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
+import { useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
 
 export const BestillingProgresjon = ({ bestilling, cancelBestilling }) => {
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
@@ -15,6 +16,21 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }) => {
 
 	const sistOppdatert = bestilling.sistOppdatert
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
+
+	const setDetaljertOrgStatus = (bestillingStatus, orgnummer) => {
+		const detaljertStatus = bestillingStatus?.orgStatus?.[orgnummer]?.[0]?.details
+		if (orgStatus !== detaljertStatus) {
+			setOrgStatus(detaljertStatus)
+		}
+	}
+
+	if (erOrganisasjon) {
+		const { bestillingStatus } = useOrganisasjonBestillingStatus(
+			[bestilling.organisasjonNummer],
+			true
+		)
+		setDetaljertOrgStatus(bestillingStatus, bestilling.organisasjonNummer)
+	}
 
 	useEffect(() => {
 		harBestillingFeilet(sistOppdatert)

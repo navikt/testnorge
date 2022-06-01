@@ -11,14 +11,14 @@ const mapStateToProps = (
 			visning: string
 		}
 		redigertePersoner: {
-			antallSlettedePersoner: number
+			antallPersonerFjernet: number
 		}
 	},
 	ownProps: FormikProps<any>
 ) => ({
 	...ownProps,
 	visning: state.finnPerson.visning,
-	antallSlettet: state.redigertePersoner.antallSlettedePersoner,
+	antallPersonerFjernet: state.redigertePersoner.antallPersonerFjernet,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

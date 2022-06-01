@@ -1,17 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import 'rc-tooltip/assets/bootstrap.css'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
-import { EnhetBestilling, EnhetData, OrgStatus } from '~/components/fagsystem/organisasjoner/types'
+import { EnhetBestilling, EnhetData } from '~/components/fagsystem/organisasjoner/types'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
+import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+import Loading from '~/components/ui/loading/Loading'
+import _isEmpty from 'lodash/isEmpty'
+import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 
 type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
-	organisasjoner: OrgStatus
+	search: string
+	setAntallOrg: Function
+	sidetall: number
 }
 
 const ikonTypeMap = {
@@ -23,13 +29,90 @@ const ikonTypeMap = {
 
 export default function OrganisasjonListe({
 	bestillinger,
-	organisasjoner,
+	search,
+	setAntallOrg,
+	sidetall,
 }: OrganisasjonListeProps) {
-	if (!organisasjoner) {
-		return null
+	const sokSelectorOrg = (
+		items: {
+			organisasjonsnavn: string
+			enhetstype: string
+			bestillingId: number[]
+			orgInfo: Organisasjon
+			id: number
+			organisasjonsnummer: string
+			status: string
+		}[],
+		searchStr: string
+	) => {
+		if (!items) return []
+		if (!searchStr) return items
+
+		const query = searchStr.toLowerCase()
+		return items.filter((item) =>
+			Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query))
+		)
 	}
 
+	const hentOrgStatus = (
+		bestillingArray: Array<EnhetBestilling>,
+		bestillingId: string | number
+	) => {
+		if (!bestillingArray) return null
+		let orgStatus = 'Ferdig'
+		const bestilling = bestillingArray.find((obj) => {
+			return obj.id === bestillingId
+		})
+		if (!bestilling?.status) orgStatus = 'Feilet'
+		bestilling?.status?.[0].statuser?.forEach((status) => {
+			if (status?.melding !== 'OK') orgStatus = 'Avvik'
+		})
+		return orgStatus
+	}
+
+	const getBestillingIdFromOrgnummer = (
+		bestillinger: Array<EnhetBestilling>,
+		organisasjonsnummer: string
+	) =>
+		bestillinger
+			.filter((org) => org.organisasjonNummer === organisasjonsnummer)
+			.map((org) => org.id)
+			.sort(function (a: number, b: number) {
+				return b - a
+			})
+
+	const mergeList = (organisasjoner: Array<Organisasjon>, bestillinger: Array<EnhetBestilling>) => {
+		if (_isEmpty(organisasjoner)) return null
+
+		return organisasjoner.map((orgInfo) => {
+			const bestillingId = getBestillingIdFromOrgnummer(bestillinger, orgInfo.organisasjonsnummer)
+			return {
+				orgInfo,
+				id: orgInfo.id,
+				organisasjonsnummer: orgInfo.organisasjonsnummer,
+				organisasjonsnavn: orgInfo.organisasjonsnavn,
+				enhetstype: orgInfo.enhetstype,
+				status: hentOrgStatus(bestillinger, bestillingId[0]),
+				bestillingId: bestillingId,
+			}
+		})
+	}
+
+	const { organisasjoner, loading } = useOrganisasjoner(
+		bestillinger
+			?.filter((org) => org.ferdig && org.organisasjonNummer !== 'NA')
+			?.map((org) => org.organisasjonNummer)
+	)
+
+	useEffect(() => {
+		setAntallOrg(organisasjoner?.length)
+	}, [organisasjoner])
+
+	if (loading) {
+		return <Loading label="Laster organisasjoner" panel />
+	}
 	const sortedOrgliste = _orderBy(organisasjoner, ['id'], ['desc'])
+	const filtrertOrgListe = sokSelectorOrg(mergeList(sortedOrgliste, bestillinger), search)
 
 	const columns = [
 		{
@@ -74,10 +157,10 @@ export default function OrganisasjonListe({
 	return (
 		<ErrorBoundary>
 			<DollyTable
-				data={sortedOrgliste}
+				data={filtrertOrgListe}
 				columns={columns}
+				visSide={sidetall}
 				pagination
-				visSide={null}
 				iconItem={<OrganisasjonItem />}
 				onExpand={(organisasjon: EnhetData) => (
 					<OrganisasjonVisning data={organisasjon} bestillinger={bestillinger} />

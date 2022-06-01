@@ -68,13 +68,6 @@ export default handleActions(
 	initialState
 )
 
-/**
- * Finner bestilling som matcher ID
- * @param state
- * @param {string|number} id
- */
-export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id]
-
 // Henter alle bestillinger som er gjort på en ident
 export const getBestillingsListe = (bestillinger, IDer) => {
 	const bestillingsListe = []
@@ -94,8 +87,8 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 }
 
 // Filtrer bestillinger basert på søkestreng
-export const sokSelector = (state, searchStr) => {
-	const items = Object.values(state.bestillingStatuser.byId)
+export const sokSelector = (bestillingerById, searchStr) => {
+	const items = Object.values(bestillingerById)
 	if (!searchStr || !items) return items
 
 	return items.filter(({ listedata }) => {
