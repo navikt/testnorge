@@ -193,6 +193,8 @@ const updateVegadressetype = (adresse: any) => {
 		adresse.vegadresseType = 'KOMMUNENUMMER'
 	} else if (notNullKeys.length === 1 && notNullKeys.includes('postnummer')) {
 		adresse.vegadresseType = 'POSTNUMMER'
+	} else if (notNullKeys.length === 1 && notNullKeys.includes('bydelsnummer')) {
+		adresse.vegadresseType = 'BYDELSNUMMER'
 	} else if (notNullKeys.length !== 0) {
 		adresse.vegadresseType = 'DETALJERT'
 	}
