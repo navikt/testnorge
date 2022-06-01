@@ -77,7 +77,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			header: 'Bestillingsinformasjon',
 			items: [
 				obj(
-					'Antall bestillt',
+					'Antall bestilt',
 					bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
 				),
 				obj(
