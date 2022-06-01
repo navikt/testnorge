@@ -79,7 +79,7 @@ const FinnPersonBestilling = ({
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
 		personList
-			.filter((person: Person) => person.fornavn !== undefined && person.etternavn !== undefined)
+			.filter((person: Person) => person.fornavn && person.etternavn)
 			.map((person: Person) => {
 				const navn = person.mellomnavn
 					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`

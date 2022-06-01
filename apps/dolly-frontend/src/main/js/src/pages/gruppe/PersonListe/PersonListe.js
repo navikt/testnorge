@@ -190,7 +190,7 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallSlettedePersoner,
+					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallPersonerFjernet,
 					pageSize: sideStoerrelse,
 				}}
 				pagination
@@ -204,6 +204,8 @@ export default function PersonListe({
 						bestillingIdListe={bruker.ident.bestillingId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
+						isAlive={!bruker.alder.includes('død')}
+						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
 				)}
 			/>

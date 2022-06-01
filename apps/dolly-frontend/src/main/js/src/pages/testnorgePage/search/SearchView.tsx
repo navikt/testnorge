@@ -6,15 +6,14 @@ import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { getAlder } from '~/ducks/fagsystem'
+import { getAlder, getKjoenn } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
-import { getEtternavn, getFornavn, getIdent, getPdlKjoenn } from '~/pages/testnorgePage/utils'
+import { getIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
-import { useNavigate } from 'react-router-dom'
+import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
 
 type Props = {
 	items?: PdlData[]
@@ -37,6 +36,20 @@ const getImportPerson = (data: PdlData) => {
 	}
 }
 
+const getFornavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].fornavn : ''
+}
+
+const getEtternavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].etternavn : ''
+}
+
+const getPdlKjoenn = (person: PdlData) => {
+	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
+}
+
 const SearchView = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -51,8 +64,6 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			</ContentContainer>
 		)
 	}
-
-	const navigate = useNavigate()
 
 	const columns = [
 		{
@@ -124,11 +135,6 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			),
 		},
 	]
-	const personerValgt = valgtePersoner.length > 0
-
-	const onImport = () => {
-		importerPersoner(valgtePersoner, navigate)
-	}
 
 	return (
 		<SearchView>
@@ -143,16 +149,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
 				pagination
 			/>
-			<div className="flexbox--align-center--justify-end">
-				<NavButton
-					type="hoved"
-					onClick={onImport}
-					disabled={!personerValgt}
-					title={!personerValgt ? 'Velg personer' : null}
-				>
-					Importer
-				</NavButton>
-			</div>
+			<ImportModal valgtePersoner={valgtePersoner} importerPersoner={importerPersoner} />
 		</SearchView>
 	)
 }

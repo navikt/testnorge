@@ -33,7 +33,11 @@ export type Search = {
 		bostedsadresse?: {
 			borINorge?: string
 			postnummer?: string
+			bydelsnummer?: string
 			kommunenummer?: string
+			historiskBydelsnummer?: string
+			historiskPostnummer?: string
+			historiskKommunenummer?: string
 		}
 		harUtenlandskAdresse?: string
 		harKontaktadresse?: string
@@ -43,7 +47,6 @@ export type Search = {
 		status?: string
 	}
 	relasjoner?: {
-		barn?: string
 		harBarn?: string
 		harDoedfoedtBarn?: string
 		forelderBarnRelasjoner?: string[]

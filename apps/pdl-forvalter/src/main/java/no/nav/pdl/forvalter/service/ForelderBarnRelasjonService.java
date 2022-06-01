@@ -17,6 +17,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
@@ -201,6 +202,10 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                     PersonUtenIdentifikatorRequest.class);
 
             request.setMinRolle(relasjon.getMinRolleForPerson());
+            request.setRelatertStatsborgerskap(hovedperson.getStatsborgerskap().stream()
+                    .map(StatsborgerskapDTO::getLandkode)
+                    .findFirst()
+                    .orElse(null));
             relasjon.setRelatertPersonUtenFolkeregisteridentifikator(
                     createPersonUtenIdentifikatorService.execute(request));
 

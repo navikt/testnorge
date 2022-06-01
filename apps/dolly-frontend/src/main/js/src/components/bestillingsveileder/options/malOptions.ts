@@ -153,14 +153,15 @@ const getUpdatedPdldata = (pdldata: any) => {
 	}
 
 	if (person?.forelderBarnRelasjon) {
-		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon
-			.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
-			.map((relasjon: ForeldreBarnRelasjon) => {
-				if (relasjon.deltBosted) {
+		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon.map(
+			(relasjon: ForeldreBarnRelasjon) => {
+				relasjon.typeForelderBarn = updateTypeForelderBarn(relasjon)
+				if (relasjon.relatertPersonsRolle === 'BARN' && relasjon.deltBosted) {
 					relasjon.deltBosted = updateAdressetyper(relasjon.deltBosted, true)
 				}
 				return relasjon
-			})
+			}
+		)
 	}
 	return newPdldata
 }
@@ -195,6 +196,17 @@ const updateVegadressetype = (adresse: any) => {
 	} else if (notNullKeys.length !== 0) {
 		adresse.vegadresseType = 'DETALJERT'
 	}
+}
+
+const updateTypeForelderBarn = (relasjon: ForeldreBarnRelasjon) => {
+	if (relasjon.relatertPerson) {
+		return 'EKSISTERENDE'
+	} else if (relasjon.relatertPerson) {
+		return 'NY'
+	} else if (relasjon.relatertPersonUtenFolkeregisteridentifikator) {
+		return 'UTEN_ID'
+	}
+	return null
 }
 
 const updateData = (data: any, initalValues: any) => {

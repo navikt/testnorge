@@ -9,7 +9,7 @@ import { ForelderBarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/
 import { Sivilstand } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import { Foreldreansvar } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
 
-const relasjonerAttributter = [
+export const relasjonerAttributter = [
 	'pdldata.person.sivilstand',
 	'pdldata.person.forelderBarnRelasjon',
 	'pdldata.person.foreldreansvar',

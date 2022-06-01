@@ -1,6 +1,6 @@
 import React from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import { GtKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
@@ -36,7 +36,7 @@ export const UtenlandskAdresse = ({ formikBag, path }: UtenlandskAdresseForm) =>
 			<FormikSelect
 				name={`${path}.landkode`}
 				label="Land"
-				kodeverk={AdresseKodeverk.StatsborgerskapLand}
+				kodeverk={GtKodeverk.LAND}
 				isClearable={false}
 				size="large"
 			/>

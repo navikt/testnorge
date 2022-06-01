@@ -258,8 +258,7 @@ export const initialForelder = {
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
-	relatertPerson: null as string,
-	nyRelatertPerson: initialPdlPerson,
+	typeForelderBarn: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -268,9 +267,8 @@ export const initialBarn = {
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
-	relatertPerson: null as string,
+	typeForelderBarn: null as string,
 	deltBosted: null as any,
-	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

@@ -12,7 +12,7 @@ interface SykdomFormProps {
 	formikBag: FormikProps<{}>
 }
 
-const sykdomAttributt = 'sykemelding'
+export const sykdomAttributt = 'sykemelding'
 
 export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 	// @ts-ignore

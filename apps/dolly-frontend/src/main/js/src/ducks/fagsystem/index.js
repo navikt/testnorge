@@ -114,6 +114,13 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		slettPersonOgPartner: [
+			DollyApi.slettPersonOgPartner,
+			(ident, partnerident) => ({
+				ident,
+				partnerident,
+			}),
+		],
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type
@@ -240,22 +247,30 @@ export default handleActions(
 			state.instdata[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
-			delete state.tpsf[action.meta.ident]
-			delete state.sigrunstub[action.meta.ident]
-			delete state.inntektstub[action.meta.ident]
-			delete state.krrstub[action.meta.ident]
-			delete state.arenaforvalteren[action.meta.ident]
-			delete state.aareg[action.meta.ident]
-			delete state.pdl[action.meta.ident]
-			delete state.pdlforvalter[action.meta.ident]
-			delete state.instdata[action.meta.ident]
-			delete state.udistub[action.meta.ident]
-			delete state.pensjonforvalter[action.meta.ident]
-			delete state.brregstub[action.meta.ident]
+			deleteIdentState(state, action.meta.ident)
+		},
+		[onSuccess(actions.slettPersonOgPartner)](state, action) {
+			deleteIdentState(state, action.meta.ident)
+			deleteIdentState(state, action.meta.partnerident)
 		},
 	},
 	initialState
 )
+
+const deleteIdentState = (state, ident) => {
+	delete state.tpsf[ident]
+	delete state.sigrunstub[ident]
+	delete state.inntektstub[ident]
+	delete state.krrstub[ident]
+	delete state.arenaforvalteren[ident]
+	delete state.aareg[ident]
+	delete state.pdl[ident]
+	delete state.pdlforvalter[ident]
+	delete state.instdata[ident]
+	delete state.udistub[ident]
+	delete state.pensjonforvalter[ident]
+	delete state.brregstub[ident]
+}
 
 // Thunk
 export const fetchTpsfPersoner = (identer) => (dispatch) => {
@@ -447,7 +462,9 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 }
 
 const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
-	if (!tpsfIdent) return null
+	if (!tpsfIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TPS')
+	}
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 	return {
 		ident,
@@ -464,7 +481,9 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 }
 
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
-	if (!pdlIdent) return null
+	if (!pdlIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
+	}
 
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
 		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
@@ -475,7 +494,6 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
 		return Math.abs(diff.getUTCFullYear() - 1970)
 	}
-
 	return {
 		ident,
 		identNr: pdlIdent.ident,
@@ -493,9 +511,10 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 }
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
-	if (!pdlData) return null
+	if (!pdlData || (!pdlData.person && !pdlData.hentPerson)) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TEST-NORGE')
+	}
 	const person = pdlData.person || pdlData.hentPerson
-	if (!person) return null
 
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
@@ -513,6 +532,24 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+	}
+}
+
+const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
+	return {
+		ident,
+		identNr: ident?.ident,
+		bestillingId: ident?.bestillingId,
+		importFra: '',
+		identtype: '',
+		kilde: kilde,
+		navn: '',
+		kjonn: '',
+		alder: '',
+		status:
+			ident?.bestillingId && bestillingStatuser
+				? hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]])
+				: '',
 	}
 }
 

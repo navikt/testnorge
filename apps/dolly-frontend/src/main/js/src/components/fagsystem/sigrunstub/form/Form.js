@@ -6,7 +6,7 @@ import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent } from '~/utils/YupValidations'
 
-const sigrunAttributt = 'sigrunstub'
+export const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
 	<Vis attributt={sigrunAttributt}>
 		<Panel

@@ -142,7 +142,8 @@ type ForelderBarnRelasjon {
     folkeregistermetadata: Folkeregistermetadata
     metadata: Metadata!
     minRolleForPerson: ForelderBarnRelasjonRolle
-    relatertPersonsIdent: String!
+    relatertPersonUtenFolkeregisteridentifikator: RelatertBiPerson
+    relatertPersonsIdent: String
     relatertPersonsRolle: ForelderBarnRelasjonRolle!
 }
 

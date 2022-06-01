@@ -63,6 +63,7 @@ export const FormikTextInput = ({
 	type?: string
 	useOnChange?: boolean
 	disabled?: boolean
+	onKeyPress?: Function
 }) => {
 	const component = <UncontrolledFormikTextInput {...props} />
 	// @ts-ignore

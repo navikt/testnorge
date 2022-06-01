@@ -16,4 +16,5 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 public class PersonUtenIdentifikatorRequest extends RelatertBiPersonDTO {
 
     private ForelderBarnRelasjonDTO.Rolle minRolle;
+    private String relatertStatsborgerskap;
 }

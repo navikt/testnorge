@@ -2,8 +2,10 @@ import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { arenaPath } from '~/components/fagsystem/arena/form/Form'
 
-export const ArenaPanel = ({ stateModifier }) => {
+export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
@@ -14,9 +16,14 @@ export const ArenaPanel = ({ stateModifier }) => {
 	return (
 		<Panel
 			heading={ArenaPanel.heading}
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => {
+				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
+					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser'])
+				}
+			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
+			startOpen={harValgtAttributt(formikBag.values, [arenaPath])}
 		>
 			<AttributtKategori title={'Aktiv bruker'}>
 				<Attributt

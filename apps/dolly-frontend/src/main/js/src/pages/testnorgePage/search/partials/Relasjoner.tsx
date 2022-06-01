@@ -8,8 +8,8 @@ import { yesNoOptions } from '~/pages/testnorgePage/utils'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const paths = {
-	sivistand: 'relasjoner.sivilstand',
-	harBarn: 'relasjoner.barn',
+	sivistand: 'sivilstand.type',
+	harBarn: 'relasjoner.harBarn',
 	harDoedfoedtBarn: 'relasjoner.harDoedfoedtBarn',
 	forelderBarnRelasjoner: 'relasjoner.forelderBarnRelasjoner',
 	foreldreansvar: 'relasjoner.foreldreansvar',

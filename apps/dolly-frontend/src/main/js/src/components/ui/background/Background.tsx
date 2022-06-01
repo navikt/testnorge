@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 // @ts-ignore
-import Summer from '~/components/ui/background/backgrounds/Summer.svg'
+import Default from '~/components/ui/background/backgrounds/Default.svg'
 // @ts-ignore
 import Christmas from '~/components/ui/background/backgrounds/Christmas.svg'
 // @ts-ignore
@@ -9,23 +9,25 @@ import Winter from '~/components/ui/background/backgrounds/Winter.svg'
 // @ts-ignore
 import Halloween from '~/components/ui/background/backgrounds/Halloween.svg'
 // @ts-ignore
-import Snowing from '~/components/ui/background/backgrounds/Snowing.svg'
-// @ts-ignore
 import Fall from '~/components/ui/background/backgrounds/Fall.svg'
 // @ts-ignore
 import Spring from '~/components/ui/background/backgrounds/Spring.svg'
 // @ts-ignore
 import Paaske from '~/components/ui/background/backgrounds/Paaske.svg'
+// @ts-ignore
+import Sommer from '~/components/ui/background/backgrounds/Sommer.svg'
+import '~/snow.scss'
+import '~/flowers.scss'
 
-export const SummerBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
+const DefaultBackground = styled.div`
+	background-image: url(data:image/svg+xml;base64,${btoa(Default)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
 	background-color: #cce4ee;
 `
 
-export const ChristmasBackground = styled.div`
+const ChristmasBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Christmas)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
@@ -33,7 +35,7 @@ export const ChristmasBackground = styled.div`
 	background-color: #005077;
 `
 
-export const WinterBackground = styled.div`
+const WinterBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Winter)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
@@ -41,15 +43,7 @@ export const WinterBackground = styled.div`
 	background-color: #005077;
 `
 
-export const SnowingBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Snowing)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #005077;
-`
-
-export const HalloweenBackground = styled.div`
+const HalloweenBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Halloween)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
@@ -57,7 +51,7 @@ export const HalloweenBackground = styled.div`
 	background-color: #c0b2d2;
 `
 
-export const FallBackground = styled.div`
+const FallBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Fall)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
@@ -65,7 +59,7 @@ export const FallBackground = styled.div`
 	background-color: #cce4ee;
 `
 
-export const SpringBackground = styled.div`
+const SpringBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Spring)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
@@ -73,10 +67,46 @@ export const SpringBackground = styled.div`
 	background-color: #cce4ee;
 `
 
-export const PaaskeBackground = styled.div`
+const PaaskeBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Paaske)});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
 	background-color: #cce4ee;
 `
+
+const SommerBackground = styled.div`
+	background-image: url(data:image/svg+xml;base64,${btoa(Sommer)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #cce4ee;
+`
+
+export const Background = (props: any) => {
+	const month = new Date().getMonth()
+	if (month >= 2 && month <= 4) {
+		return (
+			<>
+				{Array.from(Array(50).keys()).map((idx) => (
+					<div key={idx} className="flower" />
+				))}
+				<SpringBackground>{props.children}</SpringBackground>
+			</>
+		)
+	} else if (month >= 5 && month <= 7) {
+		return <SommerBackground>{props.children}</SommerBackground>
+	} else if (month >= 8 && month <= 10) {
+		return <FallBackground>{props.children}</FallBackground>
+	} else if (month === 11 || month === 0 || month === 1) {
+		return (
+			<>
+				{Array.from(Array(70).keys()).map((idx) => (
+					<div key={idx} className="snowflake" />
+				))}
+				<WinterBackground>{props.children}</WinterBackground>
+			</>
+		)
+	}
+	return <DefaultBackground>{props.children}</DefaultBackground>
+}

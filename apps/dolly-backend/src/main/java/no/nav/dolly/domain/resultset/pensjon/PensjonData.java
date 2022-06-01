@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -58,6 +59,13 @@ public class PensjonData {
 
         @Schema(description = "Tjenestepensjons ytelser")
         private List<TpYtelse> ytelser;
+
+        public List<TpYtelse> getYtelser() {
+            if (ytelser == null) {
+                ytelser = new ArrayList<>();
+            }
+            return ytelser;
+        }
     }
 
     public enum TpYtelseType {

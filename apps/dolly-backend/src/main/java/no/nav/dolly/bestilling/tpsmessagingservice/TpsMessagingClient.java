@@ -11,7 +11,10 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
@@ -20,6 +23,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -80,6 +84,7 @@ public class TpsMessagingClient implements ClientRegister {
                             sendSikkerhetstiltakSlett(dollyPerson),
                             sendSikkerhetstiltakOpprett(dollyPerson),
                             sendBostedsadresseUtland(dollyPerson),
+                            sendBostedsadresseUtlandPartner(dollyPerson),
                             sendKontaktadresseUtland(dollyPerson)
                     )
                     .filter(Objects::nonNull)
@@ -126,6 +131,33 @@ public class TpsMessagingClient implements ClientRegister {
                         Map.of("BostedadresseUtland",
                                 tpsMessagingConsumer.sendAdresseUtlandRequest(dollyPerson1.getHovedperson(), null,
                                         mapperFacade.map(dollyPerson1.getPdlfPerson().getPerson().getBostedsadresse().stream()
+                                                .filter(AdresseDTO::isAdresseUtland)
+                                                .findFirst().orElse(new BostedadresseDTO()), AdresseUtlandDTO.class)))
+
+                : null;
+    }
+
+    private TpsMessage sendBostedsadresseUtlandPartner(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER)
+                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                .map(PersonDTO::getBostedsadresse)
+                .flatMap(Collection::stream)
+                .anyMatch(AdresseDTO::isAdresseUtland) ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("BostedadresseUtlandPartner",
+                                tpsMessagingConsumer.sendAdresseUtlandRequest(dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                                .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER)
+                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                                .map(PersonDTO::getIdent)
+                                                .findFirst().orElse("00000000000"), null,
+                                        mapperFacade.map(dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                                .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER)
+                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                                .map(PersonDTO::getBostedsadresse)
+                                                .flatMap(Collection::stream)
                                                 .filter(AdresseDTO::isAdresseUtland)
                                                 .findFirst().orElse(new BostedadresseDTO()), AdresseUtlandDTO.class)))
 

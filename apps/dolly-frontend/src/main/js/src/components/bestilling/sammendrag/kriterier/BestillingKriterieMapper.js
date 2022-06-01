@@ -77,11 +77,18 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			header: 'Bestillingsinformasjon',
 			items: [
 				obj(
-					'Antall',
+					'Antall bestilt',
 					bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
 				),
+				obj(
+					'Antall levert',
+					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString()
+				),
 				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
-				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
+				obj(
+					'Sist oppdatert',
+					Formatters.formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)
+				),
 				obj(
 					'Gjenopprettet fra',
 					bestillingsinformasjon.opprettetFraId
@@ -193,11 +200,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				kjoenn,
 				foedtEtter,
 				foedtFoer,
+				foedselsdato,
 				alder,
 				statsborgerskapLandkode,
+				statsborgerskap,
 				gradering,
 				syntetisk,
 				nyttNavn,
+				navn,
 			} = _get(personData, path)
 
 			return [
@@ -206,11 +216,19 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Kjønn', kjoenn),
 					obj('Født etter', Formatters.formatDate(foedtEtter)),
 					obj('Født før', Formatters.formatDate(foedtFoer)),
+					obj('Fødselsdato', Formatters.formatDate(foedselsdato)),
 					obj('Alder', alder),
-					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
+					obj(
+						'Statsborgerskap',
+						statsborgerskapLandkode || statsborgerskap,
+						AdresseKodeverk.StatsborgerskapLand
+					),
 					obj('Gradering', Formatters.showLabel('gradering', gradering)),
 					obj('Er syntetisk', syntetisk && 'JA'),
 					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
+					obj('Fornavn', navn?.fornavn),
+					obj('Mellomnavn', navn?.mellomnavn),
+					obj('Etternavn', navn?.etternavn),
 				]),
 			]
 		}
@@ -691,6 +709,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Person relatert til', item.relatertPerson),
 						...deltBosted(item, 'deltBosted'),
 						...personRelatertTil(item, 'nyRelatertPerson'),
+						...personRelatertTil(item, 'relatertPersonUtenFolkeregisteridentifikator'),
 					]
 				}),
 			}
