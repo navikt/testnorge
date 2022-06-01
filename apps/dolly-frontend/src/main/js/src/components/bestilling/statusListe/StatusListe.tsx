@@ -34,14 +34,11 @@ const StatusListe = ({
 	useOrganisasjonBestilling(brukerId, autoRefresh)
 
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
-		Object.values(bestillinger)
-			.filter(
-				(bestilling) =>
-					!bestilling.ferdig && nyeBestillinger.every((nyeBest) => !isEqual(bestilling, nyeBest))
-			)
-			.forEach((bestilling) => {
-				setNyeBestillinger(nyeBestillinger.concat(bestilling))
-			})
+		const filtrerteBestillinger = Object.values(bestillinger).filter(
+			(bestilling) =>
+				!bestilling.ferdig && nyeBestillinger.every((nyeBest) => !isEqual(bestilling, nyeBest))
+		)
+		setNyeBestillinger(filtrerteBestillinger)
 	}
 
 	useEffect(() => {

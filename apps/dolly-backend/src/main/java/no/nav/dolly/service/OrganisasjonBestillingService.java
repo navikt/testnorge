@@ -200,10 +200,13 @@ public class OrganisasjonBestillingService {
         bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
         bestilling.setSistOppdatert(now());
 
+        bestillingRepository.save(bestilling);
+
         return orgStatus;
     }
 
-    private List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+    @Transactional
+    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
@@ -212,7 +215,9 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
-    private OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
+
+    @Transactional
+    public OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
 

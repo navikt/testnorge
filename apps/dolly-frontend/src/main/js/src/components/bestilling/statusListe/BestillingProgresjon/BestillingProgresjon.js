@@ -17,19 +17,17 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }) => {
 	const sistOppdatert = bestilling.sistOppdatert
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const setDetaljertOrgStatus = (bestillingStatus, orgnummer) => {
-		const detaljertStatus = bestillingStatus?.orgStatus?.[orgnummer]?.[0]?.details
+	const setDetaljertOrgStatus = (bestillingStatus) => {
+		const detaljertStatus =
+			bestillingStatus?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
 		if (orgStatus !== detaljertStatus) {
 			setOrgStatus(detaljertStatus)
 		}
 	}
 
 	if (erOrganisasjon) {
-		const { bestillingStatus } = useOrganisasjonBestillingStatus(
-			[bestilling.organisasjonNummer],
-			true
-		)
-		setDetaljertOrgStatus(bestillingStatus, bestilling.organisasjonNummer)
+		const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
+		setDetaljertOrgStatus(bestillingStatus)
 	}
 
 	useEffect(() => {

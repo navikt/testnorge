@@ -12,8 +12,8 @@ const getOrganisasjonerForBrukerUrl = (brukerId: string) =>
 const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon/bestillingsstatus?brukerId=${brukerId}`
 
-const getOrganisasjonBestillingStatusUrl = (organisasjoner: string[]) =>
-	`/testnav-organisasjon-forvalter/api/v2/organisasjoner/ordrestatus?orgnumre=${organisasjoner}`
+const getOrganisasjonBestillingStatusUrl = (bestillingId: number) =>
+	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
 
 export type Bestillingsstatus = {
 	id: number
@@ -92,17 +92,17 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh: boolean
 }
 
 export const useOrganisasjonBestillingStatus = (
-	orgnummer: string[],
+	bestillingId: number,
 	autoRefresh: boolean = false
 ) => {
-	if (!orgnummer) {
+	if (!bestillingId) {
 		return {
 			loading: false,
-			error: 'Orgnummer mangler!',
+			error: 'bestillingId mangler!',
 		}
 	}
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
-		getOrganisasjonBestillingStatusUrl(orgnummer),
+		getOrganisasjonBestillingStatusUrl(bestillingId),
 		fetcher,
 		autoRefresh && { refreshInterval: 1000 }
 	)
