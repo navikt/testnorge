@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
@@ -116,6 +117,19 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
+    public OrganisasjonBestilling cancelBestilling(Long bestillingId) {
+
+        Optional<OrganisasjonBestilling> bestillingById = bestillingRepository.findById(bestillingId);
+        OrganisasjonBestilling organisasjonBestilling = bestillingById.orElseThrow(() -> new NotFoundException(format("Fant ikke organisasjon bestillingId %d", bestillingId)));
+
+        organisasjonBestilling.setFeil("Bestilling stoppet");
+        organisasjonBestilling.setFerdig(true);
+        organisasjonBestilling.setSistOppdatert(now());
+        saveBestillingToDB(organisasjonBestilling);
+        return organisasjonBestilling;
+    }
+
+    @Transactional
     public OrganisasjonBestilling saveBestillingToDB(OrganisasjonBestilling bestilling) {
 
         try {
@@ -152,15 +166,6 @@ public class OrganisasjonBestillingService {
                         .build());
     }
 
-    private OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
-
-        bestilling.setFeil(orgStatus.getError());
-        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
-        bestilling.setSistOppdatert(now());
-
-        return orgStatus;
-    }
-
     @Transactional
     public void setBestillingFeil(Long bestillingId, String feil) {
 
@@ -186,6 +191,15 @@ public class OrganisasjonBestillingService {
         progressService.deleteByOrgnummer(orgnummer);
 
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
+    }
+
+    private OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
+
+        bestilling.setFeil(orgStatus.getError());
+        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
+        bestilling.setSistOppdatert(now());
+
+        return orgStatus;
     }
 
     private List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
