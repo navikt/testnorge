@@ -7,7 +7,19 @@ import Icon from '~/components/ui/icon/Icon'
 import './BestillingProgresjon.less'
 import { useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
 
-export const BestillingProgresjon = ({ bestilling, cancelBestilling }) => {
+type ProgresjonProps = {
+	bestilling: {
+		sistOppdatert: Date
+		hasOwnProperty: Function
+		id: number
+		antallIdenter: number
+		bestilling: { sykemelding: { syntSykemelding: {} } }
+		antallLevert: number
+	}
+	cancelBestilling: Function
+}
+
+export const BestillingProgresjon = ({ bestilling, cancelBestilling }: ProgresjonProps) => {
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
 	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
 
@@ -17,7 +29,7 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }) => {
 	const sistOppdatert = bestilling.sistOppdatert
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const setDetaljertOrgStatus = (bestillingStatus) => {
+	const setDetaljertOrgStatus = (bestillingStatus: any) => {
 		const detaljertStatus =
 			bestillingStatus?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
 		if (orgStatus !== detaljertStatus) {
@@ -34,7 +46,7 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }) => {
 		harBestillingFeilet(sistOppdatert)
 	}, [bestilling])
 
-	const harBestillingFeilet = (sistOppdatertState) => {
+	const harBestillingFeilet = (sistOppdatertState: Date) => {
 		const liveTimeStamp = new Date().getTime()
 		const oldTimeStamp = new Date(sistOppdatertState).getTime()
 

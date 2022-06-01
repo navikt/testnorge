@@ -10,7 +10,7 @@ import {
 	useMatchMutate,
 } from '~/utils/hooks/useMutate'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
-import { isEmpty, isEqual } from 'lodash'
+import { isEmpty } from 'lodash'
 import { Bestillingsstatus, useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 
 type StatusProps = {
@@ -34,11 +34,12 @@ const StatusListe = ({
 	useOrganisasjonBestilling(brukerId, autoRefresh)
 
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
-		const filtrerteBestillinger = Object.values(bestillinger).filter(
+		const nyBestillingListe = Object.values(bestillinger).filter(
 			(bestilling) =>
-				!bestilling.ferdig && nyeBestillinger.every((nyeBest) => !isEqual(bestilling, nyeBest))
+				(!bestilling.ferdig && nyeBestillinger.every((best) => best.id !== bestilling.id)) ||
+				(bestilling.ferdig && nyeBestillinger.some((best) => best.id === bestilling.id))
 		)
-		setNyeBestillinger(filtrerteBestillinger)
+		setNyeBestillinger(nyBestillingListe)
 	}
 
 	useEffect(() => {
@@ -46,7 +47,7 @@ const StatusListe = ({
 	}, [bestillingListe])
 
 	useEffect(() => {
-		setAutoRefresh(!isEmpty(nyeBestillinger))
+		setAutoRefresh(!isEmpty(nyeBestillinger) && nyeBestillinger.some((best) => !best.ferdig))
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_BESTILLINGER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
