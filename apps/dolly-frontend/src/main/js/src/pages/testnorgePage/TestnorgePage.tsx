@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import Title from '~/components/Title'
 import { Formik } from 'formik'
-import SearchContainer from '~/components/SearchContainer'
+import SearchContainer from './search/searchContainer/SearchContainer'
 import { SearchOptions } from './search/SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
 import SearchViewConnector from '~/pages/testnorgePage/search/SearchViewConnector'
@@ -101,7 +101,9 @@ export default () => {
 										)}
 									</>
 								}
+								formikBag={formikBag}
 								onSubmit={formikBag.handleSubmit}
+								onEmpty={formikBag.resetForm}
 							/>
 						</Fragment>
 					)

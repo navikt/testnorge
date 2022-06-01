@@ -9,17 +9,10 @@ import { Nasjonalitet, NasjonalitetPaths } from '~/pages/testnorgePage/search/pa
 import { Relasjoner, RelasjonerPaths } from '~/pages/testnorgePage/search/partials/Relasjoner'
 import { Personstatus, PersonstatusPaths } from '~/pages/testnorgePage/search/partials/Personstatus'
 import { OptionsPanel } from './optionsPanel/OptionsPanel'
-import styled from 'styled-components'
-import Icon from '~/components/ui/icon/Icon'
 
 export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>
 }
-
-const IconContainer = styled.div`
-	margin: 0 0 0 auto;
-	cursor: pointer;
-`
 
 export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
 	let count = 0
@@ -43,40 +36,12 @@ export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
 	return count
 }
 
-const getNumSelected = (formikBag: FormikProps<{}>) => {
-	let count = getCount(IdenterPaths, formikBag)
-	if (count > 0) {
-		return count
-	}
-	const allPaths = [
-		...IdentifikasjonPaths,
-		...PersonstatusPaths,
-		...AlderPaths,
-		...AdresserPaths,
-		...NasjonalitetPaths,
-		...RelasjonerPaths,
-	]
-	return getCount(allPaths, formikBag)
-}
-
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
 	const disabled = getCount(IdenterPaths, props.formikBag) > 0
-	const numSelected = getNumSelected(props.formikBag)
 
 	return (
 		<>
-			<div className="flexbox--align-center">
-				<h2>Søkealternativer</h2>
-				{numSelected > 0 && (
-					<IconContainer
-						onClick={() => {
-							props.formikBag.resetForm()
-						}}
-					>
-						<Icon size={20} kind={'trashcan'} />
-					</IconContainer>
-				)}
-			</div>
+			<h2>Søkealternativer</h2>
 			<OptionsPanel
 				heading={'Fødsels- eller D-nummer'}
 				startOpen
