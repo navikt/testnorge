@@ -462,18 +462,7 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 
 const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 	if (!tpsfIdent) {
-		return {
-			ident,
-			identNr: ident.ident,
-			bestillingId: ident.bestillingId,
-			importFra: '',
-			identtype: '',
-			kilde: 'TPS',
-			navn: '',
-			kjonn: '',
-			alder: '',
-			status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
-		}
+		return getDefaultInfo(ident, bestillingStatuser, 'TPS')
 	}
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 	return {
@@ -491,7 +480,9 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 }
 
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
-	if (!pdlIdent) return null
+	if (!pdlIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
+	}
 
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
 		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
@@ -502,7 +493,6 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
 		return Math.abs(diff.getUTCFullYear() - 1970)
 	}
-
 	return {
 		ident,
 		identNr: pdlIdent.ident,
@@ -520,9 +510,10 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 }
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
-	if (!pdlData) return null
+	if (!pdlData || (!pdlData.person && !pdlData.hentPerson)) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TEST-NORGE')
+	}
 	const person = pdlData.person || pdlData.hentPerson
-	if (!person) return null
 
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
@@ -540,6 +531,24 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+	}
+}
+
+const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
+	return {
+		ident,
+		identNr: ident?.ident,
+		bestillingId: ident?.bestillingId,
+		importFra: '',
+		identtype: '',
+		kilde: kilde,
+		navn: '',
+		kjonn: '',
+		alder: '',
+		status:
+			ident?.bestillingId && bestillingStatuser
+				? hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]])
+				: '',
 	}
 }
 
