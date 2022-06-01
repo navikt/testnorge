@@ -90,7 +90,8 @@ public class RelasjonerUtils {
                 .flatMap(value -> Optional.ofNullable(value.getManglerSivilstand()))
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(SIVILSTAND_PATH, ".type", true));
+                        queryBuilder.mustNot( QueryBuilders.existsQuery(SIVILSTAND_PATH));
+//                        queryBuilder.mustNot(nestedExistsQuery(SIVILSTAND_PATH, ".type", true));
                     }
                 });
     }
