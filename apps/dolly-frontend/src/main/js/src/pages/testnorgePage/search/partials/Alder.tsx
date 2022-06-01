@@ -28,9 +28,4 @@ export const Alder = () => (
 	</section>
 )
 
-export const AlderPaths = {
-	[paths.fra]: 'string',
-	[paths.til]: 'string',
-	[paths.fom]: 'string',
-	[paths.tom]: 'string',
-}
+export const AlderPaths = Object.values(paths)

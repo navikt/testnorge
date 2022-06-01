@@ -102,10 +102,4 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 	)
 }
 
-export const RelasjonerPaths = {
-	[paths.sivistand]: 'string',
-	[paths.harBarn]: 'string',
-	[paths.harDoedfoedtBarn]: 'string',
-	[paths.forelderBarnRelasjoner]: 'list',
-	[paths.foreldreansvar]: 'string',
-}
+export const RelasjonerPaths = Object.values(paths)

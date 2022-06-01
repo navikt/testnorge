@@ -52,6 +52,4 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 	)
 }
 
-export const IdenterPaths = {
-	[identerPath]: 'list',
-}
+export const IdenterPaths = [identerPath]

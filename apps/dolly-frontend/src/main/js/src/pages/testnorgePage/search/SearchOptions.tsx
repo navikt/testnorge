@@ -21,17 +21,23 @@ const IconContainer = styled.div`
 	cursor: pointer;
 `
 
-export const getCount = (values: Record<string, string>, formikBag: FormikProps<{}>) => {
+export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
 	let count = 0
-	for (let key in values) {
-		const value = _get(formikBag.values, key)
-		const valueType = values[key]
-		if (valueType === 'string' && value && value !== '') {
+	for (let path of paths) {
+		const value = _get(formikBag.values, path)
+		const valueType = typeof value
+		if (valueType === 'string') {
+			if (value && value !== '') {
+				count++
+			}
+		} else if (valueType === 'boolean') {
+			if (value) {
+				count++
+			}
+		} else if (value instanceof Date) {
 			count++
-		} else if (valueType === 'list' && value) {
+		} else if (Array.isArray(value)) {
 			count += [...value].filter((n) => n).length
-		} else if (value) {
-			count++
 		}
 	}
 	return count
@@ -42,13 +48,15 @@ const getNumSelected = (formikBag: FormikProps<{}>) => {
 	if (count > 0) {
 		return count
 	}
-	count += getCount(IdentifikasjonPaths, formikBag)
-	count += getCount(PersonstatusPaths, formikBag)
-	count += getCount(AlderPaths, formikBag)
-	count += getCount(AdresserPaths, formikBag)
-	count += getCount(NasjonalitetPaths, formikBag)
-	count += getCount(RelasjonerPaths, formikBag)
-	return count
+	const allPaths = [
+		...IdentifikasjonPaths,
+		...PersonstatusPaths,
+		...AlderPaths,
+		...AdresserPaths,
+		...NasjonalitetPaths,
+		...RelasjonerPaths,
+	]
+	return getCount(allPaths, formikBag)
 }
 
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
