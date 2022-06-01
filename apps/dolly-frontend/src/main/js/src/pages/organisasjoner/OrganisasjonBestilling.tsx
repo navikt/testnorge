@@ -50,7 +50,7 @@ export default function OrganisasjonBestilling({
 			width: '20',
 			dataField: 'sistOppdatert',
 			formatter(cell: string): string {
-				return Formatters.formatDate(cell)
+				return Formatters.formatDateTime(cell)
 			},
 		},
 		{

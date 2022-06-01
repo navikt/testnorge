@@ -17,6 +17,7 @@ export default function BestillingSammendrag({ bestilling }) {
 				bestilling={bestilling.bestilling}
 				bestillingsinformasjon={{
 					antallIdenter: bestilling.antallIdenter,
+					antallLevert: bestilling.antallLevert,
 					sistOppdatert: bestilling.sistOppdatert,
 					opprettetFraId: bestilling.opprettetFraId,
 					opprettetFraGruppeId: bestilling.opprettetFraGruppeId,
