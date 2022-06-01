@@ -103,7 +103,7 @@ public class OrganisasjonBestillingService {
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(progress -> RsOrganisasjonBestillingStatus.builder()
-                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, null))
+                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, getOrgforvalterStatus(progress.getBestilling(), progress).getDetails()))
                         .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(progress.getBestilling().getBestKriterier()))
                         .sistOppdatert(progress.getBestilling().getSistOppdatert())
                         .organisasjonNummer(progress.getOrganisasjonsnummer())
