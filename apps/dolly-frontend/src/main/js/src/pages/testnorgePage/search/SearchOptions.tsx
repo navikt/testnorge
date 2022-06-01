@@ -66,7 +66,7 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 	return (
 		<>
 			<div className="flexbox--align-center">
-				<h2>Personinformasjon</h2>
+				<h2>Søkealternativer</h2>
 				{numSelected > 0 && (
 					<IconContainer
 						onClick={() => {

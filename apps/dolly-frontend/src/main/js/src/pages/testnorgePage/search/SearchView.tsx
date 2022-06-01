@@ -114,7 +114,9 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 					<Button
 						onClick={() => {
 							const alleValgtPaaSiden = data.every((person) =>
-								valgtePersoner.map((valgtPerson) => valgtPerson?.ident).includes(getIdent(person))
+								valgtePersoner
+									.map((valgtPerson) => valgtPerson?.ident)
+									.includes(getPdlIdent(person))
 							)
 							alleValgtPaaSiden
 								? setValgtePersoner([])
