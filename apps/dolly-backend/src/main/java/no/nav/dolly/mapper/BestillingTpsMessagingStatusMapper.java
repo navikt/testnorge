@@ -101,8 +101,8 @@ public final class BestillingTpsMessagingStatusMapper {
 
     private static String getStatus(String status) {
 
-        if (status.equals("Ingen svarstatus mottatt fra TPS")) {
-            return "Status ukjent (tidsavbrudd)";
+        if (status.toLowerCase().contains("feil: ingen svarstatus mottatt fra tps")) {
+            return status.split(" ")[0] + " ADVARSEL: Status ukjent (tidsavbrudd)";
 
         } else {
             return status.contains(OKEY) ||
