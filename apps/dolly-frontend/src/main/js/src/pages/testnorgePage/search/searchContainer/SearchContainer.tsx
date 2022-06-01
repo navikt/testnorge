@@ -54,7 +54,11 @@ export default ({ left, right, formikBag, onSubmit, onEmpty }: Props) => {
 		<Container>
 			<Left>
 				{left}
-				<Button type="hoved" onClick={() => onSubmit()}>
+				<Button
+					type="hoved"
+					onClick={() => onSubmit()}
+					disabled={Object.keys(formikBag.errors).length > 0}
+				>
 					{'Søk'}
 				</Button>
 				<Button onClick={() => onEmpty()} disabled={getNumSelected() == 0}>
