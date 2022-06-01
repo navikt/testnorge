@@ -2,7 +2,7 @@ import React from 'react'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import { initialVegadresse } from '~/components/fagsystem/pdlf/form/initialValues'
 import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Vegadresse'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
@@ -16,6 +16,7 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 	const vegadresseValg = {
 		POSTNUMMER: 'POSTNUMMER',
 		KOMMUNENUMMER: 'KOMMUNENUMMER',
+		BYDELSNUMMER: 'BYDELSNUMMER',
 		DETALJERT: 'DETALJERT',
 	}
 
@@ -42,6 +43,11 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 						id: `postnummer_${path}`,
 					},
 					{
+						label: 'Tilfeldig vegadresse basert på bydelsnummer ...',
+						value: vegadresseValg.BYDELSNUMMER,
+						id: `bydelsnummer_${path}`,
+					},
+					{
 						label: 'Tilfeldig vegadresse basert på kommunenummer ...',
 						value: vegadresseValg.KOMMUNENUMMER,
 						id: `kommunenummer_${path}`,
@@ -61,6 +67,15 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 					name={`${path}.postnummer`}
 					label="Postnummer"
 					kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
+					size="large"
+					isClearable={false}
+				/>
+			)}
+			{vegadresseType === vegadresseValg.BYDELSNUMMER && (
+				<FormikSelect
+					name={`${path}.bydelsnummer`}
+					label="Bydelsnummer"
+					kodeverk={GtKodeverk.BYDEL}
 					size="large"
 					isClearable={false}
 				/>
