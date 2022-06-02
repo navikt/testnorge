@@ -14,6 +14,14 @@ export const initialValues = {
 		statsborgerskap: '',
 		utflyttingFraNorge: false,
 		innflyttingTilNorge: false,
+		innflytting: {
+			fraflyttingsland: '',
+			historiskFraflyttingsland: '',
+		},
+		utflytting: {
+			tilflyttingsland: '',
+			historiskTilflyttingsland: '',
+		},
 	},
 	sivilstand: {
 		type: '',
