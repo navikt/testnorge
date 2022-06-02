@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 import { DollyApi } from '~/service/Api'
-import { GtKodeverk } from '~/config/kodeverk'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',
 	fraflyttingsland: 'nasjonalitet.innflytting.fraflyttingsland',
-	histFraflyttingsland: 'nasjonalitet.innflytting.historiskFraflyttingsland',
 	tilflyttingsland: 'nasjonalitet.utflytting.tilflyttingsland',
+	histFraflyttingsland: 'nasjonalitet.innflytting.historiskFraflyttingsland',
 	histTilflyttingsland: 'nasjonalitet.utflytting.historiskTilflyttingsland',
 }
 
@@ -20,7 +19,7 @@ const initalLandOptions = [
 ]
 
 export const Nasjonalitet = () => {
-	const [landOptions, setLandOptions] = useState([])
+	const [landOptions, setLandOptions] = useState(initalLandOptions)
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
