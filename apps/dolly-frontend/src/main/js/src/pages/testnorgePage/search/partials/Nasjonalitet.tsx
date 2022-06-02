@@ -1,16 +1,14 @@
 import React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',
-	inflyttet: 'nasjonalitet.innflyttingTilNorge',
 	fraflyttingsland: 'nasjonalitet.innflytting.fraflyttingsland',
 	histFraflyttingsland: 'nasjonalitet.innflytting.historiskFraflyttingsland',
-	utflyttet: 'nasjonalitet.utflyttingFraNorge',
-	tilflyttingsland: 'nasjonalitet.innflytting.tilflyttingsland',
-	histTilflyttingsland: 'nasjonalitet.innflytting.historiskTilflyttingsland',
+	tilflyttingsland: 'nasjonalitet.utflytting.tilflyttingsland',
+	histTilflyttingsland: 'nasjonalitet.utflytting.historiskTilflyttingsland',
 }
 
 export const Nasjonalitet = () => {
@@ -23,8 +21,6 @@ export const Nasjonalitet = () => {
 				optionHeight={50}
 				size="medium"
 			/>
-			{/*<FormikCheckbox name={paths.inflyttet} label="Har innflyttet til Norge" size="medium" />*/}
-			{/*<FormikCheckbox name={paths.utflyttet} label="Har utflyttet fra Norge" size="medium" />*/}
 			<FormikSelect
 				name={paths.fraflyttingsland}
 				label="Innflyttet til Norge fra"
@@ -39,6 +35,24 @@ export const Nasjonalitet = () => {
 				optionHeight={50}
 				size="medium"
 			/>
+			<AdvancedOptions>
+				<FormikSelect
+					name={paths.histFraflyttingsland}
+					label="Tidligere innflyttet fra"
+					kodeverk={'Landkoder'}
+					optionHeight={50}
+					size="medium"
+					info="Velg hvor person har tildligere innflyttet til Norge fra."
+				/>
+				<FormikSelect
+					name={paths.histTilflyttingsland}
+					label="Tidligere utflyttet til"
+					kodeverk={'Landkoder'}
+					optionHeight={50}
+					size="medium"
+					info="Velg hvor person har tildligere utflyttet fra Norge til."
+				/>
+			</AdvancedOptions>
 		</section>
 	)
 }
