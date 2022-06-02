@@ -3,7 +3,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 import { DollyApi } from '~/service/Api'
-import { Exception } from 'sass'
+import { GtKodeverk } from '~/config/kodeverk'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',
@@ -25,7 +25,7 @@ export const Nasjonalitet = () => {
 
 	useEffect(() => {
 		setLoading(true)
-		DollyApi.getKodeverkByNavn('Landkoder')
+		DollyApi.getKodeverkByNavn(GtKodeverk.LAND)
 			.then((data: any) => {
 				const land = data?.data?.koder
 				const nyOptions = [...initalLandOptions, ...land]
