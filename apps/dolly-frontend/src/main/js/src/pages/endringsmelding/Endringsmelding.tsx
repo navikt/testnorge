@@ -1,7 +1,7 @@
 import React from 'react'
 import Title from '~/components/Title'
-import Logger from '~/logger'
 import './Endringsmelding.less'
+import { LinkPanel } from '@navikt/ds-react'
 
 export default () => {
 	return (
@@ -18,13 +18,15 @@ export default () => {
 					<br />
 					Trykk på knappen under for å gå direkte til Endringmelding.
 				</p>
-				<a
-					href="https://endringsmelding.dev.intern.nav.no"
-					target="_blank"
-					onClick={() => Logger.log({ event: 'Trykket på endringsmelding knapp' })}
-				>
-					Endringsmelding
-				</a>
+				<div className={'linkPanel-container'}>
+					<LinkPanel
+						className={'linkPanel'}
+						target="_blank"
+						href="https://endringsmelding.dev.intern.nav.no"
+					>
+						<LinkPanel.Title>Endringsmelding</LinkPanel.Title>
+					</LinkPanel>
+				</div>
 			</div>
 		</div>
 	)
