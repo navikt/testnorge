@@ -6,7 +6,7 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -23,7 +23,7 @@ public class NasjonalitetUtils {
     private static final String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
     private static final String INNFLYTTING_PATH = "hentPerson.innflyttingTilNorge";
     private static final String UTFLYTTING_PATH = "hentPerson.utflyttingFraNorge";
-    private static final List<String> EØS_LANDKODER = Arrays.asList(
+    private static final Collection<String> EØS_LANDKODER = Arrays.asList(
             "AUT",
             "BEL",
             "BGR",
