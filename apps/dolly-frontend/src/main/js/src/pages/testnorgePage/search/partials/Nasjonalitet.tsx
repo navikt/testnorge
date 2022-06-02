@@ -48,7 +48,7 @@ export const Nasjonalitet = () => {
 			/>
 			<FormikSelect
 				name={paths.fraflyttingsland}
-				label="Innflyttet til Norge fra"
+				label="Innvandret til Norge fra"
 				options={landOptions}
 				optionHeight={50}
 				size="medium"
@@ -65,11 +65,11 @@ export const Nasjonalitet = () => {
 			<AdvancedOptions>
 				<FormikSelect
 					name={paths.histFraflyttingsland}
-					label="Tidligere innflyttet fra"
+					label="Tidligere innvandret fra"
 					options={landOptions}
 					optionHeight={50}
 					size="medium"
-					info="Velg hvor person har tildligere innflyttet til Norge fra."
+					info="Velg hvor person har tildligere innvandret til Norge fra."
 					isLoading={loading}
 				/>
 				<FormikSelect
