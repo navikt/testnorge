@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 import { DollyApi } from '~/service/Api'
+import { Exception } from 'sass'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',
@@ -12,22 +13,30 @@ const paths = {
 	histTilflyttingsland: 'nasjonalitet.utflytting.historiskTilflyttingsland',
 }
 
-export const Nasjonalitet = () => {
-	const landOptions = [
-		{ value: 'VERDEN', label: 'Vilkårlig land' },
-		{ value: 'EØS', label: 'EØS-området' },
-		{ value: 'UEØS', label: 'Utenfor EØS-området' },
-	]
+const initalLandOptions = [
+	{ value: 'VERDEN', label: 'VILKÅRLIG LAND' },
+	{ value: 'EØS', label: 'EØS-OMRÅDET' },
+	{ value: 'UEØS', label: 'UTENFOR EØS-OMRÅDET' },
+]
 
-	// useEffect(() => {
-	// 	DollyApi.getKodeverkByNavn('landkoder').then()
-	// 	malerApi
-	// 		.hentMaler()
-	// 		.then((data) => {
-	// 			setMaler(data.malbestillinger[`${brukerId}`] || [])
-	// 		})
-	// 		.then(() => setLoading(false))
-	// }, [])
+export const Nasjonalitet = () => {
+	const [landOptions, setLandOptions] = useState([])
+	const [loading, setLoading] = useState(false)
+
+	useEffect(() => {
+		setLoading(true)
+		DollyApi.getKodeverkByNavn('Landkoder')
+			.then((data: any) => {
+				const land = data?.data?.koder
+				const nyOptions = [...initalLandOptions, ...land]
+				setLandOptions(nyOptions)
+				setLoading(false)
+			})
+			.catch((_error) => {
+				setLandOptions(initalLandOptions)
+				setLoading(false)
+			})
+	}, [])
 
 	return (
 		<section>
@@ -44,6 +53,7 @@ export const Nasjonalitet = () => {
 				options={landOptions}
 				optionHeight={50}
 				size="medium"
+				isLoading={loading}
 			/>
 			<FormikSelect
 				name={paths.tilflyttingsland}
@@ -51,6 +61,7 @@ export const Nasjonalitet = () => {
 				options={landOptions}
 				optionHeight={50}
 				size="medium"
+				isLoading={loading}
 			/>
 			<AdvancedOptions>
 				<FormikSelect
@@ -60,6 +71,7 @@ export const Nasjonalitet = () => {
 					optionHeight={50}
 					size="medium"
 					info="Velg hvor person har tildligere innflyttet til Norge fra."
+					isLoading={loading}
 				/>
 				<FormikSelect
 					name={paths.histTilflyttingsland}
@@ -68,6 +80,7 @@ export const Nasjonalitet = () => {
 					optionHeight={50}
 					size="medium"
 					info="Velg hvor person har tildligere utflyttet fra Norge til."
+					isLoading={loading}
 				/>
 			</AdvancedOptions>
 		</section>
