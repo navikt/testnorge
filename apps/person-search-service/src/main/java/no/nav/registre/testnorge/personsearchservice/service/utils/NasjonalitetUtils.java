@@ -131,7 +131,7 @@ public class NasjonalitetUtils {
         if (!value.isEmpty()) {
             switch (value) {
                 case "VERDEN" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
-                case "EØS" -> queryBuilder.must(nestedTermsQuery(path, field, EØS_LANDKODER, ""));
+                case "EØS", "EU" -> queryBuilder.must(nestedTermsQuery(path, field, EØS_LANDKODER, historisk));
                 case "UEØS" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EØS_LANDKODER, historisk));
                 default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
