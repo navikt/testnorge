@@ -31,7 +31,6 @@ public class HentIdenterRequest {
     }
 
     public enum Kjoenn {
-
         KVINNE,
         MANN
     }
