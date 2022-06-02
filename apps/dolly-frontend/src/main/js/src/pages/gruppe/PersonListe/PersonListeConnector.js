@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
 import { actions as actionList, fetchPdlPersoner, fetchTpsfPersoner } from '~/ducks/fagsystem'
-import { getBestillinger } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import personListe from './PersonListe'
 
@@ -8,7 +7,6 @@ const loadingSelector = createLoadingSelector([
 	actionList.getTpsf,
 	actionList.getPDLPersoner,
 	actionList.getPdlForvalter,
-	getBestillinger,
 ])
 
 const mapStateToProps = (state) => ({

@@ -13,7 +13,9 @@ type MalResponse = {
 }
 
 export const useDollyMaler = () => {
-	const { data, error } = useSWR<MalResponse, Error>(getMalerUrl, fetcher)
+	const { data, error } = useSWR<MalResponse, Error>(getMalerUrl, fetcher, {
+		fallbackData: { malbestillinger: ['TEMP', []] },
+	})
 
 	return {
 		maler: data?.malbestillinger,
@@ -25,7 +27,8 @@ export const useDollyMaler = () => {
 export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn: string) => {
 	const { data, error } = useSWR<Mal[], Error>(
 		`${getMalerUrl}/bruker?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
-		fetcher
+		fetcher,
+		{ fallbackData: [] }
 	)
 
 	return {

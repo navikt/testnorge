@@ -1,0 +1,36 @@
+//Hentet fra https://codepen.io/alvaromontoro/pen/GRNmdzB
+
+.rain {
+  position: absolute;
+  --size: 1vw;
+  width: var(--size);
+  height: var(--size);
+  background: #659ac7;
+  border-radius: 20%;
+  z-index: 10;
+  transform-origin: 50% 100%;
+}
+
+@keyframes rainfall {
+  0% {
+    transform: translate3d(var(--left-ini), 5vh, 0);
+  }
+  100% {
+    transform: translate3d(var(--left-end), 100vh, 0);
+  }
+}
+
+@for $i from 1 through 500 {
+  .rain:nth-child(#{$i}) {
+    --size: #{random(2) * 0.15}vw;
+    --left-ini: #{random(5) - 10}vw;
+    --left-end: #{random(5) - 10}vw;
+    left: #{random(95)}vw;
+    animation: rainfall #{0.18 + random(3)}s linear infinite;
+    animation-delay: -#{random(50)}s;
+  }
+}
+
+.rainfall:nth-child(6n) {
+  filter: blur(1px);
+}

@@ -17,7 +17,6 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { tpsfAttributter } from '~/components/bestillingsveileder/utils'
 import { useDollyMaler } from '~/utils/hooks/useMaler'
-import Loading from '~/components/ui/loading/Loading'
 
 const initialValues = {
 	antall: 1,
@@ -47,10 +46,6 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	const [zIdent, setZIdent] = useState(zBruker)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyMaler()
-
-	if (loading) {
-		return <Loading label="Laster maler" />
-	}
 
 	const zIdentOptions = getZIdentOptions(maler)
 	const malOptions = getMalOptions(maler, zIdent)

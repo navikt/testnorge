@@ -13,7 +13,7 @@ import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBest
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { useGruppeAlle } from '~/utils/hooks/useGruppe'
+import { useGruppeAlle, useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
@@ -33,8 +33,9 @@ export default function Gruppe({ visning, setVisning, antallPersonerFjernet }: G
 	const {
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
-	const { grupperById, loading } = useGruppeAlle()
+	const { grupperById, loading: loadingAllegrupper } = useGruppeAlle()
 	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(Number(gruppeId))
+	const { loading: loadingGruppe } = useGruppeById(Number(gruppeId))
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
@@ -42,7 +43,7 @@ export default function Gruppe({ visning, setVisning, antallPersonerFjernet }: G
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
-	if (loading || loadingBestillinger) {
+	if (loadingAllegrupper || loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
 	const gruppe = grupperById[gruppeId]

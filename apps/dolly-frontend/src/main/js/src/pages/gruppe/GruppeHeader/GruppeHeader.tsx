@@ -43,11 +43,7 @@ const GruppeHeader = ({
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
-	const { gruppe, loading } = useGruppeById(gruppeId)
-
-	if (loading) {
-		return null
-	}
+	const { gruppe } = useGruppeById(gruppeId)
 
 	const erLaast = gruppe.erLaast
 
