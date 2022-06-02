@@ -7,6 +7,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -131,7 +132,7 @@ public class NasjonalitetUtils {
         if (!value.isEmpty()) {
             switch (value) {
                 case "VERDEN" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
-                case "EØS", "EU" -> queryBuilder.must(nestedTermsQuery(path, field, EØS_LANDKODER, historisk));
+                case "EØS", "EU" -> queryBuilder.must(nestedTermsQuery(path, field, List.of("SWE"), historisk));
                 case "UEØS" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EØS_LANDKODER, historisk));
                 default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
