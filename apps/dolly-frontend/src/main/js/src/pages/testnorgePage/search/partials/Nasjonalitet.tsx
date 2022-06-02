@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
+import { DollyApi } from '~/service/Api'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',
@@ -12,6 +13,22 @@ const paths = {
 }
 
 export const Nasjonalitet = () => {
+	const landOptions = [
+		{ value: 'VERDEN', label: 'Vilkårlig land' },
+		{ value: 'EØS', label: 'EØS-området' },
+		{ value: 'UEØS', label: 'Utenfor EØS-området' },
+	]
+
+	// useEffect(() => {
+	// 	DollyApi.getKodeverkByNavn('landkoder').then()
+	// 	malerApi
+	// 		.hentMaler()
+	// 		.then((data) => {
+	// 			setMaler(data.malbestillinger[`${brukerId}`] || [])
+	// 		})
+	// 		.then(() => setLoading(false))
+	// }, [])
+
 	return (
 		<section>
 			<FormikSelect
@@ -24,14 +41,14 @@ export const Nasjonalitet = () => {
 			<FormikSelect
 				name={paths.fraflyttingsland}
 				label="Innflyttet til Norge fra"
-				kodeverk={'Landkoder'}
+				options={landOptions}
 				optionHeight={50}
 				size="medium"
 			/>
 			<FormikSelect
 				name={paths.tilflyttingsland}
 				label="Utflyttet fra Norge til"
-				kodeverk={'Landkoder'}
+				options={landOptions}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -39,7 +56,7 @@ export const Nasjonalitet = () => {
 				<FormikSelect
 					name={paths.histFraflyttingsland}
 					label="Tidligere innflyttet fra"
-					kodeverk={'Landkoder'}
+					options={landOptions}
 					optionHeight={50}
 					size="medium"
 					info="Velg hvor person har tildligere innflyttet til Norge fra."
@@ -47,7 +64,7 @@ export const Nasjonalitet = () => {
 				<FormikSelect
 					name={paths.histTilflyttingsland}
 					label="Tidligere utflyttet til"
-					kodeverk={'Landkoder'}
+					options={landOptions}
 					optionHeight={50}
 					size="medium"
 					info="Velg hvor person har tildligere utflyttet fra Norge til."
