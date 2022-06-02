@@ -104,18 +104,6 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/gjenopprett?miljoer=${envs}`
 	}
 
-	static bruker() {
-		return brukerBase
-	}
-
-	static brukerById(brukerId) {
-		return `${brukerBase}/${brukerId}`
-	}
-
-	static currentBruker() {
-		return `${brukerBase}/current`
-	}
-
 	static addFavorite() {
 		return `${brukerBase}/leggTilFavoritt`
 	}

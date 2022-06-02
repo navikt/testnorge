@@ -36,7 +36,7 @@ const StatusListe = ({
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
 		const nyBestillingListe = Object.values(bestillinger).filter(
 			(bestilling) =>
-				(!bestilling.ferdig && nyeBestillinger.every((best) => best.id !== bestilling.id)) ||
+				!bestilling.ferdig ||
 				(bestilling.ferdig && nyeBestillinger.some((best) => best.id === bestilling.id))
 		)
 		setNyeBestillinger(nyBestillingListe)

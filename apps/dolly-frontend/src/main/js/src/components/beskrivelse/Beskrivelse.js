@@ -13,9 +13,7 @@ export const Beskrivelse = ({ ident, updateBeskrivelse, isUpdatingBeskrivelse, c
 	}
 
 	const handleSubmit = (value) => {
-		updateBeskrivelse(ident.ident, value).then(() => {
-			return matchMutate(REGEX_BACKEND_GRUPPER)
-		})
+		updateBeskrivelse(ident.ident, value).then(() => matchMutate(REGEX_BACKEND_GRUPPER))
 	}
 
 	return (

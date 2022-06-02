@@ -2,19 +2,6 @@ import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
 
 export default {
-	//* Grupper
-	getGrupper() {
-		return Request.get(Endpoints.gruppe())
-	},
-
-	getGrupperPaginert(page, pageSize) {
-		return Request.get(Endpoints.gruppePaginert(page, pageSize))
-	},
-
-	getGruppeByIdPaginert(gruppeId, pageNo = 0, pageSize = 10) {
-		return Request.get(Endpoints.gruppeByIdPaginert(gruppeId, pageNo, pageSize))
-	},
-
 	getSkjerming(ident) {
 		return Request.get(Endpoints.skjermingByIdent(ident))
 	},
@@ -88,19 +75,6 @@ export default {
 		return Request.post(Endpoints.ordre(ident))
 	},
 
-	//* Bruker
-	getBrukere() {
-		return Request.get(Endpoints.bruker())
-	},
-
-	getBrukereById(brukerId) {
-		return Request.get(Endpoints.brukerById())
-	},
-
-	getCurrentBruker() {
-		return Request.get(Endpoints.currentBruker())
-	},
-
 	addFavorite(groupId) {
 		return Request.put(Endpoints.addFavorite(), { gruppeId: groupId })
 	},
@@ -130,14 +104,6 @@ export default {
 
 	getBestillingerFragment(fragment) {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
-	},
-
-	getBestillingMaler() {
-		return Request.get(Endpoints.bestillingMal())
-	},
-
-	getBestillingStatus(bestillingId) {
-		return Request.get(Endpoints.bestillingStatus(bestillingId))
 	},
 
 	gjenopprettBestilling(bestillingId, envs) {
@@ -219,13 +185,6 @@ export default {
 	//* Tags
 	getTags() {
 		return Request.get(Endpoints.getTags())
-	},
-
-	getTagsPaaIdent(ident) {
-		if (!ident) {
-			return null
-		}
-		return Request.get(Endpoints.getTagsPaaIdent(ident))
 	},
 
 	//* Excel

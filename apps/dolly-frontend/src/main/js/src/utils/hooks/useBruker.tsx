@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '~/api'
 
+const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
 const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
@@ -20,6 +21,16 @@ type BrukerType = {
 	brukertype: string
 	epost: string
 	favoritter: []
+}
+
+export const useAlleBrukere = () => {
+	const { data, error } = useSWR<BrukerType, Error>(getBrukereUrl, fetcher)
+
+	return {
+		brukere: data,
+		loading: !error && !data,
+		error: error,
+	}
 }
 
 export const useCurrentBruker = () => {
