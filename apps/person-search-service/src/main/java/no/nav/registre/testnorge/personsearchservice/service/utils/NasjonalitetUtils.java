@@ -5,6 +5,8 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.NasjonalitetSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -21,6 +23,39 @@ public class NasjonalitetUtils {
     private static final String STATSBORGERSKAP_PATH = "hentPerson.statsborgerskap";
     private static final String INNFLYTTING_PATH = "hentPerson.innflyttingTilNorge";
     private static final String UTFLYTTING_PATH = "hentPerson.utflyttingFraNorge";
+    private static final List<String> EØS_LANDKODER = Arrays.asList(
+            "AUT",
+            "BEL",
+            "BGR",
+            "CHE",
+            "CYP",
+            "CZE",
+            "DEU",
+            "DNK",
+            "ESP",
+            "EST",
+            "FIN",
+            "FRA",
+            "GBR",
+            "GRC",
+            "HRV",
+            "HUN",
+            "IRL",
+            "ISL",
+            "ITA",
+            "LIE",
+            "LTU",
+            "LUX",
+            "LVA",
+            "MLT",
+            "NLD",
+            "POL",
+            "PRT",
+            "ROU",
+            "SVK",
+            "SVN",
+            "SWE"
+    );
 
     public static void addNasjonalitetQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getNasjonalitet())
@@ -42,7 +77,7 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getStatsborgerskap())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, false));
+                        queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, NO));
                     }
                 });
     }
@@ -51,7 +86,7 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getUtflyttingFraNorge())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery(UTFLYTTING_PATH, METADATA_FIELD, true));
+                        queryBuilder.must(nestedExistsQuery(UTFLYTTING_PATH, METADATA_FIELD, ""));
                     }
                 });
     }
@@ -60,39 +95,47 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getInnflyttingTilNorge())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery(INNFLYTTING_PATH, METADATA_FIELD, true));
+                        queryBuilder.must(nestedExistsQuery(INNFLYTTING_PATH, METADATA_FIELD, ""));
                     }
                 });
     }
 
     private static void addFraflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
         Optional.ofNullable(search.getFraflyttingsland())
-                .ifPresent(values -> {
-                    if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", values, NO));
-                    }
+                .ifPresent(value -> {
+                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO);
                 });
         Optional.ofNullable(search.getHistoriskFraflyttingsland())
-                .ifPresent(values -> {
-                    if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", values, YES));
+                .ifPresent(value -> {
+                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", YES);
+                });
+    }
+
+
+    private static void addTilflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.UtflyttingSearch search) {
+        Optional.ofNullable(search.getTilflyttingsland())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", NO);
+                    }
+                });
+        Optional.ofNullable(search.getHistoriskTilflyttingsland())
+                .ifPresent(value -> {
+                    if (!value.isEmpty()) {
+                        addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", YES);
                     }
                 });
     }
 
-    private static void addTilflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.UtflyttingSearch search) {
-        Optional.ofNullable(search.getTilflyttingsland())
-                .ifPresent(values -> {
-                    if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery(UTFLYTTING_PATH, ".tilflyttingsland", values, NO));
-                    }
-                });
-        Optional.ofNullable(search.getHistoriskTilflyttingsland())
-                .ifPresent(values -> {
-                    if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery(UTFLYTTING_PATH, ".tilflyttingsland", values, YES));
-                    }
-                });
+    private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {
+        if (!value.isEmpty()) {
+            switch (value) {
+                case "VERDEN" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
+                case "EØS" -> queryBuilder.must(nestedTermsQuery(path, field, EØS_LANDKODER, historisk));
+                case "UEØS" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EØS_LANDKODER, historisk));
+                default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
+            }
+        }
     }
 }
 

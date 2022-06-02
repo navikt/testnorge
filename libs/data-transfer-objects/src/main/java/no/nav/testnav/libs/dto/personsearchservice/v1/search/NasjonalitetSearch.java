@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -20,15 +18,15 @@ public class NasjonalitetSearch {
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
     public class InnflyttingSearch {
-        List<String> fraflyttingsland;
-        List<String> historiskFraflyttingsland;
+        String fraflyttingsland;
+        String historiskFraflyttingsland;
     }
 
     @Value
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
     public class UtflyttingSearch {
-        List<String> tilflyttingsland;
-        List<String> historiskTilflyttingsland;
+        String tilflyttingsland;
+        String historiskTilflyttingsland;
     }
 }

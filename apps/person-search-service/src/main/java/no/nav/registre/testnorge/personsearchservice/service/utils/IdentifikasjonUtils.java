@@ -12,6 +12,7 @@ import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryU
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedTermsQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
 
 @UtilityClass
 public class IdentifikasjonUtils {
@@ -37,17 +38,17 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdenttype())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(IDENTIFIKATOR_PATH, ".type", value, false));
+                        queryBuilder.must(nestedMatchQuery(IDENTIFIKATOR_PATH, ".type", value, NO));
                     }
                 });
     }
 
     private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
         if (nonNull(search.getFalskIdentitet()) && Boolean.TRUE.equals(search.getFalskIdentitet())) {
-            queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, ""));
         }
         if (nonNull(search.getUtenlandskIdentitet()) && Boolean.TRUE.equals(search.getUtenlandskIdentitet())) {
-            queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, ""));
         }
     }
 
@@ -56,9 +57,9 @@ public class IdentifikasjonUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         if (value.equals(NO_VALUE)) {
-                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD, true));
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD, ""));
                         } else {
-                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, ".gradering", value, false));
+                            queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, ".gradering", value, NO));
                         }
                     }
                 });
@@ -68,7 +69,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getKjoenn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(KJOENN_PATH, ".kjoenn", value, false));
+                        queryBuilder.must(nestedMatchQuery(KJOENN_PATH, ".kjoenn", value, NO));
                     }
                 });
     }

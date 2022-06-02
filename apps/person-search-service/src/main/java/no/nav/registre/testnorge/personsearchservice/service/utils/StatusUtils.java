@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
 
 @UtilityClass
 public class StatusUtils {
@@ -25,7 +26,7 @@ public class StatusUtils {
                 .flatMap(value -> Optional.ofNullable(value.getStatus()))
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(PERSONSTATUS_PATH, ".status", value, false));
+                        queryBuilder.must(nestedMatchQuery(PERSONSTATUS_PATH, ".status", value, NO));
                     }
                 });
     }
@@ -34,7 +35,7 @@ public class StatusUtils {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", true));
+                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", ""));
                     }
                 });
     }

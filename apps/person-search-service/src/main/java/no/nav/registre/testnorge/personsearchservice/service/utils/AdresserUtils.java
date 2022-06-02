@@ -124,9 +124,9 @@ public class AdresserUtils {
         Optional.ofNullable(search.getHarKontaktadresse())
                 .ifPresent(value -> {
                     if (YES.equalsIgnoreCase(value)) {
-                        queryBuilder.must(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, false));
+                        queryBuilder.must(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, NO));
                     } else if (NO.equalsIgnoreCase(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, false));
+                        queryBuilder.mustNot(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, NO));
                     }
                 });
     }
@@ -135,9 +135,9 @@ public class AdresserUtils {
         Optional.ofNullable(search.getHarOppholdsadresse())
                 .ifPresent(value -> {
                     if (YES.equalsIgnoreCase(value)) {
-                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, false));
+                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, NO));
                     } else if (NO.equalsIgnoreCase(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, false));
+                        queryBuilder.mustNot(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, NO));
                     }
                 });
     }
@@ -146,8 +146,8 @@ public class AdresserUtils {
         Optional.ofNullable(search.getHarUtenlandskAdresse())
                 .ifPresent(value -> {
                     var newQuery = QueryBuilders.boolQuery()
-                            .should(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse", false))
-                            .should(nestedExistsQuery(KONTAKTADRESSE_PATH, ".utenlandskAdresse", false))
+                            .should(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse", NO))
+                            .should(nestedExistsQuery(KONTAKTADRESSE_PATH, ".utenlandskAdresse", NO))
                             .minimumShouldMatch(1);
                     if (YES.equalsIgnoreCase(value)) {
                         queryBuilder.must(newQuery);
@@ -161,7 +161,7 @@ public class AdresserUtils {
         Optional.ofNullable(oppholdsadresse.getOppholdAnnetSted())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", value, false));
+                        queryBuilder.must(nestedMatchQuery(OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", value, NO));
                     }
                 });
     }

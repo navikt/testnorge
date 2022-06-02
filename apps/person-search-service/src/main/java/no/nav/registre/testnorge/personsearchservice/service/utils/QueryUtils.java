@@ -22,40 +22,32 @@ public class QueryUtils {
         if (!historisk.isEmpty()) {
             var boolQuery = QueryBuilders.boolQuery()
                     .must(QueryBuilders.termsQuery(path + field, values))
-                    .must(QueryBuilders.termQuery(path + HISTORISK_PATH, "Y".equalsIgnoreCase(historisk)));
+                    .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
             return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
         } else {
             return QueryBuilders.nestedQuery(path, QueryBuilders.termsQuery(path + field, values), ScoreMode.Avg);
         }
     }
 
-    public static NestedQueryBuilder nestedExistsQuery(String path, String field, boolean historisk) {
-        if (historisk) {
-            return QueryBuilders.nestedQuery(path, QueryBuilders.existsQuery(path + field), ScoreMode.Avg);
+    public static NestedQueryBuilder nestedExistsQuery(String path, String field, String historisk) {
+        if (!historisk.isEmpty()){
+            var boolQuery = QueryBuilders.boolQuery()
+                    .must(QueryBuilders.existsQuery(path + field))
+                    .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
+            return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
         } else {
-            return QueryBuilders.nestedQuery(
-                    path,
-                    QueryBuilders.boolQuery()
-                            .must(QueryBuilders.existsQuery(path + field))
-                            .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false))
-                    ,
-                    ScoreMode.Avg
-            );
+            return QueryBuilders.nestedQuery(path, QueryBuilders.existsQuery(path + field), ScoreMode.Avg);
         }
-
     }
 
-    public static NestedQueryBuilder nestedMatchQuery(String path, String field, String value, boolean historisk) {
-        if (historisk) {
-            return QueryBuilders.nestedQuery(path, QueryBuilders.matchQuery(path + field, value), ScoreMode.Avg);
+    public static NestedQueryBuilder nestedMatchQuery(String path, String field, String value, String historisk) {
+        if (!historisk.isEmpty()){
+            var boolQuery = QueryBuilders.boolQuery()
+                    .must(QueryBuilders.matchQuery(path + field, value))
+                    .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
+            return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
         } else {
-            return QueryBuilders.nestedQuery(
-                    path,
-                    QueryBuilders.boolQuery()
-                            .must(QueryBuilders.matchQuery(path + field, value))
-                            .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false))
-                    ,
-                    ScoreMode.Avg);
+            return QueryBuilders.nestedQuery(path, QueryBuilders.matchQuery(path + field, value), ScoreMode.Avg);
         }
     }
 
@@ -72,7 +64,7 @@ public class QueryUtils {
             boolQuery.should(QueryBuilders.matchQuery(path + field, value));
         }
         if (!historisk.isEmpty()) {
-            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, "Y".equalsIgnoreCase(historisk)));
+            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
         }
         boolQuery.minimumShouldMatch(minimumShould);
 
