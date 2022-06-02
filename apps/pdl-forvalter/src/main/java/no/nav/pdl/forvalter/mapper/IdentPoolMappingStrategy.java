@@ -33,13 +33,13 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                 };
     }
 
-    private static KjoennDTO.Kjoenn mapKjoenn(KjoennDTO.Kjoenn kjoenn) {
+    private static HentIdenterRequest.Kjoenn mapKjoenn(KjoennDTO.Kjoenn kjoenn) {
 
         return isNull(kjoenn) ?
                 null :
                 switch (kjoenn) {
-                    case MANN -> KjoennDTO.Kjoenn.MANN;
-                    case KVINNE -> KjoennDTO.Kjoenn.KVINNE;
+                    case MANN -> HentIdenterRequest.Kjoenn.MANN;
+                    case KVINNE -> HentIdenterRequest.Kjoenn.KVINNE;
                     case UKJENT -> null;
                 };
     }
