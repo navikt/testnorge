@@ -15,6 +15,4 @@ export const Personstatus = () => (
 	</section>
 )
 
-export const PersonstatusPaths = {
-	[personstatusPath]: 'string',
-}
+export const PersonstatusPaths = [personstatusPath]
