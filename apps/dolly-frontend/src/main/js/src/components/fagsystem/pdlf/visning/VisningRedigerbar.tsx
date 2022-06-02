@@ -163,8 +163,6 @@ export const VisningRedigerbar = ({
 
 	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {
-			case Attributt.Persondetaljer:
-				return <PersondetaljerSamlet path={path} formikBag={formikBag} />
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:

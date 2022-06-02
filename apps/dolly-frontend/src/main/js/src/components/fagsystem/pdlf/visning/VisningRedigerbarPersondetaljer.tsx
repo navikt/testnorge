@@ -23,6 +23,9 @@ import { ifPresent } from '~/utils/YupValidations'
 import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
 import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
+import { Checkbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import _has from 'lodash/has'
+import { isEqual } from 'lodash'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -51,10 +54,16 @@ const FieldArrayEdit = styled.div`
 	}
 `
 
+const PersondetaljerVisning = styled.div`
+	width: 100%;
+	position: relative;
+`
+
 const EditDeleteKnapper = styled.div`
 	position: absolute;
-	right: 8px;
-	margin-top: -10px;
+	right: 0;
+	top: 0;
+	margin: -5px 10px 0 0;
 	&&& {
 		button {
 			position: relative;
@@ -79,7 +88,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-
+	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 	const pdlfError = (error: any) => {
 		error &&
 			setErrorMessagePdlf(
@@ -104,26 +113,34 @@ export const VisningRedigerbarPersondetaljer = ({
 			setVisningModus(Modus.LoadingPdlf)
 			await Promise.allSettled(
 				Object.keys(data).map((attr) => {
-					console.log('attr: ', attr) //TODO - SLETT MEG
-					console.log('data: ', data) //TODO - SLETT MEG
+					// console.log('attr: ', attr) //TODO - SLETT MEG
+					// console.log('data: ', data) //TODO - SLETT MEG
+					const initialData = _get(initialValues, `${attr}[0]`)
 					const itemData = _get(data, `${attr}[0]`)
-					PdlforvalterApi.putAttributt(ident, attr, itemData?.id, itemData).catch((error) => {
-						pdlfError(error)
-					})
+					console.log('itemData: ', itemData) //TODO - SLETT MEG
+					console.log('initialData: ', initialData) //TODO - SLETT MEG
+					// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+					if (!isEqual(itemData, initialData))
+						return PdlforvalterApi.putAttributt(ident, attr, itemData?.id || 0, itemData).catch(
+							(error) => {
+								pdlfError(error)
+							}
+						)
 				})
 			)
 				.then((putResponse) => {
-					console.log('putResponse: ', putResponse) //TODO - SLETT MEG
-					if (putResponse) {
-						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
-							})
+					// console.log('putResponse: ', putResponse) //TODO - SLETT MEG
+					// if (putResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then((ordreResponse) => {
+						// console.log('ordreResponse: ', ordreResponse) //TODO - SLETT MEG
+						getPdlForvalter().then(() => {
+							if (mountedRef.current) {
+								setVisningModus(Modus.Les)
+							}
 						})
-					}
+					})
+					// }
 				})
 				.catch((error) => {
 					pdlError(error)
@@ -153,25 +170,33 @@ export const VisningRedigerbarPersondetaljer = ({
 		// })
 	}, [])
 
-	const handleDelete = useCallback(() => {
+	const handleDelete = useCallback((slettAttr) => {
+		// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 		const slett = async () => {
-			const id = _get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.deleteAttributt(ident, path, id)
-				.catch((error) => {
-					pdlfError(error)
-				})
-				.then((deleteResponse) => {
-					if (deleteResponse) {
-						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
-							})
+			await Promise.allSettled(
+				Object.keys(slettAttr).map((attr) => {
+					// console.log('attr: ', attr) //TODO - SLETT MEG
+					if (slettAttr[attr]) {
+						const id = _get(initialValues, `${attr}[0].id`)
+						return PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
+							pdlfError(error)
 						})
 					}
+				})
+			)
+				.then((deleteResponse) => {
+					// console.log('deleteResponse: ', deleteResponse) //TODO - SLETT MEG
+					// if (deleteResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter().then(() => {
+							if (mountedRef.current) {
+								setVisningModus(Modus.Les)
+							}
+						})
+					})
+					// }
 				})
 				.catch((error) => {
 					pdlError(error)
@@ -196,43 +221,98 @@ export const VisningRedigerbarPersondetaljer = ({
 		]
 	)
 
+	const harNavn =
+		initialValues?.navn?.[0]?.fornavn ||
+		initialValues?.navn?.[0]?.mellomnavn ||
+		initialValues?.navn?.[0]?.etternavn
+
+	const harKjoenn = initialValues?.kjoenn?.[0]?.kjoenn
+
+	const harPersonstatus = initialValues?.folkeregisterpersonstatus?.[0]?.status
+
+	const SlettModal = () => {
+		const slettAttr = {
+			navn: false,
+			kjoenn: false,
+			folkeregisterpersonstatus: false,
+		}
+
+		return (
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+				<div className="slettModal">
+					<div className="slettModal slettModal-content">
+						<Icon size={50} kind="report-problem-circle" />
+						<h1>Sletting</h1>
+						<h4>Hvilke opplysninger ønsker du å slette?</h4>
+						<div className="flexbox--flex-wrap">
+							{harNavn && (
+								<DollyCheckbox
+									id={'navn'}
+									label={'Navn'}
+									size={'xxsmall'}
+									onChange={() => {
+										slettAttr.navn = !slettAttr.navn
+									}}
+								/>
+							)}
+							{harKjoenn && (
+								<DollyCheckbox
+									id={'kjoenn'}
+									label={'Kjønn'}
+									size={'xxsmall'}
+									onChange={() => {
+										slettAttr.kjoenn = !slettAttr.kjoenn
+									}}
+								/>
+							)}
+							{harPersonstatus && (
+								<DollyCheckbox
+									id={'folkeregisterpersonstatus'}
+									label={'Personstatus'}
+									size={'xxsmall'}
+									onChange={() => {
+										slettAttr.folkeregisterpersonstatus = !slettAttr.folkeregisterpersonstatus
+									}}
+								/>
+							)}
+						</div>
+					</div>
+					<div className="slettModal-actions">
+						<NavButton onClick={closeModal}>Avbryt</NavButton>
+						<NavButton
+							onClick={() => {
+								closeModal()
+								return handleDelete(slettAttr)
+							}}
+							type="hoved"
+						>
+							Slett
+						</NavButton>
+					</div>
+				</div>
+			</DollyModal>
+		)
+	}
+
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
 			{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
 			{visningModus === Modus.Les && (
-				<>
+				<PersondetaljerVisning>
 					{dataVisning}
 					<EditDeleteKnapper>
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
-						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-							<div className="slettModal">
-								<div className="slettModal slettModal-content">
-									<Icon size={50} kind="report-problem-circle" />
-									<h1>Sletting</h1>
-									<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
-								</div>
-								<div className="slettModal-actions">
-									<NavButton onClick={closeModal}>Nei</NavButton>
-									<NavButton
-										onClick={() => {
-											closeModal()
-											return handleDelete()
-										}}
-										type="hoved"
-									>
-										Ja, jeg er sikker
-									</NavButton>
-								</div>
-							</div>
-						</DollyModal>
+						{(harNavn || harKjoenn || harPersonstatus) && (
+							<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+						)}
+						<SlettModal />
 					</EditDeleteKnapper>
 					<div className="flexbox--full-width">
 						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
 						{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
 					</div>
-				</>
+				</PersondetaljerVisning>
 			)}
 			{visningModus === Modus.Skriv && (
 				<Formik

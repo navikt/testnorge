@@ -40,7 +40,7 @@ export const Persondetaljer = ({
 		return null
 	}
 	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
-
+	// console.log('tpsMessagingData: ', tpsMessagingData) //TODO - SLETT MEG
 	const initialPersondetaljer = {
 		navn: [initialNavn],
 		kjoenn: [initialKjoenn],
@@ -49,16 +49,15 @@ export const Persondetaljer = ({
 
 	const PersondetaljerLes = ({ person, idx }) => {
 		const personNavn = person?.navn?.[0]
-		const { fornavn, mellomnavn, etternavn } = personNavn
 		const personKjoenn = person?.kjoenn?.[0]
 		const personstatus = getCurrentPersonstatus(redigertPerson || person)
 
 		return (
 			<div className="person-visning_redigerbar">
 				<TitleValue title="Identtttt" value={person?.ident} />
-				<TitleValue title="Fornavn" value={fornavn} />
-				<TitleValue title="Mellomnavn" value={mellomnavn} />
-				<TitleValue title="Etternavn" value={etternavn} />
+				<TitleValue title="Fornavn" value={personNavn?.fornavn} />
+				<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
+				<TitleValue title="Etternavn" value={personNavn?.etternavn} />
 				<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 				<TitleValue
 					title="Personstatus"
@@ -70,7 +69,7 @@ export const Persondetaljer = ({
 	}
 
 	const PersondetaljerVisning = ({ person, idx }) => {
-		console.log('data: ', data) //TODO - SLETT MEG
+		// console.log('data: ', data) //TODO - SLETT MEG
 		// const initPerson = Object.assign(_cloneDeep(initialPersondetaljer), data)
 		const initPerson = {
 			navn: [data?.navn?.[0] || initialNavn],

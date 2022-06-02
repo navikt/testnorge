@@ -455,9 +455,11 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 	if (!pdlIdent) return null
 
+	const pdlFornavn = pdlIdent?.navn?.[0]?.fornavn || ''
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
 		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
 		: ''
+	const pdlEtternavn = pdlIdent?.navn?.[0]?.etternavn || ''
 
 	const pdlAlder = (foedselsdato) => {
 		if (!foedselsdato) return null
@@ -471,7 +473,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
 		kilde: 'PDL',
-		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.navn?.[0]?.etternavn}`,
+		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: Formatters.formatAlder(
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),

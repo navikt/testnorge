@@ -6,7 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
+import { ManIconItem, UnknownIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -123,13 +123,18 @@ export default function PersonListe({
 	const updatePersonHeader = () => {
 		personListe.map((person) => {
 			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			const mellomnavn = `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.` || ''
+			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+				: ''
+			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+
 			if (redigertPerson) {
 				if (!redigertPerson.doedsfall) {
 					person.alder = person.alder.split(' ')[0]
 				}
 				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
-				person.navn = `${redigertPerson.navn?.[0]?.fornavn} ${mellomnavn} ${redigertPerson.navn?.[0]?.etternavn}`
+				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
 			}
 		})
 	}
@@ -229,7 +234,15 @@ export default function PersonListe({
 					pageSize: sideStoerrelse,
 				}}
 				pagination
-				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				iconItem={(bruker) =>
+					bruker.kjonn === 'MANN' ? (
+						<ManIconItem />
+					) : bruker.kjonn === 'KVINNE' ? (
+						<WomanIconItem />
+					) : (
+						<UnknownIconItem />
+					)
+				}
 				visSide={sidetall}
 				setSidetall={setSidetall}
 				setSideStoerrelse={setSideStoerrelse}

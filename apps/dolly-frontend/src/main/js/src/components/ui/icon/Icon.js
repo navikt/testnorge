@@ -72,6 +72,7 @@ import ManLight from '~/assets/icons/custom/ManLight.svg'
 import Man2 from '~/assets/icons/custom/Man2.svg'
 import Man2Light from '~/assets/icons/custom/Man2Light.svg'
 import Woman from '~/assets/icons/custom/Woman.svg'
+import Person from '~/assets/icons/custom/Person.svg'
 import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
 import ChildHalo from '~/assets/icons/custom/ChildHalo2.svg'
@@ -118,6 +119,7 @@ export const icons = {
 	man2: Man2,
 	man2Light: Man2Light,
 	woman: Woman,
+	person: Person,
 	group: Group,
 	groupLight: GroupLight,
 	groupDark: GroupDark,
