@@ -54,7 +54,7 @@ export const Persondetaljer = ({
 
 		return (
 			<div className="person-visning_redigerbar">
-				<TitleValue title="Identtttt" value={person?.ident} />
+				<TitleValue title="Ident" value={person?.ident} />
 				<TitleValue title="Fornavn" value={personNavn?.fornavn} />
 				<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 				<TitleValue title="Etternavn" value={personNavn?.etternavn} />
@@ -84,14 +84,24 @@ export const Persondetaljer = ({
 		// const slettetAdressebeskyttelsePdlf =
 		// 	tmpPersoner?.hasOwnProperty(ident) && !redigertAdressebeskyttelsePdlf
 		// if (slettetAdressebeskyttelsePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		// console.log('redigertPersonPdlf: ', redigertPersonPdlf) //TODO - SLETT MEG
 
 		const personValues = redigertPersonPdlf ? redigertPersonPdlf : person
 		const redigertPersonValues = redigertPersonPdlf
 			? // ? Object.assign(_cloneDeep(initialPersondetaljer), redigertPersonPdlf)
+			  // {
+			  // 	navn: [redigertPersonPdlf?.navn?.[0]] || null,
+			  // 	kjoenn: [redigertPersonPdlf?.kjoenn?.[0]] || null,
+			  // 	folkeregisterpersonstatus: [redigertPersonPdlf?.folkeregisterPersonstatus?.[0]] || null,
+			  // }
 			  {
-					navn: [redigertPersonPdlf?.navn?.[0]] || null,
-					kjoenn: [redigertPersonPdlf?.kjoenn?.[0]] || null,
-					folkeregisterpersonstatus: [redigertPersonPdlf?.folkeregisterPersonstatus?.[0]] || null,
+					navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : initialNavn],
+					kjoenn: [redigertPersonPdlf?.kjoenn ? redigertPersonPdlf?.kjoenn?.[0] : initialKjoenn],
+					folkeregisterpersonstatus: [
+						redigertPersonPdlf?.folkeregisterPersonstatus
+							? redigertPersonPdlf?.folkeregisterPersonstatus?.[0]
+							: initialPersonstatus,
+					],
 			  }
 			: null
 		// console.log('erPdlVisning: ', erPdlVisning) //TODO - SLETT MEG

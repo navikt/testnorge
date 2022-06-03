@@ -34,12 +34,23 @@ export const PdlPersonInfo = ({
 	const personKjoenn = data?.kjoenn?.[0]
 	const personstatus = getCurrentPersonstatus(redigertPerson || data)
 
+	if (
+		!data?.ident &&
+		!personNavn &&
+		!personKjoenn &&
+		!personstatus &&
+		!tpsMessagingData &&
+		!tpsMessagingLoading
+	) {
+		return null
+	}
+
 	return (
 		<ErrorBoundary>
 			<div>
 				{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 				<div className="person-visning_content">
-					<TitleValue title="Identtttt" value={data?.ident} />
+					<TitleValue title="Ident" value={data?.ident} />
 					<TitleValue title="Fornavn" value={personNavn?.fornavn} />
 					<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 					<TitleValue title="Etternavn" value={personNavn?.etternavn} />

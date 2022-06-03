@@ -76,6 +76,10 @@ const Knappegruppe = styled.div`
 	align-content: baseline;
 `
 
+const SlettCheckbox = styled(Checkbox)`
+	margin-right: 20px;
+`
+
 export const VisningRedigerbarPersondetaljer = ({
 	getPdlForvalter,
 	dataVisning,
@@ -88,7 +92,10 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+
 	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+	// console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
+
 	const pdlfError = (error: any) => {
 		error &&
 			setErrorMessagePdlf(
@@ -105,89 +112,28 @@ export const VisningRedigerbarPersondetaljer = ({
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
-		// console.log('data: ', data) //TODO - SLETT MEG
-		// console.log('path: ', path) //TODO - SLETT MEG
-		// return Object.keys(data).forEach((attr) => {
 		const submit = async () => {
-			// const id = _get(data, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
-			await Promise.allSettled(
-				Object.keys(data).map((attr) => {
-					// console.log('attr: ', attr) //TODO - SLETT MEG
-					// console.log('data: ', data) //TODO - SLETT MEG
-					const initialData = _get(initialValues, `${attr}[0]`)
+			const editFn = async () => {
+				for (let attr of Object.keys(data)) {
+					const initialData = redigertAttributt
+						? _get(redigertAttributt, `${attr}[0]`)
+						: _get(initialValues, `${attr}[0]`)
 					const itemData = _get(data, `${attr}[0]`)
-					console.log('itemData: ', itemData) //TODO - SLETT MEG
 					console.log('initialData: ', initialData) //TODO - SLETT MEG
-					// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-					if (!isEqual(itemData, initialData))
-						return PdlforvalterApi.putAttributt(ident, attr, itemData?.id || 0, itemData).catch(
+					console.log('itemData: ', itemData) //TODO - SLETT MEG
+					console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
+					if (!isEqual(itemData, initialData)) {
+						await PdlforvalterApi.putAttributt(ident, attr, itemData?.id || 0, itemData).catch(
 							(error) => {
 								pdlfError(error)
 							}
 						)
-				})
-			)
-				.then((putResponse) => {
-					// console.log('putResponse: ', putResponse) //TODO - SLETT MEG
-					// if (putResponse) {
-					setVisningModus(Modus.LoadingPdl)
-					DollyApi.sendOrdre(ident).then((ordreResponse) => {
-						// console.log('ordreResponse: ', ordreResponse) //TODO - SLETT MEG
-						getPdlForvalter().then(() => {
-							if (mountedRef.current) {
-								setVisningModus(Modus.Les)
-							}
-						})
-					})
-					// }
-				})
-				.catch((error) => {
-					pdlError(error)
-				})
-
-			// await Object.keys(data).forEach((attr) => {
-			// 	const itemData = _get(data, `${attr}[0]`)
-			// 	PdlforvalterApi.putAttributt(ident, attr, 0, itemData).catch((error) => {
-			// 		pdlfError(error)
-			// 	})
-			// })
-			// setVisningModus(Modus.LoadingPdl)
-			// DollyApi.sendOrdre(ident)
-			// 	.then(() => {
-			// 		getPdlForvalter().then(() => {
-			// 			if (mountedRef.current) {
-			// 				setVisningModus(Modus.Les)
-			// 			}
-			// 		})
-			// 	})
-			// 	.catch((error) => {
-			// 		pdlError(error)
-			// 	})
-		}
-		mountedRef.current = false
-		return submit()
-		// })
-	}, [])
-
-	const handleDelete = useCallback((slettAttr) => {
-		// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-		const slett = async () => {
-			setVisningModus(Modus.LoadingPdlf)
-			await Promise.allSettled(
-				Object.keys(slettAttr).map((attr) => {
-					// console.log('attr: ', attr) //TODO - SLETT MEG
-					if (slettAttr[attr]) {
-						const id = _get(initialValues, `${attr}[0].id`)
-						return PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
-							pdlfError(error)
-						})
 					}
-				})
-			)
-				.then((deleteResponse) => {
-					// console.log('deleteResponse: ', deleteResponse) //TODO - SLETT MEG
-					// if (deleteResponse) {
+				}
+			}
+			return editFn()
+				.then(() => {
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
 						getPdlForvalter().then(() => {
@@ -196,7 +142,38 @@ export const VisningRedigerbarPersondetaljer = ({
 							}
 						})
 					})
-					// }
+				})
+				.catch((error) => {
+					pdlError(error)
+				})
+		}
+		mountedRef.current = false
+		return submit()
+	}, [])
+
+	const handleDelete = useCallback((slettAttr) => {
+		const slett = async () => {
+			setVisningModus(Modus.LoadingPdlf)
+			const deleteFn = async () => {
+				for (let attr of Object.keys(slettAttr)) {
+					if (slettAttr[attr]) {
+						const id = _get(initialValues, `${attr}[0].id`)
+						await PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
+							pdlfError(error)
+						})
+					}
+				}
+			}
+			return deleteFn()
+				.then(() => {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter().then(() => {
+							if (mountedRef.current) {
+								setVisningModus(Modus.Les)
+							}
+						})
+					})
 				})
 				.catch((error) => {
 					pdlError(error)
@@ -221,14 +198,21 @@ export const VisningRedigerbarPersondetaljer = ({
 		]
 	)
 
-	const harNavn =
-		initialValues?.navn?.[0]?.fornavn ||
-		initialValues?.navn?.[0]?.mellomnavn ||
-		initialValues?.navn?.[0]?.etternavn
+	const harNavn = redigertAttributt
+		? redigertAttributt?.navn?.[0]?.fornavn ||
+		  redigertAttributt?.navn?.[0]?.mellomnavn ||
+		  redigertAttributt?.navn?.[0]?.etternavn
+		: initialValues?.navn?.[0]?.fornavn ||
+		  initialValues?.navn?.[0]?.mellomnavn ||
+		  initialValues?.navn?.[0]?.etternavn
 
-	const harKjoenn = initialValues?.kjoenn?.[0]?.kjoenn
+	const harKjoenn = redigertAttributt
+		? redigertAttributt?.kjoenn?.[0]?.kjoenn
+		: initialValues?.kjoenn?.[0]?.kjoenn
 
-	const harPersonstatus = initialValues?.folkeregisterpersonstatus?.[0]?.status
+	const harPersonstatus = redigertAttributt
+		? redigertAttributt?.folkeregisterpersonstatus?.[0]?.status
+		: initialValues?.folkeregisterpersonstatus?.[0]?.status
 
 	const SlettModal = () => {
 		const slettAttr = {
@@ -246,7 +230,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						<h4>Hvilke opplysninger ønsker du å slette?</h4>
 						<div className="flexbox--flex-wrap">
 							{harNavn && (
-								<DollyCheckbox
+								<SlettCheckbox
 									id={'navn'}
 									label={'Navn'}
 									size={'xxsmall'}
@@ -256,7 +240,7 @@ export const VisningRedigerbarPersondetaljer = ({
 								/>
 							)}
 							{harKjoenn && (
-								<DollyCheckbox
+								<SlettCheckbox
 									id={'kjoenn'}
 									label={'Kjønn'}
 									size={'xxsmall'}
@@ -266,7 +250,7 @@ export const VisningRedigerbarPersondetaljer = ({
 								/>
 							)}
 							{harPersonstatus && (
-								<DollyCheckbox
+								<Checkbox
 									id={'folkeregisterpersonstatus'}
 									label={'Personstatus'}
 									size={'xxsmall'}

@@ -7,6 +7,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import Hjelpetekst from '~/components/hjelpetekst'
 
 export const PersondetaljerSamlet = ({ path, idx, formikBag }) => {
 	// console.log('path: ', path) //TODO - SLETT MEG
@@ -22,7 +23,7 @@ export const PersondetaljerSamlet = ({ path, idx, formikBag }) => {
 			{/*/>*/}
 			{/*<NavnForm path={`${path}.navn[0]`} />*/}
 			<div className="flexbox--full-width">
-				<AlertStripeInfo>Identnummer, språk og skjerming kan ikke endres.</AlertStripeInfo>
+				<AlertStripeInfo>Identnummer, språk og skjerming kan ikke endres her.</AlertStripeInfo>
 				{/*<h3 style={{ marginTop: '0' }}>Navn</h3>*/}
 				<h3>Navn</h3>
 				<div className="flexbox--flex-wrap">
@@ -33,8 +34,13 @@ export const PersondetaljerSamlet = ({ path, idx, formikBag }) => {
 
 				{/*<KjoennForm path={`${path}.kjoenn[0]`} />*/}
 				<KjoennForm path="kjoenn[0]" />
-
-				<h3>Personstatus</h3>
+				<div className="flexbox--align-center">
+					<h3>Personstatus</h3>
+					<Hjelpetekst hjelpetekstFor="Personstatus">
+						Endring av personstatus er kun ment for negativ testing. Adresser og andre avhengige
+						verdier vil ikke bli oppdatert for å stemme overens med ny personstatus.
+					</Hjelpetekst>
+				</div>
 				<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
 					{/*<PersonstatusForm path={`${path}.folkeregisterPersonstatus[0]`} />*/}
 					<PersonstatusForm path="folkeregisterpersonstatus[0]" />
