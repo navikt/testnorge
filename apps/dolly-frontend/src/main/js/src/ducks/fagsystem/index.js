@@ -306,8 +306,7 @@ export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch, getState) => {
-	const state = getState()
+export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) => {
 	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
