@@ -21,7 +21,7 @@ public class QueryUtils {
     public static NestedQueryBuilder nestedTermsQuery(String path, String field, Collection<String> values, String historisk) {
         if (!historisk.isEmpty()) {
             var boolQuery = QueryBuilders.boolQuery()
-                    .must(QueryBuilders.boolQuery().must(QueryBuilders.termsQuery(path + field, values)))
+                    .must(QueryBuilders.termsQuery(path + field, values))
                     .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
             return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
         } else {

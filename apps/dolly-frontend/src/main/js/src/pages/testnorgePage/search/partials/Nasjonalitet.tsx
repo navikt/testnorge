@@ -14,8 +14,8 @@ const paths = {
 
 const initalLandOptions = [
 	{ value: 'VERDEN', label: 'VILKÅRLIG LAND' },
-	{ value: 'EØS', label: 'EØS-OMRÅDET' },
-	{ value: 'UEØS', label: 'UTENFOR EØS-OMRÅDET' },
+	{ value: 'EU', label: 'EØS-OMRÅDET' },
+	{ value: 'U-EU', label: 'UTENFOR EØS-OMRÅDET' },
 ]
 
 export const Nasjonalitet = () => {
