@@ -131,10 +131,17 @@ public class NasjonalitetUtils {
     private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {
         if (!value.isEmpty()) {
             switch (value) {
-                case "VERDEN" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
-                case "EU" -> queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
-                case "U-EU" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
-                default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
+                case "VERDEN":
+                    queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
+                    break;
+                case "EU":
+                    queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
+                    break;
+                case "U-EU":
+                    queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
+                    break;
+                default:
+                    queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
         }
     }
