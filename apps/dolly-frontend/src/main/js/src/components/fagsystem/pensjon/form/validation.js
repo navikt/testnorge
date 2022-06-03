@@ -124,9 +124,7 @@ const validFomDateTest = (val) => {
 		const values = this.options.context
 
 		if (invalidAlderFom(inntektFom, values)) {
-			return this.createError({
-				message: 'F.o.m kan tidligst være året personen fyller 18 år',
-			})
+			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 18 år' })
 		}
 
 		let inntektTom = _get(values, `${path}.tomAar`)
