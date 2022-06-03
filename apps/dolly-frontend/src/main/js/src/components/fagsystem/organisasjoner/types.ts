@@ -13,6 +13,7 @@ export type EnhetBestilling = {
 	underenheter?: Array<EnhetBestilling>
 	id?: number
 	ferdig: boolean
+	feil: string
 	organisasjonsnavn?: string
 	organisasjonNummer?: string
 	status?: Array<Statuser>

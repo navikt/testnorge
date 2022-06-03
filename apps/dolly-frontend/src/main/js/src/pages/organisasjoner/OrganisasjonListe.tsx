@@ -63,7 +63,7 @@ export default function OrganisasjonListe({
 		const bestilling = bestillingArray.find((obj) => {
 			return obj.id === bestillingId
 		})
-		if (!bestilling?.status) orgStatus = 'Feilet'
+		if (!bestilling?.status || bestilling.feil) orgStatus = 'Feilet'
 		bestilling?.status?.[0].statuser?.forEach((status) => {
 			if (status?.melding !== 'OK') orgStatus = 'Avvik'
 		})

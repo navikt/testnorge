@@ -2,7 +2,9 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
+import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,6 +27,16 @@ public class OrganisasjonProgressService {
     public Optional<OrganisasjonBestillingProgress> save(OrganisasjonBestillingProgress progress) {
 
         return organisasjonProgressRepository.save(progress);
+    }
+
+    @Transactional
+    public Optional<OrganisasjonBestillingProgress> saveTempRequest(RsOrganisasjonBestilling bestilling, OrganisasjonBestilling dbBestilling) {
+
+        return organisasjonProgressRepository.save(OrganisasjonBestillingProgress.builder()
+                .bestilling(dbBestilling)
+                .organisasjonsnummer("Ubestemt")
+                .organisasjonsforvalterStatus(bestilling.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
+                .build());
     }
 
     @Transactional
