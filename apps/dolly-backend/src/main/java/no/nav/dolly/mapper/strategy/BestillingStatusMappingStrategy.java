@@ -113,7 +113,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
                         bestillingStatus.setAntallLevert(0);
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
-                        bestillingStatus.setFerdig(true);
                     }
                 })
                 .byDefault()
