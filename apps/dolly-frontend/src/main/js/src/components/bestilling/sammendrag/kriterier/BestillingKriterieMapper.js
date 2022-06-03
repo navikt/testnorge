@@ -368,6 +368,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Husnummer', adresseData.husnummer),
 				obj('Husbokstav', adresseData.husbokstav),
 				obj('Postnummer', adresseData.postnummer),
+				obj('Bydelsnummer', adresseData.bydelsnummer),
 				obj('Kommunenummer', adresseData.kommunenummer),
 			]
 		}

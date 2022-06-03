@@ -1,0 +1,23 @@
+@import (reference) '~lessVars';
+@headerHoverColor: darken(@color-lightblue, 7%);
+
+.linkPanel-container{
+  @import '@navikt/ds-css';
+  display: flex;
+  .linkPanel {
+    padding: 10px 30px 10px 30px;
+    font-weight: 600;
+    font-size: 1em;
+    &:hover {
+      color: @color-lightblue;
+    }
+  }
+}
+
+.endringsmelding-tekst{
+  padding: 5px 15px 20px 15px;
+  background-color: white;
+  p {
+    margin-bottom: 15px;
+  }
+}

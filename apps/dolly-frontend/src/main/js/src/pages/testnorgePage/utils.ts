@@ -24,10 +24,7 @@ export const initialValues = {
 		forelderBarnRelasjoner: [] as string[],
 		foreldreansvar: '',
 	},
-	ident: {
-		ident: '',
-	},
-	identer: [] as string[],
+	identer: [''],
 	identifikasjon: {
 		adressebeskyttelse: '',
 		identtype: '',
@@ -62,12 +59,7 @@ const fellesSearchValues = {
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
-	let identer = values?.identer ? [...values.identer] : []
-	if (values?.ident?.ident) {
-		identer.push(values?.ident?.ident)
-		identer = identer.filter((item: string) => item)
-	}
-
+	const identer = values?.identer ? [...values.identer].filter((n) => n) : []
 	const kunLevende = values?.personstatus?.status !== 'DOED'
 
 	if (identer.length > 0) {
@@ -85,7 +77,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 			searchValues.relasjoner.harBarn = 'Y'
 		}
 
-		delete searchValues.ident
+		delete searchValues.identer
 		return searchValues
 	}
 }
@@ -95,7 +87,7 @@ export const yesNoOptions = [
 	{ value: 'N', label: 'Nei' },
 ]
 
-export const getIdent = (person: PdlData) => {
+export const getPdlIdent = (person: PdlData) => {
 	const identer = person.hentIdenter?.identer?.filter(
 		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
 	)

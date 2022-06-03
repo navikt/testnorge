@@ -52,7 +52,6 @@ export type MatrikkelAdresse = {
 	poststed: string
 	bruksenhetsnummer?: string
 	tilleggsnavn: string
-	bydelsnummer?: string
 }
 
 const getQueryParms = (request: any) => {
