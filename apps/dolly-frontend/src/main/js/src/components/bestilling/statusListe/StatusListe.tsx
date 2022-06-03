@@ -10,8 +10,8 @@ import {
 	useMatchMutate,
 } from '~/utils/hooks/useMutate'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
-import { isEmpty } from 'lodash'
 import { Bestillingsstatus, useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
+import { isEmpty } from 'lodash'
 
 type StatusProps = {
 	gruppeId: number

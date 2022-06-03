@@ -9,6 +9,7 @@ import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/Be
 import './BestillingResultat.less'
 import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 import useBoolean from '~/utils/hooks/useBoolean'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 export default function BestillingResultat(props) {
 	const { bestilling, onCloseButton } = props
@@ -16,6 +17,9 @@ export default function BestillingResultat(props) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
 	const antall = antallIdenterOpprettet(bestilling)
+	const mutate = useMatchMutate()
+
+	mutate(REGEX_BACKEND_GRUPPER)
 
 	return (
 		<div className="bestilling-resultat">

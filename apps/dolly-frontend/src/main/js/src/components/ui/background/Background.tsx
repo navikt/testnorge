@@ -20,6 +20,7 @@ import '~/snow.scss'
 import '~/rain.scss'
 import '~/flowers.scss'
 import { useWeatherFyrstikkAlleen } from '~/utils/hooks/useWeather'
+import { round } from 'lodash'
 
 const DefaultBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Default)});
@@ -87,7 +88,7 @@ const SommerBackground = styled.div`
 
 export const Background = (props: any) => {
 	const month = new Date().getMonth()
-	const { beregnetRegn = 0 } = useWeatherFyrstikkAlleen()
+	const { beregnetMillimeterRegn = 0 } = useWeatherFyrstikkAlleen()
 	if (month >= 2 && month <= 4) {
 		return (
 			<>
@@ -100,7 +101,7 @@ export const Background = (props: any) => {
 	} else if (month >= 5 && month <= 7) {
 		return (
 			<>
-				{Array.from(Array(250 * beregnetRegn).keys()).map((idx) => (
+				{Array.from(Array(2 * round(beregnetMillimeterRegn) * 10).keys()).map((idx) => (
 					<div key={idx} className="rain" />
 				))}
 				<SommerBackground>{props.children}</SommerBackground>

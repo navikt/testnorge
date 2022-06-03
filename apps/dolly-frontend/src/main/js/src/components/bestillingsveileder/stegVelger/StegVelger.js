@@ -14,6 +14,7 @@ import DisplayFormikState from '~/utils/DisplayFormikState'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
+	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '~/utils/hooks/useMutate'
 
@@ -50,6 +51,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 
 		onSubmit(values, formikBag)
 		mutate(REGEX_BACKEND_GRUPPER)
+		mutate(REGEX_BACKEND_ORGANISASJONER)
 		return mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
