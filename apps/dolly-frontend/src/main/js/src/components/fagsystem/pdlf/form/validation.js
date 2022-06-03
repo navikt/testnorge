@@ -313,10 +313,19 @@ const fullmakt = Yup.array().of(
 )
 
 const tilrettelagtKommunikasjon = Yup.array().of(
-	Yup.object({
-		spraakForTaletolk: Yup.string().nullable(),
-		spraakForTegnspraakTolk: Yup.string().nullable(),
-	})
+	Yup.object().shape(
+		{
+			spraakForTaletolk: Yup.mixed().when('spraakForTegnspraakTolk', {
+				is: null,
+				then: requiredString.nullable(),
+			}),
+			spraakForTegnspraakTolk: Yup.mixed().when('spraakForTaletolk', {
+				is: null,
+				then: requiredString.nullable(),
+			}),
+		},
+		['spraakForTaletolk', 'spraakForTegnspraakTolk']
+	)
 )
 
 const sikkerhetstiltak = Yup.array().of(
