@@ -45,7 +45,6 @@ public class OrganisasjonController {
     public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
-        progressService.saveTempRequest(request, bestilling);
         organisasjonClient.opprett(request, bestilling);
 
         return getStatus(bestilling, "Ubestemt");

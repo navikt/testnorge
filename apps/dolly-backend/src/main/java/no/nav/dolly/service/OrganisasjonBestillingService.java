@@ -145,6 +145,7 @@ public class OrganisasjonBestillingService {
         return saveBestillingToDB(
                 OrganisasjonBestilling.builder()
                         .antall(1)
+                        .ferdig(false)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))

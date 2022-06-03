@@ -31,7 +31,7 @@ export default function FagsystemStatus({ bestilling }: Miljostatus) {
 
 	return (
 		<div className="fagsystem-status">
-			{bestilling.status.map((fagsystem, idx) => (
+			{bestilling.status?.map((fagsystem, idx) => (
 				<div className="fagsystem-status_kind" key={idx}>
 					<Icon kind={iconType(fagsystem.statuser, bestilling.feil)} />
 					<p>{fagsystem.navn}</p>
