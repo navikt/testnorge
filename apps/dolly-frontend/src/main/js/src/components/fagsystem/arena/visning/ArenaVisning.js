@@ -5,6 +5,7 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Panel from '~/components/ui/panel/Panel'
+import _orderBy from 'lodash/orderBy'
 
 const Visning = ({ data }) => {
 	if (!data) return null
@@ -63,6 +64,10 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
 
+	const sortedBestillinger =
+		arenaBestillinger?.length > 0 ? _orderBy(arenaBestillinger, ['id'], ['desc']) : []
+	const sisteArenaBestilling = sortedBestillinger?.[0]
+
 	const visningData = {
 		brukertype: undefined,
 		servicebehov: undefined,
@@ -75,22 +80,18 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 
-	for (let bestilling of arenaBestillinger) {
-		if (bestilling.data.arenaforvalter !== undefined) {
-			fyllVisningData(bestilling, visningData)
-		}
-	}
+	fyllVisningData(sisteArenaBestilling, visningData)
+
 	return (
 		<div>
-			{useStandard && (
+			{useStandard ? (
 				<div>
 					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 					<div className="person-visning_content">
 						<Visning data={visningData} />
 					</div>
 				</div>
-			)}
-			{!useStandard && (
+			) : (
 				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
 					<div className="person-visning">
 						<div className="person-visning_content">
@@ -104,6 +105,9 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 }
 
 function fyllVisningData(bestilling, visningData) {
+	if (!bestilling) {
+		return null
+	}
 	const {
 		arenaBrukertype,
 		kvalifiseringsgruppe,

@@ -1,28 +1,20 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const MedServicebehov = ({ formikBag, path }) => {
 	const { arenaforvalter } = formikBag.values
 
-	const opts = useContext(BestillingsveilederContext)
-	const { personFoerLeggTil } = opts
-
-	const uregistert = !(personFoerLeggTil && personFoerLeggTil.arenaforvalteren)
-
 	return (
 		<React.Fragment>
-			{uregistert && (
-				<FormikSelect
-					name={`${path}.kvalifiseringsgruppe`}
-					label="Servicebehov"
-					options={Options('kvalifiseringsgruppe')}
-					size="large"
-				/>
-			)}
+			<FormikSelect
+				name={`${path}.kvalifiseringsgruppe`}
+				label="Servicebehov"
+				options={Options('kvalifiseringsgruppe')}
+				size="large"
+			/>
 			{arenaforvalter.aap115 && (
 				<Kategori title="11-5-vedtak">
 					<FormikDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />
