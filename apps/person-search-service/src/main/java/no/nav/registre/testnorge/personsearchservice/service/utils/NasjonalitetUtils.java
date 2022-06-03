@@ -104,7 +104,7 @@ public class NasjonalitetUtils {
     private static void addFraflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
         Optional.ofNullable(search.getFraflyttingsland())
                 .ifPresent(value -> {
-                    queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", EU_LANDKODER, "");
+                    queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", EU_LANDKODER, ""));
 //                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO);
                 });
         Optional.ofNullable(search.getHistoriskFraflyttingsland())
