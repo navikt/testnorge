@@ -410,7 +410,7 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 
 	if (!bestillingStatus) return totalStatus
 
-	bestillingStatus.status.forEach((fagsystem) => {
+	bestillingStatus?.status.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {
 			_get(status, 'detaljert', []).forEach((miljoe) => {
 				_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
@@ -476,7 +476,7 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 		navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 		kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
 		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
@@ -506,7 +506,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			pdlIdent?.doedsfall?.[0]?.doedsdato
 		),
-		status: hentPersonStatus(ident?.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
@@ -531,7 +531,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
@@ -548,7 +548,7 @@ const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
 		alder: '',
 		status:
 			ident?.bestillingId && bestillingStatuser
-				? hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]])
+				? hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]])
 				: '',
 	}
 }

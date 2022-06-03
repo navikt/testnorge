@@ -31,10 +31,6 @@ export const actions = createActions(
 	}
 )
 
-function identerAlleredeHentet(hentedeIdenter, lagredeIdenter) {
-	return Object.values(hentedeIdenter).every((person) => lagredeIdenter[person.ident])
-}
-
 const initialState = {
 	ident: {},
 	byId: {},
@@ -48,12 +44,6 @@ export default handleActions(
 	{
 		[LOCATION_CHANGE](state, action) {
 			return initialState
-		},
-		[onSuccess(actions.getByUserId)](state, action) {
-			state.mineIds = action.payload.data.map((v) => v.id)
-			action.payload.data.forEach((gruppe) => {
-				state.byId[gruppe.id] = gruppe
-			})
 		},
 		[onSuccess(actions.update)](state, action) {
 			state.byId[action.payload.data.id] = action.payload.data

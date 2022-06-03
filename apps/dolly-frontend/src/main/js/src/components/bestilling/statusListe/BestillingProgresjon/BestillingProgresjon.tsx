@@ -116,20 +116,20 @@ export const BestillingProgresjon = ({
 			<div>
 				<Line percent={percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
-			{/*{timedOut && (*/}
-			<div className="cancel-container">
-				<div>
-					<Icon kind={'report-problem-circle'} />
-					<h5 className="feil-status-text">
-						Dette tar lengre tid enn forventet. Hvis bestillingen er kompleks kan du gi Dolly litt
-						mer tid før du eventuelt avbryter.
-					</h5>
+			{timedOut && (
+				<div className="cancel-container">
+					<div>
+						<Icon kind={'report-problem-circle'} />
+						<h5 className="feil-status-text">
+							Dette tar lengre tid enn forventet. Hvis bestillingen er kompleks kan du gi Dolly litt
+							mer tid før du eventuelt avbryter.
+						</h5>
+					</div>
+					<NavButton type="fare" onClick={handleCancelBtn}>
+						Avbryt bestilling
+					</NavButton>
 				</div>
-				<NavButton type="fare" onClick={handleCancelBtn}>
-					Avbryt bestilling
-				</NavButton>
-			</div>
-			{/*)}*/}
+			)}
 		</Fragment>
 	)
 }

@@ -13,7 +13,7 @@ export default function GjenopprettBestilling(props) {
 	const { environments } = bestilling
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const { mutate } = useMatchMutate()
+	const mutate = useMatchMutate()
 
 	const submitFormik = async (values) => {
 		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()

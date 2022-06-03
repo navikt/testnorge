@@ -1,10 +1,8 @@
-import { LOCATION_CHANGE } from 'redux-first-history'
 import { createActions } from 'redux-actions'
 import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
 import { DollyApi } from '~/service/Api'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
 
 export const {
 	cancelBestilling,
@@ -19,18 +17,6 @@ export const {
 	},
 	'removeNyBestillingStatus',
 	{ prefix: 'bestillingStatus' }
-)
-
-// ny-array holder oversikt over nye bestillinger i en session
-const initialState = { ny: [], byId: {} }
-
-export default handleActions(
-	{
-		[LOCATION_CHANGE](state, action) {
-			return initialState
-		},
-	},
-	initialState
 )
 
 // Henter alle bestillinger som er gjort på en ident
@@ -63,7 +49,6 @@ export const sokSelector = (bestillingerById, searchStr) => {
 }
 
 // Object med system som key, og OK-miljøer som value
-// StatusArray = state.bestillingStatus[0].status
 export const successMiljoSelector = (statusArray) => {
 	const success_list = statusArray
 		.filter((curr) => !_isNil(curr))

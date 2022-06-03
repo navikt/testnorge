@@ -37,7 +37,6 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-    private final OrganisasjonProgressService progressService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/bestilling")
