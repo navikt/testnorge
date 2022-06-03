@@ -98,20 +98,12 @@ export default {
 	},
 
 	//* Bestilling
-	getBestillinger(gruppeId) {
-		return Request.get(Endpoints.bestillinger(gruppeId))
-	},
-
 	getBestillingerFragment(fragment) {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
-	},
-
-	postOpenAmBestilling(bestillingId) {
-		return Request.post(Endpoints.openAmBestilling(bestillingId))
 	},
 
 	cancelBestilling(bestillingId, erOrganisasjon) {
@@ -145,10 +137,6 @@ export default {
 		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
 	},
 
-	getFasteDatasettGruppe(gruppe) {
-		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
-	},
-
 	getPersonnavn() {
 		return Request.get(Endpoints.getPersonnavn())
 	},
@@ -157,21 +145,10 @@ export default {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
 	},
 
-	getDokarkivDokumentinfo(journalpostId, miljoe) {
-		return Request.get(Endpoints.dokarkivDokumentinfo(journalpostId, miljoe))
-	},
-
 	//* Organisasjoner
-	getOrganisasjonsnummerByUserId(userId) {
-		return Request.get(Endpoints.organisasjonStatusByUser(userId))
-	},
 
 	createOrganisasjonBestilling(data) {
 		return Request.post(Endpoints.organisasjonBestilling(), data)
-	},
-
-	getOrganisasjonBestillingStatus(bestillingId) {
-		return Request.get(Endpoints.organisasjonStatusByBestillingId(bestillingId))
 	},
 
 	gjenopprettOrganisasjonBestilling(bestillingId, envs) {

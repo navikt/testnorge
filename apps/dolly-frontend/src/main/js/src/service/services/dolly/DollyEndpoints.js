@@ -23,17 +23,8 @@ export default class DollyEndpoints {
 		return groupBase
 	}
 
-	static gruppePaginert(page = 0, pageSize = 10) {
-		return `${groupBase}/page/${page}?pageSize=${pageSize}`
-	}
-
 	static gruppeById(gruppeId) {
 		return `${groupBase}/${gruppeId}`
-	}
-
-	static gruppeByIdPaginert(gruppeId, pageNo = 0, pageSize = 10) {
-		if (!gruppeId) return null
-		return `${groupBase}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}`
 	}
 
 	static gruppeByUser(userId) {
@@ -68,28 +59,12 @@ export default class DollyEndpoints {
 		return `${tagsBase}`
 	}
 
-	static getTagsPaaIdent(ident) {
-		return `${tagsBase}/ident/${ident}`
-	}
-
-	static gruppeBestillingStatus(gruppeId) {
-		return `${groupBase}/${gruppeId}/bestillingStatus`
-	}
-
 	static organisasjonBestilling() {
 		return `${organisasjonBase}/bestilling`
 	}
 
 	static skjermingByIdent(ident) {
 		return `${skjermingBase}/${ident}`
-	}
-
-	static organisasjonStatusByBestillingId(bestillingId) {
-		return `${organisasjonBase}/bestilling?bestillingId=${bestillingId}`
-	}
-
-	static organisasjonStatusByUser(userId) {
-		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
 	}
 
 	static gjenopprettOrganisasjonBestilling(bestillingId, envs) {
@@ -120,10 +95,6 @@ export default class DollyEndpoints {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}
 
-	static dokarkivDokumentinfo(journalpostId, env) {
-		return `${dokarkivBase}/${journalpostId}?miljoe=${env}`
-	}
-
 	static bestillinger(gruppeId) {
 		return `${bestillingBase}/gruppe/${gruppeId}`
 	}
@@ -136,16 +107,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/${bestillingId}`
 	}
 
-	static bestillingMal() {
-		return `${bestillingBase}/malbestilling`
-	}
-
 	static gjenopprettBestilling(bestillingId, envs) {
 		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
-	}
-
-	static openAmBestilling(bestillingId) {
-		return `${openamBase}/bestilling/${bestillingId}?bestillingId=${bestillingId}`
 	}
 
 	static removeBestilling(bestillingId, erOrganisasjon) {

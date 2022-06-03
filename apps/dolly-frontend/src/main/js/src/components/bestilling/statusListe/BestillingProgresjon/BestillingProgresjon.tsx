@@ -5,7 +5,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Icon from '~/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
-import { useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
+import { Bestillingsstatus, useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
 
 type ProgresjonProps = {
 	bestilling: {
@@ -17,13 +17,18 @@ type ProgresjonProps = {
 		antallLevert: number
 	}
 	cancelBestilling: Function
+	setNyeBestillinger: Function
 }
 
-export const BestillingProgresjon = ({ bestilling, cancelBestilling }: ProgresjonProps) => {
+export const BestillingProgresjon = ({
+	bestilling,
+	cancelBestilling,
+	setNyeBestillinger,
+}: ProgresjonProps) => {
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
 	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
 
-	const [failed, setFailed] = useState(false)
+	const [timedOut, setTimedOut] = useState(false)
 	const [orgStatus, setOrgStatus] = useState(null)
 
 	const sistOppdatert = bestilling.sistOppdatert
@@ -56,7 +61,7 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }: Progresjo
 			: SECONDS_BEFORE_WARNING_MESSAGE
 
 		if (antallSekunderBrukt > tidsBegrensing) {
-			setFailed(true)
+			setTimedOut(true)
 		}
 	}
 
@@ -67,11 +72,10 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }: Progresjo
 			bestilling.bestilling.sykemelding.syntSykemelding != null
 		const antallLevert = bestilling.antallLevert
 
-		// Percent
 		let percent = (100 / total) * antallLevert
 		let text = `Opprettet ${antallLevert} av ${total}`
 
-		// To indicate progress hvis ingenting har skjedd enda
+		// Indikerer progress hvis ingenting har skjedd enda
 		if (percent === 0) percent += 10
 
 		if (antallLevert === total) text = `Ferdigstiller bestilling`
@@ -92,37 +96,40 @@ export const BestillingProgresjon = ({ bestilling, cancelBestilling }: Progresjo
 		}
 	}
 
-	const _onCancelBtn = () => {
+	const handleCancelBtn = () => {
 		cancelBestilling(bestilling.id, erOrganisasjon)
+		setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
+			nyeBestillinger.filter((best) => best.id !== bestilling.id)
+		)
 	}
 
-	const status = calculateStatus()
+	const { percent, title, text } = calculateStatus()
 
 	return (
 		<Fragment>
 			<div className="flexbox--space">
 				<h5>
-					<Loading onlySpinner /> {status.title}
+					<Loading onlySpinner /> {title}
 				</h5>
-				<span>{status.text}</span>
+				<span>{text}</span>
 			</div>
 			<div>
-				<Line percent={status.percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
+				<Line percent={percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
-			{failed && (
-				<div className="cancel-container">
-					<div>
-						<Icon kind={'report-problem-circle'} />
-						<h5 className="feil-status-text">
-							Dette tar lengre tid enn forventet. Hvis bestillingen er kompleks kan du gi Dolly litt
-							mer tid før du eventuelt avbryter.
-						</h5>
-					</div>
-					<NavButton type="fare" onClick={_onCancelBtn}>
-						Avbryt bestilling
-					</NavButton>
+			{/*{timedOut && (*/}
+			<div className="cancel-container">
+				<div>
+					<Icon kind={'report-problem-circle'} />
+					<h5 className="feil-status-text">
+						Dette tar lengre tid enn forventet. Hvis bestillingen er kompleks kan du gi Dolly litt
+						mer tid før du eventuelt avbryter.
+					</h5>
 				</div>
-			)}
+				<NavButton type="fare" onClick={handleCancelBtn}>
+					Avbryt bestilling
+				</NavButton>
+			</div>
+			{/*)}*/}
 		</Fragment>
 	)
 }

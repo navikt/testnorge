@@ -66,7 +66,11 @@ const StatusListe = ({
 			{bestilling.ferdig ? (
 				<BestillingResultat bestilling={bestilling} />
 			) : (
-				<BestillingProgresjon bestilling={bestilling} cancelBestilling={cancelBestilling} />
+				<BestillingProgresjon
+					bestilling={bestilling}
+					cancelBestilling={cancelBestilling}
+					setNyeBestillinger={setNyeBestillinger}
+				/>
 			)}
 		</div>
 	))

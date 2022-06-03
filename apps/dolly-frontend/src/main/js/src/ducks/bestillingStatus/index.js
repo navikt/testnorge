@@ -4,23 +4,17 @@ import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
 import { DollyApi } from '~/service/Api'
-import bestillingStatusMapper from './bestillingStatusMapper'
-import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 
 export const {
-	getBestillinger,
 	cancelBestilling,
 	gjenopprettBestilling,
-	getOrganisasjonBestilling,
 	gjenopprettOrganisasjonBestilling,
 	removeNyBestillingStatus,
 } = createActions(
 	{
-		getBestillinger: DollyApi.getBestillinger,
 		cancelBestilling: DollyApi.cancelBestilling,
 		gjenopprettBestilling: DollyApi.gjenopprettBestilling,
-		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId,
 		gjenopprettOrganisasjonBestilling: DollyApi.gjenopprettOrganisasjonBestilling,
 	},
 	'removeNyBestillingStatus',
@@ -34,35 +28,6 @@ export default handleActions(
 	{
 		[LOCATION_CHANGE](state, action) {
 			return initialState
-		},
-		[onSuccess(getBestillinger)](state, action) {
-			const { data } = action.payload
-			const nyeBestillinger = data
-				.filter((bestilling) => !bestilling.ferdig && !state.ny.includes(bestilling.id))
-				.map((bestilling) => bestilling.id)
-
-			if (nyeBestillinger.length > 0) {
-				state.ny = state.ny.concat(nyeBestillinger)
-			}
-
-			bestillingStatusMapper(data).map((best) => {
-				state.byId[best.id] = best
-			})
-		},
-		[onSuccess(getOrganisasjonBestilling)](state, action) {
-			const { data } = action.payload
-			const nyeBestillinger = data
-				.filter((bestilling) => !bestilling.ferdig && !state.ny.includes(bestilling.id))
-				.map((bestilling) => bestilling.id)
-			if (nyeBestillinger.length > 0) {
-				state.ny = state.ny.concat(nyeBestillinger)
-			}
-			bestillingStatusMapper(data).map((best) => {
-				state.byId[best.id] = best
-			})
-		},
-		[removeNyBestillingStatus](state, action) {
-			state.ny = state.ny.filter((id) => id !== action.payload)
 		},
 	},
 	initialState
