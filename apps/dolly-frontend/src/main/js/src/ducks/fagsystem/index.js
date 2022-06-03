@@ -311,7 +311,6 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch, 
 	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
-	// const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
 	const bestillinger = person.bestillingId.map((id) => bestillingerById?.[id])
 
 	// Samlet liste over alle statuser
