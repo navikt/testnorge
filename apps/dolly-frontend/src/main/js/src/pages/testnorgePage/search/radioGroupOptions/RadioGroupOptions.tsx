@@ -23,6 +23,7 @@ type RadioOptionsProps = {
 
 const IconContainer = styled.div`
 	margin: 0 0 0 auto;
+	cursor: pointer;
 `
 
 export const RadioGroupOptions = ({

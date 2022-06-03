@@ -12,10 +12,18 @@ type AdresserProps = {
 	formikBag: FormikProps<{}>
 }
 
-const bostedPath = 'adresser.bostedsadresse'
-const utlandPath = 'adresser.harUtenlandskAdresse'
-const kontaktPath = 'adresser.harKontaktadresse'
-const oppholdPath = 'adresser.harOppholdsadresse'
+const paths = {
+	borINorge: 'adresser.bostedsadresse.borINorge',
+	postnummer: 'adresser.bostedsadresse.postnummer',
+	bydelsnummer: 'adresser.bostedsadresse.bydelsnummer',
+	kommunenummer: 'adresser.bostedsadresse.kommunenummer',
+	hPostnummer: 'adresser.bostedsadresse.historiskPostnummer',
+	hBydelsnummer: 'adresser.bostedsadresse.historiskBydelsnummer',
+	hKommunenummer: 'adresser.bostedsadresse.historiskKommunenummer',
+	utenlandsk: 'adresser.harUtenlandskAdresse',
+	kontakt: 'adresser.harKontaktadresse',
+	opphold: 'adresser.harOppholdsadresse',
+}
 
 export const Adresser = ({ formikBag }: AdresserProps) => {
 	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
@@ -26,9 +34,9 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			value: 'N',
 			label: 'Nei',
 			disabled:
-				_get(formikBag.values, `${bostedPath}.kommunenummer`) ||
-				_get(formikBag.values, `${bostedPath}.postnummer`) ||
-				_get(formikBag.values, `${bostedPath}.bydelsnummer`),
+				_get(formikBag.values, paths.kommunenummer) ||
+				_get(formikBag.values, paths.postnummer) ||
+				_get(formikBag.values, paths.bydelsnummer),
 		},
 	]
 	return (
@@ -37,30 +45,30 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har bostedsadresse i Norge'}
-				path={`${bostedPath}.borINorge`}
+				path={paths.borINorge}
 				options={bostedOptions}
 			/>
 			<FormikSelect
-				name={`${bostedPath}.postnummer`}
+				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
+				disabled={_get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
 			<FormikSelect
-				name={`${bostedPath}.bydelsnummer`}
+				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
-				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
+				disabled={_get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
 			<FormikSelect
-				name={`${bostedPath}.kommunenummer`}
+				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				disabled={_get(formikBag.values, `${bostedPath}.borINorge`) === 'N'}
+				disabled={_get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -76,7 +84,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			{visAvansert && (
 				<>
 					<FormikSelect
-						name={`${bostedPath}.historiskPostnummer`}
+						name={paths.hPostnummer}
 						label="Har tidligere hatt postnummer"
 						kodeverk={AdresseKodeverk.Postnummer}
 						optionHeight={50}
@@ -84,7 +92,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 						info="Velg postnummer tilknyttet tidligere bostedsadresse."
 					/>
 					<FormikSelect
-						name={`${bostedPath}.historiskBydelsnummer`}
+						name={paths.hBydelsnummer}
 						label="Har tidligere bodd i bydel"
 						kodeverk={GtKodeverk.BYDEL}
 						optionHeight={50}
@@ -92,7 +100,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 						info="Velg bydel tilknyttet tidligere bostedsadresse."
 					/>
 					<FormikSelect
-						name={`${bostedPath}.historiskKommunenummer`}
+						name={paths.hKommunenummer}
 						label="Har tidligere bodd i kommune"
 						kodeverk={AdresseKodeverk.Kommunenummer}
 						optionHeight={50}
@@ -105,34 +113,23 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har utenlandsk adresse'}
-				path={utlandPath}
+				path={paths.utenlandsk}
 				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har kontaktadresse'}
-				path={kontaktPath}
+				path={paths.kontakt}
 				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Har oppholdsadresse'}
-				path={oppholdPath}
+				path={paths.opphold}
 				options={yesNoOptions}
 			/>
 		</section>
 	)
 }
 
-export const AdresserPaths = {
-	[bostedPath + '.borINorge']: 'string',
-	[bostedPath + '.postnummer']: 'string',
-	[bostedPath + '.bydelsnummer']: 'string',
-	[bostedPath + '.kommunenummer']: 'string',
-	[bostedPath + '.historiskPostnummer']: 'string',
-	[bostedPath + '.historiskBydelsnummer']: 'string',
-	[bostedPath + '.historiskKommunenummer']: 'string',
-	[utlandPath]: 'string',
-	[kontaktPath]: 'string',
-	[oppholdPath]: 'string',
-}
+export const AdresserPaths = Object.values(paths)

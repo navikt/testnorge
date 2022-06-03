@@ -48,9 +48,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
             if (!availEnvironments.isEmpty()) {
 
-                if (!isOpprettEndre) {
-                    arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
-                }
+                arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
                 List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
