@@ -80,6 +80,11 @@ const invalidAlderTom = (inntektTom, values) => {
 		if (inntektTom >= foedtEtterDate.getFullYear() + 69) {
 			return true
 		}
+	} else if (!_isNil(foedtFoer)) {
+		const foedtFoerDate = new Date(foedtFoer)
+		if (foedtFoerDate.getFullYear() + 69 <= inntektTom) {
+			return true
+		}
 	}
 	return false
 }
