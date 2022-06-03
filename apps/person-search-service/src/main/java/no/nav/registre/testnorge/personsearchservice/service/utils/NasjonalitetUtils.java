@@ -5,7 +5,10 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.NasjonalitetSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
@@ -101,7 +104,8 @@ public class NasjonalitetUtils {
     private static void addFraflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
         Optional.ofNullable(search.getFraflyttingsland())
                 .ifPresent(value -> {
-                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO);
+                    queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", EU_LANDKODER, "");
+//                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO);
                 });
         Optional.ofNullable(search.getHistoriskFraflyttingsland())
                 .ifPresent(value -> {
@@ -132,7 +136,7 @@ public class NasjonalitetUtils {
                     queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
                     break;
                 case "EU":
-                    queryBuilder.must(nestedTermsQuery(path, field, Collections.singletonList("SWE"), ""));
+                    queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
                     break;
                 case "U-EU":
                     queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
