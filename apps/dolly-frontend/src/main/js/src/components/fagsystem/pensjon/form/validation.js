@@ -39,10 +39,7 @@ const invalidAlderFom = (inntektFom, values) => {
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
 	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
-	if (!_isNil(alder)) {
-		if (inntektFom >= new Date().getFullYear() - alder + 69) {
-			return true
-		}
+	if (!_isNil(alder) && alder !== '') {
 		if (new Date().getFullYear() - alder + 18 > inntektFom) {
 			return true
 		}
@@ -72,9 +69,15 @@ const invalidAlderTom = (inntektTom, values) => {
 	const importPersoner = values.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
-
+	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
 	if (!_isNil(alder)) {
 		if (inntektTom >= new Date().getFullYear() - alder + 69) {
+			return true
+		}
+	} else if (!_isNil(foedtEtter)) {
+		const foedtEtterDate = new Date(foedtEtter)
+		if (inntektTom >= foedtEtterDate.getFullYear() + 69) {
 			return true
 		}
 	}
@@ -117,8 +120,7 @@ const validFomDateTest = (val) => {
 
 		if (invalidAlderFom(inntektFom, values)) {
 			return this.createError({
-				message:
-					'F.o.m kan tidligst være året personen fyller 18 år og senest året personen fyller 69',
+				message: 'F.o.m kan tidligst være året personen fyller 18 år',
 			})
 		}
 
