@@ -32,7 +32,7 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	return alder
 }
 
-const invalidAlder = (inntektFom, values) => {
+const invalidAlderFom = (inntektFom, values) => {
 	const personFoerLeggTil = values.personFoerLeggTil
 	const importPersoner = values.importPersoner
 
@@ -40,6 +40,9 @@ const invalidAlder = (inntektFom, values) => {
 	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
 	if (!_isNil(alder)) {
+		if (inntektFom >= new Date().getFullYear() - alder + 69) {
+			return true
+		}
 		if (new Date().getFullYear() - alder + 18 > inntektFom) {
 			return true
 		}
@@ -60,6 +63,20 @@ const invalidAlder = (inntektFom, values) => {
 		}
 	} else if (new Date().getFullYear() - 12 > inntektFom) {
 		return true
+	}
+	return false
+}
+
+const invalidAlderTom = (inntektTom, values) => {
+	const personFoerLeggTil = values.personFoerLeggTil
+	const importPersoner = values.importPersoner
+
+	const alder = getAlder(values, personFoerLeggTil, importPersoner)
+
+	if (!_isNil(alder)) {
+		if (inntektTom >= new Date().getFullYear() - alder + 69) {
+			return true
+		}
 	}
 	return false
 }
@@ -98,8 +115,11 @@ const validFomDateTest = (val) => {
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
 
-		if (invalidAlder(inntektFom, values)) {
-			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 18 år' })
+		if (invalidAlderFom(inntektFom, values)) {
+			return this.createError({
+				message:
+					'F.o.m kan tidligst være året personen fyller 18 år og senest året personen fyller 69',
+			})
 		}
 
 		let inntektTom = _get(values, `${path}.tomAar`)
@@ -118,6 +138,12 @@ const validTomDateTest = (val) => {
 
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
+
+		if (invalidAlderTom(inntektTom, values)) {
+			return this.createError({
+				message: 'T.o.m kan ikke være etter året personen fyller 69',
+			})
+		}
 
 		if (invalidDoedsdato(inntektTom, values)) {
 			return this.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
