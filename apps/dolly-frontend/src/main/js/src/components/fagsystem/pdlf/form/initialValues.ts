@@ -140,8 +140,8 @@ export const initialStatsborgerskap = {
 }
 
 export const initialTilrettelagtKommunikasjon = {
-	spraakForTaletolk: '',
-	spraakForTegnspraakTolk: '',
+	spraakForTaletolk: null as string,
+	spraakForTegnspraakTolk: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
