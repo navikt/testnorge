@@ -6,7 +6,7 @@ import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
 import { logoutBruker } from '~/components/utlogging/Utlogging'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -58,7 +58,7 @@ export default () => {
 	}
 
 	if (sessionUpdated) {
-		return navigate('/')
+		return <Navigate to={'/'} />
 	}
 
 	return (
