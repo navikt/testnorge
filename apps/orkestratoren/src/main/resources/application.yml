@@ -35,3 +35,20 @@ consumers:
     url: https://testnorge-skd.nais.preprod.local/api
   testnorge-tp:
     url: https://testnorge-tp.nais.preprod.local/api
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

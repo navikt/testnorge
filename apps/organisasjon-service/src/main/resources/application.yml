@@ -17,10 +17,26 @@ spring:
 
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-
 consumers:
   testnav-ereg-proxy:
     url: https://testnav-ereg-proxy.dev-fss-pub.nais.io
     name: testnav-ereg-proxy
     cluster: dev-fss
     namespace: dolly
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
