@@ -70,7 +70,7 @@ export const useOrganisasjoner = (organisasjoner: string[]) => {
 	}
 }
 
-export const useOrganisasjonBestilling = (brukerId: string, autoRefresh: boolean = false) => {
+export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -95,10 +95,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh: boolean
 	}
 }
 
-export const useOrganisasjonBestillingStatus = (
-	bestillingId: number,
-	autoRefresh: boolean = false
-) => {
+export const useOrganisasjonBestillingStatus = (bestillingId: number, autoRefresh = false) => {
 	if (!bestillingId) {
 		return {
 			loading: false,

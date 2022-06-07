@@ -17,7 +17,9 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 
 	const { maler, loading } = useDollyMaler()
 
-	if (loading) return <Loading label="Loading" />
+	if (loading) {
+		return <Loading label="Loading" />
+	}
 
 	// @ts-ignore
 	const egneMaler = maler[brukernavn] || []
@@ -25,7 +27,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 	const erUnderRedigering = (id: string) => underRedigering.includes(id)
 
 	const avbrytRedigering = (id: string) => {
-		setUnderRedigering((underRedigering) => underRedigering.filter((number) => number !== id))
+		setUnderRedigering((erUnderRedigering) => erUnderRedigering.filter((number) => number !== id))
 	}
 
 	const columns = [

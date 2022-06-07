@@ -26,11 +26,13 @@ export default ({ setValgtGruppe, valgtGruppe }: EksisterendeGruppe) => {
 	const gruppeOptions = sortedGruppeliste.map((gruppe: Gruppe) => {
 		return {
 			value: gruppe.id,
-			label: gruppe.id + ' - ' + gruppe.navn,
+			label: `${gruppe.id} - ${gruppe.navn}`,
 		}
 	})
 
-	if (loading) return <Loading label="Laster grupper" />
+	if (loading) {
+		return <Loading label="Laster grupper" />
+	}
 
 	return (
 		<DollySelect

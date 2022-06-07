@@ -26,7 +26,9 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
 	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
 
-	if (loading) return <Loading label="Laster maler..." />
+	if (loading) {
+		return <Loading label="Laster maler..." />
+	}
 
 	const toggleValues = [
 		{

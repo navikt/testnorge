@@ -42,10 +42,8 @@ export const _getEnvironmentsSortedByType = (envArray: any[]) => {
 				return 0
 			})
 
-		sorterteEnvs.map((current: any, idx: string | number) => (envs[idx].id = sorterteEnvs[idx]))
-		sorterteEnvs.map(
-			(current: any, idx: string | number) => (envs[idx].label = sorterteEnvs[idx].toUpperCase())
-		)
+		sorterteEnvs.map((idx: number) => (envs[idx].id = sorterteEnvs[idx]))
+		sorterteEnvs.map((idx: number) => (envs[idx].label = sorterteEnvs[idx].toUpperCase()))
 	})
 	return sortedByType
 }

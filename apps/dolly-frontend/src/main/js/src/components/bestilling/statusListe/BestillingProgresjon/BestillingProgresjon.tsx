@@ -65,6 +65,18 @@ export const BestillingProgresjon = ({
 		}
 	}
 
+	function getBestillingStatusText(erSykemelding: boolean) {
+		if (erSykemelding) {
+			return 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
+		} else {
+			return erOrganisasjon
+				? `AKTIV BESTILLING (${
+						orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'
+				  })`
+				: 'AKTIV BESTILLING'
+		}
+	}
+
 	const calculateStatus = () => {
 		const total = erOrganisasjon ? 1 : bestilling.antallIdenter
 		const sykemelding =
@@ -76,23 +88,20 @@ export const BestillingProgresjon = ({
 		let text = `Opprettet ${antallLevert} av ${total}`
 
 		// Indikerer progress hvis ingenting har skjedd enda
-		if (percent === 0) percent += 10
+		if (percent === 0) {
+			percent += 10
+		}
 
-		if (antallLevert === total) text = `Ferdigstiller bestilling`
-
-		const aktivBestilling = sykemelding
-			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
-			: erOrganisasjon
-			? `AKTIV BESTILLING (${
-					orgStatus ? orgStatus : 'Bestillingen tar opptil flere minutter per valgte miljø'
-			  })`
-			: 'AKTIV BESTILLING'
-		const title = percent === 100 ? 'FERDIG' : aktivBestilling
+		if (antallLevert === total) {
+			text = `Ferdigstiller bestilling`
+		}
+		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
+		const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
 
 		return {
-			percent,
-			title,
-			text,
+			percentFinished: percent,
+			tittel: title,
+			description: text,
 		}
 	}
 
@@ -103,18 +112,18 @@ export const BestillingProgresjon = ({
 		)
 	}
 
-	const { percent, title, text } = calculateStatus()
+	const { percentFinished, tittel, description } = calculateStatus()
 
 	return (
 		<Fragment>
 			<div className="flexbox--space">
 				<h5>
-					<Loading onlySpinner /> {title}
+					<Loading onlySpinner /> {tittel}
 				</h5>
-				<span>{text}</span>
+				<span>{description}</span>
 			</div>
 			<div>
-				<Line percent={percent} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
+				<Line percent={percentFinished} strokeWidth={0.5} trailWidth={0.5} strokeColor="#254b6d" />
 			</div>
 			{timedOut && (
 				<div className="cancel-container">

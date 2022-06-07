@@ -12,9 +12,13 @@ const FagsystemStatus = ({ bestilling }: Miljostatus) => {
 	}
 
 	const iconType = (statuser: Status[], feil: string) => {
-		if (feil) return IconTypes.feil
+		if (feil) {
+			return IconTypes.feil
+		}
 		// Alle er OK
-		if (statuser.every((status) => status.melding === 'OK')) return IconTypes.suksess
+		if (statuser.every((status) => status.melding === 'OK')) {
+			return IconTypes.suksess
+		}
 		// Denne statusmeldingen gir kun avvik
 		else if (
 			statuser.some(
@@ -23,8 +27,9 @@ const FagsystemStatus = ({ bestilling }: Miljostatus) => {
 					status?.melding?.includes('Tidsavbrudd') ||
 					status?.melding?.includes('tidsavbrudd')
 			)
-		)
+		) {
 			return IconTypes.avvik
+		}
 		// Avvik eller Error
 		return statuser.some((status) => status?.melding === 'OK') ? IconTypes.avvik : IconTypes.feil
 	}

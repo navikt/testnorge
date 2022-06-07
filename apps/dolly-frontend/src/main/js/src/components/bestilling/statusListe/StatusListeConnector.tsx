@@ -12,7 +12,7 @@ const mapStateToProps = (state: RootStateOrAny) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		cancelBestilling: (bestillingId: number, erOrganisasjon: boolean = false) =>
+		cancelBestilling: (bestillingId: number, erOrganisasjon = false) =>
 			dispatch(cancelBestilling(bestillingId, erOrganisasjon)),
 	}
 }

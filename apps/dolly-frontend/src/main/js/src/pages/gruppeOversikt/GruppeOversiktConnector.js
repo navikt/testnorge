@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import GruppeOversikt from './GruppeOversikt'
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state) => ({
 	searchActive: Boolean(state.search),
 	sidetall: state.finnPerson.sidetall,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,

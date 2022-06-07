@@ -14,7 +14,7 @@ type Bestillingsstatus = {
 	gruppeId: number
 }
 
-export const useBestillingerGruppe = (gruppeId: number, autoRefresh: boolean = false) => {
+export const useBestillingerGruppe = (gruppeId: number, autoRefresh = false) => {
 	if (!gruppeId) {
 		return {
 			loading: false,

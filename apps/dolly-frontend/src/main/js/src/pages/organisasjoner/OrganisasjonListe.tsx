@@ -45,8 +45,12 @@ export default function OrganisasjonListe({
 		}[],
 		searchStr: string
 	) => {
-		if (!items) return []
-		if (!searchStr) return items
+		if (!items) {
+			return []
+		}
+		if (!searchStr) {
+			return items
+		}
 
 		const query = searchStr.toLowerCase()
 		return items.filter((item) =>
@@ -58,41 +62,52 @@ export default function OrganisasjonListe({
 		bestillingArray: Array<EnhetBestilling>,
 		bestillingId: string | number
 	) => {
-		if (!bestillingArray) return null
+		if (!bestillingArray) {
+			return null
+		}
 		let orgStatus = 'Ferdig'
 		const bestilling = bestillingArray.find((obj) => {
 			return obj.id === bestillingId
 		})
-		if (!bestilling?.status || bestilling.feil) orgStatus = 'Feilet'
+		if (!bestilling?.status || bestilling.feil) {
+			orgStatus = 'Feilet'
+		}
 		bestilling?.status?.[0].statuser?.forEach((status) => {
-			if (status?.melding !== 'OK') orgStatus = 'Avvik'
+			if (status?.melding !== 'OK') {
+				orgStatus = 'Avvik'
+			}
 		})
 		return orgStatus
 	}
 
 	const getBestillingIdFromOrgnummer = (
-		bestillinger: Array<EnhetBestilling>,
+		bestillingListe: Array<EnhetBestilling>,
 		organisasjonsnummer: string
 	) =>
-		bestillinger
+		bestillingListe
 			.filter((org) => org.organisasjonNummer === organisasjonsnummer)
 			.map((org) => org.id)
 			.sort(function (a: number, b: number) {
 				return b - a
 			})
 
-	const mergeList = (organisasjoner: Array<Organisasjon>, bestillinger: Array<EnhetBestilling>) => {
-		if (_isEmpty(organisasjoner)) return null
+	const mergeList = (orgListe: Array<Organisasjon>, bestillingListe: Array<EnhetBestilling>) => {
+		if (_isEmpty(orgListe)) {
+			return null
+		}
 
-		return organisasjoner.map((orgInfo) => {
-			const bestillingId = getBestillingIdFromOrgnummer(bestillinger, orgInfo.organisasjonsnummer)
+		return orgListe.map((orgInfo) => {
+			const bestillingId = getBestillingIdFromOrgnummer(
+				bestillingListe,
+				orgInfo.organisasjonsnummer
+			)
 			return {
 				orgInfo,
 				id: orgInfo.id,
 				organisasjonsnummer: orgInfo.organisasjonsnummer,
 				organisasjonsnavn: orgInfo.organisasjonsnavn,
 				enhetstype: orgInfo.enhetstype,
-				status: hentOrgStatus(bestillinger, bestillingId[0]),
+				status: hentOrgStatus(bestillingListe, bestillingId[0]),
 				bestillingId: bestillingId,
 			}
 		})

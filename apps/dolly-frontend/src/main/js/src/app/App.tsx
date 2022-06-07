@@ -39,9 +39,13 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 		logoutBruker(navigate, feilmelding)
 	}
 
-	if (criticalError) logout(criticalError.stack)
+	if (criticalError) {
+		logout(criticalError.stack)
+	}
 
-	if (loading) return <Loading label="Laster Dolly" fullpage />
+	if (loading) {
+		return <Loading label="Laster Dolly" fullpage />
+	}
 
 	return (
 		<React.Fragment>
