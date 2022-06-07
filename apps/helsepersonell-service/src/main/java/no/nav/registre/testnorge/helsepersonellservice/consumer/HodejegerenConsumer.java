@@ -1,20 +1,20 @@
 package no.nav.registre.testnorge.helsepersonellservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.helsepersonellservice.config.credentials.HodejegerenServerProperties;
+import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetAlleIdenterCommand;
+import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetPersondataCommand;
+import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import no.nav.registre.testnorge.helsepersonellservice.config.credentials.HodejegerenServerProperties;
-import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetAlleIdenterCommand;
-import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetPersondataCommand;
-import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -29,11 +29,15 @@ public class HodejegerenConsumer {
     public HodejegerenConsumer(
             TokenExchange tokenExchange,
             HodejegerenServerProperties hodejegerenServerProperties,
-            @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId
-    ) {
+            @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.hodejegerenServerProperties = hodejegerenServerProperties;
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient.builder().baseUrl(hodejegerenServerProperties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(hodejegerenServerProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.executor = Executors.newFixedThreadPool(hodejegerenServerProperties.getThreads());
         this.helsepersonellAvspillingsgruppeId = helsepersonellAvspillingsgruppeId;
     }

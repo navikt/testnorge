@@ -1,22 +1,29 @@
 package no.nav.registre.testnorge.personexportapi.consumer;
 
-import static java.lang.String.format;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.personexportapi.consumer.command.GetTpsfGrupperCommand;
 import no.nav.registre.testnorge.personexportapi.consumer.command.GetTpsfMeldingerFromPageCommand;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.GruppeDTO;
 import no.nav.registre.testnorge.personexportapi.domain.Person;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Slf4j
 @Component
@@ -30,11 +37,15 @@ public class TpsfConsumer {
             @Value("${consumers.tps-forvalter.username}") String username,
             @Value("${consumers.tps-forvalter.password}") String password,
             @Value("${consumers.tps-forvalter.url}") String baseUrl,
-            @Value("${consumers.tps-forvalter.threads}") Integer threads
-    ) {
+            @Value("${consumers.tps-forvalter.threads}") Integer threads,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.username = username;
         this.password = password;
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.executorService = Executors.newFixedThreadPool(threads);
     }
 
@@ -64,10 +75,11 @@ public class TpsfConsumer {
             return meldinger
                     .stream()
                     .filter(value -> value.isFoedsel() || value.isInnvandring())
-                    .map(endringsmelding -> new Person(endringsmelding, format("%d/%d",page+1,numberOfPages)))
+                    .map(endringsmelding -> new Person(endringsmelding, format("%d/%d", page + 1, numberOfPages)))
                     .collect(Collectors.toList());
         });
     }
+
     public List<Person> getPersoner(String avspillingsgruppe) {
         int numberOfPages = getNumberOfPages(avspillingsgruppe);
         log.info("Henter alle personer fra avspillingsgruppeID {} med {} antall sider.", avspillingsgruppe, numberOfPages);
@@ -85,7 +97,7 @@ public class TpsfConsumer {
                 personer.addAll(future.get(1, TimeUnit.MINUTES));
 
             } catch (TimeoutException e) {
-                 log.error("Future task timeout exception {}", future, e);
+                log.error("Future task timeout exception {}", future, e);
             } catch (ExecutionException e) {
                 log.error("Execution exception", e);
             } catch (InterruptedException e) {

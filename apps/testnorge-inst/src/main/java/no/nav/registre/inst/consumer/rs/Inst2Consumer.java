@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriTemplate;
 
@@ -29,12 +30,13 @@ public class Inst2Consumer {
 
     public Inst2Consumer(
             @Value("${inst2.web.api.url}") String inst2WebApiServerUrl,
-            @Value("${inst2.new.api.url}") String inst2NewServerUrl
-    ) {
+            @Value("${inst2.new.api.url}") String inst2NewServerUrl,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.inst2WebApiServerUrl = new UriTemplate(inst2WebApiServerUrl);
         this.inst2NewServerUrl = inst2NewServerUrl;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = WebClient.builder()
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

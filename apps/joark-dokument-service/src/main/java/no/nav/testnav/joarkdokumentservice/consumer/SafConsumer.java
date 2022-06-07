@@ -1,10 +1,6 @@
 package no.nav.testnav.joarkdokumentservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServiceProperties;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
@@ -13,6 +9,10 @@ import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
@@ -23,15 +23,18 @@ public class SafConsumer {
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(
                         ExchangeStrategies.builder()
                                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
-                .baseUrl(properties.getUrl()).build();
+                .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public Journalpost getJournalpost(Integer journalpostId, String miljo) {

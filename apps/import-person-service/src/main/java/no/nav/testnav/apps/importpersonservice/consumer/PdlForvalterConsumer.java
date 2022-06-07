@@ -1,11 +1,5 @@
 package no.nav.testnav.apps.importpersonservice.consumer;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-
-import java.util.stream.Collectors;
-
 import no.nav.testnav.apps.importpersonservice.consumer.command.OppdaterPersonCommand;
 import no.nav.testnav.apps.importpersonservice.consumer.command.SendPersonTilPdlCommand;
 import no.nav.testnav.apps.importpersonservice.consumer.request.OppdaterPersonRequest;
@@ -14,6 +8,12 @@ import no.nav.testnav.apps.importpersonservice.domain.PersonList;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import java.util.stream.Collectors;
 
 @Component
 public class PdlForvalterConsumer {
@@ -23,14 +23,16 @@ public class PdlForvalterConsumer {
 
     public PdlForvalterConsumer(
             TestnavPdlForvalterProperties serverProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
 
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

@@ -6,6 +6,7 @@ import no.nav.registre.syntrest.consumer.credentials.SyntMeldekortProperties;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,8 +22,9 @@ public class SyntMeldekortConsumer {
 
     public SyntMeldekortConsumer(
             SyntMeldekortProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
@@ -32,6 +34,7 @@ public class SyntMeldekortConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
