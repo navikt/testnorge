@@ -3,15 +3,12 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
-import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import _get from 'lodash/get'
-import _cloneDeep from 'lodash/cloneDeep'
 import {
 	initialKjoenn,
 	initialNavn,
 	initialPersonstatus,
 } from '~/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarPersondetaljerConnector'
 
 const getCurrentPersonstatus = (data) => {
@@ -27,27 +24,13 @@ const getCurrentPersonstatus = (data) => {
 	return null
 }
 
-export const Persondetaljer = ({
-	data,
-	tpsMessagingData,
-	tpsMessagingLoading = false,
-	visTittel = true,
-	tmpPersoner,
-	ident,
-	erPdlVisning = false,
-}) => {
+export const Persondetaljer = ({ data, tmpPersoner, ident, erPdlVisning = false }) => {
 	if (!data) {
 		return null
 	}
 	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
-	// console.log('tpsMessagingData: ', tpsMessagingData) //TODO - SLETT MEG
-	const initialPersondetaljer = {
-		navn: [initialNavn],
-		kjoenn: [initialKjoenn],
-		folkeregisterpersonstatus: [initialPersonstatus],
-	}
 
-	const PersondetaljerLes = ({ person, idx }) => {
+	const PersondetaljerLes = ({ person }) => {
 		const personNavn = person?.navn?.[0]
 		const personKjoenn = person?.kjoenn?.[0]
 		const personstatus = getCurrentPersonstatus(redigertPerson || person)
@@ -63,38 +46,24 @@ export const Persondetaljer = ({
 					title="Personstatus"
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
+				{/*//TODO: Vis TpsMessaging*/}
 				{/*<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />*/}
 			</div>
 		)
 	}
 
-	const PersondetaljerVisning = ({ person, idx }) => {
-		// console.log('data: ', data) //TODO - SLETT MEG
-		// const initPerson = Object.assign(_cloneDeep(initialPersondetaljer), data)
+	const PersondetaljerVisning = ({ person }) => {
 		const initPerson = {
 			navn: [data?.navn?.[0] || initialNavn],
 			kjoenn: [data?.kjoenn?.[0] || initialKjoenn],
 			folkeregisterpersonstatus: [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus],
 		}
-		// console.log('initPerson: ', initPerson) //TODO - SLETT MEG
-		// console.log('data: ', data) //TODO - SLETT MEG
-		// const initialValues = { adressebeskyttelse: initAdressebeskyttelse }
 
 		const redigertPersonPdlf = _get(tmpPersoner, `${ident}.person`)
-		// const slettetAdressebeskyttelsePdlf =
-		// 	tmpPersoner?.hasOwnProperty(ident) && !redigertAdressebeskyttelsePdlf
-		// if (slettetAdressebeskyttelsePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
-		// console.log('redigertPersonPdlf: ', redigertPersonPdlf) //TODO - SLETT MEG
 
 		const personValues = redigertPersonPdlf ? redigertPersonPdlf : person
 		const redigertPersonValues = redigertPersonPdlf
-			? // ? Object.assign(_cloneDeep(initialPersondetaljer), redigertPersonPdlf)
-			  // {
-			  // 	navn: [redigertPersonPdlf?.navn?.[0]] || null,
-			  // 	kjoenn: [redigertPersonPdlf?.kjoenn?.[0]] || null,
-			  // 	folkeregisterpersonstatus: [redigertPersonPdlf?.folkeregisterPersonstatus?.[0]] || null,
-			  // }
-			  {
+			? {
 					navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : initialNavn],
 					kjoenn: [redigertPersonPdlf?.kjoenn ? redigertPersonPdlf?.kjoenn?.[0] : initialKjoenn],
 					folkeregisterpersonstatus: [
@@ -104,12 +73,12 @@ export const Persondetaljer = ({
 					],
 			  }
 			: null
-		// console.log('erPdlVisning: ', erPdlVisning) //TODO - SLETT MEG
+
 		return erPdlVisning ? (
-			<PersondetaljerLes person={person} idx={0} />
+			<PersondetaljerLes person={person} />
 		) : (
 			<VisningRedigerbarPersondetaljerConnector
-				dataVisning={<PersondetaljerLes person={personValues} idx={0} />}
+				dataVisning={<PersondetaljerLes person={personValues} />}
 				initialValues={initPerson}
 				redigertAttributt={redigertPersonValues}
 				path="person"
@@ -118,13 +87,12 @@ export const Persondetaljer = ({
 		)
 	}
 
-	// console.log('data: ', data) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />
 				<div className="person-visning_content">
-					<PersondetaljerVisning person={data} idx={0} />
+					<PersondetaljerVisning person={data} />
 				</div>
 			</div>
 		</ErrorBoundary>

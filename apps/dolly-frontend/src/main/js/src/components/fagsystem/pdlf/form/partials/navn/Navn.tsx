@@ -9,7 +9,7 @@ import _get from 'lodash/get'
 
 export const NavnForm = ({ formikBag, path }) => {
 	if (!_get(formikBag?.values, path)) return null
-	console.log('formikBag: ', formikBag) //TODO - SLETT MEG
+
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
 	const mellomnavnOptions = SelectOptionsOppslag.formatOptions('mellomnavn', navnInfo)

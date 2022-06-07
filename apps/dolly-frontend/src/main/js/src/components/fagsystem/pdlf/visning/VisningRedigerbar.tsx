@@ -22,7 +22,6 @@ import {
 import { ifPresent } from '~/utils/YupValidations'
 import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
 import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
-import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -41,7 +40,6 @@ enum Modus {
 }
 
 enum Attributt {
-	Persondetaljer = 'person',
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
@@ -237,8 +235,6 @@ export const VisningRedigerbar = ({
 					validationSchema={validationSchema}
 				>
 					{(formikBag) => {
-						// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-						// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
 						return (
 							<>
 								<FieldArrayEdit>

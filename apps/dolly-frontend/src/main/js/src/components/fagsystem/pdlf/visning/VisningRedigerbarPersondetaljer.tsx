@@ -1,8 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
-import { Formik, FormikProps } from 'formik'
-import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
+import { Formik } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
@@ -11,8 +10,6 @@ import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
-import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
-import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import {
 	doedsfall,
 	innflytting,
@@ -20,11 +17,8 @@ import {
 	utflytting,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
-import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
-import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
-import { Checkbox, DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import _has from 'lodash/has'
+import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
 
 type VisningTypes = {
@@ -85,16 +79,12 @@ export const VisningRedigerbarPersondetaljer = ({
 	dataVisning,
 	initialValues,
 	redigertAttributt = null,
-	path,
 	ident,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-
-	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-	// console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -120,9 +110,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						? _get(redigertAttributt, `${attr}[0]`)
 						: _get(initialValues, `${attr}[0]`)
 					const itemData = _get(data, `${attr}[0]`)
-					console.log('initialData: ', initialData) //TODO - SLETT MEG
-					console.log('itemData: ', itemData) //TODO - SLETT MEG
-					console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
+
 					if (!isEqual(itemData, initialData)) {
 						await PdlforvalterApi.putAttributt(ident, attr, itemData?.id || 0, itemData).catch(
 							(error) => {
@@ -183,6 +171,7 @@ export const VisningRedigerbarPersondetaljer = ({
 		return slett()
 	}, [])
 
+	// TODO: FIX
 	const validationSchema = Yup.object().shape(
 		{
 			doedsfall: ifPresent('doedsfall', doedsfall),
@@ -306,13 +295,11 @@ export const VisningRedigerbarPersondetaljer = ({
 					validationSchema={validationSchema}
 				>
 					{(formikBag) => {
-						// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-						// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
 						return (
 							<>
 								<FieldArrayEdit>
 									<div className="flexbox--flex-wrap">
-										<PersondetaljerSamlet path={path} formikBag={formikBag} />
+										<PersondetaljerSamlet formikBag={formikBag} />
 									</div>
 									<Knappegruppe>
 										<NavButton
