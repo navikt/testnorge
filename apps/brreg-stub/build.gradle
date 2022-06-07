@@ -73,7 +73,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'

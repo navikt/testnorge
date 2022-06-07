@@ -54,7 +54,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
     implementation 'org.hibernate.validator:hibernate-validator'

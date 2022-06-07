@@ -48,13 +48,14 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     runtimeOnly 'com.sun.xml.bind:jaxb-ri:2.3.5'
 
