@@ -25,7 +25,6 @@ function getCookie(cookieName: string) {
 
 export const logoutBruker = (navigate: Function, feilmelding?: string) => {
 	navigate('/logout' + (feilmelding ? '?state=' + feilmelding : ''))
-	window.location.reload()
 }
 
 const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000
