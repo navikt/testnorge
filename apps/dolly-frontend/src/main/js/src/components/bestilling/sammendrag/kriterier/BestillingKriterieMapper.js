@@ -10,6 +10,7 @@ import {
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -76,11 +77,18 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			header: 'Bestillingsinformasjon',
 			items: [
 				obj(
-					'Antall',
+					'Antall bestilt',
 					bestillingsinformasjon.antallIdenter && bestillingsinformasjon.antallIdenter.toString()
 				),
+				obj(
+					'Antall levert',
+					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString()
+				),
 				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
-				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
+				obj(
+					'Sist oppdatert',
+					Formatters.formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)
+				),
 				obj(
 					'Gjenopprettet fra',
 					bestillingsinformasjon.opprettetFraId
@@ -192,11 +200,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				kjoenn,
 				foedtEtter,
 				foedtFoer,
+				foedselsdato,
 				alder,
 				statsborgerskapLandkode,
+				statsborgerskap,
 				gradering,
 				syntetisk,
 				nyttNavn,
+				navn,
 			} = _get(personData, path)
 
 			return [
@@ -205,11 +216,19 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Kjønn', kjoenn),
 					obj('Født etter', Formatters.formatDate(foedtEtter)),
 					obj('Født før', Formatters.formatDate(foedtFoer)),
+					obj('Fødselsdato', Formatters.formatDate(foedselsdato)),
 					obj('Alder', alder),
-					obj('Statsborgerskap', statsborgerskapLandkode, AdresseKodeverk.StatsborgerskapLand),
+					obj(
+						'Statsborgerskap',
+						statsborgerskapLandkode || statsborgerskap,
+						AdresseKodeverk.StatsborgerskapLand
+					),
 					obj('Gradering', Formatters.showLabel('gradering', gradering)),
 					obj('Er syntetisk', syntetisk && 'JA'),
 					obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
+					obj('Fornavn', navn?.fornavn),
+					obj('Mellomnavn', navn?.mellomnavn),
+					obj('Etternavn', navn?.etternavn),
 				]),
 			]
 		}
@@ -349,6 +368,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Husnummer', adresseData.husnummer),
 				obj('Husbokstav', adresseData.husbokstav),
 				obj('Postnummer', adresseData.postnummer),
+				obj('Bydelsnummer', adresseData.bydelsnummer),
 				obj('Kommunenummer', adresseData.kommunenummer),
 			]
 		}
@@ -690,6 +710,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Person relatert til', item.relatertPerson),
 						...deltBosted(item, 'deltBosted'),
 						...personRelatertTil(item, 'nyRelatertPerson'),
+						...personRelatertTil(item, 'relatertPersonUtenFolkeregisteridentifikator'),
 					]
 				}),
 			}
@@ -1582,10 +1603,37 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		if (pensjonKriterier.tp) {
+			const hentTpOrdningNavn = (tpnr) => {
+				if (Options('tpOrdninger').length) {
+					return Options('tpOrdninger').find((ordning) => ordning.value === tpnr)?.label
+				}
+				return tpnr
+			}
+
 			const pensjonforvalterTp = {
 				header: 'Tjenestepensjon (TP)',
-				items: [obj('Ordning', pensjonKriterier.tp.ordning)],
+				itemRows: [],
 			}
+
+			pensjonKriterier.tp.forEach((ordning) => {
+				const ordningNavn = hentTpOrdningNavn(ordning.ordning)
+
+				if (ordning.ytelser?.length) {
+					ordning.ytelser.forEach((ytelse) => {
+						pensjonforvalterTp.itemRows.push([
+							{ numberHeader: `${ordningNavn}` },
+							obj('Ytelse', ytelse.type),
+							obj('datoInnmeldtYtelseFom', Formatters.formatDate(ytelse.datoInnmeldtYtelseFom)),
+							obj('datoYtelseIverksattFom', Formatters.formatDate(ytelse.datoYtelseIverksattFom)),
+							obj('datoYtelseIverksattTom', Formatters.formatDate(ytelse.datoYtelseIverksattTom)),
+						])
+					})
+				} else {
+					pensjonforvalterTp.itemRows.push([
+						{ numberHeader: `${ordningNavn} bare forhold (uten ytelser)` },
+					])
+				}
+			})
 
 			data.push(pensjonforvalterTp)
 		}

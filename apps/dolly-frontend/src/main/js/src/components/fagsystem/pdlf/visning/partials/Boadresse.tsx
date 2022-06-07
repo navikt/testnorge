@@ -6,29 +6,75 @@ import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadre
 import { Matrikkeladresse } from '~/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { UkjentBosted } from '~/components/fagsystem/pdlf/visning/partials/UkjentBosted'
+import _cloneDeep from 'lodash/cloneDeep'
+import { initialBostedsadresse } from '~/components/fagsystem/pdlf/form/initialValues'
+import _get from 'lodash/get'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import { BostedData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
-type Data = {
+type BoadresseTypes = {
 	data: Array<any>
+	tmpPersoner?: Array<BostedData>
+	ident?: string
+	identtype?: string
+	erPdlVisning?: boolean
 }
 
-type AdresseProps = {
-	adresse: any
+type BoadresseVisningTypes = {
+	boadresseData: any
 	idx: number
 }
 
-export const Adresse = ({ adresse, idx }: AdresseProps) => {
+export const Adresse = ({ boadresseData, idx }: BoadresseVisningTypes) => {
+	if (!boadresseData) return null
 	return (
 		<>
-			{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}
-			{adresse.matrikkeladresse && <Matrikkeladresse adresse={adresse} idx={idx} />}
-			{adresse.utenlandskAdresse && <UtenlandskAdresse adresse={adresse} idx={idx} />}
-			{adresse.ukjentBosted && <UkjentBosted adresse={adresse} idx={idx} />}
+			{boadresseData.vegadresse && <Vegadresse adresse={boadresseData} idx={idx} />}
+			{boadresseData.matrikkeladresse && <Matrikkeladresse adresse={boadresseData} idx={idx} />}
+			{boadresseData.utenlandskAdresse && <UtenlandskAdresse adresse={boadresseData} idx={idx} />}
+			{boadresseData.ukjentBosted && <UkjentBosted adresse={boadresseData} idx={idx} />}
 		</>
 	)
 }
 
-export const Boadresse = ({ data }: Data) => {
+export const Boadresse = ({
+	data,
+	tmpPersoner,
+	ident,
+	identtype,
+	erPdlVisning = false,
+}: BoadresseTypes) => {
 	if (!data || data.length === 0) return null
+
+	const BoadresseVisning = ({ boadresseData, idx }: BoadresseVisningTypes) => {
+		const initBoadresse = Object.assign(_cloneDeep(initialBostedsadresse), data[idx])
+		const initialValues = { bostedsadresse: initBoadresse }
+
+		const redigertBoadressePdlf = _get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
+			(a: BostedData) => a.id === boadresseData.id
+		)
+		const slettetBoadressePdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBoadressePdlf
+		if (slettetBoadressePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+
+		const boadresseValues = redigertBoadressePdlf ? redigertBoadressePdlf : boadresseData
+		const redigertBoadresseValues = redigertBoadressePdlf
+			? {
+					bostedsadresse: Object.assign(_cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
+			  }
+			: null
+		return erPdlVisning ? (
+			<Adresse boadresseData={boadresseData} idx={idx} />
+		) : (
+			<VisningRedigerbarConnector
+				dataVisning={<Adresse boadresseData={boadresseValues} idx={idx} />}
+				initialValues={initialValues}
+				redigertAttributt={redigertBoadresseValues}
+				path="bostedsadresse"
+				ident={ident}
+				identtype={identtype}
+			/>
+		)
+	}
 
 	return (
 		<>
@@ -36,7 +82,7 @@ export const Boadresse = ({ data }: Data) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => <Adresse adresse={adresse} idx={idx} />}
+						{(adresse: any, idx: number) => <BoadresseVisning boadresseData={adresse} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

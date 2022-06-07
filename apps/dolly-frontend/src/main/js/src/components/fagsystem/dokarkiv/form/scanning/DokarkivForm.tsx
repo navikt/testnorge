@@ -55,7 +55,7 @@ enum Kodeverk {
 	NAVSKJEMA = 'NAVSkjema',
 }
 
-const dokarkivAttributt = 'dokarkiv'
+export const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 	const sessionDokumenter = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))

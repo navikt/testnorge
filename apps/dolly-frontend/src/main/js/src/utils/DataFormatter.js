@@ -7,6 +7,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy hh:mm'
+export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy hh:mm:ss'
 
 const Formatters = {}
 
@@ -38,6 +39,13 @@ Formatters.formatDateTime = (date) => {
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
 	return format(date, defaultDateTimeFormat)
+}
+
+Formatters.formatDateTimeWithSeconds = (date) => {
+	if (!date) return date
+	// Parse date if not date
+	if (!isDate(date)) date = new Date(date)
+	return format(date, defaultDateTimeWithSecondsFormat)
 }
 
 // Format string to Date format

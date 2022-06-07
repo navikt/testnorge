@@ -32,7 +32,6 @@ public class PersonArtifactService {
     private final SivilstandService sivilstandService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
-    private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 

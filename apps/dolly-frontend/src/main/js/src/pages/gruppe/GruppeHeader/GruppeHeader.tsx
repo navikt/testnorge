@@ -6,28 +6,53 @@ import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConn
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { EksporterExcel } from '~/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
-import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton.tsx'
+import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton'
 import { Header } from '~/components/ui/header/Header'
 import Formatters from '~/utils/DataFormatter'
 import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/GjenopprettGruppeConnector'
 
 import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
+import { InferProps, Requireable } from 'prop-types'
+import { PopoverOrientering } from 'nav-frontend-popover'
 
-export default function GruppeHeader({
+type GruppeHeaderProps = {
+	gruppe: InferProps<{
+		erLaast: boolean
+		id: Requireable<number>
+		navn: Requireable<string>
+		hensikt: Requireable<string>
+		antallIdenter: Requireable<number>
+		opprettetAv: {}
+		tags: []
+		datoEndret: Date
+		erEierAvGruppe: boolean
+	}>
+	antallFjernet: number
+	laasGruppe: Function
+	isLockingGruppe: boolean
+	deleteGruppe: Function
+	isDeletingGruppe: boolean
+	getGruppeExcelFil: Function
+	isFetchingExcel: boolean
+	isSendingTags: boolean
+	sendTags: Function
+	bestillingStatuser: any
+}
+
+const GruppeHeader = ({
 	gruppe,
-	identArray,
-	isDeletingGruppe,
-	deleteGruppe,
-	slettedeIdenter,
-	laasGruppe,
-	sendTags,
-	isSendingTags,
-	isLockingGruppe,
 	bestillingStatuser,
+	deleteGruppe,
+	isDeletingGruppe,
 	getGruppeExcelFil,
 	isFetchingExcel,
-}) {
+	laasGruppe,
+	isLockingGruppe,
+	sendTags,
+	isSendingTags,
+	antallFjernet,
+}: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 
@@ -36,14 +61,14 @@ export default function GruppeHeader({
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'lockedGroup' : 'group'
-	const antallPersoner = gruppe.antallIdenter - slettedeIdenter?.[0]?.length
+	const antallPersoner = gruppe.antallIdenter - antallFjernet
 
 	return (
 		<Fragment>
 			<div className="page-header flexbox--align-center">
 				<h1>{gruppeNavn}</h1>
 				{erLaast && (
-					<Hjelpetekst hjelpetekstFor="Låst gruppe" type="under">
+					<Hjelpetekst hjelpetekstFor="Låst gruppe" type={PopoverOrientering.Under}>
 						Denne gruppen er låst. Låste grupper er velegnet for å dele med eksterne samhandlere
 						fordi de ikke kan endres, og blir heller ikke påvirket av prodlast i samhandlermiljøet
 						(Q1). Kontakt Team Dolly dersom du ønsker å låse opp gruppen.
@@ -60,10 +85,6 @@ export default function GruppeHeader({
 					<Header.TitleValue
 						title="Sist endret"
 						value={Formatters.formatStringDates(gruppe.datoEndret)}
-					/>
-					<Header.TitleValue
-						title="Antall brukt"
-						value={identArray.map((p) => p.ibruk).filter(Boolean).length}
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 					{gruppe.tags && (
@@ -104,12 +125,6 @@ export default function GruppeHeader({
 							action={deleteGruppe}
 							loading={isDeletingGruppe}
 							navigateHome={true}
-							disabled={antallPersoner > 15}
-							title={
-								antallPersoner > 15
-									? 'Sletting av større grupper er midlertidig utilgjengelig i påvente av en mer robust løsning'
-									: null
-							}
 						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
@@ -140,3 +155,4 @@ export default function GruppeHeader({
 		</Fragment>
 	)
 }
+export default GruppeHeader

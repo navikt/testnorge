@@ -1,8 +1,10 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { instAttributt } from '~/components/fagsystem/inst/form/Form'
 
-export const InstitusjonsoppholdPanel = ({ stateModifier }) => {
+export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
 
 	return (
@@ -11,6 +13,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="institusjon"
+			startOpen={harValgtAttributt(formikBag.values, [instAttributt])}
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.instdata} />

@@ -32,7 +32,7 @@ export const initialValues: Inntektsinformasjon = {
 	arbeidsforholdsliste: [],
 }
 
-const inntektstubAttributt = 'inntektstub'
+export const inntektstubAttributt = 'inntektstub'
 const inntektstubPath = 'inntektstub.inntektsinformasjon'
 
 const infotekst =

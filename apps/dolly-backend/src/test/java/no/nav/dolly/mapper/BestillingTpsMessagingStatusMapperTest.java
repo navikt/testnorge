@@ -64,7 +64,7 @@ class BestillingTpsMessagingStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_WITH_ENV);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Spraakkode FEIL: Ingen svarstatus mottatt fra TPS")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Spraakkode ADVARSEL: Status ukjent (tidsavbrudd)")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(1).getMiljo(), is(equalTo("q2")));

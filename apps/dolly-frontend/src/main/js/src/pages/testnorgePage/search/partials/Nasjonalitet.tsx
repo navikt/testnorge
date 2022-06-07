@@ -23,8 +23,4 @@ export const Nasjonalitet = () => (
 	</section>
 )
 
-export const NasjonalitetPaths = {
-	[paths.statsborgerskap]: 'string',
-	[paths.inflyttet]: 'boolean',
-	[paths.utflyttet]: 'boolean',
-}
+export const NasjonalitetPaths = Object.values(paths)

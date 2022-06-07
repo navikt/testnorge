@@ -24,8 +24,13 @@ const options = {
 	],
 }
 
-const identifikasjonPath = 'identifikasjon'
-const kjoennPath = 'kjoenn'
+const paths = {
+	identtype: 'identifikasjon.identtype',
+	adressebeskyttelse: 'identifikasjon.adressebeskyttelse',
+	falsk: 'identifikasjon.falskIdentitet',
+	utenlandsk: 'identifikasjon.utenlandskIdentitet',
+	kjoenn: 'kjoenn',
+}
 
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	formikBag,
@@ -35,31 +40,23 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={'Identifikatortype'}
-				path={`${identifikasjonPath}.identtype`}
+				path={paths.identtype}
 				legend={'Velg identifikatortype'}
 				options={options.identtype}
 			/>
 			<FormikSelect
-				name={`${identifikasjonPath}.adressebeskyttelse`}
+				name={paths.adressebeskyttelse}
 				label="Adressebeskyttelse"
 				options={options.adressebeskyttelse}
 				size="medium"
 			/>
 			<div className="options-title">Identitet</div>
-			<FormikCheckbox
-				name={`${identifikasjonPath}.falskIdentitet`}
-				label="Har falsk identitet"
-				size="medium"
-			/>
-			<FormikCheckbox
-				name={`${identifikasjonPath}.utenlandskIdentitet`}
-				label="Har utenlandsk identitet"
-				size="medium"
-			/>
+			<FormikCheckbox name={paths.falsk} label="Har falsk identitet" size="medium" />
+			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" size="medium" />
 			<RadioGroupOptions
 				formikBag={formikBag}
-				name={kjoennPath}
-				path={kjoennPath}
+				name={paths.kjoenn}
+				path={paths.kjoenn}
 				legend={'Velg kjønn'}
 				options={options.kjoenn}
 			/>
@@ -67,10 +64,4 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	)
 }
 
-export const IdentifikasjonPaths = {
-	[identifikasjonPath + '.falskIdentitet']: 'boolean',
-	[identifikasjonPath + '.utenlandskIdentitet']: 'boolean',
-	[identifikasjonPath + '.identtype']: 'string',
-	[identifikasjonPath + '.adressebeskyttelse']: 'string',
-	[kjoennPath]: 'string',
-}
+export const IdentifikasjonPaths = Object.values(paths)

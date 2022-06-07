@@ -4,8 +4,13 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
 import { actions as orgActions } from '~/ducks/organisasjon'
 import { actions as fasteDataActions } from '~/ducks/fastedata'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { aaregAttributt } from '~/components/fagsystem/aareg/form/Form'
+import { sigrunAttributt } from '~/components/fagsystem/sigrunstub/form/Form'
+import { inntektstubAttributt } from '~/components/fagsystem/inntektstub/form/Form'
+import { inntektsmeldingAttributt } from '~/components/fagsystem/inntektsmelding/form/Form'
 
-export const ArbeidInntektPanel = ({ stateModifier }) => {
+export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -19,6 +24,12 @@ export const ArbeidInntektPanel = ({ stateModifier }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
+			startOpen={harValgtAttributt(formikBag.values, [
+				aaregAttributt,
+				sigrunAttributt,
+				inntektstubAttributt,
+				inntektsmeldingAttributt,
+			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)">
 				<Attributt attr={sm.attrs.aareg} />

@@ -36,6 +36,7 @@ public class RelasjonerUtils {
                     addForeldreansvarQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
+        addManglerSivilstandQuery(queryBuilder, search);
     }
 
     private static void addRelasjonQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
@@ -80,6 +81,16 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value, false));
+                    }
+                });
+    }
+
+    private static void addManglerSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getSivilstand())
+                .flatMap(value -> Optional.ofNullable(value.getManglerSivilstand()))
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.mustNot(nestedExistsQuery(SIVILSTAND_PATH, METADATA_FIELD, true));
                     }
                 });
     }

@@ -61,7 +61,7 @@ public class BrukerServiceTest {
         var identer = Collections.singletonList(fnr1);
         var personer = Collections.singletonList(PersonDTO.builder().ident(fnr1).build());
 
-        when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, null)).thenReturn(personer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, false)).thenReturn(personer);
         when(pdlProxyConsumer.createTags(identer, SYNT_TAGS)).thenReturn(true);
         when(arenaForvalterService
                 .opprettArbeidssoekereUtenVedtak(identer, miljoe))

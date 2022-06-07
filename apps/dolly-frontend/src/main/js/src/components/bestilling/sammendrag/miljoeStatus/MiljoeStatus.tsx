@@ -70,7 +70,7 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 				status.detaljert.forEach((detaljertStatus: Detaljert) => {
 					statusListe.push({
 						...systeminfo,
-						miljo: detaljertStatus.miljo.toUpperCase(),
+						miljo: detaljertStatus.miljo?.toUpperCase(),
 						identer: detaljertStatus.identer,
 					})
 				})

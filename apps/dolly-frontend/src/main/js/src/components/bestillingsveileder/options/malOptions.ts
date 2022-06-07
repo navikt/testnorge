@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 import {
 	BostedData,
-	Kontaktadresse,
-	Oppholdsadresse,
+	KontaktadresseData,
+	OppholdsadresseData,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
 
@@ -31,7 +31,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		initialValuesMal.pdlforvalter = getUpdatedPdlfData(initialValuesMal.pdlforvalter)
 	}
 	if (initialValuesMal.tpsf) {
-		initialValuesMal.tpsf = getUpdatedTpsfData(initialValuesMal.tpsf)
+		initialValuesMal.tpsf = null
 	}
 	if (initialValuesMal.udistub) {
 		initialValuesMal.udistub = getUpdatedUdistubData(initialValuesMal.udistub)
@@ -84,37 +84,6 @@ const getUpdatedPdlfData = (pdlfData: any) => {
 	return newPdlfData
 }
 
-const getUpdatedTpsfData = (tpsfData: any) => {
-	let newTpsfData = Object.assign({}, tpsfData)
-	if (tpsfData.statsborgerskap) {
-		newTpsfData = updateData(newTpsfData, initialValues.statborgerskap)
-	}
-	if (tpsfData.innvandretFraLand) {
-		newTpsfData = updateData(newTpsfData, initialValues.innvandretFra)
-	}
-	if (tpsfData.utvandretTilLand) {
-		newTpsfData = updateData(newTpsfData, initialValues.utvandretTil)
-	}
-	if (tpsfData.relasjoner) {
-		if (tpsfData.relasjoner.barn) {
-			newTpsfData.relasjoner.barn = newTpsfData.relasjoner.barn.map((barn: any) => {
-				if (barn.identtype === 'FDAT') {
-					const newData = updateData(barn, initialValues.barnDoedfoedt)
-					newData.foedselsdato = newData.doedsdato
-					return newData
-				} else {
-					return updateData(barn, initialValues.barn)
-				}
-			})
-		}
-	}
-	if (tpsfData.boadresse) {
-		newTpsfData.boadresse = updateData(newTpsfData.boadresse, initialValues.boadresse)
-	}
-
-	return newTpsfData
-}
-
 const getUpdatedUdistubData = (udistubData: any) => {
 	const newUdistubData = Object.assign({}, udistubData)
 	const oppholdStatus = udistubData.oppholdStatus
@@ -161,6 +130,8 @@ const getUpdatedPdldata = (pdldata: any) => {
 				syntetisk: nyPerson.syntetisk,
 			}
 		}
+	} else {
+		newPdldata.opprettNyPerson = {}
 	}
 	const person = newPdldata?.person
 	if (person?.bostedsadresse) {
@@ -169,25 +140,28 @@ const getUpdatedPdldata = (pdldata: any) => {
 		})
 	}
 	if (person?.oppholdsadresse) {
-		newPdldata.person.oppholdsadresse = person.oppholdsadresse.map((adresse: Oppholdsadresse) => {
-			return updateAdressetyper(adresse, false)
-		})
+		newPdldata.person.oppholdsadresse = person.oppholdsadresse.map(
+			(adresse: OppholdsadresseData) => {
+				return updateAdressetyper(adresse, false)
+			}
+		)
 	}
 	if (person?.kontaktadresse) {
-		newPdldata.person.kontaktadresse = person.kontaktadresse.map((adresse: Kontaktadresse) => {
+		newPdldata.person.kontaktadresse = person.kontaktadresse.map((adresse: KontaktadresseData) => {
 			return updateAdressetyper(adresse, false)
 		})
 	}
 
 	if (person?.forelderBarnRelasjon) {
-		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon
-			.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
-			.map((relasjon: ForeldreBarnRelasjon) => {
-				if (relasjon.deltBosted) {
+		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon.map(
+			(relasjon: ForeldreBarnRelasjon) => {
+				relasjon.typeForelderBarn = updateTypeForelderBarn(relasjon)
+				if (relasjon.relatertPersonsRolle === 'BARN' && relasjon.deltBosted) {
 					relasjon.deltBosted = updateAdressetyper(relasjon.deltBosted, true)
 				}
 				return relasjon
-			})
+			}
+		)
 	}
 	return newPdldata
 }
@@ -219,9 +193,22 @@ const updateVegadressetype = (adresse: any) => {
 		adresse.vegadresseType = 'KOMMUNENUMMER'
 	} else if (notNullKeys.length === 1 && notNullKeys.includes('postnummer')) {
 		adresse.vegadresseType = 'POSTNUMMER'
+	} else if (notNullKeys.length === 1 && notNullKeys.includes('bydelsnummer')) {
+		adresse.vegadresseType = 'BYDELSNUMMER'
 	} else if (notNullKeys.length !== 0) {
 		adresse.vegadresseType = 'DETALJERT'
 	}
+}
+
+const updateTypeForelderBarn = (relasjon: ForeldreBarnRelasjon) => {
+	if (relasjon.relatertPerson) {
+		return 'EKSISTERENDE'
+	} else if (relasjon.relatertPerson) {
+		return 'NY'
+	} else if (relasjon.relatertPersonUtenFolkeregisteridentifikator) {
+		return 'UTEN_ID'
+	}
+	return null
 }
 
 const updateData = (data: any, initalValues: any) => {

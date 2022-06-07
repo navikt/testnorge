@@ -16,7 +16,7 @@ export const initialValues = {
 	startdato: '',
 	sluttdato: '',
 }
-const instAttributt = 'instdata'
+export const instAttributt = 'instdata'
 
 export const InstForm = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)

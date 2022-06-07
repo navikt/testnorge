@@ -5,11 +5,13 @@ import _isEmpty from 'lodash/isEmpty'
 import _get from 'lodash/get'
 import { useDispatch } from 'react-redux'
 
-export const stateModifierFns = (initial, setInitial, options = null) => {
+export const stateModifierFns = (initial, setInitial, options = null, dispatch = null) => {
+	if (dispatch == null) {
+		dispatch = useDispatch()
+	}
 	const opts = options
 	const set = (path, value) => setInitial(_set(path, value, initial))
 	const has = (path) => _has(initial, path)
-	const dispatch = useDispatch()
 	const del = (path) => {
 		let newObj = _omit(initial, path)
 
@@ -40,7 +42,7 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 			const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
 			if (ignores.includes(curr)) return acc
 
-			const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts)(fn)
+			const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts, dispatch)(fn)
 			sm_local.attrs[curr][key]()
 			return acc
 		}, Object.assign({}, initial))

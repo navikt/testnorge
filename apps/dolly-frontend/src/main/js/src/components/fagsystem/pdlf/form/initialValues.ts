@@ -1,3 +1,5 @@
+import { startOfToday } from 'date-fns'
+
 export const initialPdlPerson = {
 	identtype: null as string,
 	kjoenn: null as string,
@@ -116,7 +118,7 @@ export const initialSikkerhetstiltak = {
 		personident: '',
 		enhet: '',
 	},
-	gyldigFraOgMed: new Date(),
+	gyldigFraOgMed: startOfToday(),
 	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
@@ -125,7 +127,7 @@ export const initialSikkerhetstiltak = {
 export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
-	gyldigFraOgMed: new Date(),
+	gyldigFraOgMed: startOfToday(),
 	gyldigTilOgMed: null as string,
 }
 
@@ -138,8 +140,8 @@ export const initialStatsborgerskap = {
 }
 
 export const initialTilrettelagtKommunikasjon = {
-	spraakForTaletolk: '',
-	spraakForTegnspraakTolk: '',
+	spraakForTaletolk: null as string,
+	spraakForTegnspraakTolk: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
@@ -256,8 +258,7 @@ export const initialForelder = {
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
-	relatertPerson: null as string,
-	nyRelatertPerson: initialPdlPerson,
+	typeForelderBarn: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -266,9 +267,8 @@ export const initialBarn = {
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
-	relatertPerson: null as string,
-	deltBosted: null,
-	nyRelatertPerson: initialPdlPerson,
+	typeForelderBarn: null as string,
+	deltBosted: null as any,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -304,7 +304,7 @@ export const initialNyIdent = {
 }
 
 export const initialFullmakt = {
-	omraader: [],
+	omraader: [] as any,
 	gyldigFraOgMed: null as string,
 	gyldigTilOgMed: null as string,
 	motpartsPersonident: null as string,

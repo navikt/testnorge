@@ -34,13 +34,8 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 			<div className="menu-links">
 				<NavLink to="/gruppe">Personer</NavLink>
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
-				<a
-					href="https://endringsmelding.dev.intern.nav.no"
-					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
-				>
-					Endringsmelding
-				</a>
 				<NavLink to="/testnorge">Test-Norge</NavLink>
+				<NavLink to="/endringsmelding">Endringsmelding</NavLink>
 				<a
 					href="https://navikt.github.io/testnorge/applications/dolly/"
 					target="_blank"

@@ -66,7 +66,7 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 			window.open(fileURL)
 		})
 		.catch((error) => {
-			console.log(error)
+			console.error(error)
 		})
 
 export default {

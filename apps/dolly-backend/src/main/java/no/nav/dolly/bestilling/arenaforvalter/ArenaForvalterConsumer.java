@@ -88,6 +88,7 @@ public class ArenaForvalterConsumer {
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
                         .map(miljoe -> Flux.range(0, identer.size())
+                                .delayElements(Duration.ofMillis(100))
                                 .map(index -> new ArenaForvalterDeleteCommand(webClient, identer.get(index), miljoe, token.getTokenValue()).call())))
                         .flatMap(Flux::from)
                         .flatMap(Flux::from)

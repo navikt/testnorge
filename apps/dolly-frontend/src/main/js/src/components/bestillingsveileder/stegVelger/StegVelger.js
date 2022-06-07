@@ -23,7 +23,11 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = () => {
+	const handleBack = (formikBag) => {
+		if (isLastStep()) {
+			const { setSubmitting } = formikBag
+			setSubmitting(false)
+		}
 		if (step !== 0) setStep(step - 1)
 	}
 

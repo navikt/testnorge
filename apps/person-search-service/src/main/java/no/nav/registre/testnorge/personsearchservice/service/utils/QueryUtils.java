@@ -73,15 +73,15 @@ public class QueryUtils {
             List<String> fields,
             String value,
             int minimumShould,
-            boolean historisk
+            String historisk
     ) {
         var boolQuery = QueryBuilders.boolQuery();
 
         for (String field : fields) {
             boolQuery.should(QueryBuilders.matchQuery(path + field, value));
         }
-        if (historisk) {
-            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, false));
+        if (!historisk.isEmpty()) {
+            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, "Y".equalsIgnoreCase(historisk)));
         }
         boolQuery.minimumShouldMatch(minimumShould);
 

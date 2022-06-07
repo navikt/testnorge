@@ -353,6 +353,8 @@ public class ArtifactUpdateService {
 
         adressebeskyttelseService.validate(oppdatertBeskyttelse, person.getPerson());
         adressebeskyttelseService.convert(person.getPerson());
+
+        folkeregisterPersonstatusService.update(person.getPerson());
     }
 
     public void updateDoedsfall(String ident, Integer id, DoedsfallDTO oppdatertDoedsfall) {

@@ -22,6 +22,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
@@ -376,6 +377,7 @@ public class PdlPerson {
         private String relatertPersonsIdent;
         private Rolle relatertPersonsRolle;
         private Rolle minRolleForPerson;
+        private RelatertBiPersonDTO relatertPersonUtenFolkeregisteridentifikator;
         private Metadata metadata;
 
         public boolean isForelder() {

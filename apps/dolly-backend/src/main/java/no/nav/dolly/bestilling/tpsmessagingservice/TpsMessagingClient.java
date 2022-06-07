@@ -12,6 +12,9 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
@@ -21,17 +24,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -46,174 +45,6 @@ public class TpsMessagingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ExecutorService dollyForkJoinPool;
     private final DollyPersonCache dollyPersonCache;
-
-    @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
-
-        var status = new StringBuilder();
-
-        try {
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-
-            List.of(
-                            supplyAsync(() -> sendSpraakkode(bestilling, dollyPerson), dollyForkJoinPool),
-                            supplyAsync(() -> sendBankkontoer(bestilling, dollyPerson), dollyForkJoinPool),
-                            supplyAsync(() -> sendEgenansatt(bestilling, dollyPerson), dollyForkJoinPool),
-                            supplyAsync(() -> sendSikkerhetstiltak(dollyPerson), dollyForkJoinPool),
-                            supplyAsync(() -> sendTelefonnumre(dollyPerson), dollyForkJoinPool),
-                            supplyAsync(() -> sendBostedsadresseUtland(dollyPerson), dollyForkJoinPool),
-                            supplyAsync(() -> sendKontaktadresseUtland(dollyPerson), dollyForkJoinPool))
-
-                    .forEach(future -> {
-                        try {
-                            future.get(1, TimeUnit.MINUTES)
-                                    .entrySet()
-                                    .forEach(entry -> status.append(getResponse(entry.getKey(), entry.getValue())));
-
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-
-                            log.error(e.getMessage(), e);
-                            Thread.interrupted();
-                        }
-                    });
-
-        } catch (RuntimeException e) {
-            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
-            log.error("Kall til TPS messaging service feilet: {}", e.getMessage());
-        }
-        progress.setTpsMessagingStatus(status.toString());
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        // TpsMessaging har ikke sletting
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendBostedsadresseUtland(DollyPerson dollyPerson) {
-
-        return nonNull(dollyPerson.getPdlfPerson()) ?
-
-                Map.of("BostedadresseUtland",
-                        Stream.of(List.of(dollyPerson.getPdlfPerson().getPerson()),
-                                        dollyPerson.getPdlfPerson().getRelasjoner().stream()
-                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
-                                                .toList())
-                                .flatMap(Collection::stream)
-                                .filter(person -> person.getBostedsadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
-                                .map(person ->
-                                        tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
-                                                mapperFacade.map(person.getBostedsadresse().stream()
-                                                        .filter(AdresseDTO::isAdresseUtland)
-                                                        .findFirst().orElse(new BostedadresseDTO()), AdresseUtlandDTO.class)))
-                                .findFirst()
-                                .orElse(emptyList()))
-                : emptyMap();
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendKontaktadresseUtland(DollyPerson dollyPerson) {
-
-        return nonNull(dollyPerson.getPdlfPerson()) ?
-
-                Map.of("KontaktadresseUtland",
-                        Stream.of(List.of(dollyPerson.getPdlfPerson().getPerson()),
-                                        dollyPerson.getPdlfPerson().getRelasjoner().stream()
-                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
-                                                .toList())
-                                .flatMap(Collection::stream)
-                                .filter(person -> person.getKontaktadresse().stream().anyMatch(AdresseDTO::isAdresseUtland))
-                                .map(person ->
-                                        tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
-                                                mapperFacade.map(person.getKontaktadresse().stream()
-                                                        .filter(AdresseDTO::isAdresseUtland)
-                                                        .findFirst().get(), AdresseUtlandDTO.class)))
-                                .findFirst()
-                                .orElse(emptyList()))
-                : emptyMap();
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendTelefonnumre(DollyPerson dollyPerson) {
-
-        return nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty() ?
-
-                Map.of("Telefonnummer_slett", tpsMessagingConsumer.deleteTelefonnummerRequest(
-                                dollyPerson.getHovedperson(), null),
-                        "Telefonnummer_opprett", tpsMessagingConsumer.sendTelefonnummerRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                mapperFacade.mapAsList(dollyPerson.getPdlfPerson().getPerson().getTelefonnummer(),
-                                        TelefonTypeNummerDTO.class)))
-                : emptyMap();
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendSikkerhetstiltak(DollyPerson dollyPerson) {
-
-        return nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().isEmpty() ?
-
-                Map.of("Sikkerhetstiltak_slett", tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
-                                dollyPerson.getHovedperson(), null),
-                        "Sikkerhetstiltak_opprett", tpsMessagingConsumer.sendSikkerhetstiltakRequest(
-                                dollyPerson.getHovedperson(),
-                                null,
-                                dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak()
-                                        .stream().findFirst().orElse(new SikkerhetstiltakDTO())))
-                : emptyMap();
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
-
-        return nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode()) ?
-
-                Map.of("SpråkKode", tpsMessagingConsumer.sendSpraakkodeRequest(
-                        dollyPerson.getHovedperson(),
-                        null,
-                        mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)))
-
-                : emptyMap();
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendEgenansatt(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
-
-        var egansatt = new HashMap<String, List<TpsMeldingResponseDTO>>();
-
-        if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())) {
-
-            egansatt.put("Egenansatt_slett", tpsMessagingConsumer.deleteEgenansattRequest(
-                    dollyPerson.getHovedperson(),
-                    null));
-
-        } else if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
-
-            egansatt.put("Egenansatt_opprett", tpsMessagingConsumer.sendEgenansattRequest(
-                    dollyPerson.getHovedperson(),
-                    null,
-                    bestilling.getSkjerming().getEgenAnsattDatoFom().toLocalDate()));
-        }
-
-        return egansatt;
-    }
-
-    private Map<String, List<TpsMeldingResponseDTO>> sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
-
-        var bankkontoer = new HashMap<String, List<TpsMeldingResponseDTO>>();
-
-        if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
-
-            bankkontoer.put("UtenlandskBankkonto", tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
-                    dollyPerson.getHovedperson(),
-                    null,
-                    bestilling.getTpsMessaging().getUtenlandskBankkonto()));
-
-        } else if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
-
-            bankkontoer.put("NorskBankkonto", tpsMessagingConsumer.sendNorskBankkontoRequest(
-                    dollyPerson.getHovedperson(),
-                    null,
-                    bestilling.getTpsMessaging().getNorskBankkonto()));
-        }
-
-        return bankkontoer;
-    }
 
     private static String getResponse(String melding, List<TpsMeldingResponseDTO> responseList) {
 
@@ -232,5 +63,236 @@ public class TpsMessagingClient implements ClientRegister {
             });
         }
         return respons.toString();
+    }
+
+    @Override
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+
+        var startTime = System.currentTimeMillis();
+
+        var status = new StringBuilder();
+
+        try {
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
+
+            Stream.of(
+                            sendSpraakkode(bestilling),
+                            sendBankkontonummer(bestilling),
+                            sendEgenansatt(bestilling),
+                            sendTelefonnumreSlett(dollyPerson),
+                            sendTelefonnumreOpprett(dollyPerson),
+                            sendSikkerhetstiltakSlett(dollyPerson),
+                            sendSikkerhetstiltakOpprett(dollyPerson),
+                            sendBostedsadresseUtland(dollyPerson),
+                            sendBostedsadresseUtlandPartner(dollyPerson),
+                            sendKontaktadresseUtland(dollyPerson)
+                    )
+                    .filter(Objects::nonNull)
+                    .map(completable -> supplyAsync(() -> completable.apply(bestilling, dollyPerson), dollyForkJoinPool))
+                    .forEach(future -> {
+                        try {
+                            future.get()
+                                    .forEach((key, value) -> status.append(getResponse(key, value)));
+
+                        } catch (InterruptedException e) {
+
+                            log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
+
+                        } catch (ExecutionException e) {
+
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
+
+                        }
+                    });
+
+        } catch (RuntimeException e) {
+            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+            log.error("Kall til TPS messaging service feilet: {}", e.getMessage());
+        }
+        progress.setTpsMessagingStatus(status.toString());
+
+        log.info("TpsMessaging for ident {} tok {} ms", dollyPerson.getHovedperson(), System.currentTimeMillis() - startTime);
+    }
+
+    @Override
+    public void release(List<String> identer) {
+
+        // TpsMessaging har ikke sletting
+    }
+
+    private TpsMessage sendBostedsadresseUtland(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && dollyPerson.getPdlfPerson().getPerson().getBostedsadresse().stream()
+                .anyMatch(BostedadresseDTO::isAdresseUtland) ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("BostedadresseUtland",
+                                tpsMessagingConsumer.sendAdresseUtlandRequest(dollyPerson1.getHovedperson(), null,
+                                        mapperFacade.map(dollyPerson1.getPdlfPerson().getPerson().getBostedsadresse().stream()
+                                                .filter(AdresseDTO::isAdresseUtland)
+                                                .findFirst().orElse(new BostedadresseDTO()), AdresseUtlandDTO.class)))
+
+                : null;
+    }
+
+    private TpsMessage sendBostedsadresseUtlandPartner(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER)
+                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                .map(PersonDTO::getBostedsadresse)
+                .flatMap(Collection::stream)
+                .anyMatch(AdresseDTO::isAdresseUtland) ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("BostedadresseUtlandPartner",
+                                tpsMessagingConsumer.sendAdresseUtlandRequest(dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                                .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER)
+                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                                .map(PersonDTO::getIdent)
+                                                .findFirst().orElse("00000000000"), null,
+                                        mapperFacade.map(dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                                .filter(relasjon -> relasjon.getRelasjonType() == RelasjonType.EKTEFELLE_PARTNER)
+                                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                                .map(PersonDTO::getBostedsadresse)
+                                                .flatMap(Collection::stream)
+                                                .filter(AdresseDTO::isAdresseUtland)
+                                                .findFirst().orElse(new BostedadresseDTO()), AdresseUtlandDTO.class)))
+
+                : null;
+    }
+
+    private TpsMessage sendKontaktadresseUtland(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && dollyPerson.getPdlfPerson().getPerson().getKontaktadresse().stream()
+                .anyMatch(KontaktadresseDTO::isAdresseUtland) ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("KontaktadresseUtland",
+                                tpsMessagingConsumer.sendAdresseUtlandRequest(dollyPerson1.getHovedperson(), null,
+                                        mapperFacade.map(dollyPerson1.getPdlfPerson().getPerson().getKontaktadresse().stream()
+                                                .filter(AdresseDTO::isAdresseUtland)
+                                                .findFirst().orElse(new KontaktadresseDTO()), AdresseUtlandDTO.class)))
+                : null;
+    }
+
+    private TpsMessage sendTelefonnumreSlett(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty() ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("Telefonnummer_slett",
+                                tpsMessagingConsumer.deleteTelefonnummerRequest(
+                                        dollyPerson1.getHovedperson(), null))
+
+                : null;
+    }
+
+    private TpsMessage sendTelefonnumreOpprett(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getTelefonnummer().isEmpty() ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("Telefonnummer_opprett",
+                                tpsMessagingConsumer.sendTelefonnummerRequest(
+                                        dollyPerson1.getHovedperson(),
+                                        null,
+                                        mapperFacade.mapAsList(dollyPerson1.getPdlfPerson().getPerson().getTelefonnummer(),
+                                                TelefonTypeNummerDTO.class)))
+
+                : null;
+    }
+
+    private TpsMessage sendSikkerhetstiltakSlett(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().isEmpty() ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("Sikkerhetstiltak_slett",
+                                tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                                        dollyPerson1.getHovedperson(), null))
+
+                : null;
+    }
+
+    private TpsMessage sendSikkerhetstiltakOpprett(DollyPerson dollyPerson) {
+
+        return nonNull(dollyPerson.getPdlfPerson()) && !dollyPerson.getPdlfPerson().getPerson().getSikkerhetstiltak().isEmpty() ?
+
+                (bestilling, dollyPerson1) ->
+                        Map.of("Sikkerhetstiltak_opprett",
+                                tpsMessagingConsumer.sendSikkerhetstiltakRequest(
+                                        dollyPerson1.getHovedperson(),
+                                        null,
+                                        dollyPerson1.getPdlfPerson().getPerson().getSikkerhetstiltak()
+                                                .stream().findFirst().orElse(new SikkerhetstiltakDTO())))
+
+                : null;
+    }
+
+    private TpsMessage sendSpraakkode(RsDollyUtvidetBestilling bestilling) {
+
+        return nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode()) ?
+
+                (bestilling1, dollyPerson) ->
+                        Map.of("SpråkKode",
+                                tpsMessagingConsumer.sendSpraakkodeRequest(
+                                        dollyPerson.getHovedperson(),
+                                        null,
+                                        mapperFacade.map(bestilling1.getTpsMessaging().getSpraakKode(), SpraakDTO.class)))
+
+                : null;
+    }
+
+    private TpsMessage sendEgenansatt(RsDollyUtvidetBestilling bestilling) {
+
+        if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())) {
+
+            return (bestilling1, dollyPerson) ->
+                    Map.of("Egenansatt_slett",
+                            tpsMessagingConsumer.deleteEgenansattRequest(
+                                    dollyPerson.getHovedperson(),
+                                    null));
+
+        } else if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
+
+            return (bestilling1, dollyPerson) ->
+                    Map.of("Egenansatt_opprett",
+                            tpsMessagingConsumer.sendEgenansattRequest(
+                                    dollyPerson.getHovedperson(),
+                                    null,
+                                    bestilling1.getSkjerming().getEgenAnsattDatoFom().toLocalDate()));
+
+        } else {
+
+            return null;
+        }
+    }
+
+    private TpsMessage sendBankkontonummer(RsDollyUtvidetBestilling bestilling) {
+
+        if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
+
+            return (bestilling1, dollyPerson) ->
+                    Map.of("UtenlandskBankkonto",
+                            tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                                    dollyPerson.getHovedperson(),
+                                    null,
+                                    bestilling1.getTpsMessaging().getUtenlandskBankkonto()));
+
+        } else if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
+
+            return (bestilling1, dollyPerson) ->
+                    Map.of("NorskBankkonto",
+                            tpsMessagingConsumer.sendNorskBankkontoRequest(
+                                    dollyPerson.getHovedperson(),
+                                    null,
+                                    bestilling1.getTpsMessaging().getNorskBankkonto()));
+        } else {
+
+            return null;
+        }
     }
 }

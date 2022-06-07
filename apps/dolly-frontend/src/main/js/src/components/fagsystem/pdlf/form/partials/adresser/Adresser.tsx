@@ -12,7 +12,7 @@ interface AdresserValues {
 	formikBag: FormikProps<{}>
 }
 
-const adresseAttributter = [
+export const adresseAttributter = [
 	'pdldata.person.bostedsadresse',
 	'pdldata.person.oppholdsadresse',
 	'pdldata.person.kontaktadresse',

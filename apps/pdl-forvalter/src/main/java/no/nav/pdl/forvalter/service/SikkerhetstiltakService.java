@@ -60,7 +60,7 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
         }
 
         if (nonNull(sikkerhetstiltak.getGyldigFraOgMed()) && nonNull(sikkerhetstiltak.getGyldigTilOgMed()) &&
-                !sikkerhetstiltak.getGyldigFraOgMed().isBefore(sikkerhetstiltak.getGyldigTilOgMed())) {
+                sikkerhetstiltak.getGyldigFraOgMed().isAfter(sikkerhetstiltak.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 

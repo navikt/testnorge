@@ -6,11 +6,14 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
+import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.MalBestillingService;
+import no.nav.dolly.service.NavigasjonService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -41,6 +44,7 @@ public class BestillingController {
 
     private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
+    private final NavigasjonService navigasjonService;
     private final MalBestillingService malBestillingService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
@@ -49,6 +53,20 @@ public class BestillingController {
     @Operation(description = "Hent Bestilling med bestillingsId")
     public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
+    }
+
+    @GetMapping("/soekBestilling")
+    @Operation(description = "Hent Bestillinger basert på fragment")
+    public List<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+        return bestillingService.fetchBestillingByFragment(fragment);
+    }
+
+    @Operation(description = "Naviger til ønsket bestilling")
+    @Transactional
+    @GetMapping("/naviger/{bestillingId}")
+    public RsWhereAmI navigerTilBestilling(@PathVariable Long bestillingId) {
+
+        return navigasjonService.navigerTilBestilling(bestillingId);
     }
 
     @Cacheable(value = CACHE_BESTILLING)

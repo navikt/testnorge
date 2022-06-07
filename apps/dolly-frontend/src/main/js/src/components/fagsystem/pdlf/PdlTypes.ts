@@ -17,12 +17,19 @@ export type PersonData = {
 	kjoenn?: Array<Kjoenn>
 	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<StatsborgerskapData>
-	adressebeskyttelse?: Array<Adressebeskyttelse>
+	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<Sivilstand>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
 	innflytting?: Array<Innflytting>
 	utflytting?: Array<Utflytting>
+}
+
+export type PersonUtenIdData = {
+	foedselsdato?: string
+	kjoenn?: string
+	navn?: Navn
+	statsborgerskap: string
 }
 
 type Navn = {
@@ -72,8 +79,9 @@ type Utflytting = {
 	id?: number
 }
 
-type Adressebeskyttelse = {
+export type AdressebeskyttelseData = {
 	gradering: string
+	id?: number
 }
 
 export type Sivilstand = {
@@ -98,13 +106,21 @@ export enum Rolle {
 	MEDMOR = 'MEDMOR',
 }
 
+export enum TypeAnsvarlig {
+	EKSISTERENDE = 'EKSISTERENDE',
+	UTEN_ID = 'UTEN_ID',
+	NY = 'NY',
+}
+
 export type ForeldreBarnRelasjon = {
 	id?: number
 	minRolleForPerson: Rolle
 	relatertPerson?: string
+	relatertPersonUtenFolkeregisteridentifikator?: PersonUtenIdData
 	relatertPersonsIdent: string
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
+	typeForelderBarn?: string
 }
 
 export type DoedfoedtBarn = {
@@ -156,4 +172,13 @@ export type NyIdent = {
 export type SelectedValue = {
 	value: string
 	label: string
+}
+
+export enum Adressetype {
+	Veg = 'VEGADRESSE',
+	Matrikkel = 'MATRIKKELADRESSE',
+	Postboks = 'POSTBOKSADRESSE',
+	Utenlandsk = 'UTENLANDSK_ADRESSE',
+	Ukjent = 'UKJENT_BOSTED',
+	Annet = 'OPPHOLD_ANNET_STED',
 }

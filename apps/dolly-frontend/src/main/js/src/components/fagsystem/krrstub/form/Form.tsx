@@ -21,7 +21,7 @@ type Change = {
 	value: boolean
 }
 
-const krrAttributt = 'krrstub'
+export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()

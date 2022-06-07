@@ -8,7 +8,9 @@ import Loading from '~/components/ui/loading/Loading'
 import './TagsButton.less'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { actions } from '~/ducks/gruppe'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { useDispatch } from 'react-redux'
 
 type Props = {
 	action: Function
@@ -18,12 +20,13 @@ type Props = {
 }
 
 export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Props) => {
-	if (loading) return <Loading label="Sender tags..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [tags, setTags] = useState(eksisterendeTags)
+	const dispatch = useDispatch()
+
+	if (loading) return <Loading label="Sender tags..." />
 
 	const tagsFraDolly = SelectOptionsOppslag.hentTagsFraDolly()
-	// @ts-ignore
 	const tagOptions = SelectOptionsOppslag.formatOptions('tags', tagsFraDolly)
 
 	return (
@@ -57,8 +60,10 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 						</NavButton>
 						<NavButton
 							onClick={() => {
-								action(gruppeId, tags)
-								location.reload()
+								action(gruppeId, tags).then(() => {
+									dispatch(actions.getById(gruppeId, 0, 10))
+									closeModal()
+								})
 							}}
 							type="hoved"
 						>

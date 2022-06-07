@@ -26,6 +26,7 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
     private final String npid;
     private final String token;
 
+    @Override
     public Mono<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient

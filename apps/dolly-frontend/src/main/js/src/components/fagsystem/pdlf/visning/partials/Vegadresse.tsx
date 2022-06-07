@@ -29,6 +29,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 		husnummer,
 		kommunenummer,
 		postnummer,
+		bydelsnummer,
 	} = adresse.vegadresse
 	const {
 		angittFlyttedato,
@@ -52,6 +53,15 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 						<KodeverkConnector navn="Postnummer" value={postnummer}>
 							{(v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : postnummer}</span>
+							)}
+						</KodeverkConnector>
+					)}
+				</TitleValue>
+				<TitleValue title="Bydelsnummer">
+					{bydelsnummer && (
+						<KodeverkConnector navn="Bydeler" value={bydelsnummer}>
+							{(v: Kodeverk, verdi: KodeverkValues) => (
+								<span>{verdi ? verdi.label : bydelsnummer}</span>
 							)}
 						</KodeverkConnector>
 					)}

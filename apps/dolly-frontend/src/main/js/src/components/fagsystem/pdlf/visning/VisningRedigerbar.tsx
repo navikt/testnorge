@@ -13,15 +13,23 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
+import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
+import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
+import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
+import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
+import { AdressebeskyttelseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import {
 	doedsfall,
 	innflytting,
 	statsborgerskap,
 	utflytting,
+	adressebeskyttelse,
+	bostedsadresse,
+	kontaktadresse,
+	oppholdsadresse,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
-import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
-import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -30,6 +38,7 @@ type VisningTypes = {
 	redigertAttributt?: any
 	path: string
 	ident: string
+	identtype?: string
 }
 
 enum Modus {
@@ -45,6 +54,10 @@ enum Attributt {
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
+	Boadresse = 'bostedsadresse',
+	Oppholdsadresse = 'oppholdsadresse',
+	Kontaktadresse = 'kontaktadresse',
+	Adressebeskyttelse = 'adressebeskyttelse',
 }
 
 const FieldArrayEdit = styled.div`
@@ -81,6 +94,7 @@ export const VisningRedigerbar = ({
 	redigertAttributt = null,
 	path,
 	ident,
+	identtype,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -171,6 +185,14 @@ export const VisningRedigerbar = ({
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:
 				return <UtvandringForm path={path} />
+			case Attributt.Boadresse:
+				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
+			case Attributt.Oppholdsadresse:
+				return <OppholdsadresseForm formikBag={formikBag} path={path} />
+			case Attributt.Kontaktadresse:
+				return <KontaktadresseForm formikBag={formikBag} path={path} />
+			case Attributt.Adressebeskyttelse:
+				return <AdressebeskyttelseForm formikBag={formikBag} path={path} identtype={identtype} />
 		}
 	}
 
@@ -180,12 +202,20 @@ export const VisningRedigerbar = ({
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 			innflytting: ifPresent('innflytting', innflytting),
 			utflytting: ifPresent('utflytting', utflytting),
+			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
+			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
+			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
+			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
 		},
 		[
 			['doedsfall', 'doedsfall'],
 			['statsborgerskap', 'statsborgerskap'],
 			['innflytting', 'innflytting'],
 			['utflytting', 'utflytting'],
+			['bostedsadresse', 'bostedsadresse'],
+			['oppholdsadresse', 'oppholdsadresse'],
+			['kontaktadresse', 'kontaktadresse'],
+			['adressebeskyttelse', 'adressebeskyttelse'],
 		]
 	)
 

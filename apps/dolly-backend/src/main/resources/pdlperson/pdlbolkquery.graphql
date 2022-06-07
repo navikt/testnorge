@@ -74,6 +74,7 @@ query($identer: [ID!]!) {
                     tilleggsnavn,
                     postnummer,
                     kommunenummer,
+                    bydelsnummer,
                     koordinater {
                         x,
                         y,
@@ -132,6 +133,7 @@ query($identer: [ID!]!) {
                     tilleggsnavn,
                     postnummer,
                     kommunenummer,
+                    bydelsnummer,
                     koordinater {
                         x,
                         y,
@@ -175,6 +177,7 @@ query($identer: [ID!]!) {
                     tilleggsnavn,
                     postnummer,
                     kommunenummer,
+                    bydelsnummer,
                     koordinater {
                         x,
                         y,
@@ -209,6 +212,16 @@ query($identer: [ID!]!) {
                 relatertPersonsIdent,
                 relatertPersonsRolle,
                 minRolleForPerson,
+                relatertPersonUtenFolkeregisteridentifikator {
+                    navn {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    },
+                    foedselsdato,
+                    kjoenn
+                    statsborgerskap
+                },
                 folkeregistermetadata {
                     ...folkeregistermetadataDetails
                 }
@@ -235,6 +248,7 @@ query($identer: [ID!]!) {
                     tilleggsnavn,
                     postnummer,
                     kommunenummer,
+                    bydelsnummer,
                     koordinater {
                         x,
                         y,

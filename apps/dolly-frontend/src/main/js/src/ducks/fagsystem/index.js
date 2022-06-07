@@ -20,6 +20,7 @@ import { selectIdentById } from '~/ducks/gruppe'
 import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
+import { isNil } from 'lodash'
 
 export const actions = createActions(
 	{
@@ -112,6 +113,13 @@ export const actions = createActions(
 			DollyApi.slettPerson,
 			(ident) => ({
 				ident,
+			}),
+		],
+		slettPersonOgPartner: [
+			DollyApi.slettPersonOgPartner,
+			(ident, partnerident) => ({
+				ident,
+				partnerident,
 			}),
 		],
 	},
@@ -240,39 +248,56 @@ export default handleActions(
 			state.instdata[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
-			delete state.tpsf[action.meta.ident]
-			delete state.sigrunstub[action.meta.ident]
-			delete state.inntektstub[action.meta.ident]
-			delete state.krrstub[action.meta.ident]
-			delete state.arenaforvalteren[action.meta.ident]
-			delete state.aareg[action.meta.ident]
-			delete state.pdl[action.meta.ident]
-			delete state.pdlforvalter[action.meta.ident]
-			delete state.instdata[action.meta.ident]
-			delete state.udistub[action.meta.ident]
-			delete state.pensjonforvalter[action.meta.ident]
-			delete state.brregstub[action.meta.ident]
+			deleteIdentState(state, action.meta.ident)
+		},
+		[onSuccess(actions.slettPersonOgPartner)](state, action) {
+			deleteIdentState(state, action.meta.ident)
+			deleteIdentState(state, action.meta.partnerident)
 		},
 	},
 	initialState
 )
 
+const deleteIdentState = (state, ident) => {
+	delete state.tpsf[ident]
+	delete state.sigrunstub[ident]
+	delete state.inntektstub[ident]
+	delete state.krrstub[ident]
+	delete state.arenaforvalteren[ident]
+	delete state.aareg[ident]
+	delete state.pdl[ident]
+	delete state.pdlforvalter[ident]
+	delete state.instdata[ident]
+	delete state.udistub[ident]
+	delete state.pensjonforvalter[ident]
+	delete state.brregstub[ident]
+}
+
 // Thunk
 export const fetchTpsfPersoner = (identer) => (dispatch) => {
-	const tpsIdenter = identer.map((person) => {
-		if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
-			return person.ident
-		}
-	})
+	const tpsIdenter = identer
+		.map((person) => {
+			if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
+				return person.ident
+			}
+		})
+		.filter((person) => !isNil(person))
 
 	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
 }
 
-export const fetchPdlPersoner = (identer) => (dispatch) => {
-	const pdlIdenter = identer.map((person) => {
-		return person.ident
-	})
-	if (identer && identer.length >= 1) {
+export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
+	const pdlIdenter = identer
+		.filter(
+			(person) =>
+				!fagsystem.pdl[person.ident] &&
+				!fagsystem.pdlforvalter[person.ident] &&
+				!fagsystem.tpsf[person.ident]
+		)
+		.map((person) => {
+			return person.ident
+		})
+	if (pdlIdenter && pdlIdenter.length >= 1) {
 		dispatch(actions.getPdlForvalter(pdlIdenter))
 		dispatch(actions.getPDLPersoner(pdlIdenter))
 	}
@@ -436,7 +461,9 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 }
 
 const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
-	if (!tpsfIdent) return null
+	if (!tpsfIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TPS')
+	}
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 	return {
 		ident,
@@ -453,7 +480,9 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 }
 
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
-	if (!pdlIdent) return null
+	if (!pdlIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
+	}
 
 	const pdlFornavn = pdlIdent?.navn?.[0]?.fornavn || ''
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
@@ -466,7 +495,6 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
 		return Math.abs(diff.getUTCFullYear() - 1970)
 	}
-
 	return {
 		ident,
 		identNr: pdlIdent.ident,
@@ -484,9 +512,10 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 }
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
-	if (!pdlData) return null
+	if (!pdlData || (!pdlData.person && !pdlData.hentPerson)) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TEST-NORGE')
+	}
 	const person = pdlData.person || pdlData.hentPerson
-	if (!person) return null
 
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
@@ -504,6 +533,24 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+	}
+}
+
+const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
+	return {
+		ident,
+		identNr: ident?.ident,
+		bestillingId: ident?.bestillingId,
+		importFra: '',
+		identtype: '',
+		kilde: kilde,
+		navn: '',
+		kjonn: '',
+		alder: '',
+		status:
+			ident?.bestillingId && bestillingStatuser
+				? hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]])
+				: '',
 	}
 }
 

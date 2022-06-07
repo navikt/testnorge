@@ -74,7 +74,7 @@ export const initialValues = (type: string) => ({
 	ytelse: '',
 })
 
-const inntektsmeldingAttributt = 'inntektsmelding'
+export const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
 export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => {

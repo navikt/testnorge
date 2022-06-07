@@ -5,6 +5,7 @@ import Icon from '~/components/ui/icon/Icon'
 import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import IdentList from "~/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList";
 
 export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
 	if (statusrapport.length <= 0) return null
@@ -15,6 +16,9 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 	const getIconType = (status: Status) => {
 		const melding = status.melding
 		if (melding && !melding.includes('OK')) {
+			if (melding.includes('ADVARSEL')) {
+				return 'report-problem-circle'
+			}
 			return problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
 				? 'report-problem-circle'
 				: 'report-problem-triangle'
@@ -82,11 +86,7 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 							</td>
 							<td>{status.miljo || <i>Ikke relevant</i>}</td>
 							<td>
-								<ul>
-									{status.identer.map((ident, idx) => (
-										<li key={idx}>{ident}</li>
-									))}
-								</ul>
+								<IdentList identer={status.identer} />
 							</td>
 						</tr>
 					))}

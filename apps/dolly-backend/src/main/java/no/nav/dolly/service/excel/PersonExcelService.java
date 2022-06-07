@@ -45,8 +45,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -117,6 +115,7 @@ public class PersonExcelService {
         return foreldre.stream()
                 .filter(forelder -> PdlPerson.Rolle.BARN == forelder.getMinRolleForPerson())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -125,6 +124,7 @@ public class PersonExcelService {
         return barn.stream()
                 .filter(barnet -> PdlPerson.Rolle.BARN == barnet.getRelatertPersonsRolle())
                 .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(",\n"));
     }
 
@@ -210,7 +210,8 @@ public class PersonExcelService {
     private static Map<String, Integer> createLinkReferanser(List<Object[]> personData) {
 
         return IntStream.range(0, personData.size()).boxed()
-                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> row));
+                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> row,
+                        (row1, row2) -> row1));
     }
 
     private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
@@ -392,6 +393,7 @@ public class PersonExcelService {
                         getIdenterForRelasjon(personer, FULLMEKTIG))
                 .flatMap(Collection::stream)
                 .filter(ident -> !hovedpersoner.contains(ident))
+                .distinct()
                 .toList()));
         log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
@@ -455,8 +457,8 @@ public class PersonExcelService {
         var personBolker = new ArrayList<Object[]>();
         for (var future : futures) {
             try {
-                personBolker.addAll(future.get(1, TimeUnit.MINUTES));
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                personBolker.addAll(future.get());
+            } catch (InterruptedException | ExecutionException e) {
                 log.error("Future task exception {}", e.getMessage(), e);
                 throw e;
             }

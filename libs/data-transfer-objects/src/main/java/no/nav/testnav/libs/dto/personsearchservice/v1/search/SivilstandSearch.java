@@ -9,4 +9,5 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class SivilstandSearch {
     String type;
+    Boolean manglerSivilstand;
 }

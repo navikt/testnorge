@@ -6,6 +6,8 @@ import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,8 +39,8 @@ class ForeldreansvarServiceTest {
     void whenAnsvarIsMissing_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
-                        .isNew(true)
-                        .build();
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -50,11 +52,11 @@ class ForeldreansvarServiceTest {
     void whenAmbiguousAnsvarlig_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.ANDRE)
-                        .ansvarlig(IDENT_ANDRE)
-                        .ansvarligUtenIdentifikator(new ForeldreansvarDTO.RelatertBiPersonDTO())
-                        .isNew(true)
-                        .build();
+                .ansvar(Ansvar.ANDRE)
+                .ansvarlig(IDENT_ANDRE)
+                .ansvarligUtenIdentifikator(new RelatertBiPersonDTO())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -69,10 +71,10 @@ class ForeldreansvarServiceTest {
         when(personRepository.existsByIdent(IDENT_ANDRE)).thenReturn(false);
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.ANDRE)
-                        .ansvarlig(IDENT_ANDRE)
-                        .isNew(true)
-                        .build();
+                .ansvar(Ansvar.ANDRE)
+                .ansvarlig(IDENT_ANDRE)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -90,14 +92,14 @@ class ForeldreansvarServiceTest {
         when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(false);
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.ANDRE)
-                        .ansvarligUtenIdentifikator(ForeldreansvarDTO.RelatertBiPersonDTO.builder()
-                                .navn(ForeldreansvarDTO.PersonnavnDTO.builder()
-                                        .etternavn(ETTERNAVN)
-                                        .build())
+                .ansvar(Ansvar.ANDRE)
+                .ansvarligUtenIdentifikator(RelatertBiPersonDTO.builder()
+                        .navn(PersonnavnDTO.builder()
+                                .etternavn(ETTERNAVN)
                                 .build())
-                        .isNew(true)
-                        .build();
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -116,14 +118,14 @@ class ForeldreansvarServiceTest {
         when(genererNavnServiceConsumer.verifyNavn(personnavn)).thenReturn(false);
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.ANDRE)
-                        .ansvarligUtenIdentifikator(ForeldreansvarDTO.RelatertBiPersonDTO.builder()
-                                .navn(ForeldreansvarDTO.PersonnavnDTO.builder()
-                                        .etternavn(ETTERNAVN)
-                                        .build())
+                .ansvar(Ansvar.ANDRE)
+                .ansvarligUtenIdentifikator(RelatertBiPersonDTO.builder()
+                        .navn(PersonnavnDTO.builder()
+                                .etternavn(ETTERNAVN)
                                 .build())
-                        .isNew(true)
-                        .build();
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -136,9 +138,9 @@ class ForeldreansvarServiceTest {
     void whenAnsvarIsMorANdForeldreBarnRelationExcludesMor_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.MOR)
-                        .isNew(true)
-                        .build();
+                .ansvar(Ansvar.MOR)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -151,9 +153,9 @@ class ForeldreansvarServiceTest {
     void whenAnsvarIsFarAndForeldreBarnRelationExcludesFar_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.FAR)
-                        .isNew(true)
-                        .build();
+                .ansvar(Ansvar.FAR)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));
@@ -166,9 +168,9 @@ class ForeldreansvarServiceTest {
     void whenAnsvarIsFellesAndForeldreBarnRelationExcludesMorOrFar_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
-                        .ansvar(Ansvar.FELLES)
-                        .isNew(true)
-                        .build();
+                .ansvar(Ansvar.FELLES)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 foreldreansvarService.validate(request, new PersonDTO()));

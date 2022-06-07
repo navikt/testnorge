@@ -77,7 +77,11 @@ export default {
 	},
 
 	navigerTilPerson(ident) {
-		return Request.get(Endpoints.naviger(ident))
+		return Request.get(Endpoints.navigerTilIdent(ident))
+	},
+
+	navigerTilBestilling(bestillingId) {
+		return Request.get(Endpoints.navigerTilBestilling(bestillingId))
 	},
 
 	sendOrdre(ident) {
@@ -124,6 +128,10 @@ export default {
 		return Request.get(Endpoints.bestillinger(gruppeId))
 	},
 
+	getBestillingerFragment(fragment) {
+		return Request.get(Endpoints.bestillingerFragment(fragment))
+	},
+
 	getBestillingMaler() {
 		return Request.get(Endpoints.bestillingMal())
 	},
@@ -145,6 +153,10 @@ export default {
 	},
 
 	slettPerson(ident) {
+		return Request.delete(Endpoints.slettPerson(ident))
+	},
+
+	slettPersonOgPartner(ident, _partnerident) {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
@@ -219,5 +231,9 @@ export default {
 	//* Excel
 	getExcelFil(groupId) {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
+	},
+
+	importerPartner(groupId, ident) {
+		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, 'PDL'))
 	},
 }

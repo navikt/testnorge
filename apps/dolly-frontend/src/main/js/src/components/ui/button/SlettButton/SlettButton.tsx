@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 
 type Props = {
 	action: Function
-	gruppeId?: string
+	gruppeId?: string | number
 	loading: boolean
 	children: any
 	disabled?: boolean

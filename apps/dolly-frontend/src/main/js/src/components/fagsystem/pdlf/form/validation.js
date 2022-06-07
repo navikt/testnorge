@@ -143,6 +143,18 @@ const testDeltBostedAdressetype = (value) => {
 	})
 }
 
+const gyldigDatoFom = Yup.lazy((val) =>
+	val instanceof Date
+		? testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed')
+		: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed')
+)
+
+const gyldigDatoTom = Yup.lazy((val) =>
+	val instanceof Date
+		? testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed')
+		: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed')
+)
+
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
 	mellomnavn: Yup.string(),
@@ -171,15 +183,25 @@ const vegadresse = Yup.object({
 	tilleggsnavn: Yup.string().nullable(),
 	bruksenhetsnummer: Yup.string().nullable(),
 	husbokstav: Yup.string().nullable(),
-	husnummer: Yup.string().nullable(),
+	husnummer: Yup.lazy((val) =>
+		typeof val === 'string' ? Yup.string().nullable() : Yup.number().nullable()
+	),
 	kommunenummer: Yup.string().nullable(),
 	postnummer: Yup.string().nullable(),
 })
 
 const matrikkeladresse = Yup.object({
 	kommunenummer: Yup.string().nullable(),
-	gaardsnummer: Yup.string().max(5, 'Gårdsnummeret må være under 99999').nullable(),
-	bruksnummer: Yup.string().max(4, 'Bruksnummeret må være under 9999').nullable(),
+	gaardsnummer: Yup.lazy((val) =>
+		typeof val === 'string'
+			? Yup.string().max(5, 'Gårdsnummeret må være under 99999').nullable()
+			: Yup.number().max(99999, 'Gårdsnummeret må være under 99999').nullable()
+	),
+	bruksnummer: Yup.lazy((val) =>
+		typeof val === 'string'
+			? Yup.string().max(4, 'Bruksnummeret må være under 9999').nullable()
+			: Yup.number().max(9999, 'Bruksnummeret må være under 9999').nullable()
+	),
 	postnummer: Yup.string().nullable(),
 	bruksenhetsnummer: Yup.string()
 		.matches(
@@ -211,80 +233,74 @@ const ukjentBosted = Yup.object({
 	bostedskommune: Yup.string().nullable(),
 })
 
-const bostedsadresse = Yup.array().of(
-	Yup.object({
-		adressetype: Yup.string().nullable(),
-		angittFlyttedato: Yup.string().nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		vegadresse: Yup.mixed().when('adressetype', {
-			is: 'VEGADRESSE',
-			then: vegadresse,
-		}),
-		matrikkeladresse: Yup.mixed().when('adressetype', {
-			is: 'MATRIKKELADRESSE',
-			then: matrikkeladresse,
-		}),
-		utenlandskAdresse: Yup.mixed().when('adressetype', {
-			is: 'UTENLANDSK_ADRESSE',
-			then: utenlandskAdresse,
-		}),
-		ukjentBosted: Yup.mixed().when('adressetype', {
-			is: 'UKJENT_BOSTED',
-			then: ukjentBosted,
-		}),
-	})
-)
+export const bostedsadresse = Yup.object({
+	adressetype: Yup.string().nullable(),
+	angittFlyttedato: Yup.lazy((val) =>
+		val instanceof Date ? Yup.date().nullable() : Yup.string().nullable()
+	),
+	gyldigFraOgMed: gyldigDatoFom,
+	gyldigTilOgMed: gyldigDatoTom,
+	vegadresse: Yup.mixed().when('adressetype', {
+		is: 'VEGADRESSE',
+		then: vegadresse,
+	}),
+	matrikkeladresse: Yup.mixed().when('adressetype', {
+		is: 'MATRIKKELADRESSE',
+		then: matrikkeladresse,
+	}),
+	utenlandskAdresse: Yup.mixed().when('adressetype', {
+		is: 'UTENLANDSK_ADRESSE',
+		then: utenlandskAdresse,
+	}),
+	ukjentBosted: Yup.mixed().when('adressetype', {
+		is: 'UKJENT_BOSTED',
+		then: ukjentBosted,
+	}),
+})
 
-const oppholdsadresse = Yup.array().of(
-	Yup.object({
-		adressetype: Yup.string().nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		vegadresse: Yup.mixed().when('adressetype', {
-			is: 'VEGADRESSE',
-			then: vegadresse,
-		}),
-		matrikkeladresse: Yup.mixed().when('adressetype', {
-			is: 'MATRIKKELADRESSE',
-			then: matrikkeladresse,
-		}),
-		utenlandskAdresse: Yup.mixed().when('adressetype', {
-			is: 'UTENLANDSK_ADRESSE',
-			then: utenlandskAdresse,
-		}),
-		oppholdAnnetSted: Yup.mixed().when('adressetype', {
-			is: 'OPPHOLD_ANNET_STED',
-			then: requiredString.nullable(),
-		}),
-	})
-)
+export const oppholdsadresse = Yup.object({
+	adressetype: Yup.string().nullable(),
+	gyldigFraOgMed: gyldigDatoFom,
+	gyldigTilOgMed: gyldigDatoTom,
+	vegadresse: Yup.mixed().when('adressetype', {
+		is: 'VEGADRESSE',
+		then: vegadresse,
+	}),
+	matrikkeladresse: Yup.mixed().when('adressetype', {
+		is: 'MATRIKKELADRESSE',
+		then: matrikkeladresse,
+	}),
+	utenlandskAdresse: Yup.mixed().when('adressetype', {
+		is: 'UTENLANDSK_ADRESSE',
+		then: utenlandskAdresse,
+	}),
+	oppholdAnnetSted: Yup.mixed().when('adressetype', {
+		is: 'OPPHOLD_ANNET_STED',
+		then: requiredString.nullable(),
+	}),
+})
 
-const kontaktadresse = Yup.array().of(
-	Yup.object({
-		adressetype: Yup.string().nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		vegadresse: Yup.mixed().when('adressetype', {
-			is: 'VEGADRESSE',
-			then: vegadresse,
-		}),
-		utenlandskAdresse: Yup.mixed().when('adressetype', {
-			is: 'UTENLANDSK_ADRESSE',
-			then: utenlandskAdresse,
-		}),
-		postboksadresse: Yup.mixed().when('adressetype', {
-			is: 'POSTBOKSADRESSE',
-			then: postboksadresse,
-		}),
-	})
-)
+export const kontaktadresse = Yup.object({
+	adressetype: Yup.string().nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
+	vegadresse: Yup.mixed().when('adressetype', {
+		is: 'VEGADRESSE',
+		then: vegadresse,
+	}),
+	utenlandskAdresse: Yup.mixed().when('adressetype', {
+		is: 'UTENLANDSK_ADRESSE',
+		then: utenlandskAdresse,
+	}),
+	postboksadresse: Yup.mixed().when('adressetype', {
+		is: 'POSTBOKSADRESSE',
+		then: postboksadresse,
+	}),
+})
 
-const adressebeskyttelse = Yup.array().of(
-	Yup.object({
-		gradering: requiredString.nullable(),
-	})
-)
+export const adressebeskyttelse = Yup.object({
+	gradering: requiredString.nullable(),
+})
 
 const fullmakt = Yup.array().of(
 	Yup.object({
@@ -297,10 +313,19 @@ const fullmakt = Yup.array().of(
 )
 
 const tilrettelagtKommunikasjon = Yup.array().of(
-	Yup.object({
-		spraakForTaletolk: Yup.string().nullable(),
-		spraakForTegnspraakTolk: Yup.string().nullable(),
-	})
+	Yup.object().shape(
+		{
+			spraakForTaletolk: Yup.mixed().when('spraakForTegnspraakTolk', {
+				is: null,
+				then: requiredString.nullable(),
+			}),
+			spraakForTegnspraakTolk: Yup.mixed().when('spraakForTaletolk', {
+				is: null,
+				then: requiredString.nullable(),
+			}),
+		},
+		['spraakForTaletolk', 'spraakForTegnspraakTolk']
+	)
 )
 
 const sikkerhetstiltak = Yup.array().of(
@@ -512,7 +537,7 @@ const forelderBarnRelasjon = Yup.array().of(
 			then: Yup.mixed().notRequired(),
 			otherwise: Yup.boolean(),
 		}),
-		nyRelatertPerson: nyPerson,
+		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
 			then: deltBosted.nullable(),
@@ -560,7 +585,15 @@ export const validation = {
 				{
 					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
 						is: null,
-						then: Yup.mixed().required(messages.required).nullable(),
+						then: Yup.mixed()
+							.test(
+								'max',
+								`Alder må være mindre enn ${new Date().getFullYear() - 1899} år`,
+								(val) => val && new Date().getFullYear() - parseInt(val) >= 1900
+							)
+							.test('min', 'Alder må være minst 0 år', (val) => val && parseInt(val) >= 0)
+							.required(messages.required)
+							.nullable(),
 					}),
 					foedtEtter: testDatoFom(
 						Yup.mixed().when(['alder', 'foedtFoer'], {
@@ -589,10 +622,16 @@ export const validation = {
 			)
 			.nullable(),
 		person: Yup.object({
-			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
-			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
-			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', kontaktadresse),
-			adressebeskyttelse: ifPresent('$pdldata.person.adressebeskyttelse', adressebeskyttelse),
+			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
+			oppholdsadresse: ifPresent(
+				'$pdldata.person.oppholdsadresse',
+				Yup.array().of(oppholdsadresse)
+			),
+			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', Yup.array().of(kontaktadresse)),
+			adressebeskyttelse: ifPresent(
+				'$pdldata.person.adressebeskyttelse',
+				Yup.array().of(adressebeskyttelse)
+			),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
 			tilrettelagtKommunikasjon: ifPresent(

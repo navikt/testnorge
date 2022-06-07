@@ -20,5 +20,6 @@ public class VegadresseDTO implements Serializable {
     private String husbokstav;
     private String husnummer;
     private String kommunenummer;
+    private String bydelsnummer;
     private String postnummer;
 }

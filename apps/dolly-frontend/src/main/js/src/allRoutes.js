@@ -1,4 +1,5 @@
 import React, { lazy } from 'react'
+import { Navigate } from 'react-router-dom'
 
 const Gruppe = lazy(() => import('./pages/gruppe/GruppeConnector'))
 const GruppeOversikt = lazy(() => import('./pages/gruppeOversikt/GruppeOversiktConnector'))
@@ -9,11 +10,12 @@ const BestillingsveilederConnector = lazy(() =>
 const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
 const UI = lazy(() => import('./pages/ui/index'))
 const TestnorgePage = lazy(() => import('./pages/testnorgePage/TestnorgePage'))
+const Endringsmelding = lazy(() => import('./pages/endringsmelding/Endringsmelding'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
 const allRoutes = [
-	{ path: '/', breadcrumb: 'Hjem', element: GruppeOversikt },
+	{ path: '/', breadcrumb: 'Hjem', element: () => <Navigate to="/gruppe" replace /> },
 	{ path: '/gruppe', breadcrumb: 'Personer', element: GruppeOversikt },
 	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: Gruppe },
 	{
@@ -43,6 +45,11 @@ const allRoutes = [
 		path: '/importer',
 		breadcrumb: 'Importer',
 		element: BestillingsveilederConnector,
+	},
+	{
+		path: '/endringsmelding',
+		breadcrumb: 'Endringsmelding',
+		element: Endringsmelding,
 	},
 ]
 

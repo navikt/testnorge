@@ -68,25 +68,6 @@ class BostedAdresseServiceTest {
     }
 
     @Test
-    void whenAddressProvidedAndStrengtFortrolig_thenThrowExecption() {
-
-        var request = BostedadresseDTO.builder()
-                .vegadresse(new VegadresseDTO())
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request, PersonDTO.builder()
-                        .ident(FNR_IDENT)
-                        .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
-                                .gradering(STRENGT_FORTROLIG)
-                                .build()))
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("STRENGT_FORTROLIG skal ikke ha bostedsadresse"));
-    }
-
-    @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()

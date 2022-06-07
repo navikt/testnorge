@@ -22,7 +22,7 @@ import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { TpsMessagingApi } from '~/service/Api'
-import { getIdent } from '~/pages/testnorgePage/utils'
+import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
@@ -46,7 +46,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 	const execute = useCallback(() => {
 		const tpsMessaging = async () => {
 			setTpsMessagingLoading(true)
-			const resp = await TpsMessagingApi.getTpsPersonInfo(getIdent(pdlData), environments[0])
+			const resp = await TpsMessagingApi.getTpsPersonInfo(getPdlIdent(pdlData), environments[0])
 				.then((response: any) => {
 					return response?.data[0]?.person
 				})
@@ -112,7 +112,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse data={kontaktadresse} />
-				<Adressebeskyttelse data={adressebeskyttelse} />
+				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
