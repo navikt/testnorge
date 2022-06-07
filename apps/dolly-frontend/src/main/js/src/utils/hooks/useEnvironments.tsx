@@ -37,8 +37,12 @@ export const _getEnvironmentsSortedByType = (envArray: any[]) => {
 			.sort(function (a: string, b: string) {
 				const prev = parseInt(a.substring(1))
 				const current = parseInt(b.substring(1))
-				if (prev > current) return 1
-				if (prev < current || isNaN(current)) return -1
+				if (prev > current) {
+					return 1
+				}
+				if (prev < current || isNaN(current)) {
+					return -1
+				}
 				return 0
 			})
 
