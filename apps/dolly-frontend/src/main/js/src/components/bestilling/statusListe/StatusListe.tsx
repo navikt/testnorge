@@ -64,7 +64,7 @@ const StatusListe = ({
 	return nyeBestillinger?.map((bestilling) => (
 		<div className="bestilling-status" key={bestilling.id}>
 			{bestilling.ferdig ? (
-				<BestillingResultat bestilling={bestilling} />
+				<BestillingResultat bestilling={bestilling} setNyeBestillinger={setNyeBestillinger} />
 			) : (
 				<BestillingProgresjon
 					bestilling={bestilling}

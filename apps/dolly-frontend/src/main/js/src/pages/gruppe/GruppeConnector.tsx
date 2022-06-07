@@ -10,15 +10,11 @@ const mapStateToProps = (
 		finnPerson: {
 			visning: string
 		}
-		redigertePersoner: {
-			antallPersonerFjernet: number
-		}
 	},
 	ownProps: FormikProps<any>
 ) => ({
 	...ownProps,
 	visning: state.finnPerson.visning,
-	antallPersonerFjernet: state.redigertePersoner.antallPersonerFjernet,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

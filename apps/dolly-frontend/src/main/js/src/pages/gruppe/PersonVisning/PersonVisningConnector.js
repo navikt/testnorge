@@ -3,7 +3,6 @@ import { createSelector } from 'reselect'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
-import { increaseAntallFjernet, decreaseAntallFjernet } from '~/ducks/redigertePersoner'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -49,12 +48,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		fetchDataFraFagsystemer: (bestillinger) =>
 			dispatch(fetchDataFraFagsystemer(ownProps.ident, bestillinger)),
 		slettPerson: () => {
-			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
 		slettPersonOgPartner: (partnerident) => {
-			dispatch(increaseAntallFjernet())
-			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPersonOgPartner(ownProps.personId, partnerident))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
@@ -66,9 +62,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					identtype: type,
 				},
 			}),
-		updateAntallImporterte: () => {
-			dispatch(decreaseAntallFjernet())
-		},
 	}
 }
 

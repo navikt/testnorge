@@ -8,7 +8,7 @@ import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { useGruppeAlle } from '~/utils/hooks/useGruppe'
+import { useGrupper } from '~/utils/hooks/useGruppe'
 import { useDispatch } from 'react-redux'
 import { setSidetall } from '~/ducks/finnPerson'
 import { PopoverOrientering } from 'nav-frontend-popover'
@@ -36,7 +36,7 @@ export default function GruppeOversikt({
 	} = useCurrentBruker()
 	const [visning, setVisning] = useState(VisningType.MINE)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
-	const { grupper, loading } = useGruppeAlle(visning === VisningType.MINE ? brukerId : null)
+	const { grupper, loading } = useGrupper(visning === VisningType.MINE ? brukerId : null)
 	const dispatch = useDispatch()
 
 	const byttVisning = (event: BaseSyntheticEvent) => {

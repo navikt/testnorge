@@ -4,7 +4,7 @@ import Icon from '~/components/ui/icon/Icon'
 import './FagsystemStatus.less'
 import { Miljostatus, Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
-export default function FagsystemStatus({ bestilling }: Miljostatus) {
+const FagsystemStatus = ({ bestilling }: Miljostatus) => {
 	const IconTypes = {
 		suksess: 'feedback-check-circle',
 		avvik: 'report-problem-circle',
@@ -40,3 +40,4 @@ export default function FagsystemStatus({ bestilling }: Miljostatus) {
 		</div>
 	)
 }
+export default FagsystemStatus

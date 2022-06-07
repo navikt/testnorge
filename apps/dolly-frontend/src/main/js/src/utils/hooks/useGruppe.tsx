@@ -42,7 +42,7 @@ export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10, autoR
 		error: error,
 	}
 }
-export const useGruppeAlle = (brukerId?: string) => {
+export const useGrupper = (brukerId?: string) => {
 	const { data, error } = useSWR<Gruppe[], Error>(
 		`${getGruppeUrl}${brukerId ? `?brukerId=${brukerId}` : ''}`,
 		fetcher

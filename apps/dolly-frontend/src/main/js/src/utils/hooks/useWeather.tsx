@@ -7,11 +7,11 @@ const fyrstikkAlleenForecastUrl =
 export const useWeatherFyrstikkAlleen = () => {
 	const { data, error } = useSWR<any, Error>(fyrstikkAlleenForecastUrl, fetcher)
 
-	const beregnetMillimeterRegn =
+	const millimeterNedboer =
 		data?.properties?.timeseries?.[0]?.data?.next_6_hours?.details?.precipitation_amount
 
 	return {
-		beregnetMillimeterRegn: beregnetMillimeterRegn ? beregnetMillimeterRegn * 10 : 0,
+		millimeterNedboer: millimeterNedboer ? millimeterNedboer * 10 : 0,
 		loading: !error && !data,
 		error: error,
 	}

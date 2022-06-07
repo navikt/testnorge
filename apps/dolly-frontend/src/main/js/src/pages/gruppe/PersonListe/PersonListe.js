@@ -190,7 +190,7 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallPersonerFjernet,
+					antallElementer: gruppeInfo.antallIdenter,
 					pageSize: sideStoerrelse,
 				}}
 				pagination

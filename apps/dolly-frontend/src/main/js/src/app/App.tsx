@@ -41,7 +41,7 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 
 	if (criticalError) logout(criticalError.stack)
 
-	if (loading) return <Loading label="Laster Dolly applikasjon" fullpage />
+	if (loading) return <Loading label="Laster Dolly" fullpage />
 
 	return (
 		<React.Fragment>

@@ -13,14 +13,13 @@ import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBest
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { useGruppeAlle, useGruppeById } from '~/utils/hooks/useGruppe'
+import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
 export type GruppeProps = {
 	visning: string
 	setVisning: Function
-	antallPersonerFjernet: number
 }
 
 export enum VisningType {
@@ -28,14 +27,13 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default function Gruppe({ visning, setVisning, antallPersonerFjernet }: GruppeProps) {
+export default function Gruppe({ visning, setVisning }: GruppeProps) {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
-	const { grupperById, loading: loadingAllegrupper } = useGruppeAlle()
 	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(Number(gruppeId))
-	const { loading: loadingGruppe } = useGruppeById(Number(gruppeId))
+	const { gruppe, loading: loadingGruppe } = useGruppeById(Number(gruppeId))
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 	const [redirectToSoek, setRedirectToSoek] = useState(false)
@@ -43,10 +41,9 @@ export default function Gruppe({ visning, setVisning, antallPersonerFjernet }: G
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
-	if (loadingAllegrupper || loadingGruppe || loadingBestillinger) {
+	if (loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
-	const gruppe = grupperById[gruppeId]
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
 		dispatch(resetNavigering())
@@ -106,7 +103,7 @@ export default function Gruppe({ visning, setVisning, antallPersonerFjernet }: G
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
-							{`Personer (${gruppe.antallIdenter - antallPersonerFjernet})`}
+							{`Personer (${gruppe.antallIdenter})`}
 						</ToggleKnapp>
 						<ToggleKnapp
 							value={VisningType.VISNING_BESTILLING}

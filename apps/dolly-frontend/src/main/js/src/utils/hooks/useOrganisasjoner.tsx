@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import { fetcher } from '~/api'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { isEmpty } from 'lodash'
+import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
 const getOrganisasjonerUrl = (organisasjoner: string[]) =>
 	`/testnav-organisasjon-forvalter/api/v2/organisasjoner?orgnumre=${organisasjoner}`
@@ -24,6 +25,9 @@ export type Bestillingsstatus = {
 	bruker: any
 	gruppeId: number
 	ferdig: boolean
+	feil?: string
+	status: Bestillingsinformasjon[]
+	systeminfo: string
 	stoppet: boolean
 }
 

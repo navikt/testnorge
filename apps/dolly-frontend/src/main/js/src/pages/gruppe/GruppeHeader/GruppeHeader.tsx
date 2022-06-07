@@ -18,7 +18,6 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 
 type GruppeHeaderProps = {
 	gruppeId: number
-	antallPersonerFjernet: number
 	laasGruppe: Function
 	isLockingGruppe: boolean
 	deleteGruppe: Function
@@ -39,7 +38,6 @@ const GruppeHeader = ({
 	isLockingGruppe,
 	sendTags,
 	isSendingTags,
-	antallPersonerFjernet,
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
@@ -50,7 +48,7 @@ const GruppeHeader = ({
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'lockedGroup' : 'group'
-	const antallPersoner = gruppe.antallIdenter - antallPersonerFjernet
+	const antallPersoner = gruppe.antallIdenter
 
 	return (
 		<Fragment>

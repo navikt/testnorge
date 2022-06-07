@@ -10,16 +10,19 @@ import './BestillingResultat.less'
 import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
 
-export default function BestillingResultat(props) {
-	const { bestilling, onCloseButton } = props
+type ResultatProps = {
+	bestilling: Bestillingsstatus
+	setNyeBestillinger: Function
+}
+
+export default function BestillingResultat({ bestilling, setNyeBestillinger }: ResultatProps) {
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
-	const antall = antallIdenterOpprettet(bestilling)
+	const antallOpprettet = antallIdenterOpprettet(bestilling)
 	const mutate = useMatchMutate()
-
-	mutate(REGEX_BACKEND_GRUPPER)
 
 	return (
 		<div className="bestilling-resultat">
@@ -27,12 +30,20 @@ export default function BestillingResultat(props) {
 				<p>Bestilling #{bestilling.id}</p>
 				<h3>Bestillingsstatus</h3>
 				<div className="status-header_button-wrap">
-					<Button kind="remove-circle" onClick={() => onCloseButton(bestilling.id)} />
+					<Button
+						kind="remove-circle"
+						onClick={() =>
+							setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
+								nyeBestillinger.filter((best) => best.id !== bestilling.id)
+							)
+						}
+					/>
 				</div>
 			</div>
 			<hr />
+			{/*// @ts-ignore*/}
 			<FagsystemStatus bestilling={bestilling} />
-			{antall.harMangler && <span>{antall.tekst}</span>}
+			{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 			{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 			<Feedback
 				label="Hvordan var din opplevelse med bruk av Dolly?"
@@ -50,7 +61,7 @@ export default function BestillingResultat(props) {
 					brukerId={brukerId}
 					closeModal={() => {
 						closeGjenoprettModal()
-						window.location.reload()
+						mutate(REGEX_BACKEND_GRUPPER)
 					}}
 				/>
 			)}
