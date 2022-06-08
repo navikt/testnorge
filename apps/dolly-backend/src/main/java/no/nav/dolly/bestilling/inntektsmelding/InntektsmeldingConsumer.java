@@ -11,6 +11,7 @@ import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -27,11 +28,15 @@ public class InntektsmeldingConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public InntektsmeldingConsumer(TokenExchange tokenService, InntektsmeldingServiceProperties serviceProperties) {
+    public InntektsmeldingConsumer(TokenExchange tokenService,
+                                   InntektsmeldingServiceProperties serviceProperties,
+                                   ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

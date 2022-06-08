@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -37,11 +38,15 @@ public class ArbeidsforholdServiceConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public ArbeidsforholdServiceConsumer(TokenExchange tokenService, ArbeidsforholdServiceProperties serviceProperties) {
+    public ArbeidsforholdServiceConsumer(TokenExchange tokenService,
+                                         ArbeidsforholdServiceProperties serviceProperties,
+                                         ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

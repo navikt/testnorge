@@ -9,6 +9,7 @@ import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -25,14 +26,23 @@ public class AktoerIdSyncConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public AktoerIdSyncConsumer(TokenExchange tokenService, PersonServiceProperties serverProperties) {
+    public AktoerIdSyncConsumer(TokenExchange tokenService,
+                                PersonServiceProperties serverProperties,
+                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(serverProperties.getUrl()).build();
+                .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "aktoerregister_getId" })
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "aktoerregister_getId"})
     public AktoerIdent getAktoerId(String ident) {
 
         ResponseEntity<AktoerIdent> response =
@@ -47,9 +57,5 @@ public class AktoerIdSyncConsumer {
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

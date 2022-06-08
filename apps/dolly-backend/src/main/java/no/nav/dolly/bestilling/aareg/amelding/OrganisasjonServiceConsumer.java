@@ -8,6 +8,7 @@ import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -30,12 +31,16 @@ public class OrganisasjonServiceConsumer {
     private final ExecutorService executorService;
     private final NaisServerProperties serviceProperties;
 
-    public OrganisasjonServiceConsumer(TokenExchange tokenService, OrganisasjonServiceProperties serviceProperties) {
+    public OrganisasjonServiceConsumer(TokenExchange tokenService,
+                                       OrganisasjonServiceProperties serviceProperties,
+                                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

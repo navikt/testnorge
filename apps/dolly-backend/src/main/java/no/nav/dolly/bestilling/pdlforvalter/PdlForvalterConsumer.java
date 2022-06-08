@@ -41,6 +41,7 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
@@ -100,7 +101,11 @@ public class PdlForvalterConsumer {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final ObjectMapper objectMapper;
 
-    public PdlForvalterConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ErrorStatusDecoder errorStatusDecoder, ObjectMapper objectMapper) {
+    public PdlForvalterConsumer(TokenExchange tokenService,
+                                PdlProxyProperties serverProperties,
+                                ErrorStatusDecoder errorStatusDecoder,
+                                ObjectMapper objectMapper,
+                                ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
@@ -109,6 +114,7 @@ public class PdlForvalterConsumer {
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
