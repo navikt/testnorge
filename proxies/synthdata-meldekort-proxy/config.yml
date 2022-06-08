@@ -36,6 +36,9 @@ spec:
         - application: arena-forvalteren
           namespace: teamarenanais
           cluster: dev-fss
+        - application: arena-forvalteren-u1
+          namespace: teamarenanais
+          cluster: dev-fss
         - application: ida
           namespace: traktor
           cluster: prod-fss
