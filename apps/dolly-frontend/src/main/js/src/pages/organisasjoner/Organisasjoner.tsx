@@ -19,6 +19,8 @@ import {
 	useOrganisasjonerForBruker,
 } from '~/utils/hooks/useOrganisasjoner'
 import { sokSelector } from '~/ducks/bestillingStatus'
+import { useDispatch } from 'react-redux'
+import { resetPaginering } from '~/ducks/finnPerson'
 
 type OrganisasjonerProps = {
 	search?: string
@@ -40,11 +42,16 @@ export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const [antallOrg, setAntallOrg] = useState(null)
-	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
 	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
+
+	const byttVisning = (event: React.ChangeEvent<any>) => {
+		dispatch(resetPaginering())
+		setVisning(event.target.value)
+	}
 
 	const isFetching = loading || loadingOrganisasjoner
 

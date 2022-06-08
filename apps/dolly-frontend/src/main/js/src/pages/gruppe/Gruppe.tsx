@@ -10,7 +10,7 @@ import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
-import { resetNavigering } from '~/ducks/finnPerson'
+import { resetNavigering, resetPaginering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useGruppeById } from '~/utils/hooks/useGruppe'
@@ -47,6 +47,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
 		dispatch(resetNavigering())
+		dispatch(resetPaginering())
 		setVisning(typeof event === 'string' ? event : event.target.value)
 	}
 
