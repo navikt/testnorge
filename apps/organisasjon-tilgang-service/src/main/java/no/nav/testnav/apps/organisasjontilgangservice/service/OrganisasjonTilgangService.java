@@ -1,19 +1,18 @@
 package no.nav.testnav.apps.organisasjontilgangservice.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.AltinnConsumer;
+import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
-import no.nav.testnav.apps.organisasjontilgangservice.client.altinn.v1.AltinnClient;
-import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
-
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonTilgangService {
-    private final AltinnClient client;
+    private final AltinnConsumer client;
 
     public Flux<Organisasjon> getAll() {
         return client.getOrganisasjoner();

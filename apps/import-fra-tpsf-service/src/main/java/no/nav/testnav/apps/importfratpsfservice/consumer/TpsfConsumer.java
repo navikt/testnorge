@@ -9,9 +9,9 @@ import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmeldingGruppe;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -21,12 +21,16 @@ public class TpsfConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
-    public TpsfConsumer(TokenExchange tokenExchange, TpsfProperties properties) {
+    public TpsfConsumer(TokenExchange tokenExchange,
+                        TpsfProperties properties,
+                        ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

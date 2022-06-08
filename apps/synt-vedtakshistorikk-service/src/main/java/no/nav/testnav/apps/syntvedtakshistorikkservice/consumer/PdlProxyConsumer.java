@@ -13,6 +13,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.BufferedReader;
@@ -22,8 +23,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -39,10 +40,14 @@ public class PdlProxyConsumer {
 
     public PdlProxyConsumer(
             PdlProxyProperties serviceProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder().baseUrl(serviceProperties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.tokenExchange = tokenExchange;
     }
 

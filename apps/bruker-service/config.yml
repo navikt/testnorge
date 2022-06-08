@@ -28,6 +28,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   gcp:
     sqlInstances:
       - type: POSTGRES_12

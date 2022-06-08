@@ -8,6 +8,7 @@ import no.nav.testnav.libs.commands.GetHelsepersonellCommand;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -19,13 +20,15 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(
             TokenExchange tokenExchange,
-            HelsepersonellServiceProperties serviceProperties
-    ) {
+            HelsepersonellServiceProperties serviceProperties,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

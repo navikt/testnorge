@@ -28,6 +28,7 @@ public class AdresseServiceConsumer {
     public AdresseServiceConsumer(TokenExchange tokenExchange,
                                   AdresseServiceProperties properties,
                                   ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient

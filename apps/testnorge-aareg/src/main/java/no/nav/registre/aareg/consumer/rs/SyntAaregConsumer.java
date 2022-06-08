@@ -5,6 +5,7 @@ import no.nav.registre.aareg.consumer.rs.command.PostSyntAaregCommand;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,8 +21,9 @@ public class SyntAaregConsumer {
 
     public SyntAaregConsumer(
             @Value("${aareg.pageSize}") int pageSize,
-            @Value("${synt-aareg.rest.api.url}") String aaregUrl
-    ) {
+            @Value("${synt-aareg.rest.api.url}") String aaregUrl,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.pageSize = pageSize;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
@@ -30,6 +32,7 @@ public class SyntAaregConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(aaregUrl)
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

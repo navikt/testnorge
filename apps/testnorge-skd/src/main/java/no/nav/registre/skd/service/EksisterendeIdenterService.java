@@ -1,19 +1,18 @@
 package no.nav.registre.skd.service;
 
-import static java.util.Objects.isNull;
-import static no.nav.registre.skd.service.SyntetiseringService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
-import static no.nav.registre.skd.service.SyntetiseringService.FOEDTE_IDENTER;
-import static no.nav.registre.skd.service.SyntetiseringService.GIFTE_IDENTER_I_NORGE;
-import static no.nav.registre.skd.service.SyntetiseringService.LEVENDE_IDENTER_I_NORGE;
-import static no.nav.registre.skd.service.SyntetiseringService.SINGLE_IDENTER_I_NORGE;
-import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
-import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
-import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
-import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.skd.consumer.HodejegerenSkdConsumer;
+import no.nav.registre.skd.consumer.dto.Relasjon;
+import no.nav.registre.skd.consumer.response.RelasjonsResponse;
+import no.nav.registre.skd.domain.Endringskoder;
+import no.nav.registre.skd.domain.KoderForSivilstand;
+import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
+import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
+import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -28,16 +27,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
-import no.nav.registre.skd.consumer.dto.Relasjon;
-import no.nav.registre.skd.consumer.response.RelasjonsResponse;
-import no.nav.registre.skd.domain.Endringskoder;
-import no.nav.registre.skd.domain.KoderForSivilstand;
-import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
-import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
-import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
-import no.nav.testnav.libs.servletcore.util.IdentUtil;
+import static java.util.Objects.isNull;
+import static no.nav.registre.skd.service.SyntetiseringService.BRUKTE_IDENTER_I_DENNE_BOLKEN;
+import static no.nav.registre.skd.service.SyntetiseringService.FOEDTE_IDENTER;
+import static no.nav.registre.skd.service.SyntetiseringService.GIFTE_IDENTER_I_NORGE;
+import static no.nav.registre.skd.service.SyntetiseringService.LEVENDE_IDENTER_I_NORGE;
+import static no.nav.registre.skd.service.SyntetiseringService.SINGLE_IDENTER_I_NORGE;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettKopiAvSkdMelding;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putEktefellePartnerFnrInnIMelding;
+import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
 @Slf4j
 @Service
@@ -56,7 +55,7 @@ public class EksisterendeIdenterService {
     static final String SIVILSTAND = "sivilstand";
     static final String STATSBORGER = "statsborger";
 
-    private final HodejegerenConsumerSkd hodejegerenConsumerSkd;
+    private final HodejegerenSkdConsumer hodejegerenConsumerSkd;
 
     private final FoedselService foedselService;
 

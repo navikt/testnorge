@@ -1,23 +1,8 @@
 package no.nav.registre.skd.consumer;
 
 import com.google.common.collect.Lists;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.registre.skd.consumer.command.tpsf.DeleteIdenterFraTpsCommand;
 import no.nav.registre.skd.consumer.command.tpsf.GetMeldingerMedIdsCommand;
 import no.nav.registre.skd.consumer.command.tpsf.GetMeldingsIdsCommand;
@@ -30,26 +15,40 @@ import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.requests.SlettSkdmeldingerRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class TpsfConsumer {
 
-    private final WebClient webClient;
-
     private static final int PAGE_SIZE = 100;
+    private final WebClient webClient;
 
     public TpsfConsumer(
             @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
-            @Value("${testnorges.ida.credential.tpsf.password}") String password
-    ) {
+            @Value("${testnorges.ida.credential.tpsf.password}") String password,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.webClient = WebClient.builder().baseUrl(serverUrl)
                 .defaultHeaders(header -> header.setBasicAuth(username, password))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
     public List<Long> saveSkdEndringsmeldingerInTPSF(
             Long gruppeId,
             List<RsMeldingstype> skdmeldinger
@@ -60,7 +59,7 @@ public class TpsfConsumer {
         return new PostSaveSkdEndringsmeldingerTpsfCommand(gruppeId, skdmeldinger, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
     public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(
             Long gruppeId,
             SendToTpsRequest sendToTpsRequest
@@ -69,12 +68,12 @@ public class TpsfConsumer {
         return new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
     public List<Long> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
         return new GetMeldingsIdsCommand(gruppeId, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
     public List<Long> getMeldingIderTilhoerendeIdenter(
             Long avspillergruppeId,
             List<String> identer
@@ -82,7 +81,7 @@ public class TpsfConsumer {
         return new PostHentMeldingsIdsCommand(avspillergruppeId, identer, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
     public HttpStatus slettMeldingerFraTpsf(List<Long> meldingIder) {
         return new PostSlettMeldingerTpsfCommand(SlettSkdmeldingerRequest.builder().ids(meldingIder).build(), webClient).call();
     }

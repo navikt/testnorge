@@ -31,12 +31,12 @@ public class TpsMessagingConsumer {
     public TpsMessagingConsumer(
             TpsMessagingServiceProperties serviceProperties,
             TokenExchange tokenExchange,
-            ExchangeFilterFunction exchangeFilterFunction) {
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(exchangeFilterFunction)
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.organisasjontilgangservice.domain;
 
-import java.time.LocalDateTime;
+import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.OrganisasjonDTO;
+import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.RightDTO;
 
-import no.nav.testnav.apps.organisasjontilgangservice.client.altinn.v1.dto.OrganisasjonDTO;
-import no.nav.testnav.apps.organisasjontilgangservice.client.altinn.v1.dto.RightDTO;
+import java.time.LocalDateTime;
 
 public class Organisasjon {
     private final String navn;

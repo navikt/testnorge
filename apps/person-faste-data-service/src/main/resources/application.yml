@@ -21,3 +21,20 @@ testnav:
     hosts:
       - testnav-person-faste-data-service.dev.intern.nav.no
       - testnav-person-faste-data-service.dolly.svc.cluster.local
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

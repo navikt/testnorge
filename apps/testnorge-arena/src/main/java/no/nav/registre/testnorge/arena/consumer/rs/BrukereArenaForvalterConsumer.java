@@ -1,17 +1,21 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.DeleteArenaBrukerCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.GetArenaBrukereCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.PostArenaBrukerCommand;
-
+import no.nav.registre.testnorge.arena.consumer.rs.command.PostEndreInnsatsbehovCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriTemplate;
 
@@ -20,12 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.testnorge.arena.consumer.rs.command.PostEndreInnsatsbehovCommand;
-import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Component
 @Slf4j
@@ -37,21 +36,25 @@ public class BrukereArenaForvalterConsumer {
 
     public BrukereArenaForvalterConsumer(
             ArbeidssoekerCacheUtil arbeidssoekerCacheUtil,
-            @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
-    ) {
-        this.webClient = WebClient.builder().baseUrl(arenaForvalterServerUrl).build();
+            @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
+        this.webClient = WebClient.builder()
+                .baseUrl(arenaForvalterServerUrl)
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.hentBrukere = new UriTemplate(arenaForvalterServerUrl + "/v1/bruker");
         this.arbeidssoekerCacheUtil = arbeidssoekerCacheUtil;
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public NyeBrukereResponse sendTilArenaForvalter(
             List<NyBruker> nyeBrukere
     ) {
         return new PostArenaBrukerCommand(nyeBrukere, webClient).call();
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public List<Arbeidsoeker> hentArbeidsoekere(
             String personident,
             String eier,
@@ -149,7 +152,7 @@ public class BrukereArenaForvalterConsumer {
         return baseUrl.toString();
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
     public boolean slettBruker(
             String personident,
             String miljoe

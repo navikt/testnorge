@@ -5,6 +5,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.G
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
@@ -17,13 +18,15 @@ public class GenererOrganisasjonPopulasjonConsumer {
 
     public GenererOrganisasjonPopulasjonConsumer(
             GenererOrganisasjonPopulasjonServerProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

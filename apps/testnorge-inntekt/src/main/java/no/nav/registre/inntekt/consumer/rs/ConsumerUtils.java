@@ -1,18 +1,12 @@
 package no.nav.registre.inntekt.consumer.rs;
 
-import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnummerFraMaanedsnavn;
-import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.LOENNSINNTEKT;
-import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.NAERINGSINNTEKT;
-import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.PENSJON_ELLER_TRYGD;
-import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
-
+import lombok.experimental.UtilityClass;
 import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntekt;
 import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype;
 import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Tilleggsinformasjon;
 import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.tilleggsinformasjon.AldersUfoereEtterlatteAvtalefestetOgKrigspensjon;
-import org.springframework.stereotype.Service;
 
 import java.time.Month;
 import java.time.YearMonth;
@@ -22,14 +16,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+import static no.nav.registre.inntekt.utils.DatoParser.hentMaanedsnummerFraMaanedsnavn;
+import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.LOENNSINNTEKT;
+import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.NAERINGSINNTEKT;
+import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.PENSJON_ELLER_TRYGD;
+import static no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektstype.YTELSE_FRA_OFFENTLIGE;
+
+@UtilityClass
 public class ConsumerUtils {
 
     private static final String KONTANTYTELSE = "kontantytelse";
-
-    private ConsumerUtils() {
-
-    }
 
     public static final String CALL_ID_NAME = "Nav-Call-Id";
     public static final String CONSUMER_ID_NAME = "Nav-Consumer-Id";

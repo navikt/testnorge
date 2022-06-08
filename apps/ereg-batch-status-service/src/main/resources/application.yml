@@ -35,3 +35,20 @@ ereg:
     t4: https://modapp-t4.adeo.no
     t5: https://modapp-t5.adeo.no
     t6: https://modapp-t6.adeo.no
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,16 +26,18 @@ public class OrganisasjonFasteDataConsumer {
     public OrganisasjonFasteDataConsumer(
             OrganisasjonFasteDataServiceProperties serverProperties,
             TokenExchange tokenExchange,
-            GenererNavnConsumer genererNavnConsumer) {
+            GenererNavnConsumer genererNavnConsumer,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.genererNavnConsumer = genererNavnConsumer;
     }
-
 
     private String genererNavn(String enhetstype) {
         NavnDTO navn = genererNavnConsumer.genereNavn();

@@ -28,6 +28,7 @@ public class GenererNavnServiceConsumer {
     public GenererNavnServiceConsumer(TokenExchange tokenExchange,
                                       GenererNavnServiceProperties properties,
                                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient

@@ -1,7 +1,12 @@
 package no.nav.registre.testnorge.helsepersonellservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.helsepersonellservice.config.credentials.SamhandlerregisteretServerProperties;
+import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetSamhandlerCommand;
+import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
@@ -10,11 +15,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
-import no.nav.registre.testnorge.helsepersonellservice.config.credentials.SamhandlerregisteretServerProperties;
-import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetSamhandlerCommand;
-import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -26,8 +26,9 @@ public class SamhandlerregisteretConsumer {
 
     public SamhandlerregisteretConsumer(
             TokenExchange tokenExchange,
-            SamhandlerregisteretServerProperties serverProperties
-    ) {
+            SamhandlerregisteretServerProperties serverProperties,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
@@ -36,6 +37,7 @@ public class SamhandlerregisteretConsumer {
                         .defaultCodecs()
                         .maxInMemorySize(16 * 1024 * 1024))
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
     }
