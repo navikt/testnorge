@@ -13,9 +13,16 @@ type Props = {
 	partnerIdent: string
 	gruppeId: string
 	gruppeIdenter: string[]
+	master: string
 }
 
-export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIdenter }: Props) => {
+export const PartnerImportButton = ({
+	action,
+	gruppeId,
+	partnerIdent,
+	gruppeIdenter,
+	master,
+}: Props) => {
 	if (!partnerIdent) {
 		return null
 	}
@@ -28,7 +35,7 @@ export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIden
 	const handleImport = async (ident: string) => {
 		setLoading(true)
 		setFeilmelding(null)
-		await DollyApi.importerPartner(gruppeId, ident)
+		await DollyApi.importerPartner(gruppeId, ident, master)
 			.then((response) => {
 				setLoading(false)
 				action()
@@ -50,6 +57,7 @@ export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIden
 				disabled={disabled}
 				title={disabled ? 'Partner er allerede i gruppen' : ''}
 				kind="relasjoner"
+				className="svg-icon-blue"
 			>
 				IMPORTER PARTNER
 			</Button>
