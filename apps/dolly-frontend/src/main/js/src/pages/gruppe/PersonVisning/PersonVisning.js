@@ -97,7 +97,6 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{/*{!iLaastGruppe && ident.master === 'PDL' && isAlive && (*/}
 					{!iLaastGruppe && isAlive && (
 						<PartnerImportButton
 							action={updateAntallImporterte}
