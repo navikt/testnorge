@@ -55,7 +55,6 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	const navigate = useNavigate()
 
 	const [modalMalIsOpen, openMalModal, closeMalModal] = useBoolean(false)
-	const [partnerIdenter] = useState([])
 	const [malData, setMalData] = useState(null)
 
 	const [importMedPartner, toggleImportMedPartner] = useToggle(false)
