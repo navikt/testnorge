@@ -92,8 +92,8 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 		}
 	}
 
-	const partnere = getPartnere(valgtePersoner.map((person) => person.data))
-	const visPartnereImport = !!(partnere && partnere.length)
+	const utvalgtPersonersPartnere = getPartnere(valgtePersoner.map((person) => person.data))
+	const visPartnereImport = !!(utvalgtPersonersPartnere && utvalgtPersonersPartnere.length)
 
 	return (
 		<React.Fragment>
