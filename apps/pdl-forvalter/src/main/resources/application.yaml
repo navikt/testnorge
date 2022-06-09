@@ -48,9 +48,9 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
-#    health:
-#      show-details: always
-#      show-components: always
+    health:
+      show-details: always
+      show-components: always
   metrics.export:
     prometheus.enabled: true
 server:
