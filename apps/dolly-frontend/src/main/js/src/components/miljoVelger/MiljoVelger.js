@@ -8,7 +8,7 @@ import './MiljoVelger.less'
 import styled from 'styled-components'
 import { ifPresent } from '~/utils/YupValidations'
 import * as Yup from 'yup'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -72,9 +72,9 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 			{bestillingsdata && (
 				<>
 					{disableAllEnvironments && (
-						<AlertStripeInfo>
-							Denne bestillingen er uavhengig av miljøer.<p> </p>
-						</AlertStripeInfo>
+						<Alert variant={'info'}>
+							Denne bestillingen er uavhengig av miljøer.<p></p>
+						</Alert>
 					)}
 					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
 				</>

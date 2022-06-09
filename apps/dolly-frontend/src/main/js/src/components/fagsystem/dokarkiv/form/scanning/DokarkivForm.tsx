@@ -8,11 +8,11 @@ import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import FileUpload from 'filopplasting'
 import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
 import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import ReactImageUploading from 'react-images-uploading'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -36,7 +36,7 @@ export type Vedlegg = {
 	}
 }
 
-const FilOpplaster = styled(FileUpload)`
+const FilOpplaster = styled(ReactImageUploading)`
 	background-color: unset;
 	margin-bottom: 10px;
 	min-height: 60px;
@@ -150,10 +150,12 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
-							className={'flexbox--full-width'}
-							acceptedMimetypes={['application/pdf']}
-							files={files}
-							onFilesChanged={handleVedleggChange}
+							multiple
+							theme={'flexbox--full-width'}
+							// options={}
+							// acceptedMimetypes={['application/pdf']}
+							value={files}
+							onChange={handleVedleggChange}
 						/>
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />

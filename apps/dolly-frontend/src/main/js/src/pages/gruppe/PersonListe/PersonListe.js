@@ -68,7 +68,7 @@ export default function PersonListe({
 
 	useEffect(() => {
 		if (isEmpty(identListe)) {
-			return null
+			return
 		}
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe, fagsystem)

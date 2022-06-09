@@ -1,12 +1,12 @@
 import React from 'react'
 import cn from 'classnames'
-import Etikett, { EtikettBaseProps } from 'nav-frontend-etiketter'
 
 import './etikett.less'
+import { Tag } from '@navikt/ds-react'
 
 interface ImportFraEtikettProps {
 	importFra: string
-	type: EtikettBaseProps
+	variant: any
 	venstreMargin?: boolean
 }
 
@@ -17,14 +17,14 @@ const importType = (fra: string) => {
 	else return 'Ukjent'
 }
 
-const ImportFraEtikett = ({ importFra, type, venstreMargin }: ImportFraEtikettProps) => {
+const ImportFraEtikett = ({ importFra, variant, venstreMargin }: ImportFraEtikettProps) => {
 	if (!importFra) return null
 
 	const css = cn('dolly-etikett', { 'dolly-etikett--venstre-margin': venstreMargin })
 	return (
-		<Etikett mini className={css} type={type} title={`Importert fra ${importType(importFra)}`}>
+		<Tag variant={variant} className={css} title={`Importert fra ${importType(importFra)}`}>
 			{importType(importFra)}
-		</Etikett>
+		</Tag>
 	)
 }
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
-import { RadioPanelGruppe } from 'nav-frontend-skjema'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { FormikProps } from 'formik'
+import { Radio, RadioGroup } from '@navikt/ds-react'
 
 type Form = {
 	formikBag: FormikProps<{}>
@@ -30,24 +30,24 @@ const Tittel = styled.div`
 	}
 `
 
-const TestpersonValg = styled(RadioPanelGruppe)`
-	legend {
-		.offscreen;
-	}
+const TestpersonValg = styled(RadioGroup)`
+  legend {
+    .offscreen;
+  }
 
-	.inputPanelGruppe__inner {
-		.inputPanel {
-			margin-top: 10px;
-		}
+  .inputPanelGruppe__inner {
+    .inputPanel {
+      margin-top: 10px;
+    }
 
-		display: flex;
-		justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 
-		label {
-			width: 49%;
-			margin-bottom: 0.5rem;
-		}
-	}
+    label {
+      width: 49%;
+      margin-bottom: 0.5rem;
+    }
+  }
 `
 
 const informasjonstekst =
@@ -69,21 +69,19 @@ export const IdentVelger = ({ formikBag }: Form) => {
 		<IdentVelgerField>
 			<Tittel>
 				<h2>Velg type person</h2>
-				<Hjelpetekst hjelpetekstFor={'Identvelger'}>{informasjonstekst}</Hjelpetekst>
+				<Hjelpetekst>{informasjonstekst}</Hjelpetekst>
 			</Tittel>
 
 			<TestpersonValg
 				name="pdldata.opprettNyPerson.syntetisk"
 				legend=""
-				radios={[
-					{ label: 'Standard', value: IdentType.STANDARD },
-					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
-				]}
-				checked={type}
 				onChange={(e) =>
 					handleIdentTypeChange((e.target as HTMLTextAreaElement).value as IdentType)
 				}
-			/>
+			>
+				<Radio value={IdentType.STANDARD}>Standard</Radio>
+				<Radio value={IdentType.SYNTETISK}>Syntetisk</Radio>
+			</TestpersonValg>
 		</IdentVelgerField>
 	)
 }

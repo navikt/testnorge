@@ -13,11 +13,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { ForeldreBarnRelasjon, TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
+import { Alert } from '@navikt/ds-react'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
@@ -88,11 +88,11 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	return (
 		<>
 			{!harBarn() && (
-				<AlertStripeAdvarsel style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
 					For å sette foreldreansvar må personen også ha et barn. Det kan du legge til ved å huke av
 					for Har barn/foreldre under Familierelasjoner på forrige side, og sette en relasjon av
 					typen barn.
-				</AlertStripeAdvarsel>
+				</Alert>
 			)}
 			<FormikDollyFieldArray
 				name="pdldata.person.foreldreansvar"

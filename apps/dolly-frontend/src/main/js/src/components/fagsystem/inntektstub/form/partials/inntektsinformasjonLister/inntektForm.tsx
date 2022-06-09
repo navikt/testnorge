@@ -4,9 +4,9 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import InntektStub from '~/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
+import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
 
@@ -87,17 +87,17 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 	return (
 		<>
 			<div className="toggle--wrapper">
-				<ToggleGruppe
+				<ToggleGroup
 					onChange={(event: BaseSyntheticEvent) => changeFormType(event.target?.value)}
 					name="toggler"
 				>
-					<ToggleKnapp value={FormType.STANDARD} checked={!formSimple}>
+					<ToggleGroup.Item value={FormType.STANDARD} checked={!formSimple}>
 						Standard
-					</ToggleKnapp>
-					<ToggleKnapp value={FormType.FORENKLET} checked={formSimple}>
+					</ToggleGroup.Item>
+					<ToggleGroup.Item value={FormType.FORENKLET} checked={formSimple}>
 						Forenklet
-					</ToggleKnapp>
-				</ToggleGruppe>
+					</ToggleGroup.Item>
+				</ToggleGroup>
 			</div>
 			<FormikDollyFieldArray
 				name={`${inntektsinformasjonPath}.inntektsliste`}

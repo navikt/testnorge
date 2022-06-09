@@ -1,11 +1,10 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -13,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
+import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 export type GruppeProps = {
 	visBestilling: string
@@ -72,9 +72,9 @@ export default function Gruppe({
 		return <Loading label="Laster personer" panel />
 	}
 
-	const byttVisning = (event: BaseSyntheticEvent) => {
+	const byttVisning = (value: VisningType) => {
 		dispatch(resetNavigering())
-		setVisning(typeof event === 'string' ? event : event.target.value)
+		setVisning(value)
 	}
 
 	const startBestilling = (values: {}) =>
@@ -99,7 +99,7 @@ export default function Gruppe({
 			<div className="toolbar">
 				{brukertype === 'AZURE' && (
 					<NavButton
-						type="hoved"
+						variant={'primary'}
 						onClick={visStartBestilling}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
@@ -111,7 +111,7 @@ export default function Gruppe({
 
 				{brukertype === 'BANKID' && (
 					<NavButton
-						type="hoved"
+						variant={'primary'}
 						onClick={() => setRedirectToSoek(true)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
@@ -122,28 +122,22 @@ export default function Gruppe({
 				)}
 
 				<div style={{ marginTop: '9px' }}>
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp
-							value={VisningType.VISNING_PERSONER}
-							checked={visning === VisningType.VISNING_PERSONER}
-						>
+					<ToggleGroup onChange={byttVisning} defaultValue={VisningType.VISNING_PERSONER}>
+						<ToggleGroup.Item value={VisningType.VISNING_PERSONER}>
 							<Icon
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter - antallFjernet})`}
-						</ToggleKnapp>
-						<ToggleKnapp
-							value={VisningType.VISNING_BESTILLING}
-							checked={visning === VisningType.VISNING_BESTILLING}
-						>
+						</ToggleGroup.Item>
+						<ToggleGroup.Item value={VisningType.VISNING_BESTILLING}>
 							<Icon
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
 							{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
-						</ToggleKnapp>
-					</ToggleGruppe>
+						</ToggleGroup.Item>
+					</ToggleGroup>
 				</div>
 
 				<FinnPersonBestillingConnector />

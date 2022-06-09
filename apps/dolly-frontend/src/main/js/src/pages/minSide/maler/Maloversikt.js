@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { malerApi } from './MalerApi'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import Button from '~/components/ui/button/Button'
@@ -10,6 +9,7 @@ import { EndreMalnavn } from './EndreMalnavn'
 import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
+import { Alert } from '@navikt/ds-react'
 
 export default ({ brukerId }) => {
 	const [loading, setLoading] = useState(true)
@@ -92,13 +92,13 @@ export default ({ brukerId }) => {
 						/>
 					</ErrorBoundary>
 				) : (
-					<AlertStripeInfo>Ingen maler samsvarte med søket ditt</AlertStripeInfo>
+					<Alert variant={'warning'}>Ingen maler samsvarte med søket ditt</Alert>
 				)
 			) : (
-				<AlertStripeInfo>
+				<Alert variant={'warning'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
-				</AlertStripeInfo>
+				</Alert>
 			)}
 		</div>
 	)

@@ -37,12 +37,12 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 				<div className="step-navknapper--right">
 					{showPrevious && <NavButton onClick={() => onPrevious(formikBag)}>Tilbake</NavButton>}
 					{!isLastStep && (
-						<NavButton type="hoved" disabled={isSubmitting} onClick={handleSubmit}>
+						<NavButton variant={'primary'} disabled={isSubmitting} onClick={handleSubmit}>
 							Videre
 						</NavButton>
 					)}
 					{isLastStep && (
-						<NavButton type="hoved" onClick={handleSubmit} disabled={isSubmitting}>
+						<NavButton variant={'primary'} onClick={handleSubmit} disabled={isSubmitting}>
 							{getLastButtonText()}
 						</NavButton>
 					)}

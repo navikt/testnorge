@@ -69,7 +69,7 @@ const FinnPersonBestilling = ({
 
 	useEffect(() => {
 		if (!searchQuery) {
-			return null
+			return
 		}
 		soekType === SoekTypeValg.PERSON
 			? navigerTilPerson(searchQuery)

@@ -205,11 +205,7 @@ module.exports = (env) =>
 			rules: [
 				{
 					test: /\.less$/,
-					use: [
-						'style-loader',
-						'css-loader',
-						'less-loader?{"lessOptions":{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}}',
-					],
+					use: ['style-loader', 'css-loader', 'less-loader'],
 				},
 				{
 					test: /\.css$/,

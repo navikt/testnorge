@@ -4,9 +4,9 @@ import '~/utils/FormatIso'
 import './polyfill'
 
 import React from 'react'
-import { render } from 'react-dom'
 import Logger from './logger'
 import { v4 as uuid } from 'uuid'
+import { createRoot } from 'react-dom/client'
 import { RootComponent } from '~/RootComponent'
 
 window.uuid = uuid()
@@ -22,6 +22,7 @@ window.onerror = (message) => {
 	}
 }
 
-const root = document.getElementById('root')
+const container = document.getElementById('root')
+const root = createRoot(container)
 
-render(<RootComponent />, root)
+root.render(<RootComponent />)

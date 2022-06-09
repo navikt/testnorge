@@ -53,10 +53,10 @@ export const GjenopprettModal = ({
 								/>
 
 								<div className="dollymodal_buttons">
-									<NavButton type={'fare'} onClick={closeModal}>
+									<NavButton variant={'danger'} onClick={closeModal}>
 										Avbryt
 									</NavButton>
-									<NavButton type="hoved" onClick={formikProps.submitForm}>
+									<NavButton variant={'primary'} onClick={formikProps.submitForm}>
 										Utfør
 									</NavButton>
 								</div>

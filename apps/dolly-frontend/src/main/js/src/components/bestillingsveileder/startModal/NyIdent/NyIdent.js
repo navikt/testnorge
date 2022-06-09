@@ -14,10 +14,10 @@ import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 
 import './nyIdent.less'
 import styled from 'styled-components'
-import Alertstripe from 'nav-frontend-alertstriper'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { tpsfAttributter } from '~/components/bestillingsveileder/utils'
+import { Alert } from '@navikt/ds-react'
 
 const initialValues = {
 	antall: 1,
@@ -125,11 +125,11 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								/>
 							</InputDiv>
 							{erTpsfMal && (
-								<Alertstripe type={'advarsel'} style={{ width: '97%' }}>
+								<Alert variant={'warning'} style={{ width: '97%' }}>
 									Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
 									master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
 									ny mal og sletter denne malen.
-								</Alertstripe>
+								</Alert>
 							)}
 							<div className="mal-admin">
 								<Button kind="maler" onClick={() => {}}>

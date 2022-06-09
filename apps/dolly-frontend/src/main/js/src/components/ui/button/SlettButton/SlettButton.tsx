@@ -57,7 +57,7 @@ export const SlettButton = ({
 								gruppeId ? action(gruppeId) : action()
 								navigateHome && navigate('/')
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>

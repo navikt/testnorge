@@ -74,7 +74,7 @@ export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIden
 								closeModal()
 								handleImport(partnerIdent)
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja
 						</NavButton>

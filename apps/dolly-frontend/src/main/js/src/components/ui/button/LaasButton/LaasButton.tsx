@@ -40,7 +40,7 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 								closeModal()
 								return action(gruppeId)
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>

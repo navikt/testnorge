@@ -1,4 +1,4 @@
-import React, { ReactFragment, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
@@ -6,7 +6,7 @@ import _has from 'lodash/has'
 import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
 import { add, eachMonthOfInterval, format } from 'date-fns'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -23,11 +23,10 @@ import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 import { FormikProps } from 'formik'
 import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 interface AmeldingFormProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
-	warningMessage?: AlertStripeAdvarsel
+	warningMessage?: string
 }
 
 const KjedeContainer = styled.div`
@@ -45,7 +44,7 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): ReactFragment => {
+export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): JSX.Element => {
 	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
@@ -191,7 +190,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 		<>
 			<div className="flexbox--align-center">
 				<h3>A-melding</h3>
-				<Hjelpetekst hjelpetekstFor="A-melding">
+				<Hjelpetekst>
 					Om du har opprettet dine egne organisasjoner kan du sende A-meldinger til disse. Velg
 					først hvilken type arbeidsforhold du ønsker å opprette, deretter kan du fylle ut resten av
 					informasjonen.
@@ -230,14 +229,13 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 							{/* //TODO lag onClick for å fylle felter */}
 							{/* <Fyllknapp mini onClick={null} disabled={!fom || !tom}> */}
 							<Fyllknapp
-								mini
 								onClick={null}
 								disabled={true}
 								title="Denne funksjonaliteten er foreløpig ikke tilgjengelig"
 							>
 								Fyll felter automatisk
 							</Fyllknapp>
-							<Hjelpetekst hjelpetekstFor="Fyllknapp">
+							<Hjelpetekst>
 								Når du har fylt ut perioden du ønsker å opprette A-meldinger for, vil det genereres
 								et skjema for hver måned. Du kan velge om du ønsker å fylle ut alt selv, eller fylle
 								feltene automatisk. Ved automatisk utfylling vil det bli generert en logisk
@@ -257,7 +255,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 									isLocked={erLenket}
 								/>
 								<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
-								<Hjelpetekst hjelpetekstFor="DollyKjede">
+								<Hjelpetekst>
 									Når du ser et lenke-symbol til høyre for månedsoversikten er alle måneder lenket
 									sammen. Det vil si at om du gjør endringer på én måned vil disse bli gjort på alle
 									månedene. Om du trykker på lenken vises en brutt lenke og månedene vil være

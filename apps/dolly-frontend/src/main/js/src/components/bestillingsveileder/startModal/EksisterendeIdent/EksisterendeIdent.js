@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { useAsyncFn } from 'react-use'
-import { Textarea } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
-import Alertstripe from 'nav-frontend-alertstriper'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { PdlforvalterApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
@@ -10,6 +8,8 @@ import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Icon from '~/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
+import { Form } from 'formik'
+import { Alert } from '@navikt/ds-react'
 
 export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 	const [text, setText] = useState('')
@@ -32,18 +32,18 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 
 			{!state.value && !state.loading && (
 				<React.Fragment>
-					<Textarea
+					<Form
 						label="Identer"
 						placeholder="fnr/dnr/npid"
 						value={text}
 						onChange={(e) => setText(e.target.value)}
 					/>
 
-					<Alertstripe type="info">
+					<Alert variant="info">
 						Skriv inn fnr/dnr/npid. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
 						fra før.
-					</Alertstripe>
-					<NavButton type="hoved" onClick={() => fetch()} disabled={!text.length}>
+					</Alert>
+					<NavButton variant={'primary'} onClick={() => fetch()} disabled={!text.length}>
 						Sjekk gyldige personer
 					</NavButton>
 				</React.Fragment>
@@ -73,9 +73,9 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 					</table>
 
 					{finnesUgyldige && (
-						<Alertstripe type="advarsel">
+						<Alert variant="warning">
 							Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
-						</Alertstripe>
+						</Alert>
 					)}
 				</React.Fragment>
 			)}

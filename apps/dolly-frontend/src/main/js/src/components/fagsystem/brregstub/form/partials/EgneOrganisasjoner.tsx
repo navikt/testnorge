@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Loading from '~/components/ui/loading/Loading'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { Alert } from '@navikt/ds-react'
 
 interface OrgProps {
 	path: string
 	formikBag: FormikProps<{}>
 	handleChange: (event: React.ChangeEvent<any>) => void
-	warningMessage?: AlertStripeAdvarsel
+	warningMessage?: string
 	isLoading: boolean
 	hentOrganisasjoner: Function
 	organisasjoner: Organisasjon[]
@@ -56,10 +56,10 @@ export const EgneOrganisasjoner = ({
 		<>
 			{isLoading && <Loading label="Laster organisasjoner" />}
 			{error && (
-				<AlertStripeAdvarsel>
+				<Alert variant={'warning'}>
 					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
 					eller kontakt Team Dolly ved vedvarende feil.
-				</AlertStripeAdvarsel>
+				</Alert>
 			)}
 			{!harEgneOrganisasjoner &&
 				!isLoading &&
@@ -67,10 +67,10 @@ export const EgneOrganisasjoner = ({
 				(warningMessage ? (
 					warningMessage
 				) : (
-					<AlertStripeAdvarsel>
+					<Alert variant={'warning'}>
 						Du har ingen egne organisasjoner. For å lage dine egne organisasjoner trykk{' '}
 						<a href="/organisasjoner">her</a>.
-					</AlertStripeAdvarsel>
+					</Alert>
 				))}
 			{harEgneOrganisasjoner && !error && (
 				<DollySelect

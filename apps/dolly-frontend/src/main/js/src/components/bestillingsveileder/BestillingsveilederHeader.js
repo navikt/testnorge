@@ -56,7 +56,7 @@ export const BestillingsveilederHeader = () => {
 				{importFra !== undefined && (
 					<Header.TitleValue
 						title="Importert fra"
-						value={<ImportFraEtikett type="fokus" importFra={importFra} />}
+						value={<ImportFraEtikett variant="info" importFra={importFra} />}
 					/>
 				)}
 			</div>

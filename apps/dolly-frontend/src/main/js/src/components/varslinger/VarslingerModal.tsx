@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import Stegindikator from 'nav-frontend-stegindikator'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { VarslingerApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
+import { StepIndicator } from '@navikt/ds-react'
 
 interface Varslinger {
 	updateVarslingerBruker: Function
@@ -76,25 +76,19 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 				<div className="varslinger-modal">
 					{/* 
                 //@ts-ignore */}
-					{antallVarslinger > 1 && (
-						<Stegindikator aktivtSteg={steg} steg={varslingerSteg} kompakt />
-					)}
+					{antallVarslinger > 1 && <StepIndicator activeStep={steg} children={varslingerSteg} />}
 
 					<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
 
 					<div className="varslinger-buttons">
 						{steg > 0 && (
-							<NavButton
-								type="standard"
-								onClick={() => setSteg(steg - 1)}
-								style={{ float: 'left' }}
-							>
+							<NavButton onClick={() => setSteg(steg - 1)} style={{ float: 'left' }}>
 								Forrige side
 							</NavButton>
 						)}
 						{steg < antallVarslinger - 1 ? (
 							<NavButton
-								type="hoved"
+								variant={'primary'}
 								onClick={() => submitSettVarsling(false)}
 								style={{ float: 'right' }}
 							>
@@ -102,7 +96,7 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 							</NavButton>
 						) : (
 							<NavButton
-								type="hoved"
+								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}
 							>

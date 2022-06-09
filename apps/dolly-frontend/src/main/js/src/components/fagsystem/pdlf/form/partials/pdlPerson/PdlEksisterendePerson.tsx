@@ -9,7 +9,7 @@ import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
 import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
@@ -62,9 +62,9 @@ export const PdlEksisterendePerson = ({
 				/>
 			) : (
 				!loadingIdentOptions && (
-					<AlertStripeInfo style={{ marginBottom: '15px' }}>
+					<Alert variant={'info'} style={{ marginBottom: '15px' }}>
 						Det finnes ingen eksisterende personer i denne gruppen.
-					</AlertStripeInfo>
+					</Alert>
 				)
 			)}
 		</div>

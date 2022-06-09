@@ -25,7 +25,7 @@ export default function SlettBruker({ brukernavn, onDelete }: Props) {
 					</p>
 				</div>
 				<div className="flexbox">
-					<NavButton type="hoved" onClick={openSlettModal} className="slettbruker__button">
+					<NavButton variant={'primary'} onClick={openSlettModal} className="slettbruker__button">
 						Slett bruker
 					</NavButton>
 				</div>
@@ -40,10 +40,10 @@ export default function SlettBruker({ brukernavn, onDelete }: Props) {
 						<h1>Sletting av bruker</h1>
 						<h3>Er du sikker på at du vil slette denne brukeren og alle tilhørende data?</h3>
 						<div className="flexbox--align-center--justify-center">
-							<NavButton className="nei-button" type="hoved" onClick={closeSlettModal}>
+							<NavButton className="nei-button" variant={'primary'} onClick={closeSlettModal}>
 								Nei
 							</NavButton>
-							<NavButton className="ja-button" type="standard" onClick={onDelete}>
+							<NavButton className="ja-button" onClick={onDelete}>
 								Ja, jeg er sikker
 							</NavButton>
 						</div>

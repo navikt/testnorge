@@ -9,13 +9,12 @@ import {
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
-	warningMessage?: AlertStripeAdvarsel
+	warningMessage?: string
 }
 
 export const OrgnrToggle = ({
@@ -34,8 +33,8 @@ export const OrgnrToggle = ({
 		fetchData()
 	}, [])
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setInputType(event.target.value)
+	const handleToggleChange = (value: string) => {
+		setInputType(value)
 		clearEnhetsinfo()
 	}
 

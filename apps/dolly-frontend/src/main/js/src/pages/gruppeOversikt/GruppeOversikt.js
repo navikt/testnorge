@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
-import { PopoverOrientering } from 'nav-frontend-popover'
+import { bottom } from '@popperjs/core'
+import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 export default function GruppeOversikt({
 	getGrupper,
@@ -46,26 +46,26 @@ export default function GruppeOversikt({
 			<div className="toolbar">
 				<div className="page-header flexbox--align-center--justify-start">
 					<h1>Grupper</h1>
-					<Hjelpetekst hjelpetekstFor="Grupper" type={PopoverOrientering.Under}>
+					<Hjelpetekst placement={bottom}>
 						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
 					</Hjelpetekst>
 				</div>
 			</div>
 			<div className="toolbar">
-				<NavButton type="hoved" onClick={visNyGruppe} style={{ marginTop: '4px' }}>
+				<NavButton variant={'primary'} onClick={visNyGruppe} style={{ marginTop: '4px' }}>
 					Ny gruppe
 				</NavButton>
 				<div style={{ marginTop: '9px' }}>
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp value="mine" checked={visning === 'mine'}>
+					<ToggleGroup onChange={byttVisning} name="toggler" defaultValue={'mine'}>
+						<ToggleGroup.Item value="mine" checked={visning === 'mine'}>
 							<Icon size={16} kind={visning === 'mine' ? 'man2Light' : 'man2'} />
 							Mine
-						</ToggleKnapp>
-						<ToggleKnapp value="alle" checked={visning === 'alle'}>
+						</ToggleGroup.Item>
+						<ToggleGroup.Item value="alle" checked={visning === 'alle'}>
 							<Icon size={16} kind={visning === 'alle' ? 'groupLight' : 'groupDark'} />
 							Alle
-						</ToggleKnapp>
-					</ToggleGruppe>
+						</ToggleGroup.Item>
+					</ToggleGroup>
 				</div>
 				<FinnPersonBestillingConnector />
 			</div>

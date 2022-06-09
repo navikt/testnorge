@@ -1,11 +1,11 @@
 import React from 'react'
-import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import { initialVegadresse } from '~/components/fagsystem/pdlf/form/initialValues'
 import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Vegadresse'
 import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
+import { Radio, RadioGroup } from '@navikt/ds-react'
 
 interface VegadressevelgerValues {
 	formikBag: FormikProps<{}>
@@ -32,35 +32,25 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 			key={`vegadresse_${path}`}
 			style={{ marginBottom: '10px' }}
 		>
-			<RadioPanelGruppe
+			<RadioGroup
 				name={`vegadresse_${path}`}
 				key={`vegadresse_${path}`}
-				legend="Hva slags vegadresse vil du opprette?"
-				radios={[
-					{
-						label: 'Tilfeldig vegadresse basert på postnummer ...',
-						value: vegadresseValg.POSTNUMMER,
-						id: `postnummer_${path}`,
-					},
-					{
-						label: 'Tilfeldig vegadresse basert på bydelsnummer ...',
-						value: vegadresseValg.BYDELSNUMMER,
-						id: `bydelsnummer_${path}`,
-					},
-					{
-						label: 'Tilfeldig vegadresse basert på kommunenummer ...',
-						value: vegadresseValg.KOMMUNENUMMER,
-						id: `kommunenummer_${path}`,
-					},
-					{
-						label: 'Detaljert vegadresse ...',
-						value: vegadresseValg.DETALJERT,
-						id: `detaljert_${path}`,
-					},
-				]}
-				checked={vegadresseType}
 				onChange={(valg) => handleRadioChange(valg)}
-			/>
+				legend="Hva slags vegadresse vil du opprette?"
+			>
+				<Radio id={`postnummer_${path}`} value={vegadresseValg.POSTNUMMER}>
+					'Tilfeldig vegadresse basert på postnummer ...'
+				</Radio>
+				<Radio id={`bydelsnummer_${path}`} value={vegadresseValg.BYDELSNUMMER}>
+					'Tilfeldig vegadresse basert på bydelsnummer ...'
+				</Radio>
+				<Radio id={`kommunenummer_${path}`} value={vegadresseValg.KOMMUNENUMMER}>
+					'Tilfeldig vegadresse basert på kommunenummer ...'
+				</Radio>
+				<Radio id={`detaljert_${path}`} value={vegadresseValg.DETALJERT}>
+					'Detaljert vegadresse ...'
+				</Radio>
+			</RadioGroup>
 
 			{vegadresseType === vegadresseValg.POSTNUMMER && (
 				<FormikSelect

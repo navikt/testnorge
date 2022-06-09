@@ -1,8 +1,8 @@
 import React from 'react'
 import _get from 'lodash/get'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { ArenaApi, InstApi, PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
+import { Alert } from '@navikt/ds-react'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, udistub } =
@@ -22,7 +22,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		return null
 
 	return (
-		<AlertStripeInfo>
+		<Alert>
 			Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 			egenskaper må derfor ett eller flere av miljøene under velges:
 			<ul>
@@ -77,6 +77,6 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 			</ul>
-		</AlertStripeInfo>
+		</Alert>
 	)
 }

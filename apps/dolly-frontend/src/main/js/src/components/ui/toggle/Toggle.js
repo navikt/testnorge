@@ -1,3 +1,3 @@
-export { ToggleGruppe, ToggleKnapp } from 'nav-frontend-skjema'
+export { ToggleGroup } from '@navikt/ds-react'
 
 import './toggle.less'

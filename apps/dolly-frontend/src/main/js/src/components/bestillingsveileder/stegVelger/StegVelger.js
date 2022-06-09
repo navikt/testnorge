@@ -1,6 +1,5 @@
 import React, { Fragment, useContext, useState } from 'react'
 import { Formik } from 'formik'
-import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
@@ -11,6 +10,7 @@ import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import { StepIndicator } from '@navikt/ds-react'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
@@ -68,7 +68,9 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 
 				return (
 					<Fragment>
-						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
+						<StepIndicator activeStep={step} hideLabels={false}>
+							{labels}
+						</StepIndicator>
 
 						<BestillingsveilederHeader />
 

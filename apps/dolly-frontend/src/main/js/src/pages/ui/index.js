@@ -58,8 +58,8 @@ export default function () {
 			<FavoriteButton isFavorite={false} hideLabel={true} />
 
 			<h3>NAV knapp</h3>
-			<NavButton type={'fare'}>Avbryt</NavButton>
-			<NavButton type="hoved">OPPRETT</NavButton>
+			<NavButton variant={'danger'}>Avbryt</NavButton>
+			<NavButton variant={'primary'}>OPPRETT</NavButton>
 
 			<h3>Link knapp</h3>
 			<LinkButton text="Velg alle" />

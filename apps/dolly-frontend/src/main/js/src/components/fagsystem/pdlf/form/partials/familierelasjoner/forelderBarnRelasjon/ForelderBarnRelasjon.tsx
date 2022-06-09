@@ -12,7 +12,6 @@ import { FormikProps } from 'formik'
 import _get from 'lodash/get'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { BarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
 import _cloneDeep from 'lodash/cloneDeep'
@@ -21,6 +20,7 @@ import { TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
@@ -83,7 +83,7 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 				return (
 					<div className="flexbox--flex-wrap">
 						<div className="toggle--wrapper">
-							<ToggleGruppe
+							<ToggleGroup
 								onChange={(event: BaseSyntheticEvent) => {
 									const toggleBarn = event.target.value
 									formikBag.setFieldValue(
@@ -93,13 +93,13 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 								}}
 								name={'toggler' + idx}
 							>
-								<ToggleKnapp value={RELASJON_BARN} checked={erBarn}>
+								<ToggleGroup.Item value={RELASJON_BARN}>
 									{RELASJON_BARN.toUpperCase()}
-								</ToggleKnapp>
-								<ToggleKnapp value={RELASJON_FORELDER} checked={!erBarn}>
+								</ToggleGroup.Item>
+								<ToggleGroup.Item value={RELASJON_FORELDER}>
 									{RELASJON_FORELDER.toUpperCase()}
-								</ToggleKnapp>
-							</ToggleGruppe>
+								</ToggleGroup.Item>
+							</ToggleGroup>
 						</div>
 						<div className="flexbox--flex-wrap">
 							{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}

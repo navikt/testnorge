@@ -3,10 +3,9 @@ import React, { useState } from 'react'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
-
-import { Søkeknapp } from 'nav-frontend-ikonknapper'
+import { Search } from '@navikt/ds-react'
 
 type Props = {
 	onSubmit: (search: {
@@ -36,9 +35,7 @@ export default ({ onSubmit, loading = false }: Props) => {
 		<div>
 			<HeaderGroup>
 				<h4>Søk etter tilfeldig matrikkeladresse</h4>
-				<Hjelpetekst hjelpetekstFor="Søk etter tilfeldig matrikkeladresse">
-					{informasjonstekst}
-				</Hjelpetekst>
+				<Hjelpetekst>{informasjonstekst}</Hjelpetekst>
 			</HeaderGroup>
 			<InputGroup>
 				<DollySelect
@@ -62,13 +59,13 @@ export default ({ onSubmit, loading = false }: Props) => {
 					onChange={(e: any) => setBruksnummer(e.target.value)}
 				/>
 			</InputGroup>
-			<Søkeknapp
+			<Search
 				onClick={() => onSubmit({ kommunenummer, gaardsnummer, bruksnummer })}
 				disabled={loading}
-				spinner={loading}
+				label={''}
 			>
 				<span>Hent tilfeldige adresser</span>
-			</Søkeknapp>
+			</Search>
 		</div>
 	)
 }

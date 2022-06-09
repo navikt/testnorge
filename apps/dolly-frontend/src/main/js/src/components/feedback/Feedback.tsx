@@ -4,8 +4,6 @@ import { useToggle } from 'react-use'
 import { ThumbsRating } from '../rating'
 import { Rating } from '../../logger/types'
 import Logger from '../../logger'
-import { Textarea } from 'nav-frontend-skjema'
-import { Knapp } from 'nav-frontend-knapper'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
@@ -14,6 +12,8 @@ import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
+import { Form } from 'formik'
+import { Button } from '@navikt/ds-react'
 
 interface FeedbackProps {
 	label: string
@@ -46,7 +46,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 							<img alt="Profilbilde" src={brukerBilde || dolly} />
 						)}
 						<div className="feedback-input">
-							<Textarea
+							<Form
 								value={text}
 								label=""
 								placeholder={'(Valgfritt) ' + label}
@@ -63,9 +63,9 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 						</div>
 					</div>
 					<div className="feedback-form__submit">
-						<Knapp
+						<Button
 							form="kompakt"
-							htmlType="submit"
+							type="submit"
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={(event) => {
@@ -81,7 +81,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 							}}
 						>
 							Send
-						</Knapp>
+						</Button>
 					</div>
 				</form>
 			)}

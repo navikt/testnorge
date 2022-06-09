@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { sokSelector } from '~/ducks/bestillingStatus'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import { SearchField } from '~/components/searchField/SearchField'
 import Loading from '~/components/ui/loading/Loading'
@@ -16,7 +15,8 @@ import _isEmpty from 'lodash/isEmpty'
 import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
-import { PopoverOrientering } from 'nav-frontend-popover'
+import { bottom } from '@popperjs/core'
+import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 type OrganisasjonerProps = {
 	history: History
@@ -60,7 +60,7 @@ export default function Organisasjoner({
 	fetchOrganisasjoner,
 }: OrganisasjonerProps) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
+	const byttVisning = (value: string) => setVisning(value)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -143,14 +143,15 @@ export default function Organisasjoner({
 
 	const filterOrg = () => sokSelectorOrg(mergeList(organisasjoner, bestillinger), search)
 	const filterBest = () => sokSelector(state, search)
+	const ref = useRef()
 
 	return (
 		<ErrorBoundary>
 			<div className="oversikt-container">
 				<div className="toolbar">
 					<div className="page-header flexbox--align-center">
-						<h1>Organisasjoner</h1>
-						<Hjelpetekst hjelpetekstFor="Organisasjoner" type={PopoverOrientering.Under}>
+						<h1 ref={ref}>Organisasjoner</h1>
+						<Hjelpetekst placement={bottom}>
 							Organisasjoner i Dolly er en del av NAVs syntetiske populasjon og dekker behov for
 							data knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og det
 							legges til ny funksjonalitet fortløpende.
@@ -166,29 +167,26 @@ export default function Organisasjoner({
 				<StatusListeConnector brukerId={brukerId} />
 
 				<div className="toolbar">
-					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
+					<NavButton variant={'primary'} onClick={() => startBestilling(BestillingType.NY)}>
 						Opprett organisasjon
 					</NavButton>
 
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp
-							value={VISNING_ORGANISASJONER}
-							checked={visning === VISNING_ORGANISASJONER}
-						>
+					<ToggleGroup onChange={byttVisning} defaultValue={VISNING_ORGANISASJONER}>
+						<ToggleGroup.Item value={VISNING_ORGANISASJONER}>
 							<Icon
 								size={13}
 								kind={visning === VISNING_ORGANISASJONER ? 'organisasjonLight' : 'organisasjon'}
 							/>
 							{`Organisasjoner (${antallOrg ? antallOrg : 0})`}
-						</ToggleKnapp>
-						<ToggleKnapp value={VISNING_BESTILLINGER} checked={visning === VISNING_BESTILLINGER}>
+						</ToggleGroup.Item>
+						<ToggleGroup.Item value={VISNING_BESTILLINGER}>
 							<Icon
 								size={13}
 								kind={visning === VISNING_BESTILLINGER ? 'bestillingLight' : 'bestilling'}
 							/>
 							{`Bestillinger (${antallBest ? antallBest : 0})`}
-						</ToggleKnapp>
-					</ToggleGruppe>
+						</ToggleGroup.Item>
+					</ToggleGroup>
 
 					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
 				</div>

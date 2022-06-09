@@ -69,7 +69,7 @@ export const FrigjoerButton = ({
 									return slettPerson()
 								}
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>

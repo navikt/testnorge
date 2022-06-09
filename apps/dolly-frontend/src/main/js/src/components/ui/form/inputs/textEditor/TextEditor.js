@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Textarea } from 'nav-frontend-skjema'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 
 import './TextEditor.less'
+import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const TextEditor = ({ text, handleSubmit, placeholder, maxLength = 1000 }) => {
 	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)
@@ -29,7 +29,7 @@ export const TextEditor = ({ text, handleSubmit, placeholder, maxLength = 1000 }
 			)}
 
 			{isEditing && (
-				<Textarea
+				<DollyTextInput
 					label=""
 					placeholder={placeholder}
 					autoFocus

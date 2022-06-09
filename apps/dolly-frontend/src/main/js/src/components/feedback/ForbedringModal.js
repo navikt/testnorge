@@ -4,11 +4,11 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { v4 as _uuid } from 'uuid'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Logger from '~/logger'
-import { Textarea } from 'nav-frontend-skjema'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
 import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
+import { Textarea } from '@navikt/ds-react'
 
 export const ForbedringModal = ({ closeModal, brukerBilde }) => {
 	const MAX_LENGTH = 2000

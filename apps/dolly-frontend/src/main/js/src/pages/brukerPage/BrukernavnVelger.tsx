@@ -79,7 +79,7 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 						}
 					}
 				/>
-				<NavButton onClick={() => onSubmit()} type="hoved" className="videre-button">
+				<NavButton onClick={() => onSubmit()} variant={'primary'} className="videre-button">
 					Gå videre til Dolly
 				</NavButton>
 			</Selector>

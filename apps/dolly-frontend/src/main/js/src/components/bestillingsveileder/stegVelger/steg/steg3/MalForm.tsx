@@ -1,10 +1,9 @@
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { ToggleGruppe } from 'nav-frontend-skjema'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { malerApi } from '~/pages/minSide/maler/MalerApi'
+import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 // @ts-ignore
 export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
@@ -62,16 +61,20 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 			<h2>Lagre som mal</h2>
 			<div className="flexbox--align-center">
 				<div className="toggle--wrapper">
-					<ToggleGruppe
+					<ToggleGroup
 						onChange={(e: BaseSyntheticEvent) => handleToggleChange(e.target.value)}
 						name={'arbeidsforhold'}
 					>
 						{toggleValues.map((type) => (
-							<ToggleKnapp key={type.value} value={type.value} checked={type.value === typeMal}>
+							<ToggleGroup.Item
+								key={type.value}
+								value={type.value}
+								checked={type.value === typeMal}
+							>
 								{type.label}
-							</ToggleKnapp>
+							</ToggleGroup.Item>
 						))}
-					</ToggleGruppe>
+					</ToggleGroup>
 				</div>
 			</div>
 			{typeMal === MalTyper.ENDRE ? (

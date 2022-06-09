@@ -1,7 +1,7 @@
 import Modal from 'react-modal'
 import React, { PureComponent } from 'react'
-import Lukknapp from 'nav-frontend-lukknapp'
 import './DollyModal.less'
+import CloseButton from '~/components/ui/button/CloseButton/CloseButton'
 
 const customStyles = {
 	content: {
@@ -41,7 +41,7 @@ export default class DollyModal extends PureComponent {
 			>
 				<div className="dollymodal">
 					{children}
-					{!noCloseButton && <Lukknapp onClick={closeModal} />}
+					{!noCloseButton && <CloseButton onClick={closeModal} />}
 				</div>
 			</Modal>
 		)

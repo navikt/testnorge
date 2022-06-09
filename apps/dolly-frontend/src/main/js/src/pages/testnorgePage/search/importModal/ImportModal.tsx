@@ -87,7 +87,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 		<React.Fragment>
 			<div className="flexbox--align-center--justify-end">
 				<NavButton
-					type="hoved"
+					variant={'primary'}
 					onClick={handleImport}
 					disabled={!personerValgt}
 					title={!personerValgt ? 'Velg personer' : null}
@@ -114,7 +114,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 									importerPersoner(valgtePersoner.concat(response), navigate)
 								})
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja
 						</NavButton>
