@@ -10,4 +10,5 @@ public class PdlForvalterApplicationStarter {
 
         SpringApplication.run(PdlForvalterApplicationStarter.class, args);
     }
+
 }
