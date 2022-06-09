@@ -9,10 +9,11 @@ const mapStateToProps = (state: any, ownProps: any) => ({
 })
 
 const mapDispatchToProps = () => ({
-	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => {
+	importerPersoner: (valgtePersoner: ImportPerson[], mal: any, navigate: Function) => {
 		return navigate(`/importer`, {
 			state: {
 				importPersoner: valgtePersoner,
+				mal: mal,
 			},
 		})
 	},

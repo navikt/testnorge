@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
+import { useToggle } from 'react-use'
 import { useNavigate } from 'react-router-dom'
+import { PopoverOrientering } from 'nav-frontend-popover'
+import useBoolean from '~/utils/hooks/useBoolean'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
 import { DollyApi } from '~/service/Api'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import './ImportModal.less'
+import { MalValg } from '~/pages/testnorgePage/search/importModal/MalValg'
+import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import Hjelpetekst from '~/components/hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
+import './ImportModal.less'
 
 type Props = {
 	valgtePersoner: ImportPerson[]
-	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => void
+	importerPersoner: (valgtePersoner: ImportPerson[], mal: any, navigate: Function) => void
 }
 
 const getPdlPersoner = async (identer: string[]) => {
@@ -49,8 +54,12 @@ const partnerSivilstander = ['GIFT', 'SEPARERT']
 export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	const navigate = useNavigate()
 
-	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [partnerIdenter, setPartnerIdenter] = useState([])
+	const [modalMalIsOpen, openMalModal, closeMalModal] = useBoolean(false)
+	const [partnerIdenter] = useState([])
+	const [malData, setMalData] = useState(null)
+
+	const [importMedPartner, toggleImportMedPartner] = useToggle(false)
+	const [importMedMal, toggleImportMedMal] = useToggle(false)
 
 	const personerValgt = valgtePersoner.length > 0
 
@@ -70,53 +79,73 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	}
 
 	const handleImport = () => {
-		const partnere = getPartnere(valgtePersoner.map((person) => person.data))
-		if (partnere !== null && partnere.length > 0) {
-			setPartnerIdenter(partnere)
-			openModal()
+		importer(valgtePersoner, null)
+	}
+
+	const importer = (personer: ImportPerson[], mal: any) => {
+		if (importMedPartner && partnere?.length > 0) {
+			getPdlPersoner(partnerIdenter).then((response: ImportPerson[]) => {
+				importerPersoner(valgtePersoner.concat(response), malData, navigate)
+			})
 		} else {
-			importer(valgtePersoner)
+			importerPersoner(personer, mal, navigate)
 		}
 	}
 
-	const importer = (personer: ImportPerson[]) => {
-		importerPersoner(personer, navigate)
-	}
+	const partnere = getPartnere(valgtePersoner.map((person) => person.data))
+	const visPartnereImport = !!(partnere && partnere.length)
 
 	return (
 		<React.Fragment>
-			<div className="flexbox--align-center--justify-end">
+			<div className="flexbox--baseline--justify-end import-knapper">
+
+				{ visPartnereImport &&
+					<span className="flexbox--baseline--justify-end">
+						<Checkbox id="import-modal-import-med-partner" checked={importMedPartner}
+								  onChange={toggleImportMedPartner} label="Import med partner" size="medium"/>
+
+						<Hjelpetekst hjelpetekstFor="import-modal-import-med-partner" type={PopoverOrientering.Over}>
+							En eller flere av dine valgte Test-Norge personer har en partner. <br /> Vil du
+							inkludere partnerne i importen?
+						</Hjelpetekst>
+					</span>
+				}
+				<span>
+					<Checkbox id="import-modal-import-med-mal" checked={importMedMal} onChange={toggleImportMedMal} label="Benytt mal" size="medium" />
+				</span>
+
 				<NavButton
 					type="hoved"
-					onClick={handleImport}
+					onClick={() => {
+						if (importMedMal) {
+							openMalModal()
+						} else {
+							handleImport()
+						}
+					}}
 					disabled={!personerValgt}
 					title={!personerValgt ? 'Velg personer' : null}
 				>
 					Importer
 				</NavButton>
 			</div>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+
+			<DollyModal isOpen={modalMalIsOpen} closeModal={closeMalModal} width="60%" overflow="auto">
 				<div className="importModal">
 					<Icon kind="personinformasjon" size={60} />
 					<div className="importModal importModal-content">
-						<h1>Import av partner</h1>
+						<h1>Import med mal</h1>
 						<h4>
-							En eller flere av dine valgte Test-Norge personer har en partner. <br /> Vil du
-							inkludere partnerne i importen?
+							Hvilken mal skal brukes for persondata?
 						</h4>
 					</div>
+					<MalValg valgtMal={(mal: any) => setMalData(mal) } />
 					<div className="importModal-actions">
-						<NavButton onClick={() => importer(valgtePersoner)}>Nei</NavButton>
 						<NavButton
-							onClick={() => {
-								getPdlPersoner(partnerIdenter).then((response: ImportPerson[]) => {
-									closeModal()
-									importerPersoner(valgtePersoner.concat(response), navigate)
-								})
-							}}
+							onClick={() => importer(valgtePersoner, malData)}
 							type="hoved"
 						>
-							Ja
+							Importer
 						</NavButton>
 					</div>
 				</div>
