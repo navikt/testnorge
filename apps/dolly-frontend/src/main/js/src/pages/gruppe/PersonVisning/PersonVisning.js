@@ -70,13 +70,9 @@ export const PersonVisning = ({
 	}, [])
 
 	const pdlPartner = () => {
-		if (ident.master === 'PDL') {
-			return data.pdl?.hentPerson?.sivilstand?.filter(
-				(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
-			)?.[0]?.relatertVedSivilstand
-		} else {
-			return null
-		}
+		return data.pdl?.hentPerson?.sivilstand?.filter(
+			(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
+		)?.[0]?.relatertVedSivilstand
 	}
 
 	return (
@@ -101,12 +97,13 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && ident.master === 'PDL' && isAlive && (
+					{!iLaastGruppe && isAlive && (
 						<PartnerImportButton
 							action={updateAntallImporterte}
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
 							gruppeIdenter={gruppeIdenter}
+							master={ident?.master}
 						/>
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
