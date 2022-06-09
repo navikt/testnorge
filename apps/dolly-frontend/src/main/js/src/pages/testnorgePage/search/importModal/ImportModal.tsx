@@ -83,8 +83,9 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	}
 
 	const importer = (personer: ImportPerson[], mal: any) => {
+		const partnere = getPartnere(valgtePersoner.map((person) => person.data))
 		if (importMedPartner && partnere?.length > 0) {
-			getPdlPersoner(partnerIdenter).then((response: ImportPerson[]) => {
+			getPdlPersoner(partnere).then((response: ImportPerson[]) => {
 				importerPersoner(valgtePersoner.concat(response), malData, navigate)
 			})
 		} else {
