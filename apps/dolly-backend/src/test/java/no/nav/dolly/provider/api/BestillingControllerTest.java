@@ -71,7 +71,7 @@ public class BestillingControllerTest {
     @Test
     public void stopBestillingProgressOk() {
         when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Bestilling.builder().build());
-        bestillingController.stopBestillingProgress(BESTILLING_ID);
+        bestillingController.stopBestillingProgress(BESTILLING_ID, null);
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);
         verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));

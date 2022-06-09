@@ -9,17 +9,13 @@ import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
 import { logoutBruker } from '~/components/utlogging/Utlogging'
+import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 
-type Props = {
-	brukerProfil: {
-		visningsNavn: string
-		brukernavn: string
-	}
-	brukerBilde: Blob
-}
-
-export default ({ brukerProfil, brukerBilde }: Props) => {
+export default () => {
 	const navigate = useNavigate()
+
+	const { brukerProfil } = useBrukerProfil()
+	const { brukerBilde } = useBrukerProfilBilde()
 
 	return (
 		<header className="app-header">
@@ -61,7 +57,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 						<img alt="Profilbilde" src={brukerBilde || dolly} />
 						<div className="profil-navn">
 							<p className="min-side">MIN SIDE</p>
-							<p>{brukerProfil && brukerProfil.visningsNavn}</p>
+							<p>{brukerProfil?.visningsNavn}</p>
 						</div>
 					</NavLink>
 				</div>

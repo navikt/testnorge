@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import { Formik } from 'formik'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
@@ -7,6 +6,7 @@ import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
@@ -25,7 +25,7 @@ export const GjenopprettModal = ({
 	bestilling,
 	brukertype,
 }: GjenopprettModalProps) => {
-	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
+	const { dollyEnvironments: tilgjengeligeEnvironments } = useDollyEnvironments()
 
 	const schemaValidation = yup.object().shape({
 		environments: yup.array().required('Velg minst ett miljø'),

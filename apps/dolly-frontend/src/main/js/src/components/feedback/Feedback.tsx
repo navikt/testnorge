@@ -2,8 +2,10 @@ import * as React from 'react'
 import { useState } from 'react'
 import { useToggle } from 'react-use'
 import { ThumbsRating } from '../rating'
-import { Rating } from '../../logger/types'
+import { Rating } from '~/logger/types'
 import Logger from '../../logger'
+import { Textarea } from 'nav-frontend-skjema'
+import { Knapp } from 'nav-frontend-knapper'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
@@ -12,18 +14,18 @@ import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
-import { Form } from 'formik'
-import { Button } from '@navikt/ds-react'
+import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 
 interface FeedbackProps {
 	label: string
 	feedbackFor: string
-	brukerBilde: Response
 }
 
 const MAX_LENGTH = 2000
 
-export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => {
+export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
+	const { brukerBilde } = useBrukerProfilBilde()
+
 	const [rating, setRating] = useState<Rating>()
 	const [text, setText] = useState('')
 	const [uuid] = useState(_uuid())
@@ -46,7 +48,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 							<img alt="Profilbilde" src={brukerBilde || dolly} />
 						)}
 						<div className="feedback-input">
-							<Form
+							<Textarea
 								value={text}
 								label=""
 								placeholder={'(Valgfritt) ' + label}
@@ -63,9 +65,9 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 						</div>
 					</div>
 					<div className="feedback-form__submit">
-						<Button
+						<Knapp
 							form="kompakt"
-							type="submit"
+							htmlType="submit"
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={(event) => {
@@ -81,7 +83,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 							}}
 						>
 							Send
-						</Button>
+						</Knapp>
 					</div>
 				</form>
 			)}

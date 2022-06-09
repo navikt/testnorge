@@ -12,6 +12,7 @@ export const {
 	setSidetall,
 	setVisning,
 	resetNavigering,
+	resetPaginering,
 	resetFeilmelding,
 } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,
@@ -19,8 +20,9 @@ export const {
 	setSidetall: (sidetall) => sidetall,
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
 	setVisning: (visning) => visning,
-	resetNavigering() {},
-	resetFeilmelding() {},
+	resetNavigering,
+	resetPaginering,
+	resetFeilmelding,
 })
 
 const initialState = {
@@ -35,7 +37,7 @@ const initialState = {
 
 export default handleActions(
 	{
-		[LOCATION_CHANGE](state, action) {
+		[LOCATION_CHANGE](_state, action) {
 			if (action.payload.action !== 'REPLACE') return initialState
 		},
 		[onFailure(navigerTilPerson)](state, action) {
@@ -65,11 +67,20 @@ export default handleActions(
 		[setSidetall](state, action) {
 			state.sidetall = action.payload
 		},
+		[resetPaginering](state) {
+			state.sidetall = initialState.sidetall
+			state.sideStoerrelse = initialState.sideStoerrelse
+		},
 		[setSideStoerrelse](state, action) {
 			state.sideStoerrelse = action.payload
 		},
 		[resetNavigering](state) {
-			return { ...initialState, visning: state.visning }
+			return {
+				...initialState,
+				visning: state.visning,
+				sidetall: state.sidetall,
+				sideStoerrelse: state.sideStoerrelse,
+			}
 		},
 		[resetFeilmelding](state) {
 			state.feilmelding = null

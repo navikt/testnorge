@@ -9,6 +9,8 @@ import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -18,19 +20,20 @@ const ikonTypeMap = {
 }
 
 export default function BestillingListe({
-	bestillinger,
 	searchActive,
-	isFetchingBestillinger,
 	iLaastGruppe,
 	brukertype,
+	gruppeId,
 	navigerBestillingId,
 	visBestilling,
 	sidetall,
 }) {
-	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
-	if (!bestillinger) return null
+	const { bestillingerById, loading } = useBestillingerGruppe(gruppeId)
+	if (loading) return <Loading label="Laster bestillinger" panel />
+	if (!bestillingerById) return null
+	const bestillingListe = Object.values(bestillingerById)
 
-	if (bestillinger.length === 0) {
+	if (bestillingListe.length === 0) {
 		let infoTekst = 'Trykk på opprett personer-knappen for å starte en bestilling.'
 		if (searchActive) infoTekst = 'Søket gav ingen resultater.'
 		else if (brukertype === 'BANKID')
@@ -40,7 +43,9 @@ export default function BestillingListe({
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
-	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
+	const sortedBestillinger = _orderBy(bestillingListe, ['id'], ['desc'])
+
+	const statusBestillinger = bestillingStatusMapper(Object.values(sortedBestillinger))
 
 	const columns = [
 		{
@@ -81,7 +86,7 @@ export default function BestillingListe({
 	return (
 		<ErrorBoundary>
 			<DollyTable
-				data={sortedBestillinger}
+				data={statusBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
 				visBestilling={visBestilling || navigerBestillingId}

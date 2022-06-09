@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
+import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,30 +37,6 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-
-    private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
-
-        return RsOrganisasjonBestillingStatus.builder()
-                .id(bestilling.getId())
-                .sistOppdatert(bestilling.getSistOppdatert())
-                .antallLevert(0)
-                .ferdig(false)
-                .organisasjonNummer(orgnummer)
-                .status(List.of(RsOrganisasjonStatusRapport.builder()
-                        .id(SystemTyper.ORGANISASJON_FORVALTER)
-                        .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
-                        .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
-                                .melding("Bestilling startet ...")
-                                .detaljert(Arrays.stream(bestilling.getMiljoer().split(","))
-                                        .map(miljoe -> RsOrganisasjonStatusRapport.Detaljert.builder()
-                                                .orgnummer(orgnummer)
-                                                .miljo(miljoe)
-                                                .build())
-                                        .toList())
-                                .build()))
-                        .build()))
-                .build();
-    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/bestilling")
@@ -118,5 +95,29 @@ public class OrganisasjonController {
     public void slettgruppe(@PathVariable("orgnummer") String orgnummer) {
 
         bestillingService.slettBestillingByOrgnummer(orgnummer);
+    }
+
+    private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
+
+        return RsOrganisasjonBestillingStatus.builder()
+                .id(bestilling.getId())
+                .sistOppdatert(bestilling.getSistOppdatert())
+                .antallLevert(0)
+                .ferdig(false)
+                .organisasjonNummer(orgnummer)
+                .status(List.of(RsOrganisasjonStatusRapport.builder()
+                        .id(SystemTyper.ORGANISASJON_FORVALTER)
+                        .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
+                        .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
+                                .melding("Bestilling startet ...")
+                                .detaljert(Arrays.stream(bestilling.getMiljoer().split(","))
+                                        .map(miljoe -> RsOrganisasjonStatusRapport.Detaljert.builder()
+                                                .orgnummer(orgnummer)
+                                                .miljo(miljoe)
+                                                .build())
+                                        .toList())
+                                .build()))
+                        .build()))
+                .build();
     }
 }

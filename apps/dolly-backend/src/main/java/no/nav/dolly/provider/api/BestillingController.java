@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.MalBestillingService;
 import no.nav.dolly.service.NavigasjonService;
+import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -35,6 +36,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Transactional
 @RestController
@@ -44,6 +46,7 @@ public class BestillingController {
 
     private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
+    private final OrganisasjonBestillingService organisasjonBestillingService;
     private final NavigasjonService navigasjonService;
     private final MalBestillingService malBestillingService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
@@ -79,9 +82,11 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
-    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
-        Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "organisasjonBestilling", required = false) Boolean organisasjonBestilling) {
+
+        return isTrue(organisasjonBestilling)
+                ? mapperFacade.map(organisasjonBestillingService.cancelBestilling(bestillingId), RsBestillingStatus.class)
+                : mapperFacade.map(bestillingService.cancelBestilling(bestillingId), RsBestillingStatus.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)

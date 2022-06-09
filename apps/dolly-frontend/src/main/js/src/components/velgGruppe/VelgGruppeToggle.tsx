@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import EksisterendeGruppeConnector from './EksisterendeGruppeConnector'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import NyGruppe from './NyGruppe'
-import { ToggleGroup } from '~/components/ui/toggle/Toggle'
+import EksisterendeGruppe from '~/components/velgGruppe/EksisterendeGruppe'
 
 interface VelgGruppeToggleProps {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -24,21 +24,25 @@ export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeTogg
 	}
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGroup
-				onChange={handleToggleChange}
-				name={togglenavn}
-				defaultValue={Gruppevalg.EKSISTERENDE}
-			>
-				<ToggleGroup.Item key={Gruppevalg.EKSISTERENDE} value={Gruppevalg.EKSISTERENDE}>
+			<ToggleGruppe onChange={handleToggleChange} name={togglenavn}>
+				<ToggleKnapp
+					key={Gruppevalg.EKSISTERENDE}
+					value={Gruppevalg.EKSISTERENDE}
+					checked={gruppevalg === Gruppevalg.EKSISTERENDE}
+				>
 					Eksisterende gruppe
-				</ToggleGroup.Item>
-				<ToggleGroup.Item key={Gruppevalg.NY} value={Gruppevalg.NY}>
+				</ToggleKnapp>
+				<ToggleKnapp
+					key={Gruppevalg.NY}
+					value={Gruppevalg.NY}
+					checked={gruppevalg === Gruppevalg.NY}
+				>
 					Ny gruppe
-				</ToggleGroup.Item>
-			</ToggleGroup>
+				</ToggleKnapp>
+			</ToggleGruppe>
 
 			{gruppevalg === Gruppevalg.EKSISTERENDE ? (
-				<EksisterendeGruppeConnector setValgtGruppe={setValgtGruppe} valgtGruppe={valgtGruppe} />
+				<EksisterendeGruppe setValgtGruppe={setValgtGruppe} valgtGruppe={valgtGruppe} />
 			) : (
 				<NyGruppe setValgtGruppe={setValgtGruppe} />
 			)}

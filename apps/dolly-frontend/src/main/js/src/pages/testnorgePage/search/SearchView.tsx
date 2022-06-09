@@ -17,6 +17,7 @@ import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModa
 
 type Props = {
 	items?: PdlData[]
+	sidetall: number
 	loading: boolean
 	valgtePersoner: ImportPerson[]
 	setValgtePersoner: (personer: ImportPerson[]) => void
@@ -55,7 +56,14 @@ const SearchView = styled.div`
 	flex-direction: column;
 `
 
-export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPersoner }: Props) => {
+export default ({
+	items,
+	loading,
+	valgtePersoner,
+	setValgtePersoner,
+	importerPersoner,
+	sidetall,
+}: Props) => {
 	if (loading) return <Loading label="Søker..." />
 	if (!items || items.length === 0) {
 		return (
@@ -140,9 +148,8 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 
 	return (
 		<SearchView>
-			{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-			{/*@ts-ignore*/}
 			<DollyTable
+				visSide={sidetall}
 				data={items}
 				columns={columns}
 				iconItem={(person: PdlData) =>

@@ -8,6 +8,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
@@ -45,14 +46,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
 
-    private static List<String> mapIdents(String idents) {
-        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
-    }
-
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
-                .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
@@ -108,5 +105,22 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .exclude("bruker")
                 .byDefault()
                 .register();
+
+        factory.classMap(OrganisasjonBestilling.class, RsBestillingStatus.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(OrganisasjonBestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
+
+                        bestillingStatus.setAntallLevert(0);
+                        bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
+                    }
+                })
+                .byDefault()
+                .register();
+
+    }
+
+    private static List<String> mapIdents(String idents) {
+        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
     }
 }

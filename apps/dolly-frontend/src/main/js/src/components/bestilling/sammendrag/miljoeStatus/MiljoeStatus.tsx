@@ -9,6 +9,7 @@ export type Miljostatus = {
 	bestilling: {
 		status: Bestillingsinformasjon[]
 		systeminfo: string
+		feil: string
 	}
 }
 

@@ -1,5 +1,6 @@
 import React, { Fragment, useContext, useState } from 'react'
 import { Formik } from 'formik'
+import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
@@ -10,7 +11,12 @@ import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import DisplayFormikState from '~/utils/DisplayFormikState'
-import { StepIndicator } from '@navikt/ds-react'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	REGEX_BACKEND_ORGANISASJONER,
+	useMatchMutate,
+} from '~/utils/hooks/useMutate'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
@@ -18,6 +24,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
+	const mutate = useMatchMutate()
 	const { personFoerLeggTil, tidligereBestillinger } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
@@ -41,7 +48,11 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 		}
 
 		sessionStorage.clear()
-		return onSubmit(values, formikBag)
+
+		onSubmit(values, formikBag)
+		mutate(REGEX_BACKEND_GRUPPER)
+		mutate(REGEX_BACKEND_ORGANISASJONER)
+		return mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
 	const CurrentStepComponent = STEPS[step]
@@ -68,9 +79,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 
 				return (
 					<Fragment>
-						<StepIndicator activeStep={step} hideLabels={false}>
-							{labels}
-						</StepIndicator>
+						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
 
 						<BestillingsveilederHeader />
 

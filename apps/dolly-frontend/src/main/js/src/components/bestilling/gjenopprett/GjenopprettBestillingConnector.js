@@ -1,22 +1,13 @@
 import { connect } from 'react-redux'
 import GjenopprettBestillingComp from './GjenopprettBestilling'
-import {
-	getBestillinger,
-	getOrganisasjonBestilling,
-	gjenopprettBestilling,
-	gjenopprettOrganisasjonBestilling,
-} from '~/ducks/bestillingStatus'
+import { gjenopprettBestilling, gjenopprettOrganisasjonBestilling } from '~/ducks/bestillingStatus'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-	const { gruppeId, id } = ownProps.bestilling
+	const { id } = ownProps.bestilling
 	return {
 		gjenopprettBestilling: (envs) => dispatch(gjenopprettBestilling(id, envs)),
 		gjenopprettOrganisasjonBestilling: (envs) =>
 			dispatch(gjenopprettOrganisasjonBestilling(id, envs)),
-		getBestillinger: () =>
-			ownProps.brukerId
-				? dispatch(getOrganisasjonBestilling(ownProps.brukerId))
-				: dispatch(getBestillinger(gruppeId)),
 	}
 }
 

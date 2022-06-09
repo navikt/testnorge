@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
-import { MiljoeApi } from '~/service/Api'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
-	warningMessage?: string
+	warningMessage?: AlertStripeAdvarsel
 }
 
 export const OrgnrToggle = ({
@@ -24,17 +25,10 @@ export const OrgnrToggle = ({
 	warningMessage,
 }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
-	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
+	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
-		}
-		fetchData()
-	}, [])
-
-	const handleToggleChange = (value: string) => {
-		setInputType(value)
+	const handleToggleChange = (event: React.ChangeEvent<any>) => {
+		setInputType(event.target.value)
 		clearEnhetsinfo()
 	}
 

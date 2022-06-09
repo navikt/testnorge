@@ -9,13 +9,12 @@ import { DollyApi } from '~/service/Api'
 import './PartnerImportButton.less'
 
 type Props = {
-	action: Function
 	partnerIdent: string
 	gruppeId: string
 	gruppeIdenter: string[]
 }
 
-export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIdenter }: Props) => {
+export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: Props) => {
 	if (!partnerIdent) {
 		return null
 	}
@@ -31,7 +30,6 @@ export const PartnerImportButton = ({ action, gruppeId, partnerIdent, gruppeIden
 		await DollyApi.importerPartner(gruppeId, ident)
 			.then((response) => {
 				setLoading(false)
-				action()
 			})
 			.catch((_error) => {
 				setFeilmelding('Noe gikk galt')

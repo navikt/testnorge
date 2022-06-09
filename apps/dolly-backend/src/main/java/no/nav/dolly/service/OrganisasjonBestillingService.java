@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
@@ -116,6 +117,19 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
+    public OrganisasjonBestilling cancelBestilling(Long bestillingId) {
+
+        Optional<OrganisasjonBestilling> bestillingById = bestillingRepository.findById(bestillingId);
+        OrganisasjonBestilling organisasjonBestilling = bestillingById.orElseThrow(() -> new NotFoundException(format("Fant ikke organisasjon bestillingId %d", bestillingId)));
+
+        organisasjonBestilling.setFeil("Bestilling stoppet");
+        organisasjonBestilling.setFerdig(true);
+        organisasjonBestilling.setSistOppdatert(now());
+        saveBestillingToDB(organisasjonBestilling);
+        return organisasjonBestilling;
+    }
+
+    @Transactional
     public OrganisasjonBestilling saveBestillingToDB(OrganisasjonBestilling bestilling) {
 
         try {
@@ -131,6 +145,7 @@ public class OrganisasjonBestillingService {
         return saveBestillingToDB(
                 OrganisasjonBestilling.builder()
                         .antall(1)
+                        .ferdig(false)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
@@ -150,15 +165,6 @@ public class OrganisasjonBestillingService {
                         .bestKriterier(toJson(status.getBestilling()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
                         .build());
-    }
-
-    private OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
-
-        bestilling.setFeil(orgStatus.getError());
-        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
-        bestilling.setSistOppdatert(now());
-
-        return orgStatus;
     }
 
     @Transactional
@@ -188,7 +194,20 @@ public class OrganisasjonBestillingService {
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
     }
 
-    private List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+    @Transactional
+    public OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
+
+        bestilling.setFeil(orgStatus.getError());
+        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
+        bestilling.setSistOppdatert(now());
+
+        bestillingRepository.save(bestilling);
+
+        return orgStatus;
+    }
+
+    @Transactional
+    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
@@ -197,7 +216,9 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
-    private OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
+
+    @Transactional
+    public OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
 

@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { useAsync, useToggle } from 'react-use'
+import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
 import Button from '~/components/ui/button/Button'
-
-import { DollyApi } from '~/service/Api'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -14,10 +12,11 @@ import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 
 import './nyIdent.less'
 import styled from 'styled-components'
+import Alertstripe from 'nav-frontend-alertstriper'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { tpsfAttributter } from '~/components/bestillingsveileder/utils'
-import { Alert } from '@navikt/ds-react'
+import { useDollyMaler } from '~/utils/hooks/useMaler'
 
 const initialValues = {
 	antall: 1,
@@ -46,13 +45,10 @@ const validationSchema = yup.object({
 export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	const [zIdent, setZIdent] = useState(zBruker)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
-	const state = useAsync(async () => {
-		const response = await DollyApi.getBestillingMaler()
-		return response.data
-	}, [])
+	const { maler, loading } = useDollyMaler()
 
-	const zIdentOptions = state.value ? getZIdentOptions(state.value.malbestillinger) : []
-	const malOptions = state.value ? getMalOptions(state.value.malbestillinger, zIdent) : []
+	const zIdentOptions = getZIdentOptions(maler)
+	const malOptions = getMalOptions(maler, zIdent)
 
 	const handleMalChange = (formikbag) => {
 		toggleMalAktiv()
@@ -106,7 +102,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								<DollySelect
 									name="zIdent"
 									label="Bruker"
-									isLoading={state.loading}
+									isLoading={loading}
 									options={zIdentOptions}
 									size="medium"
 									onChange={(e) => handleBrukerChange(e, formikBag)}
@@ -117,7 +113,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								<FormikSelect
 									name="mal"
 									label="Maler"
-									isLoading={state.loading}
+									isLoading={loading}
 									options={malOptions}
 									size="grow"
 									fastfield={false}
@@ -125,11 +121,11 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								/>
 							</InputDiv>
 							{erTpsfMal && (
-								<Alert variant={'warning'} style={{ width: '97%' }}>
+								<Alertstripe type={'advarsel'} style={{ width: '97%' }}>
 									Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
 									master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
 									ny mal og sletter denne malen.
-								</Alert>
+								</Alertstripe>
 							)}
 							<div className="mal-admin">
 								<Button kind="maler" onClick={() => {}}>

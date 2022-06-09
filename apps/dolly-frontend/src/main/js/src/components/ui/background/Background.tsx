@@ -17,7 +17,10 @@ import Paaske from '~/components/ui/background/backgrounds/Paaske.svg'
 // @ts-ignore
 import Sommer from '~/components/ui/background/backgrounds/Sommer.svg'
 import '~/snow.scss'
+import '~/rain.scss'
 import '~/flowers.scss'
+import { useWeatherFyrstikkAlleen } from '~/utils/hooks/useWeather'
+import { round } from 'lodash'
 
 const DefaultBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Default)});
@@ -85,6 +88,7 @@ const SommerBackground = styled.div`
 
 export const Background = (props: any) => {
 	const month = new Date().getMonth()
+	const { millimeterNedboer = 0 } = useWeatherFyrstikkAlleen()
 	if (month >= 2 && month <= 4) {
 		return (
 			<>
@@ -95,7 +99,14 @@ export const Background = (props: any) => {
 			</>
 		)
 	} else if (month >= 5 && month <= 7) {
-		return <SommerBackground>{props.children}</SommerBackground>
+		return (
+			<>
+				{Array.from(Array(2 * round(millimeterNedboer) * 10).keys()).map((idx) => (
+					<div key={idx} className="rain" />
+				))}
+				<SommerBackground>{props.children}</SommerBackground>
+			</>
+		)
 	} else if (month >= 8 && month <= 10) {
 		return <FallBackground>{props.children}</FallBackground>
 	} else if (month === 11 || month === 0 || month === 1) {

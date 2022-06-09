@@ -8,21 +8,20 @@ import Loading from '~/components/ui/loading/Loading'
 import './TagsButton.less'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { actions } from '~/ducks/gruppe'
-import { useDispatch } from 'react-redux'
-import { Alert } from '@navikt/ds-react'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 type Props = {
 	action: Function
 	loading: boolean
 	gruppeId: number
-	eksisterendeTags: [string]
+	eksisterendeTags: string[]
 }
 
 export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [tags, setTags] = useState(eksisterendeTags)
-	const dispatch = useDispatch()
+	const mutate = useMatchMutate()
 
 	if (loading) return <Loading label="Sender tags..." />
 
@@ -38,11 +37,11 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 				<div className="tagsModal">
 					<div className="tagsModal tagsModal-content">
 						<h1>TILKNYTT TAGS</h1>
-						<Alert>
+						<AlertStripeInfo>
 							Tags gir deg mulighet til å identifisere dine PDL-personer på egen “tagged”
 							Kafka-topic, der tags[dintag] legges til på responsen. Ta kontakt for ytterligere
 							informasjon.
-						</Alert>
+						</AlertStripeInfo>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
 						<DollySelect
 							options={tagOptions}
@@ -55,17 +54,17 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 						/>
 					</div>
 					<div className="tagsModal-actions">
-						<NavButton variant={'danger'} onClick={closeModal}>
+						<NavButton type={'fare'} onClick={closeModal}>
 							Avbryt
 						</NavButton>
 						<NavButton
 							onClick={() => {
 								action(gruppeId, tags).then(() => {
-									dispatch(actions.getById(gruppeId, 0, 10))
 									closeModal()
+									return mutate(REGEX_BACKEND_GRUPPER)
 								})
 							}}
-							variant={'primary'}
+							type="hoved"
 						>
 							Tilknytt tags
 						</NavButton>
