@@ -236,7 +236,7 @@ public class ArtifactUpdateService {
                 updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting"));
 
         utflyttingService.validate(oppdatertUtflytting);
-        utflyttingService.convert(person.getPerson().getUtflytting());
+        utflyttingService.convert(person.getPerson());
         folkeregisterPersonstatusService.update(person.getPerson());
     }
 
