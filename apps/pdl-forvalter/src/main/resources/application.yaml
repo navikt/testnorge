@@ -18,7 +18,7 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
   ident-pool:
-    url:  https://testnav-ident-pool.dev.intern.nav.no
+    url: https://testnav-ident-pool.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-ident-pool
@@ -43,11 +43,14 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump
+      exposure.include: prometheus,heapdump,health
       path-mapping.prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
+    health:
+      show-details: always
+      show-components: always
   metrics.export:
     prometheus.enabled: true
 server:

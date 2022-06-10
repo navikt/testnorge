@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,12 +45,17 @@ public class KrrstubConsumer {
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
 
-    public KrrstubConsumer(TokenExchange tokenService, KrrstubProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public KrrstubConsumer(TokenExchange tokenService,
+                           KrrstubProxyProperties serverProperties,
+                           ObjectMapper objectMapper,
+                           ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -86,13 +92,13 @@ public class KrrstubConsumer {
                         .flatMap(Flux::from)
                         .filter(resp -> nonNull(resp.getId()))
                         .map(resp -> {
-                                new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue());
-                                return format("Slettet ident med id=%d", resp.getId());
+                            new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue());
+                            return format("Slettet ident med id=%d", resp.getId());
                         })
                 ).collectList();
     }
 
-        public Map<String, String> checkAlive () {
-            return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-        }
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+}
