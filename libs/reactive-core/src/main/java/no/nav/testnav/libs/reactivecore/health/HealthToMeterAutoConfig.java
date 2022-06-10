@@ -15,12 +15,12 @@ import java.util.List;
 public class HealthToMeterAutoConfig {
 
     @Bean
-    static HealthToMeterBinder healthToMeterBinder(HealthContributorRegistry registry) {
+    public HealthToMeterBinder healthToMeterBinder(HealthContributorRegistry registry) {
         return new HealthToMeterBinder(registry);
     }
 
     @Bean
-    static StatusAggregator statusAggregator() {
+    public StatusAggregator statusAggregator() {
         return new SimpleStatusAggregator(List.of(
                 Health.DOWN,
                 Health.OUT_OF_SERVICE,

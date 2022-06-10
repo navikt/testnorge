@@ -27,20 +27,17 @@ public class HealthToMeterBinder implements MeterBinder {
     }
 
     private ToDoubleFunction<HealthIndicator> statusToDouble() {
+
         return value -> {
             val status = value.health().getStatus().getCode();
-            if (no.nav.testnav.libs.reactivecore.health.Health.UP.equals(status)) {
-                return 1;
-            } else if (no.nav.testnav.libs.reactivecore.health.Health.PAUSED.equals(status)) {
-                return 2;
-            } else if (no.nav.testnav.libs.reactivecore.health.Health.DISABLED.equals(status)) {
-                return 3;
-            } else if (no.nav.testnav.libs.reactivecore.health.Health.DOWN.equals(status)) {
-                return 4;
-            } else if (no.nav.testnav.libs.reactivecore.health.Health.OUT_OF_SERVICE.equals(status)) {
-                return 4;
-            }
-            return 5;
+
+            return switch (status) {
+                case Health.UP -> 1;
+                case Health.PAUSED -> 2;
+                case Health.DISABLED -> 3;
+                case Health.DOWN, Health.OUT_OF_SERVICE -> 4;
+                default -> 5;
+            };
         };
     }
 }
