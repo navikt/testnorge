@@ -10,9 +10,9 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 
 import java.util.function.ToDoubleFunction;
 
-
 @RequiredArgsConstructor
 public class HealthToMeterBinder implements MeterBinder {
+
     private final HealthContributorRegistry registry;
 
     @Override
