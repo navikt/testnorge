@@ -236,8 +236,8 @@ public class ArtifactUpdateService {
                 updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting"));
 
         utflyttingService.validate(oppdatertUtflytting);
-        utflyttingService.convert(person.getPerson().getUtflytting());
-        folkeregisterPersonstatusService.update(person.getPerson());
+        utflyttingService.convert(person.getPerson());
+        folkeregisterPersonstatusService.convert(person.getPerson());
     }
 
     public void updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {

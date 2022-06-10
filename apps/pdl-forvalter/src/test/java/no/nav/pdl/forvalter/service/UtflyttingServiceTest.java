@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,9 @@ class UtflyttingServiceTest {
     @Mock
     private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
+    @Mock
+    private BostedAdresseService bostedAdresseService;
+
     @InjectMocks
     private UtflyttingService utflyttingService;
 
@@ -47,7 +51,11 @@ class UtflyttingServiceTest {
 
         when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("TGW");
 
-        var target = utflyttingService.convert(List.of(UtflyttingDTO.builder().isNew(true).build())).get(0);
+        var request = PersonDTO.builder()
+                .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
+                .build();
+
+        var target = utflyttingService.convert(request).get(0);
 
         verify(geografiskeKodeverkConsumer).getTilfeldigLand();
         assertThat(target.getTilflyttingsland(), is(equalTo("TGW")));
