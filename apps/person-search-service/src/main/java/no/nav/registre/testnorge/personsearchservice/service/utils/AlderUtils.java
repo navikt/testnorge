@@ -5,24 +5,28 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.getBetween;
 
 @UtilityClass
 public class AlderUtils {
 
-    public static void addAlderQueries(BoolQueryBuilder queryBuilder, PersonSearch search){
+    public static void addAlderQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         addAlderQuery(queryBuilder, search);
         addFoedselQuery(queryBuilder, search);
     }
 
     private static void addFoedselQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getFoedsel())
-                .ifPresent(value -> queryFoedselsdato(value.getFom(), value.getTom(), queryBuilder));
+                .ifPresent(value -> {
+                    var tom = isNull(value.getTom()) ? LocalDate.now() : value.getTom();
+                    queryFoedselsdato(value.getFom(), tom, queryBuilder);
+                });
     }
 
     private static void addAlderQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
@@ -43,13 +47,29 @@ public class AlderUtils {
     private static void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
         LocalDate now = LocalDate.now();
 
-        if (nonNull(fra) || nonNull(til)){
+        if (nonNull(fra) || nonNull(til)) {
             LocalDate tom = nonNull(fra) ? now.minusYears(fra).minusMonths(3) : now;
             LocalDate fom = nonNull(til) ? now.minusYears(til).minusYears(1) : null;
 
             queryFoedselsdato(fom, tom, queryBuilder);
         }
 
+    }
+
+    private static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
+        if (fom == null && tom == null) {
+            return Optional.empty();
+        }
+        var builder = QueryBuilders.rangeQuery(field);
+
+        if (nonNull(fom)) {
+            builder.gte(fom);
+        }
+
+        if (nonNull(tom)) {
+            builder.lte(tom);
+        }
+        return Optional.of(builder);
     }
 
 }

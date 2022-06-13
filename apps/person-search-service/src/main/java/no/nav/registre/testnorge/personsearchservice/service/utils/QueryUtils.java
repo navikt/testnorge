@@ -112,20 +112,4 @@ public class QueryUtils {
 
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
     }
-
-    public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
-        if (fom == null && tom == null) {
-            return Optional.empty();
-        }
-        var builder = QueryBuilders.rangeQuery(field);
-
-        if (nonNull(fom)) {
-            builder.gte(fom);
-        }
-
-        if (nonNull(tom)) {
-            builder.lte(tom);
-        }
-        return Optional.of(builder);
-    }
 }
