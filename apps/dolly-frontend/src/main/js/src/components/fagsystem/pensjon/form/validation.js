@@ -32,14 +32,14 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	return alder
 }
 
-const invalidAlder = (inntektFom, values) => {
+const invalidAlderFom = (inntektFom, values) => {
 	const personFoerLeggTil = values.personFoerLeggTil
 	const importPersoner = values.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
 	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
-	if (!_isNil(alder)) {
+	if (!_isNil(alder) && alder !== '') {
 		if (new Date().getFullYear() - alder + 18 > inntektFom) {
 			return true
 		}
@@ -60,6 +60,31 @@ const invalidAlder = (inntektFom, values) => {
 		}
 	} else if (new Date().getFullYear() - 12 > inntektFom) {
 		return true
+	}
+	return false
+}
+
+const invalidAlderTom = (inntektTom, values) => {
+	const personFoerLeggTil = values.personFoerLeggTil
+	const importPersoner = values.importPersoner
+
+	const alder = getAlder(values, personFoerLeggTil, importPersoner)
+	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	if (!_isNil(alder)) {
+		if (inntektTom >= new Date().getFullYear() - alder + 69) {
+			return true
+		}
+	} else if (!_isNil(foedtEtter)) {
+		const foedtEtterDate = new Date(foedtEtter)
+		if (inntektTom >= foedtEtterDate.getFullYear() + 69) {
+			return true
+		}
+	} else if (!_isNil(foedtFoer)) {
+		const foedtFoerDate = new Date(foedtFoer)
+		if (foedtFoerDate.getFullYear() + 69 <= inntektTom) {
+			return true
+		}
 	}
 	return false
 }
@@ -98,7 +123,7 @@ const validFomDateTest = (val) => {
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
 
-		if (invalidAlder(inntektFom, values)) {
+		if (invalidAlderFom(inntektFom, values)) {
 			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 18 år' })
 		}
 
@@ -118,6 +143,12 @@ const validTomDateTest = (val) => {
 
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
+
+		if (invalidAlderTom(inntektTom, values)) {
+			return this.createError({
+				message: 'T.o.m kan ikke være etter året personen fyller 69',
+			})
+		}
 
 		if (invalidDoedsdato(inntektTom, values)) {
 			return this.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
