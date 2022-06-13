@@ -4,14 +4,9 @@ import lombok.experimental.UtilityClass;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-
-import static java.util.Objects.nonNull;
 
 @UtilityClass
 public class QueryUtils {
@@ -24,9 +19,9 @@ public class QueryUtils {
 
 
     public static NestedQueryBuilder nestedTermsQuery(String path, String field, Collection<String> values, boolean historisk) {
-        if (historisk){
+        if (historisk) {
             return QueryBuilders.nestedQuery(path, QueryBuilders.termsQuery(path + field, values), ScoreMode.Avg);
-        }else{
+        } else {
             return QueryBuilders.nestedQuery(
                     path,
                     QueryBuilders.boolQuery()
@@ -111,21 +106,5 @@ public class QueryUtils {
         boolQuery.minimumShouldMatch(minimumShould);
 
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
-    }
-
-    public static Optional<RangeQueryBuilder> getBetween(LocalDate fom, LocalDate tom, String field) {
-        if (fom == null && tom == null) {
-            return Optional.empty();
-        }
-        var builder = QueryBuilders.rangeQuery(field);
-
-        if (nonNull(fom)) {
-            builder.gte(fom);
-        }
-
-        if (nonNull(tom)) {
-            builder.lte(tom);
-        }
-        return Optional.of(builder);
     }
 }
