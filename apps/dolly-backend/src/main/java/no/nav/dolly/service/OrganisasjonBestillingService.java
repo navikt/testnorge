@@ -82,7 +82,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatusList) ? orgStatusList : null))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatusList) ? orgStatusList : emptyList()))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(bestillingProgress.getOrganisasjonsnummer())
