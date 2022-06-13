@@ -19,8 +19,6 @@ type Props = {
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
-	const navigate = useNavigate()
-
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
@@ -55,7 +53,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				</a>
 			</div>
 			<div className="flexbox--all-center">
-				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker(navigate)} />
+				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker()} />
 				<div className="profil-area flexbox--all-center">
 					<NavLink to="/minside">
 						<img alt="Profilbilde" src={brukerBilde || dolly} />

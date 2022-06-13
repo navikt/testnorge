@@ -23,16 +23,14 @@ function getCookie(cookieName: string) {
 	return ''
 }
 
-export const logoutBruker = (navigate: Function, feilmelding?: string) => {
-	navigate('/logout' + (feilmelding ? '?state=' + feilmelding : ''))
-	window.location.reload()
+export const logoutBruker = (feilmelding?: string) => {
+	window.location.href = '/logout' + (feilmelding ? '?state=' + feilmelding : '')
 }
 
 const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000
 
 const Utlogging = () => {
 	const [serverTime, setServerTime] = useState(parseInt(getCookie('serverTime')))
-	const navigate = useNavigate()
 
 	const calculateOffset = () => {
 		const calcExpiry = parseInt(getCookie('sessionExpiry'))
@@ -58,14 +56,14 @@ const Utlogging = () => {
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		logoutBruker(navigate)
+		logoutBruker()
 	}
 
 	return (
 		<DollyModal
 			minWidth={670}
 			isOpen={milliseconds <= SHOW_MODAL_WHEN_TIME_LEFT}
-			onRequestClose={() => logoutBruker(navigate)}
+			onRequestClose={() => logoutBruker()}
 			noCloseButton={true}
 			contentLabel="Utlogging rute"
 		>
@@ -83,7 +81,7 @@ const Utlogging = () => {
 					</p>
 				</ProgressBar>
 				<div className="utlogging__button-group">
-					<Knapp className="utlogging__button" onClick={() => logoutBruker(navigate)}>
+					<Knapp className="utlogging__button" onClick={() => logoutBruker()}>
 						Logg ut nå
 					</Knapp>
 					<Hovedknapp className="utlogging__button" onClick={continueSession}>
