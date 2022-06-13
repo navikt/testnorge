@@ -71,6 +71,7 @@ export default () => {
 					className="login-modal_button-bankid"
 					type="hoved"
 					onClick={redirectOnClick('/oauth2/authorization/idporten')}
+					disabled
 				>
 					Logg inn med BankId
 				</NavButton>
