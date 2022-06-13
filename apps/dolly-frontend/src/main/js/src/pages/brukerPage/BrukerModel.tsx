@@ -23,14 +23,14 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logoutBruker(navigate, UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch(() => logoutBruker(navigate, ORG_ERROR))
-			.catch(() => logoutBruker(navigate, UNKNOWN_ERROR))
+			.catch(() => logoutBruker(ORG_ERROR))
+			.catch(() => logoutBruker(UNKNOWN_ERROR))
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
@@ -42,14 +42,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logoutBruker(navigate, UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 			})
 			.catch(() => {
 				setLoading(false)
 			})
 			.catch(() => {
-				logoutBruker(navigate, UNKNOWN_ERROR)
+				logoutBruker(UNKNOWN_ERROR)
 			})
 	}
 
@@ -70,7 +70,7 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton className="tilbake-button" onClick={() => logoutBruker(navigate)}>
+				<NavButton className="tilbake-button" onClick={() => logoutBruker()}>
 					Tilbake til innlogging
 				</NavButton>
 			</div>
