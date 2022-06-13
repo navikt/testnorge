@@ -38,7 +38,6 @@ public class SecurityConfig {
         this.postLogoutRedirectUri = postLogoutRedirectUri;
     }
 
-
     @SneakyThrows
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
