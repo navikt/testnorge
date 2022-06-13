@@ -43,7 +43,7 @@ public class AlderUtils {
     private static void queryAlder(Short fra, Short til, BoolQueryBuilder queryBuilder) {
         LocalDate now = LocalDate.now();
 
-        LocalDate tom = nonNull(fra) ? now.minusYears(fra).minusMonths(3) : now.minusMonths(3);
+        LocalDate tom = nonNull(fra) ? now.minusYears(fra).minusMonths(3) : now;
         LocalDate fom = nonNull(til) ? now.minusYears(til).minusYears(1) : null;
 
         queryFoedselsdato(fom, tom, queryBuilder);
