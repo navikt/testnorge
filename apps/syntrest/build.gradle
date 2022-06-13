@@ -57,8 +57,6 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'
