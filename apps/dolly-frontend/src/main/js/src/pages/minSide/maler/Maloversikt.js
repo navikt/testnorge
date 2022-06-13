@@ -88,7 +88,6 @@ export default ({ brukerId }) => {
 							columns={columns}
 							header={false}
 							iconItem={<MalIconItem />}
-							pagination
 						/>
 					</ErrorBoundary>
 				) : (
