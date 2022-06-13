@@ -44,7 +44,7 @@ public class AlderUtils {
         LocalDate now = LocalDate.now();
 
         if (nonNull(fra) || nonNull(til)){
-            LocalDate tom = nonNull(fra) ? now.minusYears(fra).minusMonths(3) : now.plusYears(1);
+            LocalDate tom = nonNull(fra) ? now.minusYears(fra).minusMonths(3) : now;
             LocalDate fom = nonNull(til) ? now.minusYears(til).minusYears(1) : null;
 
             queryFoedselsdato(fom, tom, queryBuilder);
