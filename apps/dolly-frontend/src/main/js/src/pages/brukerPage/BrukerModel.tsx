@@ -7,6 +7,7 @@ import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
 import { logoutBruker } from '~/components/utlogging/Utlogging'
 import { useNavigate } from 'react-router-dom'
+import { NotFoundError } from '~/error'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -29,8 +30,8 @@ export default () => {
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch(() => logoutBruker(ORG_ERROR))
-			.catch(() => logoutBruker(UNKNOWN_ERROR))
+			.catch((_e: NotFoundError) => logoutBruker(ORG_ERROR))
+			.catch((_e: Error) => logoutBruker(UNKNOWN_ERROR))
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
