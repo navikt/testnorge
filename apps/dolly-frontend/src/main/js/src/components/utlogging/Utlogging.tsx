@@ -31,7 +31,6 @@ const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000
 
 const Utlogging = () => {
 	const [serverTime, setServerTime] = useState(parseInt(getCookie('serverTime')))
-	const navigate = useNavigate()
 
 	const calculateOffset = () => {
 		const calcExpiry = parseInt(getCookie('sessionExpiry'))

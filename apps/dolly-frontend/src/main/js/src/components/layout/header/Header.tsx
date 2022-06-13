@@ -19,8 +19,6 @@ type Props = {
 }
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
-	const navigate = useNavigate()
-
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
