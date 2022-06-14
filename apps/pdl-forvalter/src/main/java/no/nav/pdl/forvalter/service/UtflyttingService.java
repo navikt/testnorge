@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -85,6 +86,12 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
 
             person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
                     .isNew(true)
+                    .id(person.getFolkeregisterPersonstatus().stream()
+                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
+                            .orElse(FolkeregisterPersonstatusDTO.builder()
+                                    .id(0)
+                                    .build())
+                            .getId() + 1)
                     .build());
         }
     }
