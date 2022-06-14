@@ -59,8 +59,8 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
             getPdlIdenter(List.of(dollyPerson.getHovedperson()))
                     .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-                    .subscribe(response -> log.info("Publish med status: {} gjort på hendelselager for ident: {}",
-                            response, dollyPerson.getHovedperson()));
+                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                            dollyPerson.getHovedperson(), response));
         }
     }
 
