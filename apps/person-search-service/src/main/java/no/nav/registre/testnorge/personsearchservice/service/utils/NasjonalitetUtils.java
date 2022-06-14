@@ -66,10 +66,17 @@ public class NasjonalitetUtils {
 
                     if (nonNull(value.getInnflytting())) {
                         addFraflyttingslandQueries(queryBuilder, value.getInnflytting());
+                        Optional.ofNullable(value.getInnflytting().getTest())
+                                .ifPresent(test -> {
+                                    if (!test.isEmpty()) {
+                                        queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", test, NO));
+                                    }
+                                });
                     }
                     if (nonNull(value.getUtflytting())) {
                         addTilflyttingslandQueries(queryBuilder, value.getUtflytting());
                     }
+
                 });
     }
 
