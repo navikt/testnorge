@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,7 +39,7 @@ public class DeployService {
                                 .infoElement(type)
                                 .hendelser(hendelser)
                                 .build()))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(List<Ordre> ordres) {
