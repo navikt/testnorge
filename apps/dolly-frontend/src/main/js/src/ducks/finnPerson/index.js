@@ -39,10 +39,10 @@ export default handleActions(
 			if (action.payload.action !== 'REPLACE') return initialState
 		},
 		[onFailure(navigerTilPerson)](state, action) {
-			state.feilmelding = action.payload.data.message
+			state.feilmelding = action.payload.data?.message
 		},
 		[onFailure(navigerTilBestilling)](state, action) {
-			state.feilmelding = action.payload.data.message
+			state.feilmelding = action.payload.data?.message
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			if (action.payload.data.error) {
