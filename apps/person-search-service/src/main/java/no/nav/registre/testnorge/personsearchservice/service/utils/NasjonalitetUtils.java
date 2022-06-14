@@ -66,12 +66,6 @@ public class NasjonalitetUtils {
 
                     if (nonNull(value.getInnflytting())) {
                         addFraflyttingslandQueries(queryBuilder, value.getInnflytting());
-                        Optional.ofNullable(value.getInnflytting().getTest())
-                                .ifPresent(test -> {
-                                    if (!test.isEmpty()) {
-                                        queryBuilder.must(nestedTermsQuery(INNFLYTTING_PATH, ".fraflyttingsland", test, NO));
-                                    }
-                                });
                     }
                     if (nonNull(value.getUtflytting())) {
                         addTilflyttingslandQueries(queryBuilder, value.getUtflytting());
@@ -126,7 +120,7 @@ public class NasjonalitetUtils {
         if (!value.isEmpty()) {
             switch (value) {
                 case "VERDEN" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
-                case "EU" -> queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
+                case "EU" -> queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, ""));
                 case "U-EU" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
                 default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
