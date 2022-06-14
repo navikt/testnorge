@@ -30,7 +30,7 @@ public class QueryUtils {
     }
 
     public static NestedQueryBuilder nestedExistsQuery(String path, String field, String historisk) {
-        if (!historisk.isEmpty()){
+        if (!historisk.isEmpty()) {
             var boolQuery = QueryBuilders.boolQuery()
                     .must(QueryBuilders.existsQuery(path + field))
                     .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
@@ -41,7 +41,7 @@ public class QueryUtils {
     }
 
     public static NestedQueryBuilder nestedMatchQuery(String path, String field, String value, String historisk) {
-        if (!historisk.isEmpty()){
+        if (!historisk.isEmpty()) {
             var boolQuery = QueryBuilders.boolQuery()
                     .must(QueryBuilders.matchQuery(path + field, value))
                     .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
@@ -84,10 +84,9 @@ public class QueryUtils {
             if (historisk) {
                 boolQuery.should(QueryBuilders.existsQuery(path + field));
             } else {
-                boolQuery.should(
-                        (QueryBuilders.boolQuery()
-                                .must(QueryBuilders.existsQuery(path + field))
-                                .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false))));
+                boolQuery.should(QueryBuilders.boolQuery()
+                        .must(QueryBuilders.existsQuery(path + field))
+                        .must(QueryBuilders.termQuery(path + HISTORISK_PATH, false)));
             }
         }
 

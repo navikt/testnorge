@@ -6,7 +6,6 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,45 +102,26 @@ public class NasjonalitetUtils {
 
     private static void addFraflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
         Optional.ofNullable(search.getFraflyttingsland())
-                .ifPresent(value -> {
-                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO);
-                });
+                .ifPresent(value -> addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO));
         Optional.ofNullable(search.getHistoriskFraflyttingsland())
-                .ifPresent(value -> {
-                    addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", YES);
-                });
+                .ifPresent(value -> addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", YES));
     }
 
 
     private static void addTilflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.UtflyttingSearch search) {
         Optional.ofNullable(search.getTilflyttingsland())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", NO);
-                    }
-                });
+                .ifPresent(value -> addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", NO));
         Optional.ofNullable(search.getHistoriskTilflyttingsland())
-                .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", YES);
-                    }
-                });
+                .ifPresent(value -> addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", YES));
     }
 
     private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {
         if (!value.isEmpty()) {
             switch (value) {
-                case "VERDEN":
-                    queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
-                    break;
-                case "EU":
-                    queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
-                    break;
-                case "U-EU":
-                    queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
-                    break;
-                default:
-                    queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
+                case "VERDEN" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
+                case "EU" -> queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
+                case "U-EU" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
+                default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
         }
     }
