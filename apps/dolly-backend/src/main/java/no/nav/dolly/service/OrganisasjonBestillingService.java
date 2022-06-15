@@ -153,10 +153,19 @@ public class OrganisasjonBestillingService {
                         .build());
     }
 
-    private OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
+    private List<OrgStatus> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
 
-        bestilling.setFeil(orgStatus.getError());
-        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
+        var feil = orgStatus.stream()
+                .filter( o -> o.getStatus().equals(FAILED) )
+                .map( o -> o.getEnvironment() + ":" + o.getDetails() )
+                .collect(Collectors.joining(","));
+
+        bestilling.setFeil(feil);
+
+        var ferdig = orgStatus.stream()
+                .anyMatch( o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())) );
+
+        bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
 
         return orgStatus;
@@ -198,6 +207,18 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
+    private String forvalterStatusDetails(OrgStatus orgStatus) {
+        switch (orgStatus.getStatus()) {
+            case COMPLETED:
+                return "OK";
+            case ERROR:
+            case FAILED:
+                return "Feil-" + orgStatus.getDetails();
+            default:
+                return orgStatus.getStatus().name();
+        }
+    }
+
     private List<OrgStatus> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
@@ -205,7 +226,12 @@ public class OrganisasjonBestillingService {
         var orgStatus = organisasjonDeployStatus.getOrgStatus()
                 .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
 
-        orgStatus.stream().forEach( status -> updateBestilling(bestilling, status) );
+        updateBestilling(bestilling, orgStatus);
+
+        var forvalterStatus = orgStatus.stream()
+                .map( org -> org.getEnvironment() + ":" + forvalterStatusDetails(org) )
+                .collect(Collectors.joining(","));
+        bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
 
         return orgStatus;
     }
