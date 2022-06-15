@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,9 @@ class InnflyttingServiceTest {
     @Mock
     private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
+    @Mock
+    private BostedAdresseService bostedAdresseService;
+
     @InjectMocks
     private InnflyttingService innflyttingService;
 
@@ -47,9 +51,13 @@ class InnflyttingServiceTest {
 
         when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("IND");
 
-        var target = innflyttingService.convert(List.of(InnflyttingDTO.builder()
-                .isNew(true)
-                .build()))
+        var request = PersonDTO.builder()
+                .innflytting(List.of(InnflyttingDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
+
+        var target = innflyttingService.convert(request)
                 .get(0);
 
         verify(geografiskeKodeverkConsumer).getTilfeldigLand();
