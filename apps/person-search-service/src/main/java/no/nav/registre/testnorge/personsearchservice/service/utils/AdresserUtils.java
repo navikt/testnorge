@@ -53,7 +53,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getKommunenummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, NO));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, false));
                     }
                 });
     }
@@ -62,7 +62,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getHistoriskKommunenummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, YES));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, true));
                     }
                 });
     }
@@ -71,7 +71,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getPostnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, NO));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, false));
                     }
                 });
     }
@@ -80,7 +80,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getHistoriskPostnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, YES));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, true));
                     }
                 });
     }
@@ -89,7 +89,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getBydelsnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, NO));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, false));
                     }
                 });
     }
@@ -98,7 +98,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getHistoriskBydelsnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, YES));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, true));
                     }
                 });
     }
@@ -124,9 +124,9 @@ public class AdresserUtils {
         Optional.ofNullable(search.getHarKontaktadresse())
                 .ifPresent(value -> {
                     if (YES.equalsIgnoreCase(value)) {
-                        queryBuilder.must(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, NO));
+                        queryBuilder.must(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, false));
                     } else if (NO.equalsIgnoreCase(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, NO));
+                        queryBuilder.mustNot(nestedExistsQuery(KONTAKTADRESSE_PATH, METADATA_FIELD, false));
                     }
                 });
     }
@@ -135,9 +135,9 @@ public class AdresserUtils {
         Optional.ofNullable(search.getHarOppholdsadresse())
                 .ifPresent(value -> {
                     if (YES.equalsIgnoreCase(value)) {
-                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, NO));
+                        queryBuilder.must(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, false));
                     } else if (NO.equalsIgnoreCase(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, NO));
+                        queryBuilder.mustNot(nestedExistsQuery(OPPHOLDSADRESSE_PATH, METADATA_FIELD, false));
                     }
                 });
     }
@@ -146,8 +146,8 @@ public class AdresserUtils {
         Optional.ofNullable(search.getHarUtenlandskAdresse())
                 .ifPresent(value -> {
                     var newQuery = QueryBuilders.boolQuery()
-                            .should(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse", NO))
-                            .should(nestedExistsQuery(KONTAKTADRESSE_PATH, ".utenlandskAdresse", NO))
+                            .should(nestedExistsQuery(OPPHOLDSADRESSE_PATH, ".utenlandskAdresse", false))
+                            .should(nestedExistsQuery(KONTAKTADRESSE_PATH, ".utenlandskAdresse", false))
                             .minimumShouldMatch(1);
                     if (YES.equalsIgnoreCase(value)) {
                         queryBuilder.must(newQuery);
@@ -161,7 +161,7 @@ public class AdresserUtils {
         Optional.ofNullable(oppholdsadresse.getOppholdAnnetSted())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", value, NO));
+                        queryBuilder.must(nestedMatchQuery(OPPHOLDSADRESSE_PATH, ".oppholdAnnetSted", value, false));
                     }
                 });
     }

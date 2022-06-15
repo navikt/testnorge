@@ -16,8 +16,6 @@ import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryU
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.HISTORISK_PATH;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.YES;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
 
 @UtilityClass
 public class NasjonalitetUtils {
@@ -77,23 +75,23 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getStatsborgerskap())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, NO));
+                        queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, false));
                     }
                 });
     }
 
     private static void addFraflyttingslandQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
         Optional.ofNullable(search.getFraflyttingsland())
-                .ifPresent(value -> addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO));
+                .ifPresent(value -> addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", false));
     }
 
 
     private static void addTilflyttingslandQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch.UtflyttingSearch search) {
         Optional.ofNullable(search.getTilflyttingsland())
-                .ifPresent(value -> addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", NO));
+                .ifPresent(value -> addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", false));
     }
 
-    private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {
+    private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, Boolean historisk) {
         if (!value.isEmpty()) {
             var euBoolQuery = getEUBoolQuery(path, field, historisk);
             switch (value) {
@@ -108,9 +106,9 @@ public class NasjonalitetUtils {
         }
     }
 
-    private BoolQueryBuilder getEUBoolQuery(String path, String field, String historisk) {
+    private BoolQueryBuilder getEUBoolQuery(String path, String field, Boolean historisk) {
         var boolQuery = QueryBuilders.boolQuery()
-                .must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
+                .must(QueryBuilders.termQuery(path + HISTORISK_PATH, historisk));
         for (var land : EU_LANDKODER) {
             boolQuery.should(QueryBuilders.matchQuery(path + field, land));
         }
