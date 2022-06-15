@@ -14,7 +14,7 @@ import java.util.Optional;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedTermsQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldMatchQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.HISTORISK_PATH;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.YES;
@@ -121,20 +121,20 @@ public class NasjonalitetUtils {
 
     private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {
         var boolQuery = QueryBuilders.boolQuery()
-                .must(QueryBuilders.termsQuery(path + field, EU_LANDKODER))
                 .must(QueryBuilders.termQuery( path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
-//        for (var land: EU_LANDKODER){
-//            boolQuery.should(QueryBuilders.matchQuery(path + field, land));
-//        }
-//        boolQuery.minimumShouldMatch(1);
+        for (var land: EU_LANDKODER){
+            boolQuery.should(QueryBuilders.matchQuery(path + field, land));
+        }
+        boolQuery.minimumShouldMatch(1);
 
 
         if (!value.isEmpty()) {
             switch (value) {
                 case "V" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
-                case "E" -> queryBuilder.must(QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg));
-//                case "E" -> queryBuilder.must(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
-                case "U" -> queryBuilder.mustNot(nestedTermsQuery(path, field, EU_LANDKODER, historisk));
+                case "E" -> queryBuilder.must(nestedShouldMatchQuery(path, field, EU_LANDKODER,1,  historisk));
+//                case "E" -> queryBuilder.must(QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg));
+                case "U" -> queryBuilder.mustNot(nestedShouldMatchQuery(path, field, EU_LANDKODER,1,  historisk));
+//                case "U" -> queryBuilder.mustNot(QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg));
                 default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
         }

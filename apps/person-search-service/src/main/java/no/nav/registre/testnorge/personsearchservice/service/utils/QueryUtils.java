@@ -71,6 +71,25 @@ public class QueryUtils {
         return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
     }
 
+    public static NestedQueryBuilder nestedShouldMatchQuery(
+            String path,
+            String field,
+            List<String> values,
+            int minimumShould,
+            String historisk
+    ) {
+        var boolQuery = QueryBuilders.boolQuery();
+
+        for (String value : values) {
+            boolQuery.should(QueryBuilders.matchQuery(path + field, value));
+        }
+        if (!historisk.isEmpty()) {
+            boolQuery.must(QueryBuilders.termQuery(path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
+        }
+        boolQuery.minimumShouldMatch(minimumShould);
+
+        return QueryBuilders.nestedQuery(path, boolQuery, ScoreMode.Avg);
+    }
 
     public static NestedQueryBuilder nestedShouldExistQuery(
             String path,
