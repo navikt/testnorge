@@ -19,7 +19,6 @@ public class NasjonalitetSearch {
     @NoArgsConstructor(force = true)
     public class InnflyttingSearch {
         String fraflyttingsland;
-        String historiskFraflyttingsland;
     }
 
     @Value
@@ -27,6 +26,5 @@ public class NasjonalitetSearch {
     @NoArgsConstructor(force = true)
     public class UtflyttingSearch {
         String tilflyttingsland;
-        String historiskTilflyttingsland;
     }
 }

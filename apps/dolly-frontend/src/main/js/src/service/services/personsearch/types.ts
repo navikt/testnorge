@@ -14,11 +14,9 @@ export type Search = {
 		statsborgerskap?: string
 		innflytting?: {
 			fraflyttingsland?: string
-			historiskFraflyttingsland?: string
 		}
 		utflytting?: {
 			tilflyttingsland?: string
-			historiskTilflyttingsland?: string
 		}
 	}
 	sivilstand?: {

@@ -67,10 +67,10 @@ public class NasjonalitetUtils {
                     addInnflyttingQuery(queryBuilder, value);
 
                     if (nonNull(value.getInnflytting())) {
-                        addFraflyttingslandQueries(queryBuilder, value.getInnflytting());
+                        addFraflyttingslandQuery(queryBuilder, value.getInnflytting());
                     }
                     if (nonNull(value.getUtflytting())) {
-                        addTilflyttingslandQueries(queryBuilder, value.getUtflytting());
+                        addTilflyttingslandQuery(queryBuilder, value.getUtflytting());
                     }
 
                 });
@@ -103,19 +103,15 @@ public class NasjonalitetUtils {
                 });
     }
 
-    private static void addFraflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
+    private static void addFraflyttingslandQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch.InnflyttingSearch search) {
         Optional.ofNullable(search.getFraflyttingsland())
                 .ifPresent(value -> addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", NO));
-        Optional.ofNullable(search.getHistoriskFraflyttingsland())
-                .ifPresent(value -> addLandQuery(queryBuilder, value, INNFLYTTING_PATH, ".fraflyttingsland", YES));
     }
 
 
-    private static void addTilflyttingslandQueries(BoolQueryBuilder queryBuilder, NasjonalitetSearch.UtflyttingSearch search) {
+    private static void addTilflyttingslandQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch.UtflyttingSearch search) {
         Optional.ofNullable(search.getTilflyttingsland())
                 .ifPresent(value -> addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", NO));
-        Optional.ofNullable(search.getHistoriskTilflyttingsland())
-                .ifPresent(value -> addLandQuery(queryBuilder, value, UTFLYTTING_PATH, ".tilflyttingsland", YES));
     }
 
     private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {

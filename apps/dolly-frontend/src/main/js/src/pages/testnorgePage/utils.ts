@@ -14,11 +14,9 @@ export const initialValues = {
 		statsborgerskap: '',
 		innflytting: {
 			fraflyttingsland: '',
-			historiskFraflyttingsland: '',
 		},
 		utflytting: {
 			tilflyttingsland: '',
-			historiskTilflyttingsland: '',
 		},
 	},
 	sivilstand: {
