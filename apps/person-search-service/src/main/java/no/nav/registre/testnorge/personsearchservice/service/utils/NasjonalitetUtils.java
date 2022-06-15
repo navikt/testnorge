@@ -124,7 +124,10 @@ public class NasjonalitetUtils {
             switch (value) {
                 case "V" -> queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
                 case "E" -> queryBuilder.must(QueryBuilders.nestedQuery(path, euBoolQuery, ScoreMode.Avg));
-                case "U" -> queryBuilder.mustNot(QueryBuilders.nestedQuery(path, euBoolQuery, ScoreMode.Avg));
+                case "U" -> {
+                    queryBuilder.must(nestedExistsQuery(path, METADATA_FIELD, historisk));
+                    queryBuilder.mustNot(QueryBuilders.nestedQuery(path, euBoolQuery, ScoreMode.Avg));
+                }
                 default -> queryBuilder.must(nestedMatchQuery(path, field, value, historisk));
             }
         }
