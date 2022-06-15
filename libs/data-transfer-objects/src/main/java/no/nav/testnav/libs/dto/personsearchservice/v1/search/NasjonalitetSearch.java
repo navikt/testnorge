@@ -9,8 +9,6 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class NasjonalitetSearch {
     String statsborgerskap;
-    Boolean innflyttingTilNorge;
-    Boolean utflyttingFraNorge;
     InnflyttingSearch innflytting;
     UtflyttingSearch utflytting;
 

@@ -63,9 +63,6 @@ public class NasjonalitetUtils {
         Optional.ofNullable(search.getNasjonalitet())
                 .ifPresent(value -> {
                     addStatsborgerskapQuery(queryBuilder, value);
-                    addUtflyttingQuery(queryBuilder, value);
-                    addInnflyttingQuery(queryBuilder, value);
-
                     if (nonNull(value.getInnflytting())) {
                         addFraflyttingslandQuery(queryBuilder, value.getInnflytting());
                     }
@@ -81,24 +78,6 @@ public class NasjonalitetUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(STATSBORGERSKAP_PATH, ".land", value, NO));
-                    }
-                });
-    }
-
-    private static void addUtflyttingQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch search) {
-        Optional.ofNullable(search.getUtflyttingFraNorge())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery(UTFLYTTING_PATH, METADATA_FIELD, ""));
-                    }
-                });
-    }
-
-    private static void addInnflyttingQuery(BoolQueryBuilder queryBuilder, NasjonalitetSearch search) {
-        Optional.ofNullable(search.getInnflyttingTilNorge())
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.must(nestedExistsQuery(INNFLYTTING_PATH, METADATA_FIELD, ""));
                     }
                 });
     }

@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.personsearchservice.config;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import no.nav.registre.testnorge.personsearchservice.mapper.MappingStrategy;
+import no.nav.registre.testnorge.personsearchservice.domain.mapper.MappingStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
