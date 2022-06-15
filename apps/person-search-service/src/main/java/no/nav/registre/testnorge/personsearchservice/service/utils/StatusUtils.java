@@ -34,7 +34,7 @@ public class StatusUtils {
         Optional.ofNullable(search.getKunLevende())
                 .ifPresent(value -> {
                     if (Boolean.TRUE.equals(value)) {
-                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", true));
+                        queryBuilder.mustNot(nestedExistsQuery(DOEDSFALL_PATH, ".doedsdato", false));
                     }
                 });
     }
