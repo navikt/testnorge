@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.domain.mapper;
+package no.nav.registre.testnorge.personsearchservice.mapper;
 
 import ma.glasnost.orika.MapperFactory;
 
