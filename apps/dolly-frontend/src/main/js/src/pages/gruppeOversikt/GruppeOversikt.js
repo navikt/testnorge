@@ -8,6 +8,8 @@ import Icon from '~/components/ui/icon/Icon'
 import Liste from './Liste'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { PopoverOrientering } from 'nav-frontend-popover'
+import { setSidetall } from '~/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
 
 export default function GruppeOversikt({
 	getGrupper,
@@ -25,6 +27,7 @@ export default function GruppeOversikt({
 	const [visning, setVisning] = useState('mine')
 	const [importerte, setImporterte] = useState(importerteZIdenter)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 		visning === 'mine' ? fetchMineGrupper() : getGrupper(sidetall, sideStoerrelse)
@@ -32,6 +35,7 @@ export default function GruppeOversikt({
 
 	const byttVisning = (event) => {
 		setVisning(event.target.value)
+		dispatch(setSidetall(0))
 	}
 
 	if (importerteZIdenter !== importerte) {
