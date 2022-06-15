@@ -15,6 +15,7 @@ import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 import { InferProps, Requireable } from 'prop-types'
 import { PopoverOrientering } from 'nav-frontend-popover'
+import FinnPersonBestillingConnector from "~/pages/gruppeOversikt/FinnPersonBestillingConnector";
 
 type GruppeHeaderProps = {
 	gruppe: InferProps<{
@@ -74,6 +75,8 @@ const GruppeHeader = ({
 						(Q1). Kontakt Team Dolly dersom du ønsker å låse opp gruppen.
 					</Hjelpetekst>
 				)}
+				<div className="flexbox--grow-2"></div>
+				<FinnPersonBestillingConnector />
 			</div>
 			<Header className={headerClass} icon={iconType}>
 				<div className="flexbox">

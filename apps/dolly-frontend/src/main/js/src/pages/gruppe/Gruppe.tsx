@@ -97,29 +97,29 @@ export default function Gruppe({
 			/>
 
 			<div className="toolbar">
-				{brukertype === 'AZURE' && (
-					<NavButton
-						type="hoved"
-						onClick={visStartBestilling}
-						disabled={erLaast}
-						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '4px' }}
-					>
-						Opprett personer
-					</NavButton>
-				)}
+				<div>
+					{brukertype === 'AZURE' && (
+						<NavButton
+							type="hoved"
+							onClick={visStartBestilling}
+							disabled={erLaast}
+							title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+							style={{ marginTop: '4px', marginRight: '10px' }}
+						>
+							Opprett personer
+						</NavButton>
+					)}
 
-				{brukertype === 'BANKID' && (
 					<NavButton
 						type="hoved"
-						onClick={() => setRedirectToSoek(true)}
+						onClick={() => navigate(`/testnorge`)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
 						style={{ marginTop: '4px' }}
 					>
 						Importer personer
 					</NavButton>
-				)}
+				</div>
 
 				<div style={{ marginTop: '9px' }}>
 					<ToggleGruppe onChange={byttVisning} name="toggler">
@@ -146,7 +146,7 @@ export default function Gruppe({
 					</ToggleGruppe>
 				</div>
 
-				<FinnPersonBestillingConnector />
+				{/*<FinnPersonBestillingConnector />*/}
 			</div>
 
 			{startBestillingAktiv && (
