@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -59,10 +60,14 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
             utflytting.setTilflyttingsland(geografiskeKodeverkConsumer.getTilfeldigLand());
         }
 
-        if (isNull(person.getBostedsadresse().stream()
+        if (isNull(utflytting.getUtflyttingsdato())) {
+            utflytting.setUtflyttingsdato(LocalDateTime.now());
+        }
+
+        if (person.getBostedsadresse().stream()
                 .findFirst()
                 .orElse(new BostedadresseDTO())
-                .getUtenlandskAdresse())) {
+                .isAdresseNorge()) {
 
             person.getBostedsadresse().add(0, BostedadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()
@@ -70,6 +75,10 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                             .build())
                     .gyldigFraOgMed(utflytting.getUtflyttingsdato())
                     .isNew(true)
+                    .id(person.getBostedsadresse().stream()
+                            .max(Comparator.comparing(BostedadresseDTO::getId))
+                            .orElse(BostedadresseDTO.builder().id(0).build())
+                            .getId() + 1)
                     .build()
             );
             bostedAdresseService.convert(person, false);
@@ -88,9 +97,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                     .isNew(true)
                     .id(person.getFolkeregisterPersonstatus().stream()
                             .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
-                            .orElse(FolkeregisterPersonstatusDTO.builder()
-                                    .id(0)
-                                    .build())
+                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
                             .getId() + 1)
                     .build());
         }
