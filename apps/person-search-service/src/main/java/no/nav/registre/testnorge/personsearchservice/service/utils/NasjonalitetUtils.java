@@ -121,11 +121,12 @@ public class NasjonalitetUtils {
 
     private static void addLandQuery(BoolQueryBuilder queryBuilder, String value, String path, String field, String historisk) {
         var boolQuery = QueryBuilders.boolQuery()
+                .must(QueryBuilders.termsQuery(path + field, EU_LANDKODER))
                 .must(QueryBuilders.termQuery( path + HISTORISK_PATH, YES.equalsIgnoreCase(historisk)));
-        for (var land: EU_LANDKODER){
-            boolQuery.should(QueryBuilders.matchQuery(path + field, land));
-        }
-        boolQuery.minimumShouldMatch(1);
+//        for (var land: EU_LANDKODER){
+//            boolQuery.should(QueryBuilders.matchQuery(path + field, land));
+//        }
+//        boolQuery.minimumShouldMatch(1);
 
 
         if (!value.isEmpty()) {
