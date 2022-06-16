@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -70,6 +71,9 @@ public class ArenaDagpengerService {
 
         if (soknadResponse.getFeiledeDagpenger().isEmpty() && !soknadResponse.getNyeDagpenger().isEmpty() && nonNull(vedtakdato)) {
             var vedtakRequest = getDagpengevedtakRequest(ident, miljoe, vedtakdato, rettighetKode, soknadResponse.getNyeDagpenger().get(0));
+            if (isNull(vedtakRequest)){
+                return Collections.singletonList(soknadResponse);
+            }
             var vedtakResponse = arenaForvalterService.opprettDagpengevedtak(vedtakRequest);
             return Arrays.asList(soknadResponse, vedtakResponse);
         } else {
@@ -90,14 +94,18 @@ public class ArenaDagpengerService {
 
     private DagpengerRequestDTO getDagpengevedtakRequest(String personident, String miljoe, LocalDate startdato, Dagpengerettighet rettighetKode, NyeDagpenger soknadResponse) {
         var vedtak = syntDagpengerConsumer.syntetiserDagpengevedtak(rettighetKode, startdato);
-        vedtak.setSakId(soknadResponse.getArenaSakId());
-        vedtak.setOppgaveId(soknadResponse.getOppgaveId());
+        if (nonNull(vedtak)) {
+            vedtak.setSakId(soknadResponse.getArenaSakId());
+            vedtak.setOppgaveId(soknadResponse.getOppgaveId());
 
-        return DagpengerRequestDTO.builder()
-                .personident(personident)
-                .miljoe(miljoe)
-                .nyeMottaDagpengevedtak(Collections.singletonList(vedtak))
-                .build();
+            return DagpengerRequestDTO.builder()
+                    .personident(personident)
+                    .miljoe(miljoe)
+                    .nyeMottaDagpengevedtak(Collections.singletonList(vedtak))
+                    .build();
+        } else {
+            return null;
+        }
     }
 
 }
