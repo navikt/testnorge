@@ -88,7 +88,6 @@ export default function OrganisasjonBestilling({
 			<DollyTable
 				data={sortedOrgliste}
 				columns={columns}
-				pagination
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {
 					return (

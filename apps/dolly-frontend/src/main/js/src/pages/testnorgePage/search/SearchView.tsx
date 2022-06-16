@@ -149,7 +149,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 					getPdlKjoenn(person) === 'M' ? <ManIconItem /> : <WomanIconItem />
 				}
 				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
-				pagination
+				pagination="simple"
 			/>
 			<ImportModal valgtePersoner={valgtePersoner} importerPersoner={importerPersoner} />
 		</SearchView>

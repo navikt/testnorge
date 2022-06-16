@@ -103,7 +103,6 @@ export default function Liste({
 				columns={columns}
 				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
-				pagination
 				gruppeDetaljer={gruppeDetaljer}
 				visSide={visSide}
 			/>
