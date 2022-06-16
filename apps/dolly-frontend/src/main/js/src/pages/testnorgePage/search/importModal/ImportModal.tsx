@@ -132,12 +132,12 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 
 			<DollyModal isOpen={modalMalIsOpen} closeModal={closeMalModal} width="60%" overflow="auto">
 				<div className="importModal">
-					<Icon kind="personinformasjon" size={60} />
+					{/*<Icon kind="personinformasjon" size={60} />*/}
 					<div className="importModal importModal-content">
 						<h1>Import med mal</h1>
-						<h4>
-							Hvilken mal skal brukes for persondata?
-						</h4>
+						{/*<h4>*/}
+						{/*	Hvilken mal skal brukes for persondata?*/}
+						{/*</h4>*/}
 					</div>
 					<MalValg valgtMal={(mal: any) => setMalData(mal) } />
 					<div className="importModal-actions">
