@@ -3,6 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.GetArenaBrukereCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostArenaBrukerCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostDagpengerCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostEndreInnsatsbehovCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostFinnTiltakCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostRettighetCommand;
@@ -13,7 +14,6 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.Fi
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
-import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.NyeDagpenger;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
@@ -44,6 +44,9 @@ public class ArenaForvalterConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
+
+    private static final String DAGPENGESOKNAD_PATH = "/api/v1/mottadagpengesoknad";
+    private static final String DAGPENGEVEDTAK_PATH = "/api/v1/mottadagpengevedtak";
 
     public ArenaForvalterConsumer(
             ArenaForvalterenProxyProperties serviceProperties,
@@ -213,23 +216,24 @@ public class ArenaForvalterConsumer {
         return arbeidssoekere;
     }
 
-    public DagpengerResponseDTO opprettDagpengerSoknad(DagpengerRequestDTO soknad){
-        log.info("Innsending av dagpengesoknad ikke implementert");
-        var response = Collections.singletonList(NyeDagpenger.builder()
-                        .personident(soknad.getPersonident())
-                        .oppgaveId(1)
-                        .arenaSakId(1)
-                .build());
-        return new DagpengerResponseDTO(response, null);
+    public DagpengerResponseDTO opprettDagpengerSoknad(DagpengerRequestDTO soknad) {
+        return opprettDagpenger(soknad, DAGPENGESOKNAD_PATH);
     }
 
-    public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak){
-        log.info("Innsending av dagpengevedtak ikke implementert");
-        var response = Collections.singletonList(NyeDagpenger.builder()
-                .personident(vedtak.getPersonident())
-                .vedtakId(1)
-                .build());
-        return new DagpengerResponseDTO(response, null);
+    public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {
+        return opprettDagpenger(vedtak, DAGPENGEVEDTAK_PATH);
+    }
+
+    private DagpengerResponseDTO opprettDagpenger(DagpengerRequestDTO request, String path) {
+        try {
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new PostDagpengerCommand(
+                            request, path, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Feil i innsending av dagpenger", e);
+            return new DagpengerResponseDTO();
+        }
     }
 
 }
