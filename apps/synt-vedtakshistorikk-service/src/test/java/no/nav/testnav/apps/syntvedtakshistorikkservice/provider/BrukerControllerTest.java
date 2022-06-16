@@ -81,14 +81,6 @@ public class BrukerControllerTest {
         assertThat(result).containsKey(fnr1);
         assertThat(result.get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
         assertThat(result.get(fnr1).getArbeidsoekerList()).hasSize(1);
-
-//        when(brukerService.registrerArenaBrukereMedOppfoelging(syntetiserArenaRequestSingle)).thenReturn(oppfoelgingResponse);
-//
-//        Map<String, NyeBrukereResponse> result = brukerController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
-//        assertThat(result.keySet()).hasSize(1);
-//        assertThat(result).containsKey(fnr1);
-//        assertThat(result.get(fnr1).getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
-//        assertThat(result.get(fnr1).getArbeidsoekerList()).hasSize(1);
     }
 
     @Test
