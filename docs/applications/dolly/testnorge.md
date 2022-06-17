@@ -26,13 +26,10 @@ søkeløsning og deretter importere dem til ønsket Dolly gruppe.
 
 ### Import av partner
 Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd. Hvis valgt person har en 
-partner som ikke allerede er valgt for import blir man nå spurt om man ønsker å inkludere dem eller ikke.
-Videoen under viser en demo for dette.
+partner som ikke allerede er valgt for import kan man huke av for "IMPORT MED PARTNER" for å inkludere dem i importen.
+Bilde under viser et tilfelle for import av partner er valgt.
 
-<video src="https://user-images.githubusercontent.com/58416744/169964310-ca58536f-210f-4b00-ae91-ec7bf8ecded4.mov"
-       controls="controls" style="max-width: 730px;" >
-
-</video>
+![Startside](assets/import_partner.png)
 
 Det er også mulig å importere partner etter opprinnelig import av person. Dette kan gjøres direkte i personvisning. 
 Videoen under viser en demo for dette.
