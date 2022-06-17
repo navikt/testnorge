@@ -447,6 +447,7 @@ public class PersonExcelService {
                         .map(PdlPersonBolk::getData)
                         .map(PdlPersonBolk.Data::getHentPersonBolk)
                         .flatMap(Flux::fromIterable)
+                        .filter(personBolk -> nonNull(personBolk.getPerson()))
                         .map(person -> prepDataRow(person, kodeverk)))
                 .collectList()
                 .block();
