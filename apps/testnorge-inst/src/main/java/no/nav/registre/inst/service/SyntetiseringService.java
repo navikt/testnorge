@@ -50,13 +50,11 @@ public class SyntetiseringService {
             return new HashMap<>();
         }
 
-        var bearerToken = identService.hentTokenTilInst2(miljoe);
-        var syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(bearerToken, callId, consumerId, miljoe, utvalgteIdenter.size());
-        return leggTilInstitusjonsforholdIInst2(bearerToken, callId, consumerId, miljoe, utvalgteIdenter, syntetiserteMeldinger);
+        var syntetiserteMeldinger = hentSyntetiserteInstitusjonsforholdsmeldinger(callId, consumerId, miljoe, utvalgteIdenter.size());
+        return leggTilInstitusjonsforholdIInst2(callId, consumerId, miljoe, utvalgteIdenter, syntetiserteMeldinger);
     }
 
     private List<InstitusjonsoppholdV2> hentSyntetiserteInstitusjonsforholdsmeldinger(
-            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
@@ -64,7 +62,7 @@ public class SyntetiseringService {
     ) {
         List<InstitusjonsoppholdV2> syntetiserteMeldinger = new ArrayList<>(antallMeldinger);
         for (int i = 0; i < ANTALL_FORSOEK && syntetiserteMeldinger.size() < antallMeldinger; i++) {
-            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(bearerToken, callId, consumerId, miljoe,
+            syntetiserteMeldinger.addAll(validerOgFjernUgyldigeMeldinger(callId, consumerId, miljoe,
                     instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger - syntetiserteMeldinger.size())));
         }
         return syntetiserteMeldinger;
@@ -86,7 +84,6 @@ public class SyntetiseringService {
     }
 
     private Map<String, List<OppholdResponse>> leggTilInstitusjonsforholdIInst2(
-            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
@@ -109,7 +106,7 @@ public class SyntetiseringService {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
                 institusjonsopphold.setNorskident(personident);
-                OppholdResponse oppholdResponse = fyllOppholdResponse(bearerToken, callId, consumerId, miljoe, statusFraInst2, institusjonsopphold, personident);
+                OppholdResponse oppholdResponse = fyllOppholdResponse(callId, consumerId, miljoe, statusFraInst2, institusjonsopphold, personident);
 
                 if (oppholdResponse.getStatus().is2xxSuccessful()) {
                     antallOppholdOpprettet++;
@@ -142,7 +139,14 @@ public class SyntetiseringService {
         return statusFraInst2;
     }
 
-    private OppholdResponse fyllOppholdResponse(String bearerToken, String callId, String consumerId, String miljoe, Map<String, List<OppholdResponse>> statusFraInst2, InstitusjonsoppholdV2 institusjonsopphold, String personident) {
+    private OppholdResponse fyllOppholdResponse(
+            String callId,
+            String consumerId,
+            String miljoe,
+            Map<String, List<OppholdResponse>> statusFraInst2,
+            InstitusjonsoppholdV2 institusjonsopphold,
+            String personident
+    ) {
         var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(callId, consumerId, miljoe, institusjonsopphold);
         if (statusFraInst2.containsKey(personident)) {
             statusFraInst2.get(personident).add(oppholdResponse);
@@ -155,7 +159,6 @@ public class SyntetiseringService {
     }
 
     private List<InstitusjonsoppholdV2> validerOgFjernUgyldigeMeldinger(
-            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
