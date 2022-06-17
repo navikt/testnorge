@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -73,8 +74,10 @@ public class ExcelService {
         hyperlinkStyle.setFont(hLinkFont);
         hyperlinkStyle.setWrapText(true);
 
-        personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter);
-        bankkontoExcelService.prepareBankkontoSheet(workbook, wrapStyle, testidenter);
+        Mono.zip(
+                        personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter),
+                        bankkontoExcelService.prepareBankkontoSheet(workbook, wrapStyle, testidenter))
+                .block();
 
         log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
         try {

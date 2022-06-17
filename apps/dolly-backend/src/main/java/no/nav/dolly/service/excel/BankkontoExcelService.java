@@ -38,7 +38,7 @@ public class BankkontoExcelService {
     private static final Object[] header = {"Ident", "Kontonummer (Norge)", "Kontonummer (Utland)", "Banknavn", "Bankkode",
             "Banklandkode", "Valutakode", "Swift/Bickode", "Bankadresse1", "Bankadresse2", "Bankadresse3"};
     private static final Integer[] COL_WIDTHS = {14, 20, 20, 20, 20, 20, 20, 20, 30, 30, 30};
-    private static final String ARK_FANE = "Bankkonti";
+    private static final String ARK_FANE = "Bankkontoer";
     private static final String LANDKODER = "Landkoder";
     private static final String VALUTAER = "Valutaer";
     private static final String KODEVERK_FMT = "%s (%s)";
@@ -109,7 +109,7 @@ public class BankkontoExcelService {
                         valutaer.getOrDefault(bankkontonrUtland.getValuta(), bankkontonrUtland.getValuta())) : "";
     }
 
-    public void prepareBankkontoSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle, List<String> testidenter) {
+    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle, List<String> testidenter) {
 
         var rows = getBankkontoDetaljer(testidenter);
 
@@ -128,6 +128,8 @@ public class BankkontoExcelService {
                             .flatMap(Collection::stream)
                             .toList());
         }
+
+        return Mono.empty();
     }
 
     private List<Object[]> getBankkontoDetaljer(List<String> identer) {

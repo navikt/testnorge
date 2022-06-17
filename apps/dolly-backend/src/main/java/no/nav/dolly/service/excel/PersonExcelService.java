@@ -354,8 +354,8 @@ public class PersonExcelService {
         }
     }
 
-    public void preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
-                                   XSSFCellStyle hyperlinkStyle, List<String> identer) {
+    public Mono<Void> preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
+                                           XSSFCellStyle hyperlinkStyle, List<String> identer) {
 
         var sheet = workbook.createSheet(ARK_FANE);
         var rows = getPersondataRowContents(identer);
@@ -374,6 +374,8 @@ public class PersonExcelService {
         var linkReferences = createLinkReferanser(rows);
 
         appendHyperlinks(sheet, rows, linkReferences, hyperlinkStyle, workbook.getCreationHelper());
+
+        return Mono.empty();
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
@@ -470,7 +472,8 @@ public class PersonExcelService {
                         (Map<String, String>) kodeverk.getT2(),
                         (Map<String, String>) kodeverk.getT1()),
                 getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse()),
-                        (Map<String, String>) kodeverk.getT3(), (Map<String, String>) kodeverk.getT1()),
+                        (Map<String, String>) kodeverk.getT3(),
+                        (Map<String, String>) kodeverk.getT1()),
                 getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO()),
                         (Map<String, String>) kodeverk.getT3(),
                         (Map<String, String>) kodeverk.getT2(),
