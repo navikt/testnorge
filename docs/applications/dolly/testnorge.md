@@ -14,7 +14,7 @@ Under "Test-Norge" fanen i Dolly er mulig å søke opp Test-Norge identer i Doll
 velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket gruppe i Dolly. Videon under viser en demo for 
 hvordan dette kan gjøres.
 
-<video src="https://user-images.githubusercontent.com/58416744/169970311-42ec4332-e50f-449e-815f-0a5d1fb146c1.mov"
+<video src="https://user-images.githubusercontent.com/58416744/174292316-cc1b2c47-b855-4390-b77f-66bc8e426a39.mov"
        controls="controls" style="max-width: 730px;" >
 
 </video>
