@@ -9,7 +9,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortReque
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Map;
 
@@ -29,7 +27,6 @@ import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
-import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @Slf4j
@@ -69,10 +66,6 @@ public class JobController {
     @Value("${batch.frikort.antallNyeIdenter}")
     private int frikortAntallNyeIdenter;
 
-    private final Map<String, Integer> antallSkdMeldingerPerEndringskode;
-    private final Map<String, Integer> antallNavMeldingerPerEndringskode;
-
-    private final TestnorgeSkdService testnorgeSkdService;
     private final TestnorgeInntektService testnorgeInntektService;
     private final TestnorgeSigrunService testnorgeSigrunService;
     private final TestnorgeAaregService testnorgeAaregService;
@@ -83,31 +76,6 @@ public class JobController {
     private final TestnorgeMedlService testnorgeMedlService;
     private final TestnorgeFrikortService testnorgeFrikortService;
 
-
-    /**
-     * Feil i innsending av TPS-meldinger må fikses før denne eventuelt kan startes igjen
-     */
-    //    @Scheduled(cron = "0 0 0 * * *")
-    public void tpsSyntBatch() {
-        try {
-            testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallSkdMeldingerPerEndringskode);
-        } catch (HttpStatusCodeException e) {
-            log.warn(e.getResponseBodyAsString(), e);
-        }
-    }
-
-    /**
-     * Feil i innsending av nav-endringmeldinger-meldinger må fikses før denne eventuelt kan startes igjen
-     */
-//    @Scheduled(cron = "0 0 0 * * *")
-    public void navSyntBatch() {
-        var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
-                .avspillergruppeId(avspillergruppeId)
-                .miljoe(miljoe)
-                .antallMeldingerPerEndringskode(antallNavMeldingerPerEndringskode)
-                .build();
-        testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
-    }
 
     @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {

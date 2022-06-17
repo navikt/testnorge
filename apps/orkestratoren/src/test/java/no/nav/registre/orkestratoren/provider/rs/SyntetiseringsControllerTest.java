@@ -8,18 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.ArenaService;
@@ -28,14 +23,10 @@ import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
-import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @ExtendWith(MockitoExtension.class)
 class SyntetiseringsControllerTest {
-
-    @Mock
-    private TestnorgeSkdService testnorgeSkdService;
 
     @Mock
     private TestnorgeInntektService testnorgeInntektService;
@@ -66,41 +57,6 @@ class SyntetiseringsControllerTest {
     private final Long avspillergruppeId = 100000445L;
     private final String miljoe = "t9";
 
-    /**
-     * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette skd-meldinger, skal metoden kalle på
-     * {@link TestnorgeSkdService#genererSkdmeldinger}
-     */
-    @Test
-    void shouldProduceSkdmeldinger() {
-        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("0110", 20);
-
-        var syntetiserSkdmeldingerRequest = new SyntetiserSkdmeldingerRequest(avspillergruppeId,
-                miljoe,
-                antallMeldingerPerEndringskode);
-
-        syntetiseringsController.opprettSkdmeldingerITPS(syntetiserSkdmeldingerRequest);
-
-        verify(testnorgeSkdService).genererSkdmeldinger(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
-    }
-
-    /**
-     * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette nav-endringsmeldinger, skal metoden kalle på
-     * {@link TestnorgeSkdService#genererNavmeldinger}
-     */
-    @Test
-    void shouldProduceNavmeldinger() {
-        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
-        antallMeldingerPerEndringskode.put("Z010", 20);
-
-        var syntetiserNavmeldingerRequest = new SyntetiserNavmeldingerRequest(avspillergruppeId,
-                miljoe,
-                antallMeldingerPerEndringskode);
-
-        syntetiseringsController.opprettNavmeldingerITPS(syntetiserNavmeldingerRequest);
-
-        verify(testnorgeSkdService).genererNavmeldinger(syntetiserNavmeldingerRequest);
-    }
 
     /**
      * Scenario: HVIS syntetiseringskontrolleren får et request om å opprette inntektsmeldinger, skal metoden kalle på

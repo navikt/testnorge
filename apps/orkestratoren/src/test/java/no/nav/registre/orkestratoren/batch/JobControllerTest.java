@@ -32,14 +32,10 @@ import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
-import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @ExtendWith(MockitoExtension.class)
 class JobControllerTest {
-
-    @Mock
-    private TestnorgeSkdService testnorgeSkdService;
 
     @Mock
     private TestnorgeInntektService testnorgeInntektService;
@@ -85,19 +81,6 @@ class JobControllerTest {
         antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put("0110", 2);
         ReflectionTestUtils.setField(jobController, "antallSkdMeldingerPerEndringskode", antallMeldingerPerEndringskode);
-    }
-
-    @Test
-    void shouldStartTpsBatch() {
-        jobController.tpsSyntBatch();
-        verify(testnorgeSkdService).genererSkdmeldinger(avspillergruppeId, miljoer.get(0), antallMeldingerPerEndringskode);
-    }
-
-    @Test
-    @Disabled("Koden er kommentert ut")
-    void shouldStartNavBatch() {
-        jobController.navSyntBatch();
-        verify(testnorgeSkdService).genererNavmeldinger(any());
     }
 
     @Test
