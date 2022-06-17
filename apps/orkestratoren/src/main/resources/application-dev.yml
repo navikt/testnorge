@@ -18,7 +18,5 @@ batch:
     antallMeldinger: 1
   medl:
     prosentfaktor: 0.1
-  frikort:
-    antallNyeIdenter: 1
 
 ibm.mq.user-authentication-m-q-c-s-p: false

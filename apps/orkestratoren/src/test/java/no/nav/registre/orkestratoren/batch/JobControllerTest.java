@@ -19,7 +19,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.ArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -53,9 +52,6 @@ class JobControllerTest {
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
-
-    @Mock
-    private TestnorgeFrikortService testnorgeFrikortService;
 
     @InjectMocks
     private JobController jobController;
@@ -112,9 +108,4 @@ class JobControllerTest {
         verify(testnorgeMedlService).genererMedlemskap(any());
     }
 
-    @Test
-    void shouldStartFrikortBatch() {
-        jobController.frikortSyntBatch();
-        verify(testnorgeFrikortService).genererFrikortEgenmeldinger(any());
-    }
 }

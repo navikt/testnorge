@@ -2,10 +2,8 @@ package no.nav.registre.orkestratoren.provider.rs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -14,7 +12,6 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.ArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -50,7 +47,6 @@ public class SyntetiseringsController {
     private final TestnorgeSamService testnorgeSamService;
     private final ArenaService arenaService;
     private final TestnorgeMedlService testnorgeMedlService;
-    private final TestnorgeFrikortService testnorgeFrikortService;
 
     @PostMapping(value = "/inntekt/generer")
     @ResponseStatus(value = HttpStatus.ACCEPTED)
@@ -116,12 +112,5 @@ public class SyntetiseringsController {
             @RequestBody SyntetiserMedlRequest syntetiserMedlRequest
     ) {
         return testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
-    }
-
-    @PostMapping(value = "/frikort/egenandeler/generer")
-    public List<GenererFrikortResponse> opprettEgenandelerIFrikort(
-            @RequestBody SyntetiserFrikortRequest syntetiserFrikortRequest
-    ) {
-        return testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
     }
 }

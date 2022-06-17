@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.ArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -61,8 +59,6 @@ public class JobController {
     @Value("${batch.medl.prosentfaktor}")
     private double medlProsentfaktor;
 
-    @Value("${batch.frikort.antallNyeIdenter}")
-    private int frikortAntallNyeIdenter;
 
     private final TestnorgeInntektService testnorgeInntektService;
     private final TestnorgeSigrunService testnorgeSigrunService;
@@ -72,7 +68,6 @@ public class JobController {
     private final TestnorgeSamService testnorgeSamService;
     private final ArenaService arenaService;
     private final TestnorgeMedlService testnorgeMedlService;
-    private final TestnorgeFrikortService testnorgeFrikortService;
 
 
     @Scheduled(cron = "0 0 1 1 * *")
@@ -137,11 +132,5 @@ public class JobController {
     public void medlSyntBatch() {
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, medlProsentfaktor);
         testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
-    }
-
-    @Scheduled(cron = "0 0 0 * * *")
-    public void frikortSyntBatch() {
-        var syntetiserFrikortRequest = new SyntetiserFrikortRequest(avspillergruppeId, miljoe, frikortAntallNyeIdenter);
-        testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
     }
 }

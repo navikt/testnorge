@@ -28,5 +28,3 @@ batch:
     antallMeldinger: 5
   medl:
     prosentfaktor:  0.1
-  frikort:
-    antallNyeIdenter: 10000

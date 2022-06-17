@@ -15,8 +15,6 @@ consumers:
     name: testnav-synt-vedtakshistorikk-service
   testnorge-aareg:
     url: https://testnorge-aareg.nais.preprod.local/api
-  testnorge-frikort:
-    url: https://testnorge-frikort.nais.preprod.local/api
   testnorge-hodejegeren:
     url: https://testnorge-hodejegeren.nais.preprod.local/api
   testnorge-inntekt:
