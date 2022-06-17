@@ -70,33 +70,48 @@ public class JobController {
     private final TestnorgeMedlService testnorgeMedlService;
 
 
-    @Scheduled(cron = "0 0 1 1 * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
         var request = new SyntetiserInntektsmeldingRequest(avspillergruppeId, miljoe);
         var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
     }
 
-    @Scheduled(cron = "0 0 1 1 5 *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 5 *")
     public void poppSyntBatch() {
         var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, poppbatchAntallNyeIdenter);
         var testdataEier = "synt_test";
         testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 
-    @Scheduled(cron = "0 0 1 1 * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 * *")
     public void aaregSyntBatch() {
         var syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, aaregbatchAntallNyeIdenter);
         testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 0 * * *")
     public void instSyntBatch() {
         var syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, instbatchAntallNyeIdenter);
         testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 
-    @Scheduled(cron = "0 0 0 1 5 *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 0 1 5 *")
     public void tpSyntBatch() {
         var request = new SyntetiserTpRequest(avspillergruppeId, miljoe, tpAntallPersoner);
         var entity = testnorgeTpService.genererTp(request);
@@ -105,7 +120,10 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 1 1 * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 * *")
     public void samSyntBatch() {
         var syntetiserSamRequest = new SyntetiserSamRequest(avspillergruppeId, miljoe, samAntallMeldinger);
         testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
@@ -128,7 +146,10 @@ public class JobController {
 
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 0 * * *")
     public void medlSyntBatch() {
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, medlProsentfaktor);
         testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
