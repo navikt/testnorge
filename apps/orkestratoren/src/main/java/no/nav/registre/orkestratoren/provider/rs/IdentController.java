@@ -40,8 +40,11 @@ public class IdentController {
         return identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
     }
 
+    /**
+     * Feil i sletting i SKD må fikses før denne eventuelt kan startes igjen
+     */
     @PostMapping("/synkronisering")
-    @Scheduled(cron = "0 0 1 1 * *")
+//    @Scheduled(cron = "0 0 1 1 * *")
     public Map<Long, SlettedeIdenterResponse> synkroniserMedTps() {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
         avspillergruppeMedFjernedeIdenter.put(avspillergruppeId, identService.synkroniserMedTps(avspillergruppeId, miljoe));
@@ -49,8 +52,11 @@ public class IdentController {
         return avspillergruppeMedFjernedeIdenter;
     }
 
+    /**
+     * Feil i sletting i SKD må fikses før denne eventuelt kan startes igjen
+     */
     @PostMapping("/rensAvspillergruppe")
-    @Scheduled(cron = "0 0 2 * * *")
+//    @Scheduled(cron = "0 0 2 * * *")
     public Map<Long, SlettedeIdenterResponse> rensAvspillergruppe() {
         Map<Long, SlettedeIdenterResponse> avspillergruppeMedFjernedeIdenter = new HashMap<>();
         avspillergruppeMedFjernedeIdenter.put(avspillergruppeId, identService.fjernKolliderendeIdenter(avspillergruppeId, miljoe));
