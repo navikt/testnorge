@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -27,6 +28,7 @@ public class ExcelService {
 
     private final TestgruppeRepository testgruppeRepository;
     private final PersonExcelService personExcelService;
+    private final BankkontoExcelService bankkontoExcelService;
 
     protected static void appendRows(XSSFSheet sheet, CellStyle wrapStyle, List<Object[]> rows) {
 
@@ -72,7 +74,8 @@ public class ExcelService {
         hyperlinkStyle.setFont(hLinkFont);
         hyperlinkStyle.setWrapText(true);
 
-        personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter);
+        CompletableFuture personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter);
+        bankkontoExcelService.prepareBankkontoSheet(workbook, wrapStyle, testidenter);
 
         log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
         try {

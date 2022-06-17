@@ -28,6 +28,25 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
     private static final String EMBETE_KODEVERK = "Vergemål_Fylkesmannsembeter";
     private final KodeverkConsumer kodeverkConsumer;
 
+    private static VergemaalType getSakstype(String vergemaalType) {
+
+        if (isNull(vergemaalType)) {
+            return null;
+        }
+
+        return switch (vergemaalType) {
+            case "MIM" -> VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
+            case "ANN" -> VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
+            case "VOK" -> VergemaalType.VOKSEN;
+            case "MIN" -> VergemaalType.MINDREAARIG;
+            case "VOM" -> VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
+            case "FRE" -> VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
+            case "EMA" -> VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
+            case "EMF" -> VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
+            default -> null;
+        };
+    }
+
     private Omfang getOmfang(String mandatType) {
 
         if (isNull(mandatType)) {
@@ -54,7 +73,8 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                         person.getVergemaal().forEach(vergemaal -> {
 
                             PdlVergemaal pdlVergemaal = new PdlVergemaal();
-                            pdlVergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(vergemaal.getEmbete()));
+                            pdlVergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).block()
+                                    .get(vergemaal.getEmbete()));
                             pdlVergemaal.setKilde(CONSUMER);
                             pdlVergemaal.setMaster(Master.FREG);
                             pdlVergemaal.setType(getSakstype(vergemaal.getSakType()));
@@ -70,24 +90,5 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
-    }
-
-    private static VergemaalType getSakstype(String vergemaalType) {
-
-        if (isNull(vergemaalType)) {
-            return null;
-        }
-
-        return switch (vergemaalType) {
-            case "MIM" -> VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
-            case "ANN" -> VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
-            case "VOK" -> VergemaalType.VOKSEN;
-            case "MIN" -> VergemaalType.MINDREAARIG;
-            case "VOM" -> VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
-            case "FRE" -> VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
-            case "EMA" -> VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
-            case "EMF" -> VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
-            default -> null;
-        };
     }
 }

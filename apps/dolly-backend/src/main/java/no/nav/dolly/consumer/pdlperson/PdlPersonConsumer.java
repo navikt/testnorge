@@ -105,10 +105,9 @@ public class PdlPersonConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                        .map(index -> new PdlBolkPersonGetCommand(webClient,
+                        .flatMap(index -> new PdlBolkPersonGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                token.getTokenValue()).call())
-                        .flatMap(Flux::from));
+                                token.getTokenValue()).call()));
     }
 
     public Map<String, String> checkAlive() {
