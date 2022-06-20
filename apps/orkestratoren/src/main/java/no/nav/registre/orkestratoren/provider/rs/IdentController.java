@@ -37,11 +37,11 @@ public class IdentController {
             @RequestParam String testdataEier,
             @RequestBody List<String> identer
     ) {
-        return identService.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
+        return identService.slettIdenterFraAdaptere(miljoe, testdataEier, identer);
     }
 
     /**
-     * Feil i sletting i SKD må fikses før denne eventuelt kan startes igjen
+     * Stopper innsending da mistenker det ikke lenger er i bruk
      */
     @PostMapping("/synkronisering")
 //    @Scheduled(cron = "0 0 1 1 * *")
@@ -53,7 +53,7 @@ public class IdentController {
     }
 
     /**
-     * Feil i sletting i SKD må fikses før denne eventuelt kan startes igjen
+     * Stopper innsending da mistenker det ikke lenger er i bruk
      */
     @PostMapping("/rensAvspillergruppe")
 //    @Scheduled(cron = "0 0 2 * * *")

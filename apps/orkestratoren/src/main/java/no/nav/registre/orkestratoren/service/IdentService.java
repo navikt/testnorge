@@ -3,12 +3,10 @@ package no.nav.registre.orkestratoren.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInstConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSigrunConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeSkdConsumer;
 import no.nav.registre.orkestratoren.provider.rs.responses.SletteFraAvspillerguppeResponse;
 import no.nav.registre.orkestratoren.provider.rs.responses.SlettedeIdenterResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -19,8 +17,6 @@ public class IdentService {
 
     private static final String TESTDATAEIER = "orkestratoren";
 
-    private final TestnorgeSkdConsumer testnorgeSkdConsumer;
-
     private final TestnorgeInstConsumer testnorgeInstConsumer;
 
     private final TestnorgeSigrunConsumer testnorgeSigrunConsumer;
@@ -28,7 +24,6 @@ public class IdentService {
     private final HodejegerenConsumer hodejegerenConsumer;
 
     public SlettedeIdenterResponse slettIdenterFraAdaptere(
-            Long avspillergruppeId,
             String miljoe,
             String testdataEier,
             List<String> identer
@@ -38,11 +33,8 @@ public class IdentService {
                         .build())
                 .build();
 
-        slettedeIdenterResponse.getTpsfStatus().setSlettedeMeldingIderFraTpsf(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer));
         slettedeIdenterResponse.setInstStatus(testnorgeInstConsumer.slettIdenterFraInst(identer));
         slettedeIdenterResponse.setSigrunStatus(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
-        // TODO: Fiks arena og legg inn denne igjen
-        // slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 
         return slettedeIdenterResponse;
     }
@@ -55,7 +47,6 @@ public class IdentService {
         var identerSomIkkeErITps = hodejegerenConsumer.getIdenterSomIkkeErITps(avspillergruppeId, miljoe);
         if (!identerSomIkkeErITps.isEmpty()) {
             slettedeIdenterResponse = slettIdenterFraAdaptere(
-                    avspillergruppeId,
                     miljoe,
                     TESTDATAEIER,
                     identerSomIkkeErITps
@@ -72,7 +63,6 @@ public class IdentService {
         var identerSomKolliderer = hodejegerenConsumer.getIdenterSomKolliderer(avspillergruppeId);
         if (!identerSomKolliderer.isEmpty()) {
             slettedeIdenterResponse = slettIdenterFraAdaptere(
-                    avspillergruppeId,
                     miljoe,
                     TESTDATAEIER,
                     identerSomKolliderer
