@@ -1,0 +1,14 @@
+management:
+  endpoints:
+    web:
+      base-path: /internal
+      exposure:
+        include: prometheus
+
+ida:
+  username: ${IDA_USERNAME}
+  password: ${IDA_PASSWORD}
+
+spring:
+  main:
+    banner-mode: off
