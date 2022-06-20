@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 // @ts-ignore
@@ -12,8 +12,7 @@ import { logoutBruker } from '~/components/utlogging/Utlogging'
 import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 
 export default () => {
-	const navigate = useNavigate()
-
+	
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 
@@ -51,7 +50,7 @@ export default () => {
 				</a>
 			</div>
 			<div className="flexbox--all-center">
-				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker(navigate)} />
+				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker()} />
 				<div className="profil-area flexbox--all-center">
 					<NavLink to="/minside">
 						<img alt="Profilbilde" src={brukerBilde || dolly} />

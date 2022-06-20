@@ -1,14 +1,14 @@
 package no.nav.testnav.apps.adresseservice.consumer;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.testnav.apps.adresseservice.config.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.adresseservice.consumer.command.PdlAdresseSoekCommand;
 import no.nav.testnav.apps.adresseservice.dto.GraphQLRequest;
 import no.nav.testnav.apps.adresseservice.dto.PdlAdresseResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 public class PdlAdresseConsumer {
@@ -16,12 +16,14 @@ public class PdlAdresseConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
-    public PdlAdresseConsumer(TokenExchange tokenExchange, PdlServiceProperties properties) {
+    public PdlAdresseConsumer(TokenExchange tokenExchange, PdlServiceProperties properties,
+                              ExchangeFilterFunction metricsWebClientFilterFunction) {
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -30,5 +32,4 @@ public class PdlAdresseConsumer {
                 .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call())
                 .block();
     }
-
 }

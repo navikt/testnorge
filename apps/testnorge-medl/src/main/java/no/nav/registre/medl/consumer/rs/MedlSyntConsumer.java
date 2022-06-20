@@ -8,6 +8,7 @@ import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,8 +24,9 @@ public class MedlSyntConsumer {
 
     public MedlSyntConsumer(
             SyntMedlGcpProperties syntMedlGcpProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = syntMedlGcpProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
@@ -34,6 +36,7 @@ public class MedlSyntConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(syntMedlGcpProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

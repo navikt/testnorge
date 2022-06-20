@@ -6,6 +6,7 @@ import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -24,14 +25,16 @@ public class OrganisasjonConsumer {
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serverProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

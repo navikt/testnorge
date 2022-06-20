@@ -2,11 +2,6 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTree;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.Ereg;
@@ -22,6 +17,13 @@ import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Component
@@ -38,8 +40,8 @@ public class OrganisasjonMottakServiceConsumer {
     }
 
     private Adresse createAdresse(no.nav.registre.sdforvalter.domain.Adresse adresse) {
-        if (adresse == null ||  adresse.getKommunenr() == null
-        ) {
+
+        if (isNull(adresse) || isBlank(adresse.getKommunenr())) {
             return null;
         }
 

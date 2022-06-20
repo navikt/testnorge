@@ -84,7 +84,6 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 							columns={columns}
 							header={false}
 							iconItem={<MalIconItem />}
-							pagination
 						/>
 					</ErrorBoundary>
 				) : (

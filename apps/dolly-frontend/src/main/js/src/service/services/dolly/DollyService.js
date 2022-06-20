@@ -169,7 +169,7 @@ export default {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 
-	importerPartner(groupId, ident) {
-		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, 'PDL'))
+	importerPartner(groupId, ident, master) {
+		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
 }

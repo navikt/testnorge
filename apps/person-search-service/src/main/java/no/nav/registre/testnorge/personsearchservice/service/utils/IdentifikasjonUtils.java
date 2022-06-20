@@ -44,10 +44,10 @@ public class IdentifikasjonUtils {
 
     private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
         if (nonNull(search.getFalskIdentitet()) && Boolean.TRUE.equals(search.getFalskIdentitet())) {
-            queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, null));
         }
         if (nonNull(search.getUtenlandskIdentitet()) && Boolean.TRUE.equals(search.getUtenlandskIdentitet())) {
-            queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, null));
         }
     }
 
@@ -56,7 +56,7 @@ public class IdentifikasjonUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         if (value.equals(NO_VALUE)) {
-                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD, true));
+                            queryBuilder.mustNot(nestedExistsQuery(ADRESSEBESKYTTELSE_PATH, METADATA_FIELD, null));
                         } else {
                             queryBuilder.must(nestedMatchQuery(ADRESSEBESKYTTELSE_PATH, ".gradering", value, false));
                         }
@@ -77,7 +77,7 @@ public class IdentifikasjonUtils {
         Optional.ofNullable(search.getIdenter())
                 .ifPresent(values -> {
                     if (!values.isEmpty()) {
-                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", ".ident", values, true));
+                        queryBuilder.must(nestedTermsQuery("hentIdenter.identer", ".ident", values, null));
                     }
                 });
     }

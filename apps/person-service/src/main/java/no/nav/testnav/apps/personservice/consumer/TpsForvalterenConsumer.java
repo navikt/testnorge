@@ -2,20 +2,20 @@ package no.nav.testnav.apps.personservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.command.GetTpsPersonCommand;
+import no.nav.testnav.apps.personservice.credentials.TpsForvalterenProxyServiceProperties;
+import no.nav.testnav.apps.personservice.domain.Person;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
-
-import no.nav.testnav.apps.personservice.consumer.command.GetTpsPersonCommand;
-import no.nav.testnav.apps.personservice.credentials.TpsForvalterenProxyServiceProperties;
-import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -28,8 +28,9 @@ public class TpsForvalterenConsumer {
     public TpsForvalterenConsumer(
             TpsForvalterenProxyServiceProperties serviceProperties,
             TokenExchange accessTokenService,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
         this.tokenExchange = accessTokenService;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
@@ -44,6 +45,7 @@ public class TpsForvalterenConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

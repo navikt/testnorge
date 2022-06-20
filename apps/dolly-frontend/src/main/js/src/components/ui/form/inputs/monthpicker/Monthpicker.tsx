@@ -13,6 +13,7 @@ interface MonthpickerProps {
 	date: Date
 	handleDateChange: (dato: string, type: string) => void
 	minDate?: Date
+	maxDate?: Date
 }
 
 export const Monthpicker = ({
@@ -22,6 +23,7 @@ export const Monthpicker = ({
 	date,
 	handleDateChange,
 	minDate = null,
+	maxDate = null,
 }: MonthpickerProps) => {
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
 		const feilmelding = _get(formikProps.errors, formikPath)
@@ -44,6 +46,7 @@ export const Monthpicker = ({
 					dropdownMode="select"
 					autoComplete="off"
 					minDate={minDate}
+					maxDate={maxDate}
 				/>
 			</Label>
 		</InputWrapper>

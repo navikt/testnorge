@@ -1,7 +1,12 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.*;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.GetArenaBrukereCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostArenaBrukerCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostEndreInnsatsbehovCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostFinnTiltakCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostRettighetCommand;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.SlettArenaBrukerCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.ArenaForvalterenProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
@@ -11,13 +16,13 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,10 +44,14 @@ public class ArenaForvalterConsumer {
 
     public ArenaForvalterConsumer(
             ArenaForvalterenProxyProperties serviceProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder().baseUrl(serviceProperties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.tokenExchange = tokenExchange;
     }
 

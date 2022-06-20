@@ -67,14 +67,14 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
 
         OrganisasjonBestillingProgress bestillingProgress;
-        OrgStatus orgStatus = null;
+        List<OrgStatus> orgStatusList = null;
 
         try {
             bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId)
                     .stream().findFirst().orElseThrow(() -> new NotFoundException("Status ikke funnet for bestillingId " + bestillingId));
 
             if (isNotTrue(bestilling.getFerdig())) {
-                orgStatus = getOrgforvalterStatus(bestilling, bestillingProgress);
+                orgStatusList = getOrgforvalterStatus(bestilling, bestillingProgress);
             }
 
         } catch (WebClientResponseException e) {
@@ -83,7 +83,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatus) ? orgStatus.getDetails() : null))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatusList) ? orgStatusList : emptyList()))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(bestillingProgress.getOrganisasjonsnummer())
@@ -103,7 +103,7 @@ public class OrganisasjonBestillingService {
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(progress -> RsOrganisasjonBestillingStatus.builder()
-                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, null))
+                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, emptyList()))
                         .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(progress.getBestilling().getBestKriterier()))
                         .sistOppdatert(progress.getBestilling().getSistOppdatert())
                         .organisasjonNummer(progress.getOrganisasjonsnummer())
@@ -113,6 +113,7 @@ public class OrganisasjonBestillingService {
                         .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
                         .build())
+                .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1 )
                 .toList();
     }
 
@@ -218,15 +219,16 @@ public class OrganisasjonBestillingService {
 
 
     @Transactional
-    public OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
+    private List<OrgStatus> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
 
         var orgStatus = organisasjonDeployStatus.getOrgStatus()
-                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList()).stream()
-                .findFirst().orElse(new OrgStatus());
+                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
 
-        return updateBestilling(bestilling, orgStatus);
+        orgStatus.stream().forEach( status -> updateBestilling(bestilling, status) );
+
+        return orgStatus;
     }
 
     private String toJson(Object object) {

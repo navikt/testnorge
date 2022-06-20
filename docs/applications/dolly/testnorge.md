@@ -14,7 +14,7 @@ Under "Test-Norge" fanen i Dolly er mulig å søke opp Test-Norge identer i Doll
 velge ekstra informasjon man ønsker lagt til på identene og importere dem inn i en ønsket gruppe i Dolly. Videon under viser en demo for 
 hvordan dette kan gjøres.
 
-<video src="https://user-images.githubusercontent.com/58416744/169970311-42ec4332-e50f-449e-815f-0a5d1fb146c1.mov"
+<video src="https://user-images.githubusercontent.com/58416744/174292316-cc1b2c47-b855-4390-b77f-66bc8e426a39.mov"
        controls="controls" style="max-width: 730px;" >
 
 </video>
@@ -26,13 +26,10 @@ søkeløsning og deretter importere dem til ønsket Dolly gruppe.
 
 ### Import av partner
 Det er mulig å inkludere valgte personers partnere i import uten å velge dem på forhånd. Hvis valgt person har en 
-partner som ikke allerede er valgt for import blir man nå spurt om man ønsker å inkludere dem eller ikke.
-Videoen under viser en demo for dette.
+partner som ikke allerede er valgt for import kan man huke av for "IMPORT MED PARTNER" for å inkludere dem i importen.
+Bilde under viser et tilfelle hvor import av partner er valgt.
 
-<video src="https://user-images.githubusercontent.com/58416744/169964310-ca58536f-210f-4b00-ae91-ec7bf8ecded4.mov"
-       controls="controls" style="max-width: 730px;" >
-
-</video>
+![Startside](assets/import_partner.png)
 
 Det er også mulig å importere partner etter opprinnelig import av person. Dette kan gjøres direkte i personvisning. 
 Videoen under viser en demo for dette.

@@ -36,7 +36,6 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 	const { gruppe, loading: loadingGruppe } = useGruppeById(Number(gruppeId))
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-	const [redirectToSoek, setRedirectToSoek] = useState(false)
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
@@ -53,10 +52,6 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 	const startBestilling = (values: {}) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
-
-	if (redirectToSoek) {
-		return navigate(`/soek`)
-	}
 
 	const erLaast = gruppe.erLaast
 
@@ -85,7 +80,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 				{brukertype === 'BANKID' && (
 					<NavButton
 						type="hoved"
-						onClick={() => setRedirectToSoek(true)}
+						onClick={() => navigate(`/testnorge`)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
 						style={{ marginTop: '4px' }}

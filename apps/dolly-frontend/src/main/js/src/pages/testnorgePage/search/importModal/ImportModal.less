@@ -1,23 +1,38 @@
 @import (reference) '~lessVars';
 
+.import-knapper {
+  margin-top: 10px;
+}
+
+.import-knapper span {
+  margin-right: 20px;
+}
+
 .importModal {
   display: flex;
-  align-items: center;
   flex-direction: column;
-  text-align: center;
   &-content {
     border-bottom: 1px solid @color-bg-divider;
     margin-bottom: 20px;
 
     h1 {
       border: none;
-      margin: 10px 0 0;
+      border-bottom: 1px solid #ccc;
     }
   }
   &-actions {
+    text-align: center;
     padding: 20px 0 0;
     button {
       margin: 0 10px;
+    }
+  }
+  &-mal-velg {
+    width: 100%;
+    margin-bottom: 20px;
+
+    div:last-child{
+      margin-right: 0;
     }
   }
   .svg-icon-personinformasjon{

@@ -56,6 +56,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'

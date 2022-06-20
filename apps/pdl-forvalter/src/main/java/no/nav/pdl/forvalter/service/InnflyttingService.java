@@ -3,22 +3,48 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
+public class InnflyttingService implements Validation<InnflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland";
 
     private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final BostedAdresseService bostedAdresseService;
+
+    public List<InnflyttingDTO> convert(PersonDTO person) {
+
+        for (var type : person.getInnflytting()) {
+            if (isTrue(type.getIsNew())) {
+
+                handle(type, person);
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+            }
+        }
+        return person.getInnflytting();
+    }
 
     @Override
     public void validate(InnflyttingDTO innflytting) {
@@ -28,17 +54,50 @@ public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
         }
     }
 
-    @Override
-    protected void handle(InnflyttingDTO innflytting) {
+    protected void handle(InnflyttingDTO innflytting, PersonDTO person) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
             innflytting.setFraflyttingsland(geografiskeKodeverkConsumer.getTilfeldigLand());
         }
-    }
 
-    @Override
-    protected void enforceIntegrity(List<InnflyttingDTO> adresse) {
+        if (isNull(innflytting.getInnflyttingsdato())) {
+            innflytting.setInnflyttingsdato(LocalDateTime.now());
+        }
 
-        // No integrity check
+        if (person.getBostedsadresse().stream()
+                .findFirst()
+                .orElse(new BostedadresseDTO())
+                .isAdresseUtland()) {
+
+            person.getBostedsadresse().add(0, BostedadresseDTO.builder()
+                    .vegadresse(new VegadresseDTO())
+                    .gyldigFraOgMed(innflytting.getInnflyttingsdato())
+                    .isNew(true)
+                    .id(person.getBostedsadresse().stream()
+                            .max(Comparator.comparing(BostedadresseDTO::getId))
+                            .orElse(BostedadresseDTO.builder().id(0).build())
+                            .getId() + 1)
+                    .build()
+            );
+            bostedAdresseService.convert(person, false);
+        }
+
+        if (person.getFolkeregisterPersonstatus().stream()
+                .findFirst()
+                .orElse(new FolkeregisterPersonstatusDTO())
+                .getStatus() != FolkeregisterPersonstatus.BOSATT ||
+                isNotTrue(person.getFolkeregisterPersonstatus().stream()
+                        .findFirst()
+                        .orElse(new FolkeregisterPersonstatusDTO())
+                        .getIsNew())) {
+
+            person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
+                    .isNew(true)
+                    .id(person.getFolkeregisterPersonstatus().stream()
+                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
+                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
+                            .getId() + 1)
+                    .build());
+        }
     }
 }

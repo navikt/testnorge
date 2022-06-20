@@ -1,7 +1,13 @@
 package no.nav.registre.orgnrservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
+import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -12,12 +18,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
-import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProperties;
-import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
-import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -32,14 +32,16 @@ public class OrganisasjonApiConsumer {
     OrganisasjonApiConsumer(
             OrganisasjonServiceProperties serviceProperties,
             TokenExchange tokenExchange,
-            MiljoerConsumer miljoerConsumer
-    ) {
+            MiljoerConsumer miljoerConsumer,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.miljoerConsumer = miljoerConsumer;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

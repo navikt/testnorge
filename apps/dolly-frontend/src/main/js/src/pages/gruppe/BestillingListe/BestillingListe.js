@@ -98,7 +98,6 @@ export default function BestillingListe({
 						brukertype={brukertype}
 					/>
 				)}
-				pagination
 			/>
 		</ErrorBoundary>
 	)

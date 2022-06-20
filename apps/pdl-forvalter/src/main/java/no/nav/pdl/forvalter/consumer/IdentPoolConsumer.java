@@ -37,6 +37,7 @@ public class IdentPoolConsumer {
     public IdentPoolConsumer(TokenExchange tokenExchange,
                              IdentPoolProperties properties,
                              ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient

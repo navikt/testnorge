@@ -193,7 +193,6 @@ export default function PersonListe({
 					antallElementer: gruppeInfo.antallIdenter,
 					pageSize: sideStoerrelse,
 				}}
-				pagination
 				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 				visSide={sidetall}
 				visPerson={visPerson}

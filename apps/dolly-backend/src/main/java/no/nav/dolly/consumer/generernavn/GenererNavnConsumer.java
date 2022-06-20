@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -32,12 +33,18 @@ public class GenererNavnConsumer {
     private final NaisServerProperties serviceProperties;
     private final MapperFacade mapper;
 
-    public GenererNavnConsumer(TokenExchange tokenService, GenererNavnServiceProperties serverProperties, MapperFacade mapperFacade) {
+    public GenererNavnConsumer(TokenExchange tokenService,
+                               GenererNavnServiceProperties serverProperties,
+                               MapperFacade mapperFacade,
+                               ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.mapper = mapperFacade;
         this.webClient = WebClient.builder()
-                .baseUrl(serverProperties.getUrl()).build();
+                .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public ResponseEntity<List<Navn>> getPersonnavn(Integer antall) {

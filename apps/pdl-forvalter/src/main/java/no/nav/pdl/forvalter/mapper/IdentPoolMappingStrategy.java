@@ -66,6 +66,7 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     }
                 })
                 .exclude("identtype")
+                .exclude("kjoenn")
                 .byDefault()
                 .register();
 
@@ -95,6 +96,7 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     }
                 })
                 .exclude("identtype")
+                .exclude("kjoenn")
                 .byDefault()
                 .register();
     }

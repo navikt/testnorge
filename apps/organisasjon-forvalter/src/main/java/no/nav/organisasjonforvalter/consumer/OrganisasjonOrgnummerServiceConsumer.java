@@ -1,13 +1,13 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.requireNonNull;
-
 import lombok.extern.slf4j.Slf4j;
+import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
+import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
-import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Service
@@ -29,11 +29,13 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
     public OrganisasjonOrgnummerServiceConsumer(
             OrganisasjonOrgnummerServiceProperties serviceProperties,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

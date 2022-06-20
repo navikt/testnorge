@@ -18,6 +18,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
@@ -54,12 +55,17 @@ public class PensjonforvalterConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public PensjonforvalterConsumer(TokenExchange tokenService, PensjonforvalterProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public PensjonforvalterConsumer(TokenExchange tokenService,
+                                    PensjonforvalterProxyProperties serverProperties,
+                                    ObjectMapper objectMapper,
+                                    ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

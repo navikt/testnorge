@@ -3,10 +3,13 @@ package no.nav.registre.skd.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-
+import no.nav.registre.skd.consumer.command.identpool.GetNavnCommand;
+import no.nav.registre.skd.consumer.command.identpool.PostFrigjoerLedigeIdenterCommand;
+import no.nav.registre.skd.consumer.command.identpool.PostHentIdenterCommand;
+import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
+import no.nav.registre.skd.consumer.response.Navn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,17 +17,12 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.Objects;
-
-import no.nav.registre.skd.consumer.command.identpool.GetNavnCommand;
-import no.nav.registre.skd.consumer.command.identpool.PostFrigjoerLedigeIdenterCommand;
-import no.nav.registre.skd.consumer.command.identpool.PostHentIdenterCommand;
-import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
-import no.nav.registre.skd.consumer.response.Navn;
 
 @Slf4j
 @Component
@@ -32,7 +30,9 @@ public class IdentPoolConsumer {
 
     private final WebClient webClient;
 
-    public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl) {
+    public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         var objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -47,11 +47,12 @@ public class IdentPoolConsumer {
 
         this.webClient = WebClient.builder().baseUrl(serverUrl)
                 .exchangeStrategies(jacksonStrategy)
+                .filter(metricsWebClientFilterFunction)
                 .build();
 
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = { "operation", "identpool" })
+    @Timed(value = "skd.resource.latency", extraTags = {"operation", "identpool"})
     public List<String> hentNyeIdenter(HentIdenterRequest hentIdenterRequest) {
         return new PostHentIdenterCommand(Objects.requireNonNull(hentIdenterRequest), webClient).call();
     }

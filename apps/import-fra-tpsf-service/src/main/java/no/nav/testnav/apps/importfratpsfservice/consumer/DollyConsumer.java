@@ -6,6 +6,7 @@ import no.nav.testnav.apps.importfratpsfservice.consumer.command.DollyPutIdentCo
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -19,12 +20,16 @@ public class DollyConsumer {
 
     public enum Master {PDL, PDLF, TPSF}
 
-    public DollyConsumer(TokenExchange tokenExchange, DollyProperties properties) {
+    public DollyConsumer(TokenExchange tokenExchange,
+                         DollyProperties properties,
+                         ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
