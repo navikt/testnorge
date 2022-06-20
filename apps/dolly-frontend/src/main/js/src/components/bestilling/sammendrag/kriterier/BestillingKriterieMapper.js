@@ -969,7 +969,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
 					obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
 					obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
-					obj('IBAN', tpsMessaging.utenlandskBankkonto.iban),
+					obj('Bankkode', tpsMessaging.utenlandskBankkonto.iban),
 					obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
 					obj('Adresselinje 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
 					obj('Adresselinje 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
