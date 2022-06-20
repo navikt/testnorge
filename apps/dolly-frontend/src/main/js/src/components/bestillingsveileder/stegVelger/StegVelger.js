@@ -1,6 +1,5 @@
 import React, { Fragment, useContext, useState } from 'react'
 import { Formik } from 'formik'
-import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
@@ -17,6 +16,7 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '~/utils/hooks/useMutate'
+import { StepIndicator } from '@navikt/ds-react'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
@@ -79,7 +79,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 
 				return (
 					<Fragment>
-						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
+						<StepIndicator activeStep={step}>{labels}</StepIndicator>
 
 						<BestillingsveilederHeader />
 

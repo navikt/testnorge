@@ -4,8 +4,6 @@ import { useToggle } from 'react-use'
 import { ThumbsRating } from '../rating'
 import { Rating } from '~/logger/types'
 import Logger from '../../logger'
-import { Textarea } from 'nav-frontend-skjema'
-import { Knapp } from 'nav-frontend-knapper'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
@@ -15,6 +13,7 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
 import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import { Button, Textarea } from '@navikt/ds-react'
 
 interface FeedbackProps {
 	label: string
@@ -54,20 +53,15 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 								placeholder={'(Valgfritt) ' + label}
 								maxLength={MAX_LENGTH}
 								onChange={(event) => setText(event.target.value)}
-								feil={
-									text.length > MAX_LENGTH
-										? { feilmelding: 'Tilbakemelding inneholder for mange tegn' }
-										: null
-								}
+								error={text.length > MAX_LENGTH ? 'Tilbakemelding inneholder for mange tegn' : null}
 							/>
 							{/* @ts-ignore */}
 							<DollyCheckbox label="Jeg ønsker å være anonym" onChange={toggleAnonym} />
 						</div>
 					</div>
 					<div className="feedback-form__submit">
-						<Knapp
-							form="kompakt"
-							htmlType="submit"
+						<Button
+							type="submit"
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={(event) => {
@@ -83,7 +77,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 							}}
 						>
 							Send
-						</Knapp>
+						</Button>
 					</div>
 				</form>
 			)}

@@ -8,14 +8,14 @@ import {
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import { Alert } from '@navikt/ds-react'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
-	warningMessage?: AlertStripeAdvarsel
+	warningMessage?: Alert
 }
 
 export const OrgnrToggle = ({
@@ -27,8 +27,8 @@ export const OrgnrToggle = ({
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setInputType(event.target.value)
+	const handleToggleChange = (value: string) => {
+		setInputType(value)
 		clearEnhetsinfo()
 	}
 

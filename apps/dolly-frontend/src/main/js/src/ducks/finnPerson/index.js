@@ -20,9 +20,9 @@ export const {
 	setSidetall: (sidetall) => sidetall,
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
 	setVisning: (visning) => visning,
-	resetNavigering,
-	resetPaginering,
-	resetFeilmelding,
+	resetNavigering() {},
+	resetPaginering() {},
+	resetFeilmelding() {},
 })
 
 const initialState = {
@@ -64,7 +64,7 @@ export default handleActions(
 			state.navigerTilGruppe = action.payload.data.gruppe?.id
 			state.visning = VisningType.VISNING_BESTILLING
 		},
-		[setSidetall](state, action) {
+		[onSuccess(setSidetall)](state, action) {
 			state.sidetall = action.payload
 		},
 		[resetPaginering](state) {
