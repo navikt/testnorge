@@ -8,11 +8,10 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
-import { logoutBruker } from '~/components/utlogging/Utlogging'
 import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 export default () => {
-	
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 

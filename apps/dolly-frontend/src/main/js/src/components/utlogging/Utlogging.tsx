@@ -6,6 +6,7 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Api from '~/api'
 import ProgressBar from 'fremdriftslinje'
 import { WarningFilled } from '@navikt/ds-icons'
+import logoutBruker from './logoutBruker'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
@@ -20,11 +21,6 @@ function getCookie(cookieName: string) {
 		}
 	}
 	return ''
-}
-
-export const logoutBruker = (feilmelding?: string) => {
-	window.location.href = '/logout'
-	console.error(feilmelding)
 }
 
 const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000

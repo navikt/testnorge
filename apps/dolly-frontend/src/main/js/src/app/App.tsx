@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Loading from '~/components/ui/loading/Loading'
@@ -9,9 +9,9 @@ import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
 import ToastConnector from '~/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
-import { logoutBruker } from '~/components/utlogging/Utlogging'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 type Props = {
 	updateVarslingerBruker?: Function
@@ -24,9 +24,11 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 	const { loading, error: userError } = useCurrentBruker()
 	useDollyEnvironments()
 
-	if (userError) {
-		setCriticalError(userError)
-	}
+	useEffect(() => {
+		if (userError) {
+			setCriticalError(userError)
+		}
+	}, [userError])
 
 	function extractFeilmelding(stackTrace: string) {
 		if (stackTrace?.includes('miljoer')) return 'miljoe_error'
@@ -39,9 +41,11 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 		logoutBruker(navigate, feilmelding)
 	}
 
-	if (criticalError) {
-		logout(criticalError.stack)
-	}
+	useEffect(() => {
+		if (criticalError) {
+			logout(criticalError.stack)
+		}
+	}, [criticalError])
 
 	if (loading) {
 		return <Loading label="Laster Dolly" fullpage />
