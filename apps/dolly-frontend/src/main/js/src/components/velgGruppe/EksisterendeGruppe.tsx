@@ -1,19 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Loading from '~/components/ui/loading/Loading'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { Gruppe, useGrupper } from '~/utils/hooks/useGruppe'
+import _orderBy from 'lodash/orderBy'
 
 interface EksisterendeGruppe {
-	fetchMineGrupper: () => void
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-	isFetching: boolean
 	valgtGruppe: string
-	gruppeListe: Array<Gruppe>
-	mineIds: Array<string>
-}
-
-type Gruppe = {
-	id: string
-	navn: string
 }
 
 type Options = {
@@ -21,29 +15,30 @@ type Options = {
 	label: string
 }
 
-export default ({
-	fetchMineGrupper,
-	setValgtGruppe,
-	isFetching,
-	valgtGruppe,
-	gruppeListe,
-}: EksisterendeGruppe) => {
-	useEffect(() => {
-		fetchMineGrupper()
-	}, [])
+export default ({ setValgtGruppe, valgtGruppe }: EksisterendeGruppe) => {
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
+	const { grupperById, loading } = useGrupper(brukerId)
 
-	const gruppeliste = gruppeListe.map((v: Gruppe) => ({
-		value: v.id,
-		label: v.id + ' - ' + v.navn,
-	}))
+	const sortedGruppeliste = _orderBy(Object.values(grupperById), ['id'], ['desc'])
 
-	if (isFetching) return <Loading label="Laster grupper" />
+	const gruppeOptions = sortedGruppeliste.map((gruppe: Gruppe) => {
+		return {
+			value: gruppe.id,
+			label: `${gruppe.id} - ${gruppe.navn}`,
+		}
+	})
+
+	if (loading) {
+		return <Loading label="Laster grupper" />
+	}
 
 	return (
 		<DollySelect
 			name="Gruppe"
 			label="Gruppe"
-			options={gruppeliste}
+			options={gruppeOptions}
 			onChange={(gruppe: Options) => setValgtGruppe(gruppe.value)}
 			value={valgtGruppe}
 			size="large"

@@ -18,7 +18,7 @@ export const UtenlandskBankkonto = () => (
 				size={'xlarge'}
 			/>
 			<FormikTextInput name={`${path}.banknavn`} label={'Banknavn'} />
-			<FormikTextInput name={`${path}.iban`} label={'IBAN'} />
+			<FormikTextInput name={`${path}.iban`} label={'Bankkode'} />
 			<FormikSelect
 				name={`${path}.valuta`}
 				label="Valuta"

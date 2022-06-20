@@ -16,6 +16,7 @@ import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
+import { useGruppeById } from '~/utils/hooks/useGruppe'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -27,10 +28,9 @@ const ikonTypeMap = {
 export default function PersonListe({
 	isFetching,
 	search,
+	gruppeId,
 	fagsystem,
 	bestillingStatuser,
-	gruppeInfo,
-	identer,
 	sidetall,
 	sideStoerrelse,
 	brukertype,
@@ -38,12 +38,12 @@ export default function PersonListe({
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
-	fetchIdenterById,
 	tmpPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const { gruppe: gruppeInfo, identer, loading } = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -51,16 +51,13 @@ export default function PersonListe({
 	)
 
 	useEffect(() => {
-		fetchIdenterById(gruppeInfo.id, sidetall, sideStoerrelse)
-		setIdentListe([])
-	}, [gruppeInfo.id, sidetall, sideStoerrelse, tmpPersoner.antallPersonerFjernet])
-
-	useEffect(() => {
-		const idents = Object.values(identer).map((ident) => {
-			if (ident) {
-				return { ident: ident.ident, master: ident.master }
-			}
-		})
+		const idents =
+			identer &&
+			Object.values(identer).map((ident) => {
+				if (ident) {
+					return { ident: ident.ident, master: ident.master }
+				}
+			})
 		if (!isEqual(idents, identListe)) {
 			setIdentListe(idents)
 		}
@@ -74,7 +71,7 @@ export default function PersonListe({
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson])
 
-	if (isFetching || (personListe?.length === 0 && !isEmpty(identer)))
+	if (isFetching || loading || (personListe?.length === 0 && !isEmpty(identer)))
 		return <Loading label="Laster personer" panel />
 
 	if (isEmpty(identer)) {
@@ -193,18 +190,18 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallPersonerFjernet,
+					antallElementer: gruppeInfo.antallIdenter,
 					pageSize: sideStoerrelse,
 				}}
+				pagination
 				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 				visSide={sidetall}
 				visPerson={visPerson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector
-						personId={bruker.ident.ident}
-						bestillingId={bruker.ident.bestillingId[0]}
-						bestillingsIdListe={bruker.ident.bestillingId}
-						gruppeId={bruker.ident.gruppeId}
+						ident={bruker.ident}
+						personId={bruker.identNr}
+						bestillingIdListe={bruker.ident.bestillingId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
 						isAlive={!bruker.alder.includes('død')}

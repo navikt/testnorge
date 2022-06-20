@@ -28,7 +28,7 @@ export const Visning = ({ data }: Data) => (
 				<TitleValue title={'Swift kode'} value={data.swift} />
 				<TitleValue title={'Land'} kodeverk={GtKodeverk.LAND} value={data.landkode} />
 				<TitleValue title={'Banknavn'} value={data.banknavn} />
-				<TitleValue title={'IBAN'} value={data.iban} />
+				<TitleValue title={'Bankkode'} value={data.iban} />
 				<TitleValue title={'Valuta'} kodeverk={ArbeidKodeverk.Valutaer} value={data.valuta} />
 				<TitleValue title={'Adresselinje 1'} value={data.bankAdresse1} />
 				<TitleValue title={'Adresselinje 2'} value={data.bankAdresse2} />
