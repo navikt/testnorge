@@ -139,6 +139,7 @@ public class BankkontoExcelService {
                 .map(Testident::getTestgruppe)
                 .map(Testgruppe::getBestillinger)
                 .flatMap(Collection::stream)
+                .filter(bestilling -> nonNull(bestilling.getBestKriterier()))
                 .filter(bestilling -> bestilling.getBestKriterier().contains("Bankkonto"))
                 .map(Bestilling::getProgresser)
                 .flatMap(Collection::stream)

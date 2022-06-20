@@ -355,7 +355,7 @@ public class PersonExcelService {
     }
 
     public Mono<Void> preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
-                                           XSSFCellStyle hyperlinkStyle, List<String> identer) {
+                                         XSSFCellStyle hyperlinkStyle, List<String> identer) {
 
         var sheet = workbook.createSheet(ARK_FANE);
         var rows = getPersondataRowContents(identer);
@@ -437,13 +437,16 @@ public class PersonExcelService {
     @SneakyThrows
     private List<Object[]> getPersoner(List<String> identer) {
 
-        return Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
+        return identer.isEmpty() ?
+                Collections.emptyList() :
+
+        Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
                         kodeverkConsumer.getKodeverkByName(KOMMUNENR),
                         kodeverkConsumer.getKodeverkByName(POSTNUMMER))
                 .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
                         .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE,
                                 Math.min((index + 1) * BLOCK_SIZE, identer.size()))))
-                        .filter(Objects::nonNull)
+                        .filter(personbolk -> nonNull(personbolk.getData()))
                         .map(PdlPersonBolk::getData)
                         .map(PdlPersonBolk.Data::getHentPersonBolk)
                         .flatMap(Flux::fromIterable)
