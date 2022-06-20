@@ -6,7 +6,6 @@ import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
 import { logoutBruker } from '~/components/utlogging/Utlogging'
-import { useNavigate } from 'react-router-dom'
 import { NotFoundError } from '~/error'
 
 const ORG_ERROR = 'organisation_error'
@@ -18,7 +17,6 @@ export default () => {
 	const [organisasjon, setOrganisasjon] = useState(null)
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
-	const navigate = useNavigate()
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()

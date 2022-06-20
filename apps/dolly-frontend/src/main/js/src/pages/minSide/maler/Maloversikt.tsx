@@ -37,7 +37,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			dataField: 'malNavn',
 			formatter: (cell: any, row: { id: string; malNavn: string }) =>
 				erUnderRedigering(row.id) ? (
-					<EndreMalnavn malInfo={row} setMaler={null} avbrytRedigering={avbrytRedigering} />
+					<EndreMalnavn malInfo={row} avbrytRedigering={avbrytRedigering} />
 				) : (
 					row.malNavn
 				),

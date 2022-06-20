@@ -56,11 +56,11 @@ export const BestillingProgresjon = ({
 		const oldTimeStamp = new Date(sistOppdatertState).getTime()
 
 		const antallSekunderBrukt = (liveTimeStamp - oldTimeStamp) / 1000
-		const tidsBegrensing = erOrganisasjon
+		const tidsbegrensning = erOrganisasjon
 			? SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON
 			: SECONDS_BEFORE_WARNING_MESSAGE
 
-		if (antallSekunderBrukt > tidsBegrensing) {
+		if (antallSekunderBrukt > tidsbegrensning) {
 			setTimedOut(true)
 		}
 	}

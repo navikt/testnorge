@@ -32,7 +32,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 	const { brukere, loading } = useAlleBrukere()
 
 	const getZIdentOptions = () => {
-		return brukere?.reduce(function (filtered: Array<SelectOptions>, ident: ZIdent) {
+		return Object.values(brukere)?.reduce((filtered: Array<SelectOptions>, ident: ZIdent) => {
 			if (ident.navIdent) {
 				filtered.push({ value: ident.navIdent, label: ident.navIdent })
 			}

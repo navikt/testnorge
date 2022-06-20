@@ -99,6 +99,7 @@ export default function Liste({
 	return (
 		<ErrorBoundary>
 			<DollyTable
+				pagination
 				data={items}
 				columns={columns}
 				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}

@@ -7,4 +7,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	removeFavorite: () => dispatch(removeFavorite(ownProps.groupId)),
 })
 
-export default connect(mapDispatchToProps)(FavoriteButton)
+export default connect(null, mapDispatchToProps)(FavoriteButton)
