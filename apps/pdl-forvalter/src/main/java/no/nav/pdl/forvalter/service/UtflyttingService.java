@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
@@ -31,7 +32,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
 
     private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
-    private final BostedAdresseService bostedAdresseService;
+    private final KontaktAdresseService kontaktAdresseService;
 
     public List<UtflyttingDTO> convert(PersonDTO person) {
 
@@ -69,19 +70,19 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                 .orElse(new BostedadresseDTO())
                 .isAdresseNorge()) {
 
-            person.getBostedsadresse().add(0, BostedadresseDTO.builder()
+            person.getKontaktadresse().add(0, KontaktadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()
                             .landkode(utflytting.getTilflyttingsland())
                             .build())
                     .gyldigFraOgMed(utflytting.getUtflyttingsdato())
                     .isNew(true)
-                    .id(person.getBostedsadresse().stream()
-                            .max(Comparator.comparing(BostedadresseDTO::getId))
-                            .orElse(BostedadresseDTO.builder().id(0).build())
+                    .id(person.getKontaktadresse().stream()
+                            .max(Comparator.comparing(KontaktadresseDTO::getId))
+                            .orElse(KontaktadresseDTO.builder().id(0).build())
                             .getId() + 1)
                     .build()
             );
-            bostedAdresseService.convert(person, false);
+            kontaktAdresseService.convert(person, false);
         }
 
         if (person.getFolkeregisterPersonstatus().stream()
