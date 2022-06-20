@@ -80,6 +80,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	initialValues,
 	redigertAttributt = null,
 	ident,
+	tpsMessagingData,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -299,7 +300,7 @@ export const VisningRedigerbarPersondetaljer = ({
 							<>
 								<FieldArrayEdit>
 									<div className="flexbox--flex-wrap">
-										<PersondetaljerSamlet formikBag={formikBag} />
+										<PersondetaljerSamlet formikBag={formikBag} tpsMessaging={tpsMessagingData} />
 									</div>
 									<Knappegruppe>
 										<NavButton

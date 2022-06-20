@@ -10,6 +10,8 @@ import {
 	initialPersonstatus,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarPersondetaljerConnector'
+import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
+import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 
 const getCurrentPersonstatus = (data) => {
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
@@ -24,11 +26,19 @@ const getCurrentPersonstatus = (data) => {
 	return null
 }
 
-export const Persondetaljer = ({ data, tmpPersoner, ident, erPdlVisning = false }) => {
+export const Persondetaljer = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning = false,
+	environments,
+}) => {
 	if (!data) {
 		return null
 	}
 	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
+
+	const tpsMessaging = TpsMessagingData(data?.ident, environments)
 
 	const PersondetaljerLes = ({ person }) => {
 		const personNavn = person?.navn?.[0]
@@ -46,8 +56,10 @@ export const Persondetaljer = ({ data, tmpPersoner, ident, erPdlVisning = false 
 					title="Personstatus"
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
-				{/*//TODO: Vis TpsMessaging*/}
-				{/*<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />*/}
+				<TpsMPersonInfo
+					data={tpsMessaging.tpsMessagingData}
+					loading={tpsMessaging.tpsMessagingLoading}
+				/>
 			</div>
 		)
 	}
@@ -83,6 +95,7 @@ export const Persondetaljer = ({ data, tmpPersoner, ident, erPdlVisning = false 
 				redigertAttributt={redigertPersonValues}
 				path="person"
 				ident={ident}
+				tpsMessagingData={tpsMessaging}
 			/>
 		)
 	}

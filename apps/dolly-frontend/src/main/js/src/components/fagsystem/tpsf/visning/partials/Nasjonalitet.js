@@ -32,7 +32,7 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 }
 
 const InnvandretUtvandret = ({ data }) => {
-	if (data.length < 1) return null
+	if (!data || data?.length < 1) return null
 	return (
 		<ErrorBoundary>
 			<DollyFieldArray data={data} header={'Innvandret/utvandret'} nested>
@@ -55,10 +55,8 @@ const InnvandretUtvandret = ({ data }) => {
 	)
 }
 
-export const Nasjonalitet = ({ data, pdlData, visTittel = true }) => {
+export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
-	const pdlInnvandret = pdlData?.innflytting
-	const pdlUtvandret = pdlData?.utflytting
 
 	if (!statsborgerskap) {
 		return null
@@ -77,11 +75,7 @@ export const Nasjonalitet = ({ data, pdlData, visTittel = true }) => {
 				) : (
 					<Statsborgerskap statsborgerskap={statsborgerskap[0] || statsborgerskap} />
 				)}
-				{pdlInnvandret && <Innvandring data={pdlInnvandret} />}
-				{pdlUtvandret && <Utvandring data={pdlUtvandret} />}
-				{innvandretUtvandret && !pdlInnvandret && !pdlUtvandret && (
-					<InnvandretUtvandret data={innvandretUtvandret} />
-				)}
+				<InnvandretUtvandret data={innvandretUtvandret} />
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
 			</div>
 		</div>

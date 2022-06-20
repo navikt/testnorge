@@ -5,11 +5,20 @@ import { PersonstatusForm } from '~/components/fagsystem/pdlf/form/partials/pers
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import Hjelpetekst from '~/components/hjelpetekst'
 
-export const PersondetaljerSamlet = ({ formikBag }) => {
+export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }) => {
+	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
+	const skjerming = tpsMessaging?.tpsMessagingData?.egenAnsattDatoFom
+
+	const sprakTekst = ' og språk'
+	const skjermingTekst = ' og skjerming'
+	const beggeTekst = ', språk og skjerming'
+
 	return (
 		<>
 			<div className="flexbox--full-width">
-				<AlertStripeInfo>Identnummer, språk og skjerming kan ikke endres her.</AlertStripeInfo>
+				<AlertStripeInfo>{`Identnummer${
+					sprak && skjerming ? beggeTekst : sprak ? sprakTekst : skjerming ? skjermingTekst : ''
+				} kan ikke endres her.`}</AlertStripeInfo>
 
 				<h3>Navn</h3>
 				<div className="flexbox--flex-wrap">

@@ -24,7 +24,7 @@ export const PdlPersonInfo = ({
 	tpsMessagingData,
 	tpsMessagingLoading = false,
 	visTittel = true,
-	tmpPersoner,
+	tmpPersoner = null,
 }) => {
 	if (!data) {
 		return null
