@@ -112,7 +112,7 @@ public class OrganisasjonBestillingService {
                         .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
                         .build())
-                .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1 )
+                .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
     }
 
@@ -156,14 +156,14 @@ public class OrganisasjonBestillingService {
     private List<OrgStatus> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
 
         var feil = orgStatus.stream()
-                .filter( o -> o.getStatus().equals(FAILED) )
-                .map( o -> o.getEnvironment() + ":" + o.getDetails() )
+                .filter(o -> FAILED.equals(o.getStatus()))
+                .map(o -> o.getEnvironment() + ":" + o.getDetails())
                 .collect(Collectors.joining(","));
 
         bestilling.setFeil(feil);
 
         var ferdig = orgStatus.stream()
-                .anyMatch( o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())) );
+                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
 
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
@@ -229,7 +229,7 @@ public class OrganisasjonBestillingService {
         updateBestilling(bestilling, orgStatus);
 
         var forvalterStatus = orgStatus.stream()
-                .map( org -> org.getEnvironment() + ":" + forvalterStatusDetails(org) )
+                .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
                 .collect(Collectors.joining(","));
         bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
 
