@@ -36,4 +36,11 @@ public class OppholdsadresseDTO extends AdresseDTO {
 
         return nonNull(getVegadresse()) || nonNull(getMatrikkeladresse());
     }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseUtland() {
+
+        return nonNull(getUtenlandskAdresse());
+    }
 }

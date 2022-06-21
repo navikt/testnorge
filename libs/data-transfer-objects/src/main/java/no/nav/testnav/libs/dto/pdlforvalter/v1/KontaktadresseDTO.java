@@ -96,4 +96,11 @@ public class KontaktadresseDTO extends AdresseDTO {
         return nonNull(getVegadresse()) || nonNull(getPostboksadresse()) ||
                 nonNull(getPostadresseIFrittFormat());
     }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseUtland() {
+
+        return nonNull(getUtenlandskAdresse());
+    }
 }

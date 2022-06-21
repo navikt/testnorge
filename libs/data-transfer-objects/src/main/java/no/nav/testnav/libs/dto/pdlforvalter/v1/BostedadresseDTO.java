@@ -37,4 +37,11 @@ public class BostedadresseDTO extends AdresseDTO {
 
         return nonNull(getVegadresse()) || nonNull(getUkjentBosted()) || nonNull(getMatrikkeladresse());
     }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseUtland() {
+
+        return nonNull(getUtenlandskAdresse());
+    }
 }
