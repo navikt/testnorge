@@ -1,7 +1,0 @@
-ida:
-  username: ${IDA_USERNAME}
-  password: ${IDA_PASSWORD}
-
-spring:
-  main:
-    banner-mode: off

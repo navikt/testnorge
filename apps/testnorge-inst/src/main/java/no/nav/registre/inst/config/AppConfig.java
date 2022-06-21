@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 })
 public class AppConfig {
 
-    @Value("${consumers.testnorge-hodejegeren.url}")
+    @Value("${testnorge-hodejegeren.rest-api.url}")
     private String hodejegerenUrl;
 
     @Bean
