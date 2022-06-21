@@ -27,7 +27,7 @@ class UtflyttingServiceTest {
     private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     @Mock
-    private BostedAdresseService bostedAdresseService;
+    private KontaktAdresseService kontaktAdresseService;
 
     @InjectMocks
     private UtflyttingService utflyttingService;
