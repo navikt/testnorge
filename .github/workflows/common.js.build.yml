@@ -13,10 +13,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-          registry-url: https://registry.npmjs.org/
+          registry-url: https://npm.pkg.github.com
       - name: Build install
         run: |
           npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
       - name: Build code
         run: |
