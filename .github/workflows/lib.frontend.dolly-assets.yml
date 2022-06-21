@@ -20,4 +20,3 @@ jobs:
       working-directory: 'navikt/dolly-assets/'
     secrets:
       NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
