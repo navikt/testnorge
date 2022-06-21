@@ -14,7 +14,7 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^4.7.4",
-    "prettier": "2.7.1"
+    "prettier": "^2.7.1"
   },
   "repository": {
     "type": "git",

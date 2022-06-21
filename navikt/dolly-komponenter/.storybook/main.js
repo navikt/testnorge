@@ -1,9 +1,10 @@
 const path = require('path');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
+  optimization: new CssMinimizerPlugin(),
   webpackFinal: async (config) => {
     config.module.rules.push({
       test: /\.css$/i,
@@ -13,16 +14,6 @@ module.exports = {
       test: /\.less$/,
       use: ['style-loader', 'css-loader', 'less-loader'],
     });
-    config.plugins.push(
-      new OptimizeCssAssetsPlugin({
-        cssProcessorOptions: {
-          safe: true,
-          discardComments: {
-            removeAll: true,
-          },
-        },
-      })
-    );
     config.resolve.extensions.push('.ts', '.tsx');
     return config;
   },
