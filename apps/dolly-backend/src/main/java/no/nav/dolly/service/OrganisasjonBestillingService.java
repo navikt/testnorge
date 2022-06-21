@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
@@ -117,6 +118,19 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
+    public OrganisasjonBestilling cancelBestilling(Long bestillingId) {
+
+        Optional<OrganisasjonBestilling> bestillingById = bestillingRepository.findById(bestillingId);
+        OrganisasjonBestilling organisasjonBestilling = bestillingById.orElseThrow(() -> new NotFoundException(format("Fant ikke organisasjon bestillingId %d", bestillingId)));
+
+        organisasjonBestilling.setFeil("Bestilling stoppet");
+        organisasjonBestilling.setFerdig(true);
+        organisasjonBestilling.setSistOppdatert(now());
+        saveBestillingToDB(organisasjonBestilling);
+        return organisasjonBestilling;
+    }
+
+    @Transactional
     public OrganisasjonBestilling saveBestillingToDB(OrganisasjonBestilling bestilling) {
 
         try {
@@ -132,6 +146,7 @@ public class OrganisasjonBestillingService {
         return saveBestillingToDB(
                 OrganisasjonBestilling.builder()
                         .antall(1)
+                        .ferdig(false)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
@@ -198,7 +213,8 @@ public class OrganisasjonBestillingService {
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
     }
 
-    private List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+    @Transactional
+    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));

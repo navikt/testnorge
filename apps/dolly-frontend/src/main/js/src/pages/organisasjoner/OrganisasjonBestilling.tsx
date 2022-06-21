@@ -8,11 +8,13 @@ import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetal
 import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 import Spinner from '~/components/ui/loading/Spinner'
 import Formatters from '~/utils/DataFormatter'
+import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
 
 type OrganisasjonBestillingProps = {
 	brukerId: string
 	brukertype: string
 	bestillinger: Array<OrgStatus>
+	sidetall: number
 }
 
 const ikonTypeMap = {
@@ -26,12 +28,15 @@ export default function OrganisasjonBestilling({
 	brukerId,
 	brukertype,
 	bestillinger,
+	sidetall,
 }: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
 		return null
 	}
 
 	const sortedOrgliste = _orderBy(bestillinger, ['id'], ['desc'])
+	// @ts-ignore
+	const bestillingStatuser = bestillingStatusMapper(sortedOrgliste)
 
 	const columns = [
 		{
@@ -86,8 +91,9 @@ export default function OrganisasjonBestilling({
 		<ErrorBoundary>
 			{/* @ts-ignore */}
 			<DollyTable
-				data={sortedOrgliste}
+				data={bestillingStatuser}
 				columns={columns}
+				visSide={sidetall}
 				pagination
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {

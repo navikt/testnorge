@@ -30,7 +30,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import wiremock.com.google.common.collect.Lists;
+import reactor.util.function.Tuple3;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -42,11 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -79,10 +75,10 @@ public class PersonExcelService {
     private static final int FORELDRE = 17;
     private static final int VERGE = 18;
     private static final int FULLMEKTIG = 19;
+    private static final int BLOCK_SIZE = 50;
 
     private final PdlPersonConsumer pdlPersonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
-    private final ExecutorService dollyForkJoinPool;
 
     private static String getFornavn(PdlPerson.Navn navn) {
 
@@ -221,15 +217,9 @@ public class PersonExcelService {
         return hyperLink;
     }
 
-    private String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap) {
+    private static String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse,
+                                                  String coAdresseNavn, Map<String, String> landkoder) {
 
-        return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
-                String.format(ADR_UTLAND_FMT, statsborgerskap.getLand(),
-                        kodeverkConsumer.getKodeverkByName(LANDKODER)
-                                .getOrDefault(statsborgerskap.getLand(), UKJENT)) : "";
-    }
-
-    private String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String coAdresseNavn) {
         return Arrays.stream(new String[]{utenlandskAdresse.getAdressenavnNummer(),
                         utenlandskAdresse.getPostboksNummerNavn(),
                         utenlandskAdresse.getRegionDistriktOmraade(),
@@ -237,14 +227,14 @@ public class PersonExcelService {
                                 .filter(StringUtils::isNotBlank)
                                 .collect(Collectors.joining(" ")),
                         String.format(ADR_UTLAND_FMT, utenlandskAdresse.getLandkode(),
-                                kodeverkConsumer.getKodeverkByName(LANDKODER)
-                                        .getOrDefault(utenlandskAdresse.getLandkode(), UKJENT)),
+                                landkoder.getOrDefault(utenlandskAdresse.getLandkode(), UKJENT)),
                         isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null})
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(COMMA_DELIM));
     }
 
-    private String formatMatrikkeladresse(MatrikkeladresseDTO matrikkeladresse, String matrikkelId, String coAdresseNavn) {
+    private static String formatMatrikkeladresse(MatrikkeladresseDTO matrikkeladresse, String matrikkelId,
+                                                 String coAdresseNavn, Map<String, String> kommunenummer) {
 
         return Stream.of("Matrikkeladresse",
                         isNotBlank(matrikkelId) ? String.format("MatrikkelId: %s", matrikkelId) : null,
@@ -254,54 +244,31 @@ public class PersonExcelService {
                                 String.format("Bruksenhet: %s",
                                         matrikkeladresse.getBruksenhetsnummer()) : null,
                         String.format("Kommune: %s %s", matrikkeladresse.getKommunenummer(),
-                                kodeverkConsumer.getKodeverkByName(KOMMUNENR).get(matrikkeladresse.getKommunenummer())),
+                                kommunenummer.get(matrikkeladresse.getKommunenummer())),
                         isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null)
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(COMMA_DELIM));
     }
 
-    private String formatVegadresse(VegadresseDTO vegadresse, String coAdresseNavn) {
+    private static String formatVegadresse(VegadresseDTO vegadresse, String coAdresseNavn, Map<String, String> postnummer) {
         return Stream.of(String.format(DUAL_FMT, vegadresse.getAdressenavn(), vegadresse.getHusnummer() +
                                 (isNotBlank(vegadresse.getHusbokstav()) ? vegadresse.getHusbokstav() : "")),
                         isNotBlank(vegadresse.getBruksenhetsnummer()) ?
                                 String.format("Bruksenhet: %s",
                                         vegadresse.getBruksenhetsnummer()) : null,
                         String.format(DUAL_FMT, vegadresse.getPostnummer(),
-                                kodeverkConsumer.getKodeverkByName(POSTNUMMER).get(vegadresse.getPostnummer()),
+                                postnummer.get(vegadresse.getPostnummer()),
                                 isNotBlank(coAdresseNavn) ? String.format(CO_ADRESSE, coAdresseNavn) : null))
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(COMMA_DELIM));
     }
 
-    private String getBoadresse(BostedadresseDTO bostedadresse) {
-
-        if (nonNull(bostedadresse.getVegadresse())) {
-            return formatVegadresse(bostedadresse.getVegadresse(), bostedadresse.getCoAdressenavn());
-
-        } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-            return formatMatrikkeladresse(bostedadresse.getMatrikkeladresse(),
-                    bostedadresse.getAdresseIdentifikatorFraMatrikkelen(), bostedadresse.getCoAdressenavn());
-
-        } else if (nonNull(bostedadresse.getUkjentBosted())) {
-            return Stream.of("Ukjent bosted",
-                            isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune()) ?
-                                    String.format("i kommune %s %s", bostedadresse.getUkjentBosted().getBostedskommune(),
-                                            kodeverkConsumer.getKodeverkByName(KOMMUNENR)
-                                                    .get(bostedadresse.getUkjentBosted().getBostedskommune())) : null)
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining(" "));
-
-        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
-            return formatUtenlandskAdresse(bostedadresse.getUtenlandskAdresse(), bostedadresse.getCoAdressenavn());
-        } else {
-            return "";
-        }
-    }
-
-    private String getKontaktadresse(PdlPerson.Kontaktadresse kontaktadresse) {
+    private static String getKontaktadresse(PdlPerson.Kontaktadresse kontaktadresse,
+                                            Map<String, String> postnummer,
+                                            Map<String, String> landkoder) {
 
         if (nonNull(kontaktadresse.getVegadresse())) {
-            return formatVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getCoAdressenavn());
+            return formatVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getCoAdressenavn(), postnummer);
 
         } else if (nonNull(kontaktadresse.getPostboksadresse())) {
             return Stream.of(kontaktadresse.getPostboksadresse().getPostbokseier(),
@@ -311,7 +278,7 @@ public class PersonExcelService {
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
-            return formatUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), kontaktadresse.getCoAdressenavn());
+            return formatUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), kontaktadresse.getCoAdressenavn(), landkoder);
 
         } else if (nonNull(kontaktadresse.getPostadresseIFrittFormat())) {
             return Stream.of(kontaktadresse.getPostadresseIFrittFormat().getAdresselinje1(),
@@ -319,8 +286,7 @@ public class PersonExcelService {
                             kontaktadresse.getPostadresseIFrittFormat().getAdresselinje3(),
                             isNotBlank(kontaktadresse.getPostadresseIFrittFormat().getPostnummer()) ?
                                     String.format(DUAL_FMT, kontaktadresse.getPostadresseIFrittFormat().getPostnummer(),
-                                            kodeverkConsumer.getKodeverkByName(POSTNUMMER)
-                                                    .get(kontaktadresse.getPostadresseIFrittFormat().getPostnummer())) : null)
+                                            postnummer.get(kontaktadresse.getPostadresseIFrittFormat().getPostnummer())) : null)
                     .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(COMMA_DELIM));
 
@@ -329,8 +295,7 @@ public class PersonExcelService {
                             kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje2(),
                             kontaktadresse.getUtenlandskAdresseIFrittFormat().getAdresselinje3(),
                             String.format(ADR_UTLAND_FMT, kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(),
-                                    kodeverkConsumer.getKodeverkByName(LANDKODER)
-                                            .getOrDefault(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(), UKJENT)))
+                                    landkoder.getOrDefault(kontaktadresse.getUtenlandskAdresseIFrittFormat().getLandkode(), UKJENT)))
                     .filter(StringUtils::isNotBlank)
                     .collect(Collectors.joining(COMMA_DELIM));
 
@@ -339,25 +304,58 @@ public class PersonExcelService {
         }
     }
 
-    private String getOppholdsadresse(OppholdsadresseDTO oppholdsadresse) {
+    private static String getStatsborgerskap(PdlPerson.Statsborgerskap statsborgerskap, Map<String, String> landkoder) {
+
+        return nonNull(statsborgerskap) && isNotBlank(statsborgerskap.getLand()) ?
+                String.format(ADR_UTLAND_FMT, statsborgerskap.getLand(),
+                        landkoder.getOrDefault(statsborgerskap.getLand(), UKJENT)) : "";
+    }
+
+    private static String getBoadresse(BostedadresseDTO bostedadresse, Map<String, String> postnumre,
+                                       Map<String, String> kommunenumre, Map<String, String> landkoder) {
+
+        if (nonNull(bostedadresse.getVegadresse())) {
+            return formatVegadresse(bostedadresse.getVegadresse(), bostedadresse.getCoAdressenavn(), postnumre);
+
+        } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
+            return formatMatrikkeladresse(bostedadresse.getMatrikkeladresse(),
+                    bostedadresse.getAdresseIdentifikatorFraMatrikkelen(), bostedadresse.getCoAdressenavn(), kommunenumre);
+
+        } else if (nonNull(bostedadresse.getUkjentBosted())) {
+            return Stream.of("Ukjent bosted",
+                            isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune()) ?
+                                    String.format("i kommune %s %s", bostedadresse.getUkjentBosted().getBostedskommune(),
+                                            kommunenumre.get(bostedadresse.getUkjentBosted().getBostedskommune())) : null)
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining(" "));
+
+        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
+            return formatUtenlandskAdresse(bostedadresse.getUtenlandskAdresse(), bostedadresse.getCoAdressenavn(), landkoder);
+        } else {
+            return "";
+        }
+    }
+
+    private static String getOppholdsadresse(OppholdsadresseDTO oppholdsadresse, Map<String, String> postnumre,
+                                             Map<String, String> kommunenumre, Map<String, String> landkoder) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
-            return formatVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getCoAdressenavn());
+            return formatVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getCoAdressenavn(), postnumre);
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
             return formatMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(),
-                    oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen(), oppholdsadresse.getCoAdressenavn());
+                    oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen(), oppholdsadresse.getCoAdressenavn(), kommunenumre);
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
-            return formatUtenlandskAdresse(oppholdsadresse.getUtenlandskAdresse(), oppholdsadresse.getCoAdressenavn());
+            return formatUtenlandskAdresse(oppholdsadresse.getUtenlandskAdresse(), oppholdsadresse.getCoAdressenavn(), landkoder);
 
         } else {
             return "";
         }
     }
 
-    public void preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
-                                   XSSFCellStyle hyperlinkStyle, List<String> identer) {
+    public Mono<Void> preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
+                                         XSSFCellStyle hyperlinkStyle, List<String> identer) {
 
         var sheet = workbook.createSheet(ARK_FANE);
         var rows = getPersondataRowContents(identer);
@@ -376,6 +374,8 @@ public class PersonExcelService {
         var linkReferences = createLinkReferanser(rows);
 
         appendHyperlinks(sheet, rows, linkReferences, hyperlinkStyle, workbook.getCreationHelper());
+
+        return Mono.empty();
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
@@ -437,37 +437,27 @@ public class PersonExcelService {
     @SneakyThrows
     private List<Object[]> getPersoner(List<String> identer) {
 
-        var futures = Lists.partition(identer, 40).stream()
-                .map(list -> CompletableFuture.supplyAsync(
-                                () -> pdlPersonConsumer.getPdlPersoner(list), dollyForkJoinPool)
-                        .thenApply(response -> Stream.of(response)
-                                .map(Flux::collectList)
-                                .map(Mono::block)
-                                .filter(Objects::nonNull)
-                                .flatMap(Collection::stream)
-                                .map(PdlPersonBolk::getData)
-                                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                                .flatMap(Collection::stream)
-                                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                .map(prepDataRow())
-                                .toList())
-                )
-                .toList();
+        return identer.isEmpty() ?
+                Collections.emptyList() :
 
-        var personBolker = new ArrayList<Object[]>();
-        for (var future : futures) {
-            try {
-                personBolker.addAll(future.get());
-            } catch (InterruptedException | ExecutionException e) {
-                log.error("Future task exception {}", e.getMessage(), e);
-                throw e;
-            }
-        }
-        return personBolker;
+        Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
+                        kodeverkConsumer.getKodeverkByName(KOMMUNENR),
+                        kodeverkConsumer.getKodeverkByName(POSTNUMMER))
+                .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
+                        .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE,
+                                Math.min((index + 1) * BLOCK_SIZE, identer.size()))))
+                        .filter(personbolk -> nonNull(personbolk.getData()))
+                        .map(PdlPersonBolk::getData)
+                        .map(PdlPersonBolk.Data::getHentPersonBolk)
+                        .flatMap(Flux::fromIterable)
+                        .filter(personBolk -> nonNull(personBolk.getPerson()))
+                        .map(person -> prepDataRow(person, kodeverk)))
+                .collectList()
+                .block();
     }
 
-    private Function<PdlPersonBolk.PersonBolk, Object[]> prepDataRow() {
-        return person -> new Object[]{
+    private Object[] prepDataRow(PdlPersonBolk.PersonBolk person, Tuple3 kodeverk) {
+        return new Object[]{
                 person.getIdent(),
                 IdentTypeUtil.getIdentType(person.getIdent()).name(),
                 getFornavn(person.getPerson().getNavn().stream().findFirst().orElse(null)),
@@ -478,11 +468,20 @@ public class PersonExcelService {
                 getFoedselsdato(person.getPerson().getFoedsel().stream().findFirst().orElse(null)),
                 getDoedsdato(person.getPerson().getDoedsfall().stream().findFirst().orElse(null)),
                 getPersonstatus(person.getPerson().getFolkeregisterpersonstatus().stream().findFirst().orElse(null)),
-                getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null)),
+                getStatsborgerskap(person.getPerson().getStatsborgerskap().stream().findFirst().orElse(null),
+                        (Map<String, String>) kodeverk.getT1()),
                 getAdressebeskyttelse(person.getPerson().getAdressebeskyttelse().stream().findFirst().orElse(null)),
-                getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO())),
-                getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse())),
-                getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO())),
+                getBoadresse(person.getPerson().getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()),
+                        (Map<String, String>) kodeverk.getT3(),
+                        (Map<String, String>) kodeverk.getT2(),
+                        (Map<String, String>) kodeverk.getT1()),
+                getKontaktadresse(person.getPerson().getKontaktadresse().stream().findFirst().orElse(new PdlPerson.Kontaktadresse()),
+                        (Map<String, String>) kodeverk.getT3(),
+                        (Map<String, String>) kodeverk.getT1()),
+                getOppholdsadresse(person.getPerson().getOppholdsadresse().stream().findFirst().orElse(new OppholdsadresseDTO()),
+                        (Map<String, String>) kodeverk.getT3(),
+                        (Map<String, String>) kodeverk.getT2(),
+                        (Map<String, String>) kodeverk.getT1()),
                 getSivilstand(person.getPerson().getSivilstand().stream().findFirst().orElse(null)),
                 getPartnere(person.getPerson().getSivilstand()),
                 getBarn(person.getPerson().getForelderBarnRelasjon()),

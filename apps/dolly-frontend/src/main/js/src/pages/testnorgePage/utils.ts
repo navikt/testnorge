@@ -12,8 +12,12 @@ export const initialValues = {
 	kjoenn: '',
 	nasjonalitet: {
 		statsborgerskap: '',
-		utflyttingFraNorge: false,
-		innflyttingTilNorge: false,
+		innflytting: {
+			fraflyttingsland: '',
+		},
+		utflytting: {
+			tilflyttingsland: '',
+		},
 	},
 	sivilstand: {
 		type: '',

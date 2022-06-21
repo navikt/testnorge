@@ -16,11 +16,11 @@ export default function Liste({
 	isFetching,
 	gruppeDetaljer,
 	visSide,
-	brukerProfil,
+	brukertype,
 }) {
 	const navigate = useNavigate()
 	if (isFetching) return <Loading label="Laster grupper" panel />
-	const azureAdProfil = brukerProfil && brukerProfil.type && brukerProfil.type === 'AzureAD'
+	const azureAdProfil = brukertype === 'AZURE'
 
 	if (!items || !items.length) {
 		return (
@@ -99,11 +99,11 @@ export default function Liste({
 	return (
 		<ErrorBoundary>
 			<DollyTable
+				pagination
 				data={items}
 				columns={columns}
 				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
-				pagination
 				gruppeDetaljer={gruppeDetaljer}
 				visSide={visSide}
 			/>

@@ -15,7 +15,7 @@ on:
         required: true
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
 
 jobs:
   deploy:

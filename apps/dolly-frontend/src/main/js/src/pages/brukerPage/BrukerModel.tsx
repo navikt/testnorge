@@ -5,8 +5,9 @@ import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
-import { logoutBruker } from '~/components/utlogging/Utlogging'
-import { useNavigate } from 'react-router-dom'
+import { NotFoundError } from '~/error'
+import { Navigate } from 'react-router-dom'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -14,23 +15,22 @@ const UNKNOWN_ERROR = 'unknown_error'
 export default () => {
 	const [loading, setLoading] = useState(true)
 	const [organisasjoner, setOrganisasjoner] = useState([])
-	const [organisasjon, setOrganisasjon] = useState<Organisasjon>(null)
+	const [organisasjon, setOrganisasjon] = useState(null)
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
-	const navigate = useNavigate()
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logoutBruker(navigate, UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch(() => logoutBruker(navigate, ORG_ERROR))
-			.catch(() => logoutBruker(navigate, UNKNOWN_ERROR))
+			.catch((_e: NotFoundError) => logoutBruker(ORG_ERROR))
+			.catch((_e: Error) => logoutBruker(UNKNOWN_ERROR))
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
@@ -42,14 +42,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logoutBruker(navigate, UNKNOWN_ERROR)
+					logoutBruker(UNKNOWN_ERROR)
 				}
 			})
 			.catch(() => {
 				setLoading(false)
 			})
 			.catch(() => {
-				logoutBruker(navigate, UNKNOWN_ERROR)
+				logoutBruker(UNKNOWN_ERROR)
 			})
 	}
 
@@ -57,7 +57,9 @@ export default () => {
 		SessionApi.addToSession(org).then(() => setSessionUpdated(true))
 	}
 
-	if (sessionUpdated) return navigate('/')
+	if (sessionUpdated) {
+		return <Navigate to={'/'} />
+	}
 
 	return (
 		<div className="bruker-container">
@@ -70,7 +72,7 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton className="tilbake-button" onClick={() => logoutBruker(navigate)}>
+				<NavButton className="tilbake-button" onClick={() => logoutBruker()}>
 					Tilbake til innlogging
 				</NavButton>
 			</div>

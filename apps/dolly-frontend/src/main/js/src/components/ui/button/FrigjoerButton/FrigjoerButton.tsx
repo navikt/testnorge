@@ -7,6 +7,7 @@ import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 
 import './FrigjoerModal.less'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 type Props = {
 	slettPerson: Function
@@ -25,6 +26,7 @@ export const FrigjoerButton = ({
 }: Props) => {
 	if (loading) return <Loading label="frigjører..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const mutate = useMatchMutate()
 
 	const infoTekst = () => {
 		if (importertPartner) {
@@ -64,10 +66,11 @@ export const FrigjoerButton = ({
 							onClick={() => {
 								closeModal()
 								if (importertPartner) {
-									return slettPersonOgPartner(importertPartner)
+									slettPersonOgPartner(importertPartner)
 								} else {
-									return slettPerson()
+									slettPerson()
 								}
+								return mutate(REGEX_BACKEND_GRUPPER)
 							}}
 							type="hoved"
 						>

@@ -13,6 +13,9 @@ local.properties
 .settings/
 .loadpath
 
+# Http requests
+*.http
+
 # Eclipse Core
 .project
 

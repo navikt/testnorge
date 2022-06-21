@@ -1,5 +1,4 @@
 import DollyService from './services/dolly/DollyService'
-import ProfilService from './services/profil/ProfilService'
 import TpsfService from './services/tpsf/TpsfService'
 import SigrunService from './services/sigrun/SigrunService'
 import KrrService from './services/krr/KrrService'
@@ -13,7 +12,6 @@ import BrregstubService from './services/brregstub/BrregstubService'
 import VarslingerService from './services/varslinger/VarslingerService'
 import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
 import OrganisasjonService from '~/service/services/organisasjonservice/OrganisasjonService'
-import MiljoeService from '~/service/services/miljoe/MiljoeService'
 import PersonOrganisasjonTilgangService from '~/service/services/personOrganisasjonTilgang/PersonOrganisasjonTilgangService'
 import BrukerService from '~/service/services/bruker/BrukerService'
 import PdlForvalterService from '~/service/services/pdl/PdlForvalterService'
@@ -21,7 +19,6 @@ import TpsMessagingService from '~/service/services/tpsmessaging/TpsMessagingSer
 import SessionService from '~/service/services/session/SessionService'
 
 export const DollyApi = DollyService
-export const ProfilApi = ProfilService
 export const TpsfApi = TpsfService
 export const TpsMessagingApi = TpsMessagingService
 export const SigrunApi = SigrunService
@@ -36,7 +33,6 @@ export const BrregstubApi = BrregstubService
 export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
 export const OrgserviceApi = OrganisasjonService
-export const MiljoeApi = MiljoeService
 export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
 export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService
@@ -44,7 +40,6 @@ export const SessionApi = SessionService
 
 export default {
 	DollyApi: DollyService,
-	ProfilApi: ProfilService,
 	TpsfApi: TpsfService,
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
@@ -58,7 +53,6 @@ export default {
 	VarslingerApi: VarslingerService,
 	OrgforvalterApi: OrganisasjonForvalterService,
 	OrgserviceApi: OrganisasjonService,
-	MiljoeApi: MiljoeService,
 	PersonOrgTilgangApi: PersonOrganisasjonTilgangService,
 	BrukerApi: BrukerService,
 	PdlforvalterApi: PdlForvalterService,

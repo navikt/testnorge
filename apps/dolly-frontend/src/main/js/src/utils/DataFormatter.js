@@ -6,8 +6,8 @@ import _isNil from 'lodash/isNil'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const defaultDateFormat = 'dd.MM.yyyy'
-export const defaultDateTimeFormat = 'dd.MM.yyyy hh:mm'
-export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy hh:mm:ss'
+export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
+export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy HH:mm:ss'
 
 const Formatters = {}
 

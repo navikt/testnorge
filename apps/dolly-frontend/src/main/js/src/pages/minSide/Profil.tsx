@@ -1,19 +1,14 @@
 import React from 'react'
+// @ts-ignore
 import dolly from '~/assets/favicon.ico'
+import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 
-type Props = {
-	bilde: Blob
-	info: {
-		visningsNavn: string
-		epost: string
-		avdeling: string
-		organisasjon: string
-		type: string
-	}
-}
+export default function Profil() {
+	const { brukerProfil: info } = useBrukerProfil()
+	const { brukerBilde: bilde } = useBrukerProfilBilde()
 
-export default function Profil({ bilde, info }: Props) {
 	const bankIdProfil = info && info.type && info.type === 'BankId'
+
 	return (
 		<div className="profil">
 			<img alt="Profilbilde" src={bilde || dolly} />

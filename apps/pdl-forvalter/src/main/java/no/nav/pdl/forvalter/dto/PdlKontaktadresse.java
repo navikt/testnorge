@@ -40,6 +40,12 @@ public class PdlKontaktadresse extends AdresseDTO {
         return false;
     }
 
+    @Override
+    @JsonIgnore
+    public boolean isAdresseUtland() {
+        return false;
+    }
+
     @Getter
     @Setter
     @NoArgsConstructor

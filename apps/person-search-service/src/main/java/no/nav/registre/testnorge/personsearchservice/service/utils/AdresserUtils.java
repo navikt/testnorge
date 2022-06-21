@@ -53,7 +53,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getKommunenummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, NO));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, false));
                     }
                 });
     }
@@ -62,7 +62,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getHistoriskKommunenummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, YES));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, KOMMUNEMNR_FIELDS, value, 1, true));
                     }
                 });
     }
@@ -71,7 +71,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getPostnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, NO));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, false));
                     }
                 });
     }
@@ -80,7 +80,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getHistoriskPostnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, YES));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, POSTNR_FIELDS, value, 1, true));
                     }
                 });
     }
@@ -89,7 +89,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getBydelsnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, NO));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, false));
                     }
                 });
     }
@@ -98,7 +98,7 @@ public class AdresserUtils {
         Optional.ofNullable(bostedsadresse.getHistoriskBydelsnummer())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
-                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, YES));
+                        queryBuilder.must(nestedShouldMatchQuery(BOSTEDSADRESSE_PATH, BYDELSNR_FIELDS, value, 1, true));
                     }
                 });
     }

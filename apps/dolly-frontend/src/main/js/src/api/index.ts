@@ -1,7 +1,21 @@
 import { NotFoundError } from '~/error'
+import { Argument } from 'classnames'
 
 const originalFetch = require('isomorphic-fetch')
 const fetch = require('fetch-retry')(originalFetch)
+
+export const fetcher = (...args: Argument[]) =>
+	fetch(...args).then((res: Response) => {
+		if (!res.ok) {
+			throw new Error('An error occurred while fetching the data.')
+		}
+		return res.json()
+	})
+
+export const imageFetcher = (...args: Argument[]) =>
+	originalFetch(...args).then((res: Response) =>
+		res.blob().then((blob: Blob) => URL.createObjectURL(blob))
+	)
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 

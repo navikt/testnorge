@@ -18,12 +18,5 @@ batch:
     antallMeldinger: 1
   medl:
     prosentfaktor: 0.1
-  frikort:
-    antallNyeIdenter: 1
-  meldinger:
-    antallNavMeldingerPerEndringskode:
-      Z010: 1
-    antallSkdMeldingerPerEndringskode:
-      0110: 0
 
 ibm.mq.user-authentication-m-q-c-s-p: false

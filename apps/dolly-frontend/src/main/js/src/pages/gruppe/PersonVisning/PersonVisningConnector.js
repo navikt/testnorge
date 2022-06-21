@@ -1,11 +1,8 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { getBestillingById, getBestillingsListe } from '~/ducks/bestillingStatus'
-import { selectIdentById } from '~/ducks/gruppe'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
-import { increaseAntallFjernet, decreaseAntallFjernet } from '~/ducks/redigertePersoner'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -42,23 +39,18 @@ const loadingSelector = createSelector(
 
 const mapStateToProps = (state, ownProps) => ({
 	loading: loadingSelector(state),
-	ident: selectIdentById(state, ownProps.personId),
 	data: selectDataForIdent(state, ownProps.personId),
-	bestilling: getBestillingById(state, ownProps.bestillingId),
-	bestillingsListe: getBestillingsListe(state, ownProps.bestillingsIdListe),
 	tmpPersoner: state.redigertePersoner,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
+		fetchDataFraFagsystemer: (bestillinger) =>
+			dispatch(fetchDataFraFagsystemer(ownProps.ident, bestillinger)),
 		slettPerson: () => {
-			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
 		slettPersonOgPartner: (partnerident) => {
-			dispatch(increaseAntallFjernet())
-			dispatch(increaseAntallFjernet())
 			return dispatch(actions.slettPersonOgPartner(ownProps.personId, partnerident))
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
@@ -70,9 +62,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 					identtype: type,
 				},
 			}),
-		updateAntallImporterte: () => {
-			dispatch(decreaseAntallFjernet())
-		},
 	}
 }
 

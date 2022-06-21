@@ -7,7 +7,7 @@ const Organisasjon = lazy(() => import('./pages/organisasjoner/OrganisasjonerCon
 const BestillingsveilederConnector = lazy(() =>
 	import('./components/bestillingsveileder/BestillingsveilederConnector')
 )
-const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
+const MinSide = lazy(() => import('./pages/minSide/MinSide'))
 const UI = lazy(() => import('./pages/ui/index'))
 const TestnorgePage = lazy(() => import('./pages/testnorgePage/TestnorgePage'))
 const Endringsmelding = lazy(() => import('./pages/endringsmelding/Endringsmelding'))
