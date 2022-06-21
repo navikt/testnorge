@@ -14,7 +14,7 @@ export const fetcher = (...args: Argument[]) =>
 
 export const imageFetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) =>
-		res.blob().then((blob: Blob) => URL.createObjectURL(blob))
+		res.ok ? res.blob().then((blob: Blob) => URL.createObjectURL(blob)) : null
 	)
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
