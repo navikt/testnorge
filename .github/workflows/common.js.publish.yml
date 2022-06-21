@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '16.x'
-          registry-url: https://registry.npmjs.org/
+          registry-url: https://npm.pkg.github.com
       - name: Build code
         run: |
           npm ci
@@ -39,8 +39,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-      - name: Publish
-        run: npm publish --access public
-        working-directory: ${{ inputs.working-directory }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: deploy to GPR
+          run: npm publish
+          env:
+            NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
