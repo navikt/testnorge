@@ -113,7 +113,7 @@ public class OrganisasjonBestillingService {
                         .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
                         .build())
-                .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1 )
+                .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
     }
 
@@ -168,6 +168,24 @@ public class OrganisasjonBestillingService {
                         .build());
     }
 
+    private List<OrgStatus> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
+
+        var feil = orgStatus.stream()
+                .filter(o -> FAILED.equals(o.getStatus()))
+                .map(o -> o.getEnvironment() + ":" + o.getDetails())
+                .collect(Collectors.joining(","));
+
+        bestilling.setFeil(feil);
+
+        var ferdig = orgStatus.stream()
+                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
+
+        bestilling.setFerdig(ferdig);
+        bestilling.setSistOppdatert(now());
+
+        return orgStatus;
+    }
+
     @Transactional
     public void setBestillingFeil(Long bestillingId, String feil) {
 
@@ -196,18 +214,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    public OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
-
-        bestilling.setFeil(orgStatus.getError());
-        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
-        bestilling.setSistOppdatert(now());
-
-        bestillingRepository.save(bestilling);
-
-        return orgStatus;
-    }
-
-    @Transactional
     public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
@@ -217,8 +223,18 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
+    private String forvalterStatusDetails(OrgStatus orgStatus) {
+        switch (orgStatus.getStatus()) {
+            case COMPLETED:
+                return "OK";
+            case ERROR:
+            case FAILED:
+                return "Feil-" + orgStatus.getDetails();
+            default:
+                return orgStatus.getStatus().name();
+        }
+    }
 
-    @Transactional
     private List<OrgStatus> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
@@ -226,7 +242,12 @@ public class OrganisasjonBestillingService {
         var orgStatus = organisasjonDeployStatus.getOrgStatus()
                 .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
 
-        orgStatus.stream().forEach( status -> updateBestilling(bestilling, status) );
+        updateBestilling(bestilling, orgStatus);
+
+        var forvalterStatus = orgStatus.stream()
+                .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
+                .collect(Collectors.joining(","));
+        bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
 
         return orgStatus;
     }
