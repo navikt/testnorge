@@ -19,8 +19,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@navikt/dolly-assets": "^1.0.1",
-    "@navikt/dolly-lib": "^1.1.9",
+    "@navikt/dolly-assets": "^1.1.0",
+    "@navikt/dolly-lib": "^1.2.0",
     "@navikt/ds-icons": "^0.8.17",
     "@navikt/ds-react": "^0.19.14",
     "@navikt/fnrvalidator": "^1.3.0",
@@ -66,9 +66,6 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "rollup-plugin-visualizer": "^5.5.0",
     "typescript": "^4.2.4"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
   },
   "repository": {
     "type": "git",
