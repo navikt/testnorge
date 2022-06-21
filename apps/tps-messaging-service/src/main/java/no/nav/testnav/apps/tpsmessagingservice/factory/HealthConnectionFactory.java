@@ -5,6 +5,7 @@ import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.msg.client.jms.JmsConstants;
 import com.ibm.msg.client.wmq.common.CommonConstants;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,18 @@ import javax.jms.JMSException;
 public class HealthConnectionFactory {
 
     private static final int UTF_8_WITH_PUA = 1208;
+
+    @Value("${config.mq.preprod.queueManager}")
+    private String queueManagerPreprod;
+    @Value("${config.mq.preprod.host}")
+    private String hostPreprod;
+    @Value("${config.mq.preprod.port}")
+    private Integer portPreprod;
+
+    @Bean
+    public QueueManager queueManager() {
+        return new QueueManager(queueManagerPreprod, hostPreprod, portPreprod, "Q1_TESTNAV_TPS_MSG_S");
+    }
 
     @Bean
     public ConnectionFactory connectionFactory(QueueManager queueManager) throws JMSException {
