@@ -41,5 +41,6 @@ jobs:
           branch: ${{ github.ref }}
       - name: Deploy to GPR
         run: npm publish
+        working-directory: ${{ inputs.working-directory }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
