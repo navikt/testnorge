@@ -15,7 +15,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DagpengevedtakDTO {
 
@@ -64,7 +63,7 @@ public class DagpengevedtakDTO {
     private List<Vilkaar> vilkaar;
 
     @JsonProperty
-    private List<KodeVerdi> reelArbeidssoker;
+    private List<KodeVerdi> reellArbeidssoker;
 
     @JsonProperty
     private List<Barn> barnListe;
