@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { Input } from 'nav-frontend-skjema';
 import { Select } from '../../select';
 import { DatePicker } from '../../date-picker';
+import { TextField } from '@navikt/ds-react';
 
-const InputFormItem = styled(Input)`
+const InputFormItem = styled(TextField)`
   width: 50%;
   padding-right: 10px;
 `;

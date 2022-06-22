@@ -1,7 +1,7 @@
+import { Label, Select as NavSelect } from '@navikt/ds-react';
 import React from 'react';
 
 import Select from 'react-select';
-import { Label, Select as NavSelect } from 'nav-frontend-skjema';
 
 import './Select.less';
 
@@ -24,7 +24,7 @@ export default ({ multi, options, onChange, htmlId, label, error, ...props }: Pr
   if (multi) {
     return (
       <div {...props}>
-        <Label htmlFor={htmlId}>{label}</Label>
+        <Label>{label}</Label>
 
         <Select
           className={error ? 'skjemaelement__input--harFeil select--error' : 'select'}
@@ -47,7 +47,7 @@ export default ({ multi, options, onChange, htmlId, label, error, ...props }: Pr
       id={htmlId}
       label={label}
       onChange={(value) => onChange([value.target.value])}
-      feil={error}
+      error={error}
       {...props}
     >
       {options.map((option, index) => (

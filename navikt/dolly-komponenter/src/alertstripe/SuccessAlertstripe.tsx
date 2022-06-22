@@ -5,8 +5,8 @@ export type SuccessAlertstripeProps = {
   label: string;
 };
 
-const SuccessAlertstripe = ({ label,  ...props }: SuccessAlertstripeProps) => (
-  <Alertstripe {...props} label={label} type="suksess" />
+const SuccessAlertstripe = ({ label, ...props }: SuccessAlertstripeProps) => (
+  <Alertstripe {...props} label={label} variant="success" />
 );
 
 SuccessAlertstripe.displayName = 'SuccessAlertstripe';

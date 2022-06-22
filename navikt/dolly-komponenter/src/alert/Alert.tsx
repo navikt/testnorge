@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import React from 'react';
-import { SuccessFilled, WarningFilled, ErrorFilled } from '@navikt/ds-icons';
+import { ErrorFilled, SuccessFilled, WarningFilled } from '@navikt/ds-icons';
+
 const Alert = styled.div`
   display: flex;
 `;
