@@ -78,7 +78,9 @@ export const PersonVisning = ({
 
 	const pdlPartner = () => {
 		return data.pdl?.hentPerson?.sivilstand?.filter(
-			(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
+			(siv) =>
+				!siv?.metadata?.historisk &&
+				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
 		)?.[0]?.relatertVedSivilstand
 	}
 
