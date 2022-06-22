@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Dagpengeperiode {
     @JsonProperty
     private Integer antallUkerPermittering;
