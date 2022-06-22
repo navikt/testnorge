@@ -18,6 +18,3 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
     with:
       working-directory: 'navikt/dolly-assets/'
-    secrets:
-      NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
