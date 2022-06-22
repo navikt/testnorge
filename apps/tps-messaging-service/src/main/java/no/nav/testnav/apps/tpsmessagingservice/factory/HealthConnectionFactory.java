@@ -4,10 +4,10 @@ import com.ibm.mq.constants.CMQC;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 import com.ibm.msg.client.jms.JmsConstants;
 import com.ibm.msg.client.wmq.common.CommonConstants;
-import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -18,31 +18,35 @@ public class HealthConnectionFactory {
     private static final int UTF_8_WITH_PUA = 1208;
 
     @Value("${config.mq.preprod.queueManager}")
-    private String queueManagerPreprod;
+    private String queueManager;
     @Value("${config.mq.preprod.host}")
-    private String hostPreprod;
+    private String host;
     @Value("${config.mq.preprod.port}")
-    private Integer portPreprod;
+    private Integer port;
+    @Value("${config.mq.preprod.user}")
+    private String username;
+    @Value("${config.mq.preprod.password}")
+    private String password;
 
     @Bean
-    public QueueManager queueManager() {
-        return new QueueManager(queueManagerPreprod, hostPreprod, portPreprod, "Q1_TESTNAV_TPS_MSG_S");
-    }
+    public ConnectionFactory connectionFactory() throws JMSException {
 
-    @Bean
-    public ConnectionFactory connectionFactory(QueueManager queueManager) throws JMSException {
-
-        MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
+        var factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);
         factory.setTransportType(CommonConstants.WMQ_CM_CLIENT);
         factory.setIntProperty(JmsConstants.JMS_IBM_ENCODING, CMQC.MQENC_NATIVE);
         factory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, true);
         factory.setIntProperty(JmsConstants.JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
-        factory.setQueueManager(queueManager.queueManagerName());
-        factory.setHostName(queueManager.host());
-        factory.setPort(queueManager.port());
-        factory.setChannel(queueManager.channel());
+        factory.setQueueManager(queueManager);
+        factory.setHostName(host);
+        factory.setPort(port);
+        factory.setChannel("Q1_TESTNAV_TPS_MSG_S");
 
-        return factory;
+        var adapter = new UserCredentialsConnectionFactoryAdapter();
+        adapter.setTargetConnectionFactory(factory);
+        adapter.setUsername(username);
+        adapter.setPassword(password);
+
+        return adapter;
     }
 }
