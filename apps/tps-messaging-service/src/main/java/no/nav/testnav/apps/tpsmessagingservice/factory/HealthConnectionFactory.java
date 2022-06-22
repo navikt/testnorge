@@ -7,6 +7,7 @@ import com.ibm.msg.client.wmq.common.CommonConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
 import javax.jms.JMSException;
@@ -28,18 +29,8 @@ public class HealthConnectionFactory {
     private String password;
 
     @Bean
-    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory mqQueueConnectionFactory) {
-
-        var userCredentialsConnectionFactoryAdapter = new UserCredentialsConnectionFactoryAdapter();
-        userCredentialsConnectionFactoryAdapter.setUsername(username);
-        userCredentialsConnectionFactoryAdapter.setPassword(password);
-        userCredentialsConnectionFactoryAdapter.setTargetConnectionFactory(mqQueueConnectionFactory);
-
-        return userCredentialsConnectionFactoryAdapter;
-    }
-
-    @Bean
-    public MQQueueConnectionFactory mqQueueConnectionFactory() throws JMSException {
+    @Primary
+    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter() throws JMSException {
 
         var factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);
@@ -52,6 +43,11 @@ public class HealthConnectionFactory {
         factory.setPort(port);
         factory.setChannel("Q1_TESTNAV_TPS_MSG_S");
 
-        return factory;
+        var userCredentialsConnectionFactoryAdapter = new UserCredentialsConnectionFactoryAdapter();
+        userCredentialsConnectionFactoryAdapter.setUsername(username);
+        userCredentialsConnectionFactoryAdapter.setPassword(password);
+        userCredentialsConnectionFactoryAdapter.setTargetConnectionFactory(factory);
+
+        return userCredentialsConnectionFactoryAdapter;
     }
 }
