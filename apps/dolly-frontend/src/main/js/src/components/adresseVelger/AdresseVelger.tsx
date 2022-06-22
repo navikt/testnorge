@@ -12,7 +12,7 @@ const StyledAdresseVelger = styled.div`
 	margin-bottom: 20px;
 `
 type Search = {
-	adressenavn?: string
+	fritekst?: string
 	postnummer?: string
 	kommunenummer?: string
 }

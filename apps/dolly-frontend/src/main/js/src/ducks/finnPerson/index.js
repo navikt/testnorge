@@ -47,18 +47,14 @@ export default handleActions(
 			state.feilmelding = action.payload.data?.message
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
-			if (action.payload.data.error) {
-				state.feilmelding = action.payload.data.message
-			}
+			state.feilmelding = action.payload?.data?.message
 			state.visPerson = action.payload.data.identHovedperson
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data.gruppe?.id
 			state.visning = VisningType.VISNING_PERSONER
 		},
 		[onSuccess(navigerTilBestilling)](state, action) {
-			if (action.payload.data.error) {
-				state.feilmelding = action.payload.data.message
-			}
+			state.feilmelding = action.payload?.data?.message
 			state.visBestilling = action.payload.data.bestillingNavigerTil
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data.gruppe?.id

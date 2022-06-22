@@ -11,4 +11,3 @@ public class AdresseServiceApplicationStarter {
         SpringApplication.run(AdresseServiceApplicationStarter.class, args);
     }
 }
-
