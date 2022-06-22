@@ -14,16 +14,16 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: "npm"
           registry-url: https://npm.pkg.github.com
-          scope: "@navikt"
-      - name: Build code
-        run: |
-          npm ci
-          npm run build
+      - name: Install
+        run: npm install --no-save --no-audit
         working-directory: ${{ inputs.working-directory }}
         env: 
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-          NPM_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Build
+        run: npm run build
+        working-directory: ${{ inputs.working-directory }}
       - name: Bump version
         run: |
           git config --global user.email "dolly@nav.no"

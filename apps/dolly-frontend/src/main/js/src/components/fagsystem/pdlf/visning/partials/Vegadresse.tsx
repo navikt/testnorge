@@ -16,6 +16,7 @@ interface VegadresseValues {
 		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
+		coAdressenavn?: string
 	}
 	idx: number
 }
@@ -37,6 +38,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 		gyldigTilOgMed,
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
+		coAdressenavn,
 	} = adresse
 
 	return (
@@ -86,6 +88,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 					title="Sluttdato for kontrakt"
 					value={Formatters.formatDate(sluttdatoForKontrakt)}
 				/>
+				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
 	)

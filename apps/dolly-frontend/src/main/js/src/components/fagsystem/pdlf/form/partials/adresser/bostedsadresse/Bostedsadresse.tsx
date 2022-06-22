@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import {
 	initialBostedsadresse,
 	initialMatrikkeladresse,
@@ -23,6 +23,8 @@ import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { getPlaceholder, setNavn } from '~/components/fagsystem/pdlf/form/partials/utils'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>
@@ -37,6 +39,7 @@ type BostedsadresseFormValues = {
 
 type Target = {
 	value: string
+	label?: string
 }
 
 export const BostedsadresseForm = ({
@@ -119,6 +122,9 @@ export const BostedsadresseForm = ({
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
+	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
@@ -148,6 +154,18 @@ export const BostedsadresseForm = ({
 					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				</DatepickerWrapper>
+				<DollySelect
+					name={`${path}.opprettCoAdresseNavn.fornavn`}
+					label="C/O adressenavn"
+					options={navnOptions}
+					size="xlarge"
+					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					isLoading={navnInfo.loading}
+					onChange={(navn: Target) =>
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+					}
+					value={_get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+				/>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null} />
 		</React.Fragment>
