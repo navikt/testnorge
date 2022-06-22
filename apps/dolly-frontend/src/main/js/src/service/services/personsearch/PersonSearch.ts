@@ -30,12 +30,14 @@ const searchPdlFragment = (fragment: string) =>
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
 	}).then((response) =>
-		response.json().then((items: [PdlPerson]) => ({
-			data: items.map((person) => ({
-				ident: person.ident,
-				...person.navn,
-			})),
-		}))
+		response.ok
+			? response.json().then((items: [PdlPerson]) => ({
+					data: items?.map((person) => ({
+						ident: person.ident,
+						...person.navn,
+					})),
+			  }))
+			: null
 	)
 
 const searchPdlPerson = async (
