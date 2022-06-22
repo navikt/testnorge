@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 
 @Configuration
@@ -29,7 +28,17 @@ public class HealthConnectionFactory {
     private String password;
 
     @Bean
-    public ConnectionFactory connectionFactory() throws JMSException {
+    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory connectionFactory) {
+
+        var userCredentialsConnectionFactoryAdapter = new UserCredentialsConnectionFactoryAdapter();
+        userCredentialsConnectionFactoryAdapter.setUsername(username);
+        userCredentialsConnectionFactoryAdapter.setPassword(password);
+        userCredentialsConnectionFactoryAdapter.setTargetConnectionFactory(connectionFactory);
+        return userCredentialsConnectionFactoryAdapter;
+    }
+
+    @Bean
+    public MQQueueConnectionFactory connectionFactory() throws JMSException {
 
         var factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);
@@ -42,11 +51,6 @@ public class HealthConnectionFactory {
         factory.setPort(port);
         factory.setChannel("Q1_TESTNAV_TPS_MSG_S");
 
-        var adapter = new UserCredentialsConnectionFactoryAdapter();
-        adapter.setTargetConnectionFactory(factory);
-        adapter.setUsername(username);
-        adapter.setPassword(password);
-
-        return adapter;
+        return factory;
     }
 }
