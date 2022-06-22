@@ -16,10 +16,7 @@
     "prettier": "^2.7.1",
     "webpack-cli": "^4.10.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/navikt/testnorge.git"
-  },
+  "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
     "singleQuote": true,
     "semi": true,
