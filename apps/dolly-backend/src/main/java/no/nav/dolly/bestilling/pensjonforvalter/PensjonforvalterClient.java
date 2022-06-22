@@ -106,6 +106,17 @@ public class PensjonforvalterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         // Pensjonforvalter / POPP støtter pt ikke sletting
+
+        slettPersonTpForhold(identer);
+    }
+
+    private void slettPersonTpForhold(List<String> identer) {
+        try {
+            identer.stream()
+                    .forEach(ident -> pensjonforvalterConsumer.sletteTpForhold(ident));
+        } catch (RuntimeException e) {
+            log.error("Slette fra TP feilet: " + String.join(", ", identer), e);
+        }
     }
 
     private void opprettPerson(DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
