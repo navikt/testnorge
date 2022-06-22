@@ -12,6 +12,7 @@ type AdresseData = {
 		ukjentBosted: {
 			bostedskommune?: string
 		}
+		coAdressenavn?: string
 	}
 	idx: number
 }
@@ -23,6 +24,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 		gyldigTilOgMed,
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
+		coAdressenavn,
 	} = adresse
 	return (
 		<>
@@ -43,6 +45,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 					title="Sluttdato for kontrakt"
 					value={Formatters.formatDate(sluttdatoForKontrakt)}
 				/>
+				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
 	)
