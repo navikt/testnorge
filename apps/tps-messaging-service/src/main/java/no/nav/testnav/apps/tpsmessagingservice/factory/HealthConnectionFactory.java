@@ -28,17 +28,18 @@ public class HealthConnectionFactory {
     private String password;
 
     @Bean
-    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory connectionFactory) {
+    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter(MQQueueConnectionFactory mqQueueConnectionFactory) {
 
         var userCredentialsConnectionFactoryAdapter = new UserCredentialsConnectionFactoryAdapter();
         userCredentialsConnectionFactoryAdapter.setUsername(username);
         userCredentialsConnectionFactoryAdapter.setPassword(password);
-        userCredentialsConnectionFactoryAdapter.setTargetConnectionFactory(connectionFactory);
+        userCredentialsConnectionFactoryAdapter.setTargetConnectionFactory(mqQueueConnectionFactory);
+
         return userCredentialsConnectionFactoryAdapter;
     }
 
     @Bean
-    public MQQueueConnectionFactory connectionFactory() throws JMSException {
+    public MQQueueConnectionFactory mqQueueConnectionFactory() throws JMSException {
 
         var factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);
