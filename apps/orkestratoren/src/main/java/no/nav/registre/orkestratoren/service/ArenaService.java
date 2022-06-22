@@ -6,6 +6,7 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.consumer.rs.SyntVedtakshistorikkServiceConsumer;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,10 @@ public class ArenaService {
 
     public Map<String, List<NyttVedtakResponse>> opprettArenaVedtakshistorikk(SyntetiserArenaRequest vedtakshistorikkRequest) {
         return syntVedtakshistorikkServiceConsumer.opprettVedtakshistorikk(vedtakshistorikkRequest);
+    }
+
+    public Map<String, List<DagpengerResponseDTO>> opprettDagpengerArena(SyntetiserArenaRequest dagpengerRequest){
+        return syntVedtakshistorikkServiceConsumer.opprettDagpenger(dagpengerRequest);
     }
 
 }
