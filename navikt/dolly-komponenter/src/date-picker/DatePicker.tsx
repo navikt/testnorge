@@ -13,7 +13,7 @@ export default ({ id, label, onBlur, error, ...props }: Props) => {
   const [date, setDate] = useState<Date>();
 
   return (
-    <div onBlur={() => onBlur(date)} {...props}>
+    <div onBlur={() => onBlur(date.toDateString())} {...props}>
       <Label>{label}</Label>
       {/*  TODO fiks i designbiblioteket*/}
       <div
