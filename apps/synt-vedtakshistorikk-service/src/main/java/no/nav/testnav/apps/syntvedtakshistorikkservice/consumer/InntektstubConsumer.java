@@ -34,6 +34,7 @@ public class InntektstubConsumer {
 
     public List<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
         try {
+            log.info("Oppretter inntekt i inntektstub for ident");
             return tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new PostInntekterCommand(inntektsinformasjon, accessToken.getTokenValue(), webClient).call())
                     .block();
@@ -45,6 +46,7 @@ public class InntektstubConsumer {
 
     public void deleteInntekter(List<String> identer) {
         try {
+            log.info("Sletter ident(er) fra Inntektstub");
             tokenExchange.exchange(serviceProperties)
                     .flatMap(accessToken -> new DeleteInntekterCommand(identer, accessToken.getTokenValue(), webClient).call())
                     .subscribe(response -> log.info("Slettet identer fra Inntektstub"));

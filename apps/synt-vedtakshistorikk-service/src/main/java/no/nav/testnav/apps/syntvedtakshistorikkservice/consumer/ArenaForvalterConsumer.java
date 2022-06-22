@@ -217,10 +217,12 @@ public class ArenaForvalterConsumer {
     }
 
     public DagpengerResponseDTO opprettDagpengerSoknad(DagpengerRequestDTO soknad) {
+        log.info("Sender inn dagpengesoknad til Arena-forvalteren");
         return opprettDagpenger(soknad, DAGPENGESOKNAD_PATH);
     }
 
     public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {
+        log.info("Sender inn dagpengevedtak til Arena-forvalteren");
         return opprettDagpenger(vedtak, DAGPENGEVEDTAK_PATH);
     }
 
