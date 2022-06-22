@@ -23,6 +23,8 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         env: 
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Bump version
         run: |
           git config --global user.email "dolly@nav.no"
