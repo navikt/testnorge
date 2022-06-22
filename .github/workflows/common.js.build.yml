@@ -9,18 +9,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: '16.x'
           registry-url: https://npm.pkg.github.com
       - name: Build install
-        run: |
-          npm ci
+        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
       - name: Build code
-        run: |
-          npm run build
+        run: npm run build
         working-directory: ${{ inputs.working-directory }}
