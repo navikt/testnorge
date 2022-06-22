@@ -91,8 +91,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 .append("c/o ")
                 .append(coNavn.getFornavn())
                 .append(' ')
-                .append(isTrue(coNavn.getHasMellomnavn()) ? coNavn.getMellomnavn() : "")
-                .append(isTrue(coNavn.getHasMellomnavn()) ? ' ' : "")
+                .append(isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "")
+                .append(isNotBlank(coNavn.getMellomnavn()) ? ' ' : "")
                 .append(coNavn.getEtternavn())
                 .toString();
     }
