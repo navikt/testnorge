@@ -49,7 +49,7 @@ const getPdlPersoner = async (identer: string[]) => {
 		})
 }
 
-const partnerSivilstander = ['GIFT', 'SEPARERT']
+const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
 export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	const navigate = useNavigate()
@@ -98,20 +98,33 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 	return (
 		<React.Fragment>
 			<div className="flexbox--baseline--justify-end import-knapper">
-
-				{ visPartnereImport &&
+				{visPartnereImport && (
 					<span className="flexbox--baseline--justify-end">
-						<Checkbox id="import-modal-import-med-partner" checked={importMedPartner}
-								  onChange={toggleImportMedPartner} label="Import med partner" size="medium"/>
+						<Checkbox
+							id="import-modal-import-med-partner"
+							checked={importMedPartner}
+							onChange={toggleImportMedPartner}
+							label="Import med partner"
+							size="medium"
+						/>
 
-						<Hjelpetekst hjelpetekstFor="import-modal-import-med-partner" type={PopoverOrientering.Over}>
+						<Hjelpetekst
+							hjelpetekstFor="import-modal-import-med-partner"
+							type={PopoverOrientering.Over}
+						>
 							En eller flere av dine valgte Test-Norge personer har en partner. <br /> Vil du
 							inkludere partnerne i importen?
 						</Hjelpetekst>
 					</span>
-				}
+				)}
 				<span>
-					<Checkbox id="import-modal-import-med-mal" checked={importMedMal} onChange={toggleImportMedMal} label="Benytt mal" size="medium" />
+					<Checkbox
+						id="import-modal-import-med-mal"
+						checked={importMedMal}
+						onChange={toggleImportMedMal}
+						label="Benytt mal"
+						size="medium"
+					/>
 				</span>
 
 				<NavButton
@@ -139,12 +152,9 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 						{/*	Hvilken mal skal brukes for persondata?*/}
 						{/*</h4>*/}
 					</div>
-					<MalValg valgtMal={(mal: any) => setMalData(mal) } />
+					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
 					<div className="importModal-actions">
-						<NavButton
-							onClick={() => importer(valgtePersoner, malData)}
-							type="hoved"
-						>
+						<NavButton onClick={() => importer(valgtePersoner, malData)} type="hoved">
 							Importer
 						</NavButton>
 					</div>
