@@ -405,7 +405,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		const coAdresse = (navn) =>
-			obj('C/O adressenavn', `${navn.fornavn} ${navn.mellomnavn} ${navn.etternavn}`)
+			obj('C/O adressenavn', `${navn?.fornavn} ${navn?.mellomnavn} ${navn?.etternavn}`)
 
 		if (tilrettelagtKommunikasjon) {
 			const tilrettelagtKommunikasjonData = {
