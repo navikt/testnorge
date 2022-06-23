@@ -10,6 +10,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
@@ -29,8 +30,9 @@ public class JenkinsConsumer {
             JenkinsServiceProperties properties,
             TokenExchange tokenExchange,
             JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer,
-            OrganisasjonBestillingConsumer organisasjonBestillingConsumer
-    ) {
+            OrganisasjonBestillingConsumer organisasjonBestillingConsumer,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.organisasjonBestillingConsumer = organisasjonBestillingConsumer;
         this.properties = properties;
         this.tokenExchange = tokenExchange;
@@ -39,8 +41,8 @@ public class JenkinsConsumer {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
-
     }
 
     public void send(Flatfil flatFile, String miljo, Set<String> uuids) {

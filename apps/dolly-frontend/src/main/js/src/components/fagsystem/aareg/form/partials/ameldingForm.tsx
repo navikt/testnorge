@@ -216,6 +216,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 						date={fom}
 						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'fom')}
 						minDate={add(new Date(), { years: -25 })}
+						maxDate={add(new Date(), { years: 1 })}
 					/>
 					<Monthpicker
 						formikBag={formikBag}
@@ -224,6 +225,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 						date={tom}
 						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'tom')}
 						minDate={add(new Date(), { years: -25 })}
+						maxDate={add(new Date(), { years: 25 })}
 					/>
 					<div className="flexbox--full-width">
 						<div className="flexbox--flex-wrap">

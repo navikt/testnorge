@@ -1,25 +1,27 @@
 package no.nav.testnav.apps.apptilganganalyseservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.GetBlobFromShaCommand;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.SearchCodeCommand;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
 public class GithubConsumer {
-    private final WebClient webClient;
     private static final int PAGE_SIZE = 100;
+    private final WebClient webClient;
 
-    public GithubConsumer(@Value("${consumers.github.url}") String url) {
-        this.webClient =  WebClient
+    public GithubConsumer(@Value("${consumers.github.url}") String url,
+                          ExchangeFilterFunction metricsWebClientFilterFunction) {
+
+        this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
                 .exchangeStrategies(ExchangeStrategies.builder()
@@ -27,6 +29,7 @@ public class GithubConsumer {
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -46,7 +49,7 @@ public class GithubConsumer {
         });
     }
 
-    public Mono<byte[]> getBlobFromSha(String sha,String owner, String repo) {
+    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
         return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
     }
 }

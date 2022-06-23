@@ -14,6 +14,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,12 +46,17 @@ public class SigrunStubConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public SigrunStubConsumer(TokenExchange tokenService, SigrunstubProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public SigrunStubConsumer(TokenExchange tokenService,
+                              SigrunstubProxyProperties serverProperties,
+                              ObjectMapper objectMapper,
+                              ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

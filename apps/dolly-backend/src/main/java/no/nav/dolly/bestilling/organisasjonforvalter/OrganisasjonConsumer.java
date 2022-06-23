@@ -16,6 +16,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
@@ -44,16 +45,25 @@ public class OrganisasjonConsumer {
     private final WebClient webClient;
     private final OrganisasjonForvalterProperties serviceProperties;
 
-    public OrganisasjonConsumer(TokenExchange tokenService, OrganisasjonForvalterProperties serviceProperties, ObjectMapper objectMapper) {
+    public OrganisasjonConsumer(TokenExchange tokenService,
+                                OrganisasjonForvalterProperties serviceProperties,
+                                ObjectMapper objectMapper,
+                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "organisasjon-hent"})
     public OrganisasjonDetaljer hentOrganisasjon(List<String> orgnumre) {
         var navCallId = getNavCallId();
         log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
@@ -75,7 +85,7 @@ public class OrganisasjonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-hent"})
     public OrganisasjonDeployStatus hentOrganisasjonStatus(List<String> orgnumre) {
         var navCallId = getNavCallId();
         log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
@@ -97,7 +107,7 @@ public class OrganisasjonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-opprett" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-opprett"})
     public ResponseEntity<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
         var navCallId = getNavCallId();
         log.info("Organisasjon oppretting sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
@@ -116,7 +126,7 @@ public class OrganisasjonConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-deploy" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-deploy"})
     public ResponseEntity<DeployResponse> deployOrganisasjon(DeployRequest request) {
         var navCallId = getNavCallId();
         log.info("Organisasjon deploy sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
@@ -124,7 +134,7 @@ public class OrganisasjonConsumer {
         return sendDeployOrganisasjonRequest(request, navCallId);
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-alive" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-alive"})
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
@@ -143,9 +153,5 @@ public class OrganisasjonConsumer {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .block();
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

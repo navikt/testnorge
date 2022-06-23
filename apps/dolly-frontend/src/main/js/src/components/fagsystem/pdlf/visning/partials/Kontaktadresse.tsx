@@ -76,6 +76,7 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 							)}
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
+						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
 					</div>
 				</>
 			)}

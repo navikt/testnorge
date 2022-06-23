@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
+import no.nav.pdl.forvalter.dto.IdentpoolLedigDTO;
 import no.nav.pdl.forvalter.utils.IdentValidCheck;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.dto.IdentpoolStatusDTO.Rekvireringsstatus.I_BRUK;
-import static no.nav.pdl.forvalter.dto.IdentpoolStatusDTO.Rekvireringsstatus.LEDIG;
 
 @Slf4j
 @Service
@@ -42,7 +40,7 @@ public class EksistensService {
                 .map(DbPerson::getIdent)
                 .collect(Collectors.toSet());
 
-        var identpoolStatus = identPoolConsumer.getIdents(validIdents.stream()
+        var identpoolStatus = identPoolConsumer.getErLedig(validIdents.stream()
                         .filter(ident -> !existsInDatabase.contains(ident))
                         .collect(Collectors.toSet()))
                 .collectList()
@@ -56,16 +54,15 @@ public class EksistensService {
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_DB, false))
                                 .toList(),
                         nonNull(identpoolStatus) ? identpoolStatus.stream()
-                                .filter(identStatus -> I_BRUK == identStatus.getRekvireringsstatus())
-                                .map(IdentpoolStatusDTO::getPersonidentifikator)
+                                .filter(IdentpoolLedigDTO::isIBruk)
+                                .map(IdentpoolLedigDTO::getIdent)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_ENV, false))
                                 .toList() : null,
                         nonNull(identpoolStatus) ? identpoolStatus.stream()
-                                .filter(identStatus -> LEDIG == identStatus.getRekvireringsstatus())
-                                .map(IdentpoolStatusDTO::getPersonidentifikator)
+                                .filter(IdentpoolLedigDTO::isLedig)
+                                .map(IdentpoolLedigDTO::getIdent)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_AVAIL, true))
-                                .toList() : null
-                        )
+                                .toList() : null)
                 .flatMap(Collection::stream)
                 .toList();
     }

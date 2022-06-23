@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
+import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -36,30 +39,7 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-
-    private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
-
-        return RsOrganisasjonBestillingStatus.builder()
-                .id(bestilling.getId())
-                .sistOppdatert(bestilling.getSistOppdatert())
-                .antallLevert(0)
-                .ferdig(false)
-                .organisasjonNummer(orgnummer)
-                .status(List.of(RsOrganisasjonStatusRapport.builder()
-                        .id(SystemTyper.ORGANISASJON_FORVALTER)
-                        .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
-                        .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
-                                .melding("Bestilling startet ...")
-                                .detaljert(Arrays.stream(bestilling.getMiljoer().split(","))
-                                        .map(miljoe -> RsOrganisasjonStatusRapport.Detaljert.builder()
-                                                .orgnummer(orgnummer)
-                                                .miljo(miljoe)
-                                                .build())
-                                        .toList())
-                                .build()))
-                        .build()))
-                .build();
-    }
+    private final OrganisasjonProgressService progressService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/bestilling")
@@ -67,6 +47,13 @@ public class OrganisasjonController {
     public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
+
+        progressService.save(OrganisasjonBestillingProgress.builder()
+                .bestilling(bestilling)
+                .organisasjonsnummer("Ubestemt")
+                .organisasjonsforvalterStatus(request.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
+                .build());
+
         organisasjonClient.opprett(request, bestilling);
 
         return getStatus(bestilling, "Ubestemt");
@@ -118,5 +105,29 @@ public class OrganisasjonController {
     public void slettgruppe(@PathVariable("orgnummer") String orgnummer) {
 
         bestillingService.slettBestillingByOrgnummer(orgnummer);
+    }
+
+    private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
+
+        return RsOrganisasjonBestillingStatus.builder()
+                .id(bestilling.getId())
+                .sistOppdatert(bestilling.getSistOppdatert())
+                .antallLevert(0)
+                .ferdig(false)
+                .organisasjonNummer(orgnummer)
+                .status(List.of(RsOrganisasjonStatusRapport.builder()
+                        .id(SystemTyper.ORGANISASJON_FORVALTER)
+                        .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
+                        .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
+                                .melding("Bestilling startet ...")
+                                .detaljert(Arrays.stream(bestilling.getMiljoer().split(","))
+                                        .map(miljoe -> RsOrganisasjonStatusRapport.Detaljert.builder()
+                                                .orgnummer(orgnummer)
+                                                .miljo(miljoe)
+                                                .build())
+                                        .toList())
+                                .build()))
+                        .build()))
+                .build();
     }
 }

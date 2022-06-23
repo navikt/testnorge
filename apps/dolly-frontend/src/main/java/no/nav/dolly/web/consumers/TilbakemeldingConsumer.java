@@ -1,18 +1,18 @@
 package no.nav.dolly.web.consumers;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
+import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
-import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service
@@ -23,10 +23,14 @@ public class TilbakemeldingConsumer {
 
     public TilbakemeldingConsumer(
             TestnorgeTilbakemeldingApiProperties tilbakemeldingApiProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.testnorgeTilbakemeldingApiProperties = tilbakemeldingApiProperties;
-        this.webClient = WebClient.builder().baseUrl(tilbakemeldingApiProperties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(tilbakemeldingApiProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.tokenExchange = tokenExchange;
     }
 

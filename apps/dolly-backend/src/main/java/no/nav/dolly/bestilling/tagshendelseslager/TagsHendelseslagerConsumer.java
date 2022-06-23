@@ -14,6 +14,7 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -28,12 +29,17 @@ public class TagsHendelseslagerConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public TagsHendelseslagerConsumer(TokenExchange tokenService, PdlProxyProperties serviceProperties, ObjectMapper objectMapper) {
+    public TagsHendelseslagerConsumer(TokenExchange tokenService,
+                                      PdlProxyProperties serviceProperties,
+                                      ObjectMapper objectMapper,
+                                      ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -66,8 +72,9 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
-    public String publish(List<String> identer) {
+    public Flux<String> publish(List<String> identer) {
 
-        return new HendelseslagerPublishCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
     }
 }

@@ -1,24 +1,21 @@
 package no.nav.registre.aareg.consumer.rs;
 
-import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-
 import no.nav.registre.aareg.consumer.rs.command.PostSyntAaregCommand;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-
-import org.slf4j.LoggerFactory;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -27,23 +24,26 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
+import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class SyntAaregConsumerTest {
 
-    private SyntAaregConsumer syntAaregConsumer;
-
-    private MockWebServer mockWebServer;
-
     private final String fnr1 = "01010101010";
     private final String fnr2 = "02020202020";
 
+    private SyntAaregConsumer syntAaregConsumer;
+
+    private final ExchangeFilterFunction metricsWebClientFilterFunction = Mockito.mock(ExchangeFilterFunction.class);
+
+    private MockWebServer mockWebServer;
 
     @Before
     public void setUp() throws IOException {
@@ -51,9 +51,10 @@ public class SyntAaregConsumerTest {
         this.mockWebServer.start();
         Dispatcher dispatcher = getDispatcher();
         mockWebServer.setDispatcher(dispatcher);
-        this.syntAaregConsumer = new SyntAaregConsumer(2, mockWebServer.url("/synt-aareg").toString());
+        syntAaregConsumer = new SyntAaregConsumer(2,
+                mockWebServer.url("/synt-aareg").toString(),
+                metricsWebClientFilterFunction);
     }
-
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {

@@ -1,13 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.DokarkivProxyServiceProperties;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.OpprettJournalpostCommand;
 import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
@@ -16,6 +9,13 @@ import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -27,11 +27,15 @@ public class DokmotConsumer {
 
     public DokmotConsumer(
             DokarkivProxyServiceProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumenter, String navCallId) {

@@ -16,8 +16,7 @@ import {
 	TpsMessagingApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
-import { selectIdentById } from '~/ducks/gruppe'
-import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
+import { successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
 import { isNil } from 'lodash'
@@ -307,14 +306,11 @@ export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
-	const state = getState()
-
-	// Person fra gruppe
-	const person = selectIdentById(state, personId)
+export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) => {
+	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
-	const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
+	const bestillinger = person.bestillingId.map((id) => bestillingerById?.[id])
 
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
@@ -412,7 +408,7 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 
 	if (!bestillingStatus) return totalStatus
 
-	bestillingStatus.status.forEach((fagsystem) => {
+	bestillingStatus?.status.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {
 			_get(status, 'detaljert', []).forEach((miljoe) => {
 				_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
@@ -427,7 +423,10 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 }
 
 export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
-	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+	if (
+		!identer ||
+		(_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+	)
 		return null
 
 	// Sortert etter bestillingsId
@@ -475,7 +474,7 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 		navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 		kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
 		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
@@ -507,7 +506,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			pdlIdent?.doedsfall?.[0]?.doedsdato
 		),
-		status: hentPersonStatus(ident?.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
@@ -532,7 +531,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
@@ -549,7 +548,7 @@ const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
 		alder: '',
 		status:
 			ident?.bestillingId && bestillingStatuser
-				? hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]])
+				? hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]])
 				: '',
 	}
 }

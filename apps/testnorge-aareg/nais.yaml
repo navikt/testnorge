@@ -25,7 +25,8 @@ spec:
     path: /internal/isReady
     initialDelay: 30
   prometheus:
-    path: /internal/prometheus
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1
@@ -44,5 +45,3 @@ spec:
     - "https://testnorge-aareg.dev-fss.nais.io"
     - "https://testnorge-aareg.dev.adeo.no"
     - "https://testnorge-aareg.dev.intern.nav.no"
-    - "https://testnorge-aareg-u2.nais.preprod.local"
-    - "https://testnorge-aareg-u2.dev-fss.nais.io"

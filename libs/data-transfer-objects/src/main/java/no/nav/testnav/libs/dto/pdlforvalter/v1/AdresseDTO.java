@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -47,9 +46,5 @@ public abstract class AdresseDTO extends DbVersjonDTO {
 
     public abstract boolean isAdresseNorge();
 
-    @JsonIgnore
-    public boolean isAdresseUtland() {
-
-        return !isAdresseNorge();
-    }
+    public abstract boolean isAdresseUtland();
 }

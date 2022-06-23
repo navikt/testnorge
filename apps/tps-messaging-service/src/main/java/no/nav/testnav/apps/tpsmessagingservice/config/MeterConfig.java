@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.config;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.tpsmessagingservice.meter.PrometheusTagsProvider;
+import no.nav.testnav.apps.tpsmessagingservice.meter.WebClientTagsProvider;
 import org.springframework.boot.actuate.metrics.AutoTimer;
 import org.springframework.boot.actuate.metrics.web.reactive.client.MetricsWebClientFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ public class MeterConfig {
 
     @Bean
     public ExchangeFilterFunction metricsWebClientFilterFunction() {
-        return new MetricsWebClientFilterFunction(meterRegistry, new PrometheusTagsProvider(),
+        return new MetricsWebClientFilterFunction(meterRegistry, new WebClientTagsProvider(),
                 "webClientMetrics", AutoTimer.ENABLED);
     }
 }

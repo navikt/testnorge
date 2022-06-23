@@ -1,5 +1,11 @@
 import { startOfToday } from 'date-fns'
 
+const navn = {
+	fornavn: null as string,
+	mellomnavn: null as string,
+	etternavn: null as string,
+}
+
 export const initialPdlPerson = {
 	identtype: null as string,
 	kjoenn: null as string,
@@ -17,11 +23,7 @@ export const initialPdlPerson = {
 export const initialPdlBiPerson = {
 	foedselsdato: null as string,
 	kjoenn: null as string,
-	navn: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
+	navn: navn,
 	statsborgerskap: null as string,
 }
 
@@ -29,6 +31,7 @@ export const initialKontaktadresse = {
 	adressetype: null as string,
 	gyldigFraOgMed: null as string,
 	gyldigTilOgMed: null as string,
+	opprettCoAdresseNavn: null as object,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -165,21 +168,13 @@ export const initialFoedsel = {
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as string,
 	organisasjonsnavn: null as string,
-	kontaktperson: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
+	kontaktperson: navn,
 }
 
 export const initialPerson = {
 	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
-	navn: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
+	navn: navn,
 }
 
 export const initialNyPerson = {

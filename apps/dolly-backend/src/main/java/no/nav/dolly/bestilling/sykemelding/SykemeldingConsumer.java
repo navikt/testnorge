@@ -14,6 +14,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
@@ -40,16 +41,23 @@ public class SykemeldingConsumer {
     public SykemeldingConsumer(
             TokenExchange accessTokenService,
             SykemeldingApiProxyProperties serverProperties,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .baseUrl(serverProperties.getUrl()).build();
+                .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "syntsykemelding_opprett" })
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "syntsykemelding_opprett"})
     public ResponseEntity<String> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
 
         String callId = getNavCallId();
@@ -68,7 +76,7 @@ public class SykemeldingConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
+    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
     public ResponseEntity<String> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
 
         String callId = getNavCallId();
@@ -89,9 +97,5 @@ public class SykemeldingConsumer {
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

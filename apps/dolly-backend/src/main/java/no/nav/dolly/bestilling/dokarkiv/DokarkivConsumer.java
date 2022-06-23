@@ -12,6 +12,7 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -37,12 +38,17 @@ public class DokarkivConsumer {
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
 
-    public DokarkivConsumer(DokarkivProxyServiceProperties properties, TokenExchange tokenService, ObjectMapper objectMapper) {
+    public DokarkivConsumer(DokarkivProxyServiceProperties properties,
+                            TokenExchange tokenService,
+                            ObjectMapper objectMapper,
+                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = properties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

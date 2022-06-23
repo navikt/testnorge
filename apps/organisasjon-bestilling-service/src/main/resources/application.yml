@@ -20,7 +20,6 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:organisasjon-bestilling-service
 
-
 consumers:
   ereg-batch-status-service:
     url: https://ereg-batch-status-service.dev-fss-pub.nais.io
@@ -32,3 +31,20 @@ consumers:
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
     namespace: dolly
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

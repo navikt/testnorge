@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
@@ -17,19 +15,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.util.Map;
 
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
 import no.nav.registre.orkestratoren.service.ArenaService;
-import no.nav.registre.orkestratoren.service.TestnorgeFrikortService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
-import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 
 @Slf4j
@@ -66,13 +59,7 @@ public class JobController {
     @Value("${batch.medl.prosentfaktor}")
     private double medlProsentfaktor;
 
-    @Value("${batch.frikort.antallNyeIdenter}")
-    private int frikortAntallNyeIdenter;
 
-    private final Map<String, Integer> antallSkdMeldingerPerEndringskode;
-    private final Map<String, Integer> antallNavMeldingerPerEndringskode;
-
-    private final TestnorgeSkdService testnorgeSkdService;
     private final TestnorgeInntektService testnorgeInntektService;
     private final TestnorgeSigrunService testnorgeSigrunService;
     private final TestnorgeAaregService testnorgeAaregService;
@@ -81,61 +68,50 @@ public class JobController {
     private final TestnorgeSamService testnorgeSamService;
     private final ArenaService arenaService;
     private final TestnorgeMedlService testnorgeMedlService;
-    private final TestnorgeFrikortService testnorgeFrikortService;
 
 
     /**
-     * Feil i innsending av TPS-meldinger må fikses før denne eventuelt kan startes igjen
+     * Stopper innsending da mistenker det ikke lenger er i bruk
      */
-    //    @Scheduled(cron = "0 0 0 * * *")
-    public void tpsSyntBatch() {
-        try {
-            testnorgeSkdService.genererSkdmeldinger(avspillergruppeId, miljoe, antallSkdMeldingerPerEndringskode);
-        } catch (HttpStatusCodeException e) {
-            log.warn(e.getResponseBodyAsString(), e);
-        }
-    }
-
-    /**
-     * Feil i innsending av nav-endringmeldinger-meldinger må fikses før denne eventuelt kan startes igjen
-     */
-//    @Scheduled(cron = "0 0 0 * * *")
-    public void navSyntBatch() {
-        var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
-                .avspillergruppeId(avspillergruppeId)
-                .miljoe(miljoe)
-                .antallMeldingerPerEndringskode(antallNavMeldingerPerEndringskode)
-                .build();
-        testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
-    }
-
-    @Scheduled(cron = "0 0 1 1 * *")
+//    @Scheduled(cron = "0 0 1 1 * *")
     public void inntektSyntBatch() {
         var request = new SyntetiserInntektsmeldingRequest(avspillergruppeId, miljoe);
         var feiledeInntektsmeldinger = testnorgeInntektService.genererInntektsmeldinger(request);
         log.info("Inntekt-synt.-batch har matet Inntektstub med meldinger. Meldinger som feilet: {}.", feiledeInntektsmeldinger.keySet().toString());
     }
 
-    @Scheduled(cron = "0 0 1 1 5 *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 5 *")
     public void poppSyntBatch() {
         var syntetiserPoppRequest = new SyntetiserPoppRequest(avspillergruppeId, miljoe, poppbatchAntallNyeIdenter);
         var testdataEier = "synt_test";
         testnorgeSigrunService.genererSkattegrunnlag(syntetiserPoppRequest, testdataEier);
     }
 
-    @Scheduled(cron = "0 0 1 1 * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 * *")
     public void aaregSyntBatch() {
         var syntetiserAaregRequest = new SyntetiserAaregRequest(avspillergruppeId, miljoe, aaregbatchAntallNyeIdenter);
         testnorgeAaregService.genererArbeidsforholdsmeldinger(syntetiserAaregRequest, true);
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 0 * * *")
     public void instSyntBatch() {
         var syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, instbatchAntallNyeIdenter);
         testnorgeInstService.genererInstitusjonsforhold(syntetiserInstRequest);
     }
 
-    @Scheduled(cron = "0 0 0 1 5 *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 0 1 5 *")
     public void tpSyntBatch() {
         var request = new SyntetiserTpRequest(avspillergruppeId, miljoe, tpAntallPersoner);
         var entity = testnorgeTpService.genererTp(request);
@@ -144,7 +120,10 @@ public class JobController {
         }
     }
 
-    @Scheduled(cron = "0 0 1 1 * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 1 1 * *")
     public void samSyntBatch() {
         var syntetiserSamRequest = new SyntetiserSamRequest(avspillergruppeId, miljoe, samAntallMeldinger);
         testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
@@ -167,15 +146,12 @@ public class JobController {
 
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    /**
+     * Stopper innsending da mistenker det ikke lenger er i bruk
+     */
+//    @Scheduled(cron = "0 0 0 * * *")
     public void medlSyntBatch() {
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, medlProsentfaktor);
         testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
-    }
-
-    @Scheduled(cron = "0 0 0 * * *")
-    public void frikortSyntBatch() {
-        var syntetiserFrikortRequest = new SyntetiserFrikortRequest(avspillergruppeId, miljoe, frikortAntallNyeIdenter);
-        testnorgeFrikortService.genererFrikortEgenmeldinger(syntetiserFrikortRequest);
     }
 }

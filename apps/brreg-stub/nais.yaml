@@ -15,6 +15,9 @@ spec:
   readiness:
     path: /isReady
     initialDelay: 30
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

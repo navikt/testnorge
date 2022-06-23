@@ -27,7 +27,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						</Button>
 					)}
 					{!alleredeMal && (
-						<Button onClick={openOpenMalModal} kind={'maler'}>
+						<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
 							OPPRETT NY MAL
 						</Button>
 					)}

@@ -1,20 +1,20 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import static java.util.Collections.emptySet;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_MILJOER;
-
 import lombok.extern.slf4j.Slf4j;
+import no.nav.organisasjonforvalter.config.credentials.MiljoerServiceProperties;
+import no.nav.organisasjonforvalter.consumer.command.MiljoerServiceCommand;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import no.nav.organisasjonforvalter.config.credentials.MiljoerServiceProperties;
-import no.nav.organisasjonforvalter.consumer.command.MiljoerServiceCommand;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static java.util.Collections.emptySet;
+import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_MILJOER;
 
 @Slf4j
 @Service
@@ -26,11 +26,13 @@ public class MiljoerServiceConsumer {
 
     public MiljoerServiceConsumer(
             MiljoerServiceProperties serviceProperties,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

@@ -4,17 +4,17 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.netty.http.client.HttpClient;
-
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.SaveOrganisasjonBestillingCommand;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.UpdateOrganisasjonBestillingCommand;
 import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
 @Slf4j
 @Component
@@ -26,8 +26,9 @@ public class OrganisasjonBestillingConsumer {
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
@@ -41,6 +42,7 @@ public class OrganisasjonBestillingConsumer {
                                                 connection
                                                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_SECONDS))
                                                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_SECONDS))))))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

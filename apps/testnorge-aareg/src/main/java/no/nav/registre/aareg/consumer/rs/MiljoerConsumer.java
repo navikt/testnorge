@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.util.retry.Retry;
@@ -32,7 +33,10 @@ public class MiljoerConsumer {
     private final WebClient webClient;
     private final MiljoeServiceProperties serviceProperties;
 
-    public MiljoerConsumer(MiljoeServiceProperties serviceProperties, TokenExchange tokenExchange) {
+    public MiljoerConsumer(MiljoeServiceProperties serviceProperties,
+                           TokenExchange tokenExchange,
+                           ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
@@ -45,7 +49,9 @@ public class MiljoerConsumer {
                                                 connection
                                                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
                                                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))
-                                        )))).build();
+                                        ))))
+                .filter(metricsWebClientFilterFunction)
+                .build();
 
     }
 
