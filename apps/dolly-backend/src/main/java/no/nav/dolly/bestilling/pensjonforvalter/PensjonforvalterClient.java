@@ -115,7 +115,7 @@ public class PensjonforvalterClient implements ClientRegister {
             identer.stream()
                     .forEach(ident -> pensjonforvalterConsumer.sletteTpForhold(ident));
         } catch (RuntimeException e) {
-            log.error("Slette fra TP feilet: " + String.join(", ", identer), e);
+            log.error("Sletting fra TP feilet på identer: " + String.join(", ", identer), e);
         }
     }
 
