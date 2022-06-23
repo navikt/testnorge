@@ -7,6 +7,8 @@ on:
     secrets:
       READER_TOKEN:
         required: false
+      NPM_TOKEN:
+        required: false
 
 jobs:
   build:
@@ -23,6 +25,7 @@ jobs:
           npm install --no-save --no-audit
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
       - name: Build code
         run: npm run build
