@@ -16,8 +16,8 @@ jobs:
           registry-url: "https://npm.pkg.github.com"
       - name: Build install
         run: |
-             echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-             npm install --no-save --no-audit
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.READER_TOKEN }}" > ~/.npmrc
+          npm install --no-save --no-audit
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
