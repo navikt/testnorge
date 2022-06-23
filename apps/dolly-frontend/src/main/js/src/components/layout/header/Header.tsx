@@ -10,6 +10,7 @@ import './Header.less'
 import Logger from '~/logger'
 import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'
+import { Alert } from '@navikt/ds-react'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -24,6 +25,8 @@ export default () => {
 				<Icon size={30} kind="dolly" className="dollysheep" />
 				<h1>Dolly</h1>
 			</NavLink>
+			
+			<Alert variant={ "warning"}>0 Dager siden siste Betsy bug i master</Alert>
 
 			<div className="menu-links">
 				<NavLink to="/gruppe">Personer</NavLink>
