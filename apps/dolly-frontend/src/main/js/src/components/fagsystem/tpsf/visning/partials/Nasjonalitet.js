@@ -5,10 +5,8 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Innvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
-import { Utvandring } from '~/components/fagsystem/pdlf/visning/partials/Utvandring'
 
-const Statsborgerskap = ({ statsborgerskap }) => {
+const Statsborgerskap = ({ statsborgerskap, sprak }) => {
 	if (!statsborgerskap) {
 		return null
 	}
@@ -27,6 +25,7 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 				title="Statsborgerskap til"
 				value={Formatters.formatDate(statsborgerskap.statsborgerskapTildato)}
 			/>
+			<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprak} />
 		</div>
 	)
 }
@@ -71,12 +70,19 @@ export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
 							{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
 						</DollyFieldArray>
+						<TitleValue
+							title="Språk"
+							kodeverk={PersoninformasjonKodeverk.Spraak}
+							value={sprakKode}
+						/>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap statsborgerskap={statsborgerskap[0] || statsborgerskap} />
+					<Statsborgerskap
+						statsborgerskap={statsborgerskap[0] || statsborgerskap}
+						sprak={sprakKode}
+					/>
 				)}
 				<InnvandretUtvandret data={innvandretUtvandret} />
-				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
 			</div>
 		</div>
 	)

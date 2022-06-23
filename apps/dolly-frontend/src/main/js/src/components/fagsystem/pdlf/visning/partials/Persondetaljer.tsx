@@ -31,14 +31,12 @@ export const Persondetaljer = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
-	environments,
+	tpsMessaging,
 }) => {
 	if (!data) {
 		return null
 	}
 	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
-
-	const tpsMessaging = TpsMessagingData(data?.ident, environments)
 
 	const PersondetaljerLes = ({ person }) => {
 		const personNavn = person?.navn?.[0]

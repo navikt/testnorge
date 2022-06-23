@@ -42,8 +42,6 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 	const ident = data ? data.person?.ident : tpsfData?.ident
 	const tpsMessaging = TpsMessagingData(ident, environments)
 
-	//TODO: Prøv å flette tpsfData inn her!!! Gruppe 147 - Tykkmaget Nordmann kan brukes til test
-
 	const harTpsAdresse =
 		tpsfData?.boadresse?.length > 0 ||
 		tpsfData?.postadresse?.length > 0 ||
@@ -58,7 +56,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							data={data?.person}
 							tmpPersoner={tmpPersoner}
 							ident={ident}
-							environments={environments}
+							tpsMessaging={tpsMessaging}
 						/>
 						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPersoner} ident={ident} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />

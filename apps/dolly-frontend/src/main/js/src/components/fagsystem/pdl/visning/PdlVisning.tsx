@@ -70,29 +70,29 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 					tpsMessagingLoading={tpsMessaging?.tpsMessagingLoading}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
+				<Foedsel data={foedsel} erPdlVisning />
+				<Doedsfall data={doedsfall} erPdlVisning />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
+				<Telefonnummer data={telefonnummer} />
+				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
+				<PdlFullmakt data={fullmakt} />
+				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
+				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
 					data={tpsMessaging?.tpsMessagingData}
 					loading={tpsMessaging?.tpsMessagingLoading}
 				/>
-				<Foedsel data={foedsel} erPdlVisning />
-				<Doedsfall data={doedsfall} erPdlVisning />
-				<Telefonnummer data={telefonnummer} />
-				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
-				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<PdlBoadresse data={bostedsadresse} />
 				<PdlDeltBosted data={deltBosted} />
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
-				<PdlFullmakt data={fullmakt} />
-				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 				<PdlRelasjoner data={hentPerson} />
-				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
+				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
+				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 			</div>
 		</ErrorBoundary>
 	)
