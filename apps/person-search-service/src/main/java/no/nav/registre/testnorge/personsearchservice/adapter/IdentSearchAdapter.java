@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class IdentSearchAdapter {
     private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
-    private final RestHighLevelClient client;
+    private final RestHighLevelClient highLevelClient;
 
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
@@ -42,7 +42,7 @@ public class IdentSearchAdapter {
 
     @SneakyThrows
     public List<IdentdataDTO> search(SearchRequest searchRequest) {
-        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        SearchResponse searchResponse = highLevelClient.search(searchRequest, RequestOptions.DEFAULT);
 
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);

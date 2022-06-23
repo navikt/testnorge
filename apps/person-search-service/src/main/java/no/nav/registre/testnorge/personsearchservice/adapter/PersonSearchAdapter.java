@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class PersonSearchAdapter {
 
     private final ObjectMapper objectMapper;
-    private final RestHighLevelClient client;
+    private final RestHighLevelClient highLevelClient;
 
     private <T> List<T> convert(SearchHit[] hits, Class<T> clazz) {
         return Arrays.stream(hits).map(SearchHit::getSourceAsString).map(json -> {
@@ -44,7 +44,7 @@ public class PersonSearchAdapter {
 
     @SneakyThrows
     public PersonList search(SearchRequest searchRequest) {
-        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        SearchResponse searchResponse = highLevelClient.search(searchRequest, RequestOptions.DEFAULT);
 
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);
@@ -59,7 +59,7 @@ public class PersonSearchAdapter {
 
     @SneakyThrows
     public PdlResponse searchWithJsonStringResponse(SearchRequest searchRequest) {
-        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        SearchResponse searchResponse = highLevelClient.search(searchRequest, RequestOptions.DEFAULT);
 
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
         log.info("Fant {} personer i pdl.", totalHits.value);
