@@ -26,13 +26,12 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -47,6 +46,7 @@ public class PensjonforvalterConsumer {
     private static final String MILJOER_HENT_TILGJENGELIGE_URL = API_VERSJON + "/miljo";
     private static final String PENSJON_INNTEKT_URL = API_VERSJON + "/inntekt";
     private static final String PENSJON_TP_FORHOLD_URL = API_VERSJON + "/tp/forhold";
+    private static final String PENSJON_TP_PERSON_FORHOLD_URL = API_VERSJON + "/tp/person/forhold";
     private static final String PENSJON_TP_YTELSE_URL = API_VERSJON + "/tp/ytelse";
     private static final String FNR_QUERY = "fnr";
     private static final String MILJO_QUERY = "miljo";
@@ -203,6 +203,39 @@ public class PensjonforvalterConsumer {
         }
 
         return response.getBody();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
+    public void sletteTpForhold(String pid) {
+
+        ResponseEntity<PensjonforvalterResponse> response = webClient
+                .delete()
+                .uri(uriBuilder -> uriBuilder
+                        .path(PENSJON_TP_PERSON_FORHOLD_URL)
+                        .queryParam("miljoer", "q1,q2,q4")
+                        .build())
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header("pid", pid)
+                .retrieve()
+                .toEntity(PensjonforvalterResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .block();
+
+        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
+            log.info("Sletting mot TP forhold utført");
+        } else {
+            var status = response.getBody().getStatus().stream().map(s -> {
+                var httpStatus = s.getResponse().getHttpStatus();
+                return s.getMiljo() + ":" +
+                        (httpStatus != null ? httpStatus.getReasonPhrase() : "");
+            }).collect(Collectors.joining(", "));
+
+            log.info("Sletting mot TP forhold utført: {}", status);
+        }
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
