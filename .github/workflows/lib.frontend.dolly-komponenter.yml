@@ -19,4 +19,4 @@ jobs:
     with:
       working-directory: 'navikt/dolly-komponenter/'
     secrets:
-      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+      READER_TOKEN: ${{ secrets.DOLLY_READER_TOKEN }}
