@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,8 +25,8 @@ import java.io.Serializable;
 import static no.nav.organisasjonforvalter.jpa.entity.Adresse.AdresseType.FADR;
 import static no.nav.organisasjonforvalter.jpa.entity.Adresse.AdresseType.PADR;
 
-@Data
-@ToString
+@Getter
+@Setter
 @Entity
 @Builder
 @Table(name = "Adresse")
@@ -35,38 +34,28 @@ import static no.nav.organisasjonforvalter.jpa.entity.Adresse.AdresseType.PADR;
 @AllArgsConstructor
 public class Adresse implements Serializable {
 
-    public enum AdresseType {FADR, PADR}
-
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "adresse_seq")
     @SequenceGenerator(name = "adresse_seq", sequenceName = "ADRESSE_SEQ", allocationSize = 1)
     private Long id;
-
     @Getter(AccessLevel.NONE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organisasjon_id", nullable = false)
     private Organisasjon organisasjon;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "adressetype")
     private AdresseType adressetype;
-
     @Column(name = "adresse")
     private String adresse;
-
     @Column(name = "postnr")
     private String postnr;
-
     @Column(name = "poststed")
     private String poststed;
-
     @Column(name = "kommunenr")
     private String kommunenr;
-
     @Column(name = "landkode")
     private String landkode;
-
     @Column(name = "vegadresse_id")
     private String vegadresseId;
 
@@ -79,4 +68,6 @@ public class Adresse implements Serializable {
     public boolean isPostadresse() {
         return PADR == getAdressetype();
     }
+
+    public enum AdresseType {FADR, PADR}
 }
