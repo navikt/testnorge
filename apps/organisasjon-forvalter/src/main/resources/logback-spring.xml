@@ -7,7 +7,6 @@
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxLength>5000</maxLength>
                     <maxDepthPerThrowable>30</maxDepthPerThrowable>
-                    <shortenedClassNameLength>40</shortenedClassNameLength>
                     <exclude>jdk\.internal\.reflect</exclude>
                     <exclude>^sun\.reflect\..*\.invoke</exclude>
                     <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
@@ -16,12 +15,12 @@
                     <exclude>org\.apache\.catalina\..*</exclude>
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.tomcat\..*</exclude>
+                    <exclude>org\.springframework\.web\..*</exclude>
+                    <exclude>sun\.net\.www\..*</exclude>
+                    <exclude>io\.reactivex\.internal\..*</exclude>
                 </throwableConverter>
             </encoder>
         </appender>
-        <root level="INFO">
-            <appender-ref ref="stdout_json"/>
-        </root>
     </springProfile>
 
     <springProfile name="dev">
