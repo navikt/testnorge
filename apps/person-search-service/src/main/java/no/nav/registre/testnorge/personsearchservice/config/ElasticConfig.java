@@ -41,4 +41,5 @@ public class ElasticConfig {
 
         return new RestHighLevelClient(builder);
     }
+
 }
