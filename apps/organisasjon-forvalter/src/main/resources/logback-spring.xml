@@ -23,7 +23,4 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
-        <level value="TRACE"/>
-    </logger>
 </configuration>
