@@ -27,7 +27,7 @@ public class OpprettArbeissoekerCommand  implements Callable<Mono<Map<String, Ny
     public Mono<Map<String, NyeBrukereResponse>> call() {
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/api/v1/generer/bruker/oppfoelging")
+                        builder.path("/api/v1/bruker/oppfoelging")
                                 .build()
                 )
                 .body(BodyInserters.fromPublisher(Mono.just(request), SyntetiserArenaRequest.class))
