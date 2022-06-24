@@ -1,0 +1,32 @@
+azure:
+  app:
+    client:
+      id: ${client_id}
+      secret: ${client_secret}
+
+spring:
+  h2:
+    console:
+      enabled: true
+    path: /h2
+  flyway:
+    enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+    username: sa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  cloud:
+    vault:
+      enabled: false
+
+tps:
+  statisk:
+    avspillergruppeId: 1
+
+VAULT_URL: dummy
+
+server:
+  port: 4390

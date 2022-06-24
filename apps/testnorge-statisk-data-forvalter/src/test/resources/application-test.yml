@@ -1,0 +1,56 @@
+ereg.parallel: true
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console.enabled: true
+  jpa:
+    hibernate.ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: true
+  cloud:
+    vault:
+      token: dummy
+
+testnorge:
+  skd:
+    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-skd/api
+  hodejegeren:
+    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren/api
+  tp:
+    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-tp/api
+  aareg:
+    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-aareg/api
+
+krr.stub.rest.api.url: http://localhost:${wiremock.server.port:0}/krr-stub/api
+
+consumers:
+  person:
+    url: http://localhost:${wiremock.server.port:0}/person
+    cluster: dummy
+    namespace: dummy
+    name: testnav-person-service-test
+    client_id: dummy
+    client_secret: dummy
+    threads: 5
+organsisasjon:
+  api:
+    url: dummy
+    client_id: dummy
+    client_secret: dummy
+
+tps.statisk.avspillergruppeId: 1
+
+ORGANISASJON_API_CLIENT_ID: dummy
+ORGANISASJON_API_SECRET_ID: dummy
+
+AAD_ISSUER_URI: dummy
+controller.staticdata.cache.hours: 24
+azure.app.client.id: dummy
+
+KAFKA_SCHEMA_REGISTRY: http://localhost:9009
+kafka.groupid: organisasjon-forvalter-v1
