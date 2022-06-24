@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.bisys.adapter.exception.PersonSearchException;
 import no.nav.registre.bisys.adapter.model.Response;
 import no.nav.registre.bisys.domain.search.PersonSearch;
 import org.apache.lucene.search.TotalHits;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.nonNull;
+
 
 @Slf4j
 @Component
@@ -41,7 +44,7 @@ public class PersonSearchAdapter {
             try {
                 return objectMapper.readValue(json, clazz);
             } catch (JsonProcessingException e) {
-                throw new RuntimeException("Feil med konvertering fra json: " + json, e);
+                throw new PersonSearchException("Feil med konvertering fra json: " + json, e);
             }
         }).toList();
     }
@@ -71,7 +74,9 @@ public class PersonSearchAdapter {
 
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         TotalHits totalHits = searchResponse.getHits().getTotalHits();
-        log.info("Fant {} personer i pdl.", totalHits.value);
+        if (nonNull(totalHits)){
+            log.info("Fant {} personer i pdl.", totalHits.value);
+        }
 
         return convert(searchResponse.getHits().getHits(), Response.class);
     }

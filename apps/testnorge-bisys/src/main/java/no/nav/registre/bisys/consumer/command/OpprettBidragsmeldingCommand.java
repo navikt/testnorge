@@ -16,6 +16,7 @@ import java.time.Duration;
 public class OpprettBidragsmeldingCommand implements Runnable {
     private final WebClient webClient;
     private final SyntetisertBidragsmelding bidragsmelding;
+    private final String miljoe;
 
     @Override
     public void run() {
