@@ -4,20 +4,7 @@
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-                    <rootCauseFirst>true</rootCauseFirst>
-                    <maxLength>5000</maxLength>
-                    <maxDepthPerThrowable>30</maxDepthPerThrowable>
-                    <exclude>jdk\.internal\.reflect</exclude>
-                    <exclude>^sun\.reflect\..*\.invoke</exclude>
-                    <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
-                    <exclude>java\.lang\.reflect</exclude>
-                    <exclude>java\.util\.concurrent\..*</exclude>
-                    <exclude>org\.apache\.catalina\..*</exclude>
-                    <exclude>org\.apache\.coyote\..*</exclude>
-                    <exclude>org\.apache\.tomcat\..*</exclude>
-                    <exclude>org\.springframework\.web\..*</exclude>
-                    <exclude>sun\.net\.www\..*</exclude>
-                    <exclude>io\.reactivex\.internal\..*</exclude>
+                    <maxDepthPerThrowable>10</maxDepthPerThrowable>
                 </throwableConverter>
             </encoder>
         </appender>
