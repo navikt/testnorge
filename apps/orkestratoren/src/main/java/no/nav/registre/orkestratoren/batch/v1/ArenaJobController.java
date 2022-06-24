@@ -51,7 +51,7 @@ public class ArenaJobController {
     /**
      * Denne metoden registrerer brukere med oppfølging (uten vedtak) i Arena. Metoden kjører hver natt ved midnatt.
      */
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     public void arenaSyntBrukerBatch() {
         arenaService.opprettArbeidssoekereMedOppfoelgingIArena(SyntetiserArenaRequest.builder()
                 .miljoe(miljoe)
@@ -61,9 +61,10 @@ public class ArenaJobController {
     }
 
     /**
+     * PÅ VENT: kan ikke kjøre batch-kjøring før bedre dagpenger vedtak kvalitet.
      * Denne metoden oppretter dagpengesoknad og vedtak i Arena. Metoden kjører hver natt ved midnatt.
      */
-    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(cron = "0 30 0 * * *")
     public void arenaSyntDagpengerBatch() {
         arenaService.opprettDagpengerArena(SyntetiserArenaRequest.builder()
                 .miljoe(miljoe)
