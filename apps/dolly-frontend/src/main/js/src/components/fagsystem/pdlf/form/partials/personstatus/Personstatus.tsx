@@ -12,6 +12,7 @@ export const PersonstatusForm = ({ path }) => {
 				name={`${path}.status`}
 				label="Personstatus"
 				options={Options('personstatus')}
+				isClearable={false}
 			/>
 			<DatepickerWrapper>
 				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Personstatus gyldig f.o.m." />

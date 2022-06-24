@@ -11,10 +11,9 @@ import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import {
-	doedsfall,
-	innflytting,
-	statsborgerskap,
-	utflytting,
+	folkeregisterpersonstatus,
+	kjoenn,
+	navn,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
@@ -172,19 +171,19 @@ export const VisningRedigerbarPersondetaljer = ({
 		return slett()
 	}, [])
 
-	// TODO: FIX
 	const validationSchema = Yup.object().shape(
 		{
-			doedsfall: ifPresent('doedsfall', doedsfall),
-			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
-			innflytting: ifPresent('innflytting', innflytting),
-			utflytting: ifPresent('utflytting', utflytting),
+			folkeregisterpersonstatus: ifPresent(
+				'folkeregisterpersonstatus',
+				Yup.array().of(folkeregisterpersonstatus)
+			),
+			kjoenn: ifPresent('kjoenn', Yup.array().of(kjoenn)),
+			navn: ifPresent('navn', Yup.array().of(navn)),
 		},
 		[
-			['doedsfall', 'doedsfall'],
-			['statsborgerskap', 'statsborgerskap'],
-			['innflytting', 'innflytting'],
-			['utflytting', 'utflytting'],
+			['folkeregisterpersonstatus', 'folkeregisterpersonstatus'],
+			['kjoenn', 'kjoenn'],
+			['navn', 'navn'],
 		]
 	)
 
