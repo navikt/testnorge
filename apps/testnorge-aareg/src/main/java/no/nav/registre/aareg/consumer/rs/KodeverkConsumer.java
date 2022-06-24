@@ -21,10 +21,10 @@ public class KodeverkConsumer {
 
     public KodeverkConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${kodeverk.rest-api.url}") String hodejegerenServerUrl
+            @Value("${consumers.kodeverk.url}") String kodeverkUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
-        this.getYrkeskoderUrl = new UriTemplate(hodejegerenServerUrl + "/v1/kodeverk/Yrker/koder");
+        this.getYrkeskoderUrl = new UriTemplate(kodeverkUrl + "/api/v1/kodeverk/Yrker/koder");
     }
 
     public KodeverkResponse getYrkeskoder() {

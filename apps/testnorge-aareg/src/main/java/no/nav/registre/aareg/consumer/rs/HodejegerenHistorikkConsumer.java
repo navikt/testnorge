@@ -25,7 +25,7 @@ public class HodejegerenHistorikkConsumer {
 
     public HodejegerenHistorikkConsumer(
             RestTemplateBuilder restTemplateBuilder,
-            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl
+            @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenServerUrl
     ) {
         this.restTemplate = restTemplateBuilder.build();
         this.hodejegerenSaveHistorikk = new UriTemplate(hodejegerenServerUrl + "/v1/historikk/");
