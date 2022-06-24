@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
@@ -8,6 +11,9 @@
                 </throwableConverter>
             </encoder>
         </appender>
+        <root level="INFO">
+            <appender-ref ref="stdout_json"/>
+        </root>
     </springProfile>
 
     <springProfile name="dev">
