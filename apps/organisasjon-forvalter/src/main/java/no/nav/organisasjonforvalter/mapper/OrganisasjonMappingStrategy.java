@@ -94,7 +94,6 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         target.setUnderenheter(mapperFacade.mapAsList(source.getUnderenheter(), no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class));
                     }
                 })
-                .exclude("underenheter")
                 .byDefault()
                 .register();
 
@@ -119,7 +118,6 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                         return adresse;
                     }
                 })
-                .exclude("underenheter")
                 .byDefault()
                 .register();
     }

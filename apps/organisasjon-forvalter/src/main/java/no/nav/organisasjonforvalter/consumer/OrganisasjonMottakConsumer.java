@@ -1,6 +1,5 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -23,9 +22,10 @@ public class OrganisasjonMottakConsumer {
 
     public void opprettOrganisasjon(String key, Organisasjon organisasjon, String miljoe) {
 
-        log.info("Sender opprettOrganisasjon med UUID {} for {} til Kafka, env {}, org: {}", key, organisasjon.getOrganisasjonsnummer(), miljoe, Json.pretty(organisasjon));
+        log.info("Sender opprettOrganisasjon med UUID {} for {} til Kafka, env {}", key, organisasjon.getOrganisasjonsnummer(), miljoe);
+        var org = mapperFacade.map(organisasjon, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class);
         opprettelsesdokumentProducer.send(key, Opprettelsesdokument.newBuilder()
-                .setOrganisasjon(mapperFacade.map(organisasjon, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class))
+                .setOrganisasjon(org)
                 .setMetadata(getMetadata(miljoe))
                 .build());
     }
