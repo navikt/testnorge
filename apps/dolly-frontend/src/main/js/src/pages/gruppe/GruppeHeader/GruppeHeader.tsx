@@ -76,7 +76,7 @@ const GruppeHeader = ({
 					</Hjelpetekst>
 				)}
 				<div className="flexbox--grow-2"></div>
-				<FinnPersonBestillingConnector />
+				{/*<FinnPersonBestillingConnector />*/}
 			</div>
 			<Header className={headerClass} icon={iconType}>
 				<div className="flexbox">

@@ -96,7 +96,7 @@ export default function Gruppe({
 				brukerProfil={brukerProfil}
 			/>
 
-			<div className="toolbar">
+			<div className="toolbar" style={{ display: 'flex', alignItems: 'center' }}>
 				<div>
 					{brukertype === 'AZURE' && (
 						<NavButton
@@ -111,7 +111,7 @@ export default function Gruppe({
 					)}
 
 					<NavButton
-						type="hoved"
+						type="standard"
 						onClick={() => navigate(`/testnorge`)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
@@ -121,29 +121,33 @@ export default function Gruppe({
 					</NavButton>
 				</div>
 
-				<div style={{ marginTop: '9px' }}>
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp
-							value={VisningType.VISNING_PERSONER}
-							checked={visning === VisningType.VISNING_PERSONER}
-						>
-							<Icon
-								size={13}
-								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
-							/>
-							{`Personer (${gruppe.antallIdenter - antallFjernet})`}
-						</ToggleKnapp>
-						<ToggleKnapp
-							value={VisningType.VISNING_BESTILLING}
-							checked={visning === VisningType.VISNING_BESTILLING}
-						>
-							<Icon
-								size={13}
-								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
-							/>
-							{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
-						</ToggleKnapp>
-					</ToggleGruppe>
+				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+					<FinnPersonBestillingConnector />
+
+					<div style={{ marginTop: '8px' }}>
+						<ToggleGruppe onChange={byttVisning} name="toggler">
+							<ToggleKnapp
+								value={VisningType.VISNING_PERSONER}
+								checked={visning === VisningType.VISNING_PERSONER}
+							>
+								<Icon
+									size={13}
+									kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
+								/>
+								{`Personer (${gruppe.antallIdenter - antallFjernet})`}
+							</ToggleKnapp>
+							<ToggleKnapp
+								value={VisningType.VISNING_BESTILLING}
+								checked={visning === VisningType.VISNING_BESTILLING}
+							>
+								<Icon
+									size={13}
+									kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+								/>
+								{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
+							</ToggleKnapp>
+						</ToggleGruppe>
+					</div>
 				</div>
 
 				{/*<FinnPersonBestillingConnector />*/}
