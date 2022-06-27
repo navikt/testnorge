@@ -96,15 +96,15 @@ export default function Gruppe({
 				brukerProfil={brukerProfil}
 			/>
 
-			<div className="toolbar" style={{ display: 'flex', alignItems: 'center' }}>
-				<div>
+			<div className="toolbar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '0' }}>
+				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
 					{brukertype === 'AZURE' && (
 						<NavButton
 							type="hoved"
 							onClick={visStartBestilling}
 							disabled={erLaast}
 							title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-							style={{ marginTop: '4px', marginRight: '10px' }}
+							style={{ marginTop: '5px', marginBottom: '5px', marginRight: '10px' }}
 						>
 							Opprett personer
 						</NavButton>
@@ -115,16 +115,16 @@ export default function Gruppe({
 						onClick={() => navigate(`/testnorge`)}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '4px' }}
+						style={{ marginTop: '5px', marginBottom: '5px', }}
 					>
 						Importer personer
 					</NavButton>
-				</div>
 
-				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+					<div style={{ flexGrow: '2' }}></div>
+
 					<FinnPersonBestillingConnector />
-
-					<div style={{ marginTop: '8px' }}>
+				</div>
+				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px', marginBottom: '10px' }}>
 						<ToggleGruppe onChange={byttVisning} name="toggler">
 							<ToggleKnapp
 								value={VisningType.VISNING_PERSONER}
@@ -147,10 +147,7 @@ export default function Gruppe({
 								{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
 							</ToggleKnapp>
 						</ToggleGruppe>
-					</div>
 				</div>
-
-				{/*<FinnPersonBestillingConnector />*/}
 			</div>
 
 			{startBestillingAktiv && (
