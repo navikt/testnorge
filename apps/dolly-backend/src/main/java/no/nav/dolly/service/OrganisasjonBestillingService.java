@@ -34,6 +34,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
@@ -168,24 +169,6 @@ public class OrganisasjonBestillingService {
                         .build());
     }
 
-    private List<OrgStatus> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
-
-        var feil = orgStatus.stream()
-                .filter(o -> FAILED.equals(o.getStatus()))
-                .map(o -> o.getEnvironment() + ":" + o.getDetails())
-                .collect(Collectors.joining(","));
-
-        bestilling.setFeil(feil);
-
-        var ferdig = orgStatus.stream()
-                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
-
-        bestilling.setFerdig(ferdig);
-        bestilling.setSistOppdatert(now());
-
-        return orgStatus;
-    }
-
     @Transactional
     public void setBestillingFeil(Long bestillingId, String feil) {
 
@@ -223,16 +206,33 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
+    private List<OrgStatus> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
+
+        var feil = orgStatus.stream()
+                .filter(o -> FAILED.equals(o.getStatus()))
+                .map(o -> o.getEnvironment() + ":" + o.getDetails())
+                .collect(Collectors.joining(","));
+
+        bestilling.setFeil(feil);
+
+        var ferdig = orgStatus.stream()
+                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
+
+        bestilling.setFerdig(ferdig);
+        bestilling.setSistOppdatert(now());
+
+        return orgStatus;
+    }
+
     private String forvalterStatusDetails(OrgStatus orgStatus) {
-        switch (orgStatus.getStatus()) {
-            case COMPLETED:
-                return "OK";
-            case ERROR:
-            case FAILED:
-                return "Feil-" + orgStatus.getDetails();
-            default:
-                return orgStatus.getStatus().name();
+        if (isNull(orgStatus)) {
+            return "Not found";
         }
+        return switch (orgStatus.getStatus()) {
+            case COMPLETED -> "OK";
+            case ERROR, FAILED -> "Feil-" + orgStatus.getDetails();
+            default -> orgStatus.getStatus().name();
+        };
     }
 
     private List<OrgStatus> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
