@@ -10,7 +10,6 @@ import {
 	initialPersonstatus,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarPersondetaljerConnector'
-import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 
 const getCurrentPersonstatus = (data) => {

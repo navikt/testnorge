@@ -102,6 +102,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
+		let harFeil = false
 		const submit = async () => {
 			setVisningModus(Modus.LoadingPdlf)
 			const editFn = async () => {
@@ -115,6 +116,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						await PdlforvalterApi.putAttributt(ident, attr, itemData?.id || 0, itemData).catch(
 							(error) => {
 								pdlfError(error)
+								harFeil = true
 							}
 						)
 					}
@@ -122,14 +124,16 @@ export const VisningRedigerbarPersondetaljer = ({
 			}
 			return editFn()
 				.then(() => {
-					setVisningModus(Modus.LoadingPdl)
-					DollyApi.sendOrdre(ident).then(() => {
-						getPdlForvalter().then(() => {
-							if (mountedRef.current) {
-								setVisningModus(Modus.Les)
-							}
+					if (!harFeil) {
+						setVisningModus(Modus.LoadingPdl)
+						DollyApi.sendOrdre(ident).then(() => {
+							getPdlForvalter().then(() => {
+								if (mountedRef.current) {
+									setVisningModus(Modus.Les)
+								}
+							})
 						})
-					})
+					}
 				})
 				.catch((error) => {
 					pdlError(error)
