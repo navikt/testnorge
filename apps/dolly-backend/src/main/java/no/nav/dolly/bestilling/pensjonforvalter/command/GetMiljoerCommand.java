@@ -40,7 +40,8 @@ public class GetMiljoerCommand implements Callable<Mono<Set<String>>> {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Set<String>>() {})
+                .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
+                })
                 .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
