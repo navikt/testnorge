@@ -27,6 +27,7 @@ type VisningTypes = {
 	redigertAttributt?: any
 	path: string
 	ident: string
+	tpsMessagingData?: any
 }
 
 enum Modus {

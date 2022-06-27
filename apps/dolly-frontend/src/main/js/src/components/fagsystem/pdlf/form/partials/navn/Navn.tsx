@@ -6,8 +6,14 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
+import { FormikProps } from 'formik'
 
-export const NavnForm = ({ formikBag, path }) => {
+type NavnTypes = {
+	formikBag: FormikProps<{}>
+	path?: string
+}
+
+export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	if (!_get(formikBag?.values, path)) return null
 
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
@@ -47,7 +53,7 @@ export const NavnForm = ({ formikBag, path }) => {
 	)
 }
 
-export const Navn = ({ formikBag }) => {
+export const Navn = ({ formikBag }: NavnTypes) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -56,7 +62,7 @@ export const Navn = ({ formikBag }) => {
 				newEntry={initialNavn}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <NavnForm formikBag={formikBag} path={path} />}
+				{(path: string) => <NavnForm formikBag={formikBag} path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

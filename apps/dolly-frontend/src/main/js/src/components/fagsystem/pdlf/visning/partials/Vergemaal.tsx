@@ -58,6 +58,7 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 
 export const VergemaalVisning = ({ data, relasjoner }: VergemaalData) => {
 	if (!data || data.length < 1) return null
+
 	return (
 		<div>
 			<SubOverskrift label="Vergemål" iconKind="vergemaal" />

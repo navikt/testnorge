@@ -11,10 +11,23 @@ import {
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarPersondetaljerConnector'
 import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
+import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 
-const getCurrentPersonstatus = (data) => {
+type PersondetaljerTypes = {
+	data: any
+	tmpPersoner: any
+	ident: string
+	erPdlVisning: boolean
+	tpsMessaging: any
+}
+
+type PersonTypes = {
+	person: PersonData
+}
+
+const getCurrentPersonstatus = (data: any) => {
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
-		const statuser = data.folkeregisterpersonstatus.filter((status) => {
+		const statuser = data.folkeregisterpersonstatus.filter((status: any) => {
 			return !status?.metadata?.historisk
 		})
 		return statuser.length > 0 ? statuser[0] : null
@@ -31,13 +44,13 @@ export const Persondetaljer = ({
 	ident,
 	erPdlVisning = false,
 	tpsMessaging,
-}) => {
+}: PersondetaljerTypes) => {
 	if (!data) {
 		return null
 	}
 	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
 
-	const PersondetaljerLes = ({ person }) => {
+	const PersondetaljerLes = ({ person }: PersonTypes) => {
 		const personNavn = person?.navn?.[0]
 		const personKjoenn = person?.kjoenn?.[0]
 		const personstatus = getCurrentPersonstatus(redigertPerson || person)
@@ -61,7 +74,7 @@ export const Persondetaljer = ({
 		)
 	}
 
-	const PersondetaljerVisning = ({ person }) => {
+	const PersondetaljerVisning = ({ person }: PersonTypes) => {
 		const initPerson = {
 			navn: [data?.navn?.[0] || initialNavn],
 			kjoenn: [data?.kjoenn?.[0] || initialKjoenn],

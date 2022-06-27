@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TpsMessagingApi } from '~/service/Api'
 
-export const TpsMessagingData = (ident, environments, loading = false) => {
+export const TpsMessagingData = (ident: string, environments: Array<string>, loading = false) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
 	const mountedRef = useRef(true)

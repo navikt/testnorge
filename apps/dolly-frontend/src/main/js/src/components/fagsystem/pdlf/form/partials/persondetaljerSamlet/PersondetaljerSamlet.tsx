@@ -4,8 +4,19 @@ import { KjoennForm } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjo
 import { PersonstatusForm } from '~/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import Hjelpetekst from '~/components/hjelpetekst'
+import { FormikProps } from 'formik'
 
-export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }) => {
+type PersondetaljerSamletTypes = {
+	formikBag: FormikProps<{}>
+	tpsMessaging?: {
+		tpsMessagingData: {
+			sprakKode: string
+			egenAnsattDatoFom: string
+		}
+	}
+}
+
+export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
 	const skjerming = tpsMessaging?.tpsMessagingData?.egenAnsattDatoFom
 

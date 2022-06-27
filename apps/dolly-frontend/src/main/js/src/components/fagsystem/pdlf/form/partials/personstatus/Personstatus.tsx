@@ -5,7 +5,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 
-export const PersonstatusForm = ({ path }) => {
+type PersonstatusTypes = {
+	path: string
+}
+
+export const PersonstatusForm = ({ path }: PersonstatusTypes) => {
 	return (
 		<>
 			<FormikSelect

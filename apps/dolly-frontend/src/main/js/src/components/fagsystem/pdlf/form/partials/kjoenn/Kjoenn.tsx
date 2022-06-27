@@ -5,7 +5,11 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
-export const KjoennForm = ({ path }) => {
+type KjoennTypes = {
+	path: string
+}
+
+export const KjoennForm = ({ path }: KjoennTypes) => {
 	return (
 		<>
 			<FormikSelect
@@ -29,7 +33,7 @@ export const Kjoenn = () => {
 				newEntry={initialKjoenn}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <KjoennForm path={path} />}
+				{(path: string) => <KjoennForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)
