@@ -29,7 +29,7 @@ public class UtenlandskAdresseUtil {
         if (request.getAdresselinjer().stream().anyMatch(Strings::isNotBlank)) {
             return;
         }
-
+        
         request.setAdresselinjer(List.of(ADRESSE_NAVN_NUMMER, ADRESSE_BY_STED));
     }
 }
