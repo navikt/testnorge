@@ -16,15 +16,11 @@ spring:
       token: dummy
 
 consumers:
-  identpool:
-    url: http://localhost:${wiremock.server.port:0}/ident-pool
   person:
     url: http://localhost:${wiremock.server.port:0}/person
     cluster: dummy
     namespace: dummy
     name: testnav-person-service-test
-    client_id: dummy
-    client_secret: dummy
     threads: 5
   generer-navn-service:
     url: http://localhost:${wiremock.server.port:0}/generer-navn
@@ -59,9 +55,6 @@ consumers:
     url: http://localhost:${wiremock.server.port:0}/krr-stub/api
 
 tps.statisk.avspillergruppeId: 1
-
-ORGANISASJON_API_CLIENT_ID: dummy
-ORGANISASJON_API_SECRET_ID: dummy
 
 AAD_ISSUER_URI: dummy
 controller.staticdata.cache.hours: 24

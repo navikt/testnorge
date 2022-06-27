@@ -22,6 +22,8 @@ spring:
     vault:
       enabled: false
 
+ereg.api: dummy
+
 tps:
   statisk:
     avspillergruppeId: 1

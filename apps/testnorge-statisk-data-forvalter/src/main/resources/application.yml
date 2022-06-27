@@ -22,11 +22,7 @@ kafka:
   groupid: organisasjon-forvalter-v1
 
 consumers:
-  identpool:
-    url: https://ident-pool.dev.adeo.no
   person:
-    client_id: ${PERSON_API_CLIENT_ID}
-    client_secret: ${PERSON_API_CLIENT_SECRET}
     url: https://testnav-person-service.dev.adeo.no
     threads: 5
     cluster: dev-gcp
