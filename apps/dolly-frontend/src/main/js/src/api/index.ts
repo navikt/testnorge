@@ -5,7 +5,7 @@ const originalFetch = require('isomorphic-fetch')
 const fetch = require('fetch-retry')(originalFetch)
 
 export const fetcher = (...args: Argument[]) =>
-	fetch(...args).then((res: Response) => {
+	originalFetch(...args).then((res: Response) => {
 		if (!res.ok) {
 			throw new Error('An error occurred while fetching the data.')
 		}
