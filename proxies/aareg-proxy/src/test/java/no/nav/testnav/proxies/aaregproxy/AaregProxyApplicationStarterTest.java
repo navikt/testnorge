@@ -67,7 +67,37 @@ class AaregProxyApplicationStarterTest {
         final var BODY = "I have been correctly routed from " + FROM_ACTUAL_URI + " to " + TO_EXPECTED_URI + " with header miljoe=" + env;
 
         stubFor(
-            get(urlEqualTo("/aareg-services/api/v1/arbeidsforhold/" + ID))
+            get(urlEqualTo(TO_EXPECTED_URI))
+                .withHeader("miljoe", equalTo(env))
+                .willReturn(aResponse()
+                    .withBody(BODY))
+        );
+
+        client
+            .get().uri(FROM_ACTUAL_URI)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo(BODY);
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings =
+        {
+            "q0", "q1", "q2", "q4", "q5", "qx",
+            "t0", "t1", "t2", "t3", "t4", "t5", "t6", "t13"
+        }
+
+    )
+    void getOnUrlWithPathParamShouldBeRoutedToNewURLWithHeader(String env) {
+
+        final var ID = RANDOM.nextInt(10000, 99999);
+        final var FROM_ACTUAL_URI = "/api/v1/arbeidsforhold/" + ID + "/miljoe/" + env;
+        final var TO_EXPECTED_URI = "/aareg-services/api/v1/arbeidsforhold/" + ID;
+        final var BODY = "I have been correctly routed from " + FROM_ACTUAL_URI + " to " + TO_EXPECTED_URI + " with header miljoe=" + env;
+
+        stubFor(
+            get(urlEqualTo(TO_EXPECTED_URI))
                 .withHeader("miljoe", equalTo(env))
                 .willReturn(aResponse()
                     .withBody(BODY))
