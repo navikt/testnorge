@@ -28,7 +28,7 @@ public class AaregConsumer {
 
     public AaregConsumer(
             RestTemplate restTemplate,
-            @Value("${testnorge.aareg.rest.api.url}") String aaregServerUrl
+            @Value("${consumers.testnorge-aareg.url}") String aaregServerUrl
     ) {
         this.restTemplate = restTemplate;
         this.sendArbeidsforholdTilAaregUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/sendTilAareg?fyllUtArbeidsforhold=true");

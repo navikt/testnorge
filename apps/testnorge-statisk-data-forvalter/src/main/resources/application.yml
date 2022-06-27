@@ -53,7 +53,16 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dev-gcp
     namespace: dolly
-
+  testnorge-skd:
+    url: https://testnorge-skd.dev.intern.nav.no/api
+  testnorge-hodejegeren:
+    url: https://testnorge-hodejegeren.dev.intern.nav.no/api
+  testnorge-tp:
+    url: https://testnorge-tp.dev.intern.nav.no/api
+  testnorge-aareg:
+    url: https://testnorge-aareg.dev.intern.nav.no/api
+  krr-stub:
+    url: https://krr-stub-%s.dev.intern.nav.no/api
 
 management:
   endpoints:

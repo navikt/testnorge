@@ -36,7 +36,7 @@ import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 public class StaticDataControllerV1TpsIntegrationTest {
     @Autowired

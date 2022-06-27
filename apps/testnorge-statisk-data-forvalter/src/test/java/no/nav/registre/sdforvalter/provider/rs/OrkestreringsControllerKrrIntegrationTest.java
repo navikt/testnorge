@@ -32,7 +32,7 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @AutoConfigureMockMvc
 @DirtiesContext
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 @Disabled
 public class OrkestreringsControllerKrrIntegrationTest {

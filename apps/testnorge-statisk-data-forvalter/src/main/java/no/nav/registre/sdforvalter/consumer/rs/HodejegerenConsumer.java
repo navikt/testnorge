@@ -23,7 +23,7 @@ public class HodejegerenConsumer {
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
-    public HodejegerenConsumer(RestTemplate restTemplate, @Value("${testnorge.hodejegeren.rest.api.url}") String hodejegerenUrl) {
+    public HodejegerenConsumer(RestTemplate restTemplate, @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenUrl) {
         this.restTemplate = restTemplate;
         this.hodejegerenUrl = hodejegerenUrl + "/v1";
     }
