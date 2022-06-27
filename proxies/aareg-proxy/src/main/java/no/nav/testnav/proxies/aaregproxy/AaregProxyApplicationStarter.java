@@ -59,7 +59,7 @@ public class AaregProxyApplicationStarter {
 
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
-        Stream.of("q0", "q1", "q2", "q4", "q5", "qx")
+        Stream.of("q1", "q2", "q4", "q5", "qx")
             .forEach(env -> routes
                 .route(createRoute(env, preprodFilter))
                 .route(env, createQueryBasedRoute(env, preprodFilter))
@@ -67,7 +67,7 @@ public class AaregProxyApplicationStarter {
 
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
-        Stream.of("t0", "t1", "t2", "t3", "t4", "t5", "t6", "t13")
+        Stream.of("t0", "t1", "t2", "t3", "t4", "t5", "t13")
             .forEach(env -> routes
                 .route(createRoute(env, testFilter))
                 .route(env, createQueryBasedRoute(env, testFilter))
