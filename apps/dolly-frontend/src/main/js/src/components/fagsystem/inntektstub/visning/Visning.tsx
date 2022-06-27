@@ -87,7 +87,8 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 		<div>
 			<SubOverskrift label="A-ordningen (Inntektstub)" iconKind="inntektstub" />
 			<ErrorBoundary>
-				{numInntekter > 3 ? (
+				{numInntekter > 5 ? (
+					// @ts-ignore
 					<Panel heading={`Inntektsinsinformasjon (${inntektsperiode})`}>
 						<InntektsinformasjonVisning sortedData={sortedData} numInntekter={numInntekter} />
 					</Panel>
