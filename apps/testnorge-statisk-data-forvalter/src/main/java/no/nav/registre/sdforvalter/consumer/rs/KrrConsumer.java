@@ -33,7 +33,7 @@ public class KrrConsumer {
     private final RestTemplate restTemplate;
     private final URI krrUrl;
 
-    public KrrConsumer(RestTemplate restTemplate, @Value("${krr.stub.rest.api.url}") String krrUrl) {
+    public KrrConsumer(RestTemplate restTemplate, @Value("${consumers.krr-stub.url}") String krrUrl) {
         this.restTemplate = restTemplate;
         this.krrUrl = new UriTemplate(krrUrl + "/v1/kontaktinformasjon").expand();
     }

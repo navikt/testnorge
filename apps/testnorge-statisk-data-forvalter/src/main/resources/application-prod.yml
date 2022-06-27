@@ -19,17 +19,6 @@ app:
       role: testnorge-statisk-data-admin
       backend: postgresql/preprod-fss/creds
 
-testnorge:
-  skd:
-    rest.api.url: ${TESTNORGE_SKD}
-  hodejegeren:
-    rest.api.url: ${TESTNORGE_HODEJEGEREN}
-  tp:
-    rest.api.url: ${TESTNORGE_TP}
-  aareg:
-    rest.api.url: ${TESTNORGE_AAREG}
-
-krr.stub.rest.api.url: ${KRR_STUB_API}
 tps.statisk.avspillergruppeId: ${FAST_AVSPILLER_GRUPPE}
 dkif.forvalter.rest.api.url: ${DKIF_FORVALTER}
 ereg.api: https://modapp-{miljo}.adeo.no/ereg/api/v1/

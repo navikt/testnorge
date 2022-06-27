@@ -37,7 +37,7 @@ import no.nav.registre.sdforvalter.domain.TpsIdent;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 public class FileControllerIntegrationTest {
 

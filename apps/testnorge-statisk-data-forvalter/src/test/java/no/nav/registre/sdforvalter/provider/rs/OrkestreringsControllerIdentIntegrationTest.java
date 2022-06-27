@@ -35,7 +35,7 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 @Disabled
 public class OrkestreringsControllerIdentIntegrationTest {

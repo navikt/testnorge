@@ -1,4 +1,3 @@
-ereg.parallel: true
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
@@ -16,19 +15,9 @@ spring:
     vault:
       token: dummy
 
-testnorge:
-  skd:
-    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-skd/api
-  hodejegeren:
-    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren/api
-  tp:
-    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-tp/api
-  aareg:
-    rest.api.url: http://localhost:${wiremock.server.port:0}/testnorge-aareg/api
-
-krr.stub.rest.api.url: http://localhost:${wiremock.server.port:0}/krr-stub/api
-
 consumers:
+  identpool:
+    url: http://localhost:${wiremock.server.port:0}/ident-pool
   person:
     url: http://localhost:${wiremock.server.port:0}/person
     cluster: dummy
@@ -37,11 +26,37 @@ consumers:
     client_id: dummy
     client_secret: dummy
     threads: 5
-organsisasjon:
-  api:
-    url: dummy
-    client_id: dummy
-    client_secret: dummy
+  generer-navn-service:
+    url: http://localhost:${wiremock.server.port:0}/generer-navn
+    cluster: dummy
+    namespace: dolly
+    name: generer-navn-service
+  testnav-organisasjon-service:
+    url: http://localhost:${wiremock.server.port:0}/org-service
+    name: testnav-organisasjon-service
+    cluster: dummy
+    namespace: dolly
+    threads: 3
+  testnav-organisasjon-faste-data-service:
+    url: http://localhost:${wiremock.server.port:0}/org-faste-data
+    name: testnav-organisasjon-faste-data-service
+    cluster: dummy
+    namespace: dolly
+  testnav-person-faste-data-service:
+    url: http://localhost:${wiremock.server.port:0}/person-faste-data
+    name: testnav-person-faste-data-service
+    cluster: dummy
+    namespace: dolly
+  testnorge-skd:
+    url: http://localhost:${wiremock.server.port:0}/testnorge-skd/api
+  testnorge-hodejegeren:
+    url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren/api
+  testnorge-tp:
+    url: http://localhost:${wiremock.server.port:0}/testnorge-tp/api
+  testnorge-aareg:
+    url: http://localhost:${wiremock.server.port:0}/testnorge-aareg/api
+  krr-stub:
+    url: http://localhost:${wiremock.server.port:0}/krr-stub/api
 
 tps.statisk.avspillergruppeId: 1
 

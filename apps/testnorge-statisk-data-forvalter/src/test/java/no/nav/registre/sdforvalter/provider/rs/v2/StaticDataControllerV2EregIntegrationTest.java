@@ -39,7 +39,7 @@ import no.nav.registre.sdforvalter.domain.Opprinnelse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc()
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 @Disabled
 public class StaticDataControllerV2EregIntegrationTest {
