@@ -144,6 +144,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	}, [])
 
 	const handleDelete = useCallback((slettAttr) => {
+		let harFeil = false
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
 			const deleteFn = async () => {
@@ -152,20 +153,23 @@ export const VisningRedigerbarPersondetaljer = ({
 						const id = _get(initialValues, `${attr}[0].id`)
 						await PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
 							pdlfError(error)
+							harFeil = true
 						})
 					}
 				}
 			}
 			return deleteFn()
 				.then(() => {
-					setVisningModus(Modus.LoadingPdl)
-					DollyApi.sendOrdre(ident).then(() => {
-						getPdlForvalter().then(() => {
-							if (mountedRef.current) {
-								setVisningModus(Modus.Les)
-							}
+					if (!harFeil) {
+						setVisningModus(Modus.LoadingPdl)
+						DollyApi.sendOrdre(ident).then(() => {
+							getPdlForvalter().then(() => {
+								if (mountedRef.current) {
+									setVisningModus(Modus.Les)
+								}
+							})
 						})
-					})
+					}
 				})
 				.catch((error) => {
 					pdlError(error)
