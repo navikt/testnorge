@@ -43,7 +43,7 @@ const getInntektsperiode = (fastlandsData, svalbardsData) => {
 	const svalbard = svalbardsData?.map((s) => s.inntektsaar)
 	const foersteAar = Math.min(...fastland.concat(...svalbard))
 	const sisteAar = Math.max(...fastland.concat(...svalbard))
-	return foersteAar === sisteAar ? foersteAar : `${foersteAar} - ${sisteAar}`
+	return foersteAar === sisteAar ? `${foersteAar}` : `${foersteAar} - ${sisteAar}`
 }
 
 export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
