@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.personsearchservice.consumer.ElasticSearchConsumer;
 import no.nav.registre.testnorge.personsearchservice.domain.Person;
-import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
 import no.nav.registre.testnorge.personsearchservice.service.utils.QueryBuilder;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.action.search.SearchRequest;
@@ -27,7 +26,6 @@ public class PersonSearchService {
 
         var searchRequest = createSearchRequest(search);
         return elasticSearchConsumer.search(searchRequest)
-                .map(SearchResponse.SearchHit::get_source)
                 .map(Person::new);
     }
 

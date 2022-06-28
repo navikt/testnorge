@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.registre.testnorge.personsearchservice.consumer.ElasticSearchConsumer;
 import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
-import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
 import no.nav.registre.testnorge.personsearchservice.service.utils.QueryBuilder;
 import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,6 @@ public class IdentService {
 
         var searchRequest = createSearchRequest(getSearchCriteria(query));
         return identSearchConsumer.search(searchRequest)
-                .map(SearchResponse.SearchHit::get_source)
                 .map(response -> mapperFacade.map(response, IdentdataDTO.class));
     }
 

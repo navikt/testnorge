@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.personsearchservice.config.credentials.PdlProxyProperties;
 import no.nav.registre.testnorge.personsearchservice.consumer.command.ElasticSearchCommand;
+import no.nav.registre.testnorge.personsearchservice.model.Response;
 import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.elasticsearch.action.search.SearchRequest;
@@ -38,13 +39,14 @@ public class ElasticSearchConsumer {
     }
 
     @SneakyThrows
-    public Flux<SearchResponse.SearchHit> search(SearchRequest searchRequest) {
+    public Flux<Response> search(SearchRequest searchRequest) {
 
         return tokenExchange.exchange(pdlProxyProperties)
                 .flatMapMany(token ->
                         new ElasticSearchCommand(webClient, searchRequest.indices()[0], token.getTokenValue(), searchRequest.source().toString()).call())
                 .map(SearchResponse::getHits)
                 .map(SearchResponse.SearchHits::getHits)
-                .flatMap(Flux::fromIterable);
+                .flatMap(Flux::fromIterable)
+                .map(SearchResponse.SearchHit::get_source);
     }
 }
