@@ -39,6 +39,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
+import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.NOT_FOUND;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -225,7 +226,7 @@ public class OrganisasjonBestillingService {
 
     private String forvalterStatusDetails(OrgStatus orgStatus) {
         if (isNull(orgStatus) || isNull(orgStatus.getStatus())) {
-            return "Not found";
+            return NOT_FOUND.name();
         }
         return switch (orgStatus.getStatus()) {
             case COMPLETED -> "OK";
