@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.model;
+package no.nav.registre.testnorge.personsearchservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class FoedselModel implements WithMetadata {
-    LocalDate foedselsdato;
-    Metadata metadata;
+public class FolkeregisterMetadata {
+    LocalDate gyldighetstidspunkt;
 }

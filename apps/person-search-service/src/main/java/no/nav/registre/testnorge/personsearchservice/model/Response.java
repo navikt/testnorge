@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.personsearchservice.adapter.model;
+package no.nav.registre.testnorge.personsearchservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,6 +9,8 @@ import java.util.List;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class HentIdenterModel {
-    List<IdenterModel> identer;
+public class Response {
+    HentPersonModel hentPerson;
+    HentIdenterModel hentIdenter;
+    List<String> tags;
 }

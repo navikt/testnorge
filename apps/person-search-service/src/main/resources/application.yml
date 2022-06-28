@@ -1,13 +1,14 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
-  autoconfigure:
-    exclude: org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchReactiveHealthContributorAutoConfiguration,
-      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration,
-      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration
   application:
     name: person-search-service
     description: Tjeneste for å søke etter personer.
+  autoconfigure:
+    exclude:
+      org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchReactiveHealthContributorAutoConfiguration,
+      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration,
+      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration
   security:
     oauth2:
       resourceserver:
@@ -29,6 +30,9 @@ consumers:
     cluster: dev-fss
 
 management:
+  health:
+    elasticsearch:
+      enabled: false
   endpoints:
     enabled-by-default: true
     web:
