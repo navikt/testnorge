@@ -3,7 +3,6 @@ package no.nav.registre.orkestratoren.provider.rs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
@@ -11,15 +10,12 @@ import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
 import no.nav.registre.orkestratoren.service.TestnorgeSamService;
 import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,7 +41,6 @@ public class SyntetiseringsController {
     private final TestnorgeInstService testnorgeInstService;
     private final TestnorgeTpService testnorgeTpService;
     private final TestnorgeSamService testnorgeSamService;
-    private final ArenaService arenaService;
     private final TestnorgeMedlService testnorgeMedlService;
 
     @PostMapping(value = "/inntekt/generer")
@@ -91,20 +86,6 @@ public class SyntetiseringsController {
             @RequestBody SyntetiserSamRequest syntetiserSamRequest
     ) {
         return testnorgeSamService.genererSamordningsmeldinger(syntetiserSamRequest);
-    }
-
-    @PostMapping(value = "/arena/arbeidsoeker/generer/oppfoelging")
-    public Map<String, NyeBrukereResponse> opprettArbeidssoekereMedOppfoelgingIArena(
-            @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
-    ) {
-        return arenaService.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
-    }
-
-    @PostMapping(value = "/arena/vedtakshistorikk/generer")
-    public Map<String, List<NyttVedtakResponse>> opprettVedtakshistorikkIArena(
-            @RequestBody SyntetiserArenaRequest vedtakshistorikkRequest
-    ) {
-        return arenaService.opprettArenaVedtakshistorikk(vedtakshistorikkRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")
