@@ -11,7 +11,9 @@ export type EnhetBestilling = {
 	forretningsadresse?: Adresse
 	postadresse?: Adresse
 	underenheter?: Array<EnhetBestilling>
-	id?: number | string
+	id?: number
+	ferdig: boolean
+	feil: string
 	organisasjonsnavn?: string
 	organisasjonNummer?: string
 	status?: Array<Statuser>

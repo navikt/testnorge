@@ -7,11 +7,14 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -29,7 +32,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
 
     private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
-    private final BostedAdresseService bostedAdresseService;
+    private final KontaktAdresseService kontaktAdresseService;
 
     public List<UtflyttingDTO> convert(PersonDTO person) {
 
@@ -58,20 +61,36 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
             utflytting.setTilflyttingsland(geografiskeKodeverkConsumer.getTilfeldigLand());
         }
 
-        if (isNull(person.getBostedsadresse().stream()
+        if (isNull(utflytting.getUtflyttingsdato())) {
+            utflytting.setUtflyttingsdato(LocalDateTime.now());
+        }
+
+        if (!person.getBostedsadresse().stream()
                 .findFirst()
                 .orElse(new BostedadresseDTO())
-                .getUtenlandskAdresse())) {
+                .isAdresseUtland() &&
+                !person.getKontaktadresse().stream()
+                        .findFirst()
+                        .orElse(new KontaktadresseDTO())
+                        .isAdresseUtland()) {
 
-            person.getBostedsadresse().add(0, BostedadresseDTO.builder()
+            if (!person.getBostedsadresse().isEmpty()) {
+                person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
+            }
+
+            person.getKontaktadresse().add(0, KontaktadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()
                             .landkode(utflytting.getTilflyttingsland())
                             .build())
                     .gyldigFraOgMed(utflytting.getUtflyttingsdato())
                     .isNew(true)
+                    .id(person.getKontaktadresse().stream()
+                            .max(Comparator.comparing(KontaktadresseDTO::getId))
+                            .orElse(KontaktadresseDTO.builder().id(0).build())
+                            .getId() + 1)
                     .build()
             );
-            bostedAdresseService.convert(person, false);
+            kontaktAdresseService.convert(person, false);
         }
 
         if (person.getFolkeregisterPersonstatus().stream()
@@ -85,6 +104,10 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
 
             person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
                     .isNew(true)
+                    .id(person.getFolkeregisterPersonstatus().stream()
+                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
+                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
+                            .getId() + 1)
                     .build());
         }
     }

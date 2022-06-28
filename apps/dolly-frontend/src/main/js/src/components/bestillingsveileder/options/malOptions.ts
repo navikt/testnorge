@@ -1,6 +1,5 @@
 import { initialValues } from './utils'
 import _ from 'lodash'
-import { useSelector } from 'react-redux'
 import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 import {
 	BostedData,
@@ -8,9 +7,10 @@ import {
 	OppholdsadresseData,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 export const initialValuesBasedOnMal = (mal: any) => {
-	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
+	const { dollyEnvironments } = useDollyEnvironments()
 	const initialValuesMal = Object.assign({}, mal.bestilling)
 
 	if (initialValuesMal.aareg) {
@@ -40,10 +40,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		initialValuesMal.pdldata = getUpdatedPdldata(initialValuesMal.pdldata)
 	}
 
-	initialValuesMal.environments = filterMiljoe(
-		tilgjengeligeEnvironments,
-		mal.bestilling.environments
-	)
+	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
 }
 

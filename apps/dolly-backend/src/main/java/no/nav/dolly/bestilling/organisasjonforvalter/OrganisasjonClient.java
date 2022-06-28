@@ -56,11 +56,6 @@ public class OrganisasjonClient {
         Set<String> orgnumre = new HashSet<>();
 
         var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
-        organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
-                .bestilling(bestilling)
-                .organisasjonsnummer("Ubestemt")
-                .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
-                .build());
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 

@@ -404,6 +404,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			]
 		}
 
+		const coAdresse = (navn) =>
+			obj('C/O adressenavn', `${navn?.fornavn} ${navn?.mellomnavn} ${navn?.etternavn}`)
+
 		if (tilrettelagtKommunikasjon) {
 			const tilrettelagtKommunikasjonData = {
 				header: 'Tilrettelagt Kommunikasjon',
@@ -451,20 +454,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			const bostedsadresseData = {
 				header: 'Bostedsadresse',
 				itemRows: bostedsadresse.map((item, idx) => {
-					if (item.utenlandskAdresse) {
-						const adresseData = item.utenlandskAdresse
-						return [
-							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
-							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
-							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
-							obj('Postkode', adresseData.postkode),
-							obj('By eller sted', adresseData.bySted),
-							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
-							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
-							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
-						]
-					}
 					if (item.vegadresse) {
 						const adresseData = item.vegadresse
 						return [
@@ -472,6 +461,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...vegadresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.matrikkeladresse) {
@@ -481,6 +471,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...matrikkeladresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.utenlandskAdresse) {
@@ -490,6 +481,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...utenlandskAdresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.ukjentBosted) {
@@ -499,9 +491,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Ukjent bosted', isEmpty(adresseData) && 'Ingen verdier satt'),
 							obj('Bostedskommune', adresseData.bostedskommune),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
-					return [obj('Bostedsadresse', 'Ingen verdier satt'), ...datoer(item)]
+					return [
+						obj('Bostedsadresse', 'Ingen verdier satt'),
+						...datoer(item),
+						coAdresse(item.opprettCoAdresseNavn),
+					]
 				}),
 			}
 			data.push(bostedsadresseData)
@@ -518,6 +515,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...vegadresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.matrikkeladresse) {
@@ -527,6 +525,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...matrikkeladresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.utenlandskAdresse) {
@@ -536,6 +535,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...utenlandskAdresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.oppholdAnnetSted) {
@@ -546,6 +546,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 								Formatters.showLabel('oppholdAnnetSted', item.oppholdAnnetSted)
 							),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					return [obj('Oppholdsadresse', 'Ingen verdier satt'), ...datoer(item)]
@@ -565,6 +566,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...vegadresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.utenlandskAdresse) {
@@ -574,6 +576,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...utenlandskAdresse(adresseData),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					if (item.postboksadresse) {
@@ -585,6 +588,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							obj('Postboks', adresseData.postboks),
 							obj('Postnummer', adresseData.postnummer),
 							...datoer(item),
+							coAdresse(item.opprettCoAdresseNavn),
 						]
 					}
 					return [obj('Kontaktadresse', 'Ingen verdier satt'), ...datoer(item)]
@@ -969,7 +973,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
 					obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
 					obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
-					obj('IBAN', tpsMessaging.utenlandskBankkonto.iban),
+					obj('Bankkode', tpsMessaging.utenlandskBankkonto.iban),
 					obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
 					obj('Adresselinje 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
 					obj('Adresselinje 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),

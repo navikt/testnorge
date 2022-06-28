@@ -72,8 +72,9 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
-    public String publish(List<String> identer) {
+    public Flux<String> publish(List<String> identer) {
 
-        return new HendelseslagerPublishCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
     }
 }

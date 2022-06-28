@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 import Button from '~/components/ui/button/Button'
 // @ts-ignore
@@ -8,17 +8,13 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
-import { logoutBruker } from '~/components/utlogging/Utlogging'
+import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
-type Props = {
-	brukerProfil: {
-		visningsNavn: string
-		brukernavn: string
-	}
-	brukerBilde: Blob
-}
+export default () => {
+	const { brukerProfil } = useBrukerProfil()
+	const { brukerBilde } = useBrukerProfilBilde()
 
-export default ({ brukerProfil, brukerBilde }: Props) => {
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
@@ -59,7 +55,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 						<img alt="Profilbilde" src={brukerBilde || dolly} />
 						<div className="profil-navn">
 							<p className="min-side">MIN SIDE</p>
-							<p>{brukerProfil && brukerProfil.visningsNavn}</p>
+							<p>{brukerProfil?.visningsNavn}</p>
 						</div>
 					</NavLink>
 				</div>

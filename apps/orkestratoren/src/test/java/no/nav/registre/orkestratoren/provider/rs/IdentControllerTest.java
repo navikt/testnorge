@@ -43,7 +43,7 @@ class IdentControllerTest {
         var testdataEier = "orkestratoren";
         identController.slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
 
-        verify(identService).slettIdenterFraAdaptere(avspillergruppeId, miljoe, testdataEier, identer);
+        verify(identService).slettIdenterFraAdaptere(miljoe, testdataEier, identer);
     }
 
     @Test

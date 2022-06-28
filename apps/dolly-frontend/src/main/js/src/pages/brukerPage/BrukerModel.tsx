@@ -5,9 +5,9 @@ import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { Bruker, Organisasjon, OrgResponse } from '~/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '~/service/Api'
-import { logoutBruker } from '~/components/utlogging/Utlogging'
-import { useNavigate } from 'react-router-dom'
 import { NotFoundError } from '~/error'
+import { Navigate } from 'react-router-dom'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -15,10 +15,9 @@ const UNKNOWN_ERROR = 'unknown_error'
 export default () => {
 	const [loading, setLoading] = useState(true)
 	const [organisasjoner, setOrganisasjoner] = useState([])
-	const [organisasjon, setOrganisasjon] = useState<Organisasjon>(null)
+	const [organisasjon, setOrganisasjon] = useState(null)
 	const [modalHeight, setModalHeight] = useState(310)
 	const [sessionUpdated, setSessionUpdated] = useState(false)
-	const navigate = useNavigate()
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
@@ -58,7 +57,9 @@ export default () => {
 		SessionApi.addToSession(org).then(() => setSessionUpdated(true))
 	}
 
-	if (sessionUpdated) return navigate('/')
+	if (sessionUpdated) {
+		return <Navigate to={'/'} />
+	}
 
 	return (
 		<div className="bruker-container">

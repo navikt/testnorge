@@ -1,6 +1,5 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
-import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
@@ -11,24 +10,16 @@ import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '~/pages/gruppeOversikt/FinnPersonBestillingConnector'
-import { resetNavigering } from '~/ducks/finnPerson'
+import { resetNavigering, resetPaginering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useGruppeById } from '~/utils/hooks/useGruppe'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 
 export type GruppeProps = {
-	visBestilling: string
-	getGruppe: (arg0: string, arg1: number, arg2: number) => void
-	getBestillinger: (arg0: string) => void
-	selectGruppe: (arg0: Object[], arg1: string) => any
-	grupper: Object[]
-	isFetching: boolean
 	visning: string
 	setVisning: Function
-	bestillingStatuser: any
-	brukerBilde: Object
-	brukerProfil: Object
-	brukertype: string
-	brukernavn: string
-	antallFjernet: number
 }
 
 export enum VisningType {
@@ -36,65 +27,42 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default function Gruppe({
-	bestillingStatuser,
-	brukerBilde,
-	brukerProfil,
-	brukernavn,
-	brukertype,
-	getBestillinger,
-	getGruppe,
-	grupper,
-	visning,
-	setVisning,
-	isFetching,
-	selectGruppe,
-	antallFjernet,
-}: GruppeProps) {
+export default function Gruppe({ visning, setVisning }: GruppeProps) {
+	const { gruppeId } = useParams()
+	const {
+		currentBruker: { brukernavn, brukertype },
+	} = useCurrentBruker()
+	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(Number(gruppeId))
+	const { gruppe, loading: loadingGruppe } = useGruppeById(Number(gruppeId))
+
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-	const [redirectToSoek, setRedirectToSoek] = useState(false)
-	const [gruppe, setGruppe] = useState(null)
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	const { gruppeId } = useParams()
 
-	useEffect(() => {
-		getGruppe(gruppeId, 0, 10)
-		getBestillinger(gruppeId)
-	}, [gruppeId])
-
-	useEffect(() => {
-		setGruppe(selectGruppe(grupper, gruppeId))
-	}, [grupper])
-
-	if (isFetching || !gruppe) {
+	if (loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
 		dispatch(resetNavigering())
+		dispatch(resetPaginering())
 		setVisning(typeof event === 'string' ? event : event.target.value)
 	}
 
 	const startBestilling = (values: {}) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
-	if (redirectToSoek) {
-		return navigate(`/soek`)
-	}
-
 	const erLaast = gruppe.erLaast
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppe={gruppe} bestillingStatuser={bestillingStatuser} />
+			<GruppeHeaderConnector gruppeId={gruppe.id} />
 
-			<StatusListeConnector
-				gruppeId={gruppe.id}
-				brukerBilde={brukerBilde}
-				brukerProfil={brukerProfil}
-			/>
+			{bestillingerById && (
+				// @ts-ignore
+				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
+			)}
 
 			<div className="toolbar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '0' }}>
 				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
@@ -125,28 +93,28 @@ export default function Gruppe({
 					<FinnPersonBestillingConnector />
 				</div>
 				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px', marginBottom: '10px' }}>
-						<ToggleGruppe onChange={byttVisning} name="toggler">
-							<ToggleKnapp
-								value={VisningType.VISNING_PERSONER}
-								checked={visning === VisningType.VISNING_PERSONER}
-							>
-								<Icon
-									size={13}
-									kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
-								/>
-								{`Personer (${gruppe.antallIdenter - antallFjernet})`}
-							</ToggleKnapp>
-							<ToggleKnapp
-								value={VisningType.VISNING_BESTILLING}
-								checked={visning === VisningType.VISNING_BESTILLING}
-							>
-								<Icon
-									size={13}
-									kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
-								/>
-								{`Bestillinger (${Object.keys(bestillingStatuser).length})`}
-							</ToggleKnapp>
-						</ToggleGruppe>
+					<ToggleGruppe onChange={byttVisning} name="toggler">
+						<ToggleKnapp
+							value={VisningType.VISNING_PERSONER}
+							checked={visning === VisningType.VISNING_PERSONER}
+						>
+							<Icon
+								size={13}
+								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
+							/>
+							{`Personer (${gruppe.antallIdenter})`}
+						</ToggleKnapp>
+						<ToggleKnapp
+							value={VisningType.VISNING_BESTILLING}
+							checked={visning === VisningType.VISNING_BESTILLING}
+						>
+							<Icon
+								size={13}
+								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+							/>
+							{`Bestillinger (${Object.keys(bestillingerById).length})`}
+						</ToggleKnapp>
+					</ToggleGruppe>
 				</div>
 			</div>
 
@@ -159,10 +127,14 @@ export default function Gruppe({
 			)}
 
 			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
+				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} gruppeId={gruppeId} />
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (
-				<BestillingListeConnector iLaastGruppe={erLaast} brukertype={brukertype} />
+				<BestillingListeConnector
+					iLaastGruppe={erLaast}
+					brukertype={brukertype}
+					gruppeId={gruppeId}
+				/>
 			)}
 		</div>
 	)

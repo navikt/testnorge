@@ -5,19 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteEgenansattCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteSikkerhetstiltakCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteTelefonnummerCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.HentIdenterCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.HentPersonCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.SendEgenansattCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.SendTpsMessagingCommand;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -123,9 +124,18 @@ public class TpsMessagingConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_getIdenter"})
-    public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer) {
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_getPersoner"})
+    public Flux<PersonMiljoeDTO> getPersoner(List<String> identer, List<String> miljoer) {
 
-        return new HentIdenterCommand(webClient, miljoer, identer, serviceProperties.getAccessToken(tokenService)).call();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .flatMap(index -> new HentPersonCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call()));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_getPerson"})
+    public Flux<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new HentPersonCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 }

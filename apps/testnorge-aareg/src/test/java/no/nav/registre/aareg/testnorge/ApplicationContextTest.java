@@ -9,7 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 class ApplicationContextTest {
     @Test
     @SuppressWarnings("java:S2699")

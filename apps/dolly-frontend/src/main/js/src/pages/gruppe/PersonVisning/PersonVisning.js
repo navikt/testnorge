@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -28,6 +27,8 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
 
 const getIdenttype = (ident) => {
@@ -43,22 +44,28 @@ const getIdenttype = (ident) => {
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
+	bestillingIdListe,
 	ident,
 	isAlive,
-	gruppeId,
 	brukertype,
-	bestilling,
-	bestillingsListe,
 	gruppeIdenter,
 	loading,
 	slettPerson,
 	slettPersonOgPartner,
-	updateAntallImporterte,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
 }) => {
-	useMount(fetchDataFraFagsystemer)
+	const { gruppeId } = ident
+
+	const { bestillingerById } = useBestillingerGruppe(gruppeId)
+
+	useEffect(() => {
+		fetchDataFraFagsystemer(bestillingerById)
+	}, [])
+
+	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
+	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -71,7 +78,9 @@ export const PersonVisning = ({
 
 	const pdlPartner = () => {
 		return data.pdl?.hentPerson?.sivilstand?.filter(
-			(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
+			(siv) =>
+				!siv?.metadata?.historisk &&
+				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
 		)?.[0]?.relatertVedSivilstand
 	}
 
@@ -84,7 +93,7 @@ export const PersonVisning = ({
 							onClick={() =>
 								leggTilPaaPerson(
 									data,
-									bestillingsListe,
+									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
@@ -99,7 +108,6 @@ export const PersonVisning = ({
 
 					{!iLaastGruppe && isAlive && (
 						<PartnerImportButton
-							action={updateAntallImporterte}
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
 							gruppeIdenter={gruppeIdenter}
@@ -123,7 +131,7 @@ export const PersonVisning = ({
 				</div>
 				{ident.master !== 'PDL' && (
 					<TpsfVisning
-						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+						data={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
 						pdlData={data.pdlforvalter?.person}
 						environments={bestilling?.environments}
 						tmpPersoner={tmpPersoner?.pdlforvalter}
@@ -140,16 +148,16 @@ export const PersonVisning = ({
 				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
+					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
-				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
 				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 				<InstVisning data={data.instdata} loading={loading.instdata} />
 				<ArenaVisning
 					data={data.arenaforvalteren}
-					bestillinger={bestillingsListe}
+					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 				/>
 				<UdiVisning

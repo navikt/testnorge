@@ -21,6 +21,7 @@ type AdresseData = {
 			bygningEtasjeLeilighet?: string
 			regionDistriktOmraade?: string
 		}
+		coAdressenavn?: string
 	}
 	idx: number
 }
@@ -35,7 +36,7 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 		bygningEtasjeLeilighet,
 		regionDistriktOmraade,
 	} = adresse.utenlandskAdresse
-	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed } = adresse
+	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed, coAdressenavn } = adresse
 
 	return (
 		<>
@@ -59,6 +60,7 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Angitt flyttedato" value={Formatters.formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={Formatters.formatDate(gyldigTilOgMed)} />
+				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
 	)

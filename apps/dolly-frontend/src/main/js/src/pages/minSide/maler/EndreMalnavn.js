@@ -3,10 +3,20 @@ import { malerApi } from './MalerApi'
 import Button from '~/components/ui/button/Button'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
 
-export const EndreMalnavn = ({ malInfo, setMaler, avbrytRedigering }) => {
+export const EndreMalnavn = ({ malInfo, avbrytRedigering }) => {
+	const lagreEndring = (nyttMalnavn, id) => {
+		malerApi
+			.endreMalNavn(id, nyttMalnavn)
+			.then(() => mutate(REGEX_BACKEND_BESTILLINGER))
+			.then(() => avbrytRedigering(id))
+	}
+
 	const { malNavn, id } = malInfo
 	const [nyttMalnavn, setMalnavn] = useState(malNavn)
+
+	const mutate = useMatchMutate()
 
 	return (
 		<ErrorBoundary>
@@ -17,24 +27,10 @@ export const EndreMalnavn = ({ malInfo, setMaler, avbrytRedigering }) => {
 					onChange={(e) => setMalnavn(e.target.value)}
 					className="navnInput"
 				/>
-				<Button
-					className="lagre"
-					onClick={() => lagreEndring(nyttMalnavn, setMaler, id, avbrytRedigering)}
-				>
+				<Button className="lagre" onClick={() => lagreEndring(nyttMalnavn, id)}>
 					LAGRE
 				</Button>
 			</div>
 		</ErrorBoundary>
 	)
-}
-
-const lagreEndring = (nyttMalnavn, setMaler, id, avbrytRedigering) => {
-	malerApi
-		.endreMalNavn(id, nyttMalnavn)
-		.then(() =>
-			setMaler((maler) =>
-				maler.map((mal) => ({ ...mal, malNavn: mal.id === id ? nyttMalnavn : mal.malNavn }))
-			)
-		)
-		.then(avbrytRedigering(id))
 }

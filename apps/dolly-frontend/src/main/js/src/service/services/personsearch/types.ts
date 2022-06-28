@@ -12,8 +12,12 @@ export type Search = {
 	}
 	nasjonalitet?: {
 		statsborgerskap?: string
-		utflyttingFraNorge?: boolean
-		innflyttingTilNorge?: boolean
+		innflytting?: {
+			fraflyttingsland?: string
+		}
+		utflytting?: {
+			tilflyttingsland?: string
+		}
 	}
 	sivilstand?: {
 		type?: string

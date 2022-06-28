@@ -29,8 +29,8 @@ public class Inst2Consumer {
     private final String inst2NewServerUrl;
 
     public Inst2Consumer(
-            @Value("${inst2.web.api.url}") String inst2WebApiServerUrl,
-            @Value("${inst2.new.api.url}") String inst2NewServerUrl,
+            @Value("${consumers.inst2-web.url}") String inst2WebApiServerUrl,
+            @Value("${consumers.inst2-new.url}") String inst2NewServerUrl,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.inst2WebApiServerUrl = new UriTemplate(inst2WebApiServerUrl);

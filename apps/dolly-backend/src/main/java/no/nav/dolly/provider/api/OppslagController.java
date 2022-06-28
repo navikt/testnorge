@@ -83,7 +83,8 @@ public class OppslagController {
     @Operation(description = "Hent kodeverk, returnerer map")
     public Map<String, String> fetchKodeverk(@RequestParam String kodeverk) {
 
-        return kodeverkConsumer.getKodeverkByName(kodeverk);
+        return kodeverkConsumer.getKodeverkByName(kodeverk)
+                .block();
     }
 
     @GetMapping("/pdlperson/ident/{ident}")

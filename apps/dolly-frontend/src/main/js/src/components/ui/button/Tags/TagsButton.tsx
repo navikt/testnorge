@@ -8,21 +8,20 @@ import Loading from '~/components/ui/loading/Loading'
 import './TagsButton.less'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { actions } from '~/ducks/gruppe'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { useDispatch } from 'react-redux'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 type Props = {
 	action: Function
 	loading: boolean
 	gruppeId: number
-	eksisterendeTags: [string]
+	eksisterendeTags: string[]
 }
 
 export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [tags, setTags] = useState(eksisterendeTags)
-	const dispatch = useDispatch()
+	const mutate = useMatchMutate()
 
 	if (loading) return <Loading label="Sender tags..." />
 
@@ -61,8 +60,8 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 						<NavButton
 							onClick={() => {
 								action(gruppeId, tags).then(() => {
-									dispatch(actions.getById(gruppeId, 0, 10))
 									closeModal()
+									return mutate(REGEX_BACKEND_GRUPPER)
 								})
 							}}
 							type="hoved"

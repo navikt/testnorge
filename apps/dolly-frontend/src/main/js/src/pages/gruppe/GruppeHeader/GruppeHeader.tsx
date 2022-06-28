@@ -9,27 +9,15 @@ import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '~/components/ui/button/LaasButton/LaasButton'
 import { Header } from '~/components/ui/header/Header'
 import Formatters from '~/utils/DataFormatter'
-import GjenopprettGruppeConnector from '~/components/bestilling/gjenopprett/GjenopprettGruppeConnector'
 
 import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
-import { InferProps, Requireable } from 'prop-types'
 import { PopoverOrientering } from 'nav-frontend-popover'
-import FinnPersonBestillingConnector from "~/pages/gruppeOversikt/FinnPersonBestillingConnector";
+import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/GjenopprettGruppe'
+import { useGruppeById } from '~/utils/hooks/useGruppe'
 
 type GruppeHeaderProps = {
-	gruppe: InferProps<{
-		erLaast: boolean
-		id: Requireable<number>
-		navn: Requireable<string>
-		hensikt: Requireable<string>
-		antallIdenter: Requireable<number>
-		opprettetAv: {}
-		tags: []
-		datoEndret: Date
-		erEierAvGruppe: boolean
-	}>
-	antallFjernet: number
+	gruppeId: number
 	laasGruppe: Function
 	isLockingGruppe: boolean
 	deleteGruppe: Function
@@ -38,12 +26,10 @@ type GruppeHeaderProps = {
 	isFetchingExcel: boolean
 	isSendingTags: boolean
 	sendTags: Function
-	bestillingStatuser: any
 }
 
 const GruppeHeader = ({
-	gruppe,
-	bestillingStatuser,
+	gruppeId,
 	deleteGruppe,
 	isDeletingGruppe,
 	getGruppeExcelFil,
@@ -52,17 +38,17 @@ const GruppeHeader = ({
 	isLockingGruppe,
 	sendTags,
 	isSendingTags,
-	antallFjernet,
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
+	const { gruppe } = useGruppeById(gruppeId)
 
 	const erLaast = gruppe.erLaast
 
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'lockedGroup' : 'group'
-	const antallPersoner = gruppe.antallIdenter - antallFjernet
+	const antallPersoner = gruppe.antallIdenter
 
 	return (
 		<Fragment>
@@ -75,8 +61,6 @@ const GruppeHeader = ({
 						(Q1). Kontakt Team Dolly dersom du ønsker å låse opp gruppen.
 					</Hjelpetekst>
 				)}
-				<div className="flexbox--grow-2"></div>
-				{/*<FinnPersonBestillingConnector />*/}
 			</div>
 			<Header className={headerClass} icon={iconType}>
 				<div className="flexbox">
@@ -128,6 +112,12 @@ const GruppeHeader = ({
 							action={deleteGruppe}
 							loading={isDeletingGruppe}
 							navigateHome={true}
+							disabled={antallPersoner > 15}
+							title={
+								antallPersoner > 15
+									? 'Sletting av større grupper er midlertidig utilgjengelig i påvente av en mer robust løsning'
+									: null
+							}
 						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
@@ -149,11 +139,7 @@ const GruppeHeader = ({
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
-				<GjenopprettGruppeConnector
-					onClose={skjulGjenopprettModal}
-					gruppe={gruppe}
-					bestillingStatuser={bestillingStatuser}
-				/>
+				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppe={gruppe} />
 			)}
 		</Fragment>
 	)

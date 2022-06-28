@@ -57,13 +57,6 @@ export const SelectOptionsOppslag = {
 		return useAsync(async () => DollyApi.getPersonnavn(), [DollyApi.getPersonnavn])
 	},
 
-	hentGruppe: () => {
-		return useAsync(
-			async () => DollyApi.getFasteDatasettGruppe('DOLLY'),
-			[DollyApi.getFasteDatasettGruppe]
-		)
-	},
-
 	hentInntektsmeldingOptions: (enumtype: string) =>
 		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, { method: 'GET' }),
 
@@ -113,7 +106,7 @@ export const SelectOptionsOppslag = {
 			const navnData = data?.value?.data || []
 			const options: { value: string; label: string }[] = []
 			navnData.length > 0 &&
-				navnData.forEach((navn) => {
+				navnData.forEach((navn: { [x: string]: any }) => {
 					options.push({ value: navn[type], label: navn[type] })
 				})
 			return options
@@ -180,7 +173,7 @@ export const SelectOptionsOppslag = {
 			return options
 		} else if (type === 'tags') {
 			const tags = data.value ? Object.entries(data.value.data) : []
-			const options = []
+			const options: Option[] = []
 			tags.forEach((leverandoer) => {
 				data = leverandoer[1]
 				options.push({ value: data.tag, label: data.beskrivelse })

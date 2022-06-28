@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
-import no.nav.registre.inst.exception.UkjentMiljoeException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.security.TokenService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +21,6 @@ public class IdentService {
     private static final String KILDE = "Dolly";
 
     private final Inst2Consumer inst2Consumer;
-    private final TokenService tokenService;
-
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
             String callId,
@@ -117,16 +113,6 @@ public class IdentService {
             return opphold;
         } else {
             return new ArrayList<>();
-        }
-    }
-
-    public String hentTokenTilInst2(String miljoe) {
-        if (miljoe.contains("q")) {
-            return tokenService.getIdTokenQ();
-        } else if (miljoe.contains("t")) {
-            return tokenService.getIdTokenT();
-        } else {
-            throw new UkjentMiljoeException("Kjente ikke igjen miljø " + miljoe);
         }
     }
 

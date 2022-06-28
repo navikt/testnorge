@@ -16,6 +16,7 @@ interface MatrikkeladresseValues {
 		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
+		coAdressenavn?: string
 	}
 	idx: number
 }
@@ -29,6 +30,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		gyldigTilOgMed,
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
+		coAdressenavn,
 	} = adresse
 
 	return (
@@ -68,6 +70,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 					title="Sluttdato for kontrakt"
 					value={Formatters.formatDate(sluttdatoForKontrakt)}
 				/>
+				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
 	)
