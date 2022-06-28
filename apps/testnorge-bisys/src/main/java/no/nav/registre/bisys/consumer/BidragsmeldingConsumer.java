@@ -1,6 +1,6 @@
 package no.nav.registre.bisys.consumer;
 
-import no.nav.registre.bisys.consumer.command.OpprettBidragsmeldingCommand;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 
+@Slf4j
 @Component
 public class BidragsmeldingConsumer {
 
@@ -27,6 +28,6 @@ public class BidragsmeldingConsumer {
     }
 
     public void opprett(List<SyntetisertBidragsmelding> list, String miljoe) {
-        list.forEach(item -> new OpprettBidragsmeldingCommand(webClient, item, miljoe).run());
+        list.forEach(item -> log.info("Oppretting av bidragsmeldinger ikke ferdig implementert."));
     }
 }
