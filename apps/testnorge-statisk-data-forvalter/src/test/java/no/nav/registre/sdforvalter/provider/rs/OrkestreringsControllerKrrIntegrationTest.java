@@ -35,7 +35,7 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
         locations = "classpath:application-test.yml"
 )
 @Disabled
-public class OrkestreringsControllerKrrIntegrationTest {
+class OrkestreringsControllerKrrIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -47,7 +47,7 @@ public class OrkestreringsControllerKrrIntegrationTest {
     private KrrRepository repository;
 
     @Test
-    public void shouldInitiateKrrFromDatabase() throws Exception {
+    void shouldInitiateKrrFromDatabase() throws Exception {
         KrrModel model = createKrr("01010112365");
         repository.save(model);
 
