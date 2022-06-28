@@ -21,7 +21,13 @@ type Props = {
 	loading: boolean
 	valgtePersoner: ImportPerson[]
 	setValgtePersoner: (personer: ImportPerson[]) => void
-	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => void
+	importerPersoner: (
+		valgtePersoner: ImportPerson[],
+		mal: any,
+		navigate: Function,
+		gruppeId?: number
+	) => void
+	gruppeId?: number
 }
 
 export type ImportPerson = {
@@ -63,6 +69,7 @@ export default ({
 	setValgtePersoner,
 	importerPersoner,
 	sidetall,
+	gruppeId,
 }: Props) => {
 	if (loading) return <Loading label="Søker..." />
 	if (!items || items.length === 0) {
@@ -158,7 +165,11 @@ export default ({
 				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
 				pagination="simple"
 			/>
-			<ImportModal valgtePersoner={valgtePersoner} importerPersoner={importerPersoner} />
+			<ImportModal
+				valgtePersoner={valgtePersoner}
+				importerPersoner={importerPersoner}
+				gruppeId={gruppeId}
+			/>
 		</SearchView>
 	)
 }

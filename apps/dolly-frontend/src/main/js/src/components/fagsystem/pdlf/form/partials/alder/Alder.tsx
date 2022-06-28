@@ -22,11 +22,18 @@ export const Alder = ({ formikBag }: AlderForm) => {
 	const disableFoedtDato =
 		_get(formikBag.values, paths.alder) != '' && _get(formikBag.values, paths.alder) != null
 
-	const onlyNumberKeyPressHandler = (event: React.KeyboardEvent<any>) => !/\d/.test(event.key) && event.preventDefault()
+	const onlyNumberKeyPressHandler = (event: React.KeyboardEvent<any>) =>
+		!/\d/.test(event.key) && event.preventDefault()
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikTextInput name={paths.alder} type="number" onKeyPress={onlyNumberKeyPressHandler} label="Alder" disabled={disableAlder} />
+			<FormikTextInput
+				name={paths.alder}
+				type="number"
+				onKeyPress={onlyNumberKeyPressHandler}
+				label="Alder"
+				disabled={disableAlder}
+			/>
 			<FormikDatepicker
 				name={paths.foedtEtter}
 				label="Født etter"

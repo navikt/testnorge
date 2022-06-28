@@ -17,7 +17,11 @@ import { ifPresent, validate } from '~/utils/YupValidations'
 import * as Yup from 'yup'
 import DisplayFormikState from '~/utils/DisplayFormikState'
 
-export default () => {
+type TestnorgePageProps = {
+	gruppeId?: number
+}
+
+export default ({ gruppeId }: TestnorgePageProps) => {
 	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
@@ -97,6 +101,7 @@ export default () => {
 												loading={loading}
 												valgtePersoner={valgtePersoner}
 												setValgtePersoner={setValgtePersoner}
+												gruppeId={gruppeId}
 											/>
 										)}
 									</>

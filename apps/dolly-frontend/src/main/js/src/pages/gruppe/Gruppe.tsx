@@ -64,14 +64,24 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
 			)}
 
-			<div className="toolbar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '0' }}>
+			<div
+				className="toolbar"
+				style={{
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					marginBottom: '0',
+				}}
+			>
 				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
 					{brukertype === 'AZURE' && (
 						<NavButton
 							type="hoved"
 							onClick={visStartBestilling}
 							disabled={erLaast}
-							title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
+							title={
+								erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''
+							}
 							style={{ marginTop: '5px', marginBottom: '5px', marginRight: '10px' }}
 						>
 							Opprett personer
@@ -80,10 +90,16 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<NavButton
 						type="standard"
-						onClick={() => navigate(`/testnorge`)}
+						onClick={() =>
+							navigate(`/testnorge`, {
+								state: {
+									gruppeId: gruppeId,
+								},
+							})
+						}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '5px', marginBottom: '5px', }}
+						style={{ marginTop: '5px', marginBottom: '5px' }}
 					>
 						Importer personer
 					</NavButton>
@@ -92,7 +108,15 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<FinnPersonBestillingConnector />
 				</div>
-				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px', marginBottom: '10px' }}>
+				<div
+					style={{
+						display: 'flex',
+						flexDirection: 'column',
+						alignItems: 'center',
+						marginTop: '20px',
+						marginBottom: '10px',
+					}}
+				>
 					<ToggleGruppe onChange={byttVisning} name="toggler">
 						<ToggleKnapp
 							value={VisningType.VISNING_PERSONER}
