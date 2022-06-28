@@ -22,7 +22,6 @@ app:
 tps.statisk.avspillergruppeId: ${FAST_AVSPILLER_GRUPPE}
 
 ########## Brukes disse fremdeles?
-dkif.forvalter.rest.api.url: ${DKIF_FORVALTER}
 ereg.api: https://modapp-{miljo}.adeo.no/ereg/api/v1/
 VAULT_URL: https://vault.adeo.no
 ##########
