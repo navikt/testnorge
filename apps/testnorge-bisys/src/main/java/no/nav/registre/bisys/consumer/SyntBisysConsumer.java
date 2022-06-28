@@ -1,9 +1,9 @@
-package no.nav.registre.bisys.consumer.rs;
+package no.nav.registre.bisys.consumer;
 
 import io.micrometer.core.annotation.Timed;
-import no.nav.registre.bisys.consumer.rs.command.GetSyntBisysMeldingerCommand;
-import no.nav.registre.bisys.consumer.rs.credential.SyntBisysProperties;
-import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
+import no.nav.registre.bisys.consumer.command.GetSyntBisysMeldingerCommand;
+import no.nav.registre.bisys.consumer.credential.SyntBisysProperties;
+import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,8 @@ public class SyntBisysConsumer {
 
     @Timed(value = "bisys.resource.latency", extraTags = {"operation", "bisys-syntetisereren"})
     public List<SyntetisertBidragsmelding> getSyntetiserteBidragsmeldinger(int antallMeldinger) {
-        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
-        return new GetSyntBisysMeldingerCommand(antallMeldinger, token, webClient).call();
+        return tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new GetSyntBisysMeldingerCommand(antallMeldinger, accessToken.getTokenValue(), webClient).call())
+                .block();
     }
 }

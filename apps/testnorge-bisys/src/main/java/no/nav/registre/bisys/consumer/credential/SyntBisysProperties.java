@@ -1,4 +1,4 @@
-package no.nav.registre.bisys.consumer.rs.credential;
+package no.nav.registre.bisys.consumer.credential;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
