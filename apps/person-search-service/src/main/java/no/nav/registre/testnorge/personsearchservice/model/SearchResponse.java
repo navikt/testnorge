@@ -37,6 +37,7 @@ public class SearchResponse {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
+    @SuppressWarnings("java:S116")
     public static class SearchHit {
 
         private String _index;
