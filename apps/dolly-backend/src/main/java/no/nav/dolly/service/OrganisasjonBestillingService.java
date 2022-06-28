@@ -206,7 +206,7 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
-    private List<OrgStatus> updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
+    private void updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
 
         var feil = orgStatus.stream()
                 .filter(o -> FAILED.equals(o.getStatus()))
@@ -221,7 +221,6 @@ public class OrganisasjonBestillingService {
         bestilling.setFerdig(ferdig);
         bestilling.setSistOppdatert(now());
 
-        return orgStatus;
     }
 
     private String forvalterStatusDetails(OrgStatus orgStatus) {
