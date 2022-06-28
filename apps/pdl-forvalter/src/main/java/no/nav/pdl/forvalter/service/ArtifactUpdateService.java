@@ -420,7 +420,7 @@ public class ArtifactUpdateService {
 
         var isEksisterendeId = id > 0 && id <= person.getPerson().getSivilstand().size();
 
-        var tidligereRelatert =  isEksisterendeId ?
+        var tidligereRelatert = isEksisterendeId ?
                 person.getPerson().getSivilstand().get(id - 1).getRelatertVedSivilstand() : null;
         var isEksisterendePerson = isEksisterendeId ?
                 person.getPerson().getSivilstand().get(id - 1).getEksisterendePerson() : null;
@@ -446,14 +446,14 @@ public class ArtifactUpdateService {
         }
     }
 
-    public void updateTelefonnummer(String ident, Integer id, TelefonnummerDTO oppdatertTelefonnummer) {
+    public void updateTelefonnummer(String ident, Integer id, List<TelefonnummerDTO> oppdaterteTelefonnumre) {
 
         var person = getPerson(ident);
 
-        person.getPerson().setTelefonnummer(
-                updateArtifact(person.getPerson().getTelefonnummer(), oppdatertTelefonnummer, id, "Telefonnummer"));
+        oppdaterteTelefonnumre
+                .forEach(telefonnummerService::validate);
 
-        telefonnummerService.validate(oppdatertTelefonnummer);
+        person.getPerson().setTelefonnummer(oppdaterteTelefonnumre);
         telefonnummerService.convert(person.getPerson().getTelefonnummer());
     }
 

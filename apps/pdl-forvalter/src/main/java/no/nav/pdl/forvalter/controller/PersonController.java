@@ -605,9 +605,9 @@ public class PersonController {
                                     @PathVariable String ident,
                                     @Parameter(description = "id som identifiserer telefonnummer")
                                     @PathVariable Integer id,
-                                    @RequestBody TelefonnummerDTO telefonnummer) {
+                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
-        artifactUpdateService.updateTelefonnummer(ident, id, telefonnummer);
+        artifactUpdateService.updateTelefonnummer(ident, id, telefonnumre);
     }
 
     @DeleteMapping(value = "/{ident}/fullmakt/{id}")
