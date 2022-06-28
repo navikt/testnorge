@@ -39,7 +39,7 @@ import no.nav.registre.sdforvalter.domain.TpsIdent;
 @TestPropertySource(
         locations = "classpath:application-test.yml"
 )
-public class FileControllerIntegrationTest {
+class FileControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -67,7 +67,7 @@ public class FileControllerIntegrationTest {
     }
 
     @Test
-    public void should_save_one_ident_from_csv_to_tps_ident_database() throws Exception {
+    void should_save_one_ident_from_csv_to_tps_ident_database() throws Exception {
         String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse;Tags\n" +
                 "12345678912;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test;OTP";
 
@@ -91,7 +91,7 @@ public class FileControllerIntegrationTest {
     }
 
     @Test
-    public void should_save_two_idents_from_csv_to_tps_ident_database() throws Exception {
+    void should_save_two_idents_from_csv_to_tps_ident_database() throws Exception {
         String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse;Tags\n" +
                 "12345678910;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test;OTP\n" +
                 "12345678911;Donald;Dollesen;Dollygata 3;2222;Dollyby;Gruppen;Test;";

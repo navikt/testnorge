@@ -30,7 +30,7 @@ import no.nav.registre.sdforvalter.domain.AaregListe;
 @TestPropertySource(
         locations = "classpath:application-test.yml"
 )
-public class StaticDataControllerV1AaregIntegrationTest {
+class StaticDataControllerV1AaregIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
@@ -41,7 +41,7 @@ public class StaticDataControllerV1AaregIntegrationTest {
     private AaregRepository repository;
 
     @Test
-    public void shouldGetAareg() throws Exception {
+    void shouldGetAareg() throws Exception {
         AaregModel model = createAaregModel("0101011236", "987654321");
         repository.save(model);
         String json = mvc.perform(get("/api/v1/faste-data/aareg/")

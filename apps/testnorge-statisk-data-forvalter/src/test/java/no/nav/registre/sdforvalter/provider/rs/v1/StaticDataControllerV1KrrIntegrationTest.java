@@ -34,7 +34,7 @@ import no.nav.registre.sdforvalter.domain.KrrListe;
 @TestPropertySource(
         locations = "classpath:application-test.yml"
 )
-public class StaticDataControllerV1KrrIntegrationTest {
+class StaticDataControllerV1KrrIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
@@ -45,7 +45,7 @@ public class StaticDataControllerV1KrrIntegrationTest {
     private KrrRepository repository;
 
     @Test
-    public void shouldGetKrr() throws Exception {
+    void shouldGetKrr() throws Exception {
         KrrModel model = createKrrModel("0101011236");
         repository.save(model);
         String json = mvc.perform(get("/api/v1/faste-data/krr/")
@@ -61,7 +61,7 @@ public class StaticDataControllerV1KrrIntegrationTest {
 
 
     @Test
-    public void shouldCreateKrr() throws Exception {
+    void shouldCreateKrr() throws Exception {
         Krr krr = createKrr("0101011236");
         mvc.perform(post("/api/v1/faste-data/krr/")
                         .content(objectMapper.writeValueAsString(createKrrListe(krr)))
@@ -73,7 +73,7 @@ public class StaticDataControllerV1KrrIntegrationTest {
 
 
     @Test
-    public void shouldOnlyGetKrrWithGruppe() throws Exception {
+    void shouldOnlyGetKrrWithGruppe() throws Exception {
         Krr krr = createKrr("0101011236");
         Krr krrGruppeDolly = createKrr("0101011236", "DOLLY");
 
