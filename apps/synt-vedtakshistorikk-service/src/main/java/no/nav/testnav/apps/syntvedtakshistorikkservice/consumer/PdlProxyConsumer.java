@@ -11,7 +11,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.Pdl
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
