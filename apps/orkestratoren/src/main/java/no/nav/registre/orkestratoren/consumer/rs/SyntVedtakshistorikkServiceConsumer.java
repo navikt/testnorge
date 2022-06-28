@@ -3,12 +3,14 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.command.OpprettArbeissoekerCommand;
+import no.nav.registre.orkestratoren.consumer.rs.command.OpprettDagpengerCommand;
 import no.nav.registre.orkestratoren.consumer.rs.command.OpprettVedtakshistorikkCommand;
 import no.nav.registre.orkestratoren.consumer.rs.credentials.SyntVedtakshistorikkServiceProperties;
 import no.nav.registre.orkestratoren.exception.ArenaSyntetiseringException;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -76,5 +78,22 @@ public class SyntVedtakshistorikkServiceConsumer {
         }
         return Collections.emptyMap();
     }
+
+    @Timed(value = "orkestratoren.resource.latency", extraTags = {"operation", "arena"})
+    public Map<String, List<DagpengerResponseDTO>> opprettDagpenger(
+            SyntetiserArenaRequest request
+    ) {
+        if (nonNull(request)) {
+            try {
+                return tokenExchange.exchange(serviceProperties)
+                        .flatMap(accessToken -> new OpprettDagpengerCommand(request, accessToken.getTokenValue(), webClient).call())
+                        .block();
+            } catch (Exception e) {
+                log.error("Feil under syntetisering av dagpenger", e);
+            }
+        }
+        return Collections.emptyMap();
+    }
+
 
 }

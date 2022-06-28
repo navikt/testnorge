@@ -31,7 +31,9 @@ batch:
   avspillergruppeId: 000
   miljoe: test
   arena:
-    antallNyeIdenter: 5
+    antallHistorikker: 5
+    antallBrukere: 1
+    antallDagpenger: 1
   popp:
     antallNyeIdenter: 1
   aareg:

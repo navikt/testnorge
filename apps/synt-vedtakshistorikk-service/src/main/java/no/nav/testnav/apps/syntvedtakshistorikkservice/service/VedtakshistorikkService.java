@@ -3,7 +3,6 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +14,9 @@ import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.SyntVedtakshistorikkConsumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -29,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnSenesteVedtak;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnTidligsteDato;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnTidligsteDatoAap;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.DatoUtils.finnTidligeDatoBarnetillegg;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_AAP;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
@@ -51,10 +47,8 @@ public class VedtakshistorikkService {
     private final ArenaAapService arenaAapService;
     private final ArenaTiltakService arenaTiltakService;
     private final ArenaTilleggService arenaTilleggService;
-    private final PdlProxyConsumer pdlProxyConsumer;
+    private final TagsService tagsService;
     private final ExecutorService syntForkJoinPool;
-
-    public static final List<Tags> SYNT_TAGS = Arrays.asList(Tags.DOLLY, Tags.ARENASYNT);
 
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
@@ -106,7 +100,7 @@ public class VedtakshistorikkService {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
                 var utvalgtIdent = getUtvalgtIdentIAldersgruppe(vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
-                if (nonNull(utvalgtIdent) && opprettetTagsPaaIdent(utvalgtIdent.getIdent())) {
+                if (nonNull(utvalgtIdent) && tagsService.opprettetTagsPaaIdenter(Collections.singletonList(utvalgtIdent.getIdent()))) {
                     responses.putAll(opprettHistorikkOgSendTilArena(utvalgtIdent, miljoe, vedtakshistorikk, tidligsteDato));
                 }
             }
@@ -185,8 +179,8 @@ public class VedtakshistorikkService {
 
         if (!rettigheter.isEmpty()) {
             if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, person, miljoe)) {
-                removeTagsPaaIdent(personident);
-                slettIdentIArena(personident, miljoe);
+                tagsService.removeTagsPaaIdent(personident);
+                arenaForvalterService.slettArbeidssoekerIArena(personident, miljoe);
                 return Collections.emptyMap();
             }
             try {
@@ -215,17 +209,4 @@ public class VedtakshistorikkService {
         }
         return true;
     }
-
-    private boolean opprettetTagsPaaIdent(String ident) {
-        return pdlProxyConsumer.createTags(Collections.singletonList(ident), SYNT_TAGS);
-    }
-
-    private void removeTagsPaaIdent(String ident) {
-        pdlProxyConsumer.deleteTags(Collections.singletonList(ident), SYNT_TAGS);
-    }
-
-    private void slettIdentIArena(String ident, String miljoe) {
-        arenaForvalterService.slettArbeidssoekerIArena(ident, miljoe);
-    }
-
 }

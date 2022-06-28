@@ -103,12 +103,12 @@ public class PdlProxyConsumer {
 
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
                 var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
-                log.error("Feil i opprettelse av tag(s) på ident(er).{}", status);
+                log.error("Feil i opprettelse av tag(s) på ident(er): {}", status);
                 return false;
             }
             return true;
         } catch (Exception e) {
-            log.error("Feil i opprettelse av tag(s) på ident(er).", e);
+            log.error("Feil i opprettelse av tag(s) på ident(er): ", e);
             return false;
         }
     }

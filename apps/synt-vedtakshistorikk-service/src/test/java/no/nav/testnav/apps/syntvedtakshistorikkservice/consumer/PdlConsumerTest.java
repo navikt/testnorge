@@ -28,7 +28,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtil
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService.SYNT_TAGS;
 
 
 @ActiveProfiles("test")

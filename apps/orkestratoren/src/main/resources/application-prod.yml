@@ -15,7 +15,9 @@ batch:
   avspillergruppeId: 100000883
   miljoe: q2
   arena:
-    antallNyeIdenter: 5
+    antallHistorikker: 5
+    antallBrukere: 15
+    antallDagpenger: 5
   popp:
     antallNyeIdenter: 500
   aareg:
