@@ -15,12 +15,13 @@ const testTelefonnummer = () =>
 
 const testPrioritet = (val) => {
 	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
-		const values = this.options.context
-		const index = this.options.index
+		const values = this?.options?.context
+		if (!values || Object.keys(values).length < 1) return true
+		const index = this?.options?.index
 		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
-		if (tlfListe.length < 2) return true
+		if (tlfListe?.length < 2) return true
 		const index2 = index === 0 ? 1 : 0
-		return tlfListe[index]?.prioritet !== tlfListe[index2]?.prioritet
+		return tlfListe?.[index]?.prioritet !== tlfListe?.[index2]?.prioritet
 	})
 }
 
@@ -471,13 +472,12 @@ export const statsborgerskap = Yup.object({
 	bekreftelsesdato: Yup.date().optional().nullable(),
 })
 
-const telefonnummer = Yup.array().of(
-	Yup.object({
-		landskode: requiredString,
-		nummer: testTelefonnummer(),
-		prioritet: testPrioritet(requiredString).nullable(),
-	})
-)
+export const telefonnummer = Yup.object({
+	landskode: requiredString,
+	nummer: testTelefonnummer(),
+	// prioritet: testPrioritet(requiredString).nullable(),
+	prioritet: testPrioritet(Yup.mixed().required()).nullable(),
+})
 
 export const innflytting = Yup.object({
 	fraflyttingsland: requiredString,
@@ -639,7 +639,7 @@ export const validation = {
 				tilrettelagtKommunikasjon
 			),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
-			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
+			telefonnummer: ifPresent('$pdldata.person.telefonnummer', Yup.array().of(telefonnummer)),
 			statsborgerskap: ifPresent(
 				'$pdldata.person.statsborgerskap',
 				Yup.array().of(statsborgerskap)

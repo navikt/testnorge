@@ -4,6 +4,10 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import _cloneDeep from 'lodash/cloneDeep'
+import { initialTelefonnummer } from '~/components/fagsystem/pdlf/form/initialValues'
+import _get from 'lodash/get'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 
 type DataListe = {
 	data: Array<TelefonData>
@@ -14,20 +18,54 @@ type Data = {
 	idx: number
 }
 
-export const Telefonnummer = ({ data }: DataListe) => {
+export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }: DataListe) => {
 	if (!data || data.length === 0) return null
 
-	const TelefonnummerVisning = ({ item, idx }: Data) => {
-		const telefonnummer = item.nummer || item.telefonnummer
-		const landkode = item.landskode || item.landkode
+	const TelefonnummerLes = ({ telefonnummerData, idx }) => {
+		if (!telefonnummerData) return null
+
+		const telefonnummer = telefonnummerData.nummer || telefonnummerData.telefonnummer
+		const landkode = telefonnummerData.landskode || telefonnummerData.landkode
 		const prioritet =
-			item.prioritet || (item.telefontype === 'MOBI' && 1) || (item.telefontype === 'HJET' && 2)
+			telefonnummerData.prioritet ||
+			(telefonnummerData.telefontype === 'MOBI' && 1) ||
+			(telefonnummerData.telefontype === 'HJET' && 2)
 
 		return (
-			<div className="person-visning_content" key={idx}>
+			<div className="person-visning_redigerbar" key={idx}>
 				<TitleValue title="Telefonnummer" value={`${landkode} ${telefonnummer}`} />
 				<TitleValue title="Prioritet" value={prioritet} />
 			</div>
+		)
+	}
+
+	const TelefonnummerVisning = ({ item, idx }: Data) => {
+		const initTelefonnummer = Object.assign(_cloneDeep(initialTelefonnummer), data[idx])
+		const initialValues = { telefonnummer: initTelefonnummer }
+
+		const redigertTelefonnummerPdlf = _get(tmpPersoner, `${ident}.person.telefonnummer`)?.find(
+			(a: any) => a.id === item.id
+		)
+		const slettetTelefonnummerPdlf =
+			tmpPersoner?.hasOwnProperty(ident) && !redigertTelefonnummerPdlf
+		if (slettetTelefonnummerPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+
+		const telefonnummerValues = redigertTelefonnummerPdlf ? redigertTelefonnummerPdlf : item
+		const redigertTelefonnummerValues = redigertTelefonnummerPdlf
+			? {
+					telefonnummer: Object.assign(_cloneDeep(initialTelefonnummer), redigertTelefonnummerPdlf),
+			  }
+			: null
+		return erPdlVisning ? (
+			<TelefonnummerLes telefonnummerData={telefonnummerValues} idx={idx} />
+		) : (
+			<VisningRedigerbarConnector
+				dataVisning={<TelefonnummerLes telefonnummerData={telefonnummerValues} idx={idx} />}
+				initialValues={initialValues}
+				redigertAttributt={redigertTelefonnummerValues}
+				path="telefonnummer"
+				ident={ident}
+			/>
 		)
 	}
 

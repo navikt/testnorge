@@ -28,8 +28,10 @@ import {
 	bostedsadresse,
 	kontaktadresse,
 	oppholdsadresse,
+	telefonnummer,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
+import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -58,6 +60,7 @@ enum Attributt {
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
 	Adressebeskyttelse = 'adressebeskyttelse',
+	Telefonnummer = 'telefonnummer',
 }
 
 const FieldArrayEdit = styled.div`
@@ -193,6 +196,8 @@ export const VisningRedigerbar = ({
 				return <KontaktadresseForm formikBag={formikBag} path={path} />
 			case Attributt.Adressebeskyttelse:
 				return <AdressebeskyttelseForm formikBag={formikBag} path={path} identtype={identtype} />
+			case Attributt.Telefonnummer:
+				return <TelefonnummerFormRedigering path={path} formikBag={formikBag} />
 		}
 	}
 
@@ -206,6 +211,7 @@ export const VisningRedigerbar = ({
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
+			telefonnummer: ifPresent('telefonnummer', telefonnummer),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -216,6 +222,7 @@ export const VisningRedigerbar = ({
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
+			['telefonnummer', 'telefonnummer'],
 		]
 	)
 

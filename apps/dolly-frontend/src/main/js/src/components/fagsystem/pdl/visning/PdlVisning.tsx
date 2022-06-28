@@ -104,7 +104,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<TpsMBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
 				<Foedsel data={foedsel} erPdlVisning />
 				<Doedsfall data={doedsfall} erPdlVisning />
-				<Telefonnummer data={telefonnummer} />
+				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<PdlBoadresse data={bostedsadresse} />

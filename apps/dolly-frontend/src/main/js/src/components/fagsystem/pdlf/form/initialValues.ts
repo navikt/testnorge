@@ -315,3 +315,17 @@ export const initialOpphold = {
 	kilde: 'Dolly',
 	master: 'FREG',
 }
+
+export const initialTelefonnummer = {
+	landskode: '',
+	nummer: '',
+	prioritet: 2,
+	kilde: 'Dolly',
+	master: 'PDL',
+}
+
+export const initialTpsTelefonnummer = {
+	landkode: '',
+	telefonnummer: '',
+	telefontype: 'HJET',
+}
