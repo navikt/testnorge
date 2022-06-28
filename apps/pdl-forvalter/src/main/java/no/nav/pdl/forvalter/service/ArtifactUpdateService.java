@@ -446,12 +446,16 @@ public class ArtifactUpdateService {
         }
     }
 
-    public void updateTelefonnummer(String ident, Integer id, List<TelefonnummerDTO> oppdaterteTelefonnumre) {
+    public void updateTelefonnummer(String ident, List<TelefonnummerDTO> oppdaterteTelefonnumre) {
 
         var person = getPerson(ident);
 
         oppdaterteTelefonnumre
-                .forEach(telefonnummerService::validate);
+                .forEach(telefonnummer -> {
+                    telefonnummerService.validate(telefonnummer);
+                    telefonnummer.setIsNew(true);
+                    telefonnummer.setId(telefonnummer.getPrioritet());
+                });
 
         person.getPerson().setTelefonnummer(oppdaterteTelefonnumre);
         telefonnummerService.convert(person.getPerson().getTelefonnummer());
