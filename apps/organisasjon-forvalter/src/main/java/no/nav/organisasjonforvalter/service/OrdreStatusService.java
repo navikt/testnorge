@@ -68,7 +68,7 @@ public class OrdreStatusService {
                                     .description("Bestilling venter på å starte")
                                     .build())
                             .build())
-                    .collect(toList()));
+                    .toList());
         }
 
         return OrdreResponse.builder()
