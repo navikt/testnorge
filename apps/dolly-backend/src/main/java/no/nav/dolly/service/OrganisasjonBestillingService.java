@@ -225,7 +225,7 @@ public class OrganisasjonBestillingService {
     }
 
     private String forvalterStatusDetails(OrgStatus orgStatus) {
-        if (isNull(orgStatus)) {
+        if (isNull(orgStatus) || isNull(orgStatus.getStatus())) {
             return "Not found";
         }
         return switch (orgStatus.getStatus()) {
@@ -238,6 +238,8 @@ public class OrganisasjonBestillingService {
     private List<OrgStatus> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
+
+        log.info("Status for org deploy på org: {} - {}", bestillingProgress.getOrganisasjonsnummer(), organisasjonDeployStatus);
 
         var orgStatus = organisasjonDeployStatus.getOrgStatus()
                 .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
