@@ -42,12 +42,11 @@ export const BestillingProgresjon = ({
 		}
 	}
 
-	if (erOrganisasjon) {
-		const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
-		setDetaljertOrgStatus(bestillingStatus)
-	}
-
 	useEffect(() => {
+		if (erOrganisasjon) {
+			const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
+			setDetaljertOrgStatus(bestillingStatus)
+		}
 		harBestillingFeilet(sistOppdatert)
 	}, [bestilling])
 
