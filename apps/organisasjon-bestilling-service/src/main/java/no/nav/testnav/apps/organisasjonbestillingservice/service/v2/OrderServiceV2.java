@@ -63,7 +63,7 @@ public class OrderServiceV2 {
                 return getStatusFromBatchId(new Order(order));
             } catch (WebClientResponseException.NotFound e) {
                 log.info("Fant ikke noen status for org: {}", id);
-                return Status.NOT_FOUND;
+                return null;
             }
         }
 
