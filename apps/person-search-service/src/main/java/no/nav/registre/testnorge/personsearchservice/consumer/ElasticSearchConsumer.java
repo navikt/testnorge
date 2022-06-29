@@ -42,26 +42,25 @@ public class ElasticSearchConsumer {
     }
 
     @SneakyThrows
-    public Flux<Response> search(SearchRequest searchRequest) {
+    private Flux<Object> getSearchResponse(SearchRequest searchRequest) {
         return tokenExchange.exchange(pdlProxyProperties)
                 .flatMapMany(token ->
                         new ElasticSearchCommand(webClient, searchRequest.indices()[0], token.getTokenValue(), searchRequest.source().toString()).call())
                 .map(SearchResponse::getHits)
                 .map(SearchResponse.SearchHits::getHits)
                 .flatMap(Flux::fromIterable)
-                .map(SearchResponse.SearchHit::get_source)
+                .map(SearchResponse.SearchHit::get_source);
+    }
+
+    @SneakyThrows
+    public Flux<Response> search(SearchRequest searchRequest) {
+        return getSearchResponse(searchRequest)
                 .map(response -> objectMapper.convertValue(response, Response.class));
     }
 
     @SneakyThrows
     public Flux<String> searchWithJsonResponse(SearchRequest searchRequest) {
-        return tokenExchange.exchange(pdlProxyProperties)
-                .flatMapMany(token ->
-                        new ElasticSearchCommand(webClient, searchRequest.indices()[0], token.getTokenValue(), searchRequest.source().toString()).call())
-                .map(SearchResponse::getHits)
-                .map(SearchResponse.SearchHits::getHits)
-                .flatMap(Flux::fromIterable)
-                .map(SearchResponse.SearchHit::get_source)
+        return getSearchResponse(searchRequest)
                 .map(response -> {
                     try {
                         return objectMapper.writeValueAsString(response);
