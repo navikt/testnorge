@@ -44,6 +44,6 @@ public class SearchResponse {
         private String _type;
         private String _id;
         private Double _score;
-        private Response _source;
+        private Object _source;
     }
 }

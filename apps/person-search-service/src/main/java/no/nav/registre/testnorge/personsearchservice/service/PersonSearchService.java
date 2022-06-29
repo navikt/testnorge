@@ -1,7 +1,5 @@
 package no.nav.registre.testnorge.personsearchservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,28 +17,17 @@ import reactor.core.publisher.Flux;
 public class PersonSearchService {
 
     private final ElasticSearchConsumer elasticSearchConsumer;
-    private final ObjectMapper objectMapper;
 
     @SneakyThrows
     public Flux<Person> search(PersonSearch search) {
-
         var searchRequest = createSearchRequest(search);
         return elasticSearchConsumer.search(searchRequest)
                 .map(Person::new);
     }
 
     public Flux<String> searchPdlPersoner(PersonSearch search) {
-
         var searchRequest = createSearchRequest(search);
-        return elasticSearchConsumer.search(searchRequest)
-                .map(searchHit -> {
-                    try {
-                        return objectMapper.writeValueAsString(searchHit);
-                    } catch (JsonProcessingException e) {
-                        log.error(e.getMessage(), e);
-                        return "En feil har oppstått: " + e.getMessage();
-                    }
-                });
+        return elasticSearchConsumer.searchWithJsonResponse(searchRequest);
     }
 
     private SearchRequest createSearchRequest(PersonSearch search) {

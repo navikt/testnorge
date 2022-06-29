@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.personsearchservice.consumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import static no.nav.registre.testnorge.personsearchservice.service.utils.Jackso
 @Component
 public class ElasticSearchConsumer {
 
+    private final ObjectMapper objectMapper;
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final PdlProxyProperties pdlProxyProperties;
@@ -36,11 +38,11 @@ public class ElasticSearchConsumer {
                 .build();
         this.tokenExchange = tokenExchange;
         this.pdlProxyProperties = pdlProxyProperties;
+        this.objectMapper = objectMapper;
     }
 
     @SneakyThrows
-    public Flux<Response> search(SearchRequest searchRequest) {
-
+    private Flux<Object> getSearchResponse(SearchRequest searchRequest) {
         return tokenExchange.exchange(pdlProxyProperties)
                 .flatMapMany(token ->
                         new ElasticSearchCommand(webClient, searchRequest.indices()[0], token.getTokenValue(), searchRequest.source().toString()).call())
@@ -48,5 +50,23 @@ public class ElasticSearchConsumer {
                 .map(SearchResponse.SearchHits::getHits)
                 .flatMap(Flux::fromIterable)
                 .map(SearchResponse.SearchHit::get_source);
+    }
+
+    @SneakyThrows
+    public Flux<Response> search(SearchRequest searchRequest) {
+        return getSearchResponse(searchRequest)
+                .map(response -> objectMapper.convertValue(response, Response.class));
+    }
+
+    @SneakyThrows
+    public Flux<String> searchWithJsonResponse(SearchRequest searchRequest) {
+        return getSearchResponse(searchRequest)
+                .map(response -> {
+                    try {
+                        return objectMapper.writeValueAsString(response);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 }
