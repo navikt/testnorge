@@ -62,13 +62,14 @@ const fieldResolver = (
 	tilleggsinformasjonAttributter,
 	options = []
 ) => {
+	const fieldName = tilleggsinformasjonPaths(field)
 	const values = formik.values
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
 				key={index}
 				visHvisAvhuket={false}
-				name={field}
+				name={fieldName}
 				label={texts(field)}
 				afterChange={handleChange}
 				feil={sjekkFelt(formik, field, options, values, path)}
@@ -78,7 +79,7 @@ const fieldResolver = (
 		return (
 			<FormikSelect
 				key={index}
-				name={field}
+				name={fieldName}
 				label={texts(field)}
 				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 				fastfield={false}
@@ -92,7 +93,7 @@ const fieldResolver = (
 			<FormikTextInput
 				key={index}
 				visHvisAvhuket={false}
-				name={field}
+				name={fieldName}
 				label={texts(field)}
 				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
@@ -134,7 +135,7 @@ const fieldResolver = (
 	return (
 		<FormikSelect
 			key={index}
-			name={field}
+			name={fieldName}
 			value={filteredOptions.length === 1 ? filteredOptions[0].value : _get(values, fieldPath)}
 			label={texts(field)}
 			options={filteredOptions.filter((option) => option.value !== '<TOM>')}
