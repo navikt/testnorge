@@ -4,7 +4,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.Arena
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.*;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -38,8 +38,6 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: orkestratoren
-          cluster: dev-fss
     outbound:
       rules:
         - application: synthdata-arena-vedtakshistorikk
