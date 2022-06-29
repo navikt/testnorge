@@ -16,6 +16,7 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
+import './Gruppe.less'
 
 export type GruppeProps = {
 	visning: string
@@ -64,16 +65,8 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
 			)}
 
-			<div
-				className="toolbar"
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'center',
-					marginBottom: '0',
-				}}
-			>
-				<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+			<div className="gruppe-toolbar">
+				<div className="gruppe--full gruppe--flex-row-center">
 					{brukertype === 'AZURE' && (
 						<NavButton
 							type="hoved"
@@ -82,7 +75,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 							title={
 								erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''
 							}
-							style={{ marginTop: '5px', marginBottom: '5px', marginRight: '10px' }}
+							className="margin-top-5 margin-bottom-5 margin-right-10"
 						>
 							Opprett personer
 						</NavButton>
@@ -99,7 +92,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 						}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '5px', marginBottom: '5px' }}
+						className="margin-top-5 margin-bottom-5"
 					>
 						Importer personer
 					</NavButton>
@@ -108,15 +101,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<FinnPersonBestillingConnector />
 				</div>
-				<div
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-						marginTop: '20px',
-						marginBottom: '10px',
-					}}
-				>
+				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGruppe onChange={byttVisning} name="toggler">
 						<ToggleKnapp
 							value={VisningType.VISNING_PERSONER}
