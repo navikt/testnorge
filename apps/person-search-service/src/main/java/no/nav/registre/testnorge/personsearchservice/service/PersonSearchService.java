@@ -12,7 +12,6 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.action.search.SearchRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import no.nav.registre.testnorge.personsearchservice.model.Response;
 
 @Slf4j
 @Service
