@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.elasticsearch.action.search.SearchRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import no.nav.registre.testnorge.personsearchservice.model.Response;
 
 @Slf4j
 @Service
@@ -19,28 +20,17 @@ import reactor.core.publisher.Flux;
 public class PersonSearchService {
 
     private final ElasticSearchConsumer elasticSearchConsumer;
-    private final ObjectMapper objectMapper;
 
     @SneakyThrows
     public Flux<Person> search(PersonSearch search) {
-
         var searchRequest = createSearchRequest(search);
         return elasticSearchConsumer.search(searchRequest)
                 .map(Person::new);
     }
 
     public Flux<String> searchPdlPersoner(PersonSearch search) {
-
         var searchRequest = createSearchRequest(search);
-        return elasticSearchConsumer.search(searchRequest)
-                .map(searchHit -> {
-                    try {
-                        return objectMapper.writeValueAsString(searchHit);
-                    } catch (JsonProcessingException e) {
-                        log.error(e.getMessage(), e);
-                        return "En feil har oppstått: " + e.getMessage();
-                    }
-                });
+        return elasticSearchConsumer.searchWithJsonResponse(searchRequest);
     }
 
     private SearchRequest createSearchRequest(PersonSearch search) {
