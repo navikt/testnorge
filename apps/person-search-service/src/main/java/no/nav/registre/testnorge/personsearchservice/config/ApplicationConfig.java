@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.personsearchservice.config;
 
-
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.context.annotation.Configuration;

@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class ProviderConfig implements WebMvcConfigurer {
 
-    @Value("${testnorge.aareg.security.cors.origins:''}")
+    @Value("${testnorge-aareg.security.cors.origins:''}")
     private String[] allowedOrigins;
 
     @Autowired

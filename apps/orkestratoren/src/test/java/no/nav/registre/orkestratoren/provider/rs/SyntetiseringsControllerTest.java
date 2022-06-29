@@ -9,14 +9,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -39,9 +37,6 @@ class SyntetiseringsControllerTest {
 
     @Mock
     private TestnorgeTpService testnorgeTpService;
-
-    @Mock
-    private ArenaService arenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;
@@ -121,14 +116,6 @@ class SyntetiseringsControllerTest {
         var request = new SyntetiserTpRequest(avspillergruppeId, miljoe, antallIdenter);
         syntetiseringsController.opprettYtelserITp(request);
         verify(testnorgeTpService).genererTp(request);
-    }
-
-    @Test
-    void shouldOppretteArbeidssoekereMedOppfoelgingIArena() {
-        var syntetiserArenaRequest = new SyntetiserArenaRequest(miljoe, 2);
-        syntetiseringsController.opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
-
-        verify(arenaService).opprettArbeidssoekereMedOppfoelgingIArena(syntetiserArenaRequest);
     }
 
     @Test

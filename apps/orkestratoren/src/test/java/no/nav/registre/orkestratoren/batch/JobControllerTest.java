@@ -18,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import no.nav.registre.orkestratoren.batch.v1.JobController;
 import no.nav.registre.orkestratoren.service.TestnorgeAaregService;
-import no.nav.registre.orkestratoren.service.ArenaService;
 import no.nav.registre.orkestratoren.service.TestnorgeInntektService;
 import no.nav.registre.orkestratoren.service.TestnorgeInstService;
 import no.nav.registre.orkestratoren.service.TestnorgeMedlService;
@@ -46,9 +45,6 @@ class JobControllerTest {
 
     @Mock
     private TestnorgeSamService testnorgeSamService;
-
-    @Mock
-    private ArenaService arenaService;
 
     @Mock
     private TestnorgeMedlService testnorgeMedlService;

@@ -64,9 +64,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-geografiske-kodeverk-service
           cluster: dev-gcp
+        - application: testnav-ident-pool
+          cluster: dev-gcp
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: https://testnav-ident-pool-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12

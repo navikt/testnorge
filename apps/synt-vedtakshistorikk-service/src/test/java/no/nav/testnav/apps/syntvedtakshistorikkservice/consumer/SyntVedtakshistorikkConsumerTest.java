@@ -2,7 +2,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
