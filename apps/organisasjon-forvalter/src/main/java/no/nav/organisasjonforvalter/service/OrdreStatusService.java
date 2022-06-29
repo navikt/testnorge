@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
-import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.NOT_FOUND;
+import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.ADDING_TO_QUEUE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -64,7 +64,7 @@ public class OrdreStatusService {
                             .orgnummer(status.getOrganisasjonsnummer())
                             .miljoe(status.getMiljoe())
                             .status(StatusDTO.builder()
-                                    .status(NOT_FOUND)
+                                    .status(ADDING_TO_QUEUE)
                                     .description("Bestilling venter på å starte")
                                     .build())
                             .build())
