@@ -30,6 +30,7 @@ export const BestillingProgresjon = ({
 
 	const [timedOut, setTimedOut] = useState(false)
 	const [orgStatus, setOrgStatus] = useState(null)
+	const [orgBestillingsstatus, setOrgBestillingsstatus] = useState(null)
 
 	const sistOppdatert = bestilling.sistOppdatert
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
@@ -42,10 +43,14 @@ export const BestillingProgresjon = ({
 		}
 	}
 
+	if (erOrganisasjon) {
+		const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
+		setOrgBestillingsstatus(bestillingStatus)
+	}
+
 	useEffect(() => {
 		if (erOrganisasjon) {
-			const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
-			setDetaljertOrgStatus(bestillingStatus)
+			setDetaljertOrgStatus(orgBestillingsstatus)
 		}
 		harBestillingFeilet(sistOppdatert)
 	}, [bestilling])
