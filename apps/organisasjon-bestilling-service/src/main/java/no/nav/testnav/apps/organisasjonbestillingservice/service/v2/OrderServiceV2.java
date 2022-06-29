@@ -2,13 +2,6 @@ package no.nav.testnav.apps.organisasjonbestillingservice.service.v2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.EregBatchStatusConsumer;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.JenkinsConsumer;
 import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
@@ -17,6 +10,13 @@ import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.entity.Or
 import no.nav.testnav.apps.organisasjonbestillingservice.retry.RetryConfig;
 import no.nav.testnav.apps.organisasjonbestillingservice.service.RetryService;
 import no.nav.testnav.libs.dto.organiasjonbestilling.v2.Status;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
@@ -58,7 +58,13 @@ public class OrderServiceV2 {
         var order = entity.get();
 
         if (order.getBatchId() != null) {
-            return getStatusFromBatchId(new Order(order));
+            try {
+
+                return getStatusFromBatchId(new Order(order));
+            } catch (WebClientResponseException.NotFound e) {
+                log.info("Fant ikke noen status for org: {}", id);
+                return Status.NOT_FOUND;
+            }
         }
 
         if (order.getBuildId() == null) {
@@ -92,6 +98,21 @@ public class OrderServiceV2 {
         return getStatusFromBatchId(new Order(order));
     }
 
+    public List<Order> find(String uuid) {
+        return repository.findBy(uuid).stream().map(Order::new).collect(Collectors.toList());
+    }
+
+    public void delete(String uuid) {
+        repository.deleteAllByUuid(uuid);
+    }
+
+    public List<Order> findAll() {
+        return StreamSupport
+                .stream(repository.findAll().spliterator(), false)
+                .map(Order::new)
+                .collect(Collectors.toList());
+    }
+
     private Status getStatusFromBatchId(Order order) {
         var statusKode = eregBatchStatusConsumer.getStatusKode(order);
         return Status.from(statusKode);
@@ -115,21 +136,6 @@ public class OrderServiceV2 {
             throw new RuntimeException("Fant ingen id som matchet.");
         }
         return Long.valueOf(id);
-    }
-
-    public List<Order> find(String uuid) {
-        return repository.findBy(uuid).stream().map(Order::new).collect(Collectors.toList());
-    }
-
-    public void delete(String uuid) {
-        repository.deleteAllByUuid(uuid);
-    }
-
-    public List<Order> findAll() {
-        return StreamSupport
-                .stream(repository.findAll().spliterator(), false)
-                .map(Order::new)
-                .collect(Collectors.toList());
     }
 
 }
