@@ -2,6 +2,10 @@ package no.nav.testnav.apps.organisasjonbestillingservice.controller.v2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
+import no.nav.testnav.apps.organisasjonbestillingservice.service.v2.OrderServiceV2;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v2.StatusDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,10 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
-import no.nav.testnav.apps.organisasjonbestillingservice.service.v2.OrderServiceV2;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.StatusDTO;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @RestController
@@ -67,6 +68,9 @@ public class OrderControllerV2 {
     @GetMapping("/{uuid}/ids/{id}/status")
     public ResponseEntity<StatusDTO> getStatus(@PathVariable String uuid, @PathVariable Long id) {
         var status = service.getStatus(id);
+        if (isNull(status)) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(new StatusDTO(status));
     }
 
