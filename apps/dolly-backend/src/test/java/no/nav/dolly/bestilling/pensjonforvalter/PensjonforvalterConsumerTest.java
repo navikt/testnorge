@@ -31,7 +31,7 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class PensjonforvalterConsumerTest {
+class PensjonforvalterConsumerTest {
     private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/api/v1/miljo";
 
     @MockBean
@@ -47,7 +47,7 @@ public class PensjonforvalterConsumerTest {
     private PensjonforvalterConsumer pensjonforvalterConsumer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         when(tokenService.exchange(ArgumentMatchers.any(PensjonforvalterProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
@@ -158,7 +158,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testGetMiljoer() {
+    void testGetMiljoer() {
         stubGetMiljo();
 
         var miljoer = pensjonforvalterConsumer.getMiljoer();
@@ -170,7 +170,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testOppretPerson_ok() {
+    void testOppretPerson_ok() {
         stubPostOppretPerson(false);
 
         var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest());
@@ -181,7 +181,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testOppretPerson_error() {
+    void testOppretPerson_error() {
         stubPostOppretPerson(true);
 
         var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest());
@@ -192,7 +192,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testLagreInntekt_ok() {
+    void testLagreInntekt_ok() {
         stubPostLagreInntekt(false);
 
         var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest());
@@ -203,7 +203,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testLagreInntekt_error() {
+    void testLagreInntekt_error() {
         stubPostLagreInntekt(true);
 
         var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest());
@@ -214,7 +214,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testGetInntekter() {
+    void testGetInntekter() {
         stubGetGetInntekter();
 
         var response = pensjonforvalterConsumer.getInntekter(null, null);
@@ -228,7 +228,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testLagreTpForhold_ok() {
+    void testLagreTpForhold_ok() {
         stubPostLagreTpForhold(false);
 
         var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest());
@@ -239,7 +239,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testLagreTpForhold_error() {
+    void testLagreTpForhold_error() {
         stubPostLagreTpForhold(true);
 
         var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest());
@@ -250,28 +250,31 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testSletteTpForhold_ok() {
+    void testSletteTpForhold_ok() {
         stubDeleteSletteTpForhold(false);
 
         pensjonforvalterConsumer.sletteTpForhold("000000");
+        assertThat("no exceptions", true);
     }
 
     @Test
-    public void testSletteTpForhold_error() {
+    void testSletteTpForhold_error() {
         stubDeleteSletteTpForhold(true);
 
         pensjonforvalterConsumer.sletteTpForhold("000000");
+        assertThat("no exceptions", true);
     }
 
     @Test
-    public void testSletteTpForhold_withWrongFnr() {
+    void testSletteTpForhold_withWrongFnr() {
         stubDeleteSletteTpForhold_withWrongFnr();
 
         pensjonforvalterConsumer.sletteTpForhold("000000");
+        assertThat("no exceptions", true);
     }
 
     @Test
-    public void testGetTpForhold() {
+    void testGetTpForhold() {
         stubGetGetTpForhold();
 
         var response = pensjonforvalterConsumer.getTpForhold(null, null);
@@ -285,7 +288,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testLagreTpYtelse_ok() {
+    void testLagreTpYtelse_ok() {
         stubPostLagreTpYtelse(false);
 
         var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest());
@@ -296,7 +299,7 @@ public class PensjonforvalterConsumerTest {
     }
 
     @Test
-    public void testLagreTpYtelse_error() {
+    void testLagreTpYtelse_error() {
         stubPostLagreTpYtelse(true);
 
         var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest());
