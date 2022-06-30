@@ -31,7 +31,11 @@ import {
 	telefonnummer,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
-import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
+import {
+	Telefonnummer,
+	TelefonnummerFormRedigering,
+} from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
+import { isArray } from 'lodash'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -103,7 +107,7 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-
+	// console.log('dataVisning: ', dataVisning) //TODO - SLETT MEG
 	const pdlfError = (error: any) => {
 		error &&
 			setErrorMessagePdlf(
@@ -197,7 +201,8 @@ export const VisningRedigerbar = ({
 			case Attributt.Adressebeskyttelse:
 				return <AdressebeskyttelseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Telefonnummer:
-				return <TelefonnummerFormRedigering path={path} formikBag={formikBag} />
+				// return <TelefonnummerFormRedigering path={path} formikBag={formikBag} />
+				return <Telefonnummer formikBag={formikBag} path={path} />
 		}
 	}
 
@@ -211,7 +216,7 @@ export const VisningRedigerbar = ({
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
-			telefonnummer: ifPresent('telefonnummer', telefonnummer),
+			telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -225,12 +230,13 @@ export const VisningRedigerbar = ({
 			['telefonnummer', 'telefonnummer'],
 		]
 	)
-
+	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
 			{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
 			{visningModus === Modus.Les && (
+				// isArray(initialValues) ?
 				<>
 					{dataVisning}
 					<EditDeleteKnapper>
@@ -264,43 +270,47 @@ export const VisningRedigerbar = ({
 					</div>
 				</>
 			)}
-			{visningModus === Modus.Skriv && (
-				<Formik
-					initialValues={redigertAttributt ? redigertAttributt : initialValues}
-					onSubmit={handleSubmit}
-					enableReinitialize
-					validationSchema={validationSchema}
-				>
-					{(formikBag) => {
-						return (
-							<>
-								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
-									<Knappegruppe>
-										<NavButton
-											type="standard"
-											htmlType="reset"
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
-											style={{ top: '1.75px' }}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											type="hoved"
-											htmlType="submit"
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
-				</Formik>
-			)}
+			{visningModus === Modus.Skriv &&
+				(path === Attributt.Telefonnummer ? (
+					<p>Testi</p>
+				) : (
+					<Formik
+						initialValues={redigertAttributt ? redigertAttributt : initialValues}
+						onSubmit={handleSubmit}
+						enableReinitialize
+						validationSchema={validationSchema}
+					>
+						{(formikBag) => {
+							console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
+							return (
+								<>
+									<FieldArrayEdit>
+										<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
+										<Knappegruppe>
+											<NavButton
+												type="standard"
+												htmlType="reset"
+												onClick={() => setVisningModus(Modus.Les)}
+												disabled={formikBag.isSubmitting}
+												style={{ top: '1.75px' }}
+											>
+												Avbryt
+											</NavButton>
+											<NavButton
+												type="hoved"
+												htmlType="submit"
+												onClick={() => formikBag.handleSubmit()}
+												disabled={!formikBag.isValid || formikBag.isSubmitting}
+											>
+												Endre
+											</NavButton>
+										</Knappegruppe>
+									</FieldArrayEdit>
+								</>
+							)
+						}}
+					</Formik>
+				))}
 		</>
 	)
 }

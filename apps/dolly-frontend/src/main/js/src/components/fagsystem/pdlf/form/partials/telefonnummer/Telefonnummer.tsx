@@ -10,6 +10,7 @@ import {
 	initialTelefonnummer,
 	initialTpsTelefonnummer,
 } from '~/components/fagsystem/pdlf/form/initialValues'
+import styled from 'styled-components'
 
 export interface TelefonnummerArray {
 	person: {
@@ -23,14 +24,22 @@ interface TelefonnummerValues {
 }
 
 interface TelefonnummerProps {
-	formikBag: FormikProps<{ pdldata: TelefonnummerArray }>
+	formikBag: FormikProps<{}>
 }
 
 type TelefonnummerFormTypes = {
 	path: string
-	formikBag: FormikProps<{}>
+	formikBag?: FormikProps<{}>
 	idx?: number
 }
+
+const StyledAvansert = styled.div`
+	&&& {
+		button {
+			position: inherit;
+		}
+	}
+`
 
 export const TelefonnummerFormRedigering = ({ path }: TelefonnummerFormTypes) => {
 	return (
@@ -53,15 +62,19 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerFormTypes) =>
 				size="xsmall"
 				isClearable={false}
 			/>
-			<AvansertForm path={path} kanVelgeMaster={false} />
+			<StyledAvansert>
+				<AvansertForm path={path} kanVelgeMaster={false} />
+			</StyledAvansert>
 		</>
 	)
 }
 
 export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerFormTypes) => {
-	const tlfListe = _get(formikBag.values, 'pdldata.person.telefonnummer')
+	const tlfListe = _get(formikBag.values, path || 'pdldata.person.telefonnummer')
 	if (!tlfListe) return null
-
+	// console.log('tlfListe: ', tlfListe) //TODO - SLETT MEG
+	// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
+	// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
 	useEffect(() => {
 		if (tlfListe.length === 1) {
 			formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
@@ -135,9 +148,11 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerFormTyp
 	)
 }
 
-export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
-	const tlfListe = _get(formikBag.values, 'pdldata.person.telefonnummer')
-	const tlfListeTps = _get(formikBag.values, 'tpsMessaging.telefonnummer')
+export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
+	// console.log('formikBag: ', formikBag) //TODO - SLETT MEG
+	// console.log('path: ', path) //TODO - SLETT MEG
+	const tlfListe = _get(formikBag.values, path || 'pdldata.person.telefonnummer')
+	const tlfListeTps = _get(formikBag.values, path || 'tpsMessaging.telefonnummer')
 
 	if (!tlfListe) return null
 
@@ -158,7 +173,8 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
-				name={'pdldata.person.telefonnummer'}
+				// name={'pdldata.person.telefonnummer'}
+				name={path || 'pdldata.person.telefonnummer'}
 				header="Telefonnummer"
 				newEntry={initialTelefonnummer}
 				canBeEmpty={false}

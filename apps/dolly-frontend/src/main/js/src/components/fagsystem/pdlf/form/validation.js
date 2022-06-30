@@ -15,10 +15,14 @@ const testTelefonnummer = () =>
 
 const testPrioritet = (val) => {
 	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
+		// const context = this?.options?.context
+		// const values = Object.keys(context) > 0 ? context : this?.from?.[1]?.value?.telefonnummer
 		const values = this?.options?.context
+		console.log('values: ', values) //TODO - SLETT MEG
+		console.log('this: ', this) //TODO - SLETT MEG
 		if (!values || Object.keys(values).length < 1) return true
 		const index = this?.options?.index
-		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
+		const tlfListe = _get(values, 'pdldata.person.telefonnummer') || _get(values, 'telefonnummer')
 		if (tlfListe?.length < 2) return true
 		const index2 = index === 0 ? 1 : 0
 		return tlfListe?.[index]?.prioritet !== tlfListe?.[index2]?.prioritet
