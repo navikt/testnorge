@@ -78,23 +78,6 @@ public class PdlForvalterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final PdlDataConsumer pdlDataConsumer;
 
-    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
-        builder.append('$')
-                .append(utenlandsIdentifikasjonsnummer);
-    }
-
-    private static boolean hasNoPdldataAdresse(PersonDTO person) {
-
-        return isNull(person) ||
-                (person.getBostedsadresse().isEmpty() &&
-                        person.getKontaktadresse().isEmpty() &&
-                        person.getOppholdsadresse().isEmpty());
-    }
-
-    private static void appendOkStatus(StringBuilder builder) {
-        builder.append("&OK");
-    }
-
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -168,11 +151,13 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (DollyFunctionalException e) {
 
             status.append('&').append(e.getMessage().replace(',', ';').replace(':', '='));
+            log.error(e.getMessage(), e);
 
         } catch (RuntimeException e) {
 
             status.append('&')
                     .append(errorStatusDecoder.decodeRuntimeException(e));
+            log.error(e.getMessage(), e);
 
         } catch (Exception e) {
 
@@ -448,7 +433,6 @@ public class PdlForvalterClient implements ClientRegister {
             } catch (RuntimeException exception) {
 
                 appendErrorStatus(exception, status);
-                log.error(exception.getMessage(), exception);
             }
         }
     }
@@ -464,7 +448,6 @@ public class PdlForvalterClient implements ClientRegister {
             } catch (RuntimeException exception) {
 
                 appendErrorStatus(exception, status);
-                log.error(exception.getMessage(), exception);
             }
         }
     }
@@ -489,5 +472,23 @@ public class PdlForvalterClient implements ClientRegister {
 
         builder.append('&')
                 .append(errorStatusDecoder.decodeRuntimeException(exception));
+        log.error(exception.getMessage(), exception);
+    }
+
+    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
+        builder.append('$')
+                .append(utenlandsIdentifikasjonsnummer);
+    }
+
+    private static boolean hasNoPdldataAdresse(PersonDTO person) {
+
+        return isNull(person) ||
+                (person.getBostedsadresse().isEmpty() &&
+                        person.getKontaktadresse().isEmpty() &&
+                        person.getOppholdsadresse().isEmpty());
+    }
+
+    private static void appendOkStatus(StringBuilder builder) {
+        builder.append("&OK");
     }
 }
