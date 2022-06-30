@@ -32,16 +32,12 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
 class PensjonforvalterConsumerTest {
-    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/api/v1/miljo";
 
     @MockBean
     private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;
-
-//    @MockBean
-//    private PensjonforvalterClient pensjonforvalterClient;
 
     @Autowired
     private PensjonforvalterConsumer pensjonforvalterConsumer;
