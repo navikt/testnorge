@@ -25,7 +25,9 @@ export const Visning = ({ data }: VisningData) => (
 )
 
 export const DoedfoedtBarnVisning = ({ data }: DoedfoedtBarnData) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 
 	return (
 		<div>

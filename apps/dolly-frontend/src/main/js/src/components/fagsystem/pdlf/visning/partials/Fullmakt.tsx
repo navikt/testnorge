@@ -79,7 +79,9 @@ export const Visning = ({ data, relasjoner }: Data) => {
 }
 
 export const Fullmakt = ({ data, relasjoner }: DataListe) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 	const fullmaktRelasjoner = relasjoner?.filter(
 		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG'
 	)

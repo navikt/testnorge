@@ -81,8 +81,12 @@ export const Visning = ({ data }: VisningProps) => {
 }
 
 export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
-	if (loading) return <Loading label="Laster KRR data" />
-	if (!data) return false
+	if (loading) {
+		return <Loading label="Laster KRR data" />
+	}
+	if (!data) {
+		return false
+	}
 
 	const sortedData = Array.isArray(data) ? data.slice().reverse() : data
 

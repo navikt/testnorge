@@ -45,7 +45,9 @@ const Visning = ({ relasjon, idx }: VisningProps) => {
 }
 
 export const PdlForeldreBarn = ({ data }: PdlForeldreBarnProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<div>

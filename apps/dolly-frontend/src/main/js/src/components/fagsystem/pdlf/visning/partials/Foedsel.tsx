@@ -29,7 +29,9 @@ type FoedselVisningTypes = {
 }
 
 export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: FoedselTypes) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const FoedselLes = ({ foedsel, idx }: FoedselVisningTypes) => {
 		return (

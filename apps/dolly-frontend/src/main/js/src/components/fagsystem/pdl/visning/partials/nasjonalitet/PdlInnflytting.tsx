@@ -35,7 +35,9 @@ const Innflytting = ({ data, idx }: InnflyttingProps) => {
 }
 
 export const PdlInnflytting = ({ innflytting }: VisningProps) => {
-	if (innflytting?.length < 1) return null
+	if (innflytting?.length < 1) {
+		return null
+	}
 
 	const gyldigeInnflyttinger = innflytting?.filter(
 		(flytting: InnflyttingTilNorge) => !flytting.metadata?.historisk

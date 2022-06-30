@@ -25,7 +25,9 @@ const DoedfoedtBarnVisning = ({ doedfoedtBarn, idx }: DoedfoedtBarnProps) => {
 }
 
 export const PdlDoedfoedtBarn = ({ data }: DataProps) => {
-	if (hasNoValues(data)) return null
+	if (hasNoValues(data)) {
+		return null
+	}
 
 	return (
 		<div>

@@ -22,7 +22,9 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 }
 
 export const PdlDeltBosted = ({ data }: PdlDeltBostedProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const gyldigeAdresser = data.filter((adresse: DeltBosted) => !adresse.metadata?.historisk)
 	const historiskeAdresser = data.filter((adresse: DeltBosted) => adresse.metadata?.historisk)

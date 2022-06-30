@@ -26,7 +26,9 @@ type BoadresseVisningTypes = {
 }
 
 export const Adresse = ({ boadresseData, idx }: BoadresseVisningTypes) => {
-	if (!boadresseData) return null
+	if (!boadresseData) {
+		return null
+	}
 	return (
 		<>
 			{boadresseData.vegadresse && <Vegadresse adresse={boadresseData} idx={idx} />}
@@ -44,7 +46,9 @@ export const Boadresse = ({
 	identtype,
 	erPdlVisning = false,
 }: BoadresseTypes) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const BoadresseVisning = ({ boadresseData, idx }: BoadresseVisningTypes) => {
 		const initBoadresse = Object.assign(_cloneDeep(initialBostedsadresse), data[idx])
@@ -54,7 +58,9 @@ export const Boadresse = ({
 			(a: BostedData) => a.id === boadresseData.id
 		)
 		const slettetBoadressePdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBoadressePdlf
-		if (slettetBoadressePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetBoadressePdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const boadresseValues = redigertBoadressePdlf ? redigertBoadressePdlf : boadresseData
 		const redigertBoadresseValues = redigertBoadressePdlf

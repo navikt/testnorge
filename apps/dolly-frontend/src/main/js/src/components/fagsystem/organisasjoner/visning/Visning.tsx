@@ -14,7 +14,9 @@ type OrganisasjonVisningProps = {
 }
 
 export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningProps) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	const [selectedId, setSelectedId] = useState('0')
 

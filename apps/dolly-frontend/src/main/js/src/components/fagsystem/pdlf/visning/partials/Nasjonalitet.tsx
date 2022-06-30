@@ -18,12 +18,18 @@ export const Nasjonalitet = ({
 	visTittel = true,
 	erPdlVisning = false,
 }: NasjonalitetTypes) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	const { statsborgerskap, innflytting, utflytting, ident } = data
 
-	if (!statsborgerskap && !innflytting && !utflytting) return null
-	if (statsborgerskap?.length < 1 && innflytting?.length < 1 && utflytting?.length < 1) return null
+	if (!statsborgerskap && !innflytting && !utflytting) {
+		return null
+	}
+	if (statsborgerskap?.length < 1 && innflytting?.length < 1 && utflytting?.length < 1) {
+		return null
+	}
 
 	return (
 		<div>
