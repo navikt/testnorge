@@ -11,14 +11,21 @@ interface ImportFraEtikettProps {
 }
 
 const importType = (fra: string) => {
-	if (fra === 'TPS') return 'Mini-Norge'
-	else if (fra === 'PDL' || fra === 'PDLF') return 'PDL'
-	else if (fra === 'Test-Norge') return 'Test-Norge'
-	else return 'Ukjent'
+	if (fra === 'TPS') {
+		return 'Mini-Norge'
+	} else if (fra === 'PDL' || fra === 'PDLF') {
+		return 'PDL'
+	} else if (fra === 'Test-Norge') {
+		return 'Test-Norge'
+	} else {
+		return 'Ukjent'
+	}
 }
 
 const ImportFraEtikett = ({ importFra, type, venstreMargin }: ImportFraEtikettProps) => {
-	if (!importFra) return null
+	if (!importFra) {
+		return null
+	}
 
 	const css = cn('dolly-etikett', { 'dolly-etikett--venstre-margin': venstreMargin })
 	return (

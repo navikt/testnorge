@@ -8,7 +8,9 @@ type Props = {
 }
 
 export default function SubOverskrift({ iconKind, label }: Props) {
-	if (!label) return null
+	if (!label) {
+		return null
+	}
 	return (
 		<div className="sub-overskrift">
 			{iconKind && <Icon size={18} kind={iconKind} />}

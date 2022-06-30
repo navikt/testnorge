@@ -7,10 +7,12 @@ import { getAdresseWithAdressetype } from '~/components/fagsystem/brregstub/form
 import { LOCATION_CHANGE } from 'redux-first-history'
 
 const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
-	for (let enhet of enheter) {
+	for (const enhet of enheter) {
 		if (enhet.underenheter && enhet.underenheter.length > 0) {
-			for (let underenhet of enhet.underenheter) {
-				if (underenhet.organisasjonsnummer === orgnr) return enhet.organisasjonsnummer
+			for (const underenhet of enhet.underenheter) {
+				if (underenhet.organisasjonsnummer === orgnr) {
+					return enhet.organisasjonsnummer
+				}
 			}
 		}
 	}
@@ -42,7 +44,9 @@ export default handleActions(
 			action: { payload: Organisasjon[] }
 		) {
 			const response = action.payload
-			if (response.length === 0) state.egneOrganisasjoner = []
+			if (response.length === 0) {
+				state.egneOrganisasjoner = []
+			}
 			state.egneOrganisasjoner = response.map((org: Organisasjon) => {
 				const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
 				const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')

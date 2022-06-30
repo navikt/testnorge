@@ -16,21 +16,28 @@ const findInitialStatus = (formikBag: FormikProps<any>) => {
 		key.includes('eosEllerEFTA')
 	)
 	if (eosEllerEFTAOpphold) {
-		if (oppholdsstatusObj.eosEllerEFTABeslutningOmOppholdsrettPeriode)
+		if (oppholdsstatusObj.eosEllerEFTABeslutningOmOppholdsrettPeriode) {
 			return ['eosEllerEFTAOpphold', 'eosEllerEFTABeslutningOmOppholdsrett', '']
-		if (oppholdsstatusObj.eosEllerEFTAVedtakOmVarigOppholdsrettPeriode)
+		}
+		if (oppholdsstatusObj.eosEllerEFTAVedtakOmVarigOppholdsrettPeriode) {
 			return ['eosEllerEFTAOpphold', 'eosEllerEFTAVedtakOmVarigOppholdsrett', '']
-		if (oppholdsstatusObj.eosEllerEFTAOppholdstillatelsePeriode)
+		}
+		if (oppholdsstatusObj.eosEllerEFTAOppholdstillatelsePeriode) {
 			return ['eosEllerEFTAOpphold', 'eosEllerEFTAOppholdstillatelse', '']
+		}
 	}
-	if (oppholdsstatusObj.oppholdSammeVilkaar)
+	if (oppholdsstatusObj.oppholdSammeVilkaar) {
 		return ['tredjelandsBorgere', '', 'oppholdSammeVilkaar']
+	}
 	if (
 		oppholdsstatusObj.ikkeOppholdSammeVilkaar ||
 		formikBag.values.udistub.harOppholdsTillatelse === false
-	)
+	) {
 		return ['tredjelandsBorgere', '', 'ikkeOppholdSammeVilkaar']
-	if (oppholdsstatusObj.uavklart) return ['tredjelandsBorgere', '', 'UAVKLART']
+	}
+	if (oppholdsstatusObj.uavklart) {
+		return ['tredjelandsBorgere', '', 'UAVKLART']
+	}
 	return ['', '', '']
 }
 
@@ -49,6 +56,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
+	const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 
 	const endreOppholdsstatus = (value: string) => {
 		setOppholdsstatus(value)
@@ -75,7 +83,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 		setPdlInitialValues(formikBag)
 		formikBag.setFieldValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', true)
+			formikBag.setFieldValue(harOppholdsTillatelsePath, true)
 			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
 				oppholdSammeVilkaarPeriode: { fra: null, til: null },
 				oppholdSammeVilkaarEffektuering: null,
@@ -84,7 +92,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
 			formikBag.setFieldValue(basePath, {})
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
+			formikBag.setFieldValue(harOppholdsTillatelsePath, false)
 			formikBag.setFieldValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
 				avslagEllerBortfall: {
 					avgjorelsesDato: null,
@@ -92,7 +100,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 			})
 		} else if (value === 'UAVKLART') {
 			formikBag.setFieldValue(basePath, { uavklart: true })
-			formikBag.setFieldValue('udistub.harOppholdsTillatelse', undefined)
+			formikBag.setFieldValue(harOppholdsTillatelsePath, undefined)
 		}
 	}
 

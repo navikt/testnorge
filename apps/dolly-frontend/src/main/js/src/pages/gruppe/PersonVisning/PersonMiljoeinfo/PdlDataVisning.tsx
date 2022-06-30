@@ -13,7 +13,9 @@ type PdlDataVisningProps = {
 }
 
 export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
-	if (!ident) return null
+	if (!ident) {
+		return null
+	}
 
 	const getPersonInfo = () => {
 		const [pdlData, setPdlData] = useState(null)

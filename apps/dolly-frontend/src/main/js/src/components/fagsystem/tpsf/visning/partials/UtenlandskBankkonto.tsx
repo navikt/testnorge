@@ -39,7 +39,9 @@ export const Visning = ({ data }: Data) => (
 )
 
 export const UtenlandskBankkonto = ({ data }: Data) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 	return (
 		<div>
 			<SubOverskrift label="Utenlandsk bankkonto" iconKind="bankkonto" />

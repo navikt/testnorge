@@ -23,7 +23,9 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 	const [tags, setTags] = useState(eksisterendeTags)
 	const mutate = useMatchMutate()
 
-	if (loading) return <Loading label="Sender tags..." />
+	if (loading) {
+		return <Loading label="Sender tags..." />
+	}
 
 	const tagsFraDolly = SelectOptionsOppslag.hentTagsFraDolly()
 	const tagOptions = SelectOptionsOppslag.formatOptions('tags', tagsFraDolly)

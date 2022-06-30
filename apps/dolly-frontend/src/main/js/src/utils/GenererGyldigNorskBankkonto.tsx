@@ -37,7 +37,7 @@ const gyldigKontonummerMod11 = (kontonummer: string) => {
 }
 
 export const generateValidKontoOptions = () => {
-	let kontoArray = []
+	const kontoArray = []
 	let numIterations = 0
 	while (kontoArray.length < 10 && numIterations < 100) {
 		const kontoNummer = createValidBankkontoNummer()

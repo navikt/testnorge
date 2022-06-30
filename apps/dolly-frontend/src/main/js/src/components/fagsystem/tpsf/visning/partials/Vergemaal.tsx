@@ -65,7 +65,9 @@ export const Visning = ({ data }: Data) => {
 }
 
 export const TpsfVergemaal = ({ data }: DataListe) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 	return (
 		<div>
 			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
