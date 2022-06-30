@@ -12,6 +12,7 @@ import { MalValg } from '~/pages/testnorgePage/search/importModal/MalValg'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import Hjelpetekst from '~/components/hjelpetekst'
 import './ImportModal.less'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type Props = {
 	valgtePersoner: ImportPerson[]
@@ -19,9 +20,9 @@ type Props = {
 		valgtePersoner: ImportPerson[],
 		mal: any,
 		navigate: Function,
-		gruppeId?: number
+		gruppe?: Gruppe,
 	) => void
-	gruppeId?: number
+	gruppe?: Gruppe
 }
 
 const getPdlPersoner = async (identer: string[]) => {
@@ -56,7 +57,7 @@ const getPdlPersoner = async (identer: string[]) => {
 
 const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
-export const ImportModal = ({ valgtePersoner, importerPersoner, gruppeId }: Props) => {
+export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props) => {
 	const navigate = useNavigate()
 
 	const [modalMalIsOpen, openMalModal, closeMalModal] = useBoolean(false)
@@ -90,10 +91,10 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppeId }: Prop
 		const partnere = getPartnere(valgtePersoner.map((person) => person.data))
 		if (importMedPartner && partnere?.length > 0) {
 			getPdlPersoner(partnere).then((response: ImportPerson[]) => {
-				importerPersoner(valgtePersoner.concat(response), malData, navigate, gruppeId)
+				importerPersoner(valgtePersoner.concat(response), malData, navigate, gruppe)
 			})
 		} else {
-			importerPersoner(personer, mal, navigate, gruppeId)
+			importerPersoner(personer, mal, navigate, gruppe)
 		}
 	}
 

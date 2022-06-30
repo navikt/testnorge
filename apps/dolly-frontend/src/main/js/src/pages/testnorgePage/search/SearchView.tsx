@@ -14,6 +14,7 @@ import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
+import {Gruppe} from "~/utils/hooks/useGruppe";
 
 type Props = {
 	items?: PdlData[]
@@ -27,7 +28,7 @@ type Props = {
 		navigate: Function,
 		gruppeId?: number
 	) => void
-	gruppeId?: number
+	gruppe?: Gruppe
 }
 
 export type ImportPerson = {
@@ -69,7 +70,7 @@ export default ({
 	setValgtePersoner,
 	importerPersoner,
 	sidetall,
-	gruppeId,
+	gruppe,
 }: Props) => {
 	if (loading) return <Loading label="Søker..." />
 	if (!items || items.length === 0) {
@@ -168,7 +169,7 @@ export default ({
 			<ImportModal
 				valgtePersoner={valgtePersoner}
 				importerPersoner={importerPersoner}
-				gruppeId={gruppeId}
+				gruppe={gruppe}
 			/>
 		</SearchView>
 	)

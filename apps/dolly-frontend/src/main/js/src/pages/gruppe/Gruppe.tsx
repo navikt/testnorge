@@ -82,11 +82,11 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 					)}
 
 					<NavButton
-						type="standard"
+						type={brukertype === 'BANKID' ? 'hoved' : 'standard'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
-									gruppeId: gruppeId,
+									gruppe: gruppe,
 								},
 							})
 						}
