@@ -9,7 +9,9 @@ type OrganisasjonKriterierProps = {
 }
 
 export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterierProps) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	const [selectedId, setSelectedId] = useState('0')
 
