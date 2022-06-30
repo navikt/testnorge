@@ -34,9 +34,15 @@ export const OrgnrToggle = ({
 
 	const clearEnhetsinfo = () => {
 		const oldValues = _get(formikBag.values, path)
-		if (oldValues.hasOwnProperty('foretaksNavn')) delete oldValues['foretaksNavn']
-		if (oldValues.hasOwnProperty('forretningsAdresse')) delete oldValues['forretningsAdresse']
-		if (oldValues.hasOwnProperty('postAdresse')) delete oldValues['postAdresse']
+		if (oldValues.hasOwnProperty('foretaksNavn')) {
+			delete oldValues['foretaksNavn']
+		}
+		if (oldValues.hasOwnProperty('forretningsAdresse')) {
+			delete oldValues['forretningsAdresse']
+		}
+		if (oldValues.hasOwnProperty('postAdresse')) {
+			delete oldValues['postAdresse']
+		}
 		oldValues['orgNr'] = ''
 		formikBag.setFieldValue(path, oldValues)
 	}

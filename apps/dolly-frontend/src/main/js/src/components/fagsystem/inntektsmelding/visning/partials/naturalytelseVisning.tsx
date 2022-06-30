@@ -11,7 +11,9 @@ interface NaturalytelseVisning {
 }
 
 export default ({ data, header }: NaturalytelseVisning) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 	return (
 		<ErrorBoundary>
 			<DollyFieldArray data={data} header={header} nested>

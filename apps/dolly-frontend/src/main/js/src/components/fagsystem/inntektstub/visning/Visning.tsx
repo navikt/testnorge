@@ -72,8 +72,12 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 }
 
 export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
-	if (loading) return <Loading label="Laster Inntektstub-data" />
-	if (!liste) return null
+	if (loading) {
+		return <Loading label="Laster Inntektstub-data" />
+	}
+	if (!liste) {
+		return null
+	}
 
 	const foersteAar = liste[0]?.aarMaaned?.substring(0, 4)
 

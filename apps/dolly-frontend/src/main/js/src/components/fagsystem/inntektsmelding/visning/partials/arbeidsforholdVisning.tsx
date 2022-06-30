@@ -13,7 +13,9 @@ interface ArbeidsforholdVisning {
 }
 
 export default ({ data }: ArbeidsforholdVisning) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	return (
 		<>

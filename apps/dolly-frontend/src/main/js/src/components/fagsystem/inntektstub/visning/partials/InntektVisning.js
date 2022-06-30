@@ -7,7 +7,9 @@ import texts from '~/components/inntektStub/texts'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const InntektVisning = ({ data }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<React.Fragment>

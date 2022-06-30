@@ -9,7 +9,9 @@ type FartoyProps = {
 }
 
 export const Fartoy = ({ data }: FartoyProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<>
