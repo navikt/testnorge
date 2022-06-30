@@ -1,8 +1,7 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
 import lombok.RequiredArgsConstructor;
-
-import no.nav.registre.testnorge.personsearchservice.adapter.model.UtflyttingFraNorgeModel;
+import no.nav.registre.testnorge.personsearchservice.model.UtflyttingFraNorgeModel;
 import no.nav.testnav.libs.dto.personsearchservice.v1.UtfyttingFraNorgeDTO;
 
 @RequiredArgsConstructor

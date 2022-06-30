@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/soek-kode-rydding' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-person-search-dev')}}
     with:
       resource: 'apps/person-search-service/config.yml'
       app-name: 'person-search-service'

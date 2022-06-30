@@ -599,15 +599,14 @@ public class PersonController {
         artifactDeleteService.deleteTelefonnummer(ident, id);
     }
 
-    @PutMapping(value = "/{ident}/telefonnummer/{id}")
-    @Operation(description = "Oppdater angitt telefonnummer for person")
-    public void updateTelefonnummer(@Parameter(description = "Ident for testperson")
+    @PutMapping(value = "/{ident}/telefonnummer")
+    @Operation(description = "Oppdater telefonnumre for person")
+    public void updateTelefonnumre(@Parameter(description = "Ident for testperson")
                                     @PathVariable String ident,
                                     @Parameter(description = "id som identifiserer telefonnummer")
-                                    @PathVariable Integer id,
-                                    @RequestBody TelefonnummerDTO telefonnummer) {
+                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
-        artifactUpdateService.updateTelefonnummer(ident, id, telefonnummer);
+        artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
     }
 
     @DeleteMapping(value = "/{ident}/fullmakt/{id}")

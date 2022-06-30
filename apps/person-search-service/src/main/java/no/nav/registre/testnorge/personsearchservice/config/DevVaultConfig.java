@@ -11,6 +11,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "kv/preprod/fss/person-search-service/dev", ignoreSecretNotFound = false)
 public class DevVaultConfig extends AbstractVaultConfiguration {
 
     @Override

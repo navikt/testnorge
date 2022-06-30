@@ -1,0 +1,40 @@
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+testnorge-aareg:
+  security:
+    cors:
+      origins: http://localhost:3050,http://localhost:3000
+  srvuser:
+    username:
+      dev: test
+      test: test
+    password:
+      dev: test
+      test: test
+
+consumers:
+  synt-aareg:
+    url: http://localhost:${wiremock.server.port:0}/synthdata-aareg
+  kodeverk:
+    url: http://localhost:${wiremock.server.port:0}/kodeverk
+  testnorge-hodejegeren:
+    url: http://localhost:${wiremock.server.port:0}/hodejegeren/api
+  fasit:
+    url: https://fasit.adeo.no
+  miljoer-service:
+    url: http://localhost:${wiremock.server.port:0}/miljoer
+    cluster: dummy
+    namespace: dolly
+    name: testnav-miljoer-service
+
+aareg:
+  pageSize: 2
+
+spring:
+  cloud:
+    vault:
+      enabled: false

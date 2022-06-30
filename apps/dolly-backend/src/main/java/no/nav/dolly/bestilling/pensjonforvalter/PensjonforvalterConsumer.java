@@ -3,6 +3,14 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.pensjonforvalter.command.GetInntekterCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.GetMiljoerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
@@ -13,44 +21,23 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Service
 public class PensjonforvalterConsumer {
-
-    private static final String API_VERSJON = "/api/v1";
-    private static final String PENSJON_OPPRETT_PERSON_URL = API_VERSJON + "/person";
-    private static final String MILJOER_HENT_TILGJENGELIGE_URL = API_VERSJON + "/miljo";
-    private static final String PENSJON_INNTEKT_URL = API_VERSJON + "/inntekt";
-    private static final String PENSJON_TP_FORHOLD_URL = API_VERSJON + "/tp/forhold";
-    private static final String PENSJON_TP_YTELSE_URL = API_VERSJON + "/tp/ytelse";
-    private static final String FNR_QUERY = "fnr";
-    private static final String MILJO_QUERY = "miljo";
-
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
@@ -71,24 +58,11 @@ public class PensjonforvalterConsumer {
 
     @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Set<String> getMiljoer() {
-
         try {
-            ResponseEntity<String[]> responseEntity = webClient
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path(MILJOER_HENT_TILGJENGELIGE_URL)
-                            .build())
-                    .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                    .header(HEADER_NAV_CALL_ID, generateCallId())
-                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                    .retrieve().toEntity(String[].class)
+            return new GetMiljoerCommand(webClient, serviceProperties.getAccessToken(tokenService))
+                    .call()
                     .block();
-
-            return responseEntity.hasBody() ? new HashSet<>(Set.of(responseEntity.getBody())) : emptySet();
-
         } catch (RuntimeException e) {
-
             log.error("Feilet å lese tilgjengelige miljøer fra pensjon. {}", e.getMessage(), e);
             return emptySet();
         }
@@ -97,20 +71,8 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
-        ResponseEntity<PensjonforvalterResponse> response = webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_OPPRETT_PERSON_URL)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(opprettPersonRequest)
-                .retrieve()
-                .toEntity(PensjonforvalterResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = new OpprettPersonCommand(webClient, serviceProperties.getAccessToken(tokenService), opprettPersonRequest)
+                .call()
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
@@ -123,21 +85,8 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
-
-        ResponseEntity<PensjonforvalterResponse> response = webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_INNTEKT_URL)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreInntektRequest)
-                .retrieve()
-                .toEntity(PensjonforvalterResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = new LagreInntektCommand(webClient, serviceProperties.getAccessToken(tokenService), lagreInntektRequest)
+                .call()
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
@@ -150,22 +99,8 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
     public JsonNode getInntekter(String ident, String miljoe) {
 
-
-        ResponseEntity<JsonNode> response = webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_INNTEKT_URL)
-                        .queryParam(FNR_QUERY, ident)
-                        .queryParam(MILJO_QUERY, miljoe)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve()
-                .toEntity(JsonNode.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = new GetInntekterCommand(webClient, serviceProperties.getAccessToken(tokenService), ident, miljoe)
+                .call()
                 .block();
 
         if (nonNull(response) && !response.hasBody()) {
@@ -178,20 +113,8 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
     public PensjonforvalterResponse lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest) {
 
-        ResponseEntity<PensjonforvalterResponse> response = webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_TP_FORHOLD_URL)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreTpForholdRequest)
-                .retrieve()
-                .toEntity(PensjonforvalterResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = new LagreTpForholdCommand(webClient, serviceProperties.getAccessToken(tokenService), lagreTpForholdRequest)
+                .call()
                 .block();
 
         if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
@@ -205,24 +128,31 @@ public class PensjonforvalterConsumer {
         return response.getBody();
     }
 
+    @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
+    public void sletteTpForhold(String pid) {
+
+        var response = new SletteTpForholdCommand(webClient, serviceProperties.getAccessToken(tokenService), pid)
+                .call()
+                .block();
+
+        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
+            log.info("Sletting mot TP forhold utført");
+        } else {
+            var status = response.getBody().getStatus().stream().map(s -> {
+                var httpStatus = s.getResponse().getHttpStatus();
+                return s.getMiljo() + ":" +
+                        (httpStatus != null ? httpStatus.getReasonPhrase() : "");
+            }).collect(Collectors.joining(", "));
+
+            log.info("Sletting mot TP forhold utført: {}", status);
+        }
+    }
+
     @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
     public JsonNode getTpForhold(String ident, String miljoe) {
 
-        ResponseEntity<JsonNode> response = webClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_TP_FORHOLD_URL)
-                        .queryParam(FNR_QUERY, ident)
-                        .queryParam(MILJO_QUERY, miljoe)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve()
-                .toEntity(JsonNode.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = new GetTpForholdCommand(webClient, serviceProperties.getAccessToken(tokenService), ident, miljoe)
+                .call()
                 .block();
 
         if (isNull(response) || !response.hasBody()) {
@@ -234,21 +164,8 @@ public class PensjonforvalterConsumer {
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
     public PensjonforvalterResponse lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest) {
-
-        ResponseEntity<PensjonforvalterResponse> response = webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_TP_YTELSE_URL)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreTpYtelseRequest)
-                .retrieve()
-                .toEntity(PensjonforvalterResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = new LagreTpYtelseCommand(webClient, serviceProperties.getAccessToken(tokenService), lagreTpYtelseRequest)
+                .call()
                 .block();
 
         if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {

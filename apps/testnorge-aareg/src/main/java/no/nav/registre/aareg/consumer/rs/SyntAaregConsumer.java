@@ -21,9 +21,9 @@ public class SyntAaregConsumer {
 
     public SyntAaregConsumer(
             @Value("${aareg.pageSize}") int pageSize,
-            @Value("${synt-aareg.rest.api.url}") String aaregUrl,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
-
+            @Value("${consumers.synt-aareg.url}") String aaregUrl,
+            ExchangeFilterFunction metricsWebClientFilterFunction
+    ) {
         this.pageSize = pageSize;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()

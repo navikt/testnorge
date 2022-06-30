@@ -9,9 +9,10 @@ import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
 import ToastConnector from '~/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import logoutBruker from '~/components/utlogging/logoutBruker'
+import { useDollyMaler } from '~/utils/hooks/useMaler'
 
 type Props = {
 	updateVarslingerBruker?: Function
@@ -22,7 +23,11 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 	const navigate = useNavigate()
 
 	const { loading, error: userError } = useCurrentBruker()
+
+	// Lazyloader miljøer, maler og profilData så det ligger cachet når det trengs
 	useDollyEnvironments()
+	useDollyMaler()
+	useBrukerProfil()
 
 	useEffect(() => {
 		if (userError) {
@@ -38,7 +43,7 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 
 	const logout = (stackTrace: string) => {
 		const feilmelding = extractFeilmelding(stackTrace)
-		logoutBruker(navigate, feilmelding)
+		logoutBruker(feilmelding)
 	}
 
 	useEffect(() => {

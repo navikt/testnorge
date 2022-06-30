@@ -15,9 +15,11 @@ import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.organisasjonforvalter.util.CurrentAuthentication;
 import no.nav.organisasjonforvalter.util.UtenlandskAdresseUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,29 +39,6 @@ public class BestillingService {
     private final OrganisasjonRepository organisasjonRepository;
     private final MapperFacade mapperFacade;
 
-    private static String adresseQuery(AdresseRequest adresse) {
-
-        var query = new StringBuilder();
-        if (isNotBlank(adresse.getPostnr())) {
-            query.append("postnummer=").append(adresse.getPostnr());
-        }
-        if (query.length() > 0) {
-            query.append('&');
-        }
-        if (isNotBlank(adresse.getKommunenr())) {
-            query.append("kommunenummer=").append(adresse.getKommunenr());
-        }
-        if (query.length() > 0) {
-            query.append('&');
-        }
-        if (isNotBlank(adresse.getAdresselinjer().stream()
-                .filter(linje -> isNotBlank(linje)).findFirst().orElse(""))) {
-            query.append("fritekst=").append(adresse.getAdresselinjer().stream()
-                    .filter(linje -> isNotBlank(linje)).findFirst().get());
-        }
-        return query.toString();
-    }
-
     public BestillingResponse execute(BestillingRequest request) {
 
         Set<String> orgnumre = request.getOrganisasjoner().stream()
@@ -74,7 +53,9 @@ public class BestillingService {
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
 
-        getAdresse(orgRequest);
+        getAdresse(orgRequest.getAdresser());
+
+        orgRequest.getUnderenheter().forEach(underenhet -> getAdresse(underenhet.getAdresser()));
 
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
         organisasjon.setOrganisasjonsnummer(organisasjonOrgnummerServiceConsumer.getOrgnummer());
@@ -91,15 +72,15 @@ public class BestillingService {
         return organisasjon;
     }
 
-    private void getAdresse(OrganisasjonRequest orgRequest) {
+    private void getAdresse(List<AdresseRequest> adresseRequest) {
 
-        if (orgRequest.getAdresser().isEmpty()) {
-            orgRequest.getAdresser().add(AdresseRequest.builder()
+        if (adresseRequest.isEmpty()) {
+            adresseRequest.add(AdresseRequest.builder()
                     .adressetype(AdresseType.FADR)
                     .build());
         }
 
-        orgRequest.getAdresser().forEach(adresse -> {
+        adresseRequest.forEach(adresse -> {
 
             if (isBlank(adresse.getLandkode()) || NORGE.equals(adresse.getLandkode())) {
                 String query = adresseQuery(adresse);
@@ -110,5 +91,28 @@ public class BestillingService {
                 UtenlandskAdresseUtil.prepareUtenlandskAdresse(adresse);
             }
         });
+    }
+
+    private static String adresseQuery(AdresseRequest adresse) {
+
+        var query = new StringBuilder();
+        if (isNotBlank(adresse.getPostnr())) {
+            query.append("postnummer=").append(adresse.getPostnr());
+        }
+        if (query.length() > 0) {
+            query.append('&');
+        }
+        if (isNotBlank(adresse.getKommunenr())) {
+            query.append("kommunenummer=").append(adresse.getKommunenr());
+        }
+        if (query.length() > 0) {
+            query.append('&');
+        }
+        if (isNotBlank(adresse.getAdresselinjer().stream()
+                .filter(StringUtils::isNotBlank).findFirst().orElse(""))) {
+            query.append("fritekst=").append(adresse.getAdresselinjer().stream()
+                    .filter(StringUtils::isNotBlank).findFirst().get());
+        }
+        return query.toString();
     }
 }

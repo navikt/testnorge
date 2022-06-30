@@ -19,7 +19,6 @@ export const PensjonVisning = ({ data, loading }) => {
 			<SubOverskrift label="Pensjonsgivende inntekt (POPP)" iconKind="pensjon" />
 
 			<Panel heading={`Pensjonsgivende inntekter (${foerste} - ${siste})`}>
-				{' '}
 				<DollyFieldArray data={data.inntekter} nested>
 					{(inntekt, idx) => (
 						<div className="person-visning_content" key={idx}>

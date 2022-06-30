@@ -5,7 +5,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.Hen
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;

@@ -5,7 +5,7 @@ import Icon from '~/components/ui/icon/Icon'
 import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
-import IdentList from "~/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList";
+import IdentList from '~/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList'
 
 export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
 	if (statusrapport.length <= 0) return null

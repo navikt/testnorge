@@ -18,7 +18,7 @@ public class FasitApiConsumer {
 
     private final RestTemplate restTemplate;
 
-    @Value("${fasit.url}")
+    @Value("${consumers.fasit.url}")
     private String fasitServerUrl;
 
     public FasitResourceWithUnmappedProperties[] fetchResources(String alias, String type) {
