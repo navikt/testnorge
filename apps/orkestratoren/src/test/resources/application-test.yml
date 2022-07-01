@@ -1,9 +1,4 @@
 consumers:
-  synt-vedtakshistorikk-service:
-    url: dummy
-    cluster: dev-gcp
-    namespace: dolly
-    name: dummy
   testnorge-aareg:
     url: dummy
   testnorge-frikort:
@@ -30,8 +25,6 @@ consumers:
 batch:
   avspillergruppeId: 000
   miljoe: test
-  arena:
-    antallNyeIdenter: 5
   popp:
     antallNyeIdenter: 1
   aareg:

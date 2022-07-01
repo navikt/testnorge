@@ -20,17 +20,12 @@ public class OrganisasjonMottakConsumer {
     private final EndringsdokumentV2Producer endringsdokumentProducer;
     private final MapperFacade mapperFacade;
 
-    private static Metadata getMetadata(String miljoe) {
-        return Metadata.newBuilder()
-                .setMiljo(miljoe)
-                .build();
-    }
-
     public void opprettOrganisasjon(String key, Organisasjon organisasjon, String miljoe) {
 
-        log.info("Sender opprettOrganisasjon med UUID {} for {} til Kafa, env {}", key, organisasjon.getOrganisasjonsnummer(), miljoe);
+        log.info("Sender opprettOrganisasjon med UUID {} for {} til Kafka, env {}", key, organisasjon.getOrganisasjonsnummer(), miljoe);
+        var org = mapperFacade.map(organisasjon, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class);
         opprettelsesdokumentProducer.send(key, Opprettelsesdokument.newBuilder()
-                .setOrganisasjon(mapperFacade.map(organisasjon, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class))
+                .setOrganisasjon(org)
                 .setMetadata(getMetadata(miljoe))
                 .build());
     }
@@ -42,5 +37,11 @@ public class OrganisasjonMottakConsumer {
                 .setOrganisasjon(mapperFacade.map(organisasjon, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class))
                 .setMetadata(getMetadata(miljoe))
                 .build());
+    }
+
+    private static Metadata getMetadata(String miljoe) {
+        return Metadata.newBuilder()
+                .setMiljo(miljoe)
+                .build();
     }
 }

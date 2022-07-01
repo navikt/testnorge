@@ -22,7 +22,7 @@ Det er viktig at begge branchene oppdateres ved videreutvikling av applikasjonen
 så lenge Dolly har en U2-instans.
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør TestnorgeAaregApplicationStarter med følgende argumenter:
 ``` 
 -Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[vault-token]

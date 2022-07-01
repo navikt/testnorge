@@ -4,3 +4,9 @@ azure:
       id: ${client_id}
       secret: ${client_secret}
 
+
+batch:
+  miljoe: q2
+  antallMedHistorikk: 1
+  antallMedOppfoelging: 1
+  antallMedDagpenger: 1

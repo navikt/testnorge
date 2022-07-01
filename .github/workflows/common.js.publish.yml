@@ -4,9 +4,6 @@ on:
       working-directory:
         type: string
         required: true
-    secrets:
-      READER_TOKEN:
-        required: false
 
 jobs:
   build:
@@ -17,15 +14,14 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: https://npm.pkg.github.com
+          registry-url: "https://npm.pkg.github.com"
       - name: Install
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.READER_TOKEN }}" > ~/.npmrc
-          npm install --no-save --no-audit
+        run: npm ci
         working-directory: ${{ inputs.working-directory }}
         env: 
-          NODE_AUTH_TOKEN: ${{ secrets.DOLLY_READER_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NPM_TOKEN: ${{ secrets.READER_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build
         run: npm run build
         working-directory: ${{ inputs.working-directory }}

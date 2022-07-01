@@ -8,11 +8,12 @@ export type Journalpost = {
 	kanal: string
 	dokumenter: Dokument[]
 	miljoe: string
+	bestillingId?: number
 }
 
 export type Dokument = {
 	dokumentInfoId: number
-	tittel: string
+	tittel?: string
 }
 
 type AvsenderMottaker = {
