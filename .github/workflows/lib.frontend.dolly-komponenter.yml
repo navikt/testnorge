@@ -6,6 +6,9 @@ on:
       - navikt/dolly-komponenter/**
       - .github/workflows/lib.frontend.dolly-komponenter.yml
 
+env:
+  NPM_TOKEN: ${{ secrets.READER_TOKEN }}
+
 jobs:
   build:
     name: Build
@@ -13,7 +16,7 @@ jobs:
     #TODO: Endre tilbake til @master
     with:
       working-directory: 'navikt/dolly-komponenter/'
-    secrets: 
+    secrets:
       dolly-npm-token: ${{ secrets.READER_TOKEN }}
       github-token: ${{ secrets.GITHUB_TOKEN }}
   publish:
