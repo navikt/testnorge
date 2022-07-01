@@ -1,7 +1,11 @@
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
+import image from '@rollup/plugin-image';
 import postcss from 'rollup-plugin-postcss';
-
+import NpmImport from 'less-plugin-npm-import';
+import { visualizer } from 'rollup-plugin-visualizer';
 const packageJson = require('./package.json');
 
 export default {
@@ -19,9 +23,21 @@ export default {
     },
   ],
   plugins: [
+    peerDepsExternal(),
     resolve(),
+    commonjs(),
+    image(),
     // visualizer(),
-    postcss(),
+    postcss({
+      use: [
+        [
+          'less',
+          {
+            plugins: [new NpmImport({ prefix: '~' })],
+          },
+        ],
+      ],
+    }),
     typescript({ useTsconfigDeclarationDir: true }),
   ],
 };
