@@ -48,9 +48,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 				name={`${path}.hasMellomnavn`}
 				label="Har tilfeldig mellomnavn"
 				checkboxMargin
-				// disabled={_get(formikBag?.values, `${path}.mellomnavn`)}
 				disabled={mellomnavn !== null}
-				title={mellomnavn !== null ? 'Mellomnavn er allerede valgt' : ''}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={true} />
 		</>
