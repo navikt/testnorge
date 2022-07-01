@@ -13,6 +13,10 @@ jobs:
     #TODO: Endre tilbake til @master
     with:
       working-directory: 'navikt/dolly-komponenter/'
+    secrets:
+      NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      NPM_TOKEN: ${{ secrets.READER_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   publish:
     name: Publish
     uses: navikt/testnorge/.github/workflows/common.js.publish.yml@bugfix/js-libs-build-error
