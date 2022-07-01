@@ -24,7 +24,7 @@ export const PdlPersonInfo = ({
 	tpsMessagingData,
 	tpsMessagingLoading = false,
 	visTittel = true,
-	tmpPersoner,
+	tmpPersoner = null,
 }) => {
 	if (!data) {
 		return null
@@ -33,6 +33,17 @@ export const PdlPersonInfo = ({
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
 	const personstatus = getCurrentPersonstatus(redigertPerson || data)
+
+	if (
+		!data?.ident &&
+		!personNavn &&
+		!personKjoenn &&
+		!personstatus &&
+		!tpsMessagingData &&
+		!tpsMessagingLoading
+	) {
+		return null
+	}
 
 	return (
 		<ErrorBoundary>

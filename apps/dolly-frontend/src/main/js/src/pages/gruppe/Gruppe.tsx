@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React, { BaseSyntheticEvent } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'

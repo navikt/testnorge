@@ -4,7 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export const Identhistorikk = ({ identhistorikk, visTittel = true }) => {
+export const TpsfIdenthistorikk = ({ identhistorikk, visTittel = true }) => {
 	if (!identhistorikk || identhistorikk.length < 1) return false
 
 	return (
