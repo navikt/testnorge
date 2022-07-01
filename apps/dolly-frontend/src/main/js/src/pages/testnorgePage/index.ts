@@ -1,3 +1,8 @@
 import TestnorgePage from './TestnorgePage'
+import { connect } from 'react-redux'
 
-export default TestnorgePage
+const mapStateToProps = (state: any) => ({
+	gruppe: state?.router?.location?.state?.gruppe,
+})
+
+export default connect(mapStateToProps)(TestnorgePage)
