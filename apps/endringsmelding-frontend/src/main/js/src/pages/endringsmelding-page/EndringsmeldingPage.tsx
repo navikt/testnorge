@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import Tabs from 'nav-frontend-tabs';
 import { Page } from '@navikt/dolly-komponenter';
-import { FodselsmeldingForm, DodsmeldingForm } from './form';
-import Panel from 'nav-frontend-paneler';
+import { DodsmeldingForm, FodselsmeldingForm } from './form';
+import { Panel, Tabs } from '@navikt/ds-react';
 
 export default () => {
   const [tapIndex, setTabIndex] = useState(0);

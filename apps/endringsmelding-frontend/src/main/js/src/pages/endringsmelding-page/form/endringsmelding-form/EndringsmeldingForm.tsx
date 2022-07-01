@@ -1,6 +1,5 @@
 import React, { useReducer } from 'react';
 import { Search } from '@/components/search';
-import { Hovedknapp } from 'nav-frontend-knapper';
 
 import {
   ErrorAlertstripe,
@@ -12,6 +11,7 @@ import {
 import EndringsmeldingService from '@/service/EndringsmeldingService';
 import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
+import { Button } from '@navikt/ds-react';
 
 type Props<T> = {
   children: React.ReactNode;
@@ -98,14 +98,16 @@ export default <T extends {}>({
         <>
           {children}
           <Line reverse={true}>
-            <Hovedknapp
+            <Button
+              type={'button'}
+              variant={'primary'}
               onClick={onSubmit}
               htmlType="submit"
               disabled={state.loading}
               spinner={state.loading}
             >
               {labels.submit}
-            </Hovedknapp>
+            </Button>
           </Line>
         </>
       )}
