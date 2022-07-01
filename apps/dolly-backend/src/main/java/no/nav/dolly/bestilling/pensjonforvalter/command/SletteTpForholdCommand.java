@@ -45,6 +45,8 @@ public class SletteTpForholdCommand implements Callable<Mono<ResponseEntity<Pens
                 .retrieve()
                 .toEntity(PensjonforvalterResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .doOnError(Exception.class, error -> log.error(error.getMessage(), error))
+                .onErrorResume(Exception.class, error -> Mono.empty());
     }
 }
