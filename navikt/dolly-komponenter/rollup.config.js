@@ -1,8 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
-import NpmImport from 'less-plugin-npm-import';
 
 const packageJson = require('./package.json');
 
@@ -22,18 +20,8 @@ export default {
   ],
   plugins: [
     resolve(),
-    commonjs(),
     // visualizer(),
-    postcss({
-      use: [
-        [
-          'less',
-          {
-            plugins: [new NpmImport({ prefix: '~' })],
-          },
-        ],
-      ],
-    }),
+    postcss(),
     typescript({ useTsconfigDeclarationDir: true }),
   ],
 };

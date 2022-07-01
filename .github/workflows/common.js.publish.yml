@@ -4,7 +4,7 @@ on:
       working-directory:
         type: string
         required: true
-        
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,6 +15,14 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: "https://npm.pkg.github.com"
+         
+      - name: Create a .npmrc file for the github package repository
+        uses: FerLuisxd/create-npmrc@3
+        with:
+          org_name: navikt
+        env:
+          AUTH_TOKEN: ${{secrets.READER_TOKEN}}
+
       - name: Install
         run: npm ci
         working-directory: ${{ inputs.working-directory }}
