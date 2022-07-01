@@ -29,8 +29,8 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 		return (
 			<span>
 				Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til
-				{gruppe === null && <>gruppe du velger i neste steg.</>}
-				{gruppe !== null && <>gruppen {gruppeNavn(gruppe)}.</>}
+				{gruppe === null && <> gruppe du velger i neste steg.</>}
+				{gruppe !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
 			</span>
 		)
 	}
