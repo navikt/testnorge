@@ -8,6 +8,7 @@ on:
 
 env:
   NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+  NPM_TOKEN: ${{ secrets.READER_TOKEN }}
 
 jobs:
   build:
