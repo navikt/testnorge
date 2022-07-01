@@ -9,6 +9,7 @@ import { FormikProps } from 'formik'
 
 const basePath = 'udistub.oppholdStatus'
 const pdlBasePath = 'pdldata.person.opphold'
+const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 
 const findInitialStatus = (formikBag: FormikProps<any>) => {
 	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
@@ -56,7 +57,6 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
-	const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 
 	const endreOppholdsstatus = (value: string) => {
 		setOppholdsstatus(value)
@@ -116,6 +116,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 				name="oppholdsstatus"
 				label="Innenfor eller utenfor EØS"
 				value={oppholdsstatus}
+				size="large"
 				options={Options('oppholdsstatus')}
 				onChange={(option: Option) => endreOppholdsstatus(option.value)}
 				feil={feilmelding(oppholdsstatus)}
