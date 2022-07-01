@@ -9,14 +9,7 @@ module.exports = merge(common, {
     devtool: 'source-map',
     stats: 'minimal',
     plugins: [
-        new OptimizeCssAssetsPlugin({
-            assetNameRegExp: /\.css$/g,
-            cssProcessor: require('cssnano'),
-            cssProcessorPluginOptions: {
-                preset: ['default', {discardComments: {removeAll: true}}]
-            },
-            canPrint: true
-        }),
+        new OptimizeCssAssetsPlugin(),
         new MiniCssExtractPlugin({
             filename: '[name].[contenthash:8].css'
         })
