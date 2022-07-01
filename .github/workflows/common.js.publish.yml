@@ -4,12 +4,7 @@ on:
       working-directory:
         type: string
         required: true
-    secrets: 
-      dolly-npm-token:
-        required: false
-      github-token:
-        required: false
-
+        
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,10 +18,8 @@ jobs:
       - name: Install
         run: npm ci
         working-directory: ${{ inputs.working-directory }}
-        env: 
-          NODE_AUTH_TOKEN: ${{ secrets.dolly-npm-token }}
-          NPM_TOKEN: ${{ secrets.dolly-npm-token }}
-          GITHUB_TOKEN: ${{ secrets.github-token }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Build
         run: npm run build
         working-directory: ${{ inputs.working-directory }}
