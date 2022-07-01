@@ -54,7 +54,6 @@ export const PersonVisning = ({
 	slettPersonOgPartner,
 	leggTilPaaPerson,
 	iLaastGruppe,
-	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
 
@@ -130,15 +129,13 @@ export const PersonVisning = ({
 					)}
 				</div>
 				{ident.master !== 'PDL' && (
-					<TpsfVisning
-						data={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
-						pdlData={data.pdlforvalter?.person}
+					<PdlfVisningConnector
+						data={data.pdlforvalter}
+						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
-						tmpPersoner={tmpPersoner?.pdlforvalter}
+						master={ident.master}
 					/>
-				)}
-				{ident.master !== 'PDL' && (
-					<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
