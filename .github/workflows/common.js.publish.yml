@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          registry-url: "https://npm.pkg.github.com"
       - name: Install
         run: npm ci
         working-directory: ${{ inputs.working-directory }}
