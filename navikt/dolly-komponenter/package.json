@@ -10,7 +10,6 @@
   "scripts": {
     "build": "rollup -c"
   },
-  "types": "lib",
   "author": {
     "name": "Team dolly",
     "email": "dolly@nav.no"
