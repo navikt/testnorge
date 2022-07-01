@@ -9,12 +9,14 @@ on:
 jobs:
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.js.build.yml@master
+    uses: navikt/testnorge/.github/workflows/common.js.build.yml@bugfix/js-libs-build-error
+    #TODO: Endre tilbake til @master
     with:
       working-directory: 'navikt/dolly-komponenter/'
   publish:
     name: Publish
-    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@master
+    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@bugfix/js-libs-build-error
+    #TODO: Endre tilbake til @master
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
     with:
       working-directory: 'navikt/dolly-komponenter/'
