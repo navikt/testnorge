@@ -4,6 +4,12 @@ on:
       working-directory:
         type: string
         required: true
+    secrets:
+      dolly-npm-token:
+        required: false
+      github-token:
+        required: false
+
 
 jobs:
   build:
