@@ -11,7 +11,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -28,7 +27,7 @@ import java.util.function.Function;
         OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
-@SpringBootApplication(exclude = {ReactiveUserDetailsServiceAutoConfiguration.class})
+@SpringBootApplication
 @RequiredArgsConstructor
 public class OrganisasjonTilgangFrontendApplicationStarter {
 
