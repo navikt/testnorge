@@ -16,6 +16,7 @@ import JoarkDokumentService, {
 	Journalpost,
 } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
+import Panel from '~/components/ui/panel/Panel'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -78,16 +79,32 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 						return (
 							<>
 								<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-								<DollyFieldArray
-									ignoreOnSingleElement={true}
-									header="Inntektsmelding"
-									data={gyldigeBestillinger}
-									expandable
-								>
-									{(inntekter: BestillingData) => (
-										<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
-									)}
-								</DollyFieldArray>
+								{data.length > 5 ? (
+									// @ts-ignore
+									<Panel heading={`Inntektsmeldinger`}>
+										<DollyFieldArray
+											ignoreOnSingleElement={true}
+											header="Inntektsmelding"
+											data={gyldigeBestillinger}
+											expandable
+										>
+											{(inntekter: BestillingData) => (
+												<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+											)}
+										</DollyFieldArray>
+									</Panel>
+								) : (
+									<DollyFieldArray
+										ignoreOnSingleElement={true}
+										header="Inntektsmelding"
+										data={gyldigeBestillinger}
+										expandable
+									>
+										{(inntekter: BestillingData) => (
+											<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+										)}
+									</DollyFieldArray>
+								)}
 							</>
 						)
 					}
