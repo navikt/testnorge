@@ -40,7 +40,7 @@ export const TelefonnummerLes = ({ telefonnummerData, idx }) => {
 export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }: DataListe) => {
 	if (!data || data.length === 0) return null
 	const initialValues = { telefonnummer: data }
-	console.log('tmpPersoner: ', tmpPersoner) //TODO - SLETT MEG
+	// console.log('tmpPersoner: ', tmpPersoner) //TODO - SLETT MEG
 
 	const redigertTelefonnummerPdlf = _get(tmpPersoner, `${ident}.person.telefonnummer`)
 	const redigertTelefonnummerValues = redigertTelefonnummerPdlf && {
