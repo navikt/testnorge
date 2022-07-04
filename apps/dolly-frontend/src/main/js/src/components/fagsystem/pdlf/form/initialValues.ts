@@ -174,7 +174,7 @@ export const initialOrganisasjon = {
 export const initialPerson = {
 	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
-	navn: navn,
+	navn: null as typeof navn,
 }
 
 export const initialNyPerson = {
