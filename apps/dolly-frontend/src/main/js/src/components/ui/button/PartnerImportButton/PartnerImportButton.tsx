@@ -9,26 +9,20 @@ import { DollyApi } from '~/service/Api'
 import './PartnerImportButton.less'
 
 type Props = {
-	action: Function
 	partnerIdent: string
 	gruppeId: string
 	gruppeIdenter: string[]
 	master: string
 }
 
-export const PartnerImportButton = ({
-	action,
-	gruppeId,
-	partnerIdent,
-	gruppeIdenter,
-	master,
-}: Props) => {
+export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, master }: Props) => {
 	if (!partnerIdent) {
 		return null
 	}
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState(null)
+	const [fullfoert, setFullfoert] = useState(false)
 
 	const disabled = gruppeIdenter.includes(partnerIdent)
 
@@ -36,18 +30,28 @@ export const PartnerImportButton = ({
 		setLoading(true)
 		setFeilmelding(null)
 		await DollyApi.importerPartner(gruppeId, ident, master)
-			.then((response) => {
+			.then((_response) => {
 				setLoading(false)
-				action()
+				setFullfoert(true)
 			})
 			.catch((_error) => {
 				setFeilmelding('Noe gikk galt')
+				setFullfoert(false)
 				setLoading(false)
 			})
 	}
 
 	if (loading) {
 		return <Loading label="importerer..." />
+	}
+
+	if (fullfoert) {
+		return (
+			<div className={'success-text'}>
+				<Icon size={16} kind={'feedback-check-circle'} />
+				<span>VENNLIGST LUKK VISNING</span>
+			</div>
+		)
 	}
 
 	return (
