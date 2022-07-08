@@ -457,6 +457,8 @@ const mapDoedsfall = (doedsfall, data) => {
 	}
 }
 
+const ingenVerdierSatt = 'Ingen verdier satt'
+
 const mapBostedsadresse = (bostedsadresse, data) => {
 	if (bostedsadresse) {
 		const bostedsadresseData = {
@@ -466,7 +468,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.vegadresse
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Vegadresse` },
-						obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Vegadresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...vegadresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -476,7 +478,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.matrikkeladresse
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Matrikkeladresse` },
-						obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Matrikkeladresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...matrikkeladresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -486,7 +488,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.utenlandskAdresse
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Utenlandsk adresse` },
-						obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Utenlandsk adresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -496,14 +498,14 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.ukjentBosted
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Ukjent bosted` },
-						obj('Ukjent bosted', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Ukjent bosted', isEmpty(adresseData) && ingenVerdierSatt),
 						obj('Bostedskommune', adresseData.bostedskommune),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
 				return [
-					obj('Bostedsadresse', 'Ingen verdier satt'),
+					obj('Bostedsadresse', ingenVerdierSatt),
 					...datoer(item),
 					...coAdresse(item.opprettCoAdresseNavn),
 				]
@@ -522,7 +524,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 					const adresseData = item.vegadresse
 					return [
 						{ numberHeader: `Oppholdsadresse ${idx + 1}: Vegadresse` },
-						obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Vegadresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...vegadresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -532,7 +534,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 					const adresseData = item.matrikkeladresse
 					return [
 						{ numberHeader: `Oppholdsadresse ${idx + 1}: Matrikkeladresse` },
-						obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Matrikkeladresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...matrikkeladresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -542,7 +544,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 					const adresseData = item.utenlandskAdresse
 					return [
 						{ numberHeader: `Oppholdsadresse ${idx + 1}: Utenlandsk adresse` },
-						obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Utenlandsk adresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -559,7 +561,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
-				return [obj('Oppholdsadresse', 'Ingen verdier satt'), ...datoer(item)]
+				return [obj('Oppholdsadresse', ingenVerdierSatt), ...datoer(item)]
 			}),
 		}
 		data.push(oppholdsadresseData)
@@ -575,7 +577,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 					const adresseData = item.vegadresse
 					return [
 						{ numberHeader: `Kontaktadresse ${idx + 1}: Vegadresse` },
-						obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Vegadresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...vegadresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -585,7 +587,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 					const adresseData = item.utenlandskAdresse
 					return [
 						{ numberHeader: `Kontaktadresse ${idx + 1}: Utenlandsk adresse` },
-						obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Utenlandsk adresse', isEmpty(adresseData) && ingenVerdierSatt),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -595,7 +597,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 					const adresseData = item.postboksadresse
 					return [
 						{ numberHeader: `Kontaktadresse ${idx + 1}: Postboksadresse` },
-						obj('Postboksadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
+						obj('Postboksadresse', isEmpty(adresseData) && ingenVerdierSatt),
 						obj('Postbokseier', adresseData.postbokseier),
 						obj('Postboks', adresseData.postboks),
 						obj('Postnummer', adresseData.postnummer),
@@ -603,7 +605,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
-				return [obj('Kontaktadresse', 'Ingen verdier satt'), ...datoer(item)]
+				return [obj('Kontaktadresse', ingenVerdierSatt), ...datoer(item)]
 			}),
 		}
 		data.push(kontaktadresseData)
@@ -683,7 +685,7 @@ const deltBosted = (personData, path) => {
 					'Vegadresse',
 					deltBostedData.adressetype === 'VEGADRESSE' &&
 						isEmpty(deltBostedData.vegadresse) &&
-						'Ingen verdier satt'
+						ingenVerdierSatt
 				),
 				...vegadresse(deltBostedData.vegadresse),
 			]),
@@ -696,7 +698,7 @@ const deltBosted = (personData, path) => {
 					'Matrikkeladresse',
 					deltBostedData.adressetype === 'MATRIKKELADRESSE' &&
 						isEmpty(deltBostedData.matrikkeladresse) &&
-						'Ingen verdier satt'
+						ingenVerdierSatt
 				),
 				...matrikkeladresse(deltBostedData.matrikkeladresse),
 			]),
@@ -1110,14 +1112,14 @@ const mapAareg = (bestillingData, data) => {
 				obj('T.o.m. kalendermåned', Formatters.formatDate(aaregKriterier[0]?.genererPeriode?.tom))
 			)
 			aaregKriterier[0]?.amelding.forEach((maaned) => {
-				const data = {
+				const maanedData = {
 					itemRows: [],
 				}
 				maaned.arbeidsforhold.forEach((arbeidsforhold, i) => {
-					data.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
+					maanedData.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
 				})
 				aareg.pagineringPages.push(maaned.maaned)
-				aareg.paginering.push(data)
+				aareg.paginering.push(maanedData)
 			})
 		} else if (aaregKriterier[0]?.arbeidsgiver) {
 			aaregKriterier.forEach((arbeidsforhold, i) => {
@@ -1243,103 +1245,92 @@ const mapSykemelding = (bestillingData, data) => {
 	if (sykemeldingKriterier) {
 		const sykemelding = {
 			header: 'Sykemelding',
-			items: sykemeldingKriterier.syntSykemelding
-				? [
-						obj('Startdato', Formatters.formatDate(sykemeldingKriterier.syntSykemelding.startDato)),
-						obj('Organisasjonsnummer', sykemeldingKriterier.syntSykemelding.orgnummer),
-						obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId),
-				  ]
-				: sykemeldingKriterier.detaljertSykemelding
-				? [
-						obj(
-							'Startdato',
-							Formatters.formatDate(sykemeldingKriterier.detaljertSykemelding.startDato)
-						),
-						obj(
-							'Trenger umiddelbar bistand',
-							sykemeldingKriterier.detaljertSykemelding.umiddelbarBistand ? 'JA' : 'NEI'
-						),
-						obj(
-							'Manglende tilrettelegging på arbeidsplassen',
-							sykemeldingKriterier.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen
-								? 'JA'
-								: 'NEI'
-						),
-						obj(
-							'Diagnose',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnose')
-						),
-						obj(
-							'Diagnosekode',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnosekode')
-						),
-						obj(
-							'Antall registrerte bidiagnoser',
-							sykemeldingKriterier.detaljertSykemelding.biDiagnoser &&
-								sykemeldingKriterier.detaljertSykemelding.biDiagnoser.length
-						),
-						obj(
-							'Helsepersonell navn',
-							sykemeldingKriterier.detaljertSykemelding.helsepersonell &&
-								`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${
-									sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
-										? sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
-										: ''
-								} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
-						),
-						obj(
-							'Helsepersonell ident',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.ident')
-						),
-						obj(
-							'HPR-nummer',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')
-						),
-						obj(
-							'SamhandlerType',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.samhandlerType')
-						),
-						obj(
-							'Arbeidsgiver',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.navn')
-						),
-						obj(
-							'Yrkesbetegnelse',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.yrkesbetegnelse'),
-							ArbeidKodeverk.Yrker
-						),
-						obj(
-							'Stillingsprosent',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.stillingsprosent')
-						),
-						obj(
-							'Antall registrerte perioder',
-							sykemeldingKriterier.detaljertSykemelding.perioder.length
-						),
-						obj(
-							'Tiltak fra NAV',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakNav')
-						),
-						obj(
-							'Tiltak på arbeidsplass',
-							_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakArbeidsplass')
-						),
-						obj(
-							'Hensyn på arbeidsplass',
-							_get(
-								sykemeldingKriterier.detaljertSykemelding,
-								'detaljer.beskrivHensynArbeidsplassen'
-							)
-						),
-						obj(
-							'Arbeidsfør etter endt periode',
-							sykemeldingKriterier.detaljertSykemelding.detaljer &&
-								(sykemeldingKriterier.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode
-									? 'JA'
-									: 'NEI')
-						),
-				  ]
-				: null,
+			items: null,
+		}
+		if (sykemeldingKriterier.syntSykemelding) {
+			sykemelding.items = [
+				obj('Startdato', Formatters.formatDate(sykemeldingKriterier.syntSykemelding.startDato)),
+				obj('Organisasjonsnummer', sykemeldingKriterier.syntSykemelding.orgnummer),
+				obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId),
+			]
+		} else if (sykemeldingKriterier.detaljertSykemelding) {
+			sykemelding.items = [
+				obj(
+					'Startdato',
+					Formatters.formatDate(sykemeldingKriterier.detaljertSykemelding.startDato)
+				),
+				obj(
+					'Trenger umiddelbar bistand',
+					sykemeldingKriterier.detaljertSykemelding.umiddelbarBistand ? 'JA' : 'NEI'
+				),
+				obj(
+					'Manglende tilrettelegging på arbeidsplassen',
+					sykemeldingKriterier.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen
+						? 'JA'
+						: 'NEI'
+				),
+				obj('Diagnose', _get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnose')),
+				obj(
+					'Diagnosekode',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnosekode')
+				),
+				obj(
+					'Antall registrerte bidiagnoser',
+					sykemeldingKriterier.detaljertSykemelding.biDiagnoser &&
+						sykemeldingKriterier.detaljertSykemelding.biDiagnoser.length
+				),
+				obj(
+					'Helsepersonell navn',
+					sykemeldingKriterier.detaljertSykemelding.helsepersonell &&
+						`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${
+							sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
+								? sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
+								: ''
+						} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
+				),
+				obj(
+					'Helsepersonell ident',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.ident')
+				),
+				obj('HPR-nummer', _get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')),
+				obj(
+					'SamhandlerType',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.samhandlerType')
+				),
+				obj('Arbeidsgiver', _get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.navn')),
+				obj(
+					'Yrkesbetegnelse',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.yrkesbetegnelse'),
+					ArbeidKodeverk.Yrker
+				),
+				obj(
+					'Stillingsprosent',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.stillingsprosent')
+				),
+				obj(
+					'Antall registrerte perioder',
+					sykemeldingKriterier.detaljertSykemelding.perioder.length
+				),
+				obj(
+					'Tiltak fra NAV',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakNav')
+				),
+				obj(
+					'Tiltak på arbeidsplass',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakArbeidsplass')
+				),
+				obj(
+					'Hensyn på arbeidsplass',
+					_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.beskrivHensynArbeidsplassen')
+				),
+				obj(
+					'Arbeidsfør etter endt periode',
+					sykemeldingKriterier.detaljertSykemelding.detaljer &&
+						(sykemeldingKriterier.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode
+							? 'JA'
+							: 'NEI')
+				),
+			]
 		}
 		data.push(sykemelding)
 	}
@@ -1412,14 +1403,14 @@ const mapArena = (bestillingData, data) => {
 					Formatters.oversettBoolean(arenaKriterier.automatiskInnsendingAvMeldekort)
 				),
 				obj('Inaktiv fra dato', Formatters.formatDate(arenaKriterier.inaktiveringDato)),
-				obj('Har 11-5 vedtak', Formatters.oversettBoolean(arenaKriterier.aap115?.[0] && true)),
+				obj('Har 11-5 vedtak', Formatters.oversettBoolean(!!arenaKriterier.aap115?.[0])),
 				obj(
 					'AAP 11-5 fra dato',
 					arenaKriterier.aap115?.[0] && Formatters.formatDate(arenaKriterier.aap115[0].fraDato)
 				),
 				obj(
 					'Har AAP vedtak UA - positivt utfall',
-					Formatters.oversettBoolean(arenaKriterier.aap?.[0] && true)
+					Formatters.oversettBoolean(!!arenaKriterier.aap?.[0])
 				),
 				obj(
 					'AAP fra dato',
@@ -1429,10 +1420,7 @@ const mapArena = (bestillingData, data) => {
 					'AAP til dato',
 					arenaKriterier.aap?.[0] && Formatters.formatDate(arenaKriterier.aap[0].tilDato)
 				),
-				obj(
-					'Har dagpengevedtak',
-					Formatters.oversettBoolean(arenaKriterier.dagpenger?.[0] && true)
-				),
+				obj('Har dagpengevedtak', Formatters.oversettBoolean(!!arenaKriterier.dagpenger?.[0])),
 				obj(
 					'RettighetKode',
 					arenaKriterier.dagpenger?.[0] &&
@@ -1505,17 +1493,17 @@ const mapUdiStub = (bestillingData, data) => {
 		const currentOppholdsrettType =
 			oppholdKriterier && oppholdsrettTyper.find((type) => oppholdKriterier[type])
 
-		const currentTredjelandsborgereStatus =
-			oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar
-				? 'Oppholdstillatelse eller opphold på samme vilkår'
-				: oppholdKriterier && oppholdKriterier.uavklart
-				? 'Uavklart'
-				: udiStubKriterier.harOppholdsTillatelse === false
-				? 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
-				: null
+		var currentTredjelandsborgereStatus = null
+		if (oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar) {
+			currentTredjelandsborgereStatus = 'Oppholdstillatelse eller opphold på samme vilkår'
+		} else if (oppholdKriterier && oppholdKriterier.uavklart) {
+			currentTredjelandsborgereStatus = 'Uavklart'
+		} else if (udiStubKriterier.harOppholdsTillatelse === false) {
+			currentTredjelandsborgereStatus = 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
+		}
 
 		const oppholdsrett = Boolean(currentOppholdsrettType)
-		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
+		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus) ? 'Tredjelandsborger' : null
 
 		const aliaserListe = []
 		udiStubKriterier.aliaser &&
@@ -1530,10 +1518,7 @@ const mapUdiStub = (bestillingData, data) => {
 		const udistub = {
 			header: 'UDI',
 			items: [
-				obj(
-					'Oppholdsstatus',
-					oppholdsrett ? 'EØS-eller EFTA-opphold' : tredjelandsborger ? 'Tredjelandsborger' : null
-				),
+				obj('Oppholdsstatus', oppholdsrett ? 'EØS-eller EFTA-opphold' : tredjelandsborger),
 				obj(
 					'Type opphold',
 					oppholdsrett && Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)
