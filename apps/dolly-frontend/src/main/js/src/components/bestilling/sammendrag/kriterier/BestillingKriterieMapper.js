@@ -393,6 +393,10 @@ const datoer = (datoData) => {
 	]
 }
 
+const getNavn = (navn) => {
+	return navn ? navn : ''
+}
+
 const coAdresse = (navn) => {
 	const fornavn = navn?.fornavn
 	const mellomnavn = navn?.mellomnavn
@@ -402,7 +406,7 @@ const coAdresse = (navn) => {
 		obj(
 			'C/O adressenavn',
 			fornavn || mellomnavn || etternavn
-				? `${fornavn ? fornavn : ''} ${mellomnavn ? mellomnavn : ''} ${etternavn ? etternavn : ''}`
+				? `${getNavn(fornavn)} ${getNavn(mellomnavn)} ${getNavn(etternavn)}`
 				: null
 		),
 	]
@@ -459,6 +463,10 @@ const mapDoedsfall = (doedsfall, data) => {
 
 const ingenVerdierSatt = 'Ingen verdier satt'
 
+const adresseVerdi = (adresseData) => {
+	return isEmpty(adresseData) && ingenVerdierSatt
+}
+
 const mapBostedsadresse = (bostedsadresse, data) => {
 	if (bostedsadresse) {
 		const bostedsadresseData = {
@@ -468,7 +476,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.vegadresse
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Vegadresse` },
-						obj('Vegadresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Vegadresse', adresseVerdi(adresseData)),
 						...vegadresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -478,7 +486,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.matrikkeladresse
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Matrikkeladresse` },
-						obj('Matrikkeladresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Matrikkeladresse', adresseVerdi(adresseData)),
 						...matrikkeladresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -488,7 +496,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.utenlandskAdresse
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Utenlandsk adresse` },
-						obj('Utenlandsk adresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Utenlandsk adresse', adresseVerdi(adresseData)),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -498,7 +506,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					const adresseData = item.ukjentBosted
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Ukjent bosted` },
-						obj('Ukjent bosted', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Ukjent bosted', adresseVerdi(adresseData)),
 						obj('Bostedskommune', adresseData.bostedskommune),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -524,7 +532,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 					const adresseData = item.vegadresse
 					return [
 						{ numberHeader: `Oppholdsadresse ${idx + 1}: Vegadresse` },
-						obj('Vegadresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Vegadresse', adresseVerdi(adresseData)),
 						...vegadresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -534,7 +542,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 					const adresseData = item.matrikkeladresse
 					return [
 						{ numberHeader: `Oppholdsadresse ${idx + 1}: Matrikkeladresse` },
-						obj('Matrikkeladresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Matrikkeladresse', adresseVerdi(adresseData)),
 						...matrikkeladresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -544,7 +552,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 					const adresseData = item.utenlandskAdresse
 					return [
 						{ numberHeader: `Oppholdsadresse ${idx + 1}: Utenlandsk adresse` },
-						obj('Utenlandsk adresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Utenlandsk adresse', adresseVerdi(adresseData)),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -577,7 +585,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 					const adresseData = item.vegadresse
 					return [
 						{ numberHeader: `Kontaktadresse ${idx + 1}: Vegadresse` },
-						obj('Vegadresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Vegadresse', adresseVerdi(adresseData)),
 						...vegadresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -587,7 +595,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 					const adresseData = item.utenlandskAdresse
 					return [
 						{ numberHeader: `Kontaktadresse ${idx + 1}: Utenlandsk adresse` },
-						obj('Utenlandsk adresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Utenlandsk adresse', adresseVerdi(adresseData)),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
@@ -597,7 +605,7 @@ const mapKontaktadresse = (kontaktadresse, data) => {
 					const adresseData = item.postboksadresse
 					return [
 						{ numberHeader: `Kontaktadresse ${idx + 1}: Postboksadresse` },
-						obj('Postboksadresse', isEmpty(adresseData) && ingenVerdierSatt),
+						obj('Postboksadresse', adresseVerdi(adresseData)),
 						obj('Postbokseier', adresseData.postbokseier),
 						obj('Postboks', adresseData.postboks),
 						obj('Postnummer', adresseData.postnummer),
@@ -1493,7 +1501,7 @@ const mapUdiStub = (bestillingData, data) => {
 		const currentOppholdsrettType =
 			oppholdKriterier && oppholdsrettTyper.find((type) => oppholdKriterier[type])
 
-		var currentTredjelandsborgereStatus = null
+		let currentTredjelandsborgereStatus = null
 		if (oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar) {
 			currentTredjelandsborgereStatus = 'Oppholdstillatelse eller opphold på samme vilkår'
 		} else if (oppholdKriterier && oppholdKriterier.uavklart) {
