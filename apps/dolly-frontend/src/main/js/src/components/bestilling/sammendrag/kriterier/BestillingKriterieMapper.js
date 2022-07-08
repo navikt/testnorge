@@ -1290,11 +1290,9 @@ const mapSykemelding = (bestillingData, data) => {
 				obj(
 					'Helsepersonell navn',
 					sykemeldingKriterier.detaljertSykemelding.helsepersonell &&
-						`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${
+						`${sykemeldingKriterier.detaljertSykemelding.helsepersonell.fornavn} ${getNavn(
 							sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
-								? sykemeldingKriterier.detaljertSykemelding.helsepersonell.mellomnavn
-								: ''
-						} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
+						)} ${sykemeldingKriterier.detaljertSykemelding.helsepersonell.etternavn}`
 				),
 				obj(
 					'Helsepersonell ident',
@@ -1486,6 +1484,31 @@ const mapInst = (bestillingData, data) => {
 	}
 }
 
+const getTredjelandsborgerStatus = (oppholdKriterier, udiStubKriterier) => {
+	if (oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar) {
+		return 'Oppholdstillatelse eller opphold på samme vilkår'
+	} else if (oppholdKriterier && oppholdKriterier.uavklart) {
+		return 'Uavklart'
+	} else if (udiStubKriterier.harOppholdsTillatelse === false) {
+		return 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
+	}
+	return null
+}
+
+const getAliasListe = (udiStubKriterier) => {
+	const aliaserListe = []
+	if (udiStubKriterier.aliaser) {
+		udiStubKriterier.aliaser.forEach((alias, i) => {
+			if (alias.nyIdent === false) {
+				aliaserListe.push(`#${i + 1} Navn\n`)
+			} else {
+				aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
+			}
+		})
+	}
+	return aliaserListe
+}
+
 const mapUdiStub = (bestillingData, data) => {
 	const udiStubKriterier = bestillingData.udistub
 
@@ -1501,27 +1524,15 @@ const mapUdiStub = (bestillingData, data) => {
 		const currentOppholdsrettType =
 			oppholdKriterier && oppholdsrettTyper.find((type) => oppholdKriterier[type])
 
-		let currentTredjelandsborgereStatus = null
-		if (oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar) {
-			currentTredjelandsborgereStatus = 'Oppholdstillatelse eller opphold på samme vilkår'
-		} else if (oppholdKriterier && oppholdKriterier.uavklart) {
-			currentTredjelandsborgereStatus = 'Uavklart'
-		} else if (udiStubKriterier.harOppholdsTillatelse === false) {
-			currentTredjelandsborgereStatus = 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
-		}
+		let currentTredjelandsborgereStatus = getTredjelandsborgerStatus(
+			oppholdKriterier,
+			udiStubKriterier
+		)
 
 		const oppholdsrett = Boolean(currentOppholdsrettType)
 		const tredjelandsborger = Boolean(currentTredjelandsborgereStatus) ? 'Tredjelandsborger' : null
 
-		const aliaserListe = []
-		udiStubKriterier.aliaser &&
-			udiStubKriterier.aliaser.forEach((alias, i) => {
-				if (alias.nyIdent === false) {
-					aliaserListe.push(`#${i + 1} Navn\n`)
-				} else {
-					aliaserListe.push(`#${i + 1} ID-nummer - ${alias.identtype}\n`)
-				}
-			})
+		const aliaserListe = getAliasListe(udiStubKriterier)
 
 		const udistub = {
 			header: 'UDI',
