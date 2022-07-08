@@ -895,69 +895,52 @@ const mapNyIdent = (nyident, data) => {
 	}
 }
 
+const kontaktinfoFellesVerdier = (item) => {
+	const {
+		skifteform,
+		attestutstedelsesdato,
+		kontaktType,
+		advokatSomKontakt,
+		organisasjonSomKontakt,
+		personSomKontakt,
+	} = item
+
+	const getKontakttype = () => {
+		if (advokatSomKontakt) {
+			return 'Advokat'
+		} else if (personSomKontakt) {
+			return 'Person'
+		} else if (organisasjonSomKontakt) {
+			return 'Organisasjon'
+		} else return null
+	}
+
+	return [
+		obj('Skifteform', skifteform),
+		obj('Utstedelsesdato skifteattest', Formatters.formatDate(attestutstedelsesdato)),
+		obj(
+			'Kontakttype',
+			kontaktType ? Formatters.showLabel('kontaktType', kontaktType) : getKontakttype()
+		),
+	]
+}
+
 const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => {
 	if (kontaktinformasjonForDoedsbo) {
 		const doedsboData = {
 			header: 'Kontaktinformasjon for dødsbo',
 			itemRows: kontaktinformasjonForDoedsbo.map((item, idx) => {
-				const {
-					skifteform,
-					attestutstedelsesdato,
-					kontaktType,
-					advokatSomKontakt,
-					organisasjonSomKontakt,
-					personSomKontakt,
-					adresse,
-				} = item
+				const { advokatSomKontakt, organisasjonSomKontakt, personSomKontakt, adresse } = item
 
-				const getKontakttype = () => {
-					if (advokatSomKontakt) {
-						return 'Advokat'
-					} else if (personSomKontakt) {
-						return 'Person'
-					} else if (organisasjonSomKontakt) {
-						return 'Organisasjon'
-					} else return null
+				const kontaktperson = (person) => {
+					return [
+						obj('Kontaktperson fornavn', person?.fornavn),
+						obj('Kontaktperson mellomnavn', person?.mellomnavn),
+						obj('Kontaktperson etternavn', person?.etternavn),
+					]
 				}
 
-				return [
-					{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
-					obj('Skifteform', skifteform),
-					obj('Utstedelsesdato skifteattest', Formatters.formatDate(attestutstedelsesdato)),
-					obj(
-						'Kontakttype',
-						kontaktType ? Formatters.showLabel('kontaktType', kontaktType) : getKontakttype()
-					),
-
-					obj(
-						'Organisasjonsnummer',
-						advokatSomKontakt?.organisasjonsnummer || organisasjonSomKontakt?.organisasjonsnummer
-					),
-					obj(
-						'Organisasjonsnavn',
-						advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn
-					),
-					obj('Identifikasjonsnummer', personSomKontakt?.identifikasjonsnummer),
-					obj('Fødselsdato', Formatters.formatDate(personSomKontakt?.foedselsdato)),
-
-					obj(
-						'Kontaktperson fornavn',
-						advokatSomKontakt?.kontaktperson?.fornavn ||
-							organisasjonSomKontakt?.kontaktperson?.fornavn ||
-							personSomKontakt?.navn?.fornavn
-					),
-					obj(
-						'Kontaktperson mellomnavn',
-						advokatSomKontakt?.kontaktperson?.mellomnavn ||
-							organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
-							personSomKontakt?.navn?.mellomnavn
-					),
-					obj(
-						'Kontaktperson etternavn',
-						advokatSomKontakt?.kontaktperson?.etternavn ||
-							organisasjonSomKontakt?.kontaktperson?.etternavn ||
-							personSomKontakt?.navn?.etternavn
-					),
+				const kontaktinfoAdresse = [
 					obj('Land', adresse?.landkode, AdresseKodeverk.PostadresseLand),
 					obj('Adresselinje 1', adresse?.adresselinje1),
 					obj('Adresselinje 2', adresse?.adresselinje2),
@@ -966,6 +949,47 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 						(adresse?.postnummer || adresse?.poststedsnavn) &&
 							`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 					),
+				]
+
+				if (personSomKontakt) {
+					return [
+						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
+						...kontaktinfoFellesVerdier(item),
+						obj('Identifikasjonsnummer', personSomKontakt?.identifikasjonsnummer),
+						obj('Fødselsdato', Formatters.formatDate(personSomKontakt?.foedselsdato)),
+						...kontaktperson(personSomKontakt?.navn),
+						...kontaktinfoAdresse,
+						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
+					]
+				}
+				if (advokatSomKontakt) {
+					return [
+						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
+						...kontaktinfoFellesVerdier(item),
+						obj('Organisasjonsnummer', advokatSomKontakt.organisasjonsnummer),
+						obj('Organisasjonsnavn', advokatSomKontakt.organisasjonsnavn),
+						...kontaktperson(advokatSomKontakt.kontaktperson),
+						...kontaktinfoAdresse,
+						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
+					]
+				}
+
+				if (organisasjonSomKontakt) {
+					return [
+						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
+						...kontaktinfoFellesVerdier(item),
+						obj('Organisasjonsnummer', organisasjonSomKontakt.organisasjonsnummer),
+						obj('Organisasjonsnavn', organisasjonSomKontakt.organisasjonsnavn),
+						...kontaktperson(organisasjonSomKontakt.kontaktperson),
+						...kontaktinfoAdresse,
+						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
+					]
+				}
+
+				return [
+					{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
+					...kontaktinfoFellesVerdier(item),
+					...kontaktinfoAdresse,
 					...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
 				]
 			}),
@@ -1269,13 +1293,13 @@ const mapSykemelding = (bestillingData, data) => {
 				),
 				obj(
 					'Trenger umiddelbar bistand',
-					sykemeldingKriterier.detaljertSykemelding.umiddelbarBistand ? 'JA' : 'NEI'
+					Formatters.oversettBoolean(sykemeldingKriterier.detaljertSykemelding.umiddelbarBistand)
 				),
 				obj(
 					'Manglende tilrettelegging på arbeidsplassen',
-					sykemeldingKriterier.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen
-						? 'JA'
-						: 'NEI'
+					Formatters.oversettBoolean(
+						sykemeldingKriterier.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen
+					)
 				),
 				obj('Diagnose', _get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnose')),
 				obj(
@@ -1332,9 +1356,9 @@ const mapSykemelding = (bestillingData, data) => {
 				obj(
 					'Arbeidsfør etter endt periode',
 					sykemeldingKriterier.detaljertSykemelding.detaljer &&
-						(sykemeldingKriterier.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode
-							? 'JA'
-							: 'NEI')
+						Formatters.oversettBoolean(
+							sykemeldingKriterier.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode
+						)
 				),
 			]
 		}
@@ -1832,35 +1856,38 @@ const mapOrganisasjon = (bestillingData, data) => {
 			],
 		}
 
-		const forretningsadresseKriterier = {
-			header: 'Forretningsadresse',
-			items: [
-				obj('Land', forretningsadresse && forretningsadresse.landkode),
-				obj('Postnummer', forretningsadresse && forretningsadresse.postnr),
-				obj('Poststed', forretningsadresse && forretningsadresse.poststed),
-				obj('Kommunenummer', forretningsadresse && forretningsadresse.kommunenr),
-				obj('Adresselinje 1', forretningsadresse && forretningsadresse.adresselinjer[0]),
-				obj('Adresselinje 2', forretningsadresse && forretningsadresse.adresselinjer[1]),
-				obj('Adresselinje 3', forretningsadresse && forretningsadresse.adresselinjer[2]),
-			],
-		}
-
-		const postadresseKriterier = {
-			header: 'Postadresse',
-			items: [
-				obj('Land', postadresse && postadresse.landkode),
-				obj('Postnummer', postadresse && postadresse.postnr),
-				obj('Poststed', postadresse && postadresse.poststed),
-				obj('Kommunenummer', postadresse && postadresse.kommunenr),
-				obj('Adresselinje 1', postadresse && postadresse.adresselinjer[0]),
-				obj('Adresselinje 2', postadresse && postadresse.adresselinjer[1]),
-				obj('Adresselinje 3', postadresse && postadresse.adresselinjer[2]),
-			],
-		}
-
 		data.push(organisasjon)
-		forretningsadresse && data.push(forretningsadresseKriterier)
-		postadresse && data.push(postadresseKriterier)
+
+		if (forretningsadresse) {
+			const forretningsadresseKriterier = {
+				header: 'Forretningsadresse',
+				items: [
+					obj('Land', forretningsadresse.landkode),
+					obj('Postnummer', forretningsadresse.postnr),
+					obj('Poststed', forretningsadresse.poststed),
+					obj('Kommunenummer', forretningsadresse.kommunenr),
+					obj('Adresselinje 1', forretningsadresse.adresselinjer[0]),
+					obj('Adresselinje 2', forretningsadresse.adresselinjer[1]),
+					obj('Adresselinje 3', forretningsadresse.adresselinjer[2]),
+				],
+			}
+			data.push(forretningsadresseKriterier)
+		}
+		if (postadresse) {
+			const postadresseKriterier = {
+				header: 'Postadresse',
+				items: [
+					obj('Land', postadresse.landkode),
+					obj('Postnummer', postadresse.postnr),
+					obj('Poststed', postadresse.poststed),
+					obj('Kommunenummer', postadresse.kommunenr),
+					obj('Adresselinje 1', postadresse.adresselinjer[0]),
+					obj('Adresselinje 2', postadresse.adresselinjer[1]),
+					obj('Adresselinje 3', postadresse.adresselinjer[2]),
+				],
+			}
+			data.push(postadresseKriterier)
+		}
 	}
 }
 
