@@ -25,6 +25,7 @@ public class BankkontonrUtlandDTO {
     private String bankAdresse2;
     private String bankAdresse3;
     private String landkode;
+    private Boolean tilfeldigKontonummer;
 
     @Schema(description = "Datofeltet benyttes til lesning kun")
     private LocalDateTime kontoRegdato;
