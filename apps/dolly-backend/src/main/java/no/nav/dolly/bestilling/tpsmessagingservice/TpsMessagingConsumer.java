@@ -65,6 +65,7 @@ public class TpsMessagingConsumer {
 
     private String tilfeldigUtlandskBankkonto() {
         var kontonummerLengde = 10;
+
         return new Random().ints(kontonummerLengde, 0, 10)
                 .boxed()
                 .map(i -> i.toString())
