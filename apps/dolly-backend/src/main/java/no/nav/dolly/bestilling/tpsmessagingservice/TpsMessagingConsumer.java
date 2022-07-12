@@ -12,6 +12,7 @@ import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -24,6 +25,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -60,8 +63,22 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
+    private String tilfeldigUtlandskBankkonto() {
+        var kontonummerLengde = 10;
+        return new Random().ints(kontonummerLengde, 0, 10)
+                .boxed()
+                .map(i -> i.toString())
+                .collect(Collectors.joining());
+    }
+
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
+
+        if (body instanceof BankkontonrUtlandDTO bankkontoUtland) {
+            if ((null != bankkontoUtland.getTilfeldigKontonummer()) && bankkontoUtland.getTilfeldigKontonummer()) {
+                bankkontoUtland.setKontonummer(tilfeldigUtlandskBankkonto());
+            }
+        }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
