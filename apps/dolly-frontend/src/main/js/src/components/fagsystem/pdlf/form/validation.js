@@ -578,6 +578,25 @@ const foreldreansvar = Yup.array().of(
 	})
 )
 
+const validInputOrCheckboxTest = (val, checkboxPath, feilmelding) => {
+	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {
+		if (value) {
+			return true
+		}
+
+		const path = this.path.substring(0, this.path.lastIndexOf('.'))
+		const values = this.options.context
+
+		const checkbox = _get(values, `${path}.${checkboxPath}`)
+
+		if (!checkbox) {
+			return this.createError({ message: feilmelding })
+		}
+
+		return true
+	})
+}
+
 export const validation = {
 	pdldata: Yup.object({
 		opprettNyPerson: Yup.object()
@@ -676,7 +695,12 @@ export const validation = {
 			utenlandskBankkonto: ifPresent(
 				'$tpsMessaging.utenlandskBankkonto',
 				Yup.object().shape({
-					kontonummer: requiredString.nullable(),
+					kontonummer: validInputOrCheckboxTest(
+						Yup.string(),
+						'tilfeldigKontonummer',
+						messages.required
+					),
+					tilfeldigKontonummer: Yup.object().nullable(),
 					swift: Yup.string().nullable().optional(),
 					landkode: requiredString.nullable(),
 					iban: Yup.string().nullable().optional(),

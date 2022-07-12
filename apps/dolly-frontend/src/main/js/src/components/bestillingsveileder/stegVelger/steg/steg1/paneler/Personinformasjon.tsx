@@ -353,6 +353,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				set('tpsMessaging.utenlandskBankkonto', {
 					kontonummer: '',
+					tilfeldigKontonummer: false,
 					swift: '',
 					landkode: null,
 					banknavn: '',
