@@ -23,14 +23,14 @@ jobs:
       app-name: 'testnav-skd'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-#  deploy:
-#    name: Deploy
-#    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-#    needs: build
-#    if: ${{ github.ref == 'refs/heads/master' }}
-#    with:
-#      resource: 'apps/testnorge-skd/nais.yaml'
-#      app-name: 'testnav-skd'
-#      cluster: 'dev-fss'
-#    secrets:
-#      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+  deploy:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/testnorge-skd/nais.yaml'
+      app-name: 'testnav-skd'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
