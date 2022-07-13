@@ -34,6 +34,10 @@ test {
 repositories {
     mavenCentral()
     mavenLocal()
+
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
 }
 
 dependencies {
@@ -70,7 +74,6 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
-    implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
@@ -78,6 +81,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
