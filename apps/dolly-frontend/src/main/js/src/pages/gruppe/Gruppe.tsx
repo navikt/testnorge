@@ -104,20 +104,24 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGruppe onChange={byttVisning} name="toggler">
 						<ToggleKnapp
+							key={visning}
 							value={VisningType.VISNING_PERSONER}
 							checked={visning === VisningType.VISNING_PERSONER}
 						>
 							<Icon
+								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter})`}
 						</ToggleKnapp>
 						<ToggleKnapp
+							key={visning}
 							value={VisningType.VISNING_BESTILLING}
 							checked={visning === VisningType.VISNING_BESTILLING}
 						>
 							<Icon
+								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>

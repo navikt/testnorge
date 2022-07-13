@@ -186,5 +186,12 @@ export default function Icon({
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
-	return <SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} />
+	return (
+		<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title}>
+			<img
+				src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
+				alt="fallback"
+			/>
+		</SVG>
+	)
 }
