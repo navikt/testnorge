@@ -48,7 +48,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -59,7 +58,6 @@ dependencies {
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
