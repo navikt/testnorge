@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React, { BaseSyntheticEvent } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -16,6 +16,7 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
+import './Gruppe.less'
 
 export type GruppeProps = {
 	visning: string
@@ -64,48 +65,63 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
 			)}
 
-			<div className="toolbar">
-				{brukertype === 'AZURE' && (
-					<NavButton
-						type="hoved"
-						onClick={visStartBestilling}
-						disabled={erLaast}
-						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '4px' }}
-					>
-						Opprett personer
-					</NavButton>
-				)}
+			<div className="gruppe-toolbar">
+				<div className="gruppe--full gruppe--flex-row-center">
+					{brukertype === 'AZURE' && (
+						<NavButton
+							type="hoved"
+							onClick={visStartBestilling}
+							disabled={erLaast}
+							title={
+								erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''
+							}
+							className="margin-top-5 margin-bottom-5 margin-right-10"
+						>
+							Opprett personer
+						</NavButton>
+					)}
 
-				{brukertype === 'BANKID' && (
 					<NavButton
-						type="hoved"
-						onClick={() => navigate(`/testnorge`)}
+						type={brukertype === 'BANKID' ? 'hoved' : 'standard'}
+						onClick={() =>
+							navigate(`/testnorge`, {
+								state: {
+									gruppe: gruppe,
+								},
+							})
+						}
 						disabled={erLaast}
 						title={erLaast ? 'Denne gruppen er låst, og du kan ikke legge til flere personer.' : ''}
-						style={{ marginTop: '4px' }}
+						className="margin-top-5 margin-bottom-5"
 					>
 						Importer personer
 					</NavButton>
-				)}
 
-				<div style={{ marginTop: '9px' }}>
+					<div style={{ flexGrow: '2' }}></div>
+
+					<FinnPersonBestillingConnector />
+				</div>
+				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGruppe onChange={byttVisning} name="toggler">
 						<ToggleKnapp
+							key={visning}
 							value={VisningType.VISNING_PERSONER}
 							checked={visning === VisningType.VISNING_PERSONER}
 						>
 							<Icon
+								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter})`}
 						</ToggleKnapp>
 						<ToggleKnapp
+							key={visning}
 							value={VisningType.VISNING_BESTILLING}
 							checked={visning === VisningType.VISNING_BESTILLING}
 						>
 							<Icon
+								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
@@ -113,8 +129,6 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 						</ToggleKnapp>
 					</ToggleGruppe>
 				</div>
-
-				<FinnPersonBestillingConnector />
 			</div>
 
 			{startBestillingAktiv && (

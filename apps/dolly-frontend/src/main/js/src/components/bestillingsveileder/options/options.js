@@ -21,6 +21,7 @@ export const BVOptions = (
 		importPersoner,
 		identMaster,
 		opprettOrganisasjon = null,
+		gruppe,
 	} = {},
 	gruppeId
 ) => {
@@ -130,6 +131,7 @@ export const BVOptions = (
 		importPersoner,
 		identMaster,
 		tidligereBestillinger,
+		gruppe,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
 			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,

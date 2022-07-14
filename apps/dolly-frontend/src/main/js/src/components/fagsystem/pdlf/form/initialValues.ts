@@ -174,7 +174,7 @@ export const initialOrganisasjon = {
 export const initialPerson = {
 	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
-	navn: navn,
+	navn: null as typeof navn,
 }
 
 export const initialNyPerson = {
@@ -312,6 +312,14 @@ export const initialOpphold = {
 	oppholdFra: null as Date,
 	oppholdTil: null as Date,
 	type: 'OPPLYSNING_MANGLER',
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialPersonstatus = {
+	status: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

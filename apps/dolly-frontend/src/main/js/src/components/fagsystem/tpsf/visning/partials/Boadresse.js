@@ -63,7 +63,7 @@ export const Adressevisning = ({ boadresse }) => {
 	)
 }
 
-export const Boadresse = ({ boadresse }) => {
+export const TpsfBoadresse = ({ boadresse }) => {
 	if (!boadresse || (boadresse instanceof Array && boadresse.length < 1)) return false
 	return (
 		<>

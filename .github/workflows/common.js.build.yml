@@ -4,11 +4,6 @@ on:
       working-directory:
         type: string
         required: true
-    secrets:
-      READER_TOKEN:
-        required: false
-      NPM_TOKEN:
-        required: false
 
 jobs:
   build:
@@ -18,11 +13,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: "https://npm.pkg.github.com"
       - name: Build install
-        run: npm install --no-save --no-audit
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        run: npm ci
+        env:          
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
       - name: Build code

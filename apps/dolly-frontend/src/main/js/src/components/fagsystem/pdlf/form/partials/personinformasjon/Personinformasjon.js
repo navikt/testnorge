@@ -118,7 +118,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Navn" vis={navnPath}>
-					<Navn />
+					<Navn formikBag={formikBag} />
 				</Kategori>
 
 				<Kategori title="Diverse" vis={diversePaths}>

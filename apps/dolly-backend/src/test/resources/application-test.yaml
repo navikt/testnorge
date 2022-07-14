@@ -72,6 +72,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     threads: 5
+  testnav-pensjon-testdata-facade-proxy:
+    url: http://localhost:${wiremock.server.port:0}/pensjon-testdata
+    name: testnav-pensjon-testdata-facade-proxy
+    namespace: dolly
+    cluster: dev-fss
 
 sts:
   token:

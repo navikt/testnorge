@@ -40,7 +40,7 @@ public class SyntTpsConsumer {
                 .build();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tps-syntetisereren"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(
             String endringskode,
             Integer antallMeldinger

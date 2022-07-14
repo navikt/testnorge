@@ -63,3 +63,13 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure:
+            security:
+              reactive:
+                ReactiveUserDetailsServiceAutoConfiguration: OFF

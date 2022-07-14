@@ -16,11 +16,6 @@ import static java.util.Objects.nonNull;
 @Component
 public class FolkeregisterPersonstatusMappingStrategy implements MappingStrategy {
 
-    private static LocalDate toDate(LocalDateTime timestamp) {
-
-        return nonNull(timestamp) ? timestamp.toLocalDate() : null;
-    }
-
     @Override
     public void register(MapperFactory factory) {
 
@@ -29,6 +24,8 @@ public class FolkeregisterPersonstatusMappingStrategy implements MappingStrategy
                     @Override
                     public void mapAtoB(FolkeregisterPersonstatusDTO kilde,
                                         FolkeregisterPersonstatus destinasjon, MappingContext context) {
+
+                        destinasjon.setStatus(nonNull(kilde.getStatus()) ? kilde.getStatus() : FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.INAKTIV);
 
                         destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
                                 .ajourholdstidspunkt(LocalDate.now())
@@ -39,5 +36,10 @@ public class FolkeregisterPersonstatusMappingStrategy implements MappingStrategy
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static LocalDate toDate(LocalDateTime timestamp) {
+
+        return nonNull(timestamp) ? timestamp.toLocalDate() : null;
     }
 }

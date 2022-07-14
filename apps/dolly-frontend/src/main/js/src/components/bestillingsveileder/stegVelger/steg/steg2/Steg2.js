@@ -20,13 +20,18 @@ import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/For
 import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { ifPresent } from '~/utils/YupValidations'
 
-const getEmptyMessage = (leggTil, importTestnorge) => {
+const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
+
+const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 	if (leggTil) {
 		return 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
 	} else if (importTestnorge) {
 		return (
-			'Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til ' +
-			'gruppe du velger i neste steg.'
+			<span>
+				Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til
+				{gruppe === null && <> gruppe du velger i neste steg.</>}
+				{gruppe !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
+			</span>
 		)
 	}
 	return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
@@ -36,9 +41,10 @@ export const Steg2 = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const leggTil = opts.is.leggTil
 	const importTestnorge = opts.is.importTestnorge
+	const gruppe = opts.gruppe
 
 	if (!harAvhukedeAttributter(formikBag.values)) {
-		return <AlertStripeInfo>{getEmptyMessage(leggTil, importTestnorge)}</AlertStripeInfo>
+		return <AlertStripeInfo>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</AlertStripeInfo>
 	}
 
 	return (

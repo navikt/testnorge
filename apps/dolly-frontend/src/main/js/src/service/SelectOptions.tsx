@@ -432,7 +432,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'ORGNR', label: 'ORGNR' },
 	],
 
-	tjenestepensjonYtelseType : [
+	tjenestepensjonYtelseType: [
 		{ value: 'ALDER', label: 'Alderspensjon' },
 		{ value: 'UFORE', label: 'Uførepensjon' },
 		{ value: 'GJENLEVENDE', label: 'Gjenlevendepensjon' },
