@@ -68,16 +68,9 @@ public class TpsMessagingConsumer {
     private String tilfeldigUtlandskBankkonto() {
         var kontonummerLengde = 10;
 
-        Random randomGenerator;
-        try {
-            randomGenerator = SecureRandom.getInstanceStrong();
-        } catch (NoSuchAlgorithmException e) {
-            randomGenerator = new Random();
-        }
-
-        return randomGenerator.ints(kontonummerLengde, 0, 10)
+        return new SecureRandom().ints(kontonummerLengde, 0, 10)
                 .boxed()
-                .map(i -> i.toString())
+                .map(Integer::toUnsignedString)
                 .collect(Collectors.joining());
     }
 
