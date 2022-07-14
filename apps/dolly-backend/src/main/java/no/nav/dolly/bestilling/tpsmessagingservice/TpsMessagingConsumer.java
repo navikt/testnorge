@@ -21,6 +21,8 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +68,14 @@ public class TpsMessagingConsumer {
     private String tilfeldigUtlandskBankkonto() {
         var kontonummerLengde = 10;
 
-        return new Random().ints(kontonummerLengde, 0, 10)
+        Random randomGenerator;
+        try {
+            randomGenerator = SecureRandom.getInstanceStrong();
+        } catch (NoSuchAlgorithmException e) {
+            randomGenerator = new Random();
+        }
+
+        return randomGenerator.ints(kontonummerLengde, 0, 10)
                 .boxed()
                 .map(i -> i.toString())
                 .collect(Collectors.joining());
@@ -75,10 +84,10 @@ public class TpsMessagingConsumer {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
-        if (body instanceof BankkontonrUtlandDTO bankkontoUtland) {
-            if ((null != bankkontoUtland.getTilfeldigKontonummer()) && bankkontoUtland.getTilfeldigKontonummer()) {
-                bankkontoUtland.setKontonummer(tilfeldigUtlandskBankkonto());
-            }
+        if ((body instanceof BankkontonrUtlandDTO bankkontoUtland)
+                && (null != bankkontoUtland.getTilfeldigKontonummer())
+                && bankkontoUtland.getTilfeldigKontonummer()) {
+            bankkontoUtland.setKontonummer(tilfeldigUtlandskBankkonto());
         }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
