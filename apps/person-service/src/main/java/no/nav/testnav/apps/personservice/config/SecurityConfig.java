@@ -11,7 +11,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 
-
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
@@ -26,7 +25,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers(
-                        "/swagger-ui.html",
+                        "/swagger**",
                         "/webjars/**",
                         "/v3/api-docs/**",
                         "/internal/isReady",
