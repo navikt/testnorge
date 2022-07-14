@@ -162,6 +162,13 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
+    public List<String> getPersonIdenterBulk() {
+
+        return personRepository.findBulkIdent();
+                
+    }
+
+    @Transactional(readOnly = true)
     public List<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
 
         if (nonNull(identer) && !identer.isEmpty()) {

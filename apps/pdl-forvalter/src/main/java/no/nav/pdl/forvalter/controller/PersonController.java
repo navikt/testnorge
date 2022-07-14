@@ -70,6 +70,15 @@ public class PersonController {
     private final ArtifactUpdateService artifactUpdateService;
     private final ArtifactGjeldendeService artifactGjeldendeService;
 
+
+    @ResponseBody
+    @GetMapping("/bulk")
+    @Operation(description = "Hent bulk identer")
+    public List<String> getIdenterBulk() {
+
+        return personService.getPersonIdenterBulk();
+    }
+
     @ResponseBody
     @GetMapping
     @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
@@ -602,9 +611,9 @@ public class PersonController {
     @PutMapping(value = "/{ident}/telefonnummer")
     @Operation(description = "Oppdater telefonnumre for person")
     public void updateTelefonnumre(@Parameter(description = "Ident for testperson")
-                                    @PathVariable String ident,
-                                    @Parameter(description = "id som identifiserer telefonnummer")
-                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
+                                   @PathVariable String ident,
+                                   @Parameter(description = "id som identifiserer telefonnummer")
+                                   @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
         artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
     }
