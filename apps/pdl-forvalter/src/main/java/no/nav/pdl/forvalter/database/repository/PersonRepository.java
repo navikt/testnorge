@@ -30,15 +30,12 @@ public interface PersonRepository extends PagingAndSortingRepository<DbPerson, L
 
     boolean existsByIdent(String ident);
 
-    @Query("select p.ident from DbPerson p ")
-    List<String> findBulkIdent();
-
     @Query("from DbPerson p "
             + "where (:partialIdent is null or :partialIdent is not null and p.ident like %:partialIdent%)"
             + "and (:partialNavn1 is null or :partialNavn1 is not null and (upper(p.etternavn) like %:partialNavn1% or upper(p.fornavn) like %:partialNavn1%))"
             + "and (:partialNavn2 is null or :partialNavn2 is not null and (upper(p.etternavn) like %:partialNavn2% or upper(p.fornavn) like %:partialNavn2%))")
     List<DbPerson> findByWildcardIdent(@Param("partialIdent") String partialIdent,
-                                       @Param("partialNavn1") String partialNavn1,
-                                       @Param("partialNavn2") String partialNavn2,
-                                       Pageable pageable);
+                                     @Param("partialNavn1") String partialNavn1,
+                                     @Param("partialNavn2") String partialNavn2,
+                                     Pageable pageable);
 }
