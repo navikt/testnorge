@@ -91,4 +91,22 @@ class TpsMessagingConsumerTest {
 
         verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
     }
+
+    @Test
+    void generateUtenlandskbankkonto() {
+
+        stubPostUtenlandskBankkontoData();
+
+        var dto = new BankkontonrUtlandDTO();
+        dto.setTilfeldigKontonummer(true);
+
+        tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                IDENT,
+                MILJOER,
+                dto);
+
+        assertThat("tilfeldig kontonummer is True", dto.getTilfeldigKontonummer());
+        assertThat("kontonummer is not empty", dto.getKontonummer().length() > 0);
+
+    }
 }
