@@ -7,34 +7,42 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.net.URI;
 import java.util.Arrays;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-
-
 @Configuration
-public class OpenApiConfig {
+public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                        .in(SecurityScheme.In.HEADER)
-                        .name("Authorization")
-                ))
+                .components(new Components()
+                        .addSecuritySchemes("bearer-jwt", new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization")
+                                .description("Trenger ikke \"Bearer \" foran")
+                        )
+                        .addSecuritySchemes("user-jwt", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name(UserConstant.USER_HEADER_JWT)
+                        ))
                 .addSecurityItem(
-                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
+                        new SecurityRequirement()
+                                .addList("bearer-jwt", Arrays.asList("read", "write"))
+                                .addList("user-jwt", Arrays.asList("read", "write"))
+                )
                 .info(new Info()
                         .title(applicationProperties.getName())
                         .version(applicationProperties.getVersion())
@@ -52,10 +60,8 @@ public class OpenApiConfig {
                 );
     }
 
-    @Bean
-    RouterFunction<ServerResponse> routerFunction() {
-        return route(GET("/swagger"), req ->
-                ServerResponse.temporaryRedirect(URI.create("/swagger-ui.html"))
-                        .build());
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }

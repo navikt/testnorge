@@ -5,9 +5,9 @@ plugins {
 rootProject.name = 'person-service'
 
 includeBuild '../../libs/security-core'
-includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/commands'
-includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
