@@ -7,12 +7,17 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
+import java.net.URI;
 import java.util.Arrays;
 
-import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 
 @Configuration
@@ -45,5 +50,12 @@ public class OpenApiConfig {
                                 .url("https://opensource.org/licenses/MIT")
                         )
                 );
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> routerFunction() {
+        return route(GET("/swagger"), req ->
+                ServerResponse.temporaryRedirect(URI.create("/swagger-ui.html"))
+                        .build());
     }
 }
