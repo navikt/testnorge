@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '~/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { ErrorMessage, FormikProps } from 'formik'
+import { FormikProps } from 'formik'
 import _get from 'lodash/get'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 
 type VelgGruppeProps = {
 	formikBag: FormikProps<{}>
@@ -25,7 +26,7 @@ export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
 					<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setValgtGruppe} />
 				</div>
 			</div>
-			<ErrorMessage name="gruppeId" className="error-message" component="div" />
+			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
 		</div>
 	)
 }
