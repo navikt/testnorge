@@ -14,7 +14,7 @@ import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
-import {Gruppe} from "~/utils/hooks/useGruppe";
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type Props = {
 	items?: PdlData[]

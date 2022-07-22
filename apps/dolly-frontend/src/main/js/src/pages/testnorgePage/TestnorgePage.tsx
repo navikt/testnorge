@@ -16,7 +16,7 @@ import './TestnorgePage.less'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import * as Yup from 'yup'
 import DisplayFormikState from '~/utils/DisplayFormikState'
-import {Gruppe} from "~/utils/hooks/useGruppe";
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe

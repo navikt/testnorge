@@ -20,7 +20,7 @@ type Props = {
 		valgtePersoner: ImportPerson[],
 		mal: any,
 		navigate: Function,
-		gruppe?: Gruppe,
+		gruppe?: Gruppe
 	) => void
 	gruppe?: Gruppe
 }
