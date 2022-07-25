@@ -39,8 +39,8 @@ spec:
     requests:
       cpu: 300m
       memory: 1024Mi
-  envFrom:
-    - secret: testnav-bankkonto-service
+#  envFrom:
+#    - secret: testnav-bankkonto-service
   accessPolicy:
     inbound:
       rules:
