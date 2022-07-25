@@ -17,7 +17,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const navigate = useNavigate()
 	const { gruppeId } = useParams()
 	const options = BVOptions(location.state, gruppeId)
-	const handleSubmit = (values, formikBag) => {
+	const handleSubmit = (values, _formikBag) => {
 		sendBestilling(values, options, gruppeId, navigate)
 	}
 

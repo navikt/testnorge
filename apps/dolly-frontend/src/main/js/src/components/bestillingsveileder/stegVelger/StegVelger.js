@@ -20,7 +20,7 @@ import {
 
 const STEPS = [Steg1, Steg2, Steg3]
 
-export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, children }) => {
+export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)

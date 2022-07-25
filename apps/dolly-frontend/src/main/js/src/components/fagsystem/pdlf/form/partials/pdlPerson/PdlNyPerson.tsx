@@ -28,7 +28,7 @@ export const PdlNyPerson = ({
 		_get(formikBag.values, `${nyPersonPath}.foedtEtter`) != null ||
 		_get(formikBag.values, `${nyPersonPath}.foedtFoer`) != null
 
-	const disableFoedtDato = _get(formikBag.values, `${nyPersonPath}.alder`) != ''
+	const disableFoedtDato = _get(formikBag.values, `${nyPersonPath}.alder`) !== ''
 
 	const identtypeOptions =
 		erNyIdent && isLeggTil

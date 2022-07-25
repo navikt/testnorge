@@ -28,7 +28,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 					newEntry={initialKontaktinfoForDoedebo}
 					canBeEmpty={false}
 				>
-					{(path, idx) => {
+					{(path, _idx) => {
 						return (
 							<>
 								<FormikSelect
