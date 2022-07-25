@@ -33,7 +33,9 @@ const Visning = ({ data, idx }: VisningProps) => {
 
 export const PdlPartner = ({ data }: PdlPartnerProps) => {
 	const partnere = getSortedSivilstand(data)
-	if (!partnere || partnere.length === 0) return null
+	if (!partnere || partnere.length === 0) {
+		return null
+	}
 
 	const gjeldendePartnere = partnere.filter((partner: Sivilstand) => !partner.metadata?.historisk)
 	const historiskePartnere = partnere.filter((partner: Sivilstand) => partner.metadata?.historisk)

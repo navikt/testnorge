@@ -26,7 +26,9 @@ type OppholdsadresseVisningTypes = {
 }
 
 export const Adresse = ({ oppholdsadresseData, idx }: OppholdsadresseVisningTypes) => {
-	if (!oppholdsadresseData) return null
+	if (!oppholdsadresseData) {
+		return null
+	}
 
 	return (
 		<>

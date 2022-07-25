@@ -11,7 +11,9 @@ type RelatertPersonUtenIdData = {
 }
 
 export const RelatertPersonUtenId = ({ data, tittel, rolle = null }: RelatertPersonUtenIdData) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	return (
 		<div className="person-visning_content">

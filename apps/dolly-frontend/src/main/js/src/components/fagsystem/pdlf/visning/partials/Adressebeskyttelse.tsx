@@ -30,7 +30,9 @@ export const Adressebeskyttelse = ({
 	identtype,
 	erPdlVisning = false,
 }: AdressebeskyttelseTypes) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const AdressebeskyttelseLes = ({ adressebeskyttelse, idx }: AdressebeskyttelseVisningTypes) => {
 		return (
@@ -58,7 +60,9 @@ export const Adressebeskyttelse = ({
 		)?.find((a: Person) => a.id === adressebeskyttelse.id)
 		const slettetAdressebeskyttelsePdlf =
 			tmpPersoner?.hasOwnProperty(ident) && !redigertAdressebeskyttelsePdlf
-		if (slettetAdressebeskyttelsePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetAdressebeskyttelsePdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const adressebeskyttelseValues = redigertAdressebeskyttelsePdlf
 			? redigertAdressebeskyttelsePdlf

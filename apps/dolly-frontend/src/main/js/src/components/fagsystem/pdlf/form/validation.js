@@ -52,7 +52,7 @@ export const testDatoTom = (val, fomPath, feilmelding) => {
 
 const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
-		var feilmelding = null
+		let feilmelding = null
 		const values = this.options.context
 
 		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(

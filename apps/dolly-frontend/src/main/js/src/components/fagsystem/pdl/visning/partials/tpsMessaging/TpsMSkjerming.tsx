@@ -13,7 +13,9 @@ type Skjerming = {
 }
 
 export const TpsMSkjerming = ({ data }: TpsMSkjermingProps) => {
-	if (!data?.egenAnsattDatoFom) return null
+	if (!data?.egenAnsattDatoFom) {
+		return null
+	}
 	return (
 		<>
 			<TitleValue

@@ -5,7 +5,9 @@ import { InntektstubKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const FradragVisning = ({ data }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<React.Fragment>

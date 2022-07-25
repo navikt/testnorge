@@ -25,7 +25,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 		setMiljoer(null)
 		setSuccess(false)
 
-		let personnr = event.target.value
+		const personnr = event.target.value
 
 		// TODO: move to frontend validation
 		if (personnr.match(/^\d{11}$/) != null) {
@@ -57,7 +57,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 				setLoading(false)
 				setPersonnummer(personnr)
 
-				let env = response.data.statusPaaIdenter[0].env
+				const env = response.data.statusPaaIdenter[0].env
 				setMiljoer(env === null ? env : env.toString())
 
 				formikBag.setFieldValue(`${path}`, personnr)

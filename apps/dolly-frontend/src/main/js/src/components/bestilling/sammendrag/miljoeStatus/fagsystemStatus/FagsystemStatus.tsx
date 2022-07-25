@@ -8,7 +8,9 @@ import { Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeSt
 import IdentList from '~/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList'
 
 export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
-	if (statusrapport.length <= 0) return null
+	if (statusrapport.length <= 0) {
+		return null
+	}
 
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']

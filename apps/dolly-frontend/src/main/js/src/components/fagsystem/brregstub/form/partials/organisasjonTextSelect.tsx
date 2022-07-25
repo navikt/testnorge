@@ -12,7 +12,9 @@ interface OrgnanisasjonTextSelectProps {
 }
 
 const mapAdresse = (adresse: OrgInfoAdresse) => {
-	if (!adresse) return null
+	if (!adresse) {
+		return null
+	}
 	return {
 		adresselinje1: adresse.adresselinje1,
 		kommunenr: adresse.kommunenummer,
@@ -35,7 +37,9 @@ export const OrganisasjonTextSelect = ({
 	const [orgnummer, setOrgnummer] = useState(null)
 
 	const handleChange = (org: string, miljoe: string) => {
-		if (!org || !miljoe) return
+		if (!org || !miljoe) {
+			return
+		}
 		clearEnhetsinfo()
 		setError(null)
 		setLoading(true)

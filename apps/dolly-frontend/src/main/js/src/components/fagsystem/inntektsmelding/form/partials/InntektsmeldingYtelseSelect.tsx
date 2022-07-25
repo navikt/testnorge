@@ -29,9 +29,11 @@ export default ({
 	const ytelsePath = `${path}.ytelse`
 
 	const feil = (feilmelding: Feilmelding) => {
-		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '')
+		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '') {
 			return { feilmelding: 'Feltet er påkrevd' }
-		else return feilmelding
+		} else {
+			return feilmelding
+		}
 	}
 
 	return (
@@ -65,10 +67,13 @@ export default ({
 }
 
 const findTema = (ytelse: string) => {
-	if (ytelse === Ytelser.Sykepenger) return Tema.Syk
-	else if (ytelse === Ytelser.Foreldrepenger || ytelse === Ytelser.Svangerskapspenger)
+	if (ytelse === Ytelser.Sykepenger) {
+		return Tema.Syk
+	} else if (ytelse === Ytelser.Foreldrepenger || ytelse === Ytelser.Svangerskapspenger) {
 		return Tema.For
-	else return Tema.Oms
+	} else {
+		return Tema.Oms
+	}
 }
 
 const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, idx: number) => {

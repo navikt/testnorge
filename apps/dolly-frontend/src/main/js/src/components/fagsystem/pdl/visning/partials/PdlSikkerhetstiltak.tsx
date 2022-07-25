@@ -38,7 +38,9 @@ export const Visning = ({ data }: Data) => {
 }
 
 export const PdlSikkerhetstiltak = ({ data }: DataListe) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 	return (
 		<div>
 			<SubOverskrift label="Sikkerhetstiltak" iconKind="sikkerhetstiltak" />
