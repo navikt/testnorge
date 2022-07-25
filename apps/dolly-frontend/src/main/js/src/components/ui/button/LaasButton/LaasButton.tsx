@@ -15,7 +15,9 @@ type LaasButtonProps = {
 }
 
 export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
-	if (loading) return <Loading label="låser..." />
+	if (loading) {
+		return <Loading label="låser..." />
+	}
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (

@@ -72,7 +72,9 @@ export default ({
 	sidetall,
 	gruppe,
 }: Props) => {
-	if (loading) return <Loading label="Søker..." />
+	if (loading) {
+		return <Loading label="Søker..." />
+	}
 	if (!items || items.length === 0) {
 		return (
 			<ContentContainer>

@@ -56,7 +56,9 @@ export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps
 	const isFetching = loading || loadingOrganisasjoner
 
 	const searchfieldPlaceholderSelector = () => {
-		if (visning === VISNING_BESTILLINGER) return 'Søk i bestillinger'
+		if (visning === VISNING_BESTILLINGER) {
+			return 'Søk i bestillinger'
+		}
 		return 'Søk i organisasjoner'
 	}
 

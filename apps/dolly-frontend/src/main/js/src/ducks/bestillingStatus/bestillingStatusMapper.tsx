@@ -48,15 +48,21 @@ type System = {
 }
 
 const finnesDetAvvikForBestillinger = (systemListe: [System]) => {
-	if (!systemListe) return false
+	if (!systemListe) {
+		return false
+	}
 	return systemListe.some((system) => {
 		return system.statuser.some((status) => status.melding !== 'OK')
 	})
 }
 
 const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
-	if (!statusListe) return 0
-	if (statusListe.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
+	if (!statusListe) {
+		return 0
+	}
+	if (statusListe.some((status) => status.id === 'ORGANISASJON_FORVALTER')) {
+		return null
+	}
 
 	const addOpprettedeIdenter = (system: System) =>
 		system.statuser.flatMap((status) => {
@@ -83,9 +89,13 @@ const extractBestillingstatusKode = (
 	harAvvik: boolean,
 	antallIdenterOpprettet: number
 ) => {
-	if (bestilling.stoppet) return 'Stoppet'
-	if (!bestilling.ferdig) return 'Pågår'
-	if (antallIdenterOpprettet === 0) return 'Feilet'
+	if (bestilling.stoppet) {
+		return 'Stoppet'
+	} else if (!bestilling.ferdig) {
+		return 'Pågår'
+	} else if (antallIdenterOpprettet === 0) {
+		return 'Feilet'
+	}
 	return harAvvik ? 'Avvik' : 'Ferdig'
 }
 

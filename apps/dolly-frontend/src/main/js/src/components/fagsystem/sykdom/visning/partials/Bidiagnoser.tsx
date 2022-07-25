@@ -9,7 +9,9 @@ type BidiagnoserProps = {
 }
 
 export const Bidiagnoser = ({ data }: BidiagnoserProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 	return (
 		<>
 			<h4>Bidiagnoser</h4>

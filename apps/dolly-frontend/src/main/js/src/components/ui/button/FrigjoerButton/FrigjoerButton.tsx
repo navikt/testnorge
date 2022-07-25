@@ -24,7 +24,9 @@ export const FrigjoerButton = ({
 	importertPartner,
 	disabled = false,
 }: Props) => {
-	if (loading) return <Loading label="frigjører..." />
+	if (loading) {
+		return <Loading label="frigjører..." />
+	}
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const mutate = useMatchMutate()
 

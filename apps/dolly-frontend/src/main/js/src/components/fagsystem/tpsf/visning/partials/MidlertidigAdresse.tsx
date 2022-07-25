@@ -111,8 +111,9 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 }
 
 export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdresser) => {
-	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || isEmpty(midlertidigAdresse))
+	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || isEmpty(midlertidigAdresse)) {
 		return null
+	}
 
 	return (
 		<ErrorBoundary>
