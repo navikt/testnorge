@@ -49,7 +49,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) =>
 
 		sessionStorage.clear()
 
-		onSubmit(values, formikBag)
+		onSubmit(values)
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
 		return mutate(REGEX_BACKEND_BESTILLINGER)
