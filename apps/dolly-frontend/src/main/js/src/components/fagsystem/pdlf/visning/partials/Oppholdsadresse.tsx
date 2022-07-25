@@ -57,7 +57,9 @@ export const Oppholdsadresse = ({
 	ident,
 	erPdlVisning = false,
 }: OppholdsadresseTypes) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const OppholdsadresseVisning = ({ oppholdsadresseData, idx }: OppholdsadresseVisningTypes) => {
 		const initOppholdsadresse = Object.assign(_cloneDeep(initialOppholdsadresse), data[idx])
@@ -68,7 +70,9 @@ export const Oppholdsadresse = ({
 		)
 		const slettetOppholdsadressePdlf =
 			tmpPersoner?.hasOwnProperty(ident) && !redigertOppholdsadressePdlf
-		if (slettetOppholdsadressePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetOppholdsadressePdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const oppholdsadresseValues = redigertOppholdsadressePdlf
 			? redigertOppholdsadressePdlf

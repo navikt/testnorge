@@ -107,7 +107,7 @@ export const VisningRedigerbarPersondetaljer = ({
 		const submit = async () => {
 			setVisningModus(Modus.LoadingPdlf)
 			const editFn = async () => {
-				for (let attr of Object.keys(data)) {
+				for (const attr of Object.keys(data)) {
 					const initialData = redigertAttributt
 						? _get(redigertAttributt, `${attr}[0]`)
 						: _get(initialValues, `${attr}[0]`)
@@ -149,7 +149,7 @@ export const VisningRedigerbarPersondetaljer = ({
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
 			const deleteFn = async () => {
-				for (let attr of Object.keys(slettAttr)) {
+				for (const attr of Object.keys(slettAttr)) {
 					if (slettAttr[attr]) {
 						const id = _get(initialValues, `${attr}[0].id`)
 						await PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
