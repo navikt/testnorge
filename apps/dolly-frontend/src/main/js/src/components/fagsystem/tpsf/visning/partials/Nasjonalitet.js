@@ -68,7 +68,7 @@ export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 				{statsborgerskap.length > 1 ? (
 					<ErrorBoundary>
 						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
-							{(borgerskap, _idx) => <Statsborgerskap statsborgerskap={borgerskap} />}
+							{(borgerskap) => <Statsborgerskap statsborgerskap={borgerskap} />}
 						</DollyFieldArray>
 						<TitleValue
 							title="Språk"
