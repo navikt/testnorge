@@ -40,6 +40,7 @@ const FilOpplaster = styled(FileUpload)`
 	background-color: unset;
 	margin-bottom: 10px;
 	min-height: 60px;
+	border-style: dotted;
 
 	&:hover {
 		background-color: #f1f1f1;
