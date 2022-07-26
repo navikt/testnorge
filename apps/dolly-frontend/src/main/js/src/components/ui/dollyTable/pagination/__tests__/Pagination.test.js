@@ -8,7 +8,7 @@ describe('Pagination.js', () => {
 	const wrapper = shallow(
 		<Pagination
 			items={items}
-			render={(cb) => {
+			render={(_cb) => {
 				return <div className="test-comp">content</div>
 			}}
 		/>
@@ -51,7 +51,6 @@ describe('Pagination.js', () => {
 	})
 
 	it('should handle componentDidUpdate on new props', () => {
-		const newItems = [1, 2, 3, 4, 5, 6]
 		wrapper.setState({ currentPage: 1 })
 		expect(wrapper.state().currentPage).toEqual(1)
 
