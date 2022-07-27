@@ -11,8 +11,9 @@ import { FormikProps } from 'formik'
 import FileUpload from 'filopplasting'
 import styled from 'styled-components'
 import _get from 'lodash/get'
-import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
+import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import './DokarkivForm.less'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -40,7 +41,7 @@ const FilOpplaster = styled(FileUpload)`
 	background-color: unset;
 	margin-bottom: 10px;
 	min-height: 60px;
-	border-style: dotted;
+	border-style: dashed;
 
 	&:hover {
 		background-color: #f1f1f1;
@@ -48,6 +49,11 @@ const FilOpplaster = styled(FileUpload)`
 
 	.animate {
 		content-visibility: hidden;
+	}
+	div {
+		div {
+			margin-top: 15px;
+		}
 	}
 `
 
