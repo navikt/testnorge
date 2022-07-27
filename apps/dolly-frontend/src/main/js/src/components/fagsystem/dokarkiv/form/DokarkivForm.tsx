@@ -13,7 +13,6 @@ import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import './DokarkivForm.less'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
