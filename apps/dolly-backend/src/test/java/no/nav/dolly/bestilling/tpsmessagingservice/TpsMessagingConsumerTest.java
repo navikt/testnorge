@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
@@ -21,11 +24,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +51,8 @@ class TpsMessagingConsumerTest {
 
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     public void setup() {
@@ -90,5 +94,53 @@ class TpsMessagingConsumerTest {
                 bankkontonrUtlandDTO));
 
         verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
+    }
+
+    @Test
+    void generateUtenlandskbankkonto() {
+        stubFor(
+                post(urlPathMatching("(.*)/api/v1/personer/(.*)/bankkonto-utenlandsk"))
+                        .willReturn(ok()
+                                .withFixedDelay(100)
+                                .withBody("[{\"miljoe\" : \"q1\", \"status\" : \"OK\"}]")
+                                .withHeader("Content-Type", "application/json")));
+
+        var dto = new BankkontonrUtlandDTO();
+        dto.setTilfeldigKontonummer(true);
+
+        List.of("1111111111", "2222222222", "333333333", "4444444444")
+                .parallelStream()
+                .forEach(
+                        p -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(p, MILJOER, dto)
+                );
+
+        var sendtBankkontoer = WireMock.getAllServeEvents()
+                .stream()
+                .map(e -> e.getRequest().getBodyAsString())
+                .map(s -> {
+                    try {
+                        return objectMapper.readValue(s, BankkontonrUtlandDTO.class);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+
+        var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().collect(Collectors.toList());
+
+        assertThat("tilfeldig kontonummer is True", dto.getTilfeldigKontonummer());
+        assertThat("sendt forskjellige kontonummer", forskjelligeBankkontoer.size() == sendtBankkontoer.size());
+    }
+
+    @Test
+    void generateDifferentBankkonto() {
+        var kontoer = IntStream.range(1, 100).boxed()
+                .map((i) -> TpsMessagingConsumer.tilfeldigUtlandskBankkonto())
+                .sorted()
+                .collect(Collectors.toList());
+
+        var unikKontoer = kontoer.stream().distinct().count();
+
+        assertThat("forskjellige kontoer", unikKontoer == kontoer.size());
     }
 }
