@@ -378,6 +378,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				set(paths.utenlandskBankkonto, {
 					kontonummer: '',
+					tilfeldigKontonummer: false,
 					swift: '',
 					landkode: null,
 					banknavn: '',
