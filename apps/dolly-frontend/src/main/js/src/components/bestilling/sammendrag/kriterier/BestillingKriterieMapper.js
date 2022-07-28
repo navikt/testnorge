@@ -1031,6 +1031,10 @@ const mapTpsMessaging = (bestillingData, data) => {
 				header: 'Utenlandsk bankkonto',
 				items: [
 					obj('Kontonummer', tpsMessaging.utenlandskBankkonto.kontonummer),
+					obj(
+						'Tilfeldig kontonummer',
+						tpsMessaging.utenlandskBankkonto.tilfeldigKontonummer ? 'Ja' : ''
+					),
 					obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
 					obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
 					obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
