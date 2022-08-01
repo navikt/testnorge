@@ -272,6 +272,37 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
     private TpsMessage sendBankkontonummer(RsDollyUtvidetBestilling bestilling) {
+        if (nonNull(bestilling.getBankkonto())) {
+            if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
+
+                return (bestilling1, dollyPerson) ->
+                        Map.of("UtenlandskBankkonto",
+                                tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                                        dollyPerson.getHovedperson(),
+                                        null,
+                                        bestilling1.getBankkonto().getUtenlandskBankkonto()));
+
+            } else if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
+
+                return (bestilling1, dollyPerson) ->
+                        Map.of("UtenlandskBankkonto",
+                                tpsMessagingConsumer.sendNorskBankkontoRequest(
+                                        dollyPerson.getHovedperson(),
+                                        null,
+                                        bestilling1.getBankkonto().getNorskBankkonto()));
+
+            }
+        }
+
+        // den er for bakoverkompatibel
+        if (nonNull(bestilling.getBankkonto()) && nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
+            return (bestilling1, dollyPerson) ->
+                    Map.of("UtenlandskBankkonto",
+                            tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                                    dollyPerson.getHovedperson(),
+                                    null,
+                                    bestilling1.getBankkonto().getUtenlandskBankkonto()));
+        }
 
         if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
 
