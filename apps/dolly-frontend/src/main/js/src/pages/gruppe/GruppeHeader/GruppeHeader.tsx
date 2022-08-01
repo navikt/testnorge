@@ -112,12 +112,6 @@ const GruppeHeader = ({
 							action={deleteGruppe}
 							loading={isDeletingGruppe}
 							navigateHome={true}
-							disabled={antallPersoner > 15}
-							title={
-								antallPersoner > 15
-									? 'Sletting av større grupper er midlertidig utilgjengelig i påvente av en mer robust løsning'
-									: null
-							}
 						>
 							Er du sikker på at du vil slette denne gruppen?
 						</SlettButton>
