@@ -285,7 +285,7 @@ public class TpsMessagingClient implements ClientRegister {
             } else if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
 
                 return (bestilling1, dollyPerson) ->
-                        Map.of("UtenlandskBankkonto",
+                        Map.of("NorskBankkonto",
                                 tpsMessagingConsumer.sendNorskBankkontoRequest(
                                         dollyPerson.getHovedperson(),
                                         null,
