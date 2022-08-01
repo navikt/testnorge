@@ -29,8 +29,7 @@ import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.def
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -73,8 +72,9 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     @Override
     public void validate(SivilstandDTO sivilstand) {
 
-        if ((sivilstand.getType() == GIFT ||
-                sivilstand.getType() == REGISTRERT_PARTNER) &&
+        if ((sivilstand.isGift() ||
+                sivilstand.isSeparert() ||
+                sivilstand.getType() == SAMBOER) &&
                 isNotBlank(sivilstand.getRelatertVedSivilstand()) &&
                 !personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())) {
 
@@ -94,7 +94,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             }
         }
 
-        if (sivilstand.isGift() || sivilstand.isSeparert()) {
+        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
