@@ -153,6 +153,7 @@ export type Vergemaal = {
 	vergeIdent?: string
 	vergeEllerFullmektig?: {
 		motpartsPersonident: string
+		omfang?: string
 	}
 	id: number
 }

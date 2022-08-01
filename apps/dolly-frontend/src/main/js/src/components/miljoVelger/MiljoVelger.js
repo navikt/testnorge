@@ -1,5 +1,5 @@
 import React from 'react'
-import { ErrorMessage, FieldArray } from 'formik'
+import { FieldArray } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
@@ -10,6 +10,7 @@ import * as Yup from 'yup'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import Loading from '~/components/ui/loading/Loading'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -123,7 +124,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 				}}
 			</FieldArray>
 
-			<ErrorMessage name="environments" className="error-message" component="div" />
+			<ErrorMessageWithFocus name="environments" className="error-message" component="div" />
 		</div>
 	)
 }

@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    vault:
+      enabled: false
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+
+consumers:
+  bidragsmelding:
+    url: dummy
+  synt-bisys:
+    url: http://localhost:${wiremock.server.port:0}/synt-bisys
+    cluster: dummt
+    namespace: dummy
+    name: synthdata-bisys
+
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token

@@ -11,7 +11,9 @@ type Spraak = {
 }
 
 export const TpsMSpraak = ({ data }: TpsMSpraakProps) => {
-	if (!data?.sprakKode) return null
+	if (!data?.sprakKode) {
+		return null
+	}
 	return (
 		<>
 			<TitleValue

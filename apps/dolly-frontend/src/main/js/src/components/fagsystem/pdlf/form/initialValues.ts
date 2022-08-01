@@ -174,7 +174,7 @@ export const initialOrganisasjon = {
 export const initialPerson = {
 	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
-	navn: navn,
+	navn: null as typeof navn,
 }
 
 export const initialNyPerson = {
@@ -328,4 +328,12 @@ export const initialTpsTelefonnummer = {
 	landkode: '',
 	telefonnummer: '',
 	telefontype: 'HJET',
+}
+
+export const initialPersonstatus = {
+	status: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
 }

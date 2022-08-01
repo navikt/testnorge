@@ -97,6 +97,11 @@ public class OrganisasjonClient {
         deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer);
     }
 
+    public void release(List<String> orgnummer) {
+
+        throw new UnsupportedOperationException("Release ikke implementert");
+    }
+
     private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
 
         log.info("Deployer orgnumre fra Organisasjon Forvalter");
@@ -137,7 +142,6 @@ public class OrganisasjonClient {
         }
     }
 
-
     private String mapStatusFraDeploy(Entry<String, List<EnvStatus>> orgStatus) {
 
         if (isNull(orgStatus)) {
@@ -161,10 +165,5 @@ public class OrganisasjonClient {
             }
         });
         return status.toString();
-    }
-
-    public void release(List<String> orgnummer) {
-
-        throw new UnsupportedOperationException("Release ikke implementert");
     }
 }

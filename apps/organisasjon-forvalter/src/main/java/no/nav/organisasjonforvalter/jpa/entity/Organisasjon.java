@@ -3,9 +3,9 @@ package no.nav.organisasjonforvalter.jpa.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,8 +27,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Data
-@ToString
+@Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -82,7 +82,7 @@ public class Organisasjon implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organisasjon", cascade = CascadeType.ALL)
     private List<Adresse> adresser;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = { CascadeType.ALL })
     @JoinColumn(name = "parent_org")
     private Organisasjon parent;
 

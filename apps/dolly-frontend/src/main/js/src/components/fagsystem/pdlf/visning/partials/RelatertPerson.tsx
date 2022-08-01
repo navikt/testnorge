@@ -22,7 +22,9 @@ type RelatertPersonData = {
 }
 
 export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	return (
 		<>

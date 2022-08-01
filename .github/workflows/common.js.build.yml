@@ -4,11 +4,6 @@ on:
       working-directory:
         type: string
         required: true
-    secrets:
-      READER_TOKEN:
-        required: false
-      NPM_TOKEN:
-        required: false
 
 jobs:
   build:
@@ -18,15 +13,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-          registry-url: "https://npm.pkg.github.com"
       - name: Build install
-        run: |
-          echo "@navikt:registry=https://npm.pkg.github.com" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.READER_TOKEN }}" >> ~/.npmrc
-          npm install --no-save --no-audit
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm ci
+        env:          
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
       - name: Build code
         run: npm run build

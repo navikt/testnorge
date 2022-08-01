@@ -20,7 +20,9 @@ type Data = {
 }
 
 export const TelefonnummerLes = ({ telefonnummerData, idx }) => {
-	if (!telefonnummerData) return null
+	if (!telefonnummerData) {
+		return null
+	}
 
 	const telefonnummer = telefonnummerData.nummer || telefonnummerData.telefonnummer
 	const landkode = telefonnummerData.landskode || telefonnummerData.landkode

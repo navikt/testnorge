@@ -31,7 +31,7 @@ public abstract class RecreateKafkaProducer<T extends SpecificRecord> {
 
             @Override
             public void onSuccess(SendResult<String, T> result) {
-                log.info("Melding send med uuid: {}", key);
+                log.info("Melding sendt med uuid: {}", key);
             }
         });
     }

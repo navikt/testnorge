@@ -10,7 +10,9 @@ interface PleiepengerVisning {
 }
 
 export default ({ data }: PleiepengerVisning) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 	return (
 		<ErrorBoundary>
 			<DollyFieldArray data={data} header="Pleiepenger">

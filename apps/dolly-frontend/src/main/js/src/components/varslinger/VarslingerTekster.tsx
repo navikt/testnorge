@@ -6,7 +6,9 @@ type VarslingId = {
 }
 
 export const VarslingerTekster = ({ varslingId }: VarslingId) => {
-	if (!varslingId) return null
+	if (!varslingId) {
+		return null
+	}
 
 	const brukerveiledning = (
 		<a

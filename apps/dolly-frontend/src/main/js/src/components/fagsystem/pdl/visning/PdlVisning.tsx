@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
@@ -21,11 +21,11 @@ import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visnin
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
-import { TpsMessagingApi } from '~/service/Api'
 import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
+import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -34,41 +34,14 @@ type PdlVisningProps = {
 }
 
 export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisningProps) => {
-	if (loading) return <Loading label="Laster PDL-data" />
+	if (loading) {
+		return <Loading label="Laster PDL-data" />
+	}
 	if (!pdlData?.hentPerson) {
 		return null
 	}
 
-	const [tpsMessagingData, setTpsMessagingData] = useState(null)
-	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
-	const mountedRef = useRef(true)
-
-	const execute = useCallback(() => {
-		const tpsMessaging = async () => {
-			setTpsMessagingLoading(true)
-			const resp = await TpsMessagingApi.getTpsPersonInfo(getPdlIdent(pdlData), environments[0])
-				.then((response: any) => {
-					return response?.data[0]?.person
-				})
-				.catch((_e: Error) => {
-					return null
-				})
-			if (mountedRef.current) {
-				setTpsMessagingData(resp)
-				setTpsMessagingLoading(false)
-			}
-		}
-		return tpsMessaging()
-	}, [environments])
-
-	useEffect(() => {
-		if (!loading && environments && environments.length > 0) {
-			execute()
-		}
-		return () => {
-			mountedRef.current = false
-		}
-	}, [])
+	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), environments, loading)
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
 	const {
@@ -95,30 +68,33 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 			<div className="boks">
 				<PdlPersonInfo
 					data={hentPerson}
-					tpsMessagingData={tpsMessagingData}
-					tpsMessagingLoading={tpsMessagingLoading}
+					tpsMessagingData={tpsMessaging?.tpsMessagingData}
+					tpsMessagingLoading={tpsMessaging?.tpsMessagingLoading}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
-				<GeografiskTilknytning data={hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={hentPerson} />
-				<TpsMBankkonto data={tpsMessagingData} loading={tpsMessagingLoading} />
 				<Foedsel data={foedsel} erPdlVisning />
 				<Doedsfall data={doedsfall} erPdlVisning />
+				<GeografiskTilknytning data={hentGeografiskTilknytning} />
+				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
+				<PdlFullmakt data={fullmakt} />
+				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
+				<TpsMBankkonto
+					data={tpsMessaging?.tpsMessagingData}
+					loading={tpsMessaging?.tpsMessagingLoading}
+				/>
 				<PdlBoadresse data={bostedsadresse} />
 				<PdlDeltBosted data={deltBosted} />
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
-				<PdlFullmakt data={fullmakt} />
-				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 				<PdlRelasjoner data={hentPerson} />
-				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={falskIdentitet} />
+				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
+				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
 			</div>
 		</ErrorBoundary>
 	)

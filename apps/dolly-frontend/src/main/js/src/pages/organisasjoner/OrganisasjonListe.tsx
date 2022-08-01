@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import 'rc-tooltip/assets/bootstrap.css'
@@ -119,16 +119,17 @@ export default function OrganisasjonListe({
 			?.map((org) => org.organisasjonNummer)
 	)
 
+	const [filtrertOrgListe, setfiltrertOrgListe] = useState([])
+
 	useEffect(() => {
 		setAntallOrg(organisasjoner?.length)
-	}, [organisasjoner])
+		const sortedOrgliste = _orderBy(organisasjoner, ['id'], ['desc'])
+		setfiltrertOrgListe(sokSelectorOrg(mergeList(sortedOrgliste, bestillinger), search))
+	}, [organisasjoner, bestillinger])
 
 	if (loading) {
 		return <Loading label="Laster organisasjoner" panel />
 	}
-	const sortedOrgliste = _orderBy(organisasjoner, ['id'], ['desc'])
-	const filtrertOrgListe = sokSelectorOrg(mergeList(sortedOrgliste, bestillinger), search)
-
 	const columns = [
 		{
 			text: 'Orgnr.',
@@ -154,7 +155,9 @@ export default function OrganisasjonListe({
 			dataField: 'bestillingId',
 			formatter: (_cell: number, row: EnhetData) => {
 				const str = row.bestillingId
-				if (str.length > 1) return `${str[0]} ...`
+				if (str.length > 1) {
+					return `${str[0]} ...`
+				}
 				return str[0]
 			},
 		},

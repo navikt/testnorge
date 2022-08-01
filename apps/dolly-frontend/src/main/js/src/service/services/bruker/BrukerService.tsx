@@ -17,7 +17,7 @@ export default {
 	},
 
 	opprettBruker(brukernavn: string, organisasjonsnummer: string) {
-		let bruker: Bruker = {
+		const bruker: Bruker = {
 			brukernavn: brukernavn,
 			organisasjonsnummer: organisasjonsnummer,
 		}

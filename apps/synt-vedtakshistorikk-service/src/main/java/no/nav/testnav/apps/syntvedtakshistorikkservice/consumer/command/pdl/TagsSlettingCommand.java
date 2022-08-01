@@ -28,6 +28,7 @@ public class TagsSlettingCommand implements Callable<Mono<ResponseEntity<JsonNod
     private final String token;
 
     public Mono<ResponseEntity<JsonNode>> call() {
+        log.info("Sletter tag(s) på ident(er)");
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder

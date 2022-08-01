@@ -11,12 +11,18 @@ import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTy
 import { MalValg } from '~/pages/testnorgePage/search/importModal/MalValg'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import Hjelpetekst from '~/components/hjelpetekst'
-import Icon from '~/components/ui/icon/Icon'
 import './ImportModal.less'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type Props = {
 	valgtePersoner: ImportPerson[]
-	importerPersoner: (valgtePersoner: ImportPerson[], mal: any, navigate: Function) => void
+	importerPersoner: (
+		valgtePersoner: ImportPerson[],
+		mal: any,
+		navigate: Function,
+		gruppe?: Gruppe
+	) => void
+	gruppe?: Gruppe
 }
 
 const getPdlPersoner = async (identer: string[]) => {
@@ -51,7 +57,7 @@ const getPdlPersoner = async (identer: string[]) => {
 
 const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
-export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
+export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props) => {
 	const navigate = useNavigate()
 
 	const [modalMalIsOpen, openMalModal, closeMalModal] = useBoolean(false)
@@ -85,10 +91,10 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 		const partnere = getPartnere(valgtePersoner.map((person) => person.data))
 		if (importMedPartner && partnere?.length > 0) {
 			getPdlPersoner(partnere).then((response: ImportPerson[]) => {
-				importerPersoner(valgtePersoner.concat(response), malData, navigate)
+				importerPersoner(valgtePersoner.concat(response), malData, navigate, gruppe)
 			})
 		} else {
-			importerPersoner(personer, mal, navigate)
+			importerPersoner(personer, mal, navigate, gruppe)
 		}
 	}
 
@@ -145,12 +151,8 @@ export const ImportModal = ({ valgtePersoner, importerPersoner }: Props) => {
 
 			<DollyModal isOpen={modalMalIsOpen} closeModal={closeMalModal} width="60%" overflow="auto">
 				<div className="importModal">
-					{/*<Icon kind="personinformasjon" size={60} />*/}
 					<div className="importModal importModal-content">
 						<h1>Import med mal</h1>
-						{/*<h4>*/}
-						{/*	Hvilken mal skal brukes for persondata?*/}
-						{/*</h4>*/}
 					</div>
 					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
 					<div className="importModal-actions">

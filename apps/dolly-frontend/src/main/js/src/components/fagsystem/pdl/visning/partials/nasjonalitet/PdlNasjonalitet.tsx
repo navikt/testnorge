@@ -16,8 +16,9 @@ export const PdlNasjonalitet = ({ data, visTittel = true }: NasjonalitetProps) =
 		statsborgerskap?.length < 1 &&
 		innflyttingTilNorge?.length < 1 &&
 		utflyttingFraNorge?.length < 1
-	)
+	) {
 		return null
+	}
 
 	return (
 		<div>

@@ -103,7 +103,9 @@ const FinnPersonBestilling = ({
 	}
 
 	const soekBestillinger = async (tekst: string): Promise<Option[]> => {
-		if (!tekst) return []
+		if (!tekst) {
+			return []
+		}
 		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
 			if (!response?.data || response?.data?.length < 1) {
 				return []
@@ -116,7 +118,9 @@ const FinnPersonBestilling = ({
 	}
 
 	const soekPersoner = async (tekst: string): Promise<Option[]> => {
-		if (!tekst) return []
+		if (!tekst) {
+			return []
+		}
 		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
 		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
 		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)

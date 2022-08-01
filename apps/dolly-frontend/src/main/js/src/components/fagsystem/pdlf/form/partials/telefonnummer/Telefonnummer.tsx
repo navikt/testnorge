@@ -41,6 +41,11 @@ const StyledAvansert = styled.div`
 	}
 `
 
+const paths = {
+	pdlTelefonnummer: 'pdldata.person.telefonnummer',
+	tpsMTelefonnummer: 'tpsMessaging.telefonnummer',
+}
+
 export const TelefonnummerFormRedigering = ({ path }: TelefonnummerFormTypes) => {
 	return (
 		<>
@@ -71,14 +76,16 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerFormTypes) =>
 
 export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerFormTypes) => {
 	const tlfListe = _get(formikBag.values, path || 'pdldata.person.telefonnummer')
-	if (!tlfListe) return null
+	if (!tlfListe) {
+		return null
+	}
 	// console.log('tlfListe: ', tlfListe) //TODO - SLETT MEG
 	// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
 	// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
 	useEffect(() => {
 		if (tlfListe.length === 1) {
-			formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
-			formikBag.setFieldValue('tpsMessaging.telefonnummer[0].telefontype', 'MOBI')
+			formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+			formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 		}
 	}, [tlfListe])
 
@@ -94,18 +101,18 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerFormTyp
 
 	const handleChangeLandkode = (value: string, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.landskode`, value)
-		formikBag.setFieldValue(`tpsMessaging.telefonnummer[${idx}].landkode`, value)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, value)
 	}
 
 	const handleChangeNummer = (target: { value: string }, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.nummer`, target.value)
-		formikBag.setFieldValue(`tpsMessaging.telefonnummer[${idx}].telefonnummer`, target.value)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].telefonnummer`, target.value)
 	}
 
 	const handleChangePrioritet = (value: number, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.prioritet`, value)
 		formikBag.setFieldValue(
-			`tpsMessaging.telefonnummer[${idx}].telefontype`,
+			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
 			value === 2 ? 'HJET' : 'MOBI'
 		)
 	}
@@ -151,30 +158,32 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerFormTyp
 export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
 	// console.log('formikBag: ', formikBag) //TODO - SLETT MEG
 	// console.log('path: ', path) //TODO - SLETT MEG
-	const tlfListe = _get(formikBag.values, path || 'pdldata.person.telefonnummer')
-	const tlfListeTps = _get(formikBag.values, path || 'tpsMessaging.telefonnummer')
+	const tlfListe = _get(formikBag.values, path || paths.pdlTelefonnummer)
+	const tlfListeTps = _get(formikBag.values, path || paths.tpsMTelefonnummer)
 
-	if (!tlfListe) return null
+	if (!tlfListe) {
+		return null
+	}
 
 	const handleNewEntry = () => {
-		formikBag.setFieldValue('pdldata.person.telefonnummer', [...tlfListe, initialTelefonnummer])
-		formikBag.setFieldValue('tpsMessaging.telefonnummer', [...tlfListeTps, initialTpsTelefonnummer])
+		formikBag.setFieldValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
+		formikBag.setFieldValue(paths.tpsMTelefonnummer, [...tlfListeTps, initialTpsTelefonnummer])
 	}
 
 	const handleRemoveEntry = (idx: number) => {
 		tlfListe.splice(idx, 1)
 		tlfListeTps.splice(idx, 1)
-		formikBag.setFieldValue('pdldata.person.telefonnummer', tlfListe)
-		formikBag.setFieldValue('tpsMessaging.telefonnummer', tlfListeTps)
-		formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
-		formikBag.setFieldValue('tpsMessaging.telefonnummer[0].telefontype', 'MOBI')
+		formikBag.setFieldValue(paths.pdlTelefonnummer, tlfListe)
+		formikBag.setFieldValue(paths.tpsMTelefonnummer, tlfListeTps)
+		formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 	}
 
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				// name={'pdldata.person.telefonnummer'}
-				name={path || 'pdldata.person.telefonnummer'}
+				name={path || paths.pdlTelefonnummer}
 				header="Telefonnummer"
 				newEntry={initialTelefonnummer}
 				canBeEmpty={false}

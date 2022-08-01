@@ -16,8 +16,13 @@ import './TestnorgePage.less'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import * as Yup from 'yup'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
-export default () => {
+type TestnorgePageProps = {
+	gruppe?: Gruppe
+}
+
+export default ({ gruppe }: TestnorgePageProps) => {
 	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
@@ -97,6 +102,7 @@ export default () => {
 												loading={loading}
 												valgtePersoner={valgtePersoner}
 												setValgtePersoner={setValgtePersoner}
+												gruppe={gruppe}
 											/>
 										)}
 									</>

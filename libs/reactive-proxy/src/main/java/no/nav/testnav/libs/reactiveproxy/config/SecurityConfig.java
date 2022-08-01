@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.reactiveproxy.config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,7 +13,6 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 
 
-@Slf4j
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity

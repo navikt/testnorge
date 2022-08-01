@@ -20,67 +20,137 @@ import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/parti
 import { DeltBosted } from '~/components/fagsystem/pdlf/visning/partials/DeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { Nasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/Nasjonalitet'
+import { Persondetaljer } from '~/components/fagsystem/pdlf/visning/partials/Persondetaljer'
+import {
+	TpsfIdenthistorikk,
+	MidlertidigAdresse,
+	NorskBankkonto,
+	TpsfPersoninfo,
+	Postadresse,
+	Relasjoner,
+	UtenlandskBankkonto,
+	TpsfVergemaal,
+	TpsfNasjonalitet,
+} from '~/components/fagsystem/tpsf/visning/partials'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
+import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
-export const PdlfVisning = ({ data, loading, tmpPersoner }) => {
+export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments, master }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
-	if (!data) return null
+	if (!data && !tpsfData) return null
 
-	const {
-		foedsel,
-		doedsfall,
-		telefonnummer,
-		vergemaal,
-		tilrettelagtKommunikasjon,
-		bostedsadresse,
-		deltBosted,
-		oppholdsadresse,
-		kontaktadresse,
-		adressebeskyttelse,
-		sivilstand,
-		fullmakt,
-		utenlandskIdentifikasjonsnummer,
-		falskIdentitet,
-		kontaktinformasjonForDoedsbo,
-		forelderBarnRelasjon,
-		doedfoedtBarn,
-		ident,
-		identtype,
-	} = data.person
+	const ident = data ? data.person?.ident : tpsfData?.ident
+	const tpsMessaging = TpsMessagingData(ident, environments)
+
+	const harTpsAdresse =
+		tpsfData?.boadresse?.length > 0 ||
+		tpsfData?.postadresse?.length > 0 ||
+		tpsfData?.midlertidigAdresse?.length > 0
 
 	return (
 		<ErrorBoundary>
 			<div>
-				<Nasjonalitet data={data.person} tmpPersoner={tmpPersoner} />
-				<Foedsel data={foedsel} tmpPersoner={tmpPersoner} ident={ident} />
-				<Doedsfall data={doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
-				<Telefonnummer data={telefonnummer} tmpPersoner={tmpPersoner} ident={ident} />
-				<VergemaalVisning data={vergemaal} relasjoner={data.relasjoner} />
-				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
-				<Boadresse
-					data={bostedsadresse}
-					tmpPersoner={tmpPersoner}
-					ident={ident}
-					identtype={identtype}
+				{master === 'PDLF' ? (
+					<>
+						<Persondetaljer
+							data={data?.person}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							tpsMessaging={tpsMessaging}
+						/>
+						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPersoner} ident={ident} />
+						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
+						<Nasjonalitet data={data?.person} tmpPersoner={tmpPersoner} />
+						<Telefonnummer data={data?.person?.telefonnummer} tmpPersoner={tmpPersoner} ident={ident} />
+						<VergemaalVisning data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
+						<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
+						<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
+						<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
+					</>
+				) : (
+					<>
+						<TpsfPersoninfo data={tpsfData} environments={environments} />
+						<TpsfNasjonalitet data={tpsfData} />
+						<Telefonnummer data={tpsfData?.telefonnumre} />
+						<TpsfVergemaal data={tpsfData?.vergemaal} />
+						<Fullmakt data={tpsfData?.fullmakt} relasjoner={tpsfData?.relasjoner} />
+					</>
+				)}
+
+				<UtenlandskBankkonto
+					data={
+						tpsMessaging?.tpsMessagingData?.bankkontonrUtland
+							? tpsMessaging?.tpsMessagingData?.bankkontonrUtland
+							: tpsfData?.bankkontonrUtland
+					}
 				/>
-				<DeltBosted data={deltBosted} />
-				<Oppholdsadresse data={oppholdsadresse} tmpPersoner={tmpPersoner} ident={ident} />
-				<Kontaktadresse data={kontaktadresse} tmpPersoner={tmpPersoner} ident={ident} />
-				<Adressebeskyttelse
-					data={adressebeskyttelse}
-					tmpPersoner={tmpPersoner}
-					ident={ident}
-					identtype={identtype}
+				<NorskBankkonto
+					data={
+						tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
+							? tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
+							: tpsfData?.bankkontonrNorsk
+					}
 				/>
-				<SivilstandVisning data={sivilstand} relasjoner={data.relasjoner} />
-				<DoedfoedtBarnVisning data={doedfoedtBarn} />
-				<ForelderBarnRelasjonVisning data={forelderBarnRelasjon} relasjoner={data.relasjoner} />
-				<Fullmakt data={fullmakt} relasjoner={data.relasjoner} />
-				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
-				<FalskIdentitet data={falskIdentitet} />
-				<IdenthistorikkVisning relasjoner={data.relasjoner} />
+
+				{master === 'PDLF' || !harTpsAdresse ? (
+					<>
+						<Boadresse
+							data={data?.person?.bostedsadresse}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							identtype={data?.person?.identtype}
+						/>
+						<DeltBosted data={data?.person?.deltBosted} />
+						<Oppholdsadresse
+							data={data?.person?.oppholdsadresse}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
+						<Kontaktadresse
+							data={data?.person?.kontaktadresse}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
+						<Adressebeskyttelse
+							data={data?.person?.adressebeskyttelse}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							identtype={data?.person?.identtype}
+						/>
+					</>
+				) : (
+					<>
+						<Boadresse boadresse={tpsfData?.boadresse} />
+						<Postadresse postadresse={tpsfData?.postadresse} />
+						<MidlertidigAdresse midlertidigAdresse={tpsfData?.midlertidigAdresse} />
+					</>
+				)}
+
+				{master === 'PDLF' ? (
+					<>
+						<SivilstandVisning data={data?.person?.sivilstand} relasjoner={data?.relasjoner} />
+						<ForelderBarnRelasjonVisning
+							data={data?.person?.forelderBarnRelasjon}
+							relasjoner={data?.relasjoner}
+						/>
+						<DoedfoedtBarnVisning data={data?.person?.doedfoedtBarn} />
+					</>
+				) : (
+					<Relasjoner relasjoner={tpsfData?.relasjoner} />
+				)}
+
+				{master === 'PDLF' ? (
+					<>
+						<FalskIdentitet data={data?.person?.falskIdentitet} />
+						<UtenlandsId data={data?.person?.utenlandskIdentifikasjonsnummer} />
+						<IdenthistorikkVisning relasjoner={data?.relasjoner} />
+					</>
+				) : (
+					<TpsfIdenthistorikk identhistorikk={tpsfData?.identHistorikk} />
+				)}
 				<KontaktinformasjonForDoedsbo
-					data={kontaktinformasjonForDoedsbo}
-					relasjoner={data.relasjoner}
+					data={data?.person?.kontaktinformasjonForDoedsbo}
+					relasjoner={data?.relasjoner}
 				/>
 			</div>
 		</ErrorBoundary>

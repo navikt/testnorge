@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
 import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;

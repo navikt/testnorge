@@ -7,8 +7,6 @@ spring:
 consumers:
   bidragsmelding:
     url: https://dummy.dev.adeo.no
-  hodejegeren:
-    url: https://testnorge-hodejegeren.dev.adeo.no/api
   synt-bisys:
     url: https://synthdata-bisys.dev.intern.nav.no
     cluster: dev-gcp

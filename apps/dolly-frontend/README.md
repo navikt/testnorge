@@ -73,3 +73,4 @@ docker run --name redis-image -d -p 6379:6379 redis:6.2.6
 
 Deretter må du fjerne "dev" fra profiles i DevConfig og sette profile lik "dev" i ProdConfig (husk å endre dette tilbake 
 før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript.
+

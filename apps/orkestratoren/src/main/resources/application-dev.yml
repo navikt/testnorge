@@ -4,8 +4,6 @@ azure.app.client.secret: ${client_secret}
 batch:
   avspillergruppeId: 100000445
   miljoe: q2
-  arena:
-    antallNyeIdenter: 1
   popp:
     antallNyeIdenter: 1
   aareg:

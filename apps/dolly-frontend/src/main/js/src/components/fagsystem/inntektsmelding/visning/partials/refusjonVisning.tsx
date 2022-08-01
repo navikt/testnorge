@@ -14,7 +14,9 @@ interface RefusjonVisning {
 }
 
 export default ({ data }: RefusjonVisning) => {
-	if (!data || _isEmpty(data)) return null
+	if (!data || _isEmpty(data)) {
+		return null
+	}
 	return (
 		<>
 			<h4>Refusjon</h4>

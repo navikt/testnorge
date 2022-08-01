@@ -38,3 +38,9 @@ consumers:
 
 
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
+
+batch:
+  miljoe: test
+  antallMedHistorikk: 0
+  antallMedOppfoelging: 0
+  antallMedDagpenger: 0

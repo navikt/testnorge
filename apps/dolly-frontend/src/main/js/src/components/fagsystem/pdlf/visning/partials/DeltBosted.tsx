@@ -26,7 +26,9 @@ export const Adresse = ({ adresse, idx }: AdresseProps) => {
 }
 
 export const DeltBosted = ({ data }: Data) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<>

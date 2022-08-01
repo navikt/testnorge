@@ -24,10 +24,14 @@ type UtvandringVisningTypes = {
 }
 
 export const Utvandring = ({ data, tmpPersoner, ident, erPdlVisning }: UtvandringTypes) => {
-	if (data.length < 1) return null
+	if (data.length < 1) {
+		return null
+	}
 
 	const UtvandringLes = ({ utvandringData, idx }: UtvandringVisningTypes) => {
-		if (!utvandringData) return null
+		if (!utvandringData) {
+			return null
+		}
 		return (
 			<div className="person-visning_redigerbar" key={idx}>
 				<TitleValue
@@ -52,7 +56,9 @@ export const Utvandring = ({ data, tmpPersoner, ident, erPdlVisning }: Utvandrin
 			(a: UtvandringValues) => a.id === utvandringData.id
 		)
 		const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
-		if (slettetUtvandringPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetUtvandringPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const utvandringValues = redigertUtvandringPdlf ? redigertUtvandringPdlf : utvandringData
 		const redigertUtvandringValues = redigertUtvandringPdlf

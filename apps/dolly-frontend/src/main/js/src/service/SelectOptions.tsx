@@ -2,6 +2,23 @@ interface SelectOptions {
 	[name: string]: Array<{ value: boolean | string; label: string }>
 }
 
+const adresser = {
+	vegadresse: 'Vegadresse',
+	matrikkeladresse: 'Matrikkeladresse',
+	utenlandskAdresse: 'Utenlandsk adresse',
+}
+
+const relasjoner = {
+	mor: 'Mor',
+	far: 'Far',
+	medmor: 'Medmor',
+	forelder: 'Forelder',
+	barn: 'Barn',
+}
+
+const ingenInfo = 'Ingen informasjon'
+const tjenesteytingEllerEtablering = 'Tjenesteyting eller etablering'
+
 const selectOptions: SelectOptions = {
 	identtype: [
 		{ value: 'FNR', label: 'FNR' },
@@ -22,23 +39,23 @@ const selectOptions: SelectOptions = {
 	],
 
 	foreldreType: [
-		{ value: 'MOR', label: 'Mor' },
-		{ value: 'FAR', label: 'Far' },
+		{ value: 'MOR', label: relasjoner.mor },
+		{ value: 'FAR', label: relasjoner.far },
 	],
 
 	foreldreTypePDL: [
-		{ value: 'FORELDER', label: 'Forelder' },
-		{ value: 'MOR', label: 'Mor' },
-		{ value: 'MEDMOR', label: 'Medmor' },
-		{ value: 'FAR', label: 'Far' },
+		{ value: 'FORELDER', label: relasjoner.forelder },
+		{ value: 'MOR', label: relasjoner.mor },
+		{ value: 'MEDMOR', label: relasjoner.medmor },
+		{ value: 'FAR', label: relasjoner.far },
 	],
 
 	pdlRelasjonTyper: [
-		{ value: 'FORELDER', label: 'Forelder' },
-		{ value: 'MOR', label: 'Mor' },
-		{ value: 'MEDMOR', label: 'Medmor' },
-		{ value: 'FAR', label: 'Far' },
-		{ value: 'BARN', label: 'Barn' },
+		{ value: 'FORELDER', label: relasjoner.forelder },
+		{ value: 'MOR', label: relasjoner.mor },
+		{ value: 'MEDMOR', label: relasjoner.medmor },
+		{ value: 'FAR', label: relasjoner.far },
+		{ value: 'BARN', label: relasjoner.barn },
 	],
 
 	barnBorHos: [
@@ -62,7 +79,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'GATE', label: 'Norsk gateadresse' },
 		{ value: 'STED', label: 'Norsk stedsadresse' },
 		{ value: 'PBOX', label: 'Norsk postboksadresse' },
-		{ value: 'UTAD', label: 'Utenlandsk adresse' },
+		{ value: 'UTAD', label: adresser.utenlandskAdresse },
 	],
 
 	sikkerhetstiltakType: [
@@ -137,33 +154,33 @@ const selectOptions: SelectOptions = {
 
 	//PDLF - adresser
 	adressetypeBostedsadresse: [
-		{ value: 'VEGADRESSE', label: 'Vegadresse' },
-		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
-		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'VEGADRESSE', label: adresser.vegadresse },
+		{ value: 'MATRIKKELADRESSE', label: adresser.matrikkeladresse },
+		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
 		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
 	],
 	//DNR og BOST kan kun ha utenlandsk adresse
 	adressetypeUtenlandskBostedsadresse: [
-		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
 	],
 
 	adressetypeOppholdsadresse: [
-		{ value: 'VEGADRESSE', label: 'Vegadresse' },
-		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
-		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'VEGADRESSE', label: adresser.vegadresse },
+		{ value: 'MATRIKKELADRESSE', label: adresser.matrikkeladresse },
+		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
 		{ value: 'OPPHOLD_ANNET_STED', label: 'Opphold annet sted' },
 	],
 
 	adressetypeKontaktadresse: [
-		{ value: 'VEGADRESSE', label: 'Vegadresse' },
-		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'VEGADRESSE', label: adresser.vegadresse },
+		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
 		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
 	],
 
 	adressetypeDeltBosted: [
 		{ value: 'PARTNER_ADRESSE', label: 'Adresse fra partner' },
-		{ value: 'VEGADRESSE', label: 'Vegadresse' },
-		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'VEGADRESSE', label: adresser.vegadresse },
+		{ value: 'MATRIKKELADRESSE', label: adresser.matrikkeladresse },
 		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
 	],
 
@@ -211,9 +228,9 @@ const selectOptions: SelectOptions = {
 	// PDL - foreldreansvar
 	foreldreansvar: [
 		{ value: 'FELLES', label: 'Felles' },
-		{ value: 'MOR', label: 'Mor' },
-		{ value: 'FAR', label: 'Far' },
-		{ value: 'MEDMOR', label: 'Medmor' },
+		{ value: 'MOR', label: relasjoner.mor },
+		{ value: 'FAR', label: relasjoner.far },
+		{ value: 'MEDMOR', label: relasjoner.medmor },
 		{ value: 'ANDRE', label: 'Andre' },
 		{ value: 'UKJENT', label: 'Ukjent' },
 	],
@@ -280,17 +297,17 @@ const selectOptions: SelectOptions = {
 
 	eosEllerEFTABeslutningOmOppholdsrett: [
 		{ value: 'VARIG', label: 'Varig' },
-		{ value: 'INGEN_INFORMASJON', label: 'Ingen informasjon' },
+		{ value: 'INGEN_INFORMASJON', label: ingenInfo },
 		{ value: 'FAMILIE', label: 'Familie' },
-		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting eller etablering' },
+		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: tjenesteytingEllerEtablering },
 		{ value: 'UAVKLART', label: 'Uavklart' },
 	],
 
 	eosEllerEFTAVedtakOmVarigOppholdsrett: [
 		{ value: 'VARIG', label: 'Varig' },
-		{ value: 'INGEN_INFORMASJON', label: 'Ingen informasjon' },
+		{ value: 'INGEN_INFORMASJON', label: ingenInfo },
 		{ value: 'FAMILIE', label: 'Familie' },
-		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting eller etablering' },
+		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: tjenesteytingEllerEtablering },
 		{ value: 'UAVKLART', label: 'Uavklart' },
 	],
 
@@ -301,7 +318,7 @@ const selectOptions: SelectOptions = {
 		},
 		{ value: 'ARBEID', label: 'Arbeid' },
 		{ value: 'UTDANNING', label: 'Utdanning' },
-		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting eller etablering' },
+		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: tjenesteytingEllerEtablering },
 		{ value: 'FAMILIE', label: 'Familie' },
 		{ value: 'UAVKLART', label: 'Uavklart' },
 	],
@@ -349,7 +366,7 @@ const selectOptions: SelectOptions = {
 
 	avslagOppholdsrettBehandlet: [
 		{ value: 'VARIG', label: 'Varig' },
-		{ value: 'INGEN_INFORMASJON', label: 'Ingen informasjon' },
+		{ value: 'INGEN_INFORMASJON', label: ingenInfo },
 		{ value: 'FAMILIE', label: 'Familie' },
 		{ value: 'TJENESTEYTING_ELLER_ETABLERING', label: 'Tjenesteyting/etablering' },
 		{ value: 'UAVKLART', label: 'Uavklart' },
@@ -432,7 +449,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'ORGNR', label: 'ORGNR' },
 	],
 
-	tjenestepensjonYtelseType : [
+	tjenestepensjonYtelseType: [
 		{ value: 'ALDER', label: 'Alderspensjon' },
 		{ value: 'UFORE', label: 'Uførepensjon' },
 		{ value: 'GJENLEVENDE', label: 'Gjenlevendepensjon' },

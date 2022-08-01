@@ -38,7 +38,9 @@ const testSektorkode = (schema: any) => {
 		'sektorkode',
 		'Juridisk enhet må ha sektorkode hvis valgt',
 		function harSektorkode(value: string) {
-			if (value === undefined || value !== '') return true
+			if (value === undefined || value !== '') {
+				return true
+			}
 			return this.createError({
 				message: 'Feltet er påkrevd',
 			})

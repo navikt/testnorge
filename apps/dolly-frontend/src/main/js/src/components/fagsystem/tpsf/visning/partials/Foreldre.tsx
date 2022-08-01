@@ -42,7 +42,9 @@ type Person = {
 }
 
 export const Foreldre = ({ person, type }: Data) => {
-	if (!person) return null
+	if (!person) {
+		return null
+	}
 	const [foreldreInfo, setForeldreInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 

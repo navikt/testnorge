@@ -36,9 +36,13 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 	}, [userError])
 
 	function extractFeilmelding(stackTrace: string) {
-		if (stackTrace?.includes('miljoer')) return 'miljoe_error'
-		else if (stackTrace?.includes('current')) return 'azure_error'
-		else return 'unknown_error'
+		if (stackTrace?.includes('miljoer')) {
+			return 'miljoe_error'
+		} else if (stackTrace?.includes('current')) {
+			return 'azure_error'
+		} else {
+			return 'unknown_error'
+		}
 	}
 
 	const logout = (stackTrace: string) => {
