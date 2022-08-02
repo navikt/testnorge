@@ -174,7 +174,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/person-search-service/api': {
+				'/testnav-person-search-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
