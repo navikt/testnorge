@@ -41,7 +41,4 @@ spec:
       memory: 2048Mi
   image: {{image}}
   ingresses:
-    - "https://testnorge-aareg.nais.preprod.local"
-    - "https://testnorge-aareg.dev-fss.nais.io"
-    - "https://testnorge-aareg.dev.adeo.no"
     - "https://testnorge-aareg.dev.intern.nav.no"
