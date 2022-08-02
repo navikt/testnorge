@@ -176,8 +176,8 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			tpsM: 'tpsMessaging.sikkerhetstiltak',
 		},
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
-		utenlandskBankkonto: 'tpsMessaging.utenlandskBankkonto',
-		norskBankkonto: 'tpsMessaging.norskBankkonto',
+		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
+		norskBankkonto: 'bankkonto.norskBankkonto',
 	}
 
 	return {
