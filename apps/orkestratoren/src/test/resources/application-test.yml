@@ -13,6 +13,8 @@ consumers:
     url: dummy
   testnorge-sam:
     url: dummy
+  testnorge-nav-endringemeldinger:
+    url: dummy
   testnorge-sigrun:
     url: dummy
   testnorge-skd:
