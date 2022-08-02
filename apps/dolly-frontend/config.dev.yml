@@ -42,8 +42,8 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-pdl-forvalter-dev
         - application: testnav-bruker-service-dev
+        - application: testnav-person-search-service
       external:
-        - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub-dev.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
