@@ -11,9 +11,9 @@ consumers:
     url: dummy
   testnorge-medl:
     url: dummy
-  testnorge-sam:
-    url: dummy
   testnorge-nav-endringemeldinger:
+    url: dummy
+  testnorge-sam:
     url: dummy
   testnorge-sigrun:
     url: dummy
