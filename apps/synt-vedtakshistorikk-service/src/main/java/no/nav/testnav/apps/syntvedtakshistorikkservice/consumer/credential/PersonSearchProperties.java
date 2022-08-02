@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.person-search-service")
+@ConfigurationProperties(prefix = "consumers.testnav-person-search-service")
 public class PersonSearchProperties extends ServerProperties{
 }
