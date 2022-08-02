@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
-import { Formik, FormikProps } from 'formik'
+import { Formik } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
@@ -12,12 +12,7 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent, validate } from '~/utils/YupValidations'
-import {
-	Telefonnummer,
-	TelefonnummerForm,
-	TelefonnummerFormRedigering,
-} from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
-import { isArray } from 'lodash'
+import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
@@ -42,15 +37,6 @@ enum Modus {
 }
 
 enum Attributt {
-	Foedsel = 'foedsel',
-	Doedsfall = 'doedsfall',
-	Statsborgerskap = 'statsborgerskap',
-	Innvandring = 'innflytting',
-	Utvandring = 'utflytting',
-	Boadresse = 'bostedsadresse',
-	Oppholdsadresse = 'oppholdsadresse',
-	Kontaktadresse = 'kontaktadresse',
-	Adressebeskyttelse = 'adressebeskyttelse',
 	Telefonnummer = 'telefonnummer',
 }
 
@@ -94,10 +80,13 @@ export const VisningRedigerbarSamlet = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [slettId, setSlettId] = useState(null)
 
-	// let slettet = []
+	const openDeleteModal = (idx: number) => {
+		setSlettId(idx)
+		openModal()
+	}
 
-	// console.log('dataVisning: ', dataVisning) //TODO - SLETT MEG
 	const pdlfError = (error: any) => {
 		error &&
 			setErrorMessagePdlf(
@@ -127,9 +116,7 @@ export const VisningRedigerbarSamlet = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								// if (mountedRef.current) {
 								setVisningModus(Modus.Les)
-								// }
 							})
 						})
 					}
@@ -145,10 +132,6 @@ export const VisningRedigerbarSamlet = ({
 	const handleDelete = useCallback((idx) => {
 		const slett = async () => {
 			const id = _get(initialValues, `${path}[${idx}].id`)
-			console.log('idx: ', idx) //TODO - SLETT MEG
-			console.log('id: ', id) //TODO - SLETT MEG
-			console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-			// console.log('path: ', path) //TODO - SLETT MEG
 			setVisningModus(Modus.LoadingPdlfSlett)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
 				.catch((error) => {
@@ -159,10 +142,13 @@ export const VisningRedigerbarSamlet = ({
 						setVisningModus(Modus.LoadingPdlSlett)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								// if (mountedRef.current) {
-								// slettet.push(idx)
-								setVisningModus(Modus.Les)
-								// }
+								if (_get(initialValues, path).length < 2) {
+									if (mountedRef.current) {
+										setVisningModus(Modus.Les)
+									}
+								} else {
+									setVisningModus(Modus.Les)
+								}
 							})
 						})
 					}
@@ -175,12 +161,13 @@ export const VisningRedigerbarSamlet = ({
 		return slett()
 	}, [])
 
-	const getForm = (formikBag: FormikProps<{}>) => {
-		switch (path) {
-			case Attributt.Telefonnummer:
-				return <Telefonnummer formikBag={formikBag} path={path} />
-		}
-	}
+	// TODO: bruk denne for å lage mer generll komponent
+	// const getForm = (formikBag: FormikProps<{}>) => {
+	// 	switch (path) {
+	// 		case Attributt.Telefonnummer:
+	// 			return <Telefonnummer formikBag={formikBag} path={path} />
+	// 	}
+	// }
 
 	const validationSchema = Yup.object().shape(
 		{
@@ -188,11 +175,12 @@ export const VisningRedigerbarSamlet = ({
 		},
 		[['telefonnummer', 'telefonnummer']]
 	)
-	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-	// console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
 
 	const _validate = (values: any) => validate(values, validationSchema)
+
+	//TODO: Hva er denne godt for?
 	const test = _get(initialValues, path)
+
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
@@ -203,19 +191,20 @@ export const VisningRedigerbarSamlet = ({
 					{(item: TelefonData, idx: number) => {
 						const redigertItem = _get(redigertAttributt, `${path}.[${idx}]`)
 						const slettetItem = redigertAttributt && !redigertItem
-						// console.log('redigertItem: ', redigertItem) //TODO - SLETT MEG
-						// console.log('slettet: ', slettet) //TODO - SLETT MEG
-						console.log('xxx item: ', item) //TODO - SLETT MEG
-						console.log('xxx idx: ', idx) //TODO - SLETT MEG
+						console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
+						console.log('redigertItem: ', redigertItem) //TODO - SLETT MEG
+						console.log('slettetItem: ', slettetItem) //TODO - SLETT MEG
+
 						return (
 							<React.Fragment key={idx}>
-								{visningModus === Modus.LoadingPdlfSlett && (
+								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
 									<Loading label="Oppdaterer PDL-forvalter..." />
 								)}
-								{visningModus === Modus.LoadingPdlSlett && <Loading label="Oppdaterer PDL..." />}
-								{visningModus === Modus.Les && (
+								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
+									<Loading label="Oppdaterer PDL..." />
+								)}
+								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
-										{/*{slettet.includes(idx) ? (*/}
 										{slettetItem ? (
 											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
 										) : (
@@ -228,13 +217,19 @@ export const VisningRedigerbarSamlet = ({
 													onClick={() => setVisningModus(Modus.Skriv)}
 													title="Endre"
 												/>
-												<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+												<Button
+													kind="trashcan"
+													onClick={() => openDeleteModal(idx)}
+													title="Slett"
+													key={`button_${idx}`}
+												/>
+
 												<DollyModal
-													isOpen={modalIsOpen}
+													isOpen={modalIsOpen && slettId === idx}
 													closeModal={closeModal}
 													width="40%"
 													overflow="auto"
-													key={idx}
+													key={`modal_${idx}`}
 												>
 													<div className="slettModal">
 														<div className="slettModal slettModal-content">
@@ -246,12 +241,14 @@ export const VisningRedigerbarSamlet = ({
 														</div>
 														<div className="slettModal-actions" key={idx}>
 															<NavButton onClick={closeModal}>Nei</NavButton>
+
 															<NavButton
 																onClick={() => {
 																	closeModal()
 																	return handleDelete(idx)
 																}}
 																type="hoved"
+																key={`navbutton_${idx}`}
 															>
 																Ja, jeg er sikker
 															</NavButton>
@@ -274,28 +271,19 @@ export const VisningRedigerbarSamlet = ({
 			{visningModus === Modus.Skriv && (
 				<Formik
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
-					// initialValues={initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
-					// validationSchema={Yup.array().of(telefonnummer)}
-					// validationSchema={validationSchema}
 					validate={_validate}
 				>
 					{(formikBag) => {
-						console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-						console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
 						return (
 							<>
 								<DollyFieldArray data={test} header="" nested>
 									{(item: TelefonData, idx: number) => (
-										// <div className="flexbox--flex-wrap">
 										<TelefonnummerFormRedigering path={`telefonnummer[${idx}]`} />
-										// <TelefonnummerFormRedigering path={idx} />
-										// </div>
 									)}
 								</DollyFieldArray>
 								<FieldArrayEdit>
-									{/*<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>*/}
 									<Knappegruppe>
 										<NavButton
 											type="standard"
