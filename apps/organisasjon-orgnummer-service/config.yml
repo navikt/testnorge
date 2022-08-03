@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: organisasjon-orgnummer-service
+  name: testnav-orgnummer-service
   namespace: dolly
   labels:
     team: dolly
@@ -52,5 +52,11 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://organisasjon-orgnummer-service.dev.intern.nav.no"
-    - "https://organisasjon-orgnummer-service.dev-fss-pub.nais.io"
+    - "https://testnav-orgnummer-service.dev.intern.nav.no"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-orgnummer-pool
+        databases:
+          - name: testnav-orgnummer-pool
+        autoBackupTime: "02:00"

@@ -2,8 +2,13 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: organisasjon-orgnummer-service
+    name: testnav-orgnummer-service
     description: Genererer gyldige organisasjonsnummer. Sjekker at det ikke finnes i q1.
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+  main:
+    banner-mode: off
   security:
     oauth2:
       resourceserver:
@@ -14,7 +19,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:organisasjon-orgnummer-service
+          accepted-audience: dev-gcp:dolly:testnav-orgnummer-service
 
 consumers:
   testnav-organisasjon-service:
