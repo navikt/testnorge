@@ -3,7 +3,7 @@ consumers:
   generer-navn-service:
     url: http://generer-navn-service.dolly.svc.cluster.local
   testnav-orgnummer-service:
-    url: https://testnav-orgnummer-service.dev-fss-pub.nais.io
+    url: http://testnav-orgnummer-service..dolly.svc.cluster.local
   organisasjon-bestilling-service:
     url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
   testnav-adresse-service:

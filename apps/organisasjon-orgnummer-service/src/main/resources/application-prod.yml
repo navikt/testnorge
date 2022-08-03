@@ -13,6 +13,6 @@ spring:
 
 consumers:
   testnav-organisasjon-service:
-    url: https://testnav-organisasjon-service.dolly.svc.cluster.local
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
   testnav-miljoer-service:
-    url: https://testnav-miljoer-service.dolly.svc.cluster.local
+    url: http://testnav-miljoer-service.dolly.svc.cluster.local

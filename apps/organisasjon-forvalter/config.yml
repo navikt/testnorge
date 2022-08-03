@@ -63,7 +63,7 @@ spec:
         - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
         - application: testnav-orgnummer-service
-          cluste: dev-gcp
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12
