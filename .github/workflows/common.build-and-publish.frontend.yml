@@ -32,9 +32,11 @@ jobs:
             ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-gradle-
             ${{ runner.os }}-
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
+          node-version: '14.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@navikt'
       - name: Create a .npmrc file for the github package repository
         uses: FerLuisxd/create-npmrc@3
         with:
