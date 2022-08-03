@@ -30,6 +30,8 @@ spec:
       rules:
         - application: testnav-miljoer-service
           cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
