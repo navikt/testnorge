@@ -21,7 +21,7 @@
     "styled-components": "^5.3.5"
   },
   "dependencies": {
-    "@navikt/dolly-assets": "^1.1.6",
+    "@navikt/dolly-assets": "^1.1.7",
     "@navikt/dolly-lib": "^1.2.11",
     "@navikt/ds-icons": "^0.8.17",
     "@navikt/ds-react": "^0.19.17",
