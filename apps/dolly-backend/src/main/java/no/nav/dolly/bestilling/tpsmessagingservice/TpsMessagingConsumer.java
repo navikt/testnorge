@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -67,12 +68,17 @@ public class TpsMessagingConsumer {
     }
 
     public static String tilfeldigUtlandskBankkonto() {
-        var kontonummerLengde = 10;
+        var kontonummerLengde = 15;
 
-        return random.ints(kontonummerLengde, 1, 10)
-                .boxed()
-                .map(Integer::toUnsignedString)
-                .collect(Collectors.joining());
+        return Stream.concat(
+            random.ints(2, 'A', 'Z')
+                    .boxed()
+                    .map(i -> Character.toString(i.intValue()))
+            ,
+            random.ints(kontonummerLengde, 0, 10)
+                    .boxed()
+                    .map(Integer::toUnsignedString)
+        ).collect(Collectors.joining());
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
