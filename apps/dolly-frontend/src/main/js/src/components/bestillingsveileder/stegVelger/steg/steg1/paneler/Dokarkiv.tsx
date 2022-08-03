@@ -2,7 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { dokarkivAttributt } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
+import { dokarkivAttributt } from '~/components/fagsystem/dokarkiv/form/DokarkivForm'
 
 export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(DokarkivPanel.initialValues)
