@@ -15,6 +15,11 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
+consumers:
+  inst2:
+    url: https://inst2-{miljoe}.dev.adeo.no/web/api
+
+
 management:
   endpoints:
     enabled-by-default: true

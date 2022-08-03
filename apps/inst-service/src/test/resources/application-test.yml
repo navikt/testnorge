@@ -1,0 +1,14 @@
+consumers:
+  inst2:
+    url: http://localhost:${wiremock.server.port:0}/inst2/web/api
+
+spring:
+  cloud:
+    vault:
+      enabled: false
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
