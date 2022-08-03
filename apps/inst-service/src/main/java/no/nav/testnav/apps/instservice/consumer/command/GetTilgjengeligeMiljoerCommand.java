@@ -23,17 +23,17 @@ import static java.util.Objects.nonNull;
 @Slf4j
 @RequiredArgsConstructor
 public class GetTilgjengeligeMiljoerCommand implements Callable<List<String>> {
-
     private final WebClient webClient;
-    private final String inst2newServerUrl;
 
     @SneakyThrows
     @Override
     public List<String> call() {
         try {
             var response = webClient.get()
-                    .uri(inst2newServerUrl, uriBuilder ->
-                            uriBuilder.path("/v1/environment").build())
+                    .uri(builder ->
+                            builder.path("/v1/environment")
+                                    .build()
+                    )
                     .retrieve()
                     .toEntity(SupportedEnvironmentsResponse.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

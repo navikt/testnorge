@@ -25,14 +25,11 @@ import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HE
 @Slf4j
 @RequiredArgsConstructor
 public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse> {
-    private static final String INSTITUSJONSOPPHOLD_PERSON = "/v1/institusjonsopphold/person";
-    private static final String ENVIRONMENTS = "environments";
 
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
     };
 
     private final WebClient webClient;
-    private final String inst2newServerUrl;
     private final String miljoe;
     private final InstitusjonsoppholdV2 institusjonsopphold;
     private final String callId;
@@ -43,10 +40,11 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
     public OppholdResponse call() {
         try {
             var response = webClient.post()
-                    .uri(inst2newServerUrl, uriBuilder -> uriBuilder
-                            .path(INSTITUSJONSOPPHOLD_PERSON)
-                            .queryParam(ENVIRONMENTS, miljoe)
-                            .build())
+                    .uri(builder ->
+                            builder.path("/api/v1/institusjonsopphold/person")
+                                    .queryParam("environments", miljoe)
+                                    .build()
+                    )
                     .header(ACCEPT, "application/json")
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)

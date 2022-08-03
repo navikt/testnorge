@@ -25,15 +25,10 @@ import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HE
 @Slf4j
 @RequiredArgsConstructor
 public class GetInstitusjonsoppholdCommand implements Callable<InstitusjonResponse> {
-    private static final String INSTITUSJONSOPPHOLD_PERSON = "/v1/institusjonsopphold/person";
-    private static final String ENVIRONMENTS = "environments";
-    private static final String NORSKIDENT = "norskident";
-
     private static final ParameterizedTypeReference<InstitusjonResponse> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
     };
 
     private final WebClient webClient;
-    private final String inst2newServerUrl;
     private final String miljoe;
     private final String ident;
     private final String callId;
@@ -45,15 +40,15 @@ public class GetInstitusjonsoppholdCommand implements Callable<InstitusjonRespon
         InstitusjonResponse response;
         try {
             ResponseEntity<InstitusjonResponse> listResponseEntity = webClient.get()
-                    .uri(inst2newServerUrl,
-                            uriBuilder -> uriBuilder
-                                    .path(INSTITUSJONSOPPHOLD_PERSON)
-                                    .queryParam(ENVIRONMENTS, miljoe)
-                                    .build())
+                    .uri(builder ->
+                            builder.path("/api/v1/institusjonsopphold/person")
+                                    .queryParam("environments", miljoe)
+                                    .build()
+                    )
                     .header(ACCEPT, "application/json")
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                    .header(NORSKIDENT, ident)
+                    .header("norskident", ident)
                     .retrieve()
                     .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

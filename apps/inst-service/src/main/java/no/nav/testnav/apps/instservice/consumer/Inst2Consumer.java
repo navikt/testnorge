@@ -5,10 +5,10 @@ import no.nav.testnav.apps.instservice.consumer.command.DeleteInstitusjonsopphol
 import no.nav.testnav.apps.instservice.consumer.command.GetInstitusjonsoppholdCommand;
 import no.nav.testnav.apps.instservice.consumer.command.GetTilgjengeligeMiljoerCommand;
 import no.nav.testnav.apps.instservice.consumer.command.PostInstitusjonsoppholdCommand;
+import no.nav.testnav.apps.instservice.consumer.credential.Inst2Properties;
 import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -21,14 +21,13 @@ import java.util.List;
 public class Inst2Consumer {
 
     private final WebClient webClient;
-    private final String inst2ServerUrl;
 
     public Inst2Consumer(
-            @Value("${consumers.inst2.url}") String inst2ServerUrl,
+            Inst2Properties inst2Properties,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
-        this.inst2ServerUrl = inst2ServerUrl;
         this.webClient = WebClient.builder()
+                .baseUrl(inst2Properties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }
@@ -39,7 +38,7 @@ public class Inst2Consumer {
             String miljoe,
             String ident
     ) {
-        return new GetInstitusjonsoppholdCommand(webClient, inst2ServerUrl, miljoe, ident, callId, consumerId).call();
+        return new GetInstitusjonsoppholdCommand(webClient, miljoe, ident, callId, consumerId).call();
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(
@@ -48,7 +47,7 @@ public class Inst2Consumer {
             String miljoe,
             InstitusjonsoppholdV2 institusjonsopphold
     ) {
-        return new PostInstitusjonsoppholdCommand(webClient, inst2ServerUrl, miljoe, institusjonsopphold, callId, consumerId).call();
+        return new PostInstitusjonsoppholdCommand(webClient, miljoe, institusjonsopphold, callId, consumerId).call();
     }
 
     public ResponseEntity<Object> slettInstitusjonsoppholdMedIdent(
@@ -57,10 +56,10 @@ public class Inst2Consumer {
             String miljoe,
             String ident
     ) {
-        return new DeleteInstitusjonsoppholdCommand(webClient, inst2ServerUrl, miljoe, ident, callId, consumerId).call();
+        return new DeleteInstitusjonsoppholdCommand(webClient, miljoe, ident, callId, consumerId).call();
     }
 
     public List<String> hentInst2TilgjengeligeMiljoer() {
-        return new GetTilgjengeligeMiljoerCommand(webClient, inst2ServerUrl).call();
+        return new GetTilgjengeligeMiljoerCommand(webClient).call();
     }
 }

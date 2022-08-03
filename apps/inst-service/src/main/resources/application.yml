@@ -17,7 +17,7 @@ spring:
 
 consumers:
   inst2:
-    url: https://inst2-{miljoe}.dev.adeo.no/web/api
+    url: https://inst2-{miljoe}.dev.adeo.no/web
 
 
 management:
