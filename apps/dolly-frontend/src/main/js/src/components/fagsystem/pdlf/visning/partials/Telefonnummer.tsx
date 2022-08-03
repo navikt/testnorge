@@ -50,7 +50,8 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 	}
 
 	const slettetTelefonnummerPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertTelefonnummerPdlf
-	if (slettetTelefonnummerPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	// console.log('slettetTelefonnummerPdlf: ', slettetTelefonnummerPdlf) //TODO - SLETT MEG
+	// if (slettetTelefonnummerPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 
 	// const telefonnummerValues = redigertTelefonnummerPdlf ? redigertTelefonnummerPdlf : item
 	// const redigertTelefonnummerValues = redigertTelefonnummerPdlf
@@ -115,6 +116,7 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 						redigertAttributt={redigertTelefonnummerValues}
 						path="telefonnummer"
 						ident={ident}
+						alleSlettet={slettetTelefonnummerPdlf}
 					/>
 				)}
 			</div>

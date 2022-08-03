@@ -46,7 +46,9 @@ const paths = {
 	tpsMTelefonnummer: 'tpsMessaging.telefonnummer',
 }
 
-export const TelefonnummerFormRedigering = ({ path }: TelefonnummerFormTypes) => {
+export const TelefonnummerFormRedigering = ({ path, formikBag }: TelefonnummerFormTypes) => {
+	console.log('path: ', path) //TODO - SLETT MEG
+	console.log('formikBag: ', formikBag) //TODO - SLETT MEG
 	return (
 		<>
 			<FormikSelect

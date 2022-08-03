@@ -16,6 +16,7 @@ import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/pa
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { element } from 'prop-types'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -75,6 +76,7 @@ export const VisningRedigerbarSamlet = ({
 	path,
 	ident,
 	identtype,
+	alleSlettet,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -103,9 +105,11 @@ export const VisningRedigerbarSamlet = ({
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
+		console.log('data: ', data) //TODO - SLETT MEG
 		const submit = async () => {
 			const id = null
-			const itemData = _get(data, path)
+			const itemData = _get(data, path)?.filter((item) => item)
+			console.log('itemData: ', itemData) //TODO - SLETT MEG
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 				.catch((error) => {
@@ -142,13 +146,14 @@ export const VisningRedigerbarSamlet = ({
 						setVisningModus(Modus.LoadingPdlSlett)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (_get(initialValues, path).length < 2) {
-									if (mountedRef.current) {
-										setVisningModus(Modus.Les)
-									}
-								} else {
-									setVisningModus(Modus.Les)
-								}
+								// if (_get(initialValues, path).length < 2) {
+								// if (_get(initialValues, path).length === 1) {
+								// 	if (mountedRef.current) {
+								// 		setVisningModus(Modus.Les)
+								// 	}
+								// } else {
+								setVisningModus(Modus.Les)
+								// }
 							})
 						})
 					}
@@ -181,6 +186,25 @@ export const VisningRedigerbarSamlet = ({
 	//TODO: Hva er denne godt for?
 	const test = _get(initialValues, path)
 
+	const getRedigertAttributtListe = () => {
+		const liste = []
+		test.forEach((item) => {
+			const found = _get(redigertAttributt, path)?.find(
+				(redigertItem) => redigertItem.id === item.id
+			)
+			if (found) {
+				liste.push(found)
+			} else {
+				liste.push(null)
+			}
+		})
+		return { telefonnummer: liste }
+	}
+
+	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
+
+	// console.log('test: ', test) //TODO - SLETT MEG
+	// console.log('redigertAttributtListe: ', redigertAttributtListe) //TODO - SLETT MEG
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
@@ -189,11 +213,31 @@ export const VisningRedigerbarSamlet = ({
 			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
 				<DollyFieldArray data={test} header="" nested>
 					{(item: TelefonData, idx: number) => {
-						const redigertItem = _get(redigertAttributt, `${path}.[${idx}]`)
-						const slettetItem = redigertAttributt && !redigertItem
-						console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
-						console.log('redigertItem: ', redigertItem) //TODO - SLETT MEG
-						console.log('slettetItem: ', slettetItem) //TODO - SLETT MEG
+						// const getRedigertAttributtListe = () => {
+						// 	const liste = []
+						// 	test.forEach((item) => {
+						// 		const found = _get(redigertAttributt, path)?.find(
+						// 			(redigertItem) => redigertItem.id === item.id
+						// 		)
+						// 		if (found) {
+						// 			liste.push(found)
+						// 		} else {
+						// 			liste.push(null)
+						// 		}
+						// 	})
+						// 	return { telefonnummer: liste }
+						// }
+
+						const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
+						// const redigertAttributtListe = test && getRedigertAttributtListe()
+
+						const redigertItem = _get(redigertAttributtListe, `${path}.[${idx}]`)
+						const slettetItem = redigertAttributtListe && !redigertItem
+						// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+						// console.log('redigertAttributtListe: ', redigertAttributtListe) //TODO - SLETT MEG
+						// console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
+						// console.log('redigertItem: ', redigertItem) //TODO - SLETT MEG
+						// console.log('slettetItem: ', slettetItem) //TODO - SLETT MEG
 
 						return (
 							<React.Fragment key={idx}>
@@ -205,12 +249,12 @@ export const VisningRedigerbarSamlet = ({
 								)}
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
-										{slettetItem ? (
+										{slettetItem || alleSlettet ? (
 											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
 										) : (
 											<TelefonnummerLes telefonnummerData={redigertItem || item} idx={idx} />
 										)}
-										{!slettetItem && (
+										{!slettetItem && !alleSlettet && (
 											<EditDeleteKnapper>
 												<Button
 													kind="edit"
@@ -258,8 +302,12 @@ export const VisningRedigerbarSamlet = ({
 											</EditDeleteKnapper>
 										)}
 										<div className="flexbox--full-width">
-											{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
-											{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
+											{errorMessagePdlf && !slettetItem && (
+												<div className="error-message">{errorMessagePdlf}</div>
+											)}
+											{errorMessagePdl && !slettetItem && (
+												<div className="error-message">{errorMessagePdl}</div>
+											)}
 										</div>
 									</>
 								)}
@@ -270,18 +318,33 @@ export const VisningRedigerbarSamlet = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<Formik
-					initialValues={redigertAttributt ? redigertAttributt : initialValues}
+					initialValues={redigertAttributt ? redigertAttributtListe : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
 					validate={_validate}
 				>
 					{(formikBag) => {
+						// console.log(
+						// 	'redigertAttributtListe?.telefonnummer: ',
+						// 	redigertAttributtListe?.telefonnummer
+						// ) //TODO - SLETT MEG
 						return (
 							<>
-								<DollyFieldArray data={test} header="" nested>
-									{(item: TelefonData, idx: number) => (
-										<TelefonnummerFormRedigering path={`telefonnummer[${idx}]`} />
-									)}
+								<DollyFieldArray
+									data={redigertAttributtListe?.telefonnummer || test}
+									header=""
+									nested
+								>
+									{(item: TelefonData, idx: number) =>
+										item ? (
+											<TelefonnummerFormRedigering
+												path={`telefonnummer[${idx}]`}
+												formikBag={formikBag}
+											/>
+										) : (
+											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
+										)
+									}
 								</DollyFieldArray>
 								<FieldArrayEdit>
 									<Knappegruppe>

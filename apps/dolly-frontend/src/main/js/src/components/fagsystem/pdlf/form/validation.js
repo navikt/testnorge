@@ -14,7 +14,7 @@ const testTelefonnummer = () =>
 		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
 
 const testPrioritet = (val) => {
-	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
+	return val.test('prioritet', 'Ugyldig prioritet', function erEgenPrio() {
 		// const context = this?.options?.context
 		// const values = Object.keys(context) > 0 ? context : this?.from?.[1]?.value?.telefonnummer
 		const values = this?.options?.context
@@ -23,7 +23,9 @@ const testPrioritet = (val) => {
 		if (!values || Object.keys(values).length < 1) return true
 		const index = this?.options?.index
 		const tlfListe = _get(values, 'pdldata.person.telefonnummer') || _get(values, 'telefonnummer')
-		if (tlfListe?.length < 2) return true
+		if (tlfListe?.length < 2) {
+			return tlfListe?.[index]?.prioritet === 1
+		}
 		const index2 = index === 0 ? 1 : 0
 		return tlfListe?.[index]?.prioritet !== tlfListe?.[index2]?.prioritet
 	})
@@ -481,7 +483,7 @@ export const telefonnummer = Yup.object({
 	nummer: testTelefonnummer(),
 	// prioritet: testPrioritet(requiredString).nullable(),
 	prioritet: testPrioritet(Yup.mixed().required()).nullable(),
-})
+}).nullable()
 
 export const innflytting = Yup.object({
 	fraflyttingsland: requiredString,
