@@ -1,24 +1,24 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
-  entry: "./src/index.tsx",
+  entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, "lib"),
-    filename: "dolly-assets.js",
+    path: path.resolve(__dirname, 'lib'),
+    filename: 'dolly-assets.js',
     library: {
-      name: "dolly-assets",
-      type: "umd",
+      name: 'dolly-assets',
+      type: 'umd',
     },
   },
   module: {
     rules: [
       {
         test: /\.png/,
-        type: "asset/inline",
+        type: 'asset/inline',
       },
       {
         test: /\.svg/,
-        type: "asset/inline",
+        type: 'asset/inline',
       },
     ],
   },
