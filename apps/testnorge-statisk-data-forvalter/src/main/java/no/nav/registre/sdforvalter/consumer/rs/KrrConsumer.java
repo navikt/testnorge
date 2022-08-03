@@ -49,7 +49,7 @@ public class KrrConsumer {
                 .getListe()
                 .stream()
                 .filter(krr -> !existing.contains(krr.getFnr()))
-                .collect(Collectors.toList());
+                .toList();
 
         if (noneExisting.isEmpty()) {
             log.info("Fant ingen nye krr.");
@@ -72,7 +72,7 @@ public class KrrConsumer {
                     log.error("Klarte ikke opprette kontaktinformasjon i krr-stub");
                     return;
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 log.error("Klarte ikke opprette kontaktinformasjon i krr-stub", e);
                 return;
             }
@@ -91,10 +91,9 @@ public class KrrConsumer {
             var requestEntity = new RequestEntity<>(httpHeaders, HttpMethod.GET, krrUrl);
             try {
                 ResponseEntity<List<KrrRequest>> response = restTemplate.exchange(requestEntity, RESPONSE_TYPE);
-                if (response.getStatusCode() == HttpStatus.OK) {
-                    if (response.getBody() != null) {
-                        existing.addAll(response.getBody().stream().map(KrrRequest::getFnr).collect(Collectors.toSet()));
-                    }
+                if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                    existing.addAll(response.getBody().stream().map(KrrRequest::getFnr).collect(Collectors.toSet()));
+
                 }
             } catch (HttpClientErrorException ignored) {
                 log.info("Fant ikke person {}", fnr);

@@ -26,6 +26,6 @@ public class TpsIdentTagAdapter {
                 .findAllByIdent(ident)
                 .stream()
                 .map(TpsIdentTagModel::getTag)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

@@ -35,7 +35,7 @@ public class OrgTree {
                 .stream()
                 .filter(ereg -> ereg.getJuridiskEnhet() != null && ereg.getJuridiskEnhet().equals(juridsikenhet.getOrgnr()))
                 .map(ereg -> OrgTree.from(ereg, liste))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

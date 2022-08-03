@@ -21,7 +21,7 @@ public class SkdResponse {
     private List<Long> tpsfIds;
 
     public List<String> getFailedStatus() {
-        return statusFraFeilendeMeldinger.parallelStream().map(StatusPaaAvspiltSkdMelding::toString).collect(Collectors.toList());
+        return statusFraFeilendeMeldinger.parallelStream().map(StatusPaaAvspiltSkdMelding::toString).toList();
     }
 
 }

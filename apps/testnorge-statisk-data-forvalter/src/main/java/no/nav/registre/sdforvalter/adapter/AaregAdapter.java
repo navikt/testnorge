@@ -29,7 +29,7 @@ public class AaregAdapter extends FasteDataAdapter {
     public AaregListe fetchBy(String gruppe) {
         log.info("Henter aaregdata med gruppe {}", gruppe);
         List<AaregModel> aaregModels = repository.findByGruppeModel(getGruppe(gruppe));
-        List<Aareg> liste = aaregModels.stream().map(Aareg::new).collect(Collectors.toList());
+        List<Aareg> liste = aaregModels.stream().map(Aareg::new).toList();
 
         log.info("Fant {} aareg-personer fra gruppe {}", liste.size(), gruppe);
         return new AaregListe(liste);
@@ -43,7 +43,7 @@ public class AaregAdapter extends FasteDataAdapter {
         return new AaregListe(repository.saveAll(list
                 .stream()
                 .map(aareg -> new AaregModel(aareg, getOppinnelse(aareg), getGruppe(aareg)))
-                .collect(Collectors.toList()))
+                .toList())
         );
     }
 }

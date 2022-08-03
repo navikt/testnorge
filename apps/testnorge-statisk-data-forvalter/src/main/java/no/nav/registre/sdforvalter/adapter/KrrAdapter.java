@@ -29,7 +29,7 @@ public class KrrAdapter extends FasteDataAdapter {
     public KrrListe fetchBy(String gruppe) {
         log.info("Henter krrdata med gruppe {}", gruppe);
         List<KrrModel> krrModels = repository.findByGruppeModel(getGruppe(gruppe));
-        List<Krr> liste = krrModels.stream().map(Krr::new).collect(Collectors.toList());
+        List<Krr> liste = krrModels.stream().map(Krr::new).toList();
 
         log.info("Fant {} krr-personer fra gruppe {}", liste.size(), gruppe);
         return new KrrListe(liste);
@@ -43,7 +43,7 @@ public class KrrAdapter extends FasteDataAdapter {
         return new KrrListe(repository.saveAll(list
                 .stream()
                 .map(item -> new KrrModel(item, getOppinnelse(item), getGruppe(item)))
-                .collect(Collectors.toList()))
+                .toList())
         );
     }
 

@@ -89,7 +89,7 @@ public class EnvironmentInitializationService {
     public void opprett(String environment, List<String> liste) {
         log.info("Oppretter organisasjoner {} i miljo {}.", String.join(", ", liste), environment);
         try {
-            var eregListe = new EregListe(liste.stream().map(eregAdapter::fetchByOrgnr).collect(Collectors.toList()));
+            var eregListe = new EregListe(liste.stream().map(eregAdapter::fetchByOrgnr).toList());
             organisasjonMottakServiceConsumer.create(eregListe, environment);
         } catch(NullPointerException e) {
             log.error("Kunne ikke slå opp orgnumre i ereg.");

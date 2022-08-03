@@ -33,7 +33,7 @@ public class EregStatusService {
 
     private OrganisasjonStatusMap getStatus(String miljo, EregListe liste, Boolean equal) {
         Map<String, Organisasjon> organisasjoner = consumer.getOrganisasjoner(
-                liste.getListe().stream().map(Ereg::getOrgnr).collect(Collectors.toList()),
+                liste.getListe().stream().map(Ereg::getOrgnr).toList(),
                 miljo
         );
         return new OrganisasjonStatusMap(
@@ -43,7 +43,7 @@ public class EregStatusService {
                         .stream()
                         .map(item -> new OrganisasjonStatus(item.getOrgnr(), item, organisasjoner.get(item.getOrgnr())))
                         .filter(item -> equal == null || item.isEqual() == equal)
-                        .collect(Collectors.toList())
+                        .toList()
         );
     }
 

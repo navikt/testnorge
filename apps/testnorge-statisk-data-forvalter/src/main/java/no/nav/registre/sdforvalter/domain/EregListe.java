@@ -23,13 +23,13 @@ public final class EregListe extends FasteDataListe<Ereg> {
 
 
     public EregListe(OrganisasjonListeDTO listeDTO) {
-        this(listeDTO.getListe().stream().map(Ereg::new).collect(Collectors.toList()));
+        this(listeDTO.getListe().stream().map(Ereg::new).toList());
     }
 
     public OrganisasjonListeDTO toDTO() {
         return OrganisasjonListeDTO
                 .builder()
-                .liste(this.getListe().stream().map(Ereg::toDTO).collect(Collectors.toList()))
+                .liste(this.getListe().stream().map(Ereg::toDTO).toList())
                 .build();
     }
 

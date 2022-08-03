@@ -49,7 +49,7 @@ public class IdentService {
         TpsIdentListe identer = new TpsIdentListe(liste
                 .stream()
                 .filter(item -> !exisistingFnrs.contains(item.getFnr()))
-                .collect(Collectors.toList())
+                .toList()
         );
 //        skdConsumer.createTpsIdenterMessagesInGroup(identer, staticDataPlaygroup);
         skdConsumer.send(staticDataPlaygroup, environment);
@@ -96,7 +96,7 @@ public class IdentService {
             } else {
                 return ident;
             }
-        }).collect(Collectors.toList());
+        }).toList();
         return new TpsIdentListe(tpsIdentListe);
     }
 }

@@ -52,7 +52,7 @@ public class EregAdapter extends FasteDataAdapter {
                 .map(value -> new Ereg(
                         value,
                         eregTagAdapter.findAllTagsBy(value.getOrgnr())
-                )).collect(Collectors.toList());
+                )).toList();
 
         EregListe eregListe = new EregListe(list);
         if (eregListe.getListe().size() < ids.size()) {
@@ -67,7 +67,7 @@ public class EregAdapter extends FasteDataAdapter {
         List<Ereg> liste = eregModels.stream().map(eregModel -> {
             List<TagModel> tagModels = eregTagAdapter.findAllTagsBy(eregModel.getOrgnr());
             return new Ereg(eregModel, tagModels);
-        }).collect(Collectors.toList());
+        }).toList();
 
         log.info("Fant {} orgnr fra gruppe {}", liste.size(), gruppe);
         return new EregListe(liste);
@@ -80,7 +80,7 @@ public class EregAdapter extends FasteDataAdapter {
         List<Ereg> liste = stream.map(eregModel -> {
             List<TagModel> tagModels = eregTagAdapter.findAllTagsBy(eregModel.getOrgnr());
             return new Ereg(eregModel, tagModels);
-        }).collect(Collectors.toList());
+        }).toList();
         log.info("Fant {} organisasjoner.", liste.size());
         return new EregListe(liste);
     }
@@ -108,12 +108,12 @@ public class EregAdapter extends FasteDataAdapter {
                 .stream()
                 .filter(value -> value.getJuridiskEnhet() != null)
                 .filter(value -> notSaved.stream().anyMatch(containsJuridiskEnhet(value)))
-                .collect(Collectors.toList());
+                .toList();
 
         List<Ereg> noDependency = notSaved
                 .stream()
                 .filter(value -> !dependency.contains(value))
-                .collect(Collectors.toList());
+                .toList();
 
         return save(persist(noDependency), dependency);
     }
@@ -134,7 +134,7 @@ public class EregAdapter extends FasteDataAdapter {
                     getOppinnelse(ereg),
                     getGruppe(ereg)
             ));
-            List<TagModel> tagModels = ereg.getTags().stream().map(tagsAdapter::save).collect(Collectors.toList());
+            List<TagModel> tagModels = ereg.getTags().stream().map(tagsAdapter::save).toList();
             tagModels.forEach(tagModel -> eregTagAdapter.save(new EregTagModel(null, eregModel, tagModel)));
 
             persisted.add(new Ereg(eregModel, tagModels));
