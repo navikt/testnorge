@@ -28,8 +28,7 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-      external:
-        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+        - application: testnav-orgnummer-service
   gcp:
     sqlInstances:
       - type: POSTGRES_12
