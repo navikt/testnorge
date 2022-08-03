@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.consumer.rs.request.aareg.AaregRequest;
 import no.nav.registre.sdforvalter.consumer.rs.request.aareg.Arbeidsforhold;

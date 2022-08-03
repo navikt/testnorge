@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonConsumer;

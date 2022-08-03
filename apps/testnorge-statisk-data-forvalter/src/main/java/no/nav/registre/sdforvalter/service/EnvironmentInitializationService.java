@@ -2,11 +2,9 @@ package no.nav.registre.sdforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
@@ -14,7 +12,6 @@ import no.nav.registre.sdforvalter.adapter.KrrAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.AaregConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.KrrConsumer;
-import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
