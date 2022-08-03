@@ -1,0 +1,29 @@
+spring:
+  application:
+    version: application.version.todo
+    name: testnav-inst-service
+    description: testnav-inst-service
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
