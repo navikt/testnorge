@@ -1,7 +1,7 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
+import no.nav.organisasjonforvalter.config.credentials.TestnavOrgnummerServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
@@ -25,10 +25,10 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final OrganisasjonOrgnummerServiceProperties serviceProperties;
+    private final TestnavOrgnummerServiceProperties serviceProperties;
 
     public OrganisasjonOrgnummerServiceConsumer(
-            OrganisasjonOrgnummerServiceProperties serviceProperties,
+            TestnavOrgnummerServiceProperties serviceProperties,
             TokenExchange tokenExchange,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
@@ -57,7 +57,7 @@ public class OrganisasjonOrgnummerServiceConsumer {
             throw new HttpClientErrorException(e.getStatusCode(), requireNonNull(e.getMessage()));
 
         } catch (RuntimeException e) {
-            String error = format("Organisasjon-orgnummer-service svarte ikke etter %d ms", currentTimeMillis() - startTime);
+            String error = format("Testnav-orgnummer-service svarte ikke etter %d ms", currentTimeMillis() - startTime);
             log.error(error, e);
             throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);
         }

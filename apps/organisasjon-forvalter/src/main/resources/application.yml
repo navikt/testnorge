@@ -26,10 +26,10 @@ consumers:
     name: generer-navn-service
     cluster: dev-gcp
     namespace: dolly
-  organisasjon-orgnummer-service:
-    url: https://organisasjon-orgnummer-service.dev.intern.nav.no
-    name: organisasjon-orgnummer-service
-    cluster: dev-fss
+  testnav-orgnummer-service:
+    url: https://testnav-orgnummer-service.dev.intern.nav.no
+    name: testnav-orgnummer-service
+    cluster: dev-gcp
     namespace: dolly
   organisasjon-bestilling-service:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no

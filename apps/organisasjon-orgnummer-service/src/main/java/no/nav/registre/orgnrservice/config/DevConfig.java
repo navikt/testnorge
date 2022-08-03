@@ -10,7 +10,6 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
 @Profile("dev")
-@VaultPropertySource(value = "kv/preprod/fss/organisasjon-orgnummer-service/dev", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class DevConfig  extends AbstractVaultConfiguration {
 

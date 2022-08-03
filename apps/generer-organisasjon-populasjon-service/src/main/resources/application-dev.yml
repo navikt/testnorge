@@ -17,7 +17,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-
-consumers:
-  generer-navn-service:
-    url: https://generer-navn-service.dev.intern.nav.no
