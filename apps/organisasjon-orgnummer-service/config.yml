@@ -26,6 +26,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-orgnummer-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
