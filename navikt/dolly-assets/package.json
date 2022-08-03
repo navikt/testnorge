@@ -4,8 +4,9 @@
   "description": "Dolly assets",
   "main": "lib/index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "tsc -p ."
   },
+  "types": "lib",
   "author": {
     "name": "Team dolly",
     "email": "dolly@nav.no"
