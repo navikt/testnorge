@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Disabled
+//@Disabled
 class ApplicationContextTest {
 
     @MockBean
