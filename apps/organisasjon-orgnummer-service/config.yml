@@ -28,7 +28,7 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: testnav-orgnummer-service
+        - application: testnav-miljoer-service
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive
