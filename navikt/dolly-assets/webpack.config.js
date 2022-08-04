@@ -1,9 +1,10 @@
 const path = require('path');
 
 module.exports = {
+  target: 'node',
   entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'lib'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'dolly-assets.js',
     library: {
       name: 'dolly-assets',
