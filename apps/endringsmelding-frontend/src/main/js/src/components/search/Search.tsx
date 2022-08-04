@@ -37,7 +37,6 @@ const Alert = styled.div`
 
 const Knapp = styled(NavKnapp)`
   width: 25%;
-  height: 30px;
   align-self: flex-end;
   margin-left: 20px;
 `;
@@ -78,7 +77,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           setValue(e.target.value);
         }}
       />
-      <Knapp onClick={() => _onSearch(value)} disabled={loading} spinner={loading}>
+      <Knapp onClick={() => _onSearch(value)} disabled={loading} loading={loading}>
         {labels.button}
       </Knapp>
       <Alert>

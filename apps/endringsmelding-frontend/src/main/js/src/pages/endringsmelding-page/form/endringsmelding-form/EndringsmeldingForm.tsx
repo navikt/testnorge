@@ -4,6 +4,7 @@ import { Search } from '@/components/search';
 import {
   ErrorAlertstripe,
   Form,
+  Knapp,
   Line,
   SuccessAlertstripe,
   WarningAlertstripe,
@@ -11,7 +12,6 @@ import {
 import EndringsmeldingService from '@/service/EndringsmeldingService';
 import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
-import { Button } from '@navikt/ds-react';
 
 type Props<T> = {
   children: React.ReactNode;
@@ -98,16 +98,15 @@ export default <T extends {}>({
         <>
           {children}
           <Line reverse={true}>
-            <Button
-              type={'button'}
+            <Knapp
               variant={'primary'}
               onClick={onSubmit}
               htmlType="submit"
               disabled={state.loading}
-              spinner={state.loading}
+              loading={state.loading}
             >
               {labels.submit}
-            </Button>
+            </Knapp>
           </Line>
         </>
       )}
