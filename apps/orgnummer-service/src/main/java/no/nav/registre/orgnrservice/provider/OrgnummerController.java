@@ -2,6 +2,8 @@ package no.nav.registre.orgnrservice.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.orgnrservice.domain.Organisasjon;
+import no.nav.registre.orgnrservice.service.OrgnummerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -10,9 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Pattern;
 import java.util.List;
-
-import no.nav.registre.orgnrservice.domain.Organisasjon;
-import no.nav.registre.orgnrservice.service.OrgnummerService;
 
 @RestController
 @RequiredArgsConstructor

@@ -2,15 +2,14 @@ package no.nav.registre.orgnrservice.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orgnrservice.domain.Organisasjon;
+import no.nav.registre.orgnrservice.repository.OrgnummerRepository;
+import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.registre.orgnrservice.domain.Organisasjon;
-import no.nav.registre.orgnrservice.repository.OrgnummerRepository;
-import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 
 @Component
 @Slf4j

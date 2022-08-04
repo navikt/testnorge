@@ -2,14 +2,13 @@ package no.nav.registre.orgnrservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 
 @Slf4j
 @EnableScheduling
