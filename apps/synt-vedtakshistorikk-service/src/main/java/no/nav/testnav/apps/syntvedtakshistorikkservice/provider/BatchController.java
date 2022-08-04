@@ -57,16 +57,16 @@ public class BatchController {
      */
     @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedOppfoelgingBatch() {
-        var identer = identService.getUtvalgteIdenterIAldersgruppe(
+        var personer = identService.getUtvalgteIdenterIAldersgruppe(
                         antallBrukere,
                         MINIMUM_ALDER,
                         MAKSIMUM_ALDER,
                         false
-                )
-                .stream().map(PersonDTO::getIdent).toList();
+                );
+//                .stream().map(PersonDTO::getIdent).toList();
 
-        if (tagsService.opprettetTagsPaaIdenter(identer)) {
-            arenaForvalterService.opprettArbeidssoekereUtenVedtak(identer, miljoe);
+        if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
+            arenaForvalterService.opprettArbeidssoekereUtenVedtak(personer.stream().map(PersonDTO::getIdent).toList(), miljoe);
         }
     }
 

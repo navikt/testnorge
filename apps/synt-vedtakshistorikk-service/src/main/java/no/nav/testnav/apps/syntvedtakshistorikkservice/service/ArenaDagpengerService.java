@@ -46,7 +46,7 @@ public class ArenaDagpengerService {
             var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(minDate, LocalDate.now()))));
             if (inntektService.opprettetInntektPaaIdentFoerDato(ident.getIdent(), dato)) {
                 try {
-                    arenaForvalterService.opprettArbeidssoekerDagpenger(ident.getIdent(), miljoe, dato);
+                    arenaForvalterService.opprettArbeidssoekerDagpenger(ident, miljoe, dato);
                 } catch (Exception e) {
                     log.error(e.getMessage());
                     inntektService.deleteInntekterPaaIdent(ident.getIdent());
@@ -58,7 +58,10 @@ public class ArenaDagpengerService {
             }
         }
         if (!responses.isEmpty()) {
-            tagsService.opprettetTagsPaaIdenter(new ArrayList<>(responses.keySet()));
+            var identer = new ArrayList<>(responses.keySet());
+            var personer = utvalgteIdenter.stream().filter(person -> identer.contains(person.getIdent())).toList();
+            //TODO flytte opprettelse tags til før innsending
+            tagsService.opprettetTagsPaaIdenterOgPartner(personer);
         }
         return responses;
     }
