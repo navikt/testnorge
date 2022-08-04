@@ -2,7 +2,7 @@ package no.nav.registre.orgnrservice.service;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
-import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
+import no.nav.registre.orgnrservice.consumer.OrganisasjonConsumer;
 import no.nav.registre.orgnrservice.domain.Organisasjon;
 import no.nav.testnav.libs.servletcore.util.OrgnummerUtil;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import static java.util.Objects.nonNull;
 public class OrgnummerService {
 
     private final OrgnummerAdapter orgnummerAdapter;
-    private final OrganisasjonApiConsumer organisasjonApiConsumer;
+    private final OrganisasjonConsumer organisasjonApiConsumer;
 
     public List<String> hentOrgnr(Integer antall) {
         var hentedeOrgnummer = orgnummerAdapter.hentAlleLedige();

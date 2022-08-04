@@ -19,7 +19,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
-public class OrganisasjonApiConsumer {
+public class OrganisasjonConsumer {
 
     private static final List<String> EXCLUDE_ENVS = List.of("qx");
 
@@ -29,7 +29,7 @@ public class OrganisasjonApiConsumer {
     private final MiljoerServiceProperties miljoerServiceProperties;
     private final OrganisasjonServiceProperties organisasjonServiceProperties;
 
-    public OrganisasjonApiConsumer(
+    public OrganisasjonConsumer(
             MiljoerServiceProperties miljoerServiceProperties,
             OrganisasjonServiceProperties organisasjonServiceProperties,
             TokenExchange tokenExchange,
@@ -60,7 +60,7 @@ public class OrganisasjonApiConsumer {
                                 tokenExchange.exchange(organisasjonServiceProperties))
                         .flatMapMany(token -> new MiljoerCommand(miljoerWebClient, token.getT1().getTokenValue()).call()
                                 .flatMapMany(miljoer -> Flux.fromIterable(Arrays.asList(miljoer))
-                                        .filter(OrganisasjonApiConsumer::supportedEnv)
+                                        .filter(OrganisasjonConsumer::supportedEnv)
                                         .flatMap(miljoe ->
                                                 new GetOrganisasjonCommand(organisasjonWebClient, token.getT2().getTokenValue(),
                                                         orgnummer, miljoe).call())))
