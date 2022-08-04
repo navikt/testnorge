@@ -18,7 +18,10 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
     <DayPicker
       key={id}
       mode={'single'}
-      onSelect={setDate}
+      onSelect={(value) => {
+        onBlur(value.toISOString());
+        setDate(value);
+      }}
       selected={date}
       footer={label}
       locale={nb}
