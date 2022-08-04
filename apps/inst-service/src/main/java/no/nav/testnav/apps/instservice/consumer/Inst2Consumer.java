@@ -16,6 +16,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+
 @Component
 @Slf4j
 public class Inst2Consumer {
@@ -60,6 +63,12 @@ public class Inst2Consumer {
     }
 
     public List<String> hentInst2TilgjengeligeMiljoer() {
-        return new GetTilgjengeligeMiljoerCommand(webClient).call();
+        var response = new GetTilgjengeligeMiljoerCommand(webClient).call();
+
+        if (nonNull(response) && !response.getInstitusjonsoppholdEnvironments().isEmpty()){
+            return response.getInstitusjonsoppholdEnvironments().stream().sorted().toList();
+        } else{
+            return emptyList();
+        }
     }
 }
