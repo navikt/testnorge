@@ -33,7 +33,7 @@ public class SessionController {
     }
 
     @DeleteMapping("/user")
-    public Mono<ResponseEntity<?>> delete(ServerWebExchange exchange) {
+    public Mono<ResponseEntity> delete(ServerWebExchange exchange) {
         return exchange
                 .getSession()
                 .doOnSuccess(session -> session.getAttributes().remove(UserSessionConstant.SESSION_USER_ID_KEY))
@@ -41,7 +41,7 @@ public class SessionController {
     }
 
     @PutMapping("/user")
-    public Mono<ResponseEntity<?>> addUserToSession(@RequestParam String organisasjonsnummer, ServerWebExchange exchange) {
+    public Mono<ResponseEntity> addUserToSession(@RequestParam String organisasjonsnummer, ServerWebExchange exchange) {
         return accessService
                 .hasAccess(organisasjonsnummer, exchange)
                 .flatMap(hasAccess -> {
