@@ -65,8 +65,9 @@ public class QueryBuilder {
 
     private static void addTagsQueries(BoolQueryBuilder queryBuilder, String tag, List<String> tags, List<String> excludeTags) {
         if (isNull(tag) && (isNull(tags) || tags.isEmpty())) {
-            throw new RuntimeException();
+            throw new RuntimeException("Mangler tag");
         }
+
         Optional.ofNullable(tag)
                 .ifPresent(value -> queryBuilder.must(QueryBuilders.matchQuery("tags", tag)));
 
