@@ -52,7 +52,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			{isGjenopprettModalOpen && (
 				<GjenopprettConnector
 					bestilling={bestilling}
-					brukerId={brukerId && brukerId}
+					brukerId={brukerId}
 					closeModal={closeGjenoprettModal}
 					brukertype={brukertype}
 				/>

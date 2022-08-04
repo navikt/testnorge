@@ -9,11 +9,11 @@ type OrganisasjonKriterierProps = {
 }
 
 export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterierProps) => {
+	const [selectedId, setSelectedId] = useState('0')
+
 	if (!data) {
 		return null
 	}
-
-	const [selectedId, setSelectedId] = useState('0')
 
 	const orgTree = new OrgTree(data, '0')
 
