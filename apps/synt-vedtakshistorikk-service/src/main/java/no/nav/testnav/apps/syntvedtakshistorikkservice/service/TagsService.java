@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TagsService {
-    public static final List<Tags> SYNT_TAGS = Arrays.asList(Tags.DOLLY, Tags.ARENASYNT);
+    public static final List<Tags> SYNT_TAGS = List.of(Tags.ARENASYNT);
 
     private final PdlProxyConsumer pdlProxyConsumer;
 
