@@ -73,7 +73,9 @@ public class QueryBuilder {
         Optional.ofNullable(tags)
                 .ifPresent(values -> {
                     if (!values.isEmpty()) {
-                        queryBuilder.must(QueryBuilders.termsQuery("tags", values));
+                        for (var val: values){
+                            queryBuilder.must(QueryBuilders.matchQuery("tags", val));
+                        }
                     }
                 });
 
