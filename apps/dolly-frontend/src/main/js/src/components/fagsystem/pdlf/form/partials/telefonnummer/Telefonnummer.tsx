@@ -60,11 +60,12 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 	const optionsPrioritet = () => {
 		if (tlfListe.length === 1) {
 			return [{ value: 1, label: '1' }]
-		} else
+		} else {
 			return [
 				{ value: 1, label: '1' },
 				{ value: 2, label: '2' },
 			]
+		}
 	}
 
 	const handleNewEntry = () => {

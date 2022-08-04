@@ -20,7 +20,7 @@ import {
 
 const STEPS = [Steg1, Steg2, Steg3]
 
-export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, children }) => {
+export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
@@ -49,7 +49,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId, chil
 
 		sessionStorage.clear()
 
-		onSubmit(values, formikBag)
+		onSubmit(values)
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
 		return mutate(REGEX_BACKEND_BESTILLINGER)

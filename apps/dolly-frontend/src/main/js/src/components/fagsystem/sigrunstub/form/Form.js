@@ -34,7 +34,7 @@ SigrunstubForm.validation = {
 								.typeError('Tast inn et gyldig beløp'),
 						})
 					)
-					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(val) {
+					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(_val) {
 						const values = this.options.context
 						const path = this.options.path
 						const index = path.charAt(path.indexOf('[') + 1)

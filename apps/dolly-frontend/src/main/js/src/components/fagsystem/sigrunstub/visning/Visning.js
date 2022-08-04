@@ -6,10 +6,12 @@ import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
 
-const FastlandVisning = ({ data }) => {
-	if (!data || data.length === 0) return false
+const Visning = ({ data, header, expandable }) => {
+	if (!data || data.length === 0) {
+		return false
+	}
 	return (
-		<DollyFieldArray header="Fastlands-Norge" data={data} nested expandable>
+		<DollyFieldArray header={header} data={data} expandable={expandable} nested>
 			{(inntekt, idx) => (
 				<React.Fragment key={idx}>
 					<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
@@ -22,20 +24,11 @@ const FastlandVisning = ({ data }) => {
 	)
 }
 
+const FastlandVisning = ({ data }) => {
+	return <Visning data={data} header="Fastlands-Norge" expandable={true} />
+}
 const SvalbardVisning = ({ data }) => {
-	if (!data || data.length === 0) return false
-	return (
-		<DollyFieldArray header="Svalbard" data={data} nested>
-			{(inntekt, idx) => (
-				<React.Fragment key={idx}>
-					<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
-					<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
-					<TitleValue title="Type inntekt" value={inntekt.grunnlag} kodeverk={inntekt.tjeneste} />
-					<TitleValue title="Beløp" value={inntekt.verdi} />
-				</React.Fragment>
-			)}
-		</DollyFieldArray>
-	)
+	return <Visning data={data} header="Svalbard" expandable={false} />
 }
 
 const getInntektsperiode = (fastlandsData, svalbardsData) => {
@@ -48,11 +41,14 @@ const getInntektsperiode = (fastlandsData, svalbardsData) => {
 
 export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 	if (loading) return <Loading label="Laster sigrunstub-data" />
-	if (!data || data.length === 0) return false
+	if (!data || data.length === 0) {
+		return false
+	}
 	const grunnlag = data[0].grunnlag
 	const svalbardGrunnlag = data[0].svalbardGrunnlag
 
-	const sortedData = (data) => (Array.isArray(data) ? data.slice().reverse() : data)
+	const sortedData = (initialData) =>
+		Array.isArray(initialData) ? initialData.slice().reverse() : initialData
 
 	const inntektsperiode = getInntektsperiode(grunnlag, svalbardGrunnlag)
 	return (

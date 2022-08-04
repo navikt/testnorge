@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikProps } from 'formik'
+import { PopoverOrientering } from 'nav-frontend-popover'
 
 type Form = {
 	formikBag: FormikProps<{}>
@@ -51,7 +52,10 @@ const TestpersonValg = styled(RadioPanelGruppe)`
 `
 
 const informasjonstekst =
-	'Om ikke lenge kommer Dolly til å gå fra å opprette personer som har ekte identifikasjonsnummer til å kun opprette personer med syntetisk identifikasjonsnummer. Frem til det vil det være mulig å velge selv om man ønsker å opprette personene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
+	'Om ikke lenge kommer Dolly til å gå fra å opprette personer som har ekte identifikasjonsnummer til å kun opprette ' +
+	'personer med syntetisk identifikasjonsnummer. Frem til det vil det være mulig å velge selv om man ønsker å opprette ' +
+	'personene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer ' +
+	'til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
 
 export const IdentVelger = ({ formikBag }: Form) => {
 	const [type, setType] = useState(
@@ -69,7 +73,9 @@ export const IdentVelger = ({ formikBag }: Form) => {
 		<IdentVelgerField>
 			<Tittel>
 				<h2>Velg type person</h2>
-				<Hjelpetekst hjelpetekstFor={'Identvelger'}>{informasjonstekst}</Hjelpetekst>
+				<Hjelpetekst hjelpetekstFor={'Identvelger'} type={PopoverOrientering.Under}>
+					{informasjonstekst}
+				</Hjelpetekst>
 			</Tittel>
 
 			<TestpersonValg

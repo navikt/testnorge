@@ -14,7 +14,9 @@ type NavnTypes = {
 }
 
 export const NavnForm = ({ formikBag, path }: NavnTypes) => {
-	if (!_get(formikBag?.values, path)) return null
+	if (!_get(formikBag?.values, path)) {
+		return null
+	}
 
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)

@@ -32,9 +32,9 @@ export const UdistubForm = ({ formikBag }) => (
 			</Kategori>
 			<Arbeidsadgang formikBag={formikBag} />
 			<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
-				<Alias formikBag={formikBag} />
+				<Alias />
 			</Kategori>
-			<Annet formikBag={formikBag} />
+			<Annet />
 		</Panel>
 	</Vis>
 )

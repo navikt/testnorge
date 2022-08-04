@@ -34,9 +34,8 @@ export const BestillingProgresjon = ({
 	const sistOppdatert = bestilling.sistOppdatert
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const setDetaljertOrgStatus = (bestillingStatus: any) => {
-		const detaljertStatus =
-			bestillingStatus?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
+	const setDetaljertOrgStatus = (status: any) => {
+		const detaljertStatus = status?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
 		if (orgStatus !== detaljertStatus) {
 			setOrgStatus(detaljertStatus)
 		}

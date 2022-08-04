@@ -17,10 +17,13 @@ Formatters.formatAlder = (alder, dodsdato) => {
 }
 
 Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
-	if (_isNil(alder)) return ''
-	return doedfoedt
-		? `${alder.toString()} (dødfødt)`
-		: `${alder.toString()}${doedsdato ? ' (død)' : ''}`
+	if (_isNil(alder)) {
+		return ''
+	} else if (doedfoedt) {
+		return `${alder.toString()} (dødfødt)`
+	} else {
+		return `${alder.toString()}${doedsdato ? ' (død)' : ''}`
+	}
 }
 
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
@@ -137,12 +140,15 @@ Formatters.codeToNorskLabel = (value) => {
 }
 
 Formatters.oversettBoolean = (value) => {
-	if (_isNil(value)) return value
-	return value === true || value === 'true'
-		? 'Ja'
-		: value === false || value === 'false'
-		? 'Nei'
-		: value
+	if (_isNil(value)) {
+		return value
+	} else if (value === true || value === 'true') {
+		return 'Ja'
+	} else if (value === false || value === 'false') {
+		return 'Nei'
+	} else {
+		return value
+	}
 }
 
 Formatters.gtTypeLabel = (gtType) => {

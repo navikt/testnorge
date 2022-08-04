@@ -49,7 +49,7 @@ export const ArbeidsforholdForm = ({
 			return (field) => {
 				const value = isDate(field) ? field : field?.value || field?.target?.value || null
 				const amelding = _get(formikBag.values, 'aareg[0].amelding')
-				amelding.forEach((maaned, idx) => {
+				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
 					} else {
