@@ -3,9 +3,9 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { FormikCheckbox } from "~/components/ui/form/inputs/checbox/Checkbox";
-import { useFormikContext } from "formik";
-import _get from "lodash/get";
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { useFormikContext } from 'formik'
+import _get from 'lodash/get'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
@@ -18,8 +18,12 @@ export const UtenlandskBankkonto = () => {
 		<Vis attributt={path} formik>
 			<div className="flexbox--flex-wrap">
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={`${path}.kontonummer`} label={'Kontonummer'} disabled={disableKontonummer} />
-					<div style={{marginTop: '31px'}}>
+					<FormikTextInput
+						name={`${path}.kontonummer`}
+						label={'Kontonummer'}
+						disabled={disableKontonummer}
+					/>
+					<div style={{ marginTop: '31px' }}>
 						<FormikCheckbox
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har Tilfeldig kontonummer"

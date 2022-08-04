@@ -31,6 +31,13 @@ interface SikkerhetstiltakProps {
 }
 
 export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
+	const opts = useContext(BestillingsveilederContext)
+	const [randomNavUsers, setRandomNavUsers] = useState([])
+
+	useEffect(() => {
+		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
+	}, [])
+
 	const paths = {
 		rootPath: 'pdldata.person.sikkerhetstiltak',
 		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
@@ -42,8 +49,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	if (!sikkerhetstiltakListe) {
 		return null
 	}
-
-	const opts = useContext(BestillingsveilederContext)
 
 	const navEnheter = SelectOptionsOppslag.hentNavEnheter()
 	const navEnheterOptions = SelectOptionsOppslag.formatOptions('navEnheter', navEnheter)
@@ -78,12 +83,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		formikBag.setFieldValue(paths.rootPath, sikkerhetstiltakListe)
 		formikBag.setFieldValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
 	}
-
-	const [randomNavUsers, setRandomNavUsers] = useState([])
-
-	useEffect(() => {
-		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
-	}, [])
 
 	return (
 		<Vis attributt={Object.values(paths)} formik>
