@@ -1,6 +1,6 @@
-import { Label } from '@navikt/ds-react';
 import React, { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
+import nb from 'date-fns/locale/nb';
 
 type Props = {
   id: string;
@@ -14,19 +14,14 @@ export default ({ id, label, onBlur, error, ...props }: Props) => {
 
   return (
     <div onBlur={() => onBlur(date.toDateString())} {...props}>
-      <Label>{label}</Label>
-      {/*  TODO fiks i designbiblioteket*/}
-      <div
-        className={error ? 'skjemaelement__input--harFeil' : ''}
-        style={{ borderRadius: 4, display: 'inline-block' }}
-      >
-        <DayPicker key={id} mode={'single'} onSelect={setDate} selected={date} />
-      </div>
-      {error && (
-        <div role="alert" aria-live="assertive" className="skjemaelement__feilmelding">
-          <p className="typo-feilmelding">{error}</p>
-        </div>
-      )}
+      <DayPicker
+        key={id}
+        mode={'single'}
+        onSelect={setDate}
+        selected={date}
+        footer={label}
+        locale={nb}
+      />
     </div>
   );
 };
