@@ -36,7 +36,7 @@ export default function TableRow({
 	return (
 		<div tabIndex={0} className={rowWrapperClass}>
 			<div className={rowClass} onClick={onRowClick}>
-				{icon && icon}
+				{icon}
 				<div className="dot-body-row-columns">
 					{children}
 					{expandComponent && (
