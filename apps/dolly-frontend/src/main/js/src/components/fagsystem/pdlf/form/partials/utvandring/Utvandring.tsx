@@ -41,7 +41,7 @@ export const Utvandring = () => {
 				newEntry={initialUtvandring}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <UtvandringForm path={path} />}
+				{(path: string, _idx: number) => <UtvandringForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)
