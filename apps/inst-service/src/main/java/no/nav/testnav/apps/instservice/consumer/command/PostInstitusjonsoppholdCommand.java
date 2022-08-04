@@ -18,6 +18,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
@@ -53,11 +54,14 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
                             .filter(WebClientFilter::is5xxException))
                     .block();
 
-            Institusjonsopphold institusjonsoppholdResponse = new ObjectMapper().convertValue(response.getBody(), Institusjonsopphold.class);
-            return OppholdResponse.builder()
-                    .status(response.getStatusCode())
-                    .institusjonsopphold(institusjonsoppholdResponse)
-                    .build();
+            if (nonNull(response)){
+                var institusjonsoppholdResponse = new ObjectMapper().convertValue(response.getBody(), Institusjonsopphold.class);
+                return OppholdResponse.builder()
+                        .status(response.getStatusCode())
+                        .institusjonsopphold(institusjonsoppholdResponse)
+                        .build();
+            }
+            return new OppholdResponse();
         } catch (WebClientResponseException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
             return OppholdResponse.builder()
