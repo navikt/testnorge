@@ -35,9 +35,9 @@ const getPersonInfo = (ident: Ident) => {
 			<div className="flexbox--align-center">
 				<Icon size={20} kind="report-problem-circle" />
 				<div>
-						<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
-							{pdlError}
-						</pre>
+					<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
+						{pdlError}
+					</pre>
 				</div>
 			</div>
 		)
