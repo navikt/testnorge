@@ -9,7 +9,6 @@ import { isDate } from 'date-fns'
 For custom validation der vi kan bruke f.eks. context.
 */
 export const validate = async (values, schema) => {
-	console.log('values: ', values) //TODO - SLETT MEG
 	if (!schema) return
 	try {
 		await schema.validate(values, { abortEarly: false, context: values })

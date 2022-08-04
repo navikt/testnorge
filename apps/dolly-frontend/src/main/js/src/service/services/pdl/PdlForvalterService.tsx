@@ -25,11 +25,11 @@ export default {
 		return Request.get(endpoint)
 	},
 	putAttributt(ident: string, attributt: string, id: number, data: any) {
-		console.log('id: ', id) //TODO - SLETT MEG
 		if (!ident) {
 			return
 		}
-		const endpoint = `${getPdlUrl()}/personer/${ident}/${attributt}${id ? `/${id}` : ``}`
+		const attributtId = id ? `/${id}` : ``
+		const endpoint = `${getPdlUrl()}/personer/${ident}/${attributt}${attributtId}`
 		return Request.putWithoutResponse(endpoint, data)
 	},
 	deleteAttributt(ident: string, attributt: string, id: number) {

@@ -10,22 +10,19 @@ import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
-import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent, validate } from '~/utils/YupValidations'
-import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation'
+import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { element } from 'prop-types'
 
 type VisningTypes = {
 	getPdlForvalter: Function
-	dataVisning: any
 	initialValues: any
 	redigertAttributt?: any
 	path: string
 	ident: string
-	identtype?: string
+	alleSlettet: boolean
 }
 
 enum Modus {
@@ -70,12 +67,10 @@ const Knappegruppe = styled.div`
 
 export const VisningRedigerbarSamlet = ({
 	getPdlForvalter,
-	dataVisning,
 	initialValues,
 	redigertAttributt = null,
 	path,
 	ident,
-	identtype,
 	alleSlettet,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
@@ -105,11 +100,9 @@ export const VisningRedigerbarSamlet = ({
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
-		console.log('data: ', data) //TODO - SLETT MEG
 		const submit = async () => {
-			const id = null
-			const itemData = _get(data, path)?.filter((item) => item)
-			console.log('itemData: ', itemData) //TODO - SLETT MEG
+			const id = null as number
+			const itemData = _get(data, path)?.filter((item: any) => item)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 				.catch((error) => {
@@ -146,14 +139,7 @@ export const VisningRedigerbarSamlet = ({
 						setVisningModus(Modus.LoadingPdlSlett)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								// if (_get(initialValues, path).length < 2) {
-								// if (_get(initialValues, path).length === 1) {
-								// 	if (mountedRef.current) {
-								// 		setVisningModus(Modus.Les)
-								// 	}
-								// } else {
 								setVisningModus(Modus.Les)
-								// }
 							})
 						})
 					}
@@ -166,13 +152,19 @@ export const VisningRedigerbarSamlet = ({
 		return slett()
 	}, [])
 
-	// TODO: bruk denne for å lage mer generll komponent
-	// const getForm = (formikBag: FormikProps<{}>) => {
-	// 	switch (path) {
-	// 		case Attributt.Telefonnummer:
-	// 			return <Telefonnummer formikBag={formikBag} path={path} />
-	// 	}
-	// }
+	const getVisning = (item: any, idx: number) => {
+		switch (path) {
+			case Attributt.Telefonnummer:
+				return <TelefonnummerLes telefonnummerData={item} idx={idx} />
+		}
+	}
+
+	const getForm = (itemPath: string) => {
+		switch (path) {
+			case Attributt.Telefonnummer:
+				return <TelefonnummerFormRedigering path={itemPath} />
+		}
+	}
 
 	const validationSchema = Yup.object().shape(
 		{
@@ -183,14 +175,13 @@ export const VisningRedigerbarSamlet = ({
 
 	const _validate = (values: any) => validate(values, validationSchema)
 
-	//TODO: Hva er denne godt for?
-	const test = _get(initialValues, path)
+	const initialValuesListe = _get(initialValues, path)
 
 	const getRedigertAttributtListe = () => {
-		const liste = []
-		test.forEach((item) => {
+		const liste = [] as Array<any>
+		initialValuesListe.forEach((item: any) => {
 			const found = _get(redigertAttributt, path)?.find(
-				(redigertItem) => redigertItem.id === item.id
+				(redigertItem: any) => redigertItem.id === item.id
 			)
 			if (found) {
 				liste.push(found)
@@ -198,61 +189,37 @@ export const VisningRedigerbarSamlet = ({
 				liste.push(null)
 			}
 		})
-		return { telefonnummer: liste }
+		return { [path]: liste }
 	}
-
 	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
 
-	// console.log('test: ', test) //TODO - SLETT MEG
-	// console.log('redigertAttributtListe: ', redigertAttributtListe) //TODO - SLETT MEG
+	const loadingLabelPdlf = 'Oppdaterer PDL-forvalter...'
+	const loadingLabelPdl = 'Oppdaterer PDL...'
+
 	return (
 		<>
-			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
-			{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
-			{/*{visningModus === Modus.Les || visningModus === Modus.LoadingPdlfSlett || visningModus === Modus.LoadingPdl && (*/}
+			{visningModus === Modus.LoadingPdlf && <Loading label={loadingLabelPdlf} />}
+			{visningModus === Modus.LoadingPdl && <Loading label={loadingLabelPdl} />}
 			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
-				<DollyFieldArray data={test} header="" nested>
-					{(item: TelefonData, idx: number) => {
-						// const getRedigertAttributtListe = () => {
-						// 	const liste = []
-						// 	test.forEach((item) => {
-						// 		const found = _get(redigertAttributt, path)?.find(
-						// 			(redigertItem) => redigertItem.id === item.id
-						// 		)
-						// 		if (found) {
-						// 			liste.push(found)
-						// 		} else {
-						// 			liste.push(null)
-						// 		}
-						// 	})
-						// 	return { telefonnummer: liste }
-						// }
-
-						const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
-						// const redigertAttributtListe = test && getRedigertAttributtListe()
-
+				<DollyFieldArray data={initialValuesListe} header="" nested>
+					{(item: any, idx: number) => {
 						const redigertItem = _get(redigertAttributtListe, `${path}.[${idx}]`)
 						const slettetItem = redigertAttributtListe && !redigertItem
-						// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-						// console.log('redigertAttributtListe: ', redigertAttributtListe) //TODO - SLETT MEG
-						// console.log('redigertAttributt: ', redigertAttributt) //TODO - SLETT MEG
-						// console.log('redigertItem: ', redigertItem) //TODO - SLETT MEG
-						// console.log('slettetItem: ', slettetItem) //TODO - SLETT MEG
 
 						return (
 							<React.Fragment key={idx}>
 								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label="Oppdaterer PDL-forvalter..." />
+									<Loading label={loadingLabelPdlf} />
 								)}
 								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
-									<Loading label="Oppdaterer PDL..." />
+									<Loading label={loadingLabelPdl} />
 								)}
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
 										{slettetItem || alleSlettet ? (
 											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
 										) : (
-											<TelefonnummerLes telefonnummerData={redigertItem || item} idx={idx} />
+											getVisning(redigertItem || item, idx)
 										)}
 										{!slettetItem && !alleSlettet && (
 											<EditDeleteKnapper>
@@ -265,7 +232,6 @@ export const VisningRedigerbarSamlet = ({
 													kind="trashcan"
 													onClick={() => openDeleteModal(idx)}
 													title="Slett"
-													key={`button_${idx}`}
 												/>
 
 												<DollyModal
@@ -273,7 +239,6 @@ export const VisningRedigerbarSamlet = ({
 													closeModal={closeModal}
 													width="40%"
 													overflow="auto"
-													key={`modal_${idx}`}
 												>
 													<div className="slettModal">
 														<div className="slettModal slettModal-content">
@@ -283,7 +248,7 @@ export const VisningRedigerbarSamlet = ({
 																Er du sikker på at du vil slette denne opplysningen fra personen?
 															</h4>
 														</div>
-														<div className="slettModal-actions" key={idx}>
+														<div className="slettModal-actions">
 															<NavButton onClick={closeModal}>Nei</NavButton>
 
 															<NavButton
@@ -292,7 +257,6 @@ export const VisningRedigerbarSamlet = ({
 																	return handleDelete(idx)
 																}}
 																type="hoved"
-																key={`navbutton_${idx}`}
 															>
 																Ja, jeg er sikker
 															</NavButton>
@@ -324,23 +288,16 @@ export const VisningRedigerbarSamlet = ({
 					validate={_validate}
 				>
 					{(formikBag) => {
-						// console.log(
-						// 	'redigertAttributtListe?.telefonnummer: ',
-						// 	redigertAttributtListe?.telefonnummer
-						// ) //TODO - SLETT MEG
 						return (
 							<>
 								<DollyFieldArray
-									data={redigertAttributtListe?.telefonnummer || test}
+									data={_get(redigertAttributtListe, path) || initialValuesListe}
 									header=""
 									nested
 								>
-									{(item: TelefonData, idx: number) =>
+									{(item: any, idx: number) =>
 										item ? (
-											<TelefonnummerFormRedigering
-												path={`telefonnummer[${idx}]`}
-												formikBag={formikBag}
-											/>
+											getForm(`${path}[${idx}]`)
 										) : (
 											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
 										)

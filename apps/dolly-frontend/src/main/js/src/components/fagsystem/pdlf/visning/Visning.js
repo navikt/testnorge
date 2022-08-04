@@ -152,6 +152,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 				) : (
 					<TpsfIdenthistorikk identhistorikk={tpsfData?.identHistorikk} />
 				)}
+
 				<KontaktinformasjonForDoedsbo
 					data={data?.person?.kontaktinformasjonForDoedsbo}
 					relasjoner={data?.relasjoner}
