@@ -14,7 +14,7 @@ import './eksisterendeIdent.less'
 export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 	const [text, setText] = useState('')
 	const [state, fetch] = useAsyncFn(async () => {
-		const identListe = text.trim().split(/[\W]+/)
+		const identListe = text.trim().split(/[\W\s]+/)
 		const { data } = await PdlforvalterApi.getEksistens(identListe)
 		return data
 	}, [text])
