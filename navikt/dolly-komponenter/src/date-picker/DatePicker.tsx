@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import nb from 'date-fns/locale/nb';
+import 'react-day-picker/dist/style.css';
 
 type Props = {
   id: string;
