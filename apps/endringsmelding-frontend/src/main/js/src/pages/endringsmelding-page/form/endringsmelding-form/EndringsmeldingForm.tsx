@@ -45,7 +45,10 @@ export default <T extends {}>({
 }: Props<T>) => {
   const [state, dispatch] = useReducer(reducer, initState);
 
-  console.log(state.warningMessages);
+  if (state.warningMessages) {
+    console.log(state.warningMessages);
+  }
+
   const onSearch = (value: string) =>
     EndringsmeldingService.fetchMiljoer(value)
       .then((response) => {
@@ -94,14 +97,14 @@ export default <T extends {}>({
           onError: 'Noe gikk galt',
         }}
       />
-      {state.show && (
+      {/*{state.show && (*/}
+      {true && ( //TODO: BYTTE TILBAKE
         <>
           {children}
           <Line reverse={true}>
             <Knapp
               variant={'primary'}
               onClick={onSubmit}
-              htmlType="submit"
               disabled={state.loading}
               loading={state.loading}
             >
