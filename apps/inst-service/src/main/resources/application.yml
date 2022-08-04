@@ -5,7 +5,7 @@ spring:
   application:
     version: application.version.todo
     name: testnav-inst-service
-    description: testnav-inst-service
+    description: Applikasjon for oppretting, henting og sletting av institusjonsforholdsmeldinger i Inst.
   security:
     oauth2:
       resourceserver:
