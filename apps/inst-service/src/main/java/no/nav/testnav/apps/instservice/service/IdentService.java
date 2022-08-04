@@ -45,11 +45,8 @@ public class IdentService {
             InstitusjonsoppholdV2 opphold
     ) {
         log.info("Sender institusjonsopphold til inst2: " + opphold);
-        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(
-                callId,
-                consumerId,
-                miljoe,
-                opphold);
+        var oppholdResponse = inst2Consumer
+                .leggTilInstitusjonsoppholdIInst2(callId, consumerId, miljoe, opphold);
         oppholdResponse.setPersonident(opphold.getNorskident());
         return oppholdResponse;
     }
@@ -122,23 +119,14 @@ public class IdentService {
     }
 
     private List<InstitusjonsoppholdV2> getOppholdForMiljoe(InstitusjonResponse response, String miljoe) {
-        if ("q1".equals(miljoe)) {
-            return response.getQ1();
-        }
-        if ("q2".equals(miljoe)) {
-            return response.getQ2();
-        }
-        if ("q4".equals(miljoe)) {
-            return response.getQ4();
-        }
-        if ("t0".equals(miljoe)) {
-            return response.getT0();
-        }
-        if ("t4".equals(miljoe)) {
-            return response.getT4();
-        }
-        if ("t6".equals(miljoe)) {
-            return response.getT6();
-        } else return Collections.emptyList();
+        return switch (miljoe) {
+            case "q1" -> response.getQ1();
+            case "q2" -> response.getQ2();
+            case "q4" -> response.getQ4();
+            case "t0" -> response.getT0();
+            case "t4" -> response.getT4();
+            case "t6" -> response.getT6();
+            default -> Collections.emptyList();
+        };
     }
 }
