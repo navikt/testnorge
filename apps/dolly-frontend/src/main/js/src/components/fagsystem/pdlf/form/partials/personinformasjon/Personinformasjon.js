@@ -39,8 +39,8 @@ const alderPaths = [
 	'pdldata.opprettNyPerson.foedtFoer',
 ]
 
-const utenlandskBankkontoPath = ['tpsMessaging.utenlandskBankkonto']
-const norskBankkontoPath = ['tpsMessaging.norskBankkonto']
+const utenlandskBankkontoPath = ['bankkonto.utenlandskBankkonto']
+const norskBankkontoPath = ['bankkonto.norskBankkonto']
 const kjoennPath = ['pdldata.person.kjoenn']
 const navnPath = ['pdldata.person.navn']
 const telefonnummerPath = ['pdldata.person.telefonnummer']

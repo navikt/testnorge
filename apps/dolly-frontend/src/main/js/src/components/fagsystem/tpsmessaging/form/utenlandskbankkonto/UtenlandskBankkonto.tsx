@@ -7,7 +7,7 @@ import { FormikCheckbox } from "~/components/ui/form/inputs/checbox/Checkbox";
 import { useFormikContext } from "formik";
 import _get from "lodash/get";
 
-const path = 'tpsMessaging.utenlandskBankkonto'
+const path = 'bankkonto.utenlandskBankkonto'
 
 export const UtenlandskBankkonto = () => {
 	const { values } = useFormikContext()

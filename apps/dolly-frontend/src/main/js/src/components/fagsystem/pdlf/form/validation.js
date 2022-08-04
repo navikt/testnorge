@@ -694,8 +694,13 @@ export const validation = {
 				'$tpsMessaging.egenAnsattDatoTom',
 				testDatoTom(Yup.string(), 'egenAnsattDatoFom')
 			),
+		})
+	),
+	bankkonto: ifPresent(
+		'$bankkonto',
+		Yup.object({
 			utenlandskBankkonto: ifPresent(
-				'$tpsMessaging.utenlandskBankkonto',
+				'$bankkonto.utenlandskBankkonto',
 				Yup.object().shape({
 					kontonummer: validInputOrCheckboxTest(
 						Yup.string(),
@@ -714,7 +719,7 @@ export const validation = {
 				})
 			),
 			norskBankkonto: ifPresent(
-				'$tpsMessaging.norskBankkonto',
+				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
 					kontonummer: requiredString.nullable(),
 				})
