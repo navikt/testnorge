@@ -4,24 +4,25 @@ import nb from 'date-fns/locale/nb';
 
 type Props = {
   id: string;
+  required?: boolean;
   label: string;
   onBlur: (value: string) => void;
   error?: string;
 };
 
-export default ({ id, label, onBlur, error, ...props }: Props) => {
+export default ({ id, label, onBlur, required = false, error, ...props }: Props) => {
   const [date, setDate] = useState<Date>();
 
   return (
-    <div onBlur={() => onBlur(date.toDateString())} {...props}>
-      <DayPicker
-        key={id}
-        mode={'single'}
-        onSelect={setDate}
-        selected={date}
-        footer={label}
-        locale={nb}
-      />
-    </div>
+    <DayPicker
+      key={id}
+      mode={'single'}
+      onSelect={setDate}
+      selected={date}
+      footer={label}
+      locale={nb}
+      required={required}
+      {...props}
+    />
   );
 };
