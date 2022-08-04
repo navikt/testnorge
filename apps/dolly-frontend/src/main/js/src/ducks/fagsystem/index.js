@@ -319,7 +319,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 	const success = successMiljoSelector(statusArray)
 
 	// Samle alt fra PDL under en ID
-	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
+	if (Object.keys(success)?.some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'
 		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
