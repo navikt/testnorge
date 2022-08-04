@@ -119,7 +119,7 @@ export default function PersonListe({
 			dataField: 'identNr',
 			unique: true,
 
-			formatter: (cell, row) => <CopyButton value={row.identNr} />,
+			formatter: (_cell, row) => <CopyButton value={row.identNr} />,
 		},
 		{
 			text: 'Navn',
@@ -135,7 +135,7 @@ export default function PersonListe({
 			text: 'Bestilling-ID',
 			width: '20',
 			dataField: 'bestillingId',
-			formatter: (cell, row) => {
+			formatter: (_cell, row) => {
 				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
@@ -158,14 +158,14 @@ export default function PersonListe({
 			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
+			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
 			text: '',
 			width: '10',
 			dataField: 'harBeskrivelse',
 			centerItem: true,
-			formatter: (cell, row) => {
+			formatter: (_cell, row) => {
 				if (row.ident.beskrivelse) {
 					return (
 						<Tooltip
@@ -204,15 +204,15 @@ export default function PersonListe({
 					pageSize: sideStoerrelse,
 				}}
 				pagination
-				iconItem={(bruker) =>
-					bruker.kjonn === 'MANN' ? (
-						<ManIconItem />
-					) : bruker.kjonn === 'KVINNE' ? (
-						<WomanIconItem />
-					) : (
-						<UnknownIconItem />
-					)
-				}
+				iconItem={(bruker) => {
+					if (bruker.kjonn === 'MANN') {
+						return <ManIconItem />
+					} else if (bruker.kjonn === 'KVINNE') {
+						return <WomanIconItem />
+					} else {
+						return <UnknownIconItem />
+					}
+				}}
 				visSide={sidetall}
 				visPerson={visPerson}
 				onExpand={(bruker) => (

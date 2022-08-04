@@ -83,7 +83,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 			} else {
 				maaneder.forEach((mnd, idx) => {
 					const currMaaned = _get(formikBag.values, paths.amelding).find(
-						(element: Amelding) => element.maaned == mnd
+						(element: Amelding) => element.maaned === mnd
 					)
 					formikBag.setFieldValue(`${paths.amelding}[${idx}]`, {
 						maaned: mnd,
@@ -134,7 +134,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 
 	const handleNewEntry = () => {
 		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
-			if (!erLenket && idMaaned != selectedIndex) {
+			if (!erLenket && idMaaned !== selectedIndex) {
 				return
 			}
 			const currArbeidsforhold = _get(
@@ -156,7 +156,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 
 	const handleRemoveEntry = (idArbeidsforhold: number) => {
 		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
-			if (!erLenket && idMaaned != selectedIndex) {
+			if (!erLenket && idMaaned !== selectedIndex) {
 				return
 			}
 			const currArbeidsforhold = _get(

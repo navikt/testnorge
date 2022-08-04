@@ -2,11 +2,11 @@ import * as React from 'react'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { Bestillingsdata } from '~/components/bestillingsveileder/bestillingTypes'
 
-type BestillingInfoboks = {
+type BestillingInfoboksProps = {
 	bestillingsdata: Bestillingsdata
 }
 
-export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
+export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboksProps) => {
 	const tpsfInfo = bestillingsdata.tpsf
 
 	const harRelasjonMedAdressebeskyttelse = () => {

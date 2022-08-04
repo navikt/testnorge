@@ -47,22 +47,22 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Har inntekt',
 			checked: has(paths.inntekt),
 			add: () =>
-				set('pensjonforvalter.inntekt', {
+				set(paths.inntekt, {
 					fomAar: new Date().getFullYear() - 10,
 					tomAar: null,
 					belop: '',
 					redusertMedGrunnbelop: true,
 				}),
-			remove: () => del('pensjonforvalter.inntekt'),
+			remove: () => del(paths.inntekt),
 		},
 		tp: {
 			label: 'Har tjenestepensjonsforhold',
-			checked: has('pensjonforvalter.tp'),
+			checked: has(paths.tp),
 			add: () => {
 				fetchTpOrdninger()
-				set('pensjonforvalter.tp', [initialOrdning])
+				set(paths.tp, [initialOrdning])
 			},
-			remove: () => del('pensjonforvalter.tp'),
+			remove: () => del(paths.tp),
 		},
 	}
 }

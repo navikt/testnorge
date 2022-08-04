@@ -104,8 +104,8 @@ export default function () {
 			</Panel>
 
 			<h2>Text Editor</h2>
-			<TextEditor placeholder="Skriv en tekst" handleSubmit={(v) => {}} />
-			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={(v) => {}} />
+			<TextEditor placeholder="Skriv en tekst" handleSubmit={(_v) => {}} />
+			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={(_v) => {}} />
 
 			<h2>ContentContainer</h2>
 			<ContentContainer>Dette er en ContentContainer</ContentContainer>

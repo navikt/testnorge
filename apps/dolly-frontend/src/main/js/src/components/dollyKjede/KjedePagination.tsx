@@ -44,7 +44,7 @@ export default ({
 			<PaginationWrapper>
 				<ArrowButton
 					left={true}
-					disabled={disabled || centerIndices.length == 0 || centerIndices[0] == 1}
+					disabled={disabled || centerIndices.length === 0 || centerIndices[0] === 1}
 					onClick={handlePagination}
 				/>
 				{objectList.length > 0 && (
@@ -56,7 +56,7 @@ export default ({
 						onClick={handleClick}
 					/>
 				)}
-				{centerIndices.length != 0 && centerIndices[0] != 1 && (
+				{centerIndices.length !== 0 && centerIndices[0] !== 1 && (
 					<Separator color={disabled ? 'grey' : 'black'}>...</Separator>
 				)}
 				{centerIndices.map((item, index) => {
@@ -64,21 +64,21 @@ export default ({
 						<KjedeItem
 							key={index}
 							index={item}
-							selected={selectedIndex == item}
+							selected={selectedIndex === item}
 							disabled={disabled}
 							text={objectList[item]}
 							onClick={handleClick}
 						/>
 					)
 				})}
-				{centerIndices.length != 0 &&
-					centerIndices[centerIndices.length - 1] != objectList.length - 2 && (
+				{centerIndices.length !== 0 &&
+					centerIndices[centerIndices.length - 1] !== objectList.length - 2 && (
 						<Separator color={disabled ? 'grey' : 'black'}>...</Separator>
 					)}
 				{objectList.length > 1 && (
 					<KjedeItem
 						index={objectList.length - 1}
-						selected={selectedIndex == objectList.length - 1}
+						selected={selectedIndex === objectList.length - 1}
 						disabled={disabled}
 						text={objectList[objectList.length - 1]}
 						onClick={handleClick}
@@ -88,8 +88,8 @@ export default ({
 					left={false}
 					disabled={
 						disabled ||
-						centerIndices.length == 0 ||
-						centerIndices[centerIndices.length - 1] == objectList.length - 2
+						centerIndices.length === 0 ||
+						centerIndices[centerIndices.length - 1] === objectList.length - 2
 					}
 					onClick={handlePagination}
 				/>

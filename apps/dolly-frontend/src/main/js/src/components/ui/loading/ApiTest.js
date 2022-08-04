@@ -9,7 +9,7 @@ export const api = {
 		}).then(() => 'Dette er responsen fra APIet'),
 
 	sendMedFeil: () =>
-		new Promise((resolve, reject) => {
+		new Promise((_resolve, reject) => {
 			setTimeout(
 				() =>
 					reject(
@@ -24,7 +24,7 @@ export const FeiletApi = () => {
 	return (
 		<LoadableComponent
 			onFetch={() => api.sendMedFeil()}
-			render={(data, feilmelding) => render(data)}
+			render={(data, _feilmelding) => render(data)}
 		/>
 	)
 }

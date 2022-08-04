@@ -20,7 +20,7 @@ export const Alder = ({ formikBag }: AlderForm) => {
 		_get(formikBag.values, paths.foedtFoer) != null
 
 	const disableFoedtDato =
-		_get(formikBag.values, paths.alder) != '' && _get(formikBag.values, paths.alder) != null
+		_get(formikBag.values, paths.alder) !== '' && _get(formikBag.values, paths.alder) !== null
 
 	const onlyNumberKeyPressHandler = (event: React.KeyboardEvent<any>) =>
 		!/\d/.test(event.key) && event.preventDefault()

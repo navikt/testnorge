@@ -9,7 +9,9 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 // @ts-ignore
 export const OrganisasjonDataVisning = ({ data }) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	const organisasjonListe = Object.entries(data).sort()
 
