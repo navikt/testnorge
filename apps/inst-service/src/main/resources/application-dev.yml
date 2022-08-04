@@ -3,3 +3,5 @@ azure:
     client:
       id: ${client_id}
       secret: ${client_secret}
+
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-inst-service

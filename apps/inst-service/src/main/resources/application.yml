@@ -1,4 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-inst-service
 
 spring:
   application:
@@ -19,7 +20,7 @@ spring:
 
 consumers:
   inst2:
-    url: https://inst2-{miljoe}.dev.adeo.no/web
+    url: https://inst-testdata.dev.adeo.no
 
 
 management:

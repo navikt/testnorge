@@ -25,7 +25,7 @@ public class GetTilgjengeligeMiljoerCommand implements Callable<SupportedEnviron
         try {
             return webClient.get()
                     .uri(builder ->
-                            builder.path("/v1/environment")
+                            builder.path("/api/v1/environment")
                                     .build()
                     )
                     .retrieve()

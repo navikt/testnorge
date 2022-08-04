@@ -1,6 +1,6 @@
 consumers:
   inst2:
-    url: http://localhost:${wiremock.server.port:0}/inst2/web
+    url: http://localhost:${wiremock.server.port:0}/inst2
 
 spring:
   cloud:
@@ -12,3 +12,5 @@ azure:
     client:
       id: dummy
       secret: dummy
+
+TOKEN_X_CLIENT_ID: test
