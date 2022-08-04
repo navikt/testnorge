@@ -84,8 +84,13 @@ public class Person {
         return getCurrent(response.getHentPerson().getKjoenn()).map(KjoennModel::getKjoenn).orElse(null);
     }
 
-    private String getSivilstand() {
-        return getCurrent(response.getHentPerson().getSivilstand()).map(SivilstandModel::getType).orElse(null);
+    private SivilstandDTO getSivilstand() {
+        return getCurrent(response.getHentPerson().getSivilstand())
+                .map(sivilstand -> SivilstandDTO.builder()
+                        .type(sivilstand.getType())
+                        .relatertVedSivilstand(sivilstand.getRelatertVedSivilstand())
+                        .build())
+                .orElse(new SivilstandDTO());
     }
 
     private String getIdent() {
@@ -144,7 +149,7 @@ public class Person {
                 .tags(getTags())
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
                 .doedsfall(DoedsfallDTO.builder().doedsdato(getDoedsdato()).build())
-                .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
+                .sivilstand(getSivilstand())
                 .statsborgerskap(toDTO(statsborgerskap))
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
                 .innfyttingTilNorge(toDTO(innflyttingTilNorge))

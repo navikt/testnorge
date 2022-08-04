@@ -9,5 +9,6 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class SivilstandModel implements WithMetadata{
     String type;
+    String relatertVedSivilstand;
     Metadata metadata;
 }
