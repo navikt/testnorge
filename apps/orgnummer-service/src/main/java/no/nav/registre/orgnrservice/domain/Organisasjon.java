@@ -1,7 +1,6 @@
 package no.nav.registre.orgnrservice.domain;
 
 import lombok.Value;
-
 import no.nav.registre.orgnrservice.repository.model.OrgnummerModel;
 
 @Value
