@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 @Service
 @AllArgsConstructor
@@ -28,17 +29,17 @@ public class OrgnummerService {
 
             hentedeOrgnummer.forEach(org -> setLedigForOrgnummer(org.getOrgnummer(), false));
             return Stream.concat(
-                    hentedeOrgnummer.stream(),
-                    genererteOrganisasjoner.stream()
-            ).map(Organisasjon::getOrgnummer).collect(Collectors.toList());
+                            hentedeOrgnummer.stream(),
+                            genererteOrganisasjoner.stream())
+                    .map(Organisasjon::getOrgnummer)
+                    .toList();
         }
 
-
-        List<String> orgnummer = hentedeOrgnummer
+        var orgnummer = hentedeOrgnummer
                 .subList(0, antall)
                 .stream()
                 .map(Organisasjon::getOrgnummer)
-                .collect(Collectors.toList());
+                .toList();
 
         orgnummer.forEach(orgnr -> setLedigForOrgnummer(orgnr, false));
         return orgnummer;
@@ -49,14 +50,17 @@ public class OrgnummerService {
     }
 
     public List<Organisasjon> genererOrgnrsTilDb(Integer antall, boolean ledig) {
-        List<String> orgnrs = generateOrgnrs(antall);
+
+        var orgnrs = generateOrgnrs(antall);
         var organisasjoner = orgnrs.stream()
                 .map(orgnr -> new Organisasjon(orgnr, ledig))
-                .collect(Collectors.toList());
+                .toList();
+
         return orgnummerAdapter.saveAll(organisasjoner);
     }
 
     public List<String> generateOrgnrs(Integer antall) {
+
         List<String> orgnrListe = new ArrayList<>();
         for (int i = 0; i < antall; i++) {
             orgnrListe.add(generateOrgnr());
@@ -65,6 +69,7 @@ public class OrgnummerService {
     }
 
     private String generateOrgnr() {
+
         var generertOrgnummer = OrgnummerUtil.generateOrgnr();
         if (finnesOrgnr(generertOrgnummer)) {
             return generateOrgnr();
@@ -73,14 +78,8 @@ public class OrgnummerService {
     }
 
     private boolean finnesOrgnr(String orgnummer) {
-        return finnesOrgnrIMiljoe(orgnummer) || finnesOrgnrIDb(orgnummer);
-    }
 
-    public boolean finnesOrgnrIMiljoe(String orgnummer) {
-        return organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
-    }
-
-    private boolean finnesOrgnrIDb(String orgnummer) {
-        return orgnummerAdapter.hentByOrgnummer(orgnummer) != null;
+        return nonNull(orgnummerAdapter.hentByOrgnummer(orgnummer)) ||
+                organisasjonApiConsumer.finnesOrgnrIEreg(orgnummer);
     }
 }

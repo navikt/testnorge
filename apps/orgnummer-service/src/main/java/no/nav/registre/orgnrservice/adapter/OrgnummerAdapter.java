@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -33,7 +32,10 @@ public class OrgnummerAdapter {
     }
 
     public List<Organisasjon> saveAll(List<Organisasjon> organisasjoner) {
-        return organisasjoner.stream().map(this::save).collect(Collectors.toList());
+
+        return organisasjoner.stream()
+                .map(this::save)
+                .toList();
     }
 
     @Transactional
@@ -49,7 +51,9 @@ public class OrgnummerAdapter {
     public List<Organisasjon> hentAlleLedige() {
         log.info("Henter alle ledige orgnr...");
         var orgModeller = organisasjonRepoistory.findAllByLedigIsTrue();
-        return orgModeller.stream().map(Organisasjon::new).collect(Collectors.toList());
+        return orgModeller.stream()
+                .map(Organisasjon::new)
+                .toList();
     }
 
     public Organisasjon hentByOrgnummer(String orgnummer) {
