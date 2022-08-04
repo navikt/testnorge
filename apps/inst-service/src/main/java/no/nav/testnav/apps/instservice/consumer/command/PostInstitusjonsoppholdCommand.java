@@ -60,8 +60,9 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
                         .status(response.getStatusCode())
                         .institusjonsopphold(institusjonsoppholdResponse)
                         .build();
+            } else {
+                return new OppholdResponse();
             }
-            return new OppholdResponse();
         } catch (WebClientResponseException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
             return OppholdResponse.builder()
