@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-// @ts-ignore
-import { dollyLogo } from '@navikt/dolly-assets';
+import { dollyLogo } from '@navikt/dolly-assets/src';
 
 export type ProfilProps = {
   url?: string;
