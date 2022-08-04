@@ -8,7 +8,7 @@ const initialValues = {
 	nyIdent: false,
 }
 
-export const Alias = ({ formikBag }) => (
+export const Alias = () => (
 	<FormikDollyFieldArray name="udistub.aliaser" header="Alias" newEntry={initialValues}>
 		{(path, idx, curr) => (
 			<React.Fragment key={idx}>

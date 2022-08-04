@@ -77,20 +77,25 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 	}
 
 	useEffect(() => {
-		if (tlfListe.length === 1) {
+		if (tlfListe && tlfListe.length === 1) {
 			formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
 			formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 		}
 	}, [tlfListe])
 
+	if (!tlfListe) {
+		return null
+	}
+
 	const optionsPrioritet = () => {
 		if (tlfListe.length === 1) {
 			return [{ value: 1, label: '1' }]
-		} else
+		} else {
 			return [
 				{ value: 1, label: '1' },
 				{ value: 2, label: '2' },
 			]
+		}
 	}
 
 	const handleChangeLandkode = (value: string) => {

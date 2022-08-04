@@ -65,7 +65,9 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 			(a: Person) => a.id === foedsel.id
 		)
 		const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
-		if (slettetFoedselPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetFoedselPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
 		const redigertFoedselValues = redigertFoedselPdlf

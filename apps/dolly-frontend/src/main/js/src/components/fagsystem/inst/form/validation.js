@@ -2,11 +2,11 @@ import * as Yup from 'yup'
 import { requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 
-const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
+const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => {
 	const errorMsgAge =
 		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
 
-	return validation.test('range', errorMsgAge, function isWithinTest(val) {
+	return oppholdValidation.test('range', errorMsgAge, function isWithinTest(val) {
 		if (!val && validerStart) return true
 
 		const selectedDate = new Date(val)

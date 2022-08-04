@@ -1000,13 +1000,12 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 
 const mapTpsMessaging = (bestillingData, data) => {
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
+	const bankkonto = _get(bestillingData, 'bankkonto')
 
 	if (
 		tpsMessaging?.spraakKode ||
 		tpsMessaging?.egenAnsattDatoFom ||
-		tpsMessaging?.egenAnsattDatoTom ||
-		tpsMessaging?.norskBankkonto ||
-		tpsMessaging?.utenlandskBankkonto
+		tpsMessaging?.egenAnsattDatoTom
 	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
@@ -1017,32 +1016,34 @@ const mapTpsMessaging = (bestillingData, data) => {
 			],
 		}
 		data.push(tpsMessagingData)
+	}
 
-		if (tpsMessaging.norskBankkonto) {
+	if (bankkonto?.norskBankkonto || bankkonto?.utenlandskBankkonto) {
+		if (bankkonto.norskBankkonto) {
 			const norskBankkontoData = {
 				header: 'Norsk bankkonto',
-				items: [obj('Kontonummer', tpsMessaging.norskBankkonto.kontonummer)],
+				items: [obj('Kontonummer', bankkonto.norskBankkonto.kontonummer)],
 			}
 			data.push(norskBankkontoData)
 		}
 
-		if (tpsMessaging.utenlandskBankkonto) {
+		if (bankkonto.utenlandskBankkonto) {
 			const utenlandskBankkontoData = {
 				header: 'Utenlandsk bankkonto',
 				items: [
-					obj('Kontonummer', tpsMessaging.utenlandskBankkonto.kontonummer),
+					obj('Kontonummer', bankkonto.utenlandskBankkonto.kontonummer),
 					obj(
 						'Tilfeldig kontonummer',
-						tpsMessaging.utenlandskBankkonto.tilfeldigKontonummer ? 'Ja' : ''
+						bankkonto.utenlandskBankkonto.tilfeldigKontonummer ? 'Ja' : ''
 					),
-					obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
-					obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
-					obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
-					obj('Bankkode', tpsMessaging.utenlandskBankkonto.iban),
-					obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
-					obj('Adresselinje 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
-					obj('Adresselinje 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
-					obj('Adresselinje 3', tpsMessaging.utenlandskBankkonto.bankAdresse3),
+					obj('Swift kode', bankkonto.utenlandskBankkonto.swift),
+					obj('Land', bankkonto.utenlandskBankkonto.landkode),
+					obj('Banknavn', bankkonto.utenlandskBankkonto.banknavn),
+					obj('Bankkode', bankkonto.utenlandskBankkonto.iban),
+					obj('Valuta', bankkonto.utenlandskBankkonto.valuta),
+					obj('Adresselinje 1', bankkonto.utenlandskBankkonto.bankAdresse1),
+					obj('Adresselinje 2', bankkonto.utenlandskBankkonto.bankAdresse2),
+					obj('Adresselinje 3', bankkonto.utenlandskBankkonto.bankAdresse3),
 				],
 			}
 			data.push(utenlandskBankkontoData)

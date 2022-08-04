@@ -1,10 +1,10 @@
-# person-search-service
+# testnav-person-search-service
 
 Service som forvalter søking på personer basert på innsendte kriterier
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://person-search-service.dev.intern.nav.no/swagger)
+Swagger finnes under [/swagger](https://testnav-person-search-service.dev.intern.nav.no/swagger)
 -endepunktet til applikasjonen.
 
 ## Lokal utvikling

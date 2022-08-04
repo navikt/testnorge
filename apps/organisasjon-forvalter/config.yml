@@ -62,8 +62,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
-      external:
-        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+        - application: testnav-orgnummer-service
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12

@@ -83,8 +83,10 @@ const _renderStaticValue = (attributt, key) => {
 }
 
 const renderExpandablePanel = (attributt, key) => {
-	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) return null
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
+
+	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) return null
+
 	return (
 		<div className="flexbox--full-width" key={key}>
 			<Button

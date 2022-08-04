@@ -23,7 +23,7 @@ const getCenterIndices = (index: number, antallItems: number, itemLimit: number)
 	while (
 		indices.length < itemLimit - 3 &&
 		!indices.includes(1) &&
-		!(indices.length == itemLimit - 4 && indices[indices.length - 1] != antallItems - 2)
+		!(indices.length === itemLimit - 4 && indices[indices.length - 1] !== antallItems - 2)
 	) {
 		indices.unshift(indices[0] - 1)
 	}
@@ -31,7 +31,7 @@ const getCenterIndices = (index: number, antallItems: number, itemLimit: number)
 	while (
 		indices.length < itemLimit - 3 &&
 		!indices.includes(antallItems - 2) &&
-		!(indices.length == itemLimit - 4 && indices[0] != 1)
+		!(indices.length === itemLimit - 4 && indices[0] !== 1)
 	) {
 		indices.push(indices[indices.length - 1] + 1)
 	}
@@ -48,7 +48,11 @@ const getCenterIndices = (index: number, antallItems: number, itemLimit: number)
 }
 
 const getMaxShownItems = (itemLimit: number) => {
-	return itemLimit > 10 ? 10 : itemLimit < 5 ? 5 : itemLimit
+	if (itemLimit > 10) {
+		return 10
+	} else {
+		return itemLimit < 5 ? 5 : itemLimit
+	}
 }
 
 const getInitialPaginationIndex = (antallItems: number, maxShownItems: number) => {
@@ -83,7 +87,7 @@ export default ({
 	}, [antallItems])
 
 	const handlePagination = (addValue: number) => {
-		if (centerIndices.length == maxShownItems - 3) {
+		if (centerIndices.length === maxShownItems - 3) {
 			if (addValue < 0) {
 				addValue -= 1
 			} else {
@@ -96,9 +100,9 @@ export default ({
 
 	const handleSelection = (index: number) => {
 		let newPaginationIndex
-		if (index == 0) {
+		if (index === 0) {
 			newPaginationIndex = getInitialPaginationIndex(antallItems, maxShownItems)
-		} else if (index == antallItems - 1) {
+		} else if (index === antallItems - 1) {
 			newPaginationIndex = antallItems - 2
 		}
 		if (newPaginationIndex != null) {

@@ -95,6 +95,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
+                                .bankkonto(bestillingRequest.getBankkonto())
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())

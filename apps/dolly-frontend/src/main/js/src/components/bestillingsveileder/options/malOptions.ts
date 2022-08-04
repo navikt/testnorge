@@ -200,7 +200,7 @@ const updateVegadressetype = (adresse: any) => {
 const updateTypeForelderBarn = (relasjon: ForeldreBarnRelasjon) => {
 	if (relasjon.relatertPerson) {
 		return 'EKSISTERENDE'
-	} else if (relasjon.relatertPerson) {
+	} else if (relasjon.nyRelatertPerson) {
 		return 'NY'
 	} else if (relasjon.relatertPersonUtenFolkeregisteridentifikator) {
 		return 'UTEN_ID'

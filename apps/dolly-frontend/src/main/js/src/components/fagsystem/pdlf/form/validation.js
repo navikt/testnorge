@@ -575,9 +575,15 @@ const foreldreansvar = Yup.array().of(
 	})
 )
 
-const validInputOrCheckboxTest = (val, checkboxPath, feilmelding) => {
+const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
 	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {
 		if (value) {
+			if (inputValidation) {
+				const inputError = inputValidation(value)
+				if (inputError) {
+					return this.createError({ message: inputError })
+				}
+			}
 			return true
 		}
 
@@ -695,13 +701,27 @@ export const validation = {
 				'$tpsMessaging.egenAnsattDatoTom',
 				testDatoTom(Yup.string(), 'egenAnsattDatoFom')
 			),
+		})
+	),
+	bankkonto: ifPresent(
+		'$bankkonto',
+		Yup.object({
 			utenlandskBankkonto: ifPresent(
-				'$tpsMessaging.utenlandskBankkonto',
+				'$bankkonto.utenlandskBankkonto',
 				Yup.object().shape({
 					kontonummer: validInputOrCheckboxTest(
 						Yup.string(),
 						'tilfeldigKontonummer',
-						messages.required
+						messages.required,
+						(kontonummer) => {
+							if (kontonummer && (kontonummer.length < 1 || kontonummer.length > 36)) {
+								return 'Kontonummer kan være mellom 1 og 36 tegn'
+							}
+							if (!/^[A-Z0-9]*$/.test(kontonummer)) {
+								return 'Kontonummer kan kun bestå av tegnene A-Z eller 0-9'
+							}
+							return false
+						}
 					),
 					tilfeldigKontonummer: Yup.object().nullable(),
 					swift: Yup.string().nullable().optional(),
@@ -715,7 +735,7 @@ export const validation = {
 				})
 			),
 			norskBankkonto: ifPresent(
-				'$tpsMessaging.norskBankkonto',
+				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
 					kontonummer: requiredString.nullable(),
 				})
