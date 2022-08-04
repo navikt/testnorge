@@ -63,7 +63,6 @@ public class BatchController {
                         MAKSIMUM_ALDER,
                         false
                 );
-//                .stream().map(PersonDTO::getIdent).toList();
 
         if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
             arenaForvalterService.opprettArbeidssoekereUtenVedtak(personer.stream().map(PersonDTO::getIdent).toList(), miljoe);

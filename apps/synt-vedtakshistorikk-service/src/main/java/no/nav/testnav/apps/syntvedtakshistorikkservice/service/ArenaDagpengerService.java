@@ -60,7 +60,7 @@ public class ArenaDagpengerService {
         if (!responses.isEmpty()) {
             var identer = new ArrayList<>(responses.keySet());
             var personer = utvalgteIdenter.stream().filter(person -> identer.contains(person.getIdent())).toList();
-            //TODO flytte opprettelse tags til før innsending
+            //TODO flytte opprettelse tags til før innsending av dagpenger
             tagsService.opprettetTagsPaaIdenterOgPartner(personer);
         }
         return responses;
