@@ -82,6 +82,7 @@ import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
 import RIP from '~/assets/icons/custom/RIP.svg'
 
 import './Icon.less'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const icons = {
 	trashcan: Trashcan,
@@ -186,5 +187,14 @@ export default function Icon({
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
-	return <SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} />
+	return (
+		<ErrorBoundary>
+			<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title}>
+				<img
+					src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
+					alt="fallback"
+				/>
+			</SVG>
+		</ErrorBoundary>
+	)
 }

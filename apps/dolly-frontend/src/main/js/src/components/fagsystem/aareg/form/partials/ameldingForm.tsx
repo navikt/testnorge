@@ -46,12 +46,18 @@ const Slettknapp = styled(Button)`
 `
 
 export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): ReactFragment => {
-	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
+	const paths = {
+		arbeidsforholdstype: 'aareg[0].arbeidsforholdstype',
+		periode: 'aareg[0].genererPeriode.periode',
+		amelding: 'aareg[0].amelding',
+	}
+
+	const arbeidsforholdstype = _get(formikBag.values, paths.arbeidsforholdstype)
 
 	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
 	const tom = _get(formikBag.values, 'aareg[0].genererPeriode.tom')
-	const periode = _get(formikBag.values, 'aareg[0].genererPeriode.periode')
-	const ameldinger = _get(formikBag.values, 'aareg[0].amelding')
+	const periode = _get(formikBag.values, paths.periode)
+	const ameldinger = _get(formikBag.values, paths.amelding)
 
 	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
 	const [selectedIndex, setSelectedIndex] = useState(0)
@@ -60,7 +66,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, dato)
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
-			const maanederPrev: Array<Amelding> = _get(formikBag.values, 'aareg[0].amelding')
+			const maanederPrev: Array<Amelding> = _get(formikBag.values, paths.amelding)
 			const maaneder: Array<string> = []
 			const maanederTmp = eachMonthOfInterval({
 				start: new Date(type === 'fom' ? dato : fom),
@@ -69,17 +75,17 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 			maanederTmp.forEach((maaned) => {
 				maaneder.push(format(maaned, 'yyyy-MM'))
 			})
-			formikBag.setFieldValue('aareg[0].genererPeriode.periode', maaneder)
+			formikBag.setFieldValue(paths.periode, maaneder)
 
 			if (maaneder.length < maanederPrev.length) {
 				const maanederFiltered = maanederPrev.filter((maaned) => maaneder.includes(maaned.maaned))
-				formikBag.setFieldValue('aareg[0].amelding', maanederFiltered)
+				formikBag.setFieldValue(paths.amelding, maanederFiltered)
 			} else {
 				maaneder.forEach((mnd, idx) => {
-					const currMaaned = _get(formikBag.values, 'aareg[0].amelding').find(
-						(element: Amelding) => element.maaned == mnd
+					const currMaaned = _get(formikBag.values, paths.amelding).find(
+						(element: Amelding) => element.maaned === mnd
 					)
-					formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
+					formikBag.setFieldValue(`${paths.amelding}[${idx}]`, {
 						maaned: mnd,
 						arbeidsforhold: currMaaned
 							? currMaaned.arbeidsforhold
@@ -89,7 +95,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 					})
 					if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
 						formikBag.setFieldValue(
-							`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
+							`${paths.amelding}[${idx}].arbeidsforhold[0].fartoy`,
 							initialFartoy
 						)
 					}
@@ -99,7 +105,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-		const amelding = _get(formikBag.values, 'aareg[0].amelding')
+		const amelding = _get(formikBag.values, paths.amelding)
 		const ameldingClone = _cloneDeep(amelding)
 
 		if (event.value === 'forenkletOppgjoersordning') {
@@ -122,16 +128,18 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 				}
 			})
 		}
-		formikBag.setFieldValue('aareg[0].amelding', ameldingClone)
-		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
+		formikBag.setFieldValue(paths.amelding, ameldingClone)
+		formikBag.setFieldValue(paths.arbeidsforholdstype, event.value)
 	}
 
 	const handleNewEntry = () => {
 		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
-			if (!erLenket && idMaaned != selectedIndex) return
+			if (!erLenket && idMaaned !== selectedIndex) {
+				return
+			}
 			const currArbeidsforhold = _get(
 				formikBag.values,
-				`aareg[0].amelding[${idMaaned}].arbeidsforhold`
+				`${paths.amelding}[${idMaaned}].arbeidsforhold`
 			)
 			const nyttArbeidsforhold =
 				arbeidsforholdstype === 'forenkletOppgjoersordning'
@@ -139,7 +147,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 					: arbeidsforholdstype === 'maritimtArbeidsforhold'
 					? { ...initialArbeidsforholdOrg, fartoy: initialFartoy }
 					: initialArbeidsforholdOrg
-			formikBag.setFieldValue(`aareg[0].amelding[${idMaaned}].arbeidsforhold`, [
+			formikBag.setFieldValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, [
 				...currArbeidsforhold,
 				nyttArbeidsforhold,
 			])
@@ -148,24 +156,26 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 
 	const handleRemoveEntry = (idArbeidsforhold: number) => {
 		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
-			if (!erLenket && idMaaned != selectedIndex) return
+			if (!erLenket && idMaaned !== selectedIndex) {
+				return
+			}
 			const currArbeidsforhold = _get(
 				formikBag.values,
-				`aareg[0].amelding[${idMaaned}].arbeidsforhold`
+				`${paths.amelding}[${idMaaned}].arbeidsforhold`
 			)
 			currArbeidsforhold.splice(idArbeidsforhold, 1)
-			formikBag.setFieldValue(`aareg[0].amelding[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
+			formikBag.setFieldValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
 		})
 	}
 
 	const handleFjernMaaned = () => {
-		const currAmelding = _get(formikBag.values, 'aareg[0].amelding')
+		const currAmelding = _get(formikBag.values, paths.amelding)
 		currAmelding.splice(selectedIndex, 1)
-		formikBag.setFieldValue('aareg[0].amelding', currAmelding)
+		formikBag.setFieldValue(paths.amelding, currAmelding)
 
 		const nyPeriode = periode
 		nyPeriode.splice(selectedIndex, 1)
-		formikBag.setFieldValue('aareg[0].genererPeriode.periode', nyPeriode)
+		formikBag.setFieldValue(paths.periode, nyPeriode)
 
 		if (periode.length === 1) {
 			setSelectedIndex(0)
@@ -178,11 +188,11 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 
 	const feilmelding = () => {
 		if (
-			!_get(formikBag.values, 'aareg[0].arbeidsforholdstype') &&
-			_has(formikBag.touched, 'aareg[0].arbeidsforholdstype')
+			!_get(formikBag.values, paths.arbeidsforholdstype) &&
+			_has(formikBag.touched, paths.arbeidsforholdstype)
 		) {
 			return {
-				feilmelding: _get(formikBag.errors, 'aareg[0].arbeidsforholdstype'),
+				feilmelding: _get(formikBag.errors, paths.arbeidsforholdstype),
 			}
 		}
 	}
@@ -274,7 +284,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 									</Slettknapp>
 								)}
 							<FormikDollyFieldArray
-								name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
+								name={`${paths.amelding}[${selectedIndex}].arbeidsforhold`}
 								header="Arbeidsforhold"
 								newEntry={
 									arbeidsforholdstype === 'forenkletOppgjoersordning'

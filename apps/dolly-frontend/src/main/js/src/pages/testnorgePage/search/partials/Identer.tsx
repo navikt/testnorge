@@ -1,6 +1,7 @@
 import React from 'react'
-import { ErrorMessage, Field, FieldArray, FormikProps } from 'formik'
+import { Field, FieldArray, FormikProps } from 'formik'
 import Button from '~/components/ui/button/Button'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 
 interface IdentSearchProps {
 	formikBag: FormikProps<{}>
@@ -27,7 +28,7 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 											type="text"
 											style={{ width: '220px' }}
 										/>
-										<ErrorMessage
+										<ErrorMessageWithFocus
 											name={`${identerPath}.${index}`}
 											className="skjemaelement__feilmelding"
 											component="div"

@@ -18,7 +18,9 @@ function formaterFeilmelding(feilmeldingSetninger: string[]) {
 }
 
 export default function ApiFeilmelding({ feilmelding, container }: ApiFeilmeldingProps) {
-	if (!feilmelding || feilmelding === 'OK') return null
+	if (!feilmelding || feilmelding === 'OK') {
+		return null
+	}
 	const formatertFeilmelding = formaterFeilmelding(feilmelding.split(' '))
 	const css = cn('api-feilmelding', {
 		'api-feilmelding-container': container,

@@ -14,7 +14,9 @@ const getBrukerOptions = (malbestillinger: any) =>
 	}))
 
 const getMalOptions = (malbestillinger: any, bruker: any) => {
-	if (!malbestillinger || !malbestillinger[bruker]) return []
+	if (!malbestillinger || !malbestillinger[bruker]) {
+		return []
+	}
 	return malbestillinger[bruker].map((mal: any) => ({
 		value: mal.id,
 		label: mal.malNavn,

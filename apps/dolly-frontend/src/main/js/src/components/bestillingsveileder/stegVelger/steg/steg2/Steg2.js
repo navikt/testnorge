@@ -14,7 +14,7 @@ import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
-import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
+import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
@@ -29,8 +29,8 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 		return (
 			<span>
 				Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til
-				{gruppe === null && <>gruppe du velger i neste steg.</>}
-				{gruppe !== null && <>gruppen {gruppeNavn(gruppe)}.</>}
+				{gruppe === null && <> gruppe du velger i neste steg.</>}
+				{gruppe !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
 			</span>
 		)
 	}

@@ -23,7 +23,9 @@ type DoedsfallVisningTypes = {
 }
 
 export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: DoedsfallTypes) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const DoedsfallLes = ({ doedsfall, idx }: DoedsfallVisningTypes) => {
 		return (
@@ -41,7 +43,9 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 			(a: Person) => a.id === doedsfall.id
 		)
 		const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
-		if (slettetDoedsfallPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetDoedsfallPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
 		const redigertDoedsfallValues = redigertDoedsfallPdlf

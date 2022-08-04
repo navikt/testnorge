@@ -23,9 +23,9 @@ const Advarsler = {
 }
 
 const getAdvarsel: () => string = () => {
-	let url = location.href
+	const url = location.href
 	if (url.includes('state=')) {
-		let urlParts = url.split('state=')
+		const urlParts = url.split('state=')
 		if (urlParts.length === 1 || !(urlParts[1] in Advarsler)) {
 			return null
 		} else {

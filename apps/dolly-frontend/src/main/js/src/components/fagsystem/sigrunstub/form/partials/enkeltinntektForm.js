@@ -4,7 +4,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { SigrunKodeverk } from '~/config/kodeverk'
 
-export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
+export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste }) => {
 	return (
 		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => (

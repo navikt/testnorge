@@ -37,7 +37,9 @@ export const Visning = ({ data }: Data) => {
 }
 
 export const PdlFullmakt = ({ data }: DataListe) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 	return (
 		<div>
 			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />

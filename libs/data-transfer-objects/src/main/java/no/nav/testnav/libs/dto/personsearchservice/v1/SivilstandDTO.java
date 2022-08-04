@@ -11,4 +11,5 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class SivilstandDTO {
     String type;
+    String relatertVedSivilstand;
 }

@@ -16,7 +16,9 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 	}
 
 	const getMalOptions = (malbestillinger: Mal[]) => {
-		if (!malbestillinger) return []
+		if (!malbestillinger) {
+			return []
+		}
 		return malbestillinger.map((mal) => ({
 			value: mal.malNavn,
 			label: mal.malNavn,

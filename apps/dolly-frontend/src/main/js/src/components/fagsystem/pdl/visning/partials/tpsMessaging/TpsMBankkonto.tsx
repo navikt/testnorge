@@ -8,8 +8,12 @@ type TpsMBankkontoProps = {
 }
 
 export const TpsMBankkonto = ({ data, loading = false }: TpsMBankkontoProps) => {
-	if (loading) return <Loading />
-	if (!data) return null
+	if (loading) {
+		return <Loading />
+	}
+	if (!data) {
+		return null
+	}
 
 	return (
 		<>

@@ -52,7 +52,7 @@ export const testDatoTom = (val, fomPath, feilmelding) => {
 
 const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
-		var feilmelding = null
+		let feilmelding = null
 		const values = this.options.context
 
 		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
@@ -574,6 +574,31 @@ const foreldreansvar = Yup.array().of(
 	})
 )
 
+const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
+	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {
+		if (value) {
+			if (inputValidation) {
+				const inputError = inputValidation(value)
+				if (inputError) {
+					return this.createError({ message: inputError })
+				}
+			}
+			return true
+		}
+
+		const path = this.path.substring(0, this.path.lastIndexOf('.'))
+		const values = this.options.context
+
+		const checkbox = _get(values, `${path}.${checkboxPath}`)
+
+		if (!checkbox) {
+			return this.createError({ message: feilmelding })
+		}
+
+		return true
+	})
+}
+
 export const folkeregisterpersonstatus = Yup.object({
 	status: requiredString.nullable(),
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
@@ -675,10 +700,29 @@ export const validation = {
 				'$tpsMessaging.egenAnsattDatoTom',
 				testDatoTom(Yup.string(), 'egenAnsattDatoFom')
 			),
+		})
+	),
+	bankkonto: ifPresent(
+		'$bankkonto',
+		Yup.object({
 			utenlandskBankkonto: ifPresent(
-				'$tpsMessaging.utenlandskBankkonto',
+				'$bankkonto.utenlandskBankkonto',
 				Yup.object().shape({
-					kontonummer: requiredString.nullable(),
+					kontonummer: validInputOrCheckboxTest(
+						Yup.string(),
+						'tilfeldigKontonummer',
+						messages.required,
+						(kontonummer) => {
+							if (kontonummer && (kontonummer.length < 1 || kontonummer.length > 36)) {
+								return 'Kontonummer kan være mellom 1 og 36 tegn'
+							}
+							if (!/^[A-Z0-9]*$/.test(kontonummer)) {
+								return 'Kontonummer kan kun bestå av tegnene A-Z eller 0-9'
+							}
+							return false
+						}
+					),
+					tilfeldigKontonummer: Yup.object().nullable(),
 					swift: Yup.string().nullable().optional(),
 					landkode: requiredString.nullable(),
 					iban: Yup.string().nullable().optional(),
@@ -690,7 +734,7 @@ export const validation = {
 				})
 			),
 			norskBankkonto: ifPresent(
-				'$tpsMessaging.norskBankkonto',
+				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
 					kontonummer: requiredString.nullable(),
 				})

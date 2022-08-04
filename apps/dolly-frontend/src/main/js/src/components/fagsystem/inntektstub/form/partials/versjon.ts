@@ -31,11 +31,13 @@ export default function versjonsinformasjon(
 	//Samler spesifikk versjoninformasjon for den inntekten (idx) som skal vise
 	const spesifikkVersjonsinfo: SpesifikkVersjon = versjonsliste.reduce(
 		(acc: SpesifikkVersjon, curr: Versjonsoversikt, kdx: number) => {
-			if (curr.formikIdx === idx)
+			if (curr.formikIdx === idx) {
 				return { ...acc, underversjonerIdx: curr.underversjonerIdx, gjeldendeIdx: kdx }
-			else if (curr.underversjonerIdx.some((versjon) => versjon === idx))
+			} else if (curr.underversjonerIdx.some((versjon) => versjon === idx)) {
 				return { ...acc, versjonAv: kdx, underVersjonerIdx: curr.underversjonerIdx }
-			else return acc
+			} else {
+				return acc
+			}
 		},
 		{ versjonAv: -1, underversjonerIdx: [], gjeldendeIdx: -1 }
 	)
@@ -53,18 +55,19 @@ const mapVersjonsliste = (
 ): Array<Versjonsoversikt> => {
 	const versjonsoversikt: Array<Versjonsoversikt> = []
 	inntektValues.forEach((inntektinfo: Inntektsinformasjon, idx: number) => {
-		if (_isNil(inntektinfo.versjon))
+		if (_isNil(inntektinfo.versjon)) {
 			versjonsoversikt.push({ formikIdx: idx, underversjonerIdx: [] })
-		else {
+		} else {
 			versjonsoversikt.forEach((inntekt) => {
 				if (sjekkKombinasjon(inntektValues[inntekt.formikIdx], inntektinfo)) {
 					inntekt.underversjonerIdx.push(idx)
-					if (inntektinfo.versjon !== inntekt.underversjonerIdx.length)
+					if (inntektinfo.versjon !== inntekt.underversjonerIdx.length) {
 						//Endrer versjonsnr ved sletting av versjonsnr foran
 						formikBag.setFieldValue(
 							`${inntektstubPath}[${idx}].versjon`,
 							inntekt.underversjonerIdx.length
 						)
+					}
 				}
 			})
 		}

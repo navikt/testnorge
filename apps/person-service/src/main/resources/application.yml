@@ -4,7 +4,7 @@ spring:
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-person-service
-    desciption: API for opprettelse av personer
+    description: API for opprettelse av personer
   main:
     banner-mode: off
   security:

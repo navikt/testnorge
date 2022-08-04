@@ -3,7 +3,7 @@ const genererPersonident = () => {
 }
 
 export const genererTilfeldigeNavPersonidenter = () => {
-	let personidenter = []
+	const personidenter = []
 	let numIterations = 0
 	while (personidenter.length < 10 && numIterations < 100) {
 		const personident = genererPersonident()

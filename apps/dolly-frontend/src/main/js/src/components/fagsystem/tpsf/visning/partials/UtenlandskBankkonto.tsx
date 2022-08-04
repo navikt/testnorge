@@ -10,6 +10,7 @@ type Data = {
 
 type UtenlandskBankkontoData = {
 	kontonummer: string
+	tilfeldigKontonummer: boolean
 	swift: string
 	landkode: string
 	banknavn?: string
@@ -25,6 +26,7 @@ export const Visning = ({ data }: Data) => (
 		<div className="person-visning_content">
 			<ErrorBoundary>
 				<TitleValue title={'Kontonummer'} value={data.kontonummer} />
+				<TitleValue title={'TilfeldigKontonummer'} value={data.tilfeldigKontonummer ? 'Ja' : ''} />
 				<TitleValue title={'Swift kode'} value={data.swift} />
 				<TitleValue title={'Land'} kodeverk={GtKodeverk.LAND} value={data.landkode} />
 				<TitleValue title={'Banknavn'} value={data.banknavn} />
@@ -39,7 +41,9 @@ export const Visning = ({ data }: Data) => (
 )
 
 export const UtenlandskBankkonto = ({ data }: Data) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 	return (
 		<div>
 			<SubOverskrift label="Utenlandsk bankkonto" iconKind="bankkonto" />

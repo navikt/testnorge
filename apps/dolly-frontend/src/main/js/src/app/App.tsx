@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Loading from '~/components/ui/loading/Loading'
 import allRoutes from '~/allRoutes'
@@ -20,7 +20,6 @@ type Props = {
 
 export const App = ({ updateVarslingerBruker }: Props) => {
 	const [criticalError, setCriticalError] = useState(null)
-	const navigate = useNavigate()
 
 	const { loading, error: userError } = useCurrentBruker()
 
@@ -36,9 +35,13 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 	}, [userError])
 
 	function extractFeilmelding(stackTrace: string) {
-		if (stackTrace?.includes('miljoer')) return 'miljoe_error'
-		else if (stackTrace?.includes('current')) return 'azure_error'
-		else return 'unknown_error'
+		if (stackTrace?.includes('miljoer')) {
+			return 'miljoe_error'
+		} else if (stackTrace?.includes('current')) {
+			return 'azure_error'
+		} else {
+			return 'unknown_error'
+		}
 	}
 
 	const logout = (stackTrace: string) => {

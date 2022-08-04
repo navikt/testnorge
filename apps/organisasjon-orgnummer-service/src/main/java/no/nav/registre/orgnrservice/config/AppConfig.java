@@ -13,8 +13,6 @@ import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConf
 @EnableJpaAuditing
 @Import({
         ApplicationCoreConfig.class,
-        VaultHikariConfiguration.class,
-        FlywayConfiguration.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {

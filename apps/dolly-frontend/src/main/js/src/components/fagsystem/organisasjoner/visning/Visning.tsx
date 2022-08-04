@@ -14,9 +14,11 @@ type OrganisasjonVisningProps = {
 }
 
 export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningProps) => {
-	if (!data) return null
-
 	const [selectedId, setSelectedId] = useState('0')
+
+	if (!data) {
+		return null
+	}
 
 	const orgTree = new OrgTree(data.orgInfo, '0')
 

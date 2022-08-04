@@ -155,7 +155,9 @@ export default function OrganisasjonListe({
 			dataField: 'bestillingId',
 			formatter: (_cell: number, row: EnhetData) => {
 				const str = row.bestillingId
-				if (str.length > 1) return `${str[0]} ...`
+				if (str.length > 1) {
+					return `${str[0]} ...`
+				}
 				return str[0]
 			},
 		},

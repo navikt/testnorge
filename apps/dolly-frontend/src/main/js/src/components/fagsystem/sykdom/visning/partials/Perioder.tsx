@@ -10,7 +10,9 @@ type PerioderProps = {
 }
 
 export const Perioder = ({ data }: PerioderProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 	return (
 		<>
 			<h4>Perioder</h4>

@@ -21,17 +21,17 @@ jobs:
 
     with:
       working-directory: 'apps/organisasjon-orgnummer-service/'
-      app-name: 'organisasjon-orgnummer-service'
+      app-name: 'testnav-orgnummer-service'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-orgnummer-service')}}
     with:
       resource: 'apps/organisasjon-orgnummer-service/config.yml'
-      app-name: 'organisasjon-orgnummer-service'
-      cluster: 'dev-fss'
+      app-name: 'testnav-orgnummer-service'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

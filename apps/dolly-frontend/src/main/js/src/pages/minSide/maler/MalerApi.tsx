@@ -1,10 +1,11 @@
 const dollyBackend = '/dolly-backend/api/v1'
+const applicationJson = 'application/json'
 export const malerApi = {
 	hentMaler: () =>
 		fetch(`${dollyBackend}/bestilling/malbestilling`, {
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': applicationJson,
 			},
 		})
 			.then((response) => {
@@ -26,7 +27,7 @@ export const malerApi = {
 			{
 				credentials: 'include',
 				headers: {
-					'Content-Type': 'application/json',
+					'Content-Type': applicationJson,
 				},
 			}
 		)
@@ -46,7 +47,7 @@ export const malerApi = {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': applicationJson,
 			},
 		})
 			.then((response) => {
@@ -65,7 +66,7 @@ export const malerApi = {
 			credentials: 'include',
 			body: JSON.stringify({ malNavn }),
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': applicationJson,
 			},
 		})
 			.then((response) => {

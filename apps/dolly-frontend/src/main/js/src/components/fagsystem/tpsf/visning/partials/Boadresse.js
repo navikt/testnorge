@@ -52,7 +52,7 @@ export const Adressevisning = ({ boadresse }) => {
 				{adressetype === 'MATR' && matrikkel}
 				{postnr && (
 					<KodeverkConnector navn="Postnummer" value={postnr}>
-						{(v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
+						{(_v, verdi) => <span>{verdi ? verdi.label : postnr}</span>}
 					</KodeverkConnector>
 				)}
 			</TitleValue>

@@ -5,7 +5,7 @@ const getAllDatesBetween = (startdato, sluttdato) => {
 	const endDate = new Date(sluttdato)
 
 	const arr = []
-	for (let dt = new Date(startDate.toDateString()); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
+	for (let dt = startDate; dt <= endDate; dt.setDate(dt.getDate() + 1)) {
 		arr.push(new Date(dt.toDateString()))
 	}
 	return arr
@@ -14,9 +14,9 @@ const getAllDatesBetween = (startdato, sluttdato) => {
 export const getExcludedDatesAndMaxDate = (data) => {
 	let maxDate = null
 	let excludeDates = []
-	for (let i = 0; i < data.instdata.length; i++) {
-		const startdato = data.instdata[i].startdato
-		const sluttdato = data.instdata[i].sluttdato
+	for (const instdata of data.instdata) {
+		const startdato = instdata.startdato
+		const sluttdato = instdata.sluttdato
 		let days = []
 
 		if (_isNil(sluttdato)) {

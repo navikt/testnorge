@@ -32,8 +32,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-aareg
           cluster: dev-fss
-        - application: organisasjon-orgnummer-service
-          cluster: dev-fss
+        - application: testnav-orgnummer-service
+          cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
           cluster: dev-gcp
         - application: testnav-faste-data-frontend

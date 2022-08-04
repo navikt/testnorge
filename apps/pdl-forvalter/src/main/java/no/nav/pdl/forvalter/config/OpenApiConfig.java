@@ -33,7 +33,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
                 .info(new Info()
                         .title("Dolly PDL-Forvalter API")
                         .version("Versjon 1")
-                        .description("NAVTEST PDL-forvalter for vedlikehold av testpersoner mot PDL.")
+                        .description("TESTNAV PDL-forvalter for vedlikehold av testpersoner mot PDL.")
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
                                 .url("https://nav-it.slack.com/archives/CA3P9NGA2")

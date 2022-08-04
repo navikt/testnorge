@@ -8,7 +8,7 @@ type PdlPerson = {
 	navn: { fornavn: string; mellomnavn: string; etternavn: string }
 }
 
-const PDL_SEARCH_URL = `/person-search-service/api/v1`
+const PDL_SEARCH_URL = `/testnav-person-search-service/api/v1`
 
 const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 	Api.fetch(

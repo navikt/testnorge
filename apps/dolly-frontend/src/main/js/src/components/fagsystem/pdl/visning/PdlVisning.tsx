@@ -34,7 +34,9 @@ type PdlVisningProps = {
 }
 
 export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisningProps) => {
-	if (loading) return <Loading label="Laster PDL-data" />
+	if (loading) {
+		return <Loading label="Laster PDL-data" />
+	}
 	if (!pdlData?.hentPerson) {
 		return null
 	}

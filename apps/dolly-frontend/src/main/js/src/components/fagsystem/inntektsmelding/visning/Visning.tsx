@@ -25,7 +25,9 @@ interface InntektsmeldingVisningProps {
 
 export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningProps) => {
 	//Viser data fra bestillingen
-	if (!liste || liste.length < 1) return null
+	if (!liste || liste.length < 1) {
+		return null
+	}
 
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		return JoarkDokumentService.hentJournalpost(
@@ -116,7 +118,9 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 }
 
 InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
-	if (!bestillinger) return false
+	if (!bestillinger) {
+		return false
+	}
 
 	return bestillinger.filter(
 		(bestilling: any) =>

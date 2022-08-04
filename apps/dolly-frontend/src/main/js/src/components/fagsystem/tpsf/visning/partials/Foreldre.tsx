@@ -42,19 +42,24 @@ type Person = {
 }
 
 export const Foreldre = ({ person, type }: Data) => {
-	if (!person) return null
 	const [foreldreInfo, setForeldreInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
-		const fetchData = async () => {
-			setIsLoading(true)
-			const respons = await TpsfApi.getPersoner([person.ident])
-			setForeldreInfo(respons.data)
-			setIsLoading(false)
+		if (person) {
+			const fetchData = async () => {
+				setIsLoading(true)
+				const respons = await TpsfApi.getPersoner([person.ident])
+				setForeldreInfo(respons.data)
+				setIsLoading(false)
+			}
+			fetchData()
 		}
-		fetchData()
 	}, [])
+
+	if (!person) {
+		return null
+	}
 
 	return (
 		<>

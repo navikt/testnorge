@@ -21,6 +21,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.BankkontoData;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -57,6 +58,7 @@ public class RsDollyBestilling {
     private RsDokarkiv dokarkiv;
     private RsSykemelding sykemelding;
     private RsTpsMessaging tpsMessaging;
+    private BankkontoData bankkonto;
     private RsSkjerming skjerming;
 
     public List<RsAareg> getAareg() {

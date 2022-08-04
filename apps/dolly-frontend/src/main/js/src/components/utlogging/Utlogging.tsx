@@ -13,11 +13,12 @@ function getCookie(cookieName: string) {
 	const decodedCookie = decodeURIComponent(document.cookie)
 	const list = decodedCookie.split(';')
 	for (let value of list) {
-		while (value.charAt(0) == ' ') {
-			value = value.substring(1)
+		let val = value
+		while (val.charAt(0) === ' ') {
+			val = val.substring(1)
 		}
-		if (value.indexOf(name) == 0) {
-			return value.substring(name.length, value.length)
+		if (val.indexOf(name) === 0) {
+			return val.substring(name.length, val.length)
 		}
 	}
 	return ''

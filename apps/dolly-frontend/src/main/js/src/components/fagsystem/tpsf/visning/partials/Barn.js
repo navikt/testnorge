@@ -6,21 +6,24 @@ import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { Adressevalg } from '~/components/fagsystem/tpsf/visning/partials/Adressevalg'
 
 export const Barn = ({ data, type }) => {
-	if (!data) return null
 	const [barnInfo, setBarnInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 
-	const erDoedfoedt = data.identtype === 'FDAT'
-
 	useEffect(() => {
-		const fetchData = async () => {
-			setIsLoading(true)
-			const respons = await TpsfApi.getPersoner([data.ident], 0, 10)
-			setBarnInfo(respons.data.contents)
-			setIsLoading(false)
+		if (data) {
+			const fetchData = async () => {
+				setIsLoading(true)
+				const respons = await TpsfApi.getPersoner([data.ident], 0, 10)
+				setBarnInfo(respons.data.contents)
+				setIsLoading(false)
+			}
+			fetchData()
 		}
-		fetchData()
 	}, [])
+
+	if (!data) return null
+
+	const erDoedfoedt = data.identtype === 'FDAT'
 
 	return (
 		<>

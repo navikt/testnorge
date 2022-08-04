@@ -1,5 +1,4 @@
 import React from 'react'
-import { ErrorMessage } from 'formik'
 import { subYears } from 'date-fns'
 import _get from 'lodash/get'
 import _isString from 'lodash/isString'
@@ -8,6 +7,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import Formatters from '~/utils/DataFormatter'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),
@@ -66,7 +66,11 @@ export const InntektsaarForm = ({ formikBag }) => {
 						<div style={{ marginTop: '20px' }}>
 							{/* TODO: Vise feilmelding uten at den drunker i annen tekst */}
 							{_isString(_get(formikBag.errors, `${path}.grunnlag`)) && (
-								<ErrorMessage name={`${path}.grunnlag`} className="error-message" component="div" />
+								<ErrorMessageWithFocus
+									name={`${path}.grunnlag`}
+									className="error-message"
+									component="div"
+								/>
 							)}
 						</div>
 					</React.Fragment>

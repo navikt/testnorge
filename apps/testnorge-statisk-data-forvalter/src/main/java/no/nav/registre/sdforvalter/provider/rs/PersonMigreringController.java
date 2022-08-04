@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class PersonMigreringController {
     private final PersonFasteDataConsumer fasteDataConsumer;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> opprett(@RequestParam(required = false) String gruppe) {
-        var eregListe = gruppe == null ? tpsIdenterAdapter.fetchAll() : tpsIdenterAdapter.fetchBy(gruppe);
+    public ResponseEntity<HttpStatus> opprett(@RequestParam(required = false) Gruppe gruppe) {
+        var eregListe = gruppe == null ? tpsIdenterAdapter.fetchAll() : tpsIdenterAdapter.fetchBy(gruppe.name());
         fasteDataConsumer.opprett(eregListe);
         return ResponseEntity.noContent().build();
     }

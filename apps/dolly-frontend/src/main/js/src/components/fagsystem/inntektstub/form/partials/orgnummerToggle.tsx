@@ -46,7 +46,9 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 	}
 
 	const handleManualOrgChange = (org: string, miljo: string) => {
-		if (!org || !miljo) return
+		if (!org || !miljo) {
+			return
+		}
 		formikBag.setFieldValue(path, '')
 		setError(null)
 		setLoading(true)

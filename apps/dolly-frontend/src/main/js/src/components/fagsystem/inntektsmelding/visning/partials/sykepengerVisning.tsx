@@ -11,7 +11,9 @@ interface SykepengerVisning {
 }
 
 export default ({ data }: SykepengerVisning) => {
-	if (!data || _isEmpty(data)) return null
+	if (!data || _isEmpty(data)) {
+		return null
+	}
 	return (
 		<>
 			<h4>Sykepenger</h4>

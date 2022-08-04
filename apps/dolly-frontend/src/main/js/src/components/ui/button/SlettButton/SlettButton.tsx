@@ -29,13 +29,18 @@ export const SlettButton = ({
 	title,
 	navigateHome = false,
 }: Props) => {
-	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const navigate = useNavigate()
 	const mutate = useMatchMutate()
 
+	if (loading) {
+		return <Loading label="sletter..." />
+	}
+
 	const getTitle = () => {
-		if (title) return title
+		if (title) {
+			return title
+		}
 		return disabled ? 'Sletting er midlertidig utilgjengelig' : ''
 	}
 
