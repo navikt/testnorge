@@ -4,7 +4,7 @@
   "description": "Dolly assets",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "webpack"
   },
   "types": "lib",
   "author": {
