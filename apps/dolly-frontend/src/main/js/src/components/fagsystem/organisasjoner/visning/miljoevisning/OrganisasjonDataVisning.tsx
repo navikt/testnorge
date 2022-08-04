@@ -8,25 +8,25 @@ import { Enhetstre, OrgTree } from '~/components/enhetstre'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 // @ts-ignore
+const getOrganisasjonInfo = (organisasjon) => {
+	const [selectedId, setSelectedId] = useState('0')
+	const orgTree = new OrgTree(organisasjon[1], '0')
+	return (
+		<div className="boks">
+			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
+			<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
+			<Detaljer data={[orgTree.find(selectedId)]} />
+		</div>
+	)
+}
+
+// @ts-ignore
 export const OrganisasjonDataVisning = ({ data }) => {
 	if (!data) {
 		return null
 	}
 
 	const organisasjonListe = Object.entries(data).sort()
-
-	// @ts-ignore
-	const getOrganisasjonInfo = (organisasjon) => {
-		const [selectedId, setSelectedId] = useState('0')
-		const orgTree = new OrgTree(organisasjon[1], '0')
-		return (
-			<div className="boks">
-				<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
-				<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
-				<Detaljer data={[orgTree.find(selectedId)]} />
-			</div>
-		)
-	}
 
 	return (
 		<div className="flexbox--flex-wrap">

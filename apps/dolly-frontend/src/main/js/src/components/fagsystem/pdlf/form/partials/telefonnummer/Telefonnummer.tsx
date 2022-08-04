@@ -46,16 +46,16 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 	const tlfListe = _get(formikBag.values, paths.pdlTelefonnummer)
 	const tlfListeTps = _get(formikBag.values, paths.tpsMTelefonnummer)
 
-	if (!tlfListe) {
-		return null
-	}
-
 	useEffect(() => {
-		if (tlfListe.length === 1) {
+		if (tlfListe && tlfListe.length === 1) {
 			formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
 			formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 		}
 	}, [tlfListe])
+
+	if (!tlfListe) {
+		return null
+	}
 
 	const optionsPrioritet = () => {
 		if (tlfListe.length === 1) {

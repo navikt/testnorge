@@ -16,13 +16,14 @@ type Props = {
 }
 
 export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, master }: Props) => {
-	if (!partnerIdent) {
-		return null
-	}
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState(null)
 	const [fullfoert, setFullfoert] = useState(false)
+
+	if (!partnerIdent) {
+		return null
+	}
 
 	const disabled = gruppeIdenter.includes(partnerIdent)
 

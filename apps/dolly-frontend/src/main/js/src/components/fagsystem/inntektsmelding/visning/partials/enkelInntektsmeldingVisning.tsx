@@ -8,15 +8,13 @@ import RefusjonVisning from './refusjonVisning'
 import SykepengerVisning from './sykepengerVisning'
 import PleiepengerVisning from './pleiepengerVisning'
 import NaturalytelseVisning from './naturalytelseVisning'
-import Button from '~/components/ui/button/Button'
-import useBoolean from '~/utils/hooks/useBoolean'
 import {
 	EnkelInntektsmelding,
 	Inntekt,
 	Journalpost,
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { CodeView } from '~/components/codeView'
+import { PersonVisningContent } from '~/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
 
 const getHeader = (data: Inntekt) => {
 	const arbeidsgiver = data.arbeidsgiver
@@ -91,21 +89,7 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 			</ErrorBoundary>
 			<ErrorBoundary>
 				<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>
-					{(id: Journalpost, idx: number) => {
-						const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
-						return (
-							<div key={idx} className="person-visning_content">
-								<TitleValue title="Miljø" value={id.miljoe.toUpperCase()} />
-								<TitleValue title="Journalpost-id" value={id.dokumenter[0].journalpostId} />
-								<TitleValue title="Dokumentinfo-id" value={id.dokumenter[0].dokumentInfoId} />
-
-								<Button onClick={viserSkjemainnhold ? skjul : vis} kind="">
-									{(viserSkjemainnhold ? 'SKJUL ' : 'VIS ') + 'SKJEMAINNHOLD'}
-								</Button>
-								{viserSkjemainnhold && <CodeView language="xml" code={id.dokumenter[0].dokument} />}
-							</div>
-						)
-					}}
+					{(id: Journalpost, idx: number) => <PersonVisningContent id={id} idx={idx} />}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</>
