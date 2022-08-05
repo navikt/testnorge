@@ -5,6 +5,7 @@ import { usePopper } from 'react-popper';
 import styled from 'styled-components';
 import { TextField } from '@navikt/ds-react';
 import 'react-day-picker/dist/style.css';
+import { ChildrenBlur } from './ChildrenBlur';
 
 type Props = {
   id: string;
@@ -71,38 +72,39 @@ export default ({ label, onBlur, required = false }: Props) => {
 
   return (
     <div>
-      <div ref={popperRef}>
-        <DateField
-          label={label}
-          placeholder={format(new Date(), 'y-MM-dd')}
-          value={inputValue}
-          onChange={handleInputChange}
-          error={required && !selected ? 'Påkrevd' : null}
-          onClick={() => setIsPopperOpen(true)}
-          onBlur={closePopper}
-        />
-        <CalendarSvg role="img" aria-label="kalender icon">
-          📅
-        </CalendarSvg>
-      </div>
-      {isPopperOpen && (
-        <div
-          tabIndex={-1}
-          style={popper.styles.popper}
-          className="dialog-sheet"
-          {...popper.attributes.popper}
-          ref={setPopperElement}
-          role="dialog"
-        >
-          <StyledDaypicker
-            mode="single"
-            selected={selected}
-            required={required}
-            defaultMonth={selected}
-            onSelect={handleDaySelect}
+      <ChildrenBlur onBlur={closePopper}>
+        <div ref={popperRef}>
+          <DateField
+            label={label}
+            placeholder={format(new Date(), 'y-MM-dd')}
+            value={inputValue}
+            onChange={handleInputChange}
+            error={required && !selected ? 'Påkrevd' : null}
+            onClick={() => setIsPopperOpen(true)}
           />
+          <CalendarSvg role="img" aria-label="kalender icon">
+            📅
+          </CalendarSvg>
         </div>
-      )}
+        {isPopperOpen && (
+          <div
+            tabIndex={-1}
+            style={popper.styles.popper}
+            className="dialog-sheet"
+            {...popper.attributes.popper}
+            ref={setPopperElement}
+            role="dialog"
+          >
+            <StyledDaypicker
+              mode="single"
+              selected={selected}
+              required={required}
+              defaultMonth={selected}
+              onSelect={handleDaySelect}
+            />
+          </div>
+        )}
+      </ChildrenBlur>
     </div>
   );
 };
