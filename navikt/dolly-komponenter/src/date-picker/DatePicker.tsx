@@ -1,10 +1,10 @@
 import React, { ChangeEventHandler, useRef, useState } from 'react';
 import { format, isValid, parse } from 'date-fns';
-import FocusTrap from 'focus-trap-react';
 import { DayPicker } from 'react-day-picker';
 import { usePopper } from 'react-popper';
 import styled from 'styled-components';
 import { TextField } from '@navikt/ds-react';
+import 'react-day-picker/dist/style.css';
 
 type Props = {
   id: string;
@@ -15,17 +15,29 @@ type Props = {
 };
 
 const DateField = styled(TextField)`
-  width: 25%;
   padding-right: 10px;
 `;
 
-export default ({ id, label, onBlur, required = false, error, ...props }: Props) => {
-  const [selected, setSelected] = useState<Date>();
+const CalendarSvg = styled.span`
+  position: relative;
+  pointer-events: none;
+  right: -155px;
+  top: -35px;
+`;
+
+const StyledDaypicker = styled(DayPicker)`
+  .rdp-months {
+    border: double;
+    background-color: hsl(0deg 0% 96%);
+  }
+`;
+
+export default ({ label, onBlur, required = false }: Props) => {
+  const [selected, setSelected] = useState<Date>(new Date());
   const [inputValue, setInputValue] = useState<string>('');
   const [isPopperOpen, setIsPopperOpen] = useState(false);
 
   const popperRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null);
 
   const popper = usePopper(popperRef.current, popperElement, {
@@ -33,8 +45,7 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
   });
 
   const closePopper = () => {
-    setIsPopperOpen(false);
-    buttonRef?.current?.focus();
+    setTimeout(() => setIsPopperOpen(false), 250);
   };
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -45,10 +56,6 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
     } else {
       setSelected(undefined);
     }
-  };
-
-  const handleButtonClick = () => {
-    setIsPopperOpen(true);
   };
 
   const handleDaySelect = (date: Date) => {
@@ -70,48 +77,31 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
           placeholder={format(new Date(), 'y-MM-dd')}
           value={inputValue}
           onChange={handleInputChange}
+          error={required && !selected ? 'Påkrevd' : null}
+          onClick={() => setIsPopperOpen(true)}
+          onBlur={closePopper}
         />
-        <button
-          ref={buttonRef}
-          type="button"
-          className="pa2 bg-white button-reset ba"
-          aria-label={label}
-          onClick={handleButtonClick}
-        >
-          <span role="img" aria-label="kalender icon">
-            📅
-          </span>
-        </button>
+        <CalendarSvg role="img" aria-label="kalender icon">
+          📅
+        </CalendarSvg>
       </div>
       {isPopperOpen && (
-        <FocusTrap
-          active
-          focusTrapOptions={{
-            initialFocus: false,
-            allowOutsideClick: true,
-            clickOutsideDeactivates: true,
-            onDeactivate: closePopper,
-          }}
+        <div
+          tabIndex={-1}
+          style={popper.styles.popper}
+          className="dialog-sheet"
+          {...popper.attributes.popper}
+          ref={setPopperElement}
+          role="dialog"
         >
-          <div
-            tabIndex={-1}
-            style={popper.styles.popper}
-            className="dialog-sheet"
-            {...popper.attributes.popper}
-            ref={setPopperElement}
-            role="dialog"
-          >
-            <DayPicker
-              initialFocus={isPopperOpen}
-              mode="single"
-              defaultMonth={selected}
-              selected={selected}
-              required={required}
-              onSelect={handleDaySelect}
-              {...props}
-            />
-          </div>
-        </FocusTrap>
+          <StyledDaypicker
+            mode="single"
+            selected={selected}
+            required={required}
+            defaultMonth={selected}
+            onSelect={handleDaySelect}
+          />
+        </div>
       )}
     </div>
   );
