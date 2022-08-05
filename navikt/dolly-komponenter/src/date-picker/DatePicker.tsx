@@ -3,6 +3,7 @@ import { format, isValid, parse } from 'date-fns';
 import FocusTrap from 'focus-trap-react';
 import { DayPicker } from 'react-day-picker';
 import { usePopper } from 'react-popper';
+import { InputFormItem } from '../../lib';
 
 type Props = {
   id: string;
@@ -58,12 +59,11 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
   return (
     <div>
       <div ref={popperRef}>
-        <input
-          type="text"
+        <InputFormItem
+          label={label}
           placeholder={format(new Date(), 'y-MM-dd')}
           value={inputValue}
-          onChange={handleInputChange}
-          className="input-reset pa2 ma2 bg-white black ba"
+          onBlur={handleInputChange}
         />
         <button
           ref={buttonRef}
