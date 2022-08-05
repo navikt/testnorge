@@ -59,7 +59,7 @@ const fellesSearchValues = {
 	pageSize: 100,
 	terminateAfter: 100,
 	tag: 'TESTNORGE',
-	excludeTags: ['DOLLY'],
+	excludeTags: ['DOLLY', 'ARENASYNT'],
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
