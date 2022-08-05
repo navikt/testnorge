@@ -3,7 +3,7 @@ import { format, isValid, parse } from 'date-fns';
 import FocusTrap from 'focus-trap-react';
 import { DayPicker } from 'react-day-picker';
 import { usePopper } from 'react-popper';
-import { InputFormItem } from '../../lib';
+import { InputFormItem } from '../form';
 
 type Props = {
   id: string;
