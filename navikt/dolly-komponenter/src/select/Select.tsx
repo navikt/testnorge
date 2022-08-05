@@ -2,6 +2,7 @@ import { Label, Select as NavSelect } from '@navikt/ds-react';
 import React from 'react';
 
 import Select from 'react-select';
+import styled from 'styled-components';
 
 import './Select.less';
 
@@ -20,14 +21,18 @@ type Props = {
   error?: string;
 };
 
+const StyledSelect = styled(Select)`
+  margin-top: 7px;
+`;
+
 export default ({ multi, options, onChange, htmlId, label, error, ...props }: Props) => {
   if (multi) {
     return (
       <div {...props}>
         <Label>{label}</Label>
-
-        <Select
+        <StyledSelect
           className={error ? 'skjemaelement__input--harFeil select--error' : 'select'}
+          // @ts-ignore
           onChange={(value) => onChange(value.map((item) => item.value))}
           inputId={htmlId}
           isMulti={true}
@@ -35,7 +40,7 @@ export default ({ multi, options, onChange, htmlId, label, error, ...props }: Pr
         />
         {error && (
           <div role="alert" aria-live="assertive" className="skjemaelement__feilmelding">
-            <p className="typo-feilmelding">{error}</p>
+            <label className="typo-feilmelding">{error}</label>
           </div>
         )}
       </div>
