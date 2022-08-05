@@ -19,24 +19,12 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class TagsService {
     public static final List<Tags> SYNT_TAGS = List.of(Tags.ARENASYNT);
-    public static final List<String> GYLDIG_SIVILSTAND = Arrays.asList(
-            "GIFT",
-            "ENKE_ELLER_ENKEMANN",
-            "SKILT",
-            "SEPARERT",
-            "REGISTRERT_PARTNER",
-            "SKILT_PARTNER",
-            "SEPARERT_PARTNER",
-            "GJENLEVENDE_PARTNER"
-    );
-
     private final PdlProxyConsumer pdlProxyConsumer;
 
     public boolean opprettetTagsPaaIdenterOgPartner(List<PersonDTO> personer) {
         var identer = new ArrayList<>(personer.stream().map(PersonDTO::getIdent).toList());
         var partnere = personer.stream()
                 .map(PersonDTO::getSivilstand)
-                .filter(sivilstand -> GYLDIG_SIVILSTAND.contains(sivilstand.getType()))
                 .map(SivilstandDTO::getRelatertVedSivilstand)
                 .filter(Objects::nonNull)
                 .toList();
@@ -46,7 +34,7 @@ public class TagsService {
     }
 
     public void removeTagsPaaIdentOgPartner(PersonDTO person) {
-        if (nonNull(person.getSivilstand()) && GYLDIG_SIVILSTAND.contains(person.getSivilstand().getType())) {
+        if (nonNull(person.getSivilstand()) && nonNull(person.getSivilstand().getRelatertVedSivilstand())) {
             pdlProxyConsumer.deleteTags(Arrays.asList(person.getIdent(), person.getSivilstand().getRelatertVedSivilstand()), SYNT_TAGS);
         } else {
             pdlProxyConsumer.deleteTags(Collections.singletonList(person.getIdent()), SYNT_TAGS);
