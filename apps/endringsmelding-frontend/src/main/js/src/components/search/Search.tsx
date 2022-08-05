@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { TextField as NavInput } from '@navikt/ds-react';
 import { Button as NavKnapp } from '@navikt/ds-react';
-import { ErrorAlert, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
+import { ErrorAlert, Knapp, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
 const Search = styled.div`
@@ -33,12 +33,6 @@ const Alert = styled.div`
   align-items: flex-end;
   padding-bottom: 5px;
   padding-left: 7px;
-`;
-
-const Knapp = styled(NavKnapp)`
-  width: 25%;
-  align-self: flex-end;
-  margin-left: 20px;
 `;
 
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
