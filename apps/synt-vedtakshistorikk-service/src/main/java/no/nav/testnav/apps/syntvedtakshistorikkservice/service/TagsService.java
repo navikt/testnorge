@@ -7,10 +7,7 @@ import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Objects.nonNull;
 
@@ -18,7 +15,16 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class TagsService {
     public static final List<Tags> SYNT_TAGS = List.of(Tags.ARENASYNT);
-    private static final List<String> GYLDIG_SIVILSTAND = Arrays.asList("GIFT", "REGISTRERT_PARTNER", "SEPARERT", "SEPARERT_PARTNER");
+    public static final List<String> GYLDIG_SIVILSTAND = Arrays.asList(
+            "GIFT",
+            "ENKE_ELLER_ENKEMANN",
+            "SKILT",
+            "SEPARERT",
+            "REGISTRERT_PARTNER",
+            "SKILT_PARTNER",
+            "SEPARERT_PARTNER",
+            "GJENLEVENDE_PARTNER"
+    );
 
     private final PdlProxyConsumer pdlProxyConsumer;
 
@@ -28,6 +34,7 @@ public class TagsService {
                 .map(PersonDTO::getSivilstand)
                 .filter(sivilstand -> GYLDIG_SIVILSTAND.contains(sivilstand.getType()))
                 .map(SivilstandDTO::getRelatertVedSivilstand)
+                .filter(Objects::nonNull)
                 .toList();
 
         identer.addAll(partnere);
