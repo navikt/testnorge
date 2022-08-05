@@ -14,7 +14,7 @@ const SelectFormItem = styled(Select)`
 `;
 
 const DatePickerFormItem = styled(DatePicker)`
-  width: 25%;
+  width: 50%;
   padding-right: 10px;
 `;
 

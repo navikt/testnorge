@@ -15,7 +15,7 @@ type Props = {
 };
 
 const DateField = styled(TextField)`
-  width: 50%;
+  width: 25%;
   padding-right: 10px;
 `;
 
@@ -69,7 +69,7 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
           label={label}
           placeholder={format(new Date(), 'y-MM-dd')}
           value={inputValue}
-          onBlur={handleInputChange}
+          onChange={handleInputChange}
         />
         <button
           ref={buttonRef}
