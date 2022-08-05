@@ -3,7 +3,8 @@ import { format, isValid, parse } from 'date-fns';
 import FocusTrap from 'focus-trap-react';
 import { DayPicker } from 'react-day-picker';
 import { usePopper } from 'react-popper';
-import { InputFormItem } from '../form';
+import styled from 'styled-components';
+import { TextField } from '@navikt/ds-react';
 
 type Props = {
   id: string;
@@ -12,6 +13,11 @@ type Props = {
   onBlur: (value: string) => void;
   error?: string;
 };
+
+const DateField = styled(TextField)`
+  width: 50%;
+  padding-right: 10px;
+`;
 
 export default ({ id, label, onBlur, required = false, error, ...props }: Props) => {
   const [selected, setSelected] = useState<Date>();
@@ -59,7 +65,7 @@ export default ({ id, label, onBlur, required = false, error, ...props }: Props)
   return (
     <div>
       <div ref={popperRef}>
-        <InputFormItem
+        <DateField
           label={label}
           placeholder={format(new Date(), 'y-MM-dd')}
           value={inputValue}
