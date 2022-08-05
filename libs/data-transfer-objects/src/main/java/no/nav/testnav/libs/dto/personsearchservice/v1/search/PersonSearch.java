@@ -16,6 +16,7 @@ public class PersonSearch {
     Integer pageSize;
     Integer terminateAfter;
     String tag;
+    List<String> tags;
     List<String> excludeTags;
     String kjoenn;
     String randomSeed;
