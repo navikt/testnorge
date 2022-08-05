@@ -97,8 +97,7 @@ export default <T extends {}>({
           onError: 'Noe gikk galt',
         }}
       />
-      {/*{state.show && (*/}
-      {true && ( //TODO: BYTTE TILBAKE
+      {state.show && (
         <>
           {children}
           <Line reverse={true}>
