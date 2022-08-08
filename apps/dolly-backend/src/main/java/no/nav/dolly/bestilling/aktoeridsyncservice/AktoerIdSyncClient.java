@@ -34,7 +34,7 @@ public class AktoerIdSyncClient implements ClientRegister {
 
         var startTime = now();
         try {
-            while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) > ELAPSED &&
+            while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED &&
                     isBlank(personServiceConsumer.getAktoerId(dollyPerson.getHovedperson()).getIdent())) {
                 Thread.sleep(TIMEOUT);
             }
@@ -47,7 +47,7 @@ public class AktoerIdSyncClient implements ClientRegister {
             log.error("Feilet å lese id fra PersonService (AktoerId) for ident {}.", dollyPerson.getHovedperson(), e);
         }
 
-        if (count < MAX_COUNT) {
+        if (count < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED) {
             log.info("Synkronisering mot PersonService (AktoerId) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
         } else {
             log.warn("Synkronisering mot PersonService (AktoerId) gitt opp etter {} ms.",
