@@ -105,7 +105,7 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && isAlive && (
+					{!iLaastGruppe && (
 						<PartnerImportButton
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
