@@ -21,6 +21,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
+                            MDC.put("bestilling", bestilling.getId().toString());
 
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                                     testident.getMaster());
@@ -110,6 +112,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove("bestilling");
                             }
                         });
 

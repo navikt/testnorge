@@ -18,6 +18,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                         .forEach(ident -> {
                             BestillingProgress progress = new BestillingProgress(bestilling, ident, TPSF);
                             try {
+                                MDC.put("bestilling", bestilling.getId().toString());
                                 Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
                                         .miljoe(bestilling.getKildeMiljoe())
                                         .ident(ident)
@@ -86,6 +88,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove("bestilling");
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

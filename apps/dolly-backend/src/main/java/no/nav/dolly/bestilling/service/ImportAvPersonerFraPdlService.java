@@ -18,6 +18,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 asList(bestilling.getPdlImport().split(",")).parallelStream()
                         .filter(ident -> !bestilling.isStoppet())
                         .forEach(ident -> {
+                            MDC.put("bestilling", bestilling.getId().toString());
                             BestillingProgress progress = new BestillingProgress(bestilling, ident, PDL);
                             try {
 
@@ -86,6 +88,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove("bestilling");
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
