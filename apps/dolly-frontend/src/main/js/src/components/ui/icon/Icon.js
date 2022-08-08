@@ -189,7 +189,7 @@ export default function Icon({
 
 	return (
 		<ErrorBoundary>
-			<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title}>
+			<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} role={'img'}>
 				<img
 					src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
 					alt="fallback"

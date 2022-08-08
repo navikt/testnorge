@@ -1,6 +1,6 @@
 import React from 'react'
 import { useToggle } from 'react-use'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import './OptionsPanel.less'
 
 type OptionsPanelProps = {

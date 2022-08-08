@@ -1,5 +1,6 @@
 import * as React from 'react'
-import Button from './Button'
+import Button from '../Button'
+import './ExpandButton.less'
 
 interface ExpandButtonProps {
 	onClick: () => void
@@ -13,5 +14,16 @@ export default function ExpandButton({
 	onClick,
 }: ExpandButtonProps) {
 	const iconType = expanded ? 'chevron-up' : 'chevron-down'
-	return <Button iconSize={14} kind={iconType} onClick={onClick} disabled={disabled} />
+	return (
+		<Button
+			className={'expandButton'}
+			iconSize={14}
+			kind={iconType}
+			onClick={onClick}
+			disabled={disabled}
+			aria-label={expanded ? 'Lukk' : 'Åpne'}
+		>
+			{expanded ? 'Lukk' : 'Åpne'}
+		</Button>
+	)
 }

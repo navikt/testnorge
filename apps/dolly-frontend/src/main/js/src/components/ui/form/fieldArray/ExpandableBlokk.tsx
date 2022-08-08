@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import cn from 'classnames'
 // @ts-ignore
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 
 type NumberingProps = {
 	idx: number
