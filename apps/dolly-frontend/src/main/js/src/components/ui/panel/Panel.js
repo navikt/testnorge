@@ -3,7 +3,7 @@ import { useToggle } from 'react-use'
 import cn from 'classnames'
 import Hjelpetekst from '~/components/hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 
 import './Panel.less'
