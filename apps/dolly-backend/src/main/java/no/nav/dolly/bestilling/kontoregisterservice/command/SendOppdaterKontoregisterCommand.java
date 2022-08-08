@@ -13,7 +13,6 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
@@ -22,8 +21,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 @Slf4j
 public class SendOppdaterKontoregisterCommand implements Callable<List<TpsMeldingResponseDTO>> {
-    private static final String BASE_URL = "/api/v1/personer/{ident}";
-    private static final String BANKKONTO_URL = BASE_URL + "/bankkonto-utenlandsk";
+    private static final String KONTOREGISTER_API_URL = "/kontoregister/api/kontoregister/v1/oppdater-konto";
 
     private final WebClient webClient;
     private final OppdaterKontoRequestDto body;
@@ -36,7 +34,7 @@ public class SendOppdaterKontoregisterCommand implements Callable<List<TpsMeldin
 
         var response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(BANKKONTO_URL)
+                        .path(KONTOREGISTER_API_URL)
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, token)
@@ -48,7 +46,7 @@ public class SendOppdaterKontoregisterCommand implements Callable<List<TpsMeldin
                 .block();
 
         if (log.isTraceEnabled() && nonNull(response)) {
-            Stream.of(response).forEach(entry -> log.trace("Response fra TPS messaging service: {}", entry));
+            Stream.of(response).forEach(entry -> log.trace("Response fra Bankkontoregister service: {}", entry));
         }
 
         return Arrays.asList(response);

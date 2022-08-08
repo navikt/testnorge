@@ -159,6 +159,11 @@ consumers:
     #    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
     url: https://testnav-udistub-proxy.dev.intern.nav.no/udistub-dev
     cluster: dev-fss
+  testnav-kontoregister-person-service:
+    name: sokos-kontoregister-person
+    namespace: okonomi
+    url: https://sokos-kontoregister-person.dev.intern.nav.no
+    cluster: dev-gcp
 
 #### APP DB ####
 ? app.datasource.onsHosts

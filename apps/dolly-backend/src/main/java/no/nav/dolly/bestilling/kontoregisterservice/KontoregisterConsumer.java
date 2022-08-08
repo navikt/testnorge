@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendOppdaterKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.dto.OppdaterKontoRequestDto;
 import no.nav.dolly.bestilling.kontoregisterservice.dto.UtenlandskKontoDto;
-import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
+import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
@@ -35,7 +35,7 @@ public class KontoregisterConsumer {
     private final NaisServerProperties serviceProperties;
 
     public KontoregisterConsumer(TokenExchange tokenService,
-                                 TpsMessagingServiceProperties serverProperties,
+                                 KontoregisterConsumerProperties serverProperties,
                                  ObjectMapper objectMapper,
                                  ExchangeFilterFunction metricsWebClientFilterFunction) {
 
