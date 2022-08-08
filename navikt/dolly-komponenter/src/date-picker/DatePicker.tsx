@@ -19,11 +19,17 @@ const DateField = styled(TextField)`
   padding-right: 10px;
 `;
 
+const FlexDiv = styled.div`
+  display: flex;
+`;
+
 const CalendarSvg = styled.span`
   position: relative;
+  height: 0;
+  width: 0;
   pointer-events: none;
-  right: -155px;
-  top: -35px;
+  right: 50px;
+  top: 45px;
 `;
 
 const StyledDaypicker = styled(DayPicker)`
@@ -73,7 +79,7 @@ export default ({ label, onBlur, required = false }: Props) => {
   return (
     <div>
       <ChildrenBlur onBlur={closePopper}>
-        <div ref={popperRef}>
+        <FlexDiv ref={popperRef}>
           <DateField
             label={label}
             placeholder={format(new Date(), 'y-MM-dd')}
@@ -85,7 +91,7 @@ export default ({ label, onBlur, required = false }: Props) => {
           <CalendarSvg role="img" aria-label="kalender icon">
             📅
           </CalendarSvg>
-        </div>
+        </FlexDiv>
         {isPopperOpen && (
           <div
             tabIndex={-1}
