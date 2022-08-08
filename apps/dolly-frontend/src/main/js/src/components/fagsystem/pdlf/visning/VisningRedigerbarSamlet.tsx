@@ -23,7 +23,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	alleSlettet: boolean
-	disableIdx: number
+	disableSlett: Function
 }
 
 enum Modus {
@@ -73,7 +73,7 @@ export const VisningRedigerbarSamlet = ({
 	path,
 	ident,
 	alleSlettet,
-	disableIdx,
+	disableSlett,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -99,6 +99,14 @@ export const VisningRedigerbarSamlet = ({
 		setVisningModus(Modus.Les)
 	}
 
+	const sendOrdre = () => {
+		DollyApi.sendOrdre(ident).then(() => {
+			getPdlForvalter().then(() => {
+				setVisningModus(Modus.Les)
+			})
+		})
+	}
+
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
@@ -113,11 +121,7 @@ export const VisningRedigerbarSamlet = ({
 				.then((putResponse) => {
 					if (putResponse) {
 						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								setVisningModus(Modus.Les)
-							})
-						})
+						sendOrdre()
 					}
 				})
 				.catch((error) => {
@@ -139,11 +143,7 @@ export const VisningRedigerbarSamlet = ({
 				.then((deleteResponse) => {
 					if (deleteResponse) {
 						setVisningModus(Modus.LoadingPdlSlett)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								setVisningModus(Modus.Les)
-							})
-						})
+						sendOrdre()
 					}
 				})
 				.catch((error) => {
@@ -155,17 +155,17 @@ export const VisningRedigerbarSamlet = ({
 	}, [])
 
 	const getVisning = (item: any, idx: number) => {
-		switch (path) {
-			case Attributt.Telefonnummer:
-				return <TelefonnummerLes telefonnummerData={item} idx={idx} />
+		if (path === Attributt.Telefonnummer) {
+			return <TelefonnummerLes telefonnummerData={item} idx={idx} />
 		}
+		return null
 	}
 
 	const getForm = (itemPath: string) => {
-		switch (path) {
-			case Attributt.Telefonnummer:
-				return <TelefonnummerFormRedigering path={itemPath} />
+		if (path === Attributt.Telefonnummer) {
+			return <TelefonnummerFormRedigering path={itemPath} />
 		}
+		return null
 	}
 
 	const validationSchema = Yup.object().shape(
@@ -197,6 +197,8 @@ export const VisningRedigerbarSamlet = ({
 
 	const loadingLabelPdlf = 'Oppdaterer PDL-forvalter...'
 	const loadingLabelPdl = 'Oppdaterer PDL...'
+
+	const disableIdx = disableSlett(_get(redigertAttributtListe, path) || initialValuesListe)
 
 	return (
 		<>

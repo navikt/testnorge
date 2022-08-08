@@ -72,9 +72,6 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 
 export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) => {
 	const tlfListe = _get(formikBag.values, path || 'pdldata.person.telefonnummer')
-	if (!tlfListe) {
-		return null
-	}
 
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {

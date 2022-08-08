@@ -50,22 +50,13 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 
 	const slettetTelefonnummerPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertTelefonnummerPdlf
 
-	const disableSlett = () => {
-		if (redigertTelefonnummerPdlf) {
-			if (redigertTelefonnummerPdlf.length < 2) {
-				return null
-			} else {
-				return redigertTelefonnummerPdlf.map((tlf: TelefonData) => tlf.id).indexOf(1)
-			}
-		} else if (data) {
-			if (data.length < 2) {
-				return null
-			} else {
-				return data.map((tlf) => tlf.id).indexOf(1)
-			}
+	const disableSlett = (telefonData: Array<TelefonData>) => {
+		if (telefonData.length < 2) {
+			return null
+		} else {
+			return telefonData.map((tlf) => tlf.id).indexOf(1)
 		}
 	}
-	const disableIdx = disableSlett()
 
 	return (
 		<div>
@@ -86,7 +77,7 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 						path="telefonnummer"
 						ident={ident}
 						alleSlettet={slettetTelefonnummerPdlf}
-						disableIdx={disableIdx}
+						disableSlett={disableSlett}
 					/>
 				)}
 			</div>
