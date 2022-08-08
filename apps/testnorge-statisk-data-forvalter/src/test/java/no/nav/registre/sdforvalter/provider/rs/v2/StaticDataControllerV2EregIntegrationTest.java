@@ -39,10 +39,9 @@ import no.nav.registre.sdforvalter.domain.Opprinnelse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc()
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
-@Disabled
-public class StaticDataControllerV2EregIntegrationTest {
+class StaticDataControllerV2EregIntegrationTest {
     private static final String EREG_API = "/api/v1/faste-data/ereg/";
     @Autowired
     private MockMvc mvc;
@@ -61,7 +60,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void should_not_have_arbeidsforhold() throws Exception {
+    void should_not_have_arbeidsforhold() throws Exception {
         EregModel as = createEregModel("999999999", "AS");
         EregModel ans = createEregModel("888888888", "ANS");
 
@@ -83,7 +82,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void should_have_arbeidsforhold() throws Exception {
+    void should_have_arbeidsforhold() throws Exception {
         EregModel aafy = createEregModel("999999999", "AAFY");
         EregModel bedr = createEregModel("888888888", "BEDR");
 
@@ -104,7 +103,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void should_only_get_EREGS() throws Exception {
+    void should_only_get_EREGS() throws Exception {
         EregModel as = createEregModel("999999999", "AS");
         EregModel bedr = createEregModel("888888888", "BEDR");
         EregModel ans = createEregModel("888888881", "ANS");
@@ -131,7 +130,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldGetEregsWithOpprinnelse() throws Exception {
+    void shouldGetEregsWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         EregModel model = createEregModel("123456789", "BEDR", altinn);
 
@@ -150,7 +149,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldAddEregSetToDatabase() throws Exception {
+    void shouldAddEregSetToDatabase() throws Exception {
         Ereg ereg = createEreg("987654321", "BEDR");
         mvc.perform(post(EREG_API)
                         .content(objectMapper.writeValueAsString(create(ereg)))
@@ -168,7 +167,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldGetEregWithGruppe() throws Exception {
+    void shouldGetEregWithGruppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -191,7 +190,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldOnlyGetEregWithGruppe() throws Exception {
+    void shouldOnlyGetEregWithGruppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -218,7 +217,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldAddEregWithGrouppe() throws Exception {
+    void shouldAddEregWithGrouppe() throws Exception {
         GruppeModel gruppeModel = gruppeRepository.save(new GruppeModel(
                 null,
                 "TestKode",
@@ -240,7 +239,7 @@ public class StaticDataControllerV2EregIntegrationTest {
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldAddOpprinnelseToDatabase() throws Exception {
+    void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         Ereg ereg_123456789 = createEreg("123456789", "BEDR", altinn.getNavn());
         Ereg ereg_987654321 = createEreg("987654321", "BEDR", altinn.getNavn());

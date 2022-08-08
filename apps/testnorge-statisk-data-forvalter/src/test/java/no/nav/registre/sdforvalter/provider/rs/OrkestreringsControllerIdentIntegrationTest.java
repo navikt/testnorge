@@ -35,10 +35,10 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 @Disabled
-public class OrkestreringsControllerIdentIntegrationTest {
+class OrkestreringsControllerIdentIntegrationTest {
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
@@ -71,7 +71,7 @@ public class OrkestreringsControllerIdentIntegrationTest {
 
 
     @Test
-    public void shouldInitiateIdent() throws Exception {
+    void shouldInitiateIdent() throws Exception {
         final TpsIdentModel tpsIdent = create("01010101011", "Test", "Testen");
         tpsIdenterRepository.save(tpsIdent);
 
@@ -111,7 +111,7 @@ public class OrkestreringsControllerIdentIntegrationTest {
     }
 
     @Test
-    public void shouldUpdateTpsPlaygroupFromDatabaseAndRunPlaygroup() throws Exception {
+    void shouldUpdateTpsPlaygroupFromDatabaseAndRunPlaygroup() throws Exception {
         final TpsIdentModel tpsIdent = create("01010101011", "Test", "Testen");
         tpsIdenterRepository.save(tpsIdent);
 

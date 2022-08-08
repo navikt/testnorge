@@ -36,9 +36,9 @@ import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
-public class StaticDataControllerV1TpsIntegrationTest {
+class StaticDataControllerV1TpsIntegrationTest {
     @Autowired
     private MockMvc mvc;
 
@@ -52,8 +52,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     private OpprinnelseRepository opprinnelseRepository;
 
     @Test
-    @Disabled
-    public void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
+    void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         TpsIdentModel tpsIdentModel = createIdentModel("01010101011", "Petter", "Petterson", altinn);
         tpsIdenterRepository.save(tpsIdentModel);
@@ -70,8 +69,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     @Test
-    @Disabled
-    public void shouldAddTpsIdentSetToDatabase() throws Exception {
+    void shouldAddTpsIdentSetToDatabase() throws Exception {
         TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
         mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
                 .content(objectMapper.writeValueAsString(createTpsIdenter(tpsIdent)))
@@ -82,8 +80,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     @Test
-    @Disabled
-    public void shouldAddOpprinnelseToDatabase() throws Exception {
+    void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         final TpsIdent hans = createIdent("01010101011", "Hans", "Hansen");
         final TpsIdent petter = createIdent("01010101021", "Petter", "Petterson", altinn);
