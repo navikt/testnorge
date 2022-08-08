@@ -23,6 +23,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	alleSlettet: boolean
+	disableIdx: number
 }
 
 enum Modus {
@@ -72,6 +73,7 @@ export const VisningRedigerbarSamlet = ({
 	path,
 	ident,
 	alleSlettet,
+	disableIdx,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -232,6 +234,7 @@ export const VisningRedigerbarSamlet = ({
 													kind="trashcan"
 													onClick={() => openDeleteModal(idx)}
 													title="Slett"
+													disabled={disableIdx === idx}
 												/>
 
 												<DollyModal
