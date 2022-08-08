@@ -59,6 +59,10 @@ export default class DollyEndpoints {
 		return `${tagsBase}`
 	}
 
+	static getIdentTags(ident) {
+		return `${tagsBase}/ident/${ident}`
+	}
+
 	static organisasjonBestilling() {
 		return `${organisasjonBase}/bestilling`
 	}
