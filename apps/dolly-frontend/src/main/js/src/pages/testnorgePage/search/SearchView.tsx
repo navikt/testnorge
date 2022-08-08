@@ -16,8 +16,6 @@ import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
 import { Gruppe } from '~/utils/hooks/useGruppe'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
-import { TestnorgeVisning } from '~/pages/testnorgePage/search/testnorgeVisning/TestnorgeVisning'
-import { BrregVisning } from '~/components/fagsystem'
 
 type Props = {
 	items?: PdlData[]
