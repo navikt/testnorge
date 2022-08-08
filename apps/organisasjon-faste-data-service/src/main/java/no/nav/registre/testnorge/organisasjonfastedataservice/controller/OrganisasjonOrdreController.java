@@ -2,6 +2,10 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonOrdreService;
+import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonOrdreService;
-import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
+import static java.util.Objects.isNull;
 
 @RestController
 @Slf4j
@@ -38,9 +39,17 @@ public class OrganisasjonOrdreController {
         if (organisasjon.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        var org = organisasjon.get();
+
+        if (org.getEnhetstype().equals("BEDR") && isNull(org.getOverenhet())) {
+            log.error("Organisasjon er av type BEDR men mangler overenhet!");
+            return ResponseEntity.badRequest().build();
+        }
+
         var ordreId = update != null && update
-                ? ordreService.change(organisasjon.get(), miljo)
-                : ordreService.create(organisasjon.get(), miljo);
+                ? ordreService.change(org, miljo)
+                : ordreService.create(org, miljo);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
