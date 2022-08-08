@@ -58,7 +58,7 @@ const fellesSearchValues = {
 	page: 1,
 	pageSize: 100,
 	terminateAfter: 100,
-	tags: ['TESTNORGE', 'ARENASYNT'],
+	tag: 'TESTNORGE',
 	excludeTags: ['DOLLY'],
 }
 
