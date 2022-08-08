@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.personservice.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
@@ -11,7 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "kv/preprod/fss/testnorge-person-api-dev/dev", ignoreSecretNotFound = false)
+//@VaultPropertySource(value = "kv/preprod/fss/testnorge-person-api-dev/dev", ignoreSecretNotFound = false)
 public class DevConfig  extends AbstractVaultConfiguration {
 
     @Override
