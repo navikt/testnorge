@@ -33,7 +33,7 @@ jobs:
       - name: Npm install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-          TOKEN: ${{ secrets.NPM_TOKEN }}
+#          TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
         run: npm ci
       - name: Build code
