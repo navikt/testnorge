@@ -10,6 +10,7 @@ export type Option = {
 	value: any
 	label: string
 	tema?: string
+	sivilstand?: string
 }
 
 type Data = {
@@ -37,11 +38,12 @@ export const SelectOptionsOppslag = {
 			if (gruppe.length < 1) {
 				return null
 			}
-			const personListe: Array<{ value: string; label: string }> = []
+			const personListe: Array<{ value: string; label: string; sivilstand: string }> = []
 			response.data.forEach((id: Person) => {
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
+					sivilstand: id.person.sivilstand?.[0]?.type,
 				})
 			})
 			return personListe

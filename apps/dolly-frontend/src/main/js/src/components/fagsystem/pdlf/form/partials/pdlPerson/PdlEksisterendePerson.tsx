@@ -35,11 +35,30 @@ export const PdlEksisterendePerson = ({
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
 	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
 
+	const gyldigeSivilstanderForPartner = [
+		'UOPPGITT',
+		'UGIFT',
+		'ENKE_ELLER_ENKEMANN',
+		'SKILT',
+		'SKILT_PARTNER',
+		'GJENLEVENDE_PARTNER',
+	]
+
 	useEffect(() => {
 		if (!isTestnorgeIdent && gruppeId) {
 			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
+			// @ts-ignore
 			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
-				setIdentOptions(response?.filter((person) => person.value !== eksisterendeIdent))
+				setIdentOptions(
+					response?.filter((person) => {
+						return (
+							person.value !== eksisterendeIdent &&
+							(eksisterendePersonPath?.includes('sivilstand')
+								? gyldigeSivilstanderForPartner.includes(person.sivilstand)
+								: true)
+						)
+					})
+				)
 				setLoadingIdentOptions(false)
 			})
 		}
