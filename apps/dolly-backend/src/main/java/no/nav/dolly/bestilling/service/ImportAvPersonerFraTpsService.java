@@ -32,6 +32,7 @@ import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 
 @Service
 public class ImportAvPersonerFraTpsService extends DollyBestillingService {
+    private static final String MDC_KEY_BESTILLING = "bestilling";
 
     private TpsfService tpsfService;
     private DollyPersonCache dollyPersonCache;
@@ -71,7 +72,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                         .forEach(ident -> {
                             BestillingProgress progress = new BestillingProgress(bestilling, ident, TPSF);
                             try {
-                                MDC.put("bestilling", bestilling.getId().toString());
+                                MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                                 Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
                                         .miljoe(bestilling.getKildeMiljoe())
                                         .ident(ident)
@@ -88,7 +89,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
-                                MDC.remove("bestilling");
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

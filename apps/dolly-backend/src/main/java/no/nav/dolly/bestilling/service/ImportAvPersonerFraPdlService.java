@@ -32,6 +32,7 @@ import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @Service
 public class ImportAvPersonerFraPdlService extends DollyBestillingService {
+    private static final String MDC_KEY_BESTILLING = "bestilling";
 
     private DollyPersonCache dollyPersonCache;
     private ErrorStatusDecoder errorStatusDecoder;
@@ -69,7 +70,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 asList(bestilling.getPdlImport().split(",")).parallelStream()
                         .filter(ident -> !bestilling.isStoppet())
                         .forEach(ident -> {
-                            MDC.put("bestilling", bestilling.getId().toString());
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                             BestillingProgress progress = new BestillingProgress(bestilling, ident, PDL);
                             try {
 
@@ -88,7 +89,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
-                                MDC.remove("bestilling");
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

@@ -32,6 +32,7 @@ import static java.util.Objects.nonNull;
 
 @Service
 public class LeggTilPaaGruppeService extends DollyBestillingService {
+    private static final String MDC_KEY_BESTILLING = "bestilling";
 
     private MapperFacade mapperFacade;
     private BestillingService bestillingService;
@@ -79,7 +80,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
-                            MDC.put("bestilling", bestilling.getId().toString());
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(), testident.getMaster());
                             try {
                                 DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
@@ -91,7 +92,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
                                 oppdaterProgress(bestilling, progress);
-                                MDC.remove("bestilling");
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

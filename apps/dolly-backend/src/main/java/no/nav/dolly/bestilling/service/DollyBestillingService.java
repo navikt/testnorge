@@ -53,6 +53,7 @@ import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 @Service
 @RequiredArgsConstructor
 public class DollyBestillingService {
+    private static final String MDC_KEY_BESTILLING = "bestilling";
 
     protected static final String SUCCESS = "OK";
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
@@ -80,7 +81,7 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            MDC.put("bestilling", bestilling.getId().toString());
+            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
             var testident = identService.getTestIdent(bestilling.getIdent());
             var progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
@@ -136,7 +137,7 @@ public class DollyBestillingService {
 
         } finally {
             oppdaterBestillingFerdig(bestilling);
-            MDC.remove("bestilling");
+            MDC.remove(MDC_KEY_BESTILLING);
         }
     }
 
@@ -144,7 +145,7 @@ public class DollyBestillingService {
     public void relasjonPersonAsync(String ident, RsDollyRelasjonRequest request, Bestilling bestilling) {
 
         try {
-            MDC.put("bestilling", bestilling.getId().toString());
+            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
             var testident = identService.getTestIdent(bestilling.getIdent());
             if (testident.isPdl()) {
@@ -177,7 +178,7 @@ public class DollyBestillingService {
 
         } finally {
             oppdaterBestillingFerdig(bestilling);
-            MDC.remove("bestilling");
+            MDC.remove(MDC_KEY_BESTILLING);
         }
     }
 

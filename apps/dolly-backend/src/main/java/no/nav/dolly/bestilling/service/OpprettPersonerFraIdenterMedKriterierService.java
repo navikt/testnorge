@@ -28,6 +28,7 @@ import static java.util.Objects.nonNull;
 
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
+    private static final String MDC_KEY_BESTILLING = "bestilling";
 
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
@@ -76,7 +77,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), identStatus.getMaster());
 
                             try {
-                                MDC.put("bestilling", bestilling.getId().toString());
+                                MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                                 if (identStatus.isAvailable()) {
 
                                     var leverteIdenter = new OpprettCommand(identStatus, bestKriterier, tpsfService,
@@ -99,7 +100,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
                                 oppdaterProgress(bestilling, progress);
-                                MDC.remove("bestilling");
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
 

@@ -35,6 +35,7 @@ import static java.util.Objects.nonNull;
 
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
+    private static final String MDC_KEY_BESTILLING = "bestilling";
 
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
@@ -75,7 +76,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
-                            MDC.put("bestilling", bestilling.getId().toString());
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                                     testident.getMaster());
@@ -112,7 +113,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
-                                MDC.remove("bestilling");
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
 
