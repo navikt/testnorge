@@ -15,6 +15,7 @@ spring:
     properties:
       hibernate:
         default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     vault:
       database:
