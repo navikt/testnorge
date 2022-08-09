@@ -9,7 +9,6 @@ import no.nav.testnav.apps.instservice.domain.Institusjonsopphold;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
 import no.nav.testnav.apps.instservice.util.WebClientFilter;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
@@ -18,7 +17,8 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.*;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,8 +27,6 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
     private final String token;
     private final String miljoe;
     private final InstitusjonsoppholdV2 institusjonsopphold;
-    private final String callId;
-    private final String consumerId;
 
     @SneakyThrows
     @Override
@@ -42,8 +40,6 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
                     )
                     .header(ACCEPT, "application/json")
                     .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HEADER_NAV_CALL_ID, callId)
-                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .bodyValue(institusjonsopphold)
                     .retrieve()
                     .toEntity(Object.class)

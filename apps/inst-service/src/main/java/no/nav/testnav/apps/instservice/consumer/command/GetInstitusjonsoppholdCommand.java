@@ -16,7 +16,8 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.*;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,8 +26,6 @@ public class GetInstitusjonsoppholdCommand implements Callable<Mono<InstitusjonR
     private final String token;
     private final String miljoe;
     private final String ident;
-    private final String callId;
-    private final String consumerId;
 
     @SneakyThrows
     @Override
@@ -40,8 +39,6 @@ public class GetInstitusjonsoppholdCommand implements Callable<Mono<InstitusjonR
                     )
                     .header(ACCEPT, "application/json")
                     .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HEADER_NAV_CALL_ID, callId)
-                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header("norskident", ident)
                     .retrieve()
                     .bodyToMono(InstitusjonResponse.class)

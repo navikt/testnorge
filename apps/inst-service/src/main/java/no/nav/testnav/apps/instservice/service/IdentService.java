@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor
 public class IdentService {
 
@@ -24,43 +24,36 @@ public class IdentService {
     private final InstTestdataConsumer instTestdataConsumer;
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
-            String callId,
-            String consumerId,
             String miljoe,
             List<InstitusjonsoppholdV2> oppholdene
     ) {
         List<OppholdResponse> statusFraInst2 = new ArrayList<>(oppholdene.size());
         for (var opphold : oppholdene) {
             opphold.setRegistrertAv(KILDE);
-            var oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
+            var oppholdResponse = sendTilInst2(miljoe, opphold);
             statusFraInst2.add(oppholdResponse);
         }
         return statusFraInst2;
     }
 
     public OppholdResponse sendTilInst2(
-            String callId,
-            String consumerId,
             String miljoe,
             InstitusjonsoppholdV2 opphold
     ) {
         log.info("Sender institusjonsopphold til inst2: " + opphold);
-        var oppholdResponse = instTestdataConsumer
-                .leggTilInstitusjonsoppholdIInst2(callId, consumerId, miljoe, opphold);
+        var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(miljoe, opphold);
         oppholdResponse.setPersonident(opphold.getNorskident());
         return oppholdResponse;
     }
 
     public List<OppholdResponse> slettInstitusjonsoppholdTilIdenter(
-            String callId,
-            String consumerId,
             String miljoe,
             List<String> identer
     ) {
         List<OppholdResponse> sletteOppholdResponses = new ArrayList<>(identer.size());
 
         for (var ident : identer) {
-            var response = slettOppholdMedIdent(callId, consumerId, miljoe, ident);
+            var response = slettOppholdMedIdent(miljoe, ident);
             sletteOppholdResponses.add(OppholdResponse.builder()
                     .personident(ident)
                     .status(response.getStatusCode())
@@ -71,36 +64,21 @@ public class IdentService {
         return sletteOppholdResponses;
     }
 
-    public ResponseEntity<Object> slettOppholdMedIdent(
-            String callId,
-            String consumerId,
-            String miljoe,
-            String ident
-    ) {
-        return instTestdataConsumer.slettInstitusjonsoppholdMedIdent(callId, consumerId, miljoe, ident);
+    public ResponseEntity<Object> slettOppholdMedIdent(String miljoe, String ident) {
+        return instTestdataConsumer.slettInstitusjonsoppholdMedIdent(miljoe, ident);
     }
 
-    public List<InstitusjonsoppholdV2> hentOppholdTilIdenter(
-            String callId,
-            String consumerId,
-            String miljoe,
-            List<String> identer
-    ) {
+    public List<InstitusjonsoppholdV2> hentOppholdTilIdenter(String miljoe, List<String> identer) {
         List<InstitusjonsoppholdV2> alleInstitusjonsopphold = new ArrayList<>();
         for (var ident : identer) {
-            var institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, ident);
+            var institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(miljoe, ident);
             alleInstitusjonsopphold.addAll(institusjonsoppholdTilIdent);
         }
         return alleInstitusjonsopphold;
     }
 
-    public List<InstitusjonsoppholdV2> hentInstitusjonsoppholdFraInst2(
-            String callId,
-            String consumerId,
-            String miljoe,
-            String ident
-    ) {
-        var institusjonsforholdsmeldinger = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, ident);
+    public List<InstitusjonsoppholdV2> hentInstitusjonsoppholdFraInst2(String miljoe, String ident) {
+        var institusjonsforholdsmeldinger = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(miljoe, ident);
         if (institusjonsforholdsmeldinger != null) {
             var opphold = getOppholdForMiljoe(institusjonsforholdsmeldinger, miljoe);
             for (var melding : opphold) {

@@ -6,7 +6,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.testnav.apps.instservice.util.WebClientFilter;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -16,7 +15,8 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.*;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,8 +25,6 @@ public class DeleteInstitusjonsoppholdCommand implements Callable<Mono<ResponseE
     private final String token;
     private final String miljoe;
     private final String ident;
-    private final String callId;
-    private final String consumerId;
 
     @SneakyThrows
     @Override
@@ -40,8 +38,6 @@ public class DeleteInstitusjonsoppholdCommand implements Callable<Mono<ResponseE
                     )
                     .header(ACCEPT, "application/json")
                     .header(AUTHORIZATION, "Bearer " + token)
-                    .header(HEADER_NAV_CALL_ID, callId)
-                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header("norskident", ident)
                     .retrieve()
                     .toEntity(Object.class)

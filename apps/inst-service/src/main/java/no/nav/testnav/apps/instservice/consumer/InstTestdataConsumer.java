@@ -45,15 +45,13 @@ public class InstTestdataConsumer {
     }
 
     public InstitusjonResponse hentInstitusjonsoppholdFraInst2(
-            String callId,
-            String consumerId,
             String miljoe,
             String ident
     ) {
         try {
             var response = tokenExchange.exchange(properties)
                     .flatMap(accessToken -> new GetInstitusjonsoppholdCommand(
-                            webClient, accessToken.getTokenValue(), miljoe, ident, callId, consumerId).call())
+                            webClient, accessToken.getTokenValue(), miljoe, ident).call())
                     .block();
             return nonNull(response) ? response : new InstitusjonResponse();
         } catch (Exception e) {
@@ -63,25 +61,21 @@ public class InstTestdataConsumer {
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(
-            String callId,
-            String consumerId,
             String miljoe,
             InstitusjonsoppholdV2 institusjonsopphold
     ) {
         var token = Objects.requireNonNull(tokenExchange.exchange(properties).block()).getTokenValue();
-        return new PostInstitusjonsoppholdCommand(webClient, token, miljoe, institusjonsopphold, callId, consumerId).call();
+        return new PostInstitusjonsoppholdCommand(webClient, token, miljoe, institusjonsopphold).call();
     }
 
     public ResponseEntity<Object> slettInstitusjonsoppholdMedIdent(
-            String callId,
-            String consumerId,
             String miljoe,
             String ident
     ) {
         try {
             var response = tokenExchange.exchange(properties)
                     .flatMap(accessToken -> new DeleteInstitusjonsoppholdCommand(
-                            webClient, accessToken.getTokenValue(), miljoe, ident, callId, consumerId).call())
+                            webClient, accessToken.getTokenValue(), miljoe, ident).call())
                     .block();
             return nonNull(response)
                     ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
@@ -95,7 +89,8 @@ public class InstTestdataConsumer {
     public List<String> hentInst2TilgjengeligeMiljoer() {
         try {
             var response = tokenExchange.exchange(properties)
-                    .flatMap(accessToken -> new GetTilgjengeligeMiljoerCommand(webClient, accessToken.getTokenValue()).call())
+                    .flatMap(accessToken -> new GetTilgjengeligeMiljoerCommand(
+                            webClient, accessToken.getTokenValue()).call())
                     .block();
             if (nonNull(response) && !response.getInstitusjonsoppholdEnvironments().isEmpty()) {
                 return response.getInstitusjonsoppholdEnvironments().stream().sorted().toList();
