@@ -23,12 +23,12 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
 
-      - name: Create a .npmrc file for the github package repository
-        uses: FerLuisxd/create-npmrc@3
-        env:
-          AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        with:
-          org_name: navikt
+#      - name: Create a .npmrc file for the github package repository
+#        uses: FerLuisxd/create-npmrc@3
+#        env:
+#          AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+#        with:
+#          org_name: navikt
 
       - name: Npm install
         env:
