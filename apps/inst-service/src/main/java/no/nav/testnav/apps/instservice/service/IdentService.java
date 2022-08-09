@@ -3,7 +3,7 @@ package no.nav.testnav.apps.instservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.testnav.apps.instservice.consumer.Inst2Consumer;
+import no.nav.testnav.apps.instservice.consumer.InstTestdataConsumer;
 import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
@@ -21,7 +21,7 @@ public class IdentService {
 
     private static final String KILDE = "Dolly";
 
-    private final Inst2Consumer inst2Consumer;
+    private final InstTestdataConsumer instTestdataConsumer;
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
             String callId,
@@ -45,7 +45,7 @@ public class IdentService {
             InstitusjonsoppholdV2 opphold
     ) {
         log.info("Sender institusjonsopphold til inst2: " + opphold);
-        var oppholdResponse = inst2Consumer
+        var oppholdResponse = instTestdataConsumer
                 .leggTilInstitusjonsoppholdIInst2(callId, consumerId, miljoe, opphold);
         oppholdResponse.setPersonident(opphold.getNorskident());
         return oppholdResponse;
@@ -77,7 +77,7 @@ public class IdentService {
             String miljoe,
             String ident
     ) {
-        return inst2Consumer.slettInstitusjonsoppholdMedIdent(callId, consumerId, miljoe, ident);
+        return instTestdataConsumer.slettInstitusjonsoppholdMedIdent(callId, consumerId, miljoe, ident);
     }
 
     public List<InstitusjonsoppholdV2> hentOppholdTilIdenter(
@@ -100,7 +100,7 @@ public class IdentService {
             String miljoe,
             String ident
     ) {
-        var institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, ident);
+        var institusjonsforholdsmeldinger = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, ident);
         if (institusjonsforholdsmeldinger != null) {
             var opphold = getOppholdForMiljoe(institusjonsforholdsmeldinger, miljoe);
             for (var melding : opphold) {
@@ -115,7 +115,7 @@ public class IdentService {
     }
 
     public List<String> hentTilgjengeligeMiljoer() {
-        return inst2Consumer.hentInst2TilgjengeligeMiljoer();
+        return instTestdataConsumer.hentInst2TilgjengeligeMiljoer();
     }
 
     private List<InstitusjonsoppholdV2> getOppholdForMiljoe(InstitusjonResponse response, String miljoe) {

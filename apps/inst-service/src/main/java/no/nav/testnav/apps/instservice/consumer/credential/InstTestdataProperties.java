@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.inst2")
-public class Inst2Properties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.inst-testdata")
+public class InstTestdataProperties extends ServerProperties {
 }

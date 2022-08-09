@@ -5,7 +5,7 @@ import no.nav.testnav.apps.instservice.consumer.command.DeleteInstitusjonsopphol
 import no.nav.testnav.apps.instservice.consumer.command.GetInstitusjonsoppholdCommand;
 import no.nav.testnav.apps.instservice.consumer.command.GetTilgjengeligeMiljoerCommand;
 import no.nav.testnav.apps.instservice.consumer.command.PostInstitusjonsoppholdCommand;
-import no.nav.testnav.apps.instservice.consumer.credential.Inst2Properties;
+import no.nav.testnav.apps.instservice.consumer.credential.InstTestdataProperties;
 import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
@@ -21,16 +21,16 @@ import static java.util.Objects.nonNull;
 
 @Component
 @Slf4j
-public class Inst2Consumer {
+public class InstTestdataConsumer {
 
     private final WebClient webClient;
 
-    public Inst2Consumer(
-            Inst2Properties inst2Properties,
+    public InstTestdataConsumer(
+            InstTestdataProperties instTestdataProperties,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.webClient = WebClient.builder()
-                .baseUrl(inst2Properties.getUrl())
+                .baseUrl(instTestdataProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }

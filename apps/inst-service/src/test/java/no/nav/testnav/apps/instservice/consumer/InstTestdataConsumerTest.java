@@ -35,13 +35,13 @@ import static org.hamcrest.Matchers.is;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.yml")
 @AutoConfigureWireMock(port = 0)
-public class Inst2ConsumerTest {
+public class InstTestdataConsumerTest {
 
     @MockBean
     private JwtDecoder jwtDecoder;
 
     @Autowired
-    private Inst2Consumer inst2Consumer;
+    private InstTestdataConsumer instTestdataConsumer;
 
     private final String id = "test";
     private final String fnr1 = "01010101010";
@@ -56,7 +56,7 @@ public class Inst2ConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        var result = inst2Consumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
+        var result = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
 
         assertThat(result.getQ2().get(0).getTssEksternId(), is("440"));
         assertThat(result.getQ2().get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
@@ -68,7 +68,7 @@ public class Inst2ConsumerTest {
     public void shouldThrowUgyldigIdentResponseExceptionOnBadRequest() {
         stubGetInstitusjonsoppholdWithBadRequest();
 
-        inst2Consumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
+        instTestdataConsumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class Inst2ConsumerTest {
 
         stubAddInstitusjonsopphold();
 
-        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(id, id, miljoe, institusjonsopphold);
+        var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(id, id, miljoe, institusjonsopphold);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }

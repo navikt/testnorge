@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.instservice.service;
 
-import no.nav.testnav.apps.instservice.consumer.Inst2Consumer;
+import no.nav.testnav.apps.instservice.consumer.InstTestdataConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -23,7 +23,7 @@ public class IdentServiceTest {
     public JwtDecoder jwtDecoder;
 
     @Mock
-    private Inst2Consumer inst2Consumer;
+    private InstTestdataConsumer instTestdataConsumer;
 
     @InjectMocks
     private IdentService identService;
@@ -36,12 +36,12 @@ public class IdentServiceTest {
         var miljoe = "t1";
         var id = "test";
 
-        when(inst2Consumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1)).thenReturn(ResponseEntity.noContent().build());
-        when(inst2Consumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2)).thenReturn(ResponseEntity.noContent().build());
+        when(instTestdataConsumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1)).thenReturn(ResponseEntity.noContent().build());
+        when(instTestdataConsumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2)).thenReturn(ResponseEntity.noContent().build());
 
         identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 
-        verify(inst2Consumer).slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1);
-        verify(inst2Consumer).slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2);
+        verify(instTestdataConsumer).slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1);
+        verify(instTestdataConsumer).slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2);
     }
 }

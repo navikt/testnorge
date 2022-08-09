@@ -19,7 +19,7 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
-  inst2:
+  inst-testdata:
     url: https://inst-testdata.dev.adeo.no
 
 
