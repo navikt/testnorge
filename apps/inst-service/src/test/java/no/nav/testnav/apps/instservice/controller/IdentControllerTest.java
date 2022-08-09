@@ -31,7 +31,6 @@ public class IdentControllerTest {
     @InjectMocks
     private IdentController identController;
 
-    private final String id = "test";
     private final String miljoe = "t1";
     private List<String> identer;
     private final InstitusjonsoppholdV2 institusjonsopphold = new InstitusjonsoppholdV2();
@@ -45,30 +44,30 @@ public class IdentControllerTest {
 
     @Test
     public void shouldOppretteInstitusjonsopphold() {
-        identController.opprettInstitusjonsopphold(id, id, miljoe, institusjonsopphold);
+        identController.opprettInstitusjonsopphold(miljoe, institusjonsopphold);
 
-        verify(identService).sendTilInst2(id, id, miljoe, institusjonsopphold);
+        verify(identService).sendTilInst2(miljoe, institusjonsopphold);
     }
 
     @Test
     public void shouldHenteInstitusjonsopphold() {
-        identController.hentInstitusjonsopphold(id, id, miljoe, identer);
+        identController.hentInstitusjonsopphold(miljoe, identer);
 
-        verify(identService).hentOppholdTilIdenter(id, id, miljoe, identer);
+        verify(identService).hentOppholdTilIdenter(miljoe, identer);
     }
 
     @Test
     public void shouldOppretteFlereInstitusjonsopphold() {
         List<InstitusjonsoppholdV2> institusjonsoppholdene = new ArrayList<>(Collections.singletonList(institusjonsopphold));
-        identController.opprettFlereInstitusjonsopphold(id, id, miljoe, institusjonsoppholdene);
+        identController.opprettFlereInstitusjonsopphold(miljoe, institusjonsoppholdene);
 
-        verify(identService).opprettInstitusjonsopphold(id, id, miljoe, institusjonsoppholdene);
+        verify(identService).opprettInstitusjonsopphold(miljoe, institusjonsoppholdene);
     }
 
     @Test
     public void shouldSletteIdenter() {
-        identController.slettIdenter(id, id, miljoe, identer);
+        identController.slettIdenter(miljoe, identer);
 
-        verify(identService).slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
+        verify(identService).slettInstitusjonsoppholdTilIdenter(miljoe, identer);
     }
 }

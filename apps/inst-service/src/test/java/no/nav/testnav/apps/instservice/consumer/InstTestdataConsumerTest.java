@@ -52,7 +52,6 @@ public class InstTestdataConsumerTest {
     @Autowired
     private InstTestdataConsumer instTestdataConsumer;
 
-    private final String id = "test";
     private final String fnr1 = "01010101010";
     private final String miljoe = "q2";
 
@@ -66,7 +65,7 @@ public class InstTestdataConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        var result = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
+        var result = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(miljoe, fnr1);
 
         assertThat(result.getQ2().get(0).getTssEksternId(), is("440"));
         assertThat(result.getQ2().get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
@@ -78,7 +77,7 @@ public class InstTestdataConsumerTest {
     public void shouldThrowUgyldigIdentResponseExceptionOnBadRequest() {
         stubGetInstitusjonsoppholdWithBadRequest();
 
-        instTestdataConsumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
+        instTestdataConsumer.hentInstitusjonsoppholdFraInst2(miljoe, fnr1);
     }
 
     @Test
@@ -87,7 +86,7 @@ public class InstTestdataConsumerTest {
 
         stubAddInstitusjonsopphold();
 
-        var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(id, id, miljoe, institusjonsopphold);
+        var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(miljoe, institusjonsopphold);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }
@@ -97,8 +96,6 @@ public class InstTestdataConsumerTest {
                 .withQueryParam("environments", equalTo(miljoe))
                 .withHeader("norskident", equalTo(fnr1))
                 .withHeader("accept", equalTo("application/json"))
-                .withHeader("Nav-Call-Id", equalTo(id))
-                .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("institusjonsmeldingResponse.json"))));
@@ -107,8 +104,6 @@ public class InstTestdataConsumerTest {
     private void stubGetInstitusjonsoppholdWithBadRequest() {
         stubFor(get(urlPathMatching("(.*)/inst2/api/v1/institusjonsopphold/person"))
                 .withHeader("accept", equalTo("application/json"))
-                .withHeader("Nav-Call-Id", equalTo(id))
-                .withHeader("Nav-Consumer-Id", equalTo(id))
                 .withHeader("Nav-Personident", equalTo(fnr1))
                 .willReturn(aResponse().withStatus(HttpStatus.BAD_REQUEST.value())));
     }
@@ -117,8 +112,6 @@ public class InstTestdataConsumerTest {
         stubFor(post(urlPathMatching("(.*)/inst2/api/v1/institusjonsopphold/person"))
                 .withQueryParam("environments", equalTo(miljoe))
                 .withHeader("accept", equalTo("application/json"))
-                .withHeader("Nav-Call-Id", equalTo(id))
-                .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CREATED.value())));
     }

@@ -34,14 +34,13 @@ public class IdentServiceTest {
         var fnr2 = "02020202020";
         var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         var miljoe = "t1";
-        var id = "test";
 
-        when(instTestdataConsumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1)).thenReturn(ResponseEntity.noContent().build());
-        when(instTestdataConsumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2)).thenReturn(ResponseEntity.noContent().build());
+        when(instTestdataConsumer.slettInstitusjonsoppholdMedIdent(miljoe, fnr1)).thenReturn(ResponseEntity.noContent().build());
+        when(instTestdataConsumer.slettInstitusjonsoppholdMedIdent(miljoe, fnr2)).thenReturn(ResponseEntity.noContent().build());
 
-        identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
+        identService.slettInstitusjonsoppholdTilIdenter(miljoe, identer);
 
-        verify(instTestdataConsumer).slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1);
-        verify(instTestdataConsumer).slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2);
+        verify(instTestdataConsumer).slettInstitusjonsoppholdMedIdent(miljoe, fnr1);
+        verify(instTestdataConsumer).slettInstitusjonsoppholdMedIdent(miljoe, fnr2);
     }
 }
