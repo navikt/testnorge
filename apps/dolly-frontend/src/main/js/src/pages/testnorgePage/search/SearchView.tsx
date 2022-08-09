@@ -15,6 +15,7 @@ import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
 import { Gruppe } from '~/utils/hooks/useGruppe'
+import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 
 type Props = {
 	items?: PdlData[]
@@ -165,7 +166,20 @@ export default ({
 				iconItem={(person: PdlData) =>
 					getPdlKjoenn(person) === 'M' ? <ManIconItem /> : <WomanIconItem />
 				}
-				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
+				onExpand={(person: PdlData) => (
+					<>
+						<PdlVisning pdlData={person} />
+						<ArenaVisning
+							ident={{
+								ident: getPdlIdent(person),
+								master: 'PDL',
+							}}
+							data={null}
+							bestillinger={[]}
+							loading={false}
+						/>
+					</>
+				)}
 				pagination="simple"
 			/>
 			<ImportModal
