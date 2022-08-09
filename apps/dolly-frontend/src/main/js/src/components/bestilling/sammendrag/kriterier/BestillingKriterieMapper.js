@@ -1395,6 +1395,13 @@ const mapBrregstub = (bestillingData, data) => {
 	}
 }
 
+const jaNeiNull = (verdi) => {
+	if (null === verdi) {
+		return null
+	}
+	return verdi ? 'JA' : 'NEI'
+}
+
 const mapKrr = (bestillingData, data) => {
 	const krrKriterier = bestillingData.krrstub
 
@@ -1405,7 +1412,7 @@ const mapKrr = (bestillingData, data) => {
 				obj('Registrert i KRR', krrKriterier.registrert ? 'JA' : 'NEI'),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
-					value: krrKriterier.reservert === null ? null : krrKriterier.reservert ? 'JA' : 'NEI',
+					value: jaNeiNull(krrKriterier.reservert),
 					width: 'medium',
 				},
 				obj('Epost', krrKriterier.epost),

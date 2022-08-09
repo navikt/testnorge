@@ -7,10 +7,9 @@ import { OrganisasjonDataVisning } from '~/components/fagsystem/organisasjoner/v
 
 export const OrganisasjonMiljoeinfo = (props: { orgnummer: string }) => {
 	const state = useAsync(async () => {
-		if (!props) {
-			return null
+		if (props) {
+			return OrgforvalterApi.getOrganisasjonerMiljoeInfo(props.orgnummer)
 		}
-		return OrgforvalterApi.getOrganisasjonerMiljoeInfo(props.orgnummer)
 	}, [])
 
 	if (!props) {

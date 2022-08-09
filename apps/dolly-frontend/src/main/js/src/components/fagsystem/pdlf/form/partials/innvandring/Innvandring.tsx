@@ -41,7 +41,7 @@ export const Innvandring = () => {
 				newEntry={initialInnvandring}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <InnvandringForm path={path} />}
+				{(path: string, _idx: number) => <InnvandringForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)
