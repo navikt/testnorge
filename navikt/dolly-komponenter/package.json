@@ -20,9 +20,9 @@
     "styled-components": "^5.3.5"
   },
   "dependencies": {
-    "@navikt/fremdriftslinje": "^3.0.3",
-    "@navikt/hoykontrast": "^3.1.2",
-    "@navikt/tooltip": "1.1.2",
+    "@navikt/fremdriftslinje": "^3.0.2",
+    "@navikt/hoykontrast": "^3.1.0",
+    "@navikt/tooltip": "1.1.1",
     "@navikt/dolly-assets": "^1.1.12",
     "@navikt/dolly-lib": "^1.2.11",
     "@navikt/ds-css": "^0.18.27",

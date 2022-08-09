@@ -31,9 +31,9 @@ jobs:
           AUTH_TOKEN: ${{secrets.DOLLY_READER_TOKEN}}
 
       - name: Npm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#        env:
+#          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
         run: npm ci
       - name: Build code
