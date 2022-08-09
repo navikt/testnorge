@@ -24,5 +24,3 @@ jobs:
       working-directory: 'navikt/dolly-komponenter/'
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
