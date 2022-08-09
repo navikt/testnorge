@@ -20,14 +20,12 @@ jobs:
 
       - name: 'Install'
         run: npm install --force
-        with:
-          working-directory: 'navikt/dolly-komponenter/'
+        working-directory: 'navikt/dolly-komponenter/'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: 'Bygg'
-        with:
-          working-directory: 'navikt/dolly-komponenter/'
+        working-directory: 'navikt/dolly-komponenter/'
         run: npm run build
   publish:
     name: Publish
