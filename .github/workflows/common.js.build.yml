@@ -17,16 +17,16 @@ jobs:
       - name: 'Setup Node'
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: 16.x
+          node-version: 14.x
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
 
-#      - name: Create a .npmrc file for the github package repository
-#        uses: FerLuisxd/create-npmrc@3
-#        with:
-#          org_name: navikt
-#        env:
-#          AUTH_TOKEN: ${{secrets.READER_TOKEN}}
+      - name: Create a .npmrc file for the github package repository
+        uses: FerLuisxd/create-npmrc@3
+        with:
+          org_name: navikt
+        env:
+          AUTH_TOKEN: ${{secrets.READER_TOKEN}}
 
       - name: Npm install
         env:
