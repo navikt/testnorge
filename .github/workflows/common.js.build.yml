@@ -25,12 +25,12 @@ jobs:
         with:
           org_name: navikt
         env:
-          AUTH_TOKEN: ${{secrets.READER_TOKEN}}
+          AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Build install
+      - name: Npm install
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
         run: npm ci
       - name: Build code
