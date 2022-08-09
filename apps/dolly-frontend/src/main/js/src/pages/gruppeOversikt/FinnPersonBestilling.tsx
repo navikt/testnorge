@@ -93,7 +93,6 @@ const FinnPersonBestilling = ({
 		let beskrivendeFeilmelding = feilmelding
 
 		if (finnesTpsf || finnesPdlf || finnesPdl) {
-			// beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system og eksisterer ikke i Dolly, men finnes i følgende registre:
 			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
 			${finnesTpsf ? ' TPSF' : ''}
 			${finnesTpsf && finnesPdlf ? ', ' : ''}
