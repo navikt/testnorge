@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.instservice.consumer.command;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import no.nav.testnav.apps.instservice.domain.Institusjonsopphold;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
 import no.nav.testnav.apps.instservice.util.WebClientFilter;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
@@ -42,19 +42,21 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
                     .header(AUTHORIZATION, "Bearer " + token)
                     .bodyValue(institusjonsopphold)
                     .retrieve()
-                    .toEntity(Object.class)
+                    .toEntity(Institusjonsopphold.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                     .block();
 
             if (nonNull(response)){
-                var institusjonsoppholdResponse = new ObjectMapper().convertValue(response.getBody(), Institusjonsopphold.class);
                 return OppholdResponse.builder()
                         .status(response.getStatusCode())
-                        .institusjonsopphold(institusjonsoppholdResponse)
+                        .institusjonsopphold(response.getBody())
                         .build();
             } else {
-                return new OppholdResponse();
+                return OppholdResponse.builder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .feilmelding("Ukjent feil oppsto under opprettelse av institusjonsopphold")
+                        .build();
             }
         } catch (WebClientResponseException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
