@@ -128,7 +128,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								</Alertstripe>
 							)}
 							<div className="mal-admin">
-								<Button kind="maler" onClick={() => {}}>
+								<Button kind="maler">
 									<NavLink to="/minside">Administrer maler</NavLink>
 								</Button>
 							</div>

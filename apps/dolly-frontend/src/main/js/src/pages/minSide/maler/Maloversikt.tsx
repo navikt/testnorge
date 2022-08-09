@@ -35,7 +35,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			text: 'Malnavn',
 			width: '80',
 			dataField: 'malNavn',
-			formatter: (cell: any, row: { id: string; malNavn: string }) =>
+			formatter: (_cell: any, row: { id: string; malNavn: string }) =>
 				erUnderRedigering(row.id) ? (
 					<EndreMalnavn malInfo={row} avbrytRedigering={avbrytRedigering} />
 				) : (
@@ -45,7 +45,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 		{
 			text: 'Rediger malnavn',
 			width: '13',
-			formatter: (cell: any, row: { id: string }) => {
+			formatter: (_cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
 						AVBRYT
@@ -61,7 +61,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			text: 'Slett',
 			width: '10',
 			dataField: 'status',
-			formatter: (cell: any, row: { id: any }) => (
+			formatter: (_cell: any, row: { id: any }) => (
 				<SlettButton action={() => slettMal(row.id, null)} loading={loading}>
 					Er du sikker på at du vil slette denne malen?
 				</SlettButton>

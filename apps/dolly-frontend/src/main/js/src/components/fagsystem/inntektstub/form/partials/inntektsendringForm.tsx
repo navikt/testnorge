@@ -52,7 +52,7 @@ export default ({ formikBag, path }: InntektendringForm) => {
 				return (
 					<ErrorBoundary>
 						<DollyFieldArrayWrapper>
-							{data.map((c: Inntektslister, idx: number) => {
+							{data.map((_c: Inntektslister, idx: number) => {
 								const listePath = `${historikkPath}[${idx}]`
 								const clickRemove = () => arrayHelpers.remove(idx)
 								return (

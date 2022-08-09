@@ -12,40 +12,41 @@ type PdlDataVisningProps = {
 	ident: Ident
 }
 
-const getPersonInfo = (ident: Ident) => {
+export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
 	const [pdlError, setPdlError] = useState(null)
-	if (!pdlData) {
-		DollyApi.getPersonFraPdl(ident.ident || ident)
-			.then((response: PdlDataWrapper) => {
-				setPdlData(response.data?.data)
-				setPdlLoading(false)
-				const feil = response.data?.errors?.find((e) => e.path?.some((i) => i === 'hentPerson'))
-				if (feil) {
-					setPdlError(feil.message)
-				}
-			})
-			.catch(() => {
-				setPdlLoading(false)
-			})
-	}
-	if (pdlError) {
-		return (
-			<div className="flexbox--align-center">
-				<Icon size={20} kind="report-problem-circle" />
-				<div>
+
+	const getPersonInfo = () => {
+		if (!pdlData) {
+			DollyApi.getPersonFraPdl(ident.ident || ident)
+				.then((response: PdlDataWrapper) => {
+					setPdlData(response.data?.data)
+					setPdlLoading(false)
+					const feil = response.data?.errors?.find((e) => e.path?.some((i) => i === 'hentPerson'))
+					if (feil) {
+						setPdlError(feil.message)
+					}
+				})
+				.catch(() => {
+					setPdlLoading(false)
+				})
+		}
+		if (pdlError) {
+			return (
+				<div className="flexbox--align-center">
+					<Icon size={20} kind="report-problem-circle" />
+					<div>
 						<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
 							{pdlError}
 						</pre>
+					</div>
 				</div>
-			</div>
-		)
+			)
+		}
+		return <PdlVisning pdlData={pdlData} loading={pdlLoading} />
 	}
-	return <PdlVisning pdlData={pdlData} loading={pdlLoading} />
-}
 
-export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	if (!ident) {
 		return null
 	}
@@ -53,7 +54,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<Tooltip
-				overlay={getPersonInfo(ident)}
+				overlay={getPersonInfo}
 				placement="top"
 				align={{
 					offset: [0, -10],

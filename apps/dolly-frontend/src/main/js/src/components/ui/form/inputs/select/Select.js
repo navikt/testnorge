@@ -83,7 +83,7 @@ export const DollySelect = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ fastfield, feil, ...props }) => {
+const P_FormikSelect = ({ _fastfield, feil, ...props }) => {
 	const [field, meta] = useField(props)
 	const handleChange = (selected, meta) => {
 		let value

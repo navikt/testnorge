@@ -69,7 +69,7 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 									navn="Postnummer"
 									value={kontaktadresseData.postboksadresse.postnummer}
 								>
-									{(v: Kodeverk, verdi: KodeverkValues) => (
+									{(_v: Kodeverk, verdi: KodeverkValues) => (
 										<span>
 											{verdi ? verdi.label : kontaktadresseData.postboksadresse.postnummer}
 										</span>
@@ -105,7 +105,7 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 									navn="Postnummer"
 									value={kontaktadresseData.postadresseIFrittFormat.postnummer}
 								>
-									{(v: Kodeverk, verdi: KodeverkValues) => (
+									{(_v: Kodeverk, verdi: KodeverkValues) => (
 										<span>
 											{verdi ? verdi.label : kontaktadresseData.postadresseIFrittFormat.postnummer}
 										</span>
