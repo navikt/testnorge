@@ -8,11 +8,23 @@ on:
 
 jobs:
   build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.js.build.yml@bugfix/js-libs-build-error
-    #TODO: Endre tilbake til @master
-    with:
-      working-directory: 'navikt/dolly-komponenter/'
+    name: 'Build'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+
+      - name: 'Install'
+        run: npm install --force
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: 'Bygg'
+        run: npm run build
   publish:
     name: Publish
     uses: navikt/testnorge/.github/workflows/common.js.publish.yml@bugfix/js-libs-build-error
