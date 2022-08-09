@@ -1,5 +1,8 @@
 on:
   workflow_call:
+    secrets:
+      READER_TOKEN:
+        required: false
     inputs:
       working-directory:
         type: string
@@ -9,11 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    #    env:
-    #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #      NODE_AUTH_TOKEN: ${{ secrets.DOLLY_READER_TOKEN }}
-    #      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-    
     steps:
       - uses: actions/checkout@v3
       - name: 'Setup Node'
@@ -23,16 +21,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
 
-#      - name: Create a .npmrc file for the github package repository
-#        uses: FerLuisxd/create-npmrc@3
-#        env:
-#          AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-#        with:
-#          org_name: navikt
-
       - name: Npm install
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
         run: npm install

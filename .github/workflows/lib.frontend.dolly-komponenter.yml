@@ -8,27 +8,13 @@ on:
 
 jobs:
   build:
-    name: 'Build'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: 'Setup Node'
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          registry-url: https://npm.pkg.github.com/
-          always-auth: true
-          scope: "@navikt"
-
-      - name: 'Install'
-        run: npm install --force
-        working-directory: 'navikt/dolly-komponenter/'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-
-      - name: 'Bygg'
-        working-directory: 'navikt/dolly-komponenter/'
-        run: npm run build
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.js.build.yml@bugfix/js-libs-build-error
+    #TODO: Endre tilbake til @master
+    with:
+      working-directory: 'navikt/dolly-komponenter/'
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   publish:
     name: Publish
     uses: navikt/testnorge/.github/workflows/common.js.publish.yml@bugfix/js-libs-build-error
@@ -36,4 +22,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
     with:
       working-directory: 'navikt/dolly-komponenter/'
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
