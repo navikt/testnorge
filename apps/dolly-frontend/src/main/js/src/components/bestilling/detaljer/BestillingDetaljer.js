@@ -6,6 +6,7 @@ import GjenopprettConnector from '~/components/bestilling/gjenopprett/Gjenoppret
 
 import './BestillingDetaljer.less'
 import { MalModal } from '~/pages/minSide/maler/MalModal'
+import _get from 'lodash/get'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -14,6 +15,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
+
+	const sivilstand = _get(bestilling, 'bestilling.pdldata.person.sivilstand')
+	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
 	return (
 		<div className="bestilling-detaljer">
@@ -26,7 +30,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 							GJENOPPRETT
 						</Button>
 					)}
-					{!alleredeMal && (
+					{!alleredeMal && !harRelatertPersonVedSivilstand && (
 						<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
 							OPPRETT NY MAL
 						</Button>

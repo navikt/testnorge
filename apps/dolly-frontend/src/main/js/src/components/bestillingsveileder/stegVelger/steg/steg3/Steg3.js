@@ -9,6 +9,7 @@ import { IdentVelger } from './IdentVelger'
 import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import _get from 'lodash/get'
 
 export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -16,6 +17,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
 	const bankIdBruker = brukertype === 'BANKID'
+
+	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
+	const harRelatertPersonVedSivilstand = sivilstand.some((item) => item.relatertVedSivilstand)
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
@@ -32,6 +36,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
 		} else {
 			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		}
+		if (harRelatertPersonVedSivilstand) {
+			formikBag.setFieldValue('malBestillingNavn', undefined)
 		}
 	}, [])
 
@@ -64,7 +71,7 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 					</div>
 				</div>
 			)}
-			{!erOrganisasjon && !importTestnorge && (
+			{!erOrganisasjon && !importTestnorge && !harRelatertPersonVedSivilstand && (
 				<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
 			)}
 			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}

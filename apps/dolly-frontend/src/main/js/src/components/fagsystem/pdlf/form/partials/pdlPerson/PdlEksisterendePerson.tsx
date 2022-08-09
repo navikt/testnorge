@@ -29,7 +29,7 @@ export const PdlEksisterendePerson = ({
 	nyIdentValg = null,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { gruppeId } = opts
+	const { gruppeId, antall } = opts
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
@@ -49,6 +49,8 @@ export const PdlEksisterendePerson = ({
 		? !isEmpty(nyIdentValg)
 		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
 
+	const bestillingFlerePersoner = parseInt(antall) > 1
+
 	return (
 		<div className={'flexbox--full-width'}>
 			{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
@@ -58,7 +60,7 @@ export const PdlEksisterendePerson = ({
 					label={label}
 					options={identOptions}
 					size={'xlarge'}
-					disabled={hasNyPersonValues || disabled}
+					disabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
 				/>
 			) : (
 				!loadingIdentOptions && (
