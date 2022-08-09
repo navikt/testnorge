@@ -28,7 +28,7 @@ jobs:
         with:
           org_name: navikt
         env:
-          AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
+          AUTH_TOKEN: ${{secrets.READER_TOKEN}}
 
       - name: Npm install
         #        env:
