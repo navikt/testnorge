@@ -18,6 +18,14 @@ For dokumentasjon av applikasjonen sine endepunkter:
 - `/swagger-ui.html`
 - `WSDL: /ws`
 
+## Lokal kjøring
+Ha naisdevice kjørende og kjør UdiStubApplicationStarter med følgende argumenter:
+```
+--add-opens java.base/java.lang=ALL-UNNAMED
+-Dspring.profiles.active=dev
+-Dspring.cloud.vault.token=[vault-token]
+```
+
 ## Deployment
 
 Applikasjonen kan kjøre lokalt med en h2 database som kjører i minnet. Applikasjonen kan også kjøres i en skytjeneste med integrasjon mot Vault og postgresql. Hvis andre integrasjoner er ønskelig må disse implementeres i en egen submodul hvor integrasjonen defineres f.eks via en @Configuration annotert klasse.

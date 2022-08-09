@@ -32,4 +32,4 @@ public class VaultLocalConfig extends AbstractVaultConfiguration {
         }
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }
-}
+} 
