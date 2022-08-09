@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.instservice.consumer.command;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,18 +18,13 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
 public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse> {
-
-    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
-    };
-
     private final WebClient webClient;
+    private final String token;
     private final String miljoe;
     private final InstitusjonsoppholdV2 institusjonsopphold;
     private final String callId;
@@ -47,9 +41,12 @@ public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse>
                                     .build()
                     )
                     .header(ACCEPT, "application/json")
+                    .header(AUTHORIZATION, "Bearer " + token)
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                    .bodyValue(institusjonsopphold).retrieve().toEntity(RESPONSE_TYPE_OBJECT)
+                    .bodyValue(institusjonsopphold)
+                    .retrieve()
+                    .toEntity(Object.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                     .block();

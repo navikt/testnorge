@@ -19,9 +19,11 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
-  inst-testdata:
-    url: https://inst-testdata.dev.adeo.no
-
+  testnav-inst-proxy:
+    url: https://testnav-inst-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-inst-proxy
 
 management:
   endpoints:

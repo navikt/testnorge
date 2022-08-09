@@ -49,6 +49,9 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: https://testnav-inst-proxy.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true

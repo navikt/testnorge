@@ -1,12 +1,16 @@
 package no.nav.testnav.apps.instservice.consumer;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.testnav.apps.instservice.consumer.credential.InstTestdataProperties;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.exception.UgyldigIdentResponseException;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +20,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
@@ -29,6 +34,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.testnav.apps.instservice.utils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -40,6 +46,9 @@ public class InstTestdataConsumerTest {
     @MockBean
     private JwtDecoder jwtDecoder;
 
+    @MockBean
+    private TokenExchange tokenService;
+
     @Autowired
     private InstTestdataConsumer instTestdataConsumer;
 
@@ -50,6 +59,7 @@ public class InstTestdataConsumerTest {
     @Before
     public void before() {
         WireMock.reset();
+        when(tokenService.exchange(ArgumentMatchers.any(InstTestdataProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

@@ -10,23 +10,19 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.nonNull;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DeleteInstitusjonsoppholdCommand implements Callable<ResponseEntity<Object>> {
-    private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
-    };
-
+public class DeleteInstitusjonsoppholdCommand implements Callable<Mono<ResponseEntity<Object>>> {
     private final WebClient webClient;
+    private final String token;
     private final String miljoe;
     private final String ident;
     private final String callId;
@@ -34,30 +30,26 @@ public class DeleteInstitusjonsoppholdCommand implements Callable<ResponseEntity
 
     @SneakyThrows
     @Override
-    public ResponseEntity<Object> call() {
+    public Mono<ResponseEntity<Object>> call() {
         try {
-            var response = webClient.delete()
+            return webClient.delete()
                     .uri(builder ->
                             builder.path("/api/v1/institusjonsopphold/person")
                                     .queryParam("environments", miljoe)
                                     .build()
                     )
                     .header(ACCEPT, "application/json")
+                    .header(AUTHORIZATION, "Bearer " + token)
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header("norskident", ident)
                     .retrieve()
-                    .toEntity(RESPONSE_TYPE_OBJECT)
+                    .toEntity(Object.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
-                    .block();
-
-            return nonNull(response)
-                    ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
-                    : ResponseEntity.notFound().build();
+                            .filter(WebClientFilter::is5xxException));
         } catch (WebClientResponseException e) {
             log.error("Kunne ikke slette institusjonsopphold - {}", e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
+            return Mono.just(ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString()));
         }
     }
 }

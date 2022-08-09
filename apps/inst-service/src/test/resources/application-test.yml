@@ -1,6 +1,9 @@
 consumers:
-  inst2:
+  testnav-inst-proxy:
     url: http://localhost:${wiremock.server.port:0}/inst2
+    cluster: dummy
+    namespace: dummy
+    name: testnav-inst-proxy
 
 spring:
   cloud:
