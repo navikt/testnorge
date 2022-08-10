@@ -21,8 +21,15 @@ type Props = {
   error?: string;
 };
 
+const customStyles = {
+  control: () => ({
+    minHeight: '47px',
+  }),
+};
+
 const StyledSelect = styled(Select)`
   margin-top: 7px;
+  min-height: 47px;
 `;
 
 export default ({ multi, options, onChange, htmlId, label, error, ...props }: Props) => {
@@ -31,7 +38,9 @@ export default ({ multi, options, onChange, htmlId, label, error, ...props }: Pr
       <div {...props}>
         <Label>{label}</Label>
         <StyledSelect
+          styles={customStyles}
           className={error ? 'skjemaelement__input--harFeil select--error' : 'select'}
+          placeholder={'Velg...'}
           // @ts-ignore
           onChange={(value) => onChange(value.map((item) => item.value))}
           inputId={htmlId}

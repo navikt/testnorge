@@ -34,7 +34,7 @@ const CalendarSvg = styled.span`
 
 const StyledDaypicker = styled(DayPicker)`
   .rdp-months {
-    border: double;
+    border: thin solid;
     background-color: hsl(0deg 0% 96%);
   }
 `;
