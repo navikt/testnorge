@@ -49,6 +49,11 @@ export const PdlEksisterendePerson = ({
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
 		} else if (eksisterendePersonPath?.includes('vergemaal')) {
 			return !person.vergemaal && person.alder > 17
+		} else if (
+			eksisterendePersonPath?.includes('fullmakt') ||
+			eksisterendePersonPath?.includes('kontaktinformasjonForDoedsbo')
+		) {
+			return person.alder > 17
 		}
 		return true
 	}
