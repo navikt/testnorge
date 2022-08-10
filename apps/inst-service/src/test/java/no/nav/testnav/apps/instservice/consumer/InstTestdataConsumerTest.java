@@ -32,8 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.testnav.apps.instservice.utils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -67,10 +66,10 @@ public class InstTestdataConsumerTest {
 
         var result = instTestdataConsumer.hentInstitusjonsoppholdFraInst2(miljoe, fnr1);
 
-        assertThat(result.getQ2().get(0).getTssEksternId(), is("440"));
-        assertThat(result.getQ2().get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
-        assertThat(result.getQ2().get(1).getTssEksternId(), is("441"));
-        assertThat(result.getQ2().get(1).getStartdato(), Matchers.equalTo(LocalDate.of(2012, 4, 4)));
+        assertThat(result.getQ2().get(0).getTssEksternId()).isEqualTo("440");
+        assertThat(result.getQ2().get(0).getStartdato()).isEqualTo(LocalDate.of(2013, 7, 3));
+        assertThat(result.getQ2().get(1).getTssEksternId()).isEqualTo("441");
+        assertThat(result.getQ2().get(1).getStartdato()).isEqualTo(LocalDate.of(2012, 4, 4));
     }
 
     @Test(expected = UgyldigIdentResponseException.class)
@@ -88,7 +87,7 @@ public class InstTestdataConsumerTest {
 
         var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(miljoe, institusjonsopphold);
 
-        assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
+        assertThat(oppholdResponse.getStatus()).isEqualTo(HttpStatus.CREATED);
     }
 
     private void stubGetInstitusjonsopphold() {
