@@ -35,6 +35,6 @@ public class SkdControllerTest {
 
         verify(fasteMeldingerService).startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
         assertThat(response.getAntallSendte()).isEqualTo(1);
-        assertThat(response.getAntallFeilet()).isEqualTo(0);
+        assertThat(response.getAntallFeilet()).isZero();
     }
 }
