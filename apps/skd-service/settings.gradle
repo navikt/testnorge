@@ -8,6 +8,7 @@ rootProject.name = 'skd-service'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/security-core'
+includeBuild '../../libs/commands'
 
 gradleEnterprise {
     buildScan {
