@@ -1,4 +1,4 @@
-import "@navikt/ds-css";
+import '@navikt/ds-css';
 
 export * from './alert';
 export * from './alertstripe';
@@ -6,7 +6,6 @@ export * from './date-picker';
 export * from './header';
 export * from './page';
 export * from './profil';
-export * from './progressbar';
 export * from './form';
 export * from './loadable-component';
 export * from './loading';
