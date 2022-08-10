@@ -23,6 +23,7 @@ jobs:
       working-directory: 'apps/endringsmelding-frontend/'
       app-name: 'endringsmelding-frontend'
     secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
