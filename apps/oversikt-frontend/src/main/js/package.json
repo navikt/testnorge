@@ -1,14 +1,14 @@
 {
   "name": "oversikt-frontend",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
-    "@navikt/dolly-komponenter": "^1.1.14",
-    "@navikt/dolly-lib": "^1.2.6",
+    "@navikt/dolly-komponenter": "^1.2.26",
+    "@navikt/dolly-lib": "^1.2.11",
     "classnames": "^2.3.1",
     "lodash.throttle": "^4.1.1",
     "os-browserify": "^0.3.0",
-    "prop-types": "^15.7.2",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
@@ -19,8 +19,10 @@
     "styled-components": "^5.3.5"
   },
   "devDependencies": {
-    "@types/react": "^17.0.33",
-    "@types/react-dom": "^17.0.10",
+    "@navikt/ds-react": "^0.19.25",
+    "@navikt/ds-css": "^0.18.27",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.25",
     "@types/webpack": "^5.28.0",
@@ -35,10 +37,10 @@
     "mini-css-extract-plugin": "^2.6.1",
     "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
-    "typescript": "^4.4.4",
-    "webpack": "^5.73.0",
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.9.2",
+    "webpack-dev-server": "^4.9.3",
     "webpack-merge": "^5.8.0"
   },
   "scripts": {
