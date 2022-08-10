@@ -19,22 +19,16 @@ public class SkdStartAvspillingCommand implements Callable<Mono<SkdResponse>> {
     private final String miljoe;
 
     @Override
-    public Mono<SkdResponse> call(){
-        try{
-            return webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/startAvspilling/{avspillergruppeId}")
-                                    .queryParam("miljoe", miljoe)
-                                    .build(avspillergruppeId)
-                    )
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .bodyToMono(SkdResponse.class);
-        } catch (Exception e) {
-            log.error("Feil oppsto under opprettelse av identer i TPS: ", e);
-            return Mono.empty();
-        }
-
+    public Mono<SkdResponse> call() {
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/startAvspilling/{avspillergruppeId}")
+                                .queryParam("miljoe", miljoe)
+                                .build(avspillergruppeId)
+                )
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .retrieve()
+                .bodyToMono(SkdResponse.class);
     }
 
 }

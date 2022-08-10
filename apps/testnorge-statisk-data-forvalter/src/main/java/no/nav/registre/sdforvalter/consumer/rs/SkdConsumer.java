@@ -38,17 +38,21 @@ public class SkdConsumer {
      * @param environment Miljøet som gruppen skal spilles av til
      */
     public void send(Long playgroup, String environment) {
-        var response = tokenExchange.exchange(serverProperties)
+        try{
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new SkdStartAvspillingCommand(
                             webClient, accessToken.getTokenValue(), playgroup, environment).call())
                     .block();
 
-        if (isNull(response) || response.getAntallFeilet() != 0) {
-            log.warn("Fikk ikke opprettet alle identene i TPS, burde bli manuelt sjekket for overlapp. " +
-                    "Kan også være mulig at man prøver å initialisere et miljø som er allerede initialisert");
-        }
-        if (nonNull(response)) {
-            response.getFailedStatus().forEach(s -> log.error("Status på feilende melding: {}", s));
+            if (isNull(response) || response.getAntallFeilet() != 0) {
+                log.warn("Fikk ikke opprettet alle identene i TPS, burde bli manuelt sjekket for overlapp. " +
+                        "Kan også være mulig at man prøver å initialisere et miljø som er allerede initialisert");
+            }
+            if (nonNull(response)) {
+                response.getFailedStatus().forEach(s -> log.error("Status på feilende melding: {}", s));
+            }
+        }catch (Exception e) {
+            log.error("Feil oppsto under opprettelse av identer i TPS: ", e);
         }
     }
 }
