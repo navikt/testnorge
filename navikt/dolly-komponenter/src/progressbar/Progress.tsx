@@ -10,4 +10,4 @@ const Progress = styled(ProgressBar)`
   border-width: 1px;
 `;
 
-export default Progress;
+export default () => <Progress />;
