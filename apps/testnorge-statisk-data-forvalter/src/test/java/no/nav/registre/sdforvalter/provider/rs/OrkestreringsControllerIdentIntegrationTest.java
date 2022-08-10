@@ -22,9 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 
-import no.nav.registre.sdforvalter.consumer.rs.request.SkdRequest;
 import no.nav.registre.sdforvalter.consumer.rs.response.SkdResponse;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
@@ -55,15 +53,13 @@ class OrkestreringsControllerIdentIntegrationTest {
     private TpsIdenterRepository tpsIdenterRepository;
 
     private String hodejegerenUrlPattern;
-    private String leggTilNyeMeldingerUrlPattern;
     private String startAvspillingUrlPattern;
     private String levendeIdenterUrlPattern;
 
     @BeforeEach
     public void setup() {
         hodejegerenUrlPattern = "(.*)/v1/alle-identer/" + staticDataPlaygroup;
-        leggTilNyeMeldingerUrlPattern = "(.*)/v1/syntetisering/leggTilNyeMeldinger/" + staticDataPlaygroup;
-        startAvspillingUrlPattern = "(.*)/v1/syntetisering/startAvspilling/" + staticDataPlaygroup;
+        startAvspillingUrlPattern = "(.*)/v1/startAvspilling/" + staticDataPlaygroup;
         levendeIdenterUrlPattern = "(.*)/v1/levende-identer/" + staticDataPlaygroup;
 
         JsonWiremockHelper.builder(objectMapper).withUrlPathMatching("(.*)/v1/orkestrering/opprettPersoner/(.*)").stubPost();
@@ -86,13 +82,6 @@ class OrkestreringsControllerIdentIntegrationTest {
                 .withUrlPathMatching(levendeIdenterUrlPattern)
                 .withResponseBody(Collections.singletonList(tpsIdent.getFnr()))
                 .stubGet();
-
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(leggTilNyeMeldingerUrlPattern)
-                .withResponseBody(Collections.EMPTY_SET)
-                .stubPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -130,13 +119,6 @@ class OrkestreringsControllerIdentIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(leggTilNyeMeldingerUrlPattern)
-                .withResponseBody(Collections.EMPTY_SET)
-                .stubPost();
-
-
-        JsonWiremockHelper
-                .builder(objectMapper)
                 .withUrlPathMatching(startAvspillingUrlPattern)
                 .withResponseBody(new SkdResponse(1, 0, new ArrayList<>(), new ArrayList<>()))
                 .stubPost();
@@ -147,26 +129,8 @@ class OrkestreringsControllerIdentIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(leggTilNyeMeldingerUrlPattern)
-                .withRequestBody(new HashSet<>(Collections.singleton(createSkdRequest(tpsIdent))))
-                .verifyPost();
-
-        JsonWiremockHelper
-                .builder(objectMapper)
                 .withUrlPathMatching(startAvspillingUrlPattern)
                 .verifyPost();
-    }
-
-    public SkdRequest createSkdRequest(TpsIdentModel tpsIdent) {
-        return SkdRequest.builder()
-                .dateOfBirth(tpsIdent.getFnr().substring(0, 6))
-                .personnummer(tpsIdent.getFnr().substring(6))
-                .address(tpsIdent.getAddress())
-                .city(tpsIdent.getCity())
-                .firstName(tpsIdent.getFirstName())
-                .lastName(tpsIdent.getLastName())
-                .postnr(tpsIdent.getPostNr())
-                .build();
     }
 
     private TpsIdentModel create(String fnr, String firstName, String lastName) {

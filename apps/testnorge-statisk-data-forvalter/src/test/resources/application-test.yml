@@ -43,8 +43,11 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dummy
     namespace: dolly
-  testnorge-skd:
-    url: http://localhost:${wiremock.server.port:0}/testnorge-skd/api
+  testnav-skd-service:
+    url: http://localhost:${wiremock.server.port:0}/skd
+    name: testnav-skd-service
+    cluster: dummy
+    namespace: dolly
   testnorge-hodejegeren:
     url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren/api
   testnorge-tp:
