@@ -13,6 +13,13 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
+consumers:
+  tps-forvalteren-proxy:
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: tps-forvalteren-proxy
+
 management:
   endpoints:
     enabled-by-default: true
