@@ -1,7 +1,7 @@
 import Request from '~/service/services/Request'
 import { v4 as _uuid } from 'uuid'
 
-const getInstUrl = () => `/testnav-testnorge-inst-proxy/api/v1`
+const getInstUrl = () => `/testnav-inst-service/api/v1`
 
 export default {
 	getPerson(ident, env) {

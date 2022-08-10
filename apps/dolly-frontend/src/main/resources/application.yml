@@ -79,11 +79,11 @@ consumers:
     namespace: dolly
     name: testnav-krrstub-proxy
     url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
-  testnav-testnorge-inst-proxy:
-    cluster: dev-fss
+  testnav-inst-service:
+    cluster: dev-gcp
     namespace: dolly
-    name: testnav-testnorge-inst-proxy
-    url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
+    name: testnav-inst-service
+    url: https://testnav-inst-service.dev.intern.nav.no
   testnav-sigrunstub-proxy:
     cluster: dev-fss
     namespace: dolly

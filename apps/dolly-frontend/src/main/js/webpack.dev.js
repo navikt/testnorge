@@ -124,7 +124,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-testnorge-inst-proxy/api': {
+				'/testnav-inst-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
