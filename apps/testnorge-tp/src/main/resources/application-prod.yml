@@ -1,0 +1,10 @@
+environments: q2
+
+spring:
+  jpa.database-platform: org.hibernate.dialect.Oracle10gDialect
+  datasource:
+    url: ${TP_DB_Q2_URL}
+    username: ${TP_DB_Q2_USERNAME}
+    password: ${TP_DB_Q2_PASSWORD}
+  main:
+    banner-mode: off

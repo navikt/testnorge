@@ -17,8 +17,10 @@ public class HodejegerenHistorikkConsumer {
 
     private final WebClient webClient;
 
-    public HodejegerenHistorikkConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl,
-                                        ExchangeFilterFunction metricsWebClientFilterFunction) {
+    public HodejegerenHistorikkConsumer(
+            @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenServerUrl,
+            ExchangeFilterFunction metricsWebClientFilterFunction
+    ) {
 
         this.webClient = WebClient.builder()
                 .baseUrl(hodejegerenServerUrl)

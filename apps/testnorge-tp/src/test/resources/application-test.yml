@@ -1,0 +1,37 @@
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/aad
+
+azure.app.client:
+  id: dummy
+  secret: dummy
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb-q2
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  jpa.database-platform: org.hibernate.dialect.H2Dialect
+  cloud:
+    vault:
+      enabled: false
+
+environments: q11, q2
+
+consumers:
+  synt-tp-gcp:
+    url: http://localhost:${wiremock.server.port:0}/synt-tp
+    cluster: dummy
+    namespace: dolly
+    name: synthdata-tp-gcp
+  testnorge-hodejegeren:
+    url: http://localhost:${wiremock.server.port:0}/hodejegeren/api
+
+tp.db:
+  q2:
+    url: jdbc:h2:mem:testdb-q2
+    username: sa
+    password:
+  q11:
+    url: jdbc:h2:mem:testdb-q11
+    username: sa
+    password:

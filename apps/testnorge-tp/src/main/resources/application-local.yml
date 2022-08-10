@@ -1,0 +1,12 @@
+environments: q2
+
+spring:
+  jpa.database-platform: org.hibernate.dialect.Oracle10gDialect
+  datasource:
+    url: ${tp.db.q2.url}
+    username: ${tp.db.q2.username}
+    password: ${tp.db.q2.password}
+
+azure.app.client:
+  id: ${client_id}
+  secret: ${client_secret}
