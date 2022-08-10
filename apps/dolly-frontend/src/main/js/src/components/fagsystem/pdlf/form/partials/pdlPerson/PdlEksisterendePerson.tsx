@@ -35,6 +35,9 @@ export const PdlEksisterendePerson = ({
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
 	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
 
+	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
+	const harNyIdent = eksisterendePersonPath?.includes('nyident')
+
 	const gyldigeSivilstanderForPartner = [
 		'UOPPGITT',
 		'UGIFT',
@@ -45,7 +48,7 @@ export const PdlEksisterendePerson = ({
 	]
 
 	const filterOptions = (person: Option) => {
-		if (eksisterendePersonPath?.includes('sivilstand')) {
+		if (harSivilstand) {
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
 		} else if (eksisterendePersonPath?.includes('vergemaal')) {
 			return !person.vergemaal && person.alder > 17
@@ -80,7 +83,7 @@ export const PdlEksisterendePerson = ({
 		? !isEmpty(nyIdentValg)
 		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
 
-	const bestillingFlerePersoner = parseInt(antall) > 1
+	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 
 	return (
 		<div className={'flexbox--full-width'}>

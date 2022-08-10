@@ -21,6 +21,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
+	const nyIdent = _get(formikBag.values, 'pdldata.person.nyident')
+	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
+
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
 			return ['q1']
@@ -37,7 +40,7 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 		} else {
 			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 		}
-		if (harRelatertPersonVedSivilstand) {
+		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
 		}
 	}, [])
@@ -71,9 +74,12 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 					</div>
 				</div>
 			)}
-			{!erOrganisasjon && !importTestnorge && !harRelatertPersonVedSivilstand && (
-				<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
-			)}
+			{!erOrganisasjon &&
+				!importTestnorge &&
+				!harRelatertPersonVedSivilstand &&
+				!harEksisterendeNyIdent && (
+					<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+				)}
 			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>
 	)

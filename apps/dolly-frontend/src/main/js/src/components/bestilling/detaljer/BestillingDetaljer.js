@@ -19,6 +19,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const sivilstand = _get(bestilling, 'bestilling.pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
+	const nyIdent = _get(bestilling, 'bestilling.pdldata.person.nyident')
+	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
+
 	return (
 		<div className="bestilling-detaljer">
 			<BestillingSammendrag bestilling={bestilling} />
@@ -30,7 +33,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 							GJENOPPRETT
 						</Button>
 					)}
-					{!alleredeMal && !harRelatertPersonVedSivilstand && (
+					{!alleredeMal && !harRelatertPersonVedSivilstand && !harEksisterendeNyIdent && (
 						<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
 							OPPRETT NY MAL
 						</Button>
