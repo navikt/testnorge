@@ -148,7 +148,7 @@ public class TpService {
                                         .build()
                         )
                 ).build()
-        ).collect(Collectors.toList());
+        ).toList();
 
         var tpSaveInHodejegerenRequest = TpSaveInHodejegerenRequest.builder()
                 .kilde(TP_NAME)
@@ -174,9 +174,9 @@ public class TpService {
     public List<String> createPeople(
             List<String> fnrs
     ) {
-        var notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).collect(Collectors.toList());
+        var notFound = fnrs.parallelStream().filter(fnr -> tPersonRepository.findByFnrFk(fnr) == null).toList();
         var saved = createPeopleFromStream(notFound.parallelStream());
-        return saved.parallelStream().map(TPerson::getFnrFk).collect(Collectors.toList());
+        return saved.parallelStream().map(TPerson::getFnrFk).toList();
     }
 
     public List<String> filterTpOnFnrs(List<String> fnrs) {
@@ -184,7 +184,7 @@ public class TpService {
         List<String> personsInTp = new ArrayList<>();
         for (var subList : partitions) {
             var allPersons = tPersonRepository.findAllByFnrFkIn(subList);
-            personsInTp.addAll(allPersons.stream().map(TPerson::getFnrFk).collect(Collectors.toList()));
+            personsInTp.addAll(allPersons.stream().map(TPerson::getFnrFk).toList());
         }
         return personsInTp;
     }

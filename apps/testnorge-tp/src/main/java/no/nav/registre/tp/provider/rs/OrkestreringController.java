@@ -46,7 +46,7 @@ public class OrkestreringController {
     ) {
         TenantContext.setTenant(miljoe);
         var people = tpService.createPeople(fnrs);
-        var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
+        var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).toList());
         return ResponseEntity.ok(feilet);
     }
 
