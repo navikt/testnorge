@@ -31,7 +31,11 @@ export const isEmpty = (attributt) => {
 	const flattenData = (objekt) => {
 		let result = {}
 		for (const i in objekt) {
-			if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
+			if (
+				typeof objekt[i] === 'object' &&
+				!(objekt[i] instanceof Date) &&
+				!Array.isArray(objekt[i])
+			) {
 				const temp = flattenData(objekt[i])
 				for (const j in temp) {
 					result[i + '.' + j] = temp[j]
@@ -42,7 +46,6 @@ export const isEmpty = (attributt) => {
 		}
 		return result
 	}
-
 	return (
 		attributt?.empty ||
 		Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)

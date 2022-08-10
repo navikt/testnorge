@@ -44,25 +44,32 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
+	const filterOptions = (person: Option) => {
+		if (eksisterendePersonPath?.includes('sivilstand')) {
+			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
+		} else if (eksisterendePersonPath?.includes('vergemaal')) {
+			return !person.vergemaal && person.alder > 17
+		}
+		return true
+	}
+
 	useEffect(() => {
 		if (!isTestnorgeIdent && gruppeId) {
 			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
 			// @ts-ignore
 			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
+				console.log('response: ', response) //TODO - SLETT MEG
 				setIdentOptions(
 					response?.filter((person) => {
-						return (
-							person.value !== eksisterendeIdent &&
-							(eksisterendePersonPath?.includes('sivilstand')
-								? gyldigeSivilstanderForPartner.includes(person.sivilstand)
-								: true)
-						)
+						return person.value !== eksisterendeIdent && filterOptions(person)
 					})
 				)
 				setLoadingIdentOptions(false)
 			})
 		}
 	}, [])
+
+	console.log('identOptions: ', identOptions) //TODO - SLETT MEG
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg)

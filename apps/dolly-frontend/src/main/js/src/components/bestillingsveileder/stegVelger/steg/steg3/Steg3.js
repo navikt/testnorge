@@ -19,7 +19,7 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const bankIdBruker = brukertype === 'BANKID'
 
 	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
-	const harRelatertPersonVedSivilstand = sivilstand.some((item) => item.relatertVedSivilstand)
+	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {

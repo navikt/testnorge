@@ -3,6 +3,7 @@ import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi } from '~/ser
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { getAlder } from '~/ducks/fagsystem'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -10,7 +11,9 @@ export type Option = {
 	value: any
 	label: string
 	tema?: string
+	alder?: number
 	sivilstand?: string
+	vergemaal?: boolean
 }
 
 type Data = {
@@ -20,6 +23,14 @@ type Data = {
 	value: {
 		data: any
 	}
+}
+
+type PersonListe = {
+	value: string
+	label: string
+	alder: number
+	sivilstand: string
+	vergemaal: boolean
 }
 
 export const SelectOptionsOppslag = {
@@ -38,12 +49,15 @@ export const SelectOptionsOppslag = {
 			if (gruppe.length < 1) {
 				return null
 			}
-			const personListe: Array<{ value: string; label: string; sivilstand: string }> = []
+			const personListe: Array<PersonListe> = []
 			response.data.forEach((id: Person) => {
+				// console.log('id: ', id) //TODO - SLETT MEG
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
+					alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
 					sivilstand: id.person.sivilstand?.[0]?.type,
+					vergemaal: id.person.vergemaal?.length > 0,
 				})
 			})
 			return personListe

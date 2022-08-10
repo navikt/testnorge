@@ -23,6 +23,7 @@ export type PersonData = {
 	foreldreansvar?: Array<Foreldreansvar>
 	innflytting?: Array<Innflytting>
 	utflytting?: Array<Utflytting>
+	vergemaal?: Array<Vergemaal>
 }
 
 export type PersonUtenIdData = {
