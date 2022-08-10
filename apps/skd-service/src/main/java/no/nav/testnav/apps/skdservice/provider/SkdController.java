@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
-public class SyntetiseringController {
+public class SkdController {
 
     private final FasteMeldingerService fasteMeldingerService;
-
 
     @Operation(description = "Her kan man starte avspilling av en TPSF-avspillergruppe. Dette innebærer at alle skd-meldingene i en gitt gruppe sendes til TPS i et gitt miljø.")
     @PostMapping(value = "/startAvspilling/{avspillergruppeId}")
