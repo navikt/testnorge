@@ -5,13 +5,11 @@ spring:
     version: application.version.todo
     name: testnorge-tp
     description: todo
-
+  datasource.driver-class-name: oracle.jdbc.driver.OracleDriver
 
 multitenancy.header.name: X-DB-TENANT
 multitenancy.key.default: q2
 hibernate.multiTenancy: DATABASE
-
-spring.datasource.driver-class-name: oracle.jdbc.driver.OracleDriver
 
 consumers:
   synt-tp-gcp:

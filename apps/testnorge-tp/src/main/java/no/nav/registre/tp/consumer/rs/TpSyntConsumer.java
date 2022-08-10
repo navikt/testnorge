@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -44,7 +45,14 @@ public class TpSyntConsumer {
     public List<TYtelse> getSyntYtelser(
             int numToGenerate
     ) {
-        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
-        return new GetSyntTpYtelserCommand(numToGenerate, token, webClient).call();
+        try{
+            return tokenExchange.exchange(serviceProperties)
+                    .flatMap(accessToken -> new GetSyntTpYtelserCommand(
+                            numToGenerate, accessToken.getTokenValue(), webClient).call())
+                    .block();
+        } catch (Exception e) {
+            log.error("Klarte ikke hente meldinger fra synthdata-tp.", e);
+            return new LinkedList<>();
+        }
     }
 }
