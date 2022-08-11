@@ -6,6 +6,7 @@ import no.nav.testnav.apps.skdservice.consumer.TpsfConsumer;
 import no.nav.testnav.apps.skdservice.consumer.command.requests.SendToTpsRequest;
 import no.nav.testnav.apps.skdservice.consumer.response.SkdMeldingerTilTpsRespons;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -14,12 +15,11 @@ public class FasteMeldingerService {
 
     private final TpsfConsumer tpsfConsumer;
 
-    public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(
+    public Mono<SkdMeldingerTilTpsRespons> startAvspillingAvTpsfAvspillergruppe(
             Long avspillergruppeId,
-            String miljoe
-    ) {
-        var meldingIdsFromAvspillergruppe = tpsfConsumer.getMeldingIdsFromAvspillergruppe(avspillergruppeId);
-        var sendToTpsRequest = new SendToTpsRequest(miljoe, meldingIdsFromAvspillergruppe);
-        return tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
+            String miljoe) {
+
+        return tpsfConsumer.getMeldingIdsFromAvspillergruppe(avspillergruppeId)
+                .flatMap(meldingIds -> tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, new SendToTpsRequest(miljoe, meldingIds)));
     }
 }

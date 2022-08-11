@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,13 +28,15 @@ public class SkdControllerTest {
     @Test
     public void shouldStartAvspilling() {
         when(fasteMeldingerService.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe))
-                .thenReturn(SkdMeldingerTilTpsRespons.builder()
+                .thenReturn(Mono.just(SkdMeldingerTilTpsRespons.builder()
                         .antallSendte(1)
                         .antallFeilet(0)
-                        .build());
-        var response = skdController.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
+                        .build()));
+        var response = skdController
+                .startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe).block();
 
         verify(fasteMeldingerService).startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
+        assertThat(response).isNotNull();
         assertThat(response.getAntallSendte()).isEqualTo(1);
         assertThat(response.getAntallFeilet()).isZero();
     }

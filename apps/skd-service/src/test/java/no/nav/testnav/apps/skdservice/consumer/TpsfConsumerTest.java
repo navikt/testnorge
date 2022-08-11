@@ -2,8 +2,8 @@ package no.nav.testnav.apps.skdservice.consumer;
 
 import no.nav.testnav.apps.skdservice.consumer.command.requests.SendToTpsRequest;
 import no.nav.testnav.apps.skdservice.consumer.credential.TpsfProxyProperties;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,8 +79,9 @@ public class TpsfConsumerTest {
 
         stubTpsfConsumerSendSkdMelding();
 
-        var response = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest);
+        var response = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest).block();
 
+        assertThat(response).isNotNull();
         assertThat(expectedAntallSendte).isEqualTo(response.getAntallSendte());
         assertThat(expectedAntallFeilet).isEqualTo(response.getAntallFeilet());
 

@@ -7,11 +7,12 @@ import no.nav.testnav.apps.skdservice.consumer.command.PostSendSkdMeldingerTpsCo
 import no.nav.testnav.apps.skdservice.consumer.command.requests.SendToTpsRequest;
 import no.nav.testnav.apps.skdservice.consumer.credential.TpsfProxyProperties;
 import no.nav.testnav.apps.skdservice.consumer.response.SkdMeldingerTilTpsRespons;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -20,13 +21,13 @@ import java.util.List;
 public class TpsfConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final TpsfProxyProperties serviceProperties;
 
     public TpsfConsumer(
             TpsfProxyProperties serviceProperties,
             TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction
-    ) {
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
@@ -36,20 +37,18 @@ public class TpsfConsumer {
     }
 
     @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
-    public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(
+    public Mono<SkdMeldingerTilTpsRespons> sendSkdmeldingerToTps(
             Long gruppeId,
-            SendToTpsRequest sendToTpsRequest
-    ) {
+            SendToTpsRequest sendToTpsRequest) {
+
         log.info("Sender skd-meldinger med avspillergruppe {} til tps", gruppeId);
         return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
-                        new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient, accessToken.getTokenValue()).call())
-                .block();
+                        new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient, accessToken.getTokenValue()).call());
     }
 
     @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
-    public List<Long> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
-        return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
-                        new GetMeldingsIdsCommand(gruppeId, webClient, accessToken.getTokenValue()).call())
-                .block();
+    public Mono<List<Long>> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
+        return tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new GetMeldingsIdsCommand(gruppeId, webClient, accessToken.getTokenValue()).call());
     }
 }

@@ -3,7 +3,7 @@ Testnav-skd-service er en applikasjon brukt for å starte avspilling av en TPSF-
 skd-meldingene i en gitt gruppe sendes til TPS i et gitt miljø.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-skd-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger-ui.html](https://testnav-skd-service.dev.intern.nav.no/swagger-ui.html) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 
