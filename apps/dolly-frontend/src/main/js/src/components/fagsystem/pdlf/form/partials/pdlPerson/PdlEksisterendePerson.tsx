@@ -8,7 +8,7 @@ import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/s
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
-import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreBarnRelasjon, NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 interface PdlEksisterendePersonValues {
@@ -47,6 +47,19 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
+	const valgteBarn = _get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
+		?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
+		?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
+
+	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
+		let harEksisterendeAnsvar = false
+		valgteBarn?.forEach((barn: string) => {
+			if (foreldreansvar.includes(barn)) {
+				harEksisterendeAnsvar = true
+			}
+		})
+		return harEksisterendeAnsvar
+	}
 	const filterOptions = (person: Option) => {
 		if (harSivilstand) {
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
@@ -57,6 +70,12 @@ export const PdlEksisterendePerson = ({
 			eksisterendePersonPath?.includes('kontaktinformasjonForDoedsbo')
 		) {
 			return person.alder > 17
+		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
+			return (
+				!harForeldreansvarForValgteBarn(person.foreldreansvar) &&
+				!person.doedsfall &&
+				person.alder > 17
+			)
 		}
 		return true
 	}

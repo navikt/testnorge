@@ -24,6 +24,7 @@ export type PersonData = {
 	innflytting?: Array<Innflytting>
 	utflytting?: Array<Utflytting>
 	vergemaal?: Array<Vergemaal>
+	doedsfall?: Array<DoedsfallData>
 }
 
 export type PersonUtenIdData = {

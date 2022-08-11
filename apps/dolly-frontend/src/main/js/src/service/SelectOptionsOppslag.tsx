@@ -14,6 +14,8 @@ export type Option = {
 	alder?: number
 	sivilstand?: string
 	vergemaal?: boolean
+	doedsfall?: boolean
+	foreldreansvar: Array<string>
 }
 
 type Data = {
@@ -31,6 +33,8 @@ type PersonListe = {
 	alder: number
 	sivilstand: string
 	vergemaal: boolean
+	doedsfall: boolean
+	foreldreansvar: Array<string>
 }
 
 export const SelectOptionsOppslag = {
@@ -58,6 +62,10 @@ export const SelectOptionsOppslag = {
 					alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
 					sivilstand: id.person.sivilstand?.[0]?.type,
 					vergemaal: id.person.vergemaal?.length > 0,
+					doedsfall: id.person.doedsfall?.length > 0,
+					foreldreansvar: id.relasjoner
+						?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
+						?.map((relasjon) => relasjon.relatertPerson?.ident),
 				})
 			})
 			return personListe
