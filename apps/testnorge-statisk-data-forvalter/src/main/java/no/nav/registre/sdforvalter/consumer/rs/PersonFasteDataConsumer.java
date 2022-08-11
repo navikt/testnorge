@@ -2,7 +2,7 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.config.credentials.PersonFasteDataServiceProperties;
-import no.nav.registre.sdforvalter.consumer.rs.commnad.SavePersonFasteDataCommand;
+import no.nav.registre.sdforvalter.consumer.rs.command.SavePersonFasteDataCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;

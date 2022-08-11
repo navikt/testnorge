@@ -137,6 +137,7 @@ includeBuild './apps/organisasjon-tilgang-frontend'
 includeBuild './apps/import-fra-tpsf-service'
 includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
+includeBuild './apps/skd-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
