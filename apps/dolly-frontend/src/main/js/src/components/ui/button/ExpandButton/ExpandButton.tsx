@@ -12,8 +12,9 @@ export default function ExpandButton({
 	expanded = false,
 	disabled = false,
 	onClick,
-}: ExpandButtonProps) {
+}: ExpandButtonProps): JSX.Element {
 	const iconType = expanded ? 'chevron-up' : 'chevron-down'
+	const label: string = expanded ? 'Lukk' : 'Åpne'
 	return (
 		<Button
 			className={'expandButton'}
@@ -21,9 +22,9 @@ export default function ExpandButton({
 			kind={iconType}
 			onClick={onClick}
 			disabled={disabled}
-			aria-label={expanded ? 'Lukk' : 'Åpne'}
+			aria-label={label}
 		>
-			{expanded ? 'Lukk' : 'Åpne'}
+			{label}
 		</Button>
 	)
 }
