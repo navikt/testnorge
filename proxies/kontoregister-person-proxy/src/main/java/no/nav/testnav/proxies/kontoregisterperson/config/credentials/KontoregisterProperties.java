@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class KontoregisterProperties extends ServerProperties {
     @Override
     public String toAzureAdScope() {
+        // det er scope som må bruker for hente token
         return "api://d750bf57-b75f-425b-b8df-24a0c3673768/.default";
     }
 }
