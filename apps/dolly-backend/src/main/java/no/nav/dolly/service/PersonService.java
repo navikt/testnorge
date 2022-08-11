@@ -16,6 +16,12 @@ import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +38,8 @@ import static java.util.Objects.nonNull;
 @Service
 @RequiredArgsConstructor
 public class PersonService {
+
+    private static final int PAGE_SIZE = 100;
 
     private final TpsfService tpsfService;
     private final List<ClientRegister> clientRegister;
@@ -83,7 +91,6 @@ public class PersonService {
                     .distinct()
                     .toList();
 
-
             pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner)
                     .subscribe(response -> log.info("Slettet antall {} identer (master TPS) mot PDL-forvalter", identerInkludertRelasjoner.size()));
         }
@@ -95,7 +102,47 @@ public class PersonService {
                     .map(TestidentDTO::getIdent)
                     .toList();
 
-            pdlDataConsumer.slettPdl(pdlfIdenter)
+            var pdlfRelasjoner = Flux.range(0, (pdlfIdenter.size() / PAGE_SIZE) + 1)
+                    .flatMap(index -> pdlDataConsumer.getPersoner(pdlfIdenter, index * PAGE_SIZE,
+                            Math.min((index + 1) * PAGE_SIZE, pdlfIdenter.size())))
+                    .map(person -> Stream.of(
+                                    person.getPerson().getSivilstand().stream()
+                                            .filter(sivilstand -> !sivilstand.isEksisterendePerson())
+                                            .map(SivilstandDTO::getRelatertVedSivilstand)
+                                            .toList(),
+                                    person.getPerson().getForelderBarnRelasjon().stream()
+                                            .filter(relasjon -> !relasjon.isEksisterendePerson())
+                                            .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                            .toList(),
+                                    person.getPerson().getForeldreansvar().stream()
+                                            .filter(ansvar -> !ansvar.isEksisterendePerson())
+                                            .map(ForeldreansvarDTO::getAnsvarlig)
+                                            .toList(),
+                                    person.getPerson().getVergemaal().stream()
+                                            .filter(vergemaal -> !vergemaal.isEksisterendePerson())
+                                            .map(VergemaalDTO::getVergeIdent)
+                                            .toList(),
+                                    person.getPerson().getFullmakt().stream()
+                                            .filter(fullmakt -> !fullmakt.isEksisterendePerson())
+                                            .map(FullmaktDTO::getMotpartsPersonident)
+                                            .toList(),
+                                    person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                            .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                            .filter(Objects::nonNull)
+                                            .filter(personKontakt -> !personKontakt.isEksisterendePerson())
+                                            .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                            .toList())
+                            .flatMap(Collection::stream)
+                            .filter(Objects::nonNull)
+                            .toList())
+                    .flatMap(Flux::fromIterable)
+                    .distinct()
+                    .collectList()
+                    .block();
+
+            pdlDataConsumer.slettPdl(pdlfIdenter.stream()
+                            .filter(ident -> pdlfRelasjoner.stream().noneMatch(relasjon -> relasjon.equals(ident)))
+                            .toList())
                     .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", pdlfIdenter.size()));
         }
 
@@ -126,18 +173,19 @@ public class PersonService {
                     .map(person -> Stream.of(
                                     person.getPerson().getSivilstand().stream()
                                             .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                            .filter(Objects::nonNull)
                                             .toList(),
                                     person.getPerson().getForelderBarnRelasjon().stream()
                                             .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                            .filter(Objects::nonNull)
+                                            .toList(),
+                                    person.getPerson().getForeldreansvar().stream()
+                                            .map(ForeldreansvarDTO::getAnsvarlig)
                                             .toList(),
                                     person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
                                             .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
                                             .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                            .filter(Objects::nonNull)
                                             .toList())
                             .flatMap(Collection::stream)
+                            .filter(Objects::nonNull)
                             .toList())
                     .flatMap(Flux::fromIterable)
                     .distinct()
