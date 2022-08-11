@@ -49,7 +49,7 @@ public class FasteMeldingerServiceTest {
         verify(tpsfConsumer).getMeldingIdsFromAvspillergruppe(avspillergruppeId);
         verify(tpsfConsumer).sendSkdmeldingerToTps(eq(avspillergruppeId), any());
         assertThat(response).isNotNull();
-        assertThat(1).isEqualTo(response.getAntallSendte());
-        assertThat(0).isEqualTo(response.getAntallFeilet());
+        assertThat(response.getAntallSendte()).isEqualTo(1);
+        assertThat(response.getAntallFeilet()).isEqualTo(0);
     }
 }
