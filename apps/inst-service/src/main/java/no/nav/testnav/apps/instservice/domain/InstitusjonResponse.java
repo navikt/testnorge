@@ -22,5 +22,4 @@ public class InstitusjonResponse {
     private List<InstitusjonsoppholdV2> q4;
     private List<InstitusjonsoppholdV2> t0;
     private List<InstitusjonsoppholdV2> t4;
-    private List<InstitusjonsoppholdV2> t6;
 }

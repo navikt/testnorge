@@ -11,59 +11,61 @@ import no.nav.testnav.apps.instservice.util.WebClientFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostInstitusjonsoppholdCommand implements Callable<OppholdResponse> {
+public class PostInstitusjonsoppholdCommand implements Callable<Mono<OppholdResponse>> {
     private final WebClient webClient;
     private final String token;
     private final String miljoe;
     private final InstitusjonsoppholdV2 institusjonsopphold;
 
+    protected static String getMessage(Throwable error) {
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
+                error.getMessage();
+    }
+
     @SneakyThrows
     @Override
-    public OppholdResponse call() {
-        try {
-            var response = webClient.post()
-                    .uri(builder ->
-                            builder.path("/api/v1/institusjonsopphold/person")
-                                    .queryParam("environments", miljoe)
-                                    .build()
-                    )
-                    .header(ACCEPT, "application/json")
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .bodyValue(institusjonsopphold)
-                    .retrieve()
-                    .toEntity(Institusjonsopphold.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
-                    .block();
+    public Mono<OppholdResponse> call() {
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/institusjonsopphold/person")
+                                .queryParam("environments", miljoe)
+                                .build()
+                )
+                .header(ACCEPT, "application/json")
+                .header(AUTHORIZATION, "Bearer " + token)
+                .bodyValue(institusjonsopphold)
+                .retrieve()
+                .bodyToMono(Institusjonsopphold.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .flatMap(institusjonsopphold -> Mono.just(OppholdResponse.builder()
+                        .status(HttpStatus.OK)
+                        .institusjonsopphold(institusjonsopphold)
+                        .build()))
+                .onErrorResume(throwable -> {
+                    var message = getMessage(throwable);
+                    log.error("Feil oppsto under opprettelse av institusjonsopphold: " + message);
 
-            if (nonNull(response)){
-                return OppholdResponse.builder()
-                        .status(response.getStatusCode())
-                        .institusjonsopphold(response.getBody())
-                        .build();
-            } else {
-                return OppholdResponse.builder()
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .feilmelding("Ukjent feil oppsto under opprettelse av institusjonsopphold")
-                        .build();
-            }
-        } catch (WebClientResponseException e) {
-            log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
-            return OppholdResponse.builder()
-                    .status(e.getStatusCode())
-                    .feilmelding(e.getResponseBodyAsString())
-                    .build();
-        }
+                    var status = HttpStatus.INTERNAL_SERVER_ERROR;
+                    if (throwable instanceof WebClientResponseException) {
+                        status = ((WebClientResponseException) throwable).getStatusCode();
+                    }
+                    return Mono.just(OppholdResponse.builder()
+                            .status(status)
+                            .feilmelding(message)
+                            .build());
+                });
     }
 }

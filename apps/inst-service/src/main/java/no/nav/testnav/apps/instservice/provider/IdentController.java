@@ -31,8 +31,8 @@ public class IdentController {
     @Operation(description = "Her kan man opprette ett institusjonsopphold i inst2.")
     public OppholdResponse opprettInstitusjonsopphold(
             @RequestParam String miljoe,
-            @RequestBody InstitusjonsoppholdV2 institusjonsopphold
-    ) {
+            @RequestBody InstitusjonsoppholdV2 institusjonsopphold) {
+
         return identService.sendTilInst2(miljoe, institusjonsopphold);
     }
 
@@ -40,8 +40,8 @@ public class IdentController {
     @Operation(description = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer fra inst2.")
     public List<InstitusjonsoppholdV2> hentInstitusjonsopphold(
             @RequestParam String miljoe,
-            @RequestParam List<String> identer
-    ) {
+            @RequestParam List<String> identer) {
+
         return identService.hentOppholdTilIdenter(miljoe, identer);
     }
 
@@ -55,8 +55,8 @@ public class IdentController {
     @Operation(description = "Her kan man opprette flere institusjonsopphold i inst2.")
     public List<OppholdResponse> opprettFlereInstitusjonsopphold(
             @RequestParam String miljoe,
-            @RequestBody List<InstitusjonsoppholdV2> institusjonsopphold
-    ) {
+            @RequestBody List<InstitusjonsoppholdV2> institusjonsopphold) {
+
         return identService.opprettInstitusjonsopphold(miljoe, institusjonsopphold);
     }
 
@@ -64,8 +64,8 @@ public class IdentController {
     @Operation(description = "Her kan man slette alle institusjonsoppholdene til de angitte identene fra inst2.")
     public List<OppholdResponse> slettIdenter(
             @RequestParam String miljoe,
-            @RequestParam List<String> identer
-    ) {
+            @RequestParam List<String> identer) {
+
         return identService.slettInstitusjonsoppholdTilIdenter(miljoe, identer);
     }
 }

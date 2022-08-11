@@ -8,7 +8,6 @@ import no.nav.testnav.apps.instservice.consumer.command.PostInstitusjonsoppholdC
 import no.nav.testnav.apps.instservice.consumer.credential.InstTestdataProperties;
 import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
-import no.nav.testnav.apps.instservice.exception.UgyldigIdentResponseException;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -18,7 +17,6 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
@@ -46,59 +44,47 @@ public class InstTestdataConsumer {
 
     public InstitusjonResponse hentInstitusjonsoppholdFraInst2(
             String miljoe,
-            String ident
-    ) {
-        try {
-            var response = tokenExchange.exchange(properties)
-                    .flatMap(accessToken -> new GetInstitusjonsoppholdCommand(
-                            webClient, accessToken.getTokenValue(), miljoe, ident).call())
-                    .block();
-            return nonNull(response) ? response : new InstitusjonResponse();
-        } catch (Exception e) {
-            log.error("Kunne ikke hente ident fra inst2", e);
-            throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2", e);
-        }
+            String ident) {
+
+        var response = tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new GetInstitusjonsoppholdCommand(
+                        webClient, accessToken.getTokenValue(), miljoe, ident).call())
+                .block();
+        return nonNull(response) ? response : new InstitusjonResponse();
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(
             String miljoe,
-            InstitusjonsoppholdV2 institusjonsopphold
-    ) {
-        var token = Objects.requireNonNull(tokenExchange.exchange(properties).block()).getTokenValue();
-        return new PostInstitusjonsoppholdCommand(webClient, token, miljoe, institusjonsopphold).call();
+            InstitusjonsoppholdV2 institusjonsopphold) {
+
+        return tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new PostInstitusjonsoppholdCommand(
+                        webClient, accessToken.getTokenValue(), miljoe, institusjonsopphold).call())
+                .block();
     }
 
     public ResponseEntity<Object> slettInstitusjonsoppholdMedIdent(
             String miljoe,
-            String ident
-    ) {
-        try {
-            var response = tokenExchange.exchange(properties)
-                    .flatMap(accessToken -> new DeleteInstitusjonsoppholdCommand(
-                            webClient, accessToken.getTokenValue(), miljoe, ident).call())
-                    .block();
-            return nonNull(response)
-                    ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
-                    : ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            log.error("Kunne ikke slette institusjonsopphold: ", e);
-            return ResponseEntity.internalServerError().build();
-        }
+            String ident) {
+
+        var response = tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new DeleteInstitusjonsoppholdCommand(
+                        webClient, accessToken.getTokenValue(), miljoe, ident).call())
+                .block();
+        return nonNull(response)
+                ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
+                : ResponseEntity.notFound().build();
     }
 
     public List<String> hentInst2TilgjengeligeMiljoer() {
-        try {
-            var response = tokenExchange.exchange(properties)
-                    .flatMap(accessToken -> new GetTilgjengeligeMiljoerCommand(
-                            webClient, accessToken.getTokenValue()).call())
-                    .block();
-            if (nonNull(response) && !response.getInstitusjonsoppholdEnvironments().isEmpty()) {
-                return response.getInstitusjonsoppholdEnvironments().stream().sorted().toList();
-            } else {
-                return emptyList();
-            }
-        } catch (Exception e) {
-            log.error("Henting av tilgjengelige miljøer i Inst2 feilet: ", e);
+
+        var response = tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new GetTilgjengeligeMiljoerCommand(
+                        webClient, accessToken.getTokenValue()).call())
+                .block();
+        if (nonNull(response) && !response.getInstitusjonsoppholdEnvironments().isEmpty()) {
+            return response.getInstitusjonsoppholdEnvironments().stream().sorted().toList();
+        } else {
             return emptyList();
         }
     }

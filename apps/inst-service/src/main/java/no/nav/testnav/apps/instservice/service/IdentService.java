@@ -25,8 +25,8 @@ public class IdentService {
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
             String miljoe,
-            List<InstitusjonsoppholdV2> oppholdene
-    ) {
+            List<InstitusjonsoppholdV2> oppholdene) {
+
         List<OppholdResponse> statusFraInst2 = new ArrayList<>(oppholdene.size());
         for (var opphold : oppholdene) {
             opphold.setRegistrertAv(KILDE);
@@ -38,8 +38,8 @@ public class IdentService {
 
     public OppholdResponse sendTilInst2(
             String miljoe,
-            InstitusjonsoppholdV2 opphold
-    ) {
+            InstitusjonsoppholdV2 opphold) {
+
         log.info("Sender institusjonsopphold til inst2: " + opphold);
         var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(miljoe, opphold);
         oppholdResponse.setPersonident(opphold.getNorskident());
@@ -48,8 +48,8 @@ public class IdentService {
 
     public List<OppholdResponse> slettInstitusjonsoppholdTilIdenter(
             String miljoe,
-            List<String> identer
-    ) {
+            List<String> identer) {
+
         List<OppholdResponse> sletteOppholdResponses = new ArrayList<>(identer.size());
 
         for (var ident : identer) {
@@ -103,7 +103,6 @@ public class IdentService {
             case "q4" -> response.getQ4();
             case "t0" -> response.getT0();
             case "t4" -> response.getT4();
-            case "t6" -> response.getT6();
             default -> Collections.emptyList();
         };
     }

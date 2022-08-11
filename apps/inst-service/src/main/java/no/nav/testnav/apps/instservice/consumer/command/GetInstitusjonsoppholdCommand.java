@@ -9,13 +9,13 @@ import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.exception.UgyldigIdentResponseException;
 import no.nav.testnav.apps.instservice.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.instservice.consumer.command.PostInstitusjonsoppholdCommand.getMessage;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.ACCEPT;
 import static no.nav.testnav.apps.instservice.properties.HttpRequestConstants.AUTHORIZATION;
 
@@ -30,23 +30,22 @@ public class GetInstitusjonsoppholdCommand implements Callable<Mono<InstitusjonR
     @SneakyThrows
     @Override
     public Mono<InstitusjonResponse> call() {
-        try {
-            return webClient.get()
-                    .uri(builder ->
-                            builder.path("/api/v1/institusjonsopphold/person")
-                                    .queryParam("environments", miljoe)
-                                    .build()
-                    )
-                    .header(ACCEPT, "application/json")
-                    .header(AUTHORIZATION, "Bearer " + token)
-                    .header("norskident", ident)
-                    .retrieve()
-                    .bodyToMono(InstitusjonResponse.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException));
-        } catch (WebClientResponseException e) {
-            log.error("Kunne ikke hente ident fra inst2", e);
-            throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2", e);
-        }
+        return webClient.get()
+                .uri(builder ->
+                        builder.path("/api/v1/institusjonsopphold/person")
+                                .queryParam("environments", miljoe)
+                                .build()
+                )
+                .header(ACCEPT, "application/json")
+                .header(AUTHORIZATION, "Bearer " + token)
+                .header("norskident", ident)
+                .retrieve()
+                .bodyToMono(InstitusjonResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> {
+                    log.error("Kunne ikke hente ident fra inst2: " + getMessage(throwable));
+                    throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2: ", throwable);
+                });
     }
 }
