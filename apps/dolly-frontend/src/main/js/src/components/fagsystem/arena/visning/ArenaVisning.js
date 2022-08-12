@@ -127,7 +127,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 			{useStandard ? (
 				<div>
 					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
-					{!data && harArenasyntTag && <TagAlert />}
+					{harArenasyntTag && !data && <TagAlert />}
 					<div className="person-visning_content">
 						<Visning data={visningData} />
 					</div>
@@ -135,7 +135,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 			) : (
 				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
 					<div className="person-visning">
-						{!data && harArenasyntTag && <TagAlert />}
+						{harArenasyntTag && !data && <TagAlert />}
 						<div className="person-visning_content">
 							<Visning data={visningData} />
 						</div>
