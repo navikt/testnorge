@@ -101,13 +101,14 @@ public class PdlDataConsumer {
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {
 
-        return getPersoner(identer, 0, 10);
+        return getPersoner(identer, 0, 10).collectList().block();
     }
 
-    public List<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
+    public Flux<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
 
-        return List.of(new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
-                serviceProperties.getAccessToken(tokenService)).call().block());
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
+                        token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_identCheck"})
