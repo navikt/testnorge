@@ -63,7 +63,7 @@ public class SyntService {
             log.warn("Fortsetter execution men sløyfer de siste ytelsene");
         }
         if (ids.size() > ytelser.size()) {
-            String formated = String.format("Invalid amount of ytelser: %d, fnrs: %d", ytelser.size(), ids.size());
+            String formated = String.format("Ugyldig antall ytelser: %d, fnrs: %d", ytelser.size(), ids.size());
             log.warn(formated);
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, formated);
         }
