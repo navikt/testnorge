@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +41,9 @@ import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class EksisterendeIdenterService {
 
     private static final String STATUS_QUO_FEILMELDING = "Kunne ikke hente status quo på ident {} - ";
@@ -59,20 +61,11 @@ public class EksisterendeIdenterService {
     private static final String AKSJONSKODE_A2 = "A2";
     public static final String TRANSAKSJONSTYPE = "1";
 
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
-
-    @Autowired
-    private TpsStatusQuoService tpsStatusQuoService;
-
-    @Autowired
-    private CacheService cacheService;
-
-    @Autowired
-    private TpsfFiltreringService tpsfFiltreringService;
-
-    @Autowired
-    private Random rand;
+    private final TpsfConsumer tpsfConsumer;
+    private final TpsStatusQuoService tpsStatusQuoService;
+    private final CacheService cacheService;
+    private final TpsfFiltreringService tpsfFiltreringService;
+    private final Random rand;
 
     public Flux<String> hentLevendeIdenter(
             Long gruppeId,
@@ -113,7 +106,7 @@ public class EksisterendeIdenterService {
                 .filter(value -> value.getResponse().getData1().getFnr() != null)
                 .map(value -> {
                     var index = count.incrementAndGet();
-                    if(index % 10 == 0) {
+                    if (index % 10 == 0) {
                         log.info("Hentet {}", index);
                     }
                     return value.getResponse().getData1().getFnr();
@@ -271,7 +264,10 @@ public class EksisterendeIdenterService {
             int minimumAlder
     ) {
         var identer = cacheService.hentLevendeIdenterCache(avspillergruppeId);
-        return identer.stream().filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
+        return identer.stream()
+                .filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident)
+                        .isBefore(LocalDate.now().minusYears(minimumAlder)))
+                .toList();
     }
 
     public List<String> finnLevendeIdenterIAldersgruppe(
@@ -445,7 +441,13 @@ public class EksisterendeIdenterService {
             int minimumAlder,
             int maksimumAlder
     ) {
-        var identerOverAlder = identer.stream().filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident).isBefore(LocalDate.now().minusYears(minimumAlder))).collect(Collectors.toList());
-        return identerOverAlder.stream().filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident).isAfter(LocalDate.now().minusYears(maksimumAlder))).collect(Collectors.toList());
+        var identerOverAlder = identer.stream()
+                .filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident)
+                        .isBefore(LocalDate.now().minusYears(minimumAlder)))
+                .toList();
+        return identerOverAlder.stream()
+                .filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident)
+                        .isAfter(LocalDate.now().minusYears(maksimumAlder)))
+                .toList();
     }
 }

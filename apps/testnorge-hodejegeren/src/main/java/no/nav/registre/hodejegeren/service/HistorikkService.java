@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.logging.Level;
 import no.nav.registre.hodejegeren.logging.LogEvent;
@@ -88,7 +87,7 @@ public class HistorikkService {
         results.forEach(historikk -> historikk.getKilder().removeIf(kilde -> !kilder.contains(kilde.getNavn())));
 
         Collections.shuffle(results);
-        return results.stream().limit(pageSize).collect(Collectors.toList());
+        return results.stream().limit(pageSize).toList();
     }
 
     public Set<String> hentIdsMedKilder(List<String> kilder) {

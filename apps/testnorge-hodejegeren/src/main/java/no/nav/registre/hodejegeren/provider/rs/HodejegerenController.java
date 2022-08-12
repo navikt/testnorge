@@ -2,7 +2,7 @@ package no.nav.registre.hodejegeren.provider.rs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
-import no.nav.registre.hodejegeren.domain.Person;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
@@ -31,19 +28,15 @@ import no.nav.registre.hodejegeren.service.EksisterendeIdenterService;
 import no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 
 @RestController
+@RequiredArgsConstructor
 public class HodejegerenController {
 
     public static final int MIN_ALDER = 0;
     public static final int MAX_ALDER = 200;
 
-    @Autowired
-    private EksisterendeIdenterService eksisterendeIdenterService;
-
-    @Autowired
-    private CacheService cacheService;
-
-    @Autowired
-    private EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
+    private final EksisterendeIdenterService eksisterendeIdenterService;
+    private final CacheService cacheService;
+    private final EndringskodeTilFeltnavnMapperService endringskodeTilFeltnavnMapperService;
 
     @ApiOperation(value = "Her kan man hente alle identer i en gitt avspillergruppe i TPSF.")
     @GetMapping("api/v1/alle-identer/{avspillergruppeId}")

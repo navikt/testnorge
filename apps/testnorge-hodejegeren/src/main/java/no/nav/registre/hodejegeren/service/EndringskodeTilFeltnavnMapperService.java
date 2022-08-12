@@ -1,6 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class EndringskodeTilFeltnavnMapperService {
 
     public static final String DATO_DO = "datoDo";
@@ -22,8 +23,7 @@ public class EndringskodeTilFeltnavnMapperService {
     private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_PERSRELA = "FS03-FDNUMMER-PERSRELA-O";
 
-    @Autowired
-    private TpsStatusQuoService tpsStatusQuoService;
+    private final TpsStatusQuoService tpsStatusQuoService;
 
     public Map<String, String> getStatusQuoFraAarsakskode(String endringskode, String environment, String fnr) throws IOException {
         Map<String, String> personStatusQuo = new HashMap<>();
@@ -32,49 +32,22 @@ public class EndringskodeTilFeltnavnMapperService {
         var endringskoden = Endringskoder.getEndringskodeFraVerdi(endringskode);
 
         switch (endringskoden) {
-        case NAVNEENDRING_FOERSTE:
-        case NAVNEENDRING_MELDING:
-        case NAVNEENDRING_KORREKSJON:
-        case ADRESSEENDRING_UTEN_FLYTTING:
-        case ADRESSEKORREKSJON:
-        case UTVANDRING:
-        case FARSKAP_MEDMORSKAP:
-        case ENDRING_STATSBORGERSKAP_BIBEHOLD:
-        case ENDRING_FAMILIENUMMER:
-        case FOEDSELSNUMMERKORREKSJON:
-        case ENDRING_FORELDREANSVAR:
-        case ENDRING_OPPHOLDSTILLATELSE:
-        case ENDRING_POSTADRESSE_TILLEGGSADRESSE:
-        case ENDRING_POSTNUMMER_SKOLE_VALG_GRUNNKRETS:
-        case KOMMUNEREGULERING:
-        case ADRESSEENDRING_GAB:
-        case ENDRING_KORREKSJON_FOEDESTED:
-        case ENDRING_DUF_NUMMER:
-        case FLYTTING_INNEN_KOMMUNEN:
-        case FOEDSELSMELDING:
-        case UREGISTRERT_PERSON:
-            feltnavn = Arrays.asList(DATO_DO, STATSBORGER);
-            personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
-            break;
-        case VIGSEL:
-        case SEPERASJON:
-        case SKILSMISSE:
-        case KORREKSJON_FAMILIEOPPLYSNINGER:
-        case DOEDSMELDING:
-            feltnavn = Arrays.asList(DATO_DO, STATSBORGER, "sivilstand", "datoSivilstand");
-            personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
-            feltnavn = Collections.singletonList(FNR_RELASJON);
-            personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSRELA, feltnavn, environment, fnr));
-            break;
-        case ANNULERING_FLYTTING_ADRESSEENDRING:
-        case INNFLYTTING_ANNEN_KOMMUNE:
-            feltnavn = Arrays.asList(DATO_DO, STATSBORGER, "kommunenr", "datoFlyttet");
-            personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
-            break;
-        case INNVANDRING:
-        case TILDELING_DNUMMER:
-        default:
-            break;
+            case NAVNEENDRING_FOERSTE, NAVNEENDRING_MELDING, NAVNEENDRING_KORREKSJON, ADRESSEENDRING_UTEN_FLYTTING, ADRESSEKORREKSJON, UTVANDRING, FARSKAP_MEDMORSKAP, ENDRING_STATSBORGERSKAP_BIBEHOLD, ENDRING_FAMILIENUMMER, FOEDSELSNUMMERKORREKSJON, ENDRING_FORELDREANSVAR, ENDRING_OPPHOLDSTILLATELSE, ENDRING_POSTADRESSE_TILLEGGSADRESSE, ENDRING_POSTNUMMER_SKOLE_VALG_GRUNNKRETS, KOMMUNEREGULERING, ADRESSEENDRING_GAB, ENDRING_KORREKSJON_FOEDESTED, ENDRING_DUF_NUMMER, FLYTTING_INNEN_KOMMUNEN, FOEDSELSMELDING, UREGISTRERT_PERSON -> {
+                feltnavn = Arrays.asList(DATO_DO, STATSBORGER);
+                personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
+            }
+            case VIGSEL, SEPERASJON, SKILSMISSE, KORREKSJON_FAMILIEOPPLYSNINGER, DOEDSMELDING -> {
+                feltnavn = Arrays.asList(DATO_DO, STATSBORGER, "sivilstand", "datoSivilstand");
+                personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
+                feltnavn = Collections.singletonList(FNR_RELASJON);
+                personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSRELA, feltnavn, environment, fnr));
+            }
+            case ANNULERING_FLYTTING_ADRESSEENDRING, INNFLYTTING_ANNEN_KOMMUNE -> {
+                feltnavn = Arrays.asList(DATO_DO, STATSBORGER, "kommunenr", "datoFlyttet");
+                personStatusQuo.putAll(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, feltnavn, environment, fnr));
+            }
+            default -> {
+            }
         }
 
         return personStatusQuo;

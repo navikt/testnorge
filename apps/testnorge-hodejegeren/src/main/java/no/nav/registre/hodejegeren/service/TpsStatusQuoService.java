@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,15 +17,15 @@ import java.util.Map;
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 
-@Service
-@Getter
 @Slf4j
+@Getter
+@Service
+@RequiredArgsConstructor
 public class TpsStatusQuoService {
 
     public static final String AKSJONSKODE = "B0";
 
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
+    private final TpsfConsumer tpsfConsumer;
 
     public Map<String, String> hentStatusQuo(
             String routineName,

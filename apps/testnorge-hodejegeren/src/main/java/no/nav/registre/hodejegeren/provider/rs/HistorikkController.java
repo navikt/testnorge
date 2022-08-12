@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,14 +27,14 @@ import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/historikk")
 public class HistorikkController {
 
     private static final String MAX_PAGE_STRING = "Max størrelse på side: ";
     private static final int MAX_PAGE_SIZE = 100;
 
-    @Autowired
-    private HistorikkService historikkService;
+    private final HistorikkService historikkService;
 
     @ApiOperation(value = "Hent all historikk fra databasen.")
     @GetMapping()
