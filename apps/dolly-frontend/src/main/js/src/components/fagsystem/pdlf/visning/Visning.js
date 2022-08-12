@@ -31,6 +31,7 @@ import {
 	UtenlandskBankkonto,
 	TpsfVergemaal,
 	TpsfNasjonalitet,
+	TpsfBoadresse,
 } from '~/components/fagsystem/tpsf/visning/partials'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
@@ -41,11 +42,6 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 
 	const ident = data ? data.person?.ident : tpsfData?.ident
 	const tpsMessaging = TpsMessagingData(ident, environments)
-
-	const harTpsAdresse =
-		tpsfData?.boadresse?.length > 0 ||
-		tpsfData?.postadresse?.length > 0 ||
-		tpsfData?.midlertidigAdresse?.length > 0
 
 	return (
 		<ErrorBoundary>
@@ -70,6 +66,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 				) : (
 					<>
 						<TpsfPersoninfo data={tpsfData} environments={environments} />
+						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
 						<TpsfNasjonalitet data={tpsfData} />
 						<Telefonnummer data={tpsfData?.telefonnumre} />
 						<TpsfVergemaal data={tpsfData?.vergemaal} />
@@ -91,40 +88,32 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							: tpsfData?.bankkontonrNorsk
 					}
 				/>
-
-				{master === 'PDLF' || !harTpsAdresse ? (
-					<>
-						<Boadresse
-							data={data?.person?.bostedsadresse}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							identtype={data?.person?.identtype}
-						/>
-						<DeltBosted data={data?.person?.deltBosted} />
-						<Oppholdsadresse
-							data={data?.person?.oppholdsadresse}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-						/>
-						<Kontaktadresse
-							data={data?.person?.kontaktadresse}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-						/>
-						<Adressebeskyttelse
-							data={data?.person?.adressebeskyttelse}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							identtype={data?.person?.identtype}
-						/>
-					</>
-				) : (
-					<>
-						<Boadresse boadresse={tpsfData?.boadresse} />
-						<Postadresse postadresse={tpsfData?.postadresse} />
-						<MidlertidigAdresse midlertidigAdresse={tpsfData?.midlertidigAdresse} />
-					</>
-				)}
+				<Boadresse
+					data={data?.person?.bostedsadresse}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+					identtype={data?.person?.identtype}
+				/>
+				{!data?.person?.bostedsadresse && <TpsfBoadresse boadresse={tpsfData?.boadresse} />}
+				<DeltBosted data={data?.person?.deltBosted} />
+				<Postadresse postadresse={tpsfData?.postadresse} />
+				<MidlertidigAdresse midlertidigAdresse={tpsfData?.midlertidigAdresse} />
+				<Oppholdsadresse
+					data={data?.person?.oppholdsadresse}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+				/>
+				<Kontaktadresse
+					data={data?.person?.kontaktadresse}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+				/>
+				<Adressebeskyttelse
+					data={data?.person?.adressebeskyttelse}
+					tmpPersoner={tmpPersoner}
+					ident={ident}
+					identtype={data?.person?.identtype}
+				/>
 
 				{master === 'PDLF' ? (
 					<>
