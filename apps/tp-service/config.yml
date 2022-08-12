@@ -30,5 +30,18 @@ spec:
       cpu: 500m
       memory: 1024Mi
   image: {{ image }}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   ingresses:
     - "https://testnav-tp-service.dev.intern.nav.no"
