@@ -103,8 +103,8 @@ public class PersonService {
                     .toList();
 
             var pdlfRelasjoner = Flux.range(0, (pdlfIdenter.size() / PAGE_SIZE) + 1)
-                    .flatMap(index -> pdlDataConsumer.getPersoner(pdlfIdenter, index * PAGE_SIZE,
-                            Math.min((index + 1) * PAGE_SIZE, pdlfIdenter.size())))
+                    .flatMap(index -> pdlDataConsumer.getPersoner(pdlfIdenter.subList(index * PAGE_SIZE,
+                            Math.min((index + 1) * PAGE_SIZE, pdlfIdenter.size())), 0, PAGE_SIZE))
                     .map(person -> Stream.of(
                                     person.getPerson().getSivilstand().stream()
                                             .filter(sivilstand -> !sivilstand.isEksisterendePerson())
