@@ -31,6 +31,7 @@ import {
 	UtenlandskBankkonto,
 	TpsfVergemaal,
 	TpsfNasjonalitet,
+	TpsfBoadresse,
 } from '~/components/fagsystem/tpsf/visning/partials'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
@@ -70,6 +71,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 				) : (
 					<>
 						<TpsfPersoninfo data={tpsfData} environments={environments} />
+						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
 						<TpsfNasjonalitet data={tpsfData} />
 						<Telefonnummer data={tpsfData?.telefonnumre} />
 						<TpsfVergemaal data={tpsfData?.vergemaal} />
@@ -120,7 +122,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 					</>
 				) : (
 					<>
-						<Boadresse boadresse={tpsfData?.boadresse} />
+						<TpsfBoadresse boadresse={tpsfData?.boadresse} />
 						<Postadresse postadresse={tpsfData?.postadresse} />
 						<MidlertidigAdresse midlertidigAdresse={tpsfData?.midlertidigAdresse} />
 					</>
