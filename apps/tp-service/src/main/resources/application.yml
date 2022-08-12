@@ -5,7 +5,15 @@ spring:
     version: application.version.todo
     name: testnav-tp-service
     description: todo
-  datasource.driver-class-name: oracle.jdbc.driver.OracleDriver
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
 
 multitenancy.header.name: X-DB-TENANT
 multitenancy.key.default: q2
