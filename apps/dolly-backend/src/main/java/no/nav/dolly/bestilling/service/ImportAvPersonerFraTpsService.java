@@ -18,6 +18,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Service
 public class ImportAvPersonerFraTpsService extends DollyBestillingService {
@@ -70,6 +72,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                         .forEach(ident -> {
                             BestillingProgress progress = new BestillingProgress(bestilling, ident, TPSF);
                             try {
+                                MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                                 Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
                                         .miljoe(bestilling.getKildeMiljoe())
                                         .ident(ident)
@@ -86,6 +89,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
