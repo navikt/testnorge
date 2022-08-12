@@ -8,7 +8,7 @@ Swagger finnes under [/swagger](https://testnav-tp-service.dev.intern.nav.no/swa
 Ha naisdevice kjørende og kjør TpServiceApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=local
+-Dspring.profiles.active=dev
 ```
 
 ### Utviklerimage

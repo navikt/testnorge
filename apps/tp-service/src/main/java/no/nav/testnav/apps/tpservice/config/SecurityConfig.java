@@ -10,7 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 @EnableWebSecurity
 @Configuration
-@Profile({"prod", "local"})
+@Profile({"prod", "dev"})
 @Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
