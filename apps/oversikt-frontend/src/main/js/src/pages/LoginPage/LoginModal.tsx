@@ -20,7 +20,7 @@ export default () => {
 					).
 				</p>
 				<Knapp className="login-modal_button-nav" onClick={getOnClick('/oauth2/authorization/aad')}>
-					Logg inn med NAV-epost
+					Logg inn med NAV epost
 				</Knapp>
 				<Knapp
 					className="login-modal_button-bankid"
