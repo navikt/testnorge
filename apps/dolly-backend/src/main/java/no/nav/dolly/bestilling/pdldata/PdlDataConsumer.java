@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -123,9 +124,7 @@ public class PdlDataConsumer {
     public Mono<Void> putStandalone(String ident, Boolean standalone) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new PdlDataIdenterCommand(webClient, ident,
-                        STANDALONE_URL.replace("{standalone}", standalone.toString()),
-                        token.getTokenValue())
+                .flatMap(token -> new PdlDataStanaloneCommand(webClient, ident, standalone, token.getTokenValue())
                         .call());
     }
 
