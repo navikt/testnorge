@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.instservice.consumer.command;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +48,19 @@ public class PostInstitusjonsoppholdCommand implements Callable<Mono<OppholdResp
                 .header(AUTHORIZATION, "Bearer " + token)
                 .bodyValue(institusjonsopphold)
                 .retrieve()
-                .bodyToMono(Institusjonsopphold.class)
+                .bodyToMono(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .flatMap(institusjonsopphold -> Mono.just(OppholdResponse.builder()
+                .then(Mono.just(OppholdResponse.builder()
                         .status(HttpStatus.OK)
-                        .institusjonsopphold(institusjonsopphold)
+                        .institusjonsopphold(Institusjonsopphold.builder()
+                                .personident(institusjonsopphold.getNorskident())
+                                .tssEksternId(institusjonsopphold.getTssEksternId())
+                                .startdato(institusjonsopphold.getStartdato())
+                                .forventetSluttdato(institusjonsopphold.getSluttdato())
+                                .registrertAv(institusjonsopphold.getRegistrertAv())
+                                .institusjonstype(institusjonsopphold.getInstitusjonstype())
+                                .build())
                         .build()))
                 .onErrorResume(throwable -> {
                     var message = getMessage(throwable);
