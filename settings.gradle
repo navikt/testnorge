@@ -50,6 +50,7 @@ includeBuild './proxies/pensjon-testdata-facade-proxy'
 includeBuild './proxies/norg2-proxy'
 includeBuild './proxies/synthdata-meldekort-proxy'
 includeBuild './proxies/kontoregister-person-proxy'
+includeBuild './proxies/inst-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
@@ -139,6 +140,7 @@ includeBuild './apps/import-fra-tpsf-service'
 includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
 includeBuild './apps/skd-service'
+includeBuild './apps/inst-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
