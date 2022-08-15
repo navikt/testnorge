@@ -34,15 +34,23 @@ const ButtonGroup = styled.div`
 const FetchAccessToken = styled.div`
 	max-width: 500px;
 	padding-bottom: 25px;
-	text-align: center;
+	text-align: -webkit-center;
 `
 
-const GetToken = styled(Knapp)`
+const GetTokenButton = styled(Knapp)`
 	margin: 10px 5px;
 `
 
-const CopyToken = styled(Knapp)`
-	margin: 10px 5px;
+const CopyTokenButton = styled(Knapp)`
+	margin: 10px 5px 10px 20px;
+`
+
+const StyledInput = styled(InputFormItem)`
+	&& {
+		width: 100%;
+		margin-top: 15px;
+		padding-right: unset;
+	}
 `
 
 const AccessTokenTextArea = styled.textarea`
@@ -111,20 +119,23 @@ export default ({ labels = {}, scope }: Props) => {
 			{getError()}
 			<StyledCheckbox
 				name="client-credentials-radio"
-				label="Client credentials?"
 				value={clientCredentials}
 				onChange={(event) => setClientCredentials(event.target.checked)}
-			/>
+			>
+				Client credentials
+			</StyledCheckbox>
 			<ButtonGroup>
-				<GetToken disabled={loading} onClick={onClick}>
+				<GetTokenButton disabled={loading} onClick={onClick}>
 					Hent token
-				</GetToken>
+				</GetTokenButton>
 				<CopyToClipboard text={accessToken}>
-					<CopyToken disabled={loading}>Copy</CopyToken>
+					<CopyTokenButton variant={'secondary'} disabled={loading}>
+						Kopier
+					</CopyTokenButton>
 				</CopyToClipboard>
 			</ButtonGroup>
-			<InputFormItem
-				label="Orgnummer (Midlertidig)"
+			<StyledInput
+				label="Orgnummer (midlertidig)"
 				type="text"
 				onBlur={(event) =>
 					event.target.value && OrganisasjonService.setOrganisasjonsnummer(event.target.value)

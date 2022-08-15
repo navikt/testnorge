@@ -1,5 +1,5 @@
-import { Progress } from '@navikt/dolly-komponenter/lib'
 import React, { useEffect, useState } from 'react'
+import ProgressBar from '@navikt/fremdriftslinje'
 
 function getCookie(cname: string) {
 	const name = cname + '='
@@ -46,7 +46,7 @@ const SessionTimer = () => {
 	}, [milliseconds])
 
 	return (
-		<Progress
+		<ProgressBar
 			now={milliseconds < 0 ? 0 : Math.round(now)}
 			status={milliseconds < 0 ? 'error' : 'inprogress'}
 		>
@@ -55,7 +55,7 @@ const SessionTimer = () => {
 					? 'Du har blitt logget ut'
 					: 'Blir logget ut om: ' + Math.round(milliseconds / 1000) + 's'}
 			</p>
-		</Progress>
+		</ProgressBar>
 	)
 }
 export default SessionTimer

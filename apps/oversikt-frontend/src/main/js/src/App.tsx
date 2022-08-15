@@ -2,8 +2,6 @@ import React from 'react'
 // @ts-ignore
 import ApplicationService from '@/services/ApplicationService'
 
-import '@navikt/ds-css'
-
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import MagicTokenPage from '@/pages/MagicTokenPage'
 import AccessTokenPage from '@/pages/AccessTokenPage'
@@ -12,17 +10,15 @@ import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
 import LoginPage from '@/pages/LoginPage'
 import { UserPage } from '@/pages/UserPage'
 
-export default () => {
-	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/login">
-					<LoginPage />
-				</Route>
-				<Route path="/access-token/scope/:scope">
-					<ScopeAccessTokenPage />
-				</Route>
-				<Route path="/access-token/:name">
+export default () => (
+	<BrowserRouter>
+		<Routes>
+			<Route path="/*" element={<MagicTokenPage />} />
+			<Route path="/login" element={<LoginPage />} />
+			<Route path="/access-token/scope/:scope" element={<ScopeAccessTokenPage />} />
+			<Route
+				path="/access-token/:name"
+				element={
 					<LoadableComponent
 						onFetch={ApplicationService.fetchApplications}
 						render={(items) => (
@@ -30,7 +26,7 @@ export default () => {
 								navigations={items.map((application) => ({
 									href:
 										'/access-token/' +
-										application.cluster +
+										application.cluster?.replace('unknown', 'dev-gcp') +
 										'.' +
 										application.namespace +
 										'.' +
@@ -41,14 +37,9 @@ export default () => {
 							/>
 						)}
 					/>
-				</Route>
-				<Route path="/user">
-					<UserPage />
-				</Route>
-				<Route path="/">
-					<MagicTokenPage />
-				</Route>
-			</Routes>
-		</BrowserRouter>
-	)
-}
+				}
+			/>
+			<Route path="/user" element={<UserPage />} />
+		</Routes>
+	</BrowserRouter>
+)
