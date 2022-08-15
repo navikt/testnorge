@@ -33,7 +33,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
     private MapperFacade mapperFacade;
-    private TpsfService tpsfService;
     private ExecutorService dollyForkJoinPool;
     private PdlDataConsumer pdlDataConsumer;
     private IdentService identService;
@@ -53,7 +52,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
         this.mapperFacade = mapperFacade;
-        this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
         this.identService = identService;
@@ -66,8 +64,9 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            var tilgjengeligeIdenter = new AvailCheckCommand(bestilling.getOpprettFraIdenter(),
-                    bestKriterier.getPdldata(), tpsfService, pdlDataConsumer).call();
+            var tilgjengeligeIdenter = new AvailCheckCommand(
+                    bestilling.getOpprettFraIdenter(),
+                    pdlDataConsumer).call();
 
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.parallelStream()
@@ -80,14 +79,14 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                                 if (identStatus.isAvailable()) {
 
-                                    var leverteIdenter = new OpprettCommand(identStatus, bestKriterier, tpsfService,
+                                    var opprettetIdent = new OpprettCommand(identStatus, bestKriterier,
                                             pdlDataConsumer, mapperFacade).call();
 
                                     identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
                                             identStatus.getMaster(), bestKriterier.getBeskrivelse());
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
-                                            .hovedperson(leverteIdenter.get(0))
+                                            .hovedperson(opprettetIdent)
                                             .master(identStatus.getMaster())
                                             .tags(bestilling.getGruppe().getTags())
                                             .build();
