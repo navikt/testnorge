@@ -1,18 +1,18 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import static java.lang.System.currentTimeMillis;
-
 import lombok.extern.slf4j.Slf4j;
+import no.nav.organisasjonforvalter.config.credentials.AdresseServiceProperties;
+import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.organisasjonforvalter.config.credentials.AdresseServiceProperties;
-import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
-import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static java.lang.System.currentTimeMillis;
 
 @Slf4j
 @Service
@@ -24,11 +24,13 @@ public class AdresseServiceConsumer {
 
     public AdresseServiceConsumer(
             AdresseServiceProperties serviceProperties,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

@@ -16,6 +16,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
@@ -76,6 +78,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), identStatus.getMaster());
 
                             try {
+                                MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                                 if (identStatus.isAvailable()) {
 
                                     var opprettetIdent = new OpprettCommand(identStatus, bestKriterier,
@@ -98,6 +101,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
 

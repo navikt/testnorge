@@ -26,6 +26,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -42,12 +43,13 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
+import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DollyBestillingService {
-
     protected static final String SUCCESS = "OK";
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
 
@@ -74,6 +76,8 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
+            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+
             var testident = identService.getTestIdent(bestilling.getIdent());
             var progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
 
@@ -128,6 +132,7 @@ public class DollyBestillingService {
 
         } finally {
             oppdaterBestillingFerdig(bestilling);
+            MDC.remove(MDC_KEY_BESTILLING);
         }
     }
 

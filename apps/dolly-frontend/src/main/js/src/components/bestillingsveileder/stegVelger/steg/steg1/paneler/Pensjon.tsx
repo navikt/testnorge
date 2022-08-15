@@ -1,9 +1,15 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { fetchTpOrdninger, initialOrdning } from '../../../../../fagsystem/tjenestepensjon/form/Form'
+import {
+	fetchTpOrdninger,
+	initialOrdning,
+	tpPath,
+} from '~/components/fagsystem/tjenestepensjon/form/Form'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { pensjonPath } from '~/components/fagsystem/pensjon/form/Form'
 
-export const PensjonPanel = ({ stateModifier }: any) => {
+export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 
 	const infoTekst =
@@ -17,6 +23,7 @@ export const PensjonPanel = ({ stateModifier }: any) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="pensjon"
+			startOpen={harValgtAttributt(formikBag.values, [pensjonPath, tpPath])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
 				<Attributt attr={sm.attrs.inntekt} />
@@ -30,26 +37,32 @@ export const PensjonPanel = ({ stateModifier }: any) => {
 
 PensjonPanel.heading = 'Pensjon'
 
-PensjonPanel.initialValues = ({ set, del, has }: any) => ({
-	inntekt: {
-		label: 'Har inntekt',
-		checked: has('pensjonforvalter.inntekt'),
-		add: () =>
-			set('pensjonforvalter.inntekt', {
-				fomAar: new Date().getFullYear() - 10,
-				tomAar: null,
-				belop: '',
-				redusertMedGrunnbelop: true,
-			}),
-		remove: () => del('pensjonforvalter.inntekt'),
-	},
-	tp: {
-		label: 'Har tjenestepensjonsforhold',
-		checked: has('pensjonforvalter.tp'),
-		add: () => {
-			fetchTpOrdninger()
-			set('pensjonforvalter.tp', [initialOrdning])
+PensjonPanel.initialValues = ({ set, del, has }: any) => {
+	const paths = {
+		inntekt: 'pensjonforvalter.inntekt',
+		tp: 'pensjonforvalter.tp',
+	}
+	return {
+		inntekt: {
+			label: 'Har inntekt',
+			checked: has(paths.inntekt),
+			add: () =>
+				set(paths.inntekt, {
+					fomAar: new Date().getFullYear() - 10,
+					tomAar: null,
+					belop: '',
+					redusertMedGrunnbelop: true,
+				}),
+			remove: () => del(paths.inntekt),
 		},
-		remove: () => del('pensjonforvalter.tp'),
-	},
-})
+		tp: {
+			label: 'Har tjenestepensjonsforhold',
+			checked: has(paths.tp),
+			add: () => {
+				fetchTpOrdninger()
+				set(paths.tp, [initialOrdning])
+			},
+			remove: () => del(paths.tp),
+		},
+	}
+}

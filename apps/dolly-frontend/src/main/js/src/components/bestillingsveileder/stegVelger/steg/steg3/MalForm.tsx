@@ -1,10 +1,11 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { ToggleGruppe } from 'nav-frontend-skjema'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { malerApi } from '~/pages/minSide/maler/MalerApi'
+import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
+import Loading from '~/components/ui/loading/Loading'
 
 // @ts-ignore
 export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
@@ -14,21 +15,22 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		ENDRE = 'ENDRE',
 	}
 
-	const [malOptions, setMalOptions] = useState([])
-
-	const getMalOptions = (malbestillinger: [{ malNavn: string; malId: number }]) => {
-		if (!malbestillinger) return []
+	const getMalOptions = (malbestillinger: Mal[]) => {
+		if (!malbestillinger) {
+			return []
+		}
 		return malbestillinger.map((mal) => ({
 			value: mal.malNavn,
 			label: mal.malNavn,
 		}))
 	}
 
-	useEffect(() => {
-		malerApi.hentMalerForBrukerMedOptionalNavn(brukerId, null).then((response) => {
-			setMalOptions(getMalOptions(response))
-		})
-	}, [])
+	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
+	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
+
+	if (loading) {
+		return <Loading label="Laster maler..." />
+	}
 
 	const toggleValues = [
 		{
@@ -44,7 +46,6 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 			label: 'Overskriv eksisterende mal',
 		},
 	]
-	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
 
 	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
@@ -53,7 +54,7 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		} else if (value === MalTyper.OPPRETT) {
 			formikBag.setFieldValue('malBestillingNavn', '')
 		} else if (value === MalTyper.ENDRE) {
-			formikBag.setFieldValue('malBestillingNavn', opprettetFraMal ? opprettetFraMal : '')
+			formikBag.setFieldValue('malBestillingNavn', opprettetFraMal || '')
 		}
 	}
 
@@ -79,7 +80,7 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 					name={'malBestillingNavn'}
 					size={'xlarge'}
 					label="Malnavn"
-					options={malOptions}
+					options={getMalOptions(maler)}
 					fastfield={false}
 				/>
 			) : (

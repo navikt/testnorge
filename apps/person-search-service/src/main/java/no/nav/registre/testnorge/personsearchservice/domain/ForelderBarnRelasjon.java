@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.ForelderBarnRelasjonModel;
+import no.nav.registre.testnorge.personsearchservice.model.ForelderBarnRelasjonModel;
 import no.nav.testnav.libs.dto.personsearchservice.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.ForelderDTO;
 

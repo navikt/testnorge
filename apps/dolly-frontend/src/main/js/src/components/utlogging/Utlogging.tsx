@@ -6,33 +6,28 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Api from '~/api'
 import ProgressBar from 'fremdriftslinje'
 import { WarningFilled } from '@navikt/ds-icons'
-import { useNavigate } from 'react-router-dom'
+import logoutBruker from './logoutBruker'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
 	const decodedCookie = decodeURIComponent(document.cookie)
 	const list = decodedCookie.split(';')
 	for (let value of list) {
-		while (value.charAt(0) == ' ') {
-			value = value.substring(1)
+		let val = value
+		while (val.charAt(0) === ' ') {
+			val = val.substring(1)
 		}
-		if (value.indexOf(name) == 0) {
-			return value.substring(name.length, value.length)
+		if (val.indexOf(name) === 0) {
+			return val.substring(name.length, val.length)
 		}
 	}
 	return ''
-}
-
-export const logoutBruker = (navigate: Function, feilmelding?: string) => {
-	navigate('/logout' + (feilmelding ? '?state=' + feilmelding : ''))
-	window.location.reload()
 }
 
 const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000
 
 const Utlogging = () => {
 	const [serverTime, setServerTime] = useState(parseInt(getCookie('serverTime')))
-	const navigate = useNavigate()
 
 	const calculateOffset = () => {
 		const calcExpiry = parseInt(getCookie('sessionExpiry'))
@@ -58,14 +53,14 @@ const Utlogging = () => {
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		logoutBruker(navigate)
+		logoutBruker()
 	}
 
 	return (
 		<DollyModal
 			minWidth={670}
 			isOpen={milliseconds <= SHOW_MODAL_WHEN_TIME_LEFT}
-			onRequestClose={() => logoutBruker(navigate)}
+			onRequestClose={() => logoutBruker()}
 			noCloseButton={true}
 			contentLabel="Utlogging rute"
 		>
@@ -83,7 +78,7 @@ const Utlogging = () => {
 					</p>
 				</ProgressBar>
 				<div className="utlogging__button-group">
-					<Knapp className="utlogging__button" onClick={() => logoutBruker(navigate)}>
+					<Knapp className="utlogging__button" onClick={() => logoutBruker()}>
 						Logg ut nå
 					</Knapp>
 					<Hovedknapp className="utlogging__button" onClick={continueSession}>

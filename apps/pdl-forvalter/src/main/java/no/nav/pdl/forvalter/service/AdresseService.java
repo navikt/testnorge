@@ -27,8 +27,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             "bygg eller en bygningsdel. Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre";
     public static final String VALIDATION_POSTBOKS_ERROR = "Alfanumerisk identifikator av postboks. Kan ikke være tom";
     public static final String VALIDATION_POSTNUMMER_ERROR = "Postnummer består av fire sifre";
-    public static final String VALIDATION_GYLDIGHET_ABSENT_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha " +
-            "verdi for vegadresse uten matrikkelId";
     protected static final String VALIDATION_ADRESSE_OVELAP_ERROR = "Adresse: Overlappende adressedatoer er ikke lov";
 
     private static final String NAVN_INVALID_ERROR = "CoAdresseNavn er ikke i liste over gyldige verdier";
@@ -41,12 +39,6 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
-    }
-
-    protected static void validateMasterPdl(AdresseDTO adresse) {
-        if (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed())) {
-            throw new InvalidRequestException(VALIDATION_GYLDIGHET_ABSENT_ERROR);
-        }
     }
 
     protected static void validateBruksenhet(String bruksenhet) {
@@ -99,8 +91,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 .append("c/o ")
                 .append(coNavn.getFornavn())
                 .append(' ')
-                .append(isTrue(coNavn.getHasMellomnavn()) ? coNavn.getMellomnavn() : "")
-                .append(isTrue(coNavn.getHasMellomnavn()) ? ' ' : "")
+                .append(isNotBlank(coNavn.getMellomnavn()) ? coNavn.getMellomnavn() : "")
+                .append(isNotBlank(coNavn.getMellomnavn()) ? ' ' : "")
                 .append(coNavn.getEtternavn())
                 .toString();
     }

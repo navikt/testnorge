@@ -12,7 +12,7 @@ on:
         required: false
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
 
 jobs:
   build:
@@ -47,5 +47,5 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         run: |
           docker build --tag $IMAGE .
-          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker login ghcr.io -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
           docker push $IMAGE

@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.HentVedtakshistorikkCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -32,8 +33,9 @@ public class SyntVedtakshistorikkConsumer {
 
     public SyntVedtakshistorikkConsumer(
             SyntVedtakshistorikkProperties syntVedtakshistorikkProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = syntVedtakshistorikkProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
@@ -43,6 +45,7 @@ public class SyntVedtakshistorikkConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(syntVedtakshistorikkProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

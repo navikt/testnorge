@@ -15,6 +15,7 @@
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.tomcat\..*</exclude>
                 </throwableConverter>
+                <includeMdcKeyName>bestillingId</includeMdcKeyName>
             </encoder>
         </appender>
         <root level="INFO">

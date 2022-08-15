@@ -38,16 +38,15 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: orkestratoren
-          cluster: dev-fss
     outbound:
       rules:
         - application: synthdata-arena-vedtakshistorikk
           cluster: dev-gcp
+        - application: testnav-person-search-service
+          cluster: dev-gcp
       external:
         - host: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: https://person-search-service.dev-fss-pub.nais.io
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   azure:
     application:

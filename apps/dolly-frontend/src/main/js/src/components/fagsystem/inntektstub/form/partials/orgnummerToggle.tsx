@@ -1,6 +1,6 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { MiljoeApi, OrgserviceApi } from '~/service/Api'
+import { OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
 import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import {
@@ -9,6 +9,7 @@ import {
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { FormikProps } from 'formik'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
 
@@ -21,22 +22,16 @@ type Props = {
 const validEnhetstyper = ['BEDR', 'AAFY']
 
 export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Props) => {
+	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
+
 	const [inputType, setInputType] = useState(
 		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe
 	)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
-	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
-
-	useEffect(() => {
-		const fetchData = async () => {
-			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
-		}
-		fetchData()
-	}, [])
 
 	const handleToggleChange = (event: BaseSyntheticEvent) => {
 		setInputType(event.target.value)
@@ -51,7 +46,9 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 	}
 
 	const handleManualOrgChange = (org: string, miljo: string) => {
-		if (!org || !miljo) return
+		if (!org || !miljo) {
+			return
+		}
 		formikBag.setFieldValue(path, '')
 		setError(null)
 		setLoading(true)

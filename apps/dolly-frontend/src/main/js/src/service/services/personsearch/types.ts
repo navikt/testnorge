@@ -2,8 +2,9 @@ export type Search = {
 	page: number
 	pageSize: number
 	terminateAfter: number
-	tag: string
+	tag?: string
 	excludeTags: Array<string>
+	tags?: Array<string>
 	kunLevende?: boolean
 	kjoenn?: string
 	foedsel?: {
@@ -12,8 +13,12 @@ export type Search = {
 	}
 	nasjonalitet?: {
 		statsborgerskap?: string
-		utflyttingFraNorge?: boolean
-		innflyttingTilNorge?: boolean
+		innflytting?: {
+			fraflyttingsland?: string
+		}
+		utflytting?: {
+			tilflyttingsland?: string
+		}
 	}
 	sivilstand?: {
 		type?: string
@@ -33,7 +38,11 @@ export type Search = {
 		bostedsadresse?: {
 			borINorge?: string
 			postnummer?: string
+			bydelsnummer?: string
 			kommunenummer?: string
+			historiskBydelsnummer?: string
+			historiskPostnummer?: string
+			historiskKommunenummer?: string
 		}
 		harUtenlandskAdresse?: string
 		harKontaktadresse?: string
@@ -43,7 +52,6 @@ export type Search = {
 		status?: string
 	}
 	relasjoner?: {
-		barn?: string
 		harBarn?: string
 		harDoedfoedtBarn?: string
 		forelderBarnRelasjoner?: string[]

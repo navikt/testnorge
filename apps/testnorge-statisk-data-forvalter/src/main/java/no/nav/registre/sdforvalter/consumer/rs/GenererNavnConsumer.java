@@ -5,6 +5,7 @@ import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
@@ -14,11 +15,15 @@ public class GenererNavnConsumer {
     private final GenererNavnServiceProperties properties;
     private final TokenExchange tokenExchange;
 
-    public GenererNavnConsumer(GenererNavnServiceProperties properties, TokenExchange tokenExchange) {
+    public GenererNavnConsumer(GenererNavnServiceProperties properties,
+                               TokenExchange tokenExchange,
+                               ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

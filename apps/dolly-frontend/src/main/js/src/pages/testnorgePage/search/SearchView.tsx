@@ -6,22 +6,30 @@ import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
 import './SearchView.less'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { getAlder } from '~/ducks/fagsystem'
+import { getAlder, getKjoenn } from '~/ducks/fagsystem'
 import Formatters from '~/utils/DataFormatter'
-import { getEtternavn, getFornavn, getIdent, getPdlKjoenn } from '~/pages/testnorgePage/utils'
+import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
-import { useNavigate } from 'react-router-dom'
+import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
+import { Gruppe } from '~/utils/hooks/useGruppe'
+import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 
 type Props = {
 	items?: PdlData[]
+	sidetall: number
 	loading: boolean
 	valgtePersoner: ImportPerson[]
 	setValgtePersoner: (personer: ImportPerson[]) => void
-	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => void
+	importerPersoner: (
+		valgtePersoner: ImportPerson[],
+		mal: any,
+		navigate: Function,
+		gruppeId?: number
+	) => void
+	gruppe?: Gruppe
 }
 
 export type ImportPerson = {
@@ -30,11 +38,25 @@ export type ImportPerson = {
 }
 
 const getImportPerson = (data: PdlData) => {
-	const ident = getIdent(data)
+	const ident = getPdlIdent(data)
 	return {
 		ident: ident,
 		data: data,
 	}
+}
+
+const getFornavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].fornavn : ''
+}
+
+const getEtternavn = (person: PdlData) => {
+	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
+	return navn.length > 0 ? navn[0].etternavn : ''
+}
+
+const getPdlKjoenn = (person: PdlData) => {
+	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
 }
 
 const SearchView = styled.div`
@@ -42,24 +64,32 @@ const SearchView = styled.div`
 	flex-direction: column;
 `
 
-export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPersoner }: Props) => {
-	if (loading) return <Loading label="Søker..." />
+export default ({
+	items,
+	loading,
+	valgtePersoner,
+	setValgtePersoner,
+	importerPersoner,
+	sidetall,
+	gruppe,
+}: Props) => {
+	if (loading) {
+		return <Loading label="Søker..." />
+	}
 	if (!items || items.length === 0) {
 		return (
 			<ContentContainer>
-				Ingen resultat. Resultatet inkluderer ikke identer som allerede er importert til Dolly.
+				Fant ingen identer. Resultatet inkluderer ikke identer som allerede er importert til Dolly.
 			</ContentContainer>
 		)
 	}
-
-	const navigate = useNavigate()
 
 	const columns = [
 		{
 			text: 'Ident',
 			width: '25',
 			formatter: (_cell: any, row: PdlData) => {
-				return <CopyButton value={getIdent(row)} />
+				return <CopyButton value={getPdlIdent(row)} />
 			},
 		},
 		{
@@ -103,7 +133,9 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 					<Button
 						onClick={() => {
 							const alleValgtPaaSiden = data.every((person) =>
-								valgtePersoner.map((valgtPerson) => valgtPerson?.ident).includes(getIdent(person))
+								valgtePersoner
+									.map((valgtPerson) => valgtPerson?.ident)
+									.includes(getPdlIdent(person))
 							)
 							alleValgtPaaSiden
 								? setValgtePersoner([])
@@ -116,7 +148,7 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			},
 			formatter: (_cell: any, row: PdlData) => (
 				<VelgPerson
-					ident={getIdent(row)}
+					ident={getPdlIdent(row)}
 					data={row}
 					valgtePersoner={valgtePersoner}
 					setValgtePersoner={setValgtePersoner}
@@ -124,35 +156,37 @@ export default ({ items, loading, valgtePersoner, setValgtePersoner, importerPer
 			),
 		},
 	]
-	const personerValgt = valgtePersoner.length > 0
-
-	const onImport = () => {
-		importerPersoner(valgtePersoner, navigate)
-	}
 
 	return (
 		<SearchView>
-			{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-			{/*@ts-ignore*/}
 			<DollyTable
+				visSide={sidetall}
 				data={items}
 				columns={columns}
 				iconItem={(person: PdlData) =>
 					getPdlKjoenn(person) === 'M' ? <ManIconItem /> : <WomanIconItem />
 				}
-				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
-				pagination
+				onExpand={(person: PdlData) => (
+					<>
+						<PdlVisning pdlData={person} />
+						<ArenaVisning
+							ident={{
+								ident: getPdlIdent(person),
+								master: 'PDL',
+							}}
+							data={null}
+							bestillinger={[]}
+							loading={false}
+						/>
+					</>
+				)}
+				pagination="simple"
 			/>
-			<div className="flexbox--align-center--justify-end">
-				<NavButton
-					type="hoved"
-					onClick={onImport}
-					disabled={!personerValgt}
-					title={!personerValgt ? 'Velg personer' : null}
-				>
-					Importer
-				</NavButton>
-			</div>
+			<ImportModal
+				valgtePersoner={valgtePersoner}
+				importerPersoner={importerPersoner}
+				gruppe={gruppe}
+			/>
 		</SearchView>
 	)
 }

@@ -32,8 +32,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-aareg
           cluster: dev-fss
-        - application: organisasjon-orgnummer-service
-          cluster: dev-fss
+        - application: testnav-orgnummer-service
+          cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
@@ -65,6 +65,9 @@ spec:
     path: /internal/isReady
     initialDelay: 30
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 2
     max: 2

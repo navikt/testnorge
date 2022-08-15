@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Header from '~/components/layout/header/Header'
 import Loading from '~/components/ui/loading/Loading'
 import allRoutes from '~/allRoutes'
@@ -7,64 +7,63 @@ import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
 import './App.less'
 import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
-import { ProfilApi } from '~/service/Api'
 import ToastConnector from '~/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
-import { logoutBruker } from '~/components/utlogging/Utlogging'
+import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import logoutBruker from '~/components/utlogging/logoutBruker'
+import { useDollyMaler } from '~/utils/hooks/useMaler'
 
 type Props = {
-	brukerData?: Object
 	updateVarslingerBruker?: Function
-	getEnvironments?: Function
-	getCurrentBruker?: Function
 }
 
-export const App = ({
-	brukerData,
-	updateVarslingerBruker,
-	getCurrentBruker,
-	getEnvironments,
-}: Props) => {
+export const App = ({ updateVarslingerBruker }: Props) => {
 	const [criticalError, setCriticalError] = useState(null)
-	const [brukerProfil, setBrukerProfil] = useState(undefined)
-	const [brukerBilde, setBrukerBilde] = useState(undefined)
-	const navigate = useNavigate()
+
+	const { loading, error: userError } = useCurrentBruker()
+
+	// Lazyloader miljøer, maler og profilData så det ligger cachet når det trengs
+	useDollyEnvironments()
+	useDollyMaler()
+	useBrukerProfil()
 
 	useEffect(() => {
-		getCurrentBruker().catch((err: Object) => setCriticalError(err))
-		getEnvironments().catch((err: Object) => setCriticalError(err))
-
-		ProfilApi.getProfil()
-			.then((response: { data: Object }) => setBrukerProfil(response.data))
-			.catch(() => setBrukerProfil(null))
-		ProfilApi.getProfilBilde()
-			.then((response: { data: Response }) =>
-				response.data.blob().then((blob) => setBrukerBilde(URL.createObjectURL(blob)))
-			)
-			.catch(() => setBrukerBilde(null))
-	}, [])
+		if (userError) {
+			setCriticalError(userError)
+		}
+	}, [userError])
 
 	function extractFeilmelding(stackTrace: string) {
-		if (stackTrace?.includes('miljoer')) return 'miljoe_error'
-		else if (stackTrace?.includes('current')) return 'azure_error'
-		else return 'unknown_error'
+		if (stackTrace?.includes('miljoer')) {
+			return 'miljoe_error'
+		} else if (stackTrace?.includes('current')) {
+			return 'azure_error'
+		} else {
+			return 'unknown_error'
+		}
 	}
 
 	const logout = (stackTrace: string) => {
 		const feilmelding = extractFeilmelding(stackTrace)
-		logoutBruker(navigate, feilmelding)
+		logoutBruker(feilmelding)
 	}
 
-	if (criticalError) logout(criticalError.stack)
+	useEffect(() => {
+		if (criticalError) {
+			logout(criticalError.stack)
+		}
+	}, [criticalError])
 
-	if (!brukerData || brukerProfil === undefined || brukerBilde === undefined)
-		return <Loading label="Laster Dolly applikasjon" fullpage />
+	if (loading) {
+		return <Loading label="Laster Dolly" fullpage />
+	}
 
 	return (
 		<React.Fragment>
 			<Utlogging />
 			<VarslingerModal updateVarslingerBruker={updateVarslingerBruker} />
-			<Header brukerProfil={brukerProfil} brukerBilde={brukerBilde} />
+			<Header />
 			<Breadcrumbs />
 			<main>
 				<Suspense fallback={<Loading label="Laster inn" />}>
@@ -74,13 +73,9 @@ export const App = ({
 								<Route
 									key={idx}
 									path={route.path}
-									// @ts-ignore
 									element={
-										<route.element
-											// @ts-ignore
-											brukerBilde={brukerBilde}
-											brukerProfil={brukerProfil}
-										/>
+										// @ts-ignore
+										<route.element />
 									}
 								/>
 							) : (
@@ -90,7 +85,7 @@ export const App = ({
 					</Routes>
 				</Suspense>
 			</main>
-			<Forbedring brukerBilde={brukerBilde} />
+			<Forbedring />
 			<ToastConnector />
 		</React.Fragment>
 	)

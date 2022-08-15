@@ -142,6 +142,7 @@ type Vegadresse = {
 	tilleggsnavn?: string
 	postnummer?: string
 	kommunenummer?: string
+	bydelsnummer?: string
 	koordinater?: Koordinater
 }
 

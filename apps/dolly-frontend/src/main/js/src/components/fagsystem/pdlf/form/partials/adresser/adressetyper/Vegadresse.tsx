@@ -45,7 +45,9 @@ export const Vegadresse = ({ formikBag, path }: VegadresseValues) => {
 
 	const renderAdresse = (postnummerListe: Postnummer) => {
 		const { adressenavn, husnummer, postnummer } = _get(formikBag.values, path)
-		if (!adressenavn) return ''
+		if (!adressenavn) {
+			return ''
+		}
 		const poststed = postnummerListe.koder.find((element) => element.value === postnummer)?.label
 		return `${adressenavn} ${parseInt(husnummer)}, ${postnummer} ${poststed}`
 	}

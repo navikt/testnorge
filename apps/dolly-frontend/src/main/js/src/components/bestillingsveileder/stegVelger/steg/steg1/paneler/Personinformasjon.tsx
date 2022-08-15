@@ -17,6 +17,23 @@ import {
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
+const ignoreKeysTestnorge = [
+	'alder',
+	'foedsel',
+	'doedsdato',
+	'statsborgerskap',
+	'innvandretFraLand',
+	'utvandretTilLand',
+	'identtype',
+	'kjonn',
+	'navn',
+	'telefonnummer',
+	'vergemaal',
+	'fullmakt',
+	'sikkerhetstiltak',
+	'tilrettelagtKommunikasjon',
+]
+
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -27,13 +44,26 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const harFnr = opts.identtype === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
+	const getIgnoreKeys = () => {
+		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		if (sm.attrs.utenlandskBankkonto.checked) {
+			ignoreKeys.push('norskBankkonto')
+		} else {
+			ignoreKeys.push('utenlandskBankkonto')
+		}
+		if (!testnorgeIdent && !harFnr) {
+			ignoreKeys.push('utvandretTilLand')
+		}
+		return ignoreKeys
+	}
+
 	if (testnorgeIdent) {
 		return (
 			// @ts-ignore
 			<Panel
 				heading={PersoninformasjonPanel.heading}
 				startOpen
-				checkAttributeArray={() => sm.batchAdd('identtype')}
+				checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
@@ -58,7 +88,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		<Panel
 			heading={PersoninformasjonPanel.heading}
 			startOpen
-			checkAttributeArray={() => sm.batchAdd('identtype')}
+			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
@@ -109,57 +139,85 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		return pdlDataElement.map(({ id, ...restProperties }: { id: string }) => restProperties)
 	}
 
+	const paths = {
+		alder: 'pdldata.opprettNyPerson.alder',
+		foedtEtter: 'pdldata.opprettNyPerson.foedtEtter',
+		foedtFoer: 'pdldata.opprettNyPerson.foedtFoer',
+		foedsel: 'pdldata.person.foedsel',
+		doedsfall: 'pdldata.person.doedsfall',
+		statsborgerskap: 'pdldata.person.statsborgerskap',
+		innflytting: 'pdldata.person.innflytting',
+		utflytting: 'pdldata.person.utflytting',
+		kjoenn: 'pdldata.person.kjoenn',
+		navn: 'pdldata.person.navn',
+		spraakKode: {
+			tpsf: 'tpsf.spraakKode',
+			tpsM: 'tpsMessaging.spraakKode',
+		},
+		egenAnsattDatoFom: {
+			tpsf: 'tpsf.egenAnsattDatoFom',
+			tpsM: 'tpsMessaging.egenAnsattDatoFom',
+			skjerming: 'skjerming.egenAnsattDatoFom',
+		},
+		egenAnsattDatoTom: {
+			tpsf: 'tpsf.egenAnsattDatoTom',
+			tpsM: 'tpsMessaging.egenAnsattDatoTom',
+			skjerming: 'skjerming.egenAnsattDatoTom',
+		},
+		skjermetFra: 'skjermingsregister.skjermetFra',
+		telefonnummer: {
+			pdl: 'pdldata.person.telefonnummer',
+			tpsM: 'tpsMessaging.telefonnummer',
+		},
+		vergemaal: 'pdldata.person.vergemaal',
+		fullmakt: 'pdldata.person.fullmakt',
+		sikkerhetstiltak: {
+			pdl: 'pdldata.person.sikkerhetstiltak',
+			tpsM: 'tpsMessaging.sikkerhetstiltak',
+		},
+		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
+		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
+		norskBankkonto: 'bankkonto.norskBankkonto',
+	}
+
 	return {
 		alder: {
 			label: 'Alder',
-			checked:
-				has('pdldata.opprettNyPerson.alder') ||
-				has('pdldata.opprettNyPerson.foedtEtter') ||
-				has('pdldata.opprettNyPerson.foedtFoer'),
-			add: () =>
-				setMulti(
-					['pdldata.opprettNyPerson.alder', null],
-					['pdldata.opprettNyPerson.foedtEtter', null],
-					['pdldata.opprettNyPerson.foedtFoer', null]
-				),
-			remove: () =>
-				del([
-					'pdldata.opprettNyPerson.alder',
-					'pdldata.opprettNyPerson.foedtEtter',
-					'pdldata.opprettNyPerson.foedtFoer',
-				]),
+			checked: has(paths.alder) || has(paths.foedtEtter) || has(paths.foedtFoer),
+			add: () => setMulti([paths.alder, null], [paths.foedtEtter, null], [paths.foedtFoer, null]),
+			remove: () => del([paths.alder, paths.foedtEtter, paths.foedtFoer]),
 		},
 		foedsel: {
 			label: 'Fødsel',
-			checked: has('pdldata.person.foedsel'),
-			add: () => set('pdldata.person.foedsel', [initialFoedsel]),
-			remove: () => del(['pdldata.person.foedsel']),
+			checked: has(paths.foedsel),
+			add: () => set(paths.foedsel, [initialFoedsel]),
+			remove: () => del([paths.foedsel]),
 		},
 		doedsdato: {
 			label: 'Dødsdato',
-			checked: has('pdldata.person.doedsfall'),
-			add: () => set('pdldata.person.doedsfall', [initialDoedsfall]),
-			remove: () => del(['pdldata.person.doedsfall']),
+			checked: has(paths.doedsfall),
+			add: () => set(paths.doedsfall, [initialDoedsfall]),
+			remove: () => del([paths.doedsfall]),
 		},
 		statsborgerskap: {
 			label: 'Statsborgerskap',
-			checked: has('pdldata.person.statsborgerskap'),
+			checked: has(paths.statsborgerskap),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
-					? set('pdldata.person.statsborgerskap', fjernIdFoerLeggTil('statsborgerskap'))
-					: set('pdldata.person.statsborgerskap', [initialStatsborgerskap])
+					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
+					: set(paths.statsborgerskap, [initialStatsborgerskap])
 			},
 			remove() {
-				del(['pdldata.person.statsborgerskap'])
+				del([paths.statsborgerskap])
 			},
 		},
 		innvandretFraLand: {
 			label: 'Innvandret fra',
-			checked: has('pdldata.person.innflytting'),
+			checked: has(paths.innflytting),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
-					? set('pdldata.person.innflytting', fjernIdFoerLeggTil('innflytting'))
-					: set('pdldata.person.innflytting', [
+					? set(paths.innflytting, fjernIdFoerLeggTil('innflytting'))
+					: set(paths.innflytting, [
 							{
 								fraflyttingsland: '',
 								fraflyttingsstedIUtlandet: '',
@@ -170,16 +228,16 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					  ])
 			},
 			remove() {
-				del('pdldata.person.innflytting')
+				del(paths.innflytting)
 			},
 		},
 		utvandretTilLand: {
 			label: 'Utvandret til',
-			checked: has('pdldata.person.utflytting'),
+			checked: has(paths.utflytting),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
-					? set('pdldata.person.utflytting', fjernIdFoerLeggTil('utflytting'))
-					: set('pdldata.person.utflytting', [
+					? set(paths.utflytting, fjernIdFoerLeggTil('utflytting'))
+					: set(paths.utflytting, [
 							{
 								tilflyttingsland: '',
 								tilflyttingsstedIUtlandet: '',
@@ -190,70 +248,70 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					  ])
 			},
 			remove() {
-				del('pdldata.person.utflytting')
+				del(paths.utflytting)
 			},
 		},
 		kjonn: {
 			label: 'Kjønn',
-			checked: has('pdldata.person.kjoenn'),
-			add: () => set('pdldata.person.kjoenn', [initialKjoenn]),
-			remove: () => del('pdldata.person.kjoenn'),
+			checked: has(paths.kjoenn),
+			add: () => set(paths.kjoenn, [initialKjoenn]),
+			remove: () => del(paths.kjoenn),
 		},
 		navn: {
 			label: 'Navn',
-			checked: has('pdldata.person.navn'),
-			add: () => set('pdldata.person.navn', [initialNavn]),
-			remove: () => del('pdldata.person.navn'),
+			checked: has(paths.navn),
+			add: () => set(paths.navn, [initialNavn]),
+			remove: () => del(paths.navn),
 		},
 		sprakKode: {
 			label: 'Språk',
-			checked: has('tpsf.sprakKode') || has('tpsMessaging.spraakKode'),
-			add: () => set('tpsMessaging.spraakKode', ''),
-			remove: () => del(['tpsMessaging.spraakKode', 'tpsf.spraakKode']),
+			checked: has(paths.spraakKode.tpsf) || has(paths.spraakKode.tpsM),
+			add: () => set(paths.spraakKode.tpsM, ''),
+			remove: () => del([paths.spraakKode.tpsM, paths.spraakKode.tpsf]),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',
-			checked: has('tpsf.egenAnsattDatoFom') || has('tpsMessaging.egenAnsattDatoFom'),
+			checked: has(paths.egenAnsattDatoFom.tpsf) || has(paths.egenAnsattDatoFom.tpsM),
 			add() {
 				setMulti(
 					[
-						'tpsMessaging.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
-							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+						paths.egenAnsattDatoFom.tpsM,
+						_get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
+							_get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
 							new Date(),
 					],
-					['tpsMessaging.egenAnsattDatoTom', undefined],
+					[paths.egenAnsattDatoTom.tpsM, undefined],
 					[
-						'skjerming.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
-							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+						paths.egenAnsattDatoFom.skjerming,
+						_get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
+							_get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
 							new Date(),
 					],
-					['skjerming.egenAnsattDatoTom', undefined]
+					[paths.egenAnsattDatoTom.skjerming, undefined]
 				)
 			},
 			remove() {
 				del([
-					'tpsMessaging.egenAnsattDatoFom',
-					'tpsMessaging.egenAnsattDatoTom',
-					'tpsf.egenAnsattDatoFom',
-					'tpsf.egenAnsattDatoTom',
+					paths.egenAnsattDatoFom.tpsM,
+					paths.egenAnsattDatoTom.tpsM,
+					paths.egenAnsattDatoFom.tpsf,
+					paths.egenAnsattDatoTom.tpsf,
 					'skjerming',
 				])
 			},
 		},
 		telefonnummer: {
 			label: 'Telefonnummer',
-			checked: has('pdldata.person.telefonnummer'),
+			checked: has(paths.telefonnummer.pdl),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
 					? setMulti(
-							['pdldata.person.telefonnummer', fjernIdFoerLeggTil('telefonnummer')],
-							['tpsMessaging.telefonnummer', _get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
+							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
+							[paths.telefonnummer.tpsM, _get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
 					  )
 					: setMulti(
 							[
-								'pdldata.person.telefonnummer',
+								paths.telefonnummer.pdl,
 								[
 									{
 										landskode: '',
@@ -265,7 +323,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								],
 							],
 							[
-								'tpsMessaging.telefonnummer',
+								paths.telefonnummer.tpsM,
 								[
 									{
 										telefonnummer: '',
@@ -277,52 +335,50 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					  )
 			},
 			remove() {
-				del(['pdldata.person.telefonnummer', 'tpsMessaging.telefonnummer'])
+				del([paths.telefonnummer.pdl, paths.telefonnummer.tpsM])
 			},
 		},
 		vergemaal: {
 			label: 'Vergemål',
-			checked: has('pdldata.person.vergemaal'),
-			add: () => set('pdldata.person.vergemaal', [initialVergemaal]),
-			remove: () => del('pdldata.person.vergemaal'),
+			checked: has(paths.vergemaal),
+			add: () => set(paths.vergemaal, [initialVergemaal]),
+			remove: () => del(paths.vergemaal),
 		},
 		fullmakt: {
 			label: 'Fullmakt',
-			checked: has('pdldata.person.fullmakt'),
-			add: () => set('pdldata.person.fullmakt', [initialFullmakt]),
-			remove: () => del('pdldata.person.fullmakt'),
+			checked: has(paths.fullmakt),
+			add: () => set(paths.fullmakt, [initialFullmakt]),
+			remove: () => del(paths.fullmakt),
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
-			checked: has('pdldata.person.sikkerhetstiltak'),
+			checked: has(paths.sikkerhetstiltak.pdl),
 			add: () =>
 				setMulti(
-					['pdldata.person.sikkerhetstiltak', [initialSikkerhetstiltak]],
-					['tpsMessaging.sikkerhetstiltak', [initialTpsSikkerhetstiltak]]
+					[paths.sikkerhetstiltak.pdl, [initialSikkerhetstiltak]],
+					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]]
 				),
-			remove: () => del(['pdldata.person.sikkerhetstiltak', 'tpsMessaging.sikkerhetstiltak']),
+			remove: () => del([paths.sikkerhetstiltak.pdl, paths.sikkerhetstiltak.tpsM]),
 		},
 		tilrettelagtKommunikasjon: {
 			label: 'Tilrettelagt komm.',
-			checked: has('pdldata.person.tilrettelagtKommunikasjon'),
+			checked: has(paths.tilrettelagtKommunikasjon),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.tilrettelagtKommunikasjon')
-					? set(
-							'pdldata.person.tilrettelagtKommunikasjon',
-							fjernIdFoerLeggTil('tilrettelagtKommunikasjon')
-					  )
-					: set('pdldata.person.tilrettelagtKommunikasjon', [initialTilrettelagtKommunikasjon])
+					? set(paths.tilrettelagtKommunikasjon, fjernIdFoerLeggTil('tilrettelagtKommunikasjon'))
+					: set(paths.tilrettelagtKommunikasjon, [initialTilrettelagtKommunikasjon])
 			},
 			remove() {
-				del('pdldata.person.tilrettelagtKommunikasjon')
+				del(paths.tilrettelagtKommunikasjon)
 			},
 		},
 		utenlandskBankkonto: {
 			label: 'Utenlandsk bank',
-			checked: has('tpsMessaging.utenlandskBankkonto'),
+			checked: has(paths.utenlandskBankkonto),
 			add: () =>
-				set('tpsMessaging.utenlandskBankkonto', {
+				set(paths.utenlandskBankkonto, {
 					kontonummer: '',
+					tilfeldigKontonummer: false,
 					swift: '',
 					landkode: null,
 					banknavn: '',
@@ -332,16 +388,16 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					bankAdresse2: '',
 					bankAdresse3: '',
 				}),
-			remove: () => del('tpsMessaging.utenlandskBankkonto'),
+			remove: () => del(paths.utenlandskBankkonto),
 		},
 		norskBankkonto: {
 			label: 'Norsk bank',
-			checked: has('tpsMessaging.norskBankkonto'),
+			checked: has(paths.norskBankkonto),
 			add: () =>
-				set('tpsMessaging.norskBankkonto', {
+				set(paths.norskBankkonto, {
 					kontonummer: '',
 				}),
-			remove: () => del('tpsMessaging.norskBankkonto'),
+			remove: () => del(paths.norskBankkonto),
 		},
 	}
 }

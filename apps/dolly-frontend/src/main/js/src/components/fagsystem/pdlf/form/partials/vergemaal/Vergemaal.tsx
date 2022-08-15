@@ -23,7 +23,7 @@ export const Vergemaal = ({ formikBag }: VergemaalForm) => {
 				newEntry={initialVergemaal}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => {
+				{(path: string, _idx: number) => {
 					return (
 						<>
 							<FormikSelect

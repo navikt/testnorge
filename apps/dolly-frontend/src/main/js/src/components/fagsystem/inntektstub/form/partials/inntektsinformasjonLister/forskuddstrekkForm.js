@@ -9,7 +9,7 @@ const initialValues = {
 	beskrivelse: null,
 }
 
-export const ForskuddstrekkForm = ({ formikBag, inntektsinformasjonPath }) => {
+export const ForskuddstrekkForm = ({ inntektsinformasjonPath }) => {
 	return (
 		<FormikDollyFieldArray
 			name={`${inntektsinformasjonPath}.forskuddstrekksliste`}

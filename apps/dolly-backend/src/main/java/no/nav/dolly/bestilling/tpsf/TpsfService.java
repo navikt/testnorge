@@ -18,6 +18,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,13 +53,18 @@ public class TpsfService {
     private final ObjectMapper objectMapper;
     private final NaisServerProperties serviceProperties;
 
-    public TpsfService(TokenExchange tokenService, TpsForvalterenProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public TpsfService(TokenExchange tokenService,
+                       TpsForvalterenProxyProperties serverProperties,
+                       ObjectMapper objectMapper,
+                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.objectMapper = objectMapper;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

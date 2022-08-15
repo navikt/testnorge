@@ -29,7 +29,11 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	}, [formikBag.values])
 
 	useEffect(() => {
-		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
+		if (
+			inntektValues.inntektstype &&
+			inntektValues.inntektstype !== '' &&
+			Object.keys(fields).length < 1
+		) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
 				(response) => {
 					setFields(response)
@@ -81,7 +85,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				const emptyableFields = Object.entries(fields).filter(
 					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2
 				)
-				for (const [key, val] of emptyableFields) {
+				for (const [key] of emptyableFields) {
 					if (!values[key] && key !== 'tilleggsinformasjonstype') {
 						values[key] = '<TOM>'
 					}

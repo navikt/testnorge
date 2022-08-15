@@ -40,42 +40,74 @@ public class PensjonforvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
+    private static boolean isResponse2xx(PensjonforvalterResponse.Response status) {
+        return status.getHttpStatus().getStatus() >= 200 && status.getHttpStatus().getStatus() < 300;
+    }
+
+    public static void mergePensjonforvalterResponses(PensjonforvalterResponse response, PensjonforvalterResponse responseTil) {
+        if (response.getStatus() != null) {
+            response.getStatus().forEach(status -> {
+                var miljo = status.getMiljo();
+                var miljoResponse = status.getResponse();
+
+                if (responseTil.getStatus() == null) {
+                    responseTil.setStatus(new ArrayList<>());
+                }
+
+                var mergingTilMiljo = responseTil.getStatus().stream()
+                        .filter(s -> s.getMiljo().equalsIgnoreCase(miljo))
+                        .findFirst();
+
+                if (mergingTilMiljo.isPresent()) {
+                    if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
+                        mergingTilMiljo.get().setResponse(miljoResponse);
+                    }
+                } else {
+                    // det var ingen miljø response tidligere
+                    responseTil.getStatus().add(status);
+                }
+            });
+        }
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-            Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
-            Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
-            bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
+        Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
+        Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
+        bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
-            StringBuilder status = new StringBuilder();
+        StringBuilder status = new StringBuilder();
 
-            if (!bestilteMiljoer.isEmpty()) {
-                opprettPerson(dollyPerson, bestilteMiljoer, status);
+        opprettPerson(dollyPerson, tilgjengeligeMiljoer, status);
+        if (!bestilteMiljoer.isEmpty()) {
 
-                if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getInntekt())) {
-                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
-                }
-
-                if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getTp())) {
-                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
-                }
-
-            } else if (nonNull(bestilling.getPensjonforvalter())) {
-                status.append('$')
-                        .append(PENSJON_FORVALTER)
-                        .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
-                        .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
-                        .append("] ikke er valgt");
+            if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getInntekt())) {
+                lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
             }
-            if (status.length() > 1) {
-                progress.setPensjonforvalterStatus(status.substring(1));
+
+            if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getTp())) {
+                lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
             }
+
+        } else if (nonNull(bestilling.getPensjonforvalter())) {
+            status.append('$')
+                    .append(PENSJON_FORVALTER)
+                    .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
+                    .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
+                    .append("] ikke er valgt");
+        }
+        if (status.length() > 1) {
+            progress.setPensjonforvalterStatus(status.substring(1));
+        }
     }
 
     @Override
     public void release(List<String> identer) {
 
         // Pensjonforvalter / POPP støtter pt ikke sletting
+
+        pensjonforvalterConsumer.sletteTpForhold(identer);
     }
 
     private void opprettPerson(DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
@@ -122,31 +154,31 @@ public class PensjonforvalterClient implements ClientRegister {
         status.append('$').append(TP_FORHOLD).append('#');
         PensjonforvalterResponse response = new PensjonforvalterResponse();
 
-            pensjonData.getTp()
-                    .stream()
-                    .forEach(tp -> {
-                        try {
-                            LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
-                            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-                            lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
+        pensjonData.getTp()
+                .stream()
+                .forEach(tp -> {
+                    try {
+                        LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                        lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                        lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
 
-                            var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
-                            mergePensjonforvalterResponses(forholdResponse, response);
+                        var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
+                        mergePensjonforvalterResponses(forholdResponse, response);
 
-                            if (nonNull(tp.getYtelser())) {
-                                var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
-                                mergePensjonforvalterResponses(ytelseResponse, response);
-                            }
-                        } catch (RuntimeException e) {
-                            exceptions.add(errorStatusDecoder.decodeRuntimeException(e));
+                        if (!tp.getYtelser().isEmpty()) {
+                            var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
+                            mergePensjonforvalterResponses(ytelseResponse, response);
                         }
-                    });
+                    } catch (RuntimeException e) {
+                        exceptions.add(errorStatusDecoder.decodeRuntimeException(e));
+                    }
+                });
 
-            if (exceptions.isEmpty()) {
-                decodeStatus(response, status);
-            } else {
-                status.append(exceptions.get(0));
-            }
+        if (exceptions.isEmpty()) {
+            decodeStatus(response, status);
+        } else {
+            status.append(exceptions.get(0));
+        }
 
     }
 
@@ -165,34 +197,6 @@ public class PensjonforvalterClient implements ClientRegister {
         });
 
         return response;
-    }
-
-    private static boolean isResponse2xx(PensjonforvalterResponse.Response status) {
-        return status.getHttpStatus().getStatus() >= 200 && status.getHttpStatus().getStatus() < 300;
-    }
-
-    public static void mergePensjonforvalterResponses(PensjonforvalterResponse response, PensjonforvalterResponse responseTil) {
-        response.getStatus().forEach( status -> {
-            var miljo = status.getMiljo();
-            var miljoResponse = status.getResponse();
-
-            if (responseTil.getStatus() == null) {
-                responseTil.setStatus(new ArrayList<>());
-            }
-
-            var mergingTilMiljo = responseTil.getStatus().stream()
-                    .filter( s -> s.getMiljo().equalsIgnoreCase(miljo))
-                    .findFirst();
-
-            if (mergingTilMiljo.isPresent()) {
-                if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
-                    mergingTilMiljo.get().setResponse(miljoResponse);
-                }
-            } else {
-                // det var ingen miljø response tidligere
-                responseTil.getStatus().add(status);
-            }
-        });
     }
 
     private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {

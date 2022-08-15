@@ -11,7 +11,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 
-const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
+export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 	return (
@@ -28,7 +28,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 					newEntry={initialKontaktinfoForDoedebo}
 					canBeEmpty={false}
 				>
-					{(path, idx) => {
+					{(path) => {
 						return (
 							<>
 								<FormikSelect

@@ -8,6 +8,7 @@ import Loading from '~/components/ui/loading/Loading'
 
 import './SlettModal.less'
 import { useNavigate } from 'react-router-dom'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 type Props = {
 	action: Function
@@ -28,12 +29,18 @@ export const SlettButton = ({
 	title,
 	navigateHome = false,
 }: Props) => {
-	if (loading) return <Loading label="sletter..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const navigate = useNavigate()
+	const mutate = useMatchMutate()
+
+	if (loading) {
+		return <Loading label="sletter..." />
+	}
 
 	const getTitle = () => {
-		if (title) return title
+		if (title) {
+			return title
+		}
 		return disabled ? 'Sletting er midlertidig utilgjengelig' : ''
 	}
 
@@ -55,6 +62,7 @@ export const SlettButton = ({
 							onClick={() => {
 								closeModal()
 								gruppeId ? action(gruppeId) : action()
+								mutate(REGEX_BACKEND_GRUPPER)
 								navigateHome && navigate('/')
 							}}
 							type="hoved"

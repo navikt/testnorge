@@ -1,9 +1,14 @@
 package no.nav.registre.testnorge.profil.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
+import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
+import no.nav.registre.testnorge.profil.domain.Profil;
+import no.nav.registre.testnorge.profil.service.AzureAdTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
@@ -11,13 +16,6 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 import java.util.Optional;
-
-import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
-import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
-import no.nav.registre.testnorge.profil.domain.Profil;
-import no.nav.registre.testnorge.profil.service.AzureAdTokenService;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 
 @Slf4j
 @Component
@@ -30,8 +28,9 @@ public class AzureAdProfileConsumer {
     public AzureAdProfileConsumer(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
-            AzureAdTokenService azureAdTokenService
-    ) {
+            AzureAdTokenService azureAdTokenService,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.url = url;
         this.azureAdTokenService = azureAdTokenService;
         WebClient.Builder builder = WebClient
@@ -56,7 +55,9 @@ public class AzureAdProfileConsumer {
                     ));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
-        this.webClient = builder.build();
+        this.webClient = builder
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public Profil getProfil() {

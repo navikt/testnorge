@@ -8,6 +8,7 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,8 +24,9 @@ public class SyntTpsConsumer {
 
     public SyntTpsConsumer(
             SyntTpsGcpProperties syntTpsGcpProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = syntTpsGcpProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
@@ -34,10 +36,11 @@ public class SyntTpsConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(syntTpsGcpProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tps-syntetisereren"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })
     public List<RsMeldingstype> getSyntetiserteSkdmeldinger(
             String endringskode,
             Integer antallMeldinger

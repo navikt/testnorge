@@ -9,7 +9,6 @@ const errorSelector = createErrorMessageSelector([actions.createGruppe, actions.
 
 const mapStateToProps = (state) => ({
 	createOrUpdateFetching: loadingSelector(state),
-	currentUserId: state.bruker.brukerData.brukerId,
 	error: errorSelector(state),
 })
 

@@ -22,3 +22,20 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnorge-arbeidsforhold-export-api
     description: Api for å eksportere arbeidsforhold.
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

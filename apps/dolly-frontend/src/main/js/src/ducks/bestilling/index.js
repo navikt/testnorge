@@ -83,7 +83,6 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 	if (res.error) {
 		dispatch(actions.bestillingFeilet(res))
 	} else if (type.includes('OrganisasjonBestilling')) {
-		sessionStorage.setItem('organisasjon_bestilling', JSON.stringify({ bestilling: {}, ...res }))
 		navigate(`/organisasjoner`)
 	} else if (opts.is.importTestnorge) {
 		navigate(`/gruppe/${values.gruppeId}`)

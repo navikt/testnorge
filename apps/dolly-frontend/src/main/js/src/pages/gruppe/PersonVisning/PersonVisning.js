@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react'
-import { useMount } from 'react-use'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -28,6 +27,9 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import { getBestillingsListe } from '~/ducks/bestillingStatus'
+import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -42,18 +44,27 @@ const getIdenttype = (ident) => {
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
+	bestillingIdListe,
 	ident,
-	gruppeId,
+	isAlive,
 	brukertype,
-	bestilling,
-	bestillingsListe,
+	gruppeIdenter,
 	loading,
 	slettPerson,
+	slettPersonOgPartner,
 	leggTilPaaPerson,
 	iLaastGruppe,
-	tmpPersoner,
 }) => {
-	useMount(fetchDataFraFagsystemer)
+	const { gruppeId } = ident
+
+	const { bestillingerById } = useBestillingerGruppe(gruppeId)
+
+	useEffect(() => {
+		fetchDataFraFagsystemer(bestillingerById)
+	}, [])
+
+	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
+	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -64,6 +75,14 @@ export const PersonVisning = ({
 		}
 	}, [])
 
+	const pdlPartner = () => {
+		return data.pdl?.hentPerson?.sivilstand?.filter(
+			(siv) =>
+				!siv?.metadata?.historisk &&
+				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
+		)?.[0]?.relatertVedSivilstand
+	}
+
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -73,7 +92,7 @@ export const PersonVisning = ({
 							onClick={() =>
 								leggTilPaaPerson(
 									data,
-									bestillingsListe,
+									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
@@ -85,6 +104,15 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
+
+					{!iLaastGruppe && (
+						<PartnerImportButton
+							gruppeId={gruppeId}
+							partnerIdent={pdlPartner()}
+							gruppeIdenter={gruppeIdenter}
+							master={ident?.master}
+						/>
+					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
@@ -92,22 +120,22 @@ export const PersonVisning = ({
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton action={slettPerson} loading={loading.slettPerson}>
-							Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på
-							personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.
-						</FrigjoerButton>
+						<FrigjoerButton
+							slettPerson={slettPerson}
+							slettPersonOgPartner={slettPersonOgPartner}
+							loading={loading.slettPerson || loading.slettPersonOgPartner}
+							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
+						/>
 					)}
 				</div>
 				{ident.master !== 'PDL' && (
-					<TpsfVisning
-						data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-						pdlData={data.pdlforvalter?.person}
+					<PdlfVisningConnector
+						data={data.pdlforvalter}
+						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
-						tmpPersoner={tmpPersoner?.pdlforvalter}
+						master={ident.master}
 					/>
-				)}
-				{ident.master !== 'PDL' && (
-					<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
@@ -117,17 +145,18 @@ export const PersonVisning = ({
 				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
 				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingsListe, ident.ident)}
+					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
-				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingsListe, ident.ident)} />
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
 				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
 				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
 				<InstVisning data={data.instdata} loading={loading.instdata} />
 				<ArenaVisning
 					data={data.arenaforvalteren}
-					bestillinger={bestillingsListe}
+					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
+					ident={ident}
 				/>
 				<UdiVisning
 					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}

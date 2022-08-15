@@ -1,16 +1,6 @@
 package no.nav.testnav.endringsmeldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.util.Set;
-
 import no.nav.testnav.endringsmeldingservice.config.credentias.TpsForvalterenProxyServiceProperties;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
@@ -21,6 +11,16 @@ import no.nav.testnav.endringsmeldingservice.domain.Status;
 import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.Set;
 
 @Component
 public class TpsForvalterConsumer {
@@ -31,8 +31,9 @@ public class TpsForvalterConsumer {
     public TpsForvalterConsumer(
             TpsForvalterenProxyServiceProperties serverProperties,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.accessTokenService = tokenExchange;
 
@@ -49,6 +50,7 @@ public class TpsForvalterConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

@@ -31,20 +31,27 @@ interface SikkerhetstiltakProps {
 }
 
 export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
-	const sikkerhetstiltakListe = _get(formikBag.values, 'pdldata.person.sikkerhetstiltak')
-	const sikkerhetstiltakListeTps = _get(formikBag.values, 'tpsMessaging.sikkerhetstiltak')
-
-	if (!sikkerhetstiltakListe) return null
-
 	const opts = useContext(BestillingsveilederContext)
+	const [randomNavUsers, setRandomNavUsers] = useState([])
 
-	const navEnheter = SelectOptionsOppslag.hentNavEnheter()
-	const navEnheterOptions = SelectOptionsOppslag.formatOptions('navEnheter', navEnheter)
+	useEffect(() => {
+		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
+	}, [])
 
 	const paths = {
 		rootPath: 'pdldata.person.sikkerhetstiltak',
 		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
 	}
+
+	const sikkerhetstiltakListe = _get(formikBag.values, paths.rootPath)
+	const sikkerhetstiltakListeTps = _get(formikBag.values, paths.tpsMessagingRootPath)
+
+	if (!sikkerhetstiltakListe) {
+		return null
+	}
+
+	const navEnheter = SelectOptionsOppslag.hentNavEnheter()
+	const navEnheterOptions = SelectOptionsOppslag.formatOptions('navEnheter', navEnheter)
 
 	const indexBeskrSikkerhetTiltak = 7
 
@@ -58,11 +65,8 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	}
 
 	const handleNewEntry = () => {
-		formikBag.setFieldValue('pdldata.person.sikkerhetstiltak', [
-			...sikkerhetstiltakListe,
-			initialSikkerhetstiltak,
-		])
-		formikBag.setFieldValue('tpsMessaging.sikkerhetstiltak', [
+		formikBag.setFieldValue(paths.rootPath, [...sikkerhetstiltakListe, initialSikkerhetstiltak])
+		formikBag.setFieldValue(paths.tpsMessagingRootPath, [
 			...sikkerhetstiltakListeTps,
 			initialTpsSikkerhetstiltak,
 		])
@@ -76,21 +80,15 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	const handleRemoveEntry = (idx: number) => {
 		sikkerhetstiltakListe.splice(idx, 1)
 		sikkerhetstiltakListeTps.splice(idx, 1)
-		formikBag.setFieldValue('pdldata.person.sikkerhetstiltak', sikkerhetstiltakListe)
-		formikBag.setFieldValue('tpsMessaging.sikkerhetstiltak', sikkerhetstiltakListeTps)
+		formikBag.setFieldValue(paths.rootPath, sikkerhetstiltakListe)
+		formikBag.setFieldValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
 	}
-
-	const [randomNavUsers, setRandomNavUsers] = useState([])
-
-	useEffect(() => {
-		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
-	}, [])
 
 	return (
 		<Vis attributt={Object.values(paths)} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray
-					name={'pdldata.person.sikkerhetstiltak'}
+					name={paths.rootPath}
 					header="Sikkerhetstiltak"
 					newEntry={initialSikkerhetstiltak}
 					canBeEmpty={false}

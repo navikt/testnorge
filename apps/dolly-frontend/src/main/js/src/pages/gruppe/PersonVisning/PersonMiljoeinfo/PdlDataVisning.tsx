@@ -13,12 +13,11 @@ type PdlDataVisningProps = {
 }
 
 export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
-	if (!ident) return null
+	const [pdlData, setPdlData] = useState(null)
+	const [pdlLoading, setPdlLoading] = useBoolean(true)
+	const [pdlError, setPdlError] = useState(null)
 
 	const getPersonInfo = () => {
-		const [pdlData, setPdlData] = useState(null)
-		const [pdlLoading, setPdlLoading] = useBoolean(true)
-		const [pdlError, setPdlError] = useState(null)
 		if (!pdlData) {
 			DollyApi.getPersonFraPdl(ident.ident || ident)
 				.then((response: PdlDataWrapper) => {
@@ -46,6 +45,10 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 			)
 		}
 		return <PdlVisning pdlData={pdlData} loading={pdlLoading} />
+	}
+
+	if (!ident) {
+		return null
 	}
 
 	return (

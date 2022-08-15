@@ -16,7 +16,8 @@ spec:
     path: /internal/isReady
     initialDelay: 30
   prometheus:
-    path: /internal/prometheus
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1
@@ -35,14 +36,9 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: orkestratoren
-          cluster: dev-fss
   azure:
     application:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://testnorge-sam.nais.preprod.local"
-    - "https://testnorge-sam.dev-fss.nais.io"
-    - "https://testnorge-sam.dev.adeo.no"
     - "https://testnorge-sam.dev.intern.nav.no"

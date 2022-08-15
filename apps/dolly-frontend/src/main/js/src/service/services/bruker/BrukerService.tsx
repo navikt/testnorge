@@ -17,7 +17,7 @@ export default {
 	},
 
 	opprettBruker(brukernavn: string, organisasjonsnummer: string) {
-		let bruker: Bruker = {
+		const bruker: Bruker = {
 			brukernavn: brukernavn,
 			organisasjonsnummer: organisasjonsnummer,
 		}
@@ -44,10 +44,10 @@ export default {
 			.then((response: any) => {
 				return response.status
 			})
-			.catch((e: NotFoundError) => {
+			.catch((_e: NotFoundError) => {
 				return 404
 			})
-			.catch((e: Error) => {
+			.catch((_e: Error) => {
 				return 500
 			})
 	},

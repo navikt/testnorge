@@ -15,6 +15,7 @@ import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlForeldreansvar;
 import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
+import no.nav.pdl.forvalter.dto.PdlSivilstand;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
@@ -174,7 +175,7 @@ public class PdlOrdreService {
                                 deployService.createOrder(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()),
                                 deployService.createOrder(PDL_FORELDREANSVAR, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getForeldreansvar(), PdlForeldreansvar.class)),
                                 deployService.createOrder(PDL_FORELDRE_BARN_RELASJON, person.getIdent(), person.getPerson().getForelderBarnRelasjon()),
-                                deployService.createOrder(PDL_SIVILSTAND, person.getIdent(), person.getPerson().getSivilstand()),
+                                deployService.createOrder(PDL_SIVILSTAND, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getSivilstand(), PdlSivilstand.class)),
                                 deployService.createOrder(PDL_VERGEMAAL, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getVergemaal(), PdlVergemaal.class)),
                                 deployService.createOrder(PDL_FULLMAKT, person.getIdent(), person.getPerson().getFullmakt()),
                                 deployService.createOrder(PDL_TELEFONUMMER, person.getIdent(), person.getPerson().getTelefonnummer()),

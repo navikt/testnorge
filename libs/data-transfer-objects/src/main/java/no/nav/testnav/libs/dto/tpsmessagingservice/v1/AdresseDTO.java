@@ -1,6 +1,8 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +10,11 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressetype")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = GateadresseDTO.class, name = "GATE"),
+        @JsonSubTypes.Type(value = MatrikkeladresseDTO.class, name = "MATR")
+})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class AdresseDTO {
 

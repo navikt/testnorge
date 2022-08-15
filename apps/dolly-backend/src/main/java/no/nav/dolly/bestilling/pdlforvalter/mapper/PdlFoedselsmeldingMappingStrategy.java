@@ -47,24 +47,25 @@ public class PdlFoedselsmeldingMappingStrategy implements MappingStrategy {
                         pdlFoedsel.setFoedekommune(NORGE.equals(pdlFoedsel.getFoedeland()) ? getFoedekommune(person) : null);
                         pdlFoedsel.setFoedested("Fødested i/på " + (isNotBlank(pdlFoedsel.getFoedekommune()) ?
                                 pdlFoedsel.getFoedekommune() :
-                                kodeverkConsumer.getKodeverkByName(LAND).get(pdlFoedsel.getFoedeland())));
+                                kodeverkConsumer.getKodeverkByName(LAND).block()
+                                        .get(pdlFoedsel.getFoedeland())));
                         pdlFoedsel.setKilde(CONSUMER);
                         pdlFoedsel.setMaster(Master.FREG);
                     }
 
                     private String getFoedekommune(Person person) {
+
                         if (!person.getBoadresse().isEmpty()) {
-                            return kodeverkConsumer.getKodeverkByName(KOMMUNER).get(
-                                    person.getBoadresse().stream()
+                            return kodeverkConsumer.getKodeverkByName(KOMMUNER).block()
+                                    .get(person.getBoadresse().stream()
                                             .map(BoAdresse::getKommunenr)
                                             .reduce((first, second) -> second)
                                             .get());
                         } else {
-                            return kodeverkConsumer.getKodeverkByName(KOMMUNER).get(Math.floor(secureRandom.nextFloat() *
-                                    kodeverkConsumer.getKodeverkByName(KOMMUNER).size()));
+                            var kommuner = kodeverkConsumer.getKodeverkByName(KOMMUNER).block();
+                            return kommuner.get(Math.floor(secureRandom.nextFloat() * kommuner.size()));
                         }
                     }
-
                 })
                 .byDefault()
                 .register();

@@ -53,54 +53,65 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
                             dollyPerson.getHovedperson()));
         }
+
+        // Midlertidig ? publisering fra identhendelseslager
+        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
+                .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                        dollyPerson.getHovedperson(), response));
     }
 
     @Override
     public void release(List<String> identer) {
 
         try {
-            pdlPersonConsumer.getPdlPersoner(identer)
-                    .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                    .map(PdlPersonBolk::getData)
-                    .map(PdlPersonBolk.Data::getHentPersonBolk)
-                    .flatMap(Flux::fromIterable)
-                    .filter(personBolk -> nonNull(personBolk.getPerson()))
-                    .map(person -> Stream.of(List.of(person.getIdent()),
-                                    person.getPerson().getSivilstand().stream()
-                                            .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getForelderBarnRelasjon().stream()
-                                            .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getForeldreansvar().stream()
-                                            .map(ForeldreansvarDTO::getAnsvarlig)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getFullmakt().stream()
-                                            .map(FullmaktDTO::getMotpartsPersonident)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
-                                            .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                            .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                            .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                            .filter(Objects::nonNull)
-                                            .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                            .filter(Objects::nonNull)
-                                            .toList())
-                            .flatMap(Collection::stream)
-                            .distinct()
-                            .toList())
+            getPdlIdenter(identer)
                     .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
                     .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
 
         } catch (RuntimeException e) {
             log.error("Feilet å slette tags for identer: {}", String.join(", ", identer));
         }
+    }
+
+    private Flux<List<String>> getPdlIdenter(List<String> identer) {
+
+        return pdlPersonConsumer.getPdlPersoner(identer)
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(person -> Stream.of(List.of(person.getIdent()),
+                                person.getPerson().getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getForeldreansvar().stream()
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getFullmakt().stream()
+                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                        .filter(Objects::nonNull)
+                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .filter(Objects::nonNull)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList());
     }
 }

@@ -29,3 +29,20 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnorge-person-export-api
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

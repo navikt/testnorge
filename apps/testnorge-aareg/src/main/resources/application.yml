@@ -1,0 +1,70 @@
+application:
+  version: application.version.todo
+  name: testnorge-aareg
+
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+testnorge-aareg:
+  security:
+    cors:
+      origins: http://localhost:3050,http://localhost:3000,http://localhost:8020,http://localhost:8080
+  srvuser:
+    username:
+      dev: ${TESTNORGE_AAREG_SRV_USERNAME_PREPROD}
+      test: ${TESTNORGE_AAREG_SRV_USERNAME_TEST}
+    password:
+      dev: ${TESTNORGE_AAREG_SRV_PASSWORD_PREPROD}
+      test: ${TESTNORGE_AAREG_SRV_PASSWORD_TEST}
+
+freg:
+  security:
+    oidc:
+      auth:
+        securedPath: /**
+        ignoredPaths: /internal/**,/swagger-ui.html,/swagger-resources/**,/swagger/**,/webjars/**,/v2/api-docs/**,/api/v1/syntetisering/**,/api/v1/ident/**,/dependencies
+      idp:
+        openam:
+          clientId: ${TESTNORGE_AAREG_OIDC_AGENT_NAME}
+          clientSecret: ${TESTNORGE_AAREG_OIDC_PASSWORD}
+          hostUrl: ${TESTNORGE_AAREG_OIDC_HOST_URL}
+          issuerUrl: ${TESTNORGE_AAREG_OIDC_ISSUER_URL}
+          jwksUrl: ${TESTNORGE_AAREG_OIDC_JWKS_URL}
+
+consumers:
+  synt-aareg:
+    url: https://nais-synthdata-aareg.dev.intern.nav.no
+  kodeverk:
+    url: https://kodeverk.dev.adeo.no/api
+  testnorge-hodejegeren:
+    url: https://testnorge-hodejegeren.dev.intern.nav.no/api
+  fasit:
+    url: https://fasit.adeo.no
+  miljoer-service:
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-miljoer-service
+
+aareg:
+  pageSize: 50
+
+spring:
+  main:
+    banner-mode: off
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

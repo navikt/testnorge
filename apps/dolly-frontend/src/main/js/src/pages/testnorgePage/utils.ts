@@ -1,33 +1,34 @@
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { getKjoenn } from '~/ducks/fagsystem'
 
 export const initialValues = {
 	alder: {
 		fra: '',
 		til: '',
-		foedselsdato: {
-			fom: '',
-			tom: '',
-		},
+	},
+	foedsel: {
+		fom: '',
+		tom: '',
 	},
 	kjoenn: '',
 	nasjonalitet: {
 		statsborgerskap: '',
-		utflyttingFraNorge: false,
-		innflyttingTilNorge: false,
+		innflytting: {
+			fraflyttingsland: '',
+		},
+		utflytting: {
+			tilflyttingsland: '',
+		},
+	},
+	sivilstand: {
+		type: '',
 	},
 	relasjoner: {
-		sivilstand: '',
-		barn: '',
 		harBarn: '',
 		harDoedfoedtBarn: '',
 		forelderBarnRelasjoner: [] as string[],
 		foreldreansvar: '',
 	},
-	ident: {
-		ident: '',
-	},
-	identer: [] as string[],
+	identer: [''],
 	identifikasjon: {
 		adressebeskyttelse: '',
 		identtype: '',
@@ -37,76 +38,51 @@ export const initialValues = {
 	adresser: {
 		bostedsadresse: {
 			borINorge: '',
-			kommunenummer: '',
 			postnummer: '',
+			bydelsnummer: '',
+			kommunenummer: '',
+			historiskPostnummer: '',
+			historiskBydelsnummer: '',
+			historiskKommunenummer: '',
 		},
 		harUtenlandskAdresse: '',
 		harKontaktadresse: '',
 		harOppholdsadresse: '',
 	},
-	personstatus: '',
+	personstatus: {
+		status: '',
+	},
+}
+
+const fellesSearchValues = {
+	page: 1,
+	pageSize: 100,
+	terminateAfter: 100,
+	tag: 'TESTNORGE',
+	excludeTags: ['DOLLY'],
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
-	let identer = values?.identer ? [...values.identer] : []
-	if (values?.ident?.ident) {
-		identer.push(values?.ident?.ident)
-		identer = identer.filter((item: string) => item)
-	}
-
-	const personstatus = values?.personstatus
-	let kunLevende = true
-	if (personstatus === 'DOED' || values?.adresser?.kontaktadresse?.kontaktadresseForDoedsbo) {
-		kunLevende = false
-	}
+	const identer = values?.identer ? [...values.identer].filter((n) => n) : []
+	const kunLevende = values?.personstatus?.status !== 'DOED'
 
 	if (identer.length > 0) {
-		return {
-			page: 1,
-			pageSize: 100,
-			randomSeed: randomSeed,
-			terminateAfter: 100,
-			identer: identer,
-			tag: 'TESTNORGE',
-			excludeTags: ['DOLLY'],
-		}
+		return Object.assign({}, fellesSearchValues, { identer: identer, randomSeed: randomSeed })
 	} else {
-		return {
-			page: 1,
-			pageSize: 100,
-			randomSeed: randomSeed,
-			terminateAfter: 100,
-			kunLevende: kunLevende,
-			kjoenn: values?.kjoenn,
-			foedsel: {
-				fom: values?.alder?.foedselsdato?.fom,
-				tom: values?.alder?.foedselsdato?.tom,
-			},
-			nasjonalitet: values?.nasjonalitet,
-			sivilstand: {
-				type: values?.relasjoner?.sivilstand,
-			},
-			alder: {
-				fra: values?.alder?.fra,
-				til: values?.alder?.til,
-			},
-			identer: identer,
-			identifikasjon: values?.identifikasjon,
-			relasjoner: {
-				sivilstand: values?.relasjoner?.sivilstand,
-				harDoedfoedtBarn: values?.relasjoner?.harDoedfoedtBarn,
-				forelderBarnRelasjoner: values?.relasjoner?.forelderBarnRelasjoner,
-				barn: values?.relasjoner?.barn,
-				harBarn: values?.relasjoner?.barn === 'M' ? 'Y' : values?.relasjoner?.barn,
-				foreldreansvar: values?.relasjoner?.foreldreansvar,
-			},
-			adresser: values?.adresser,
-			personstatus: {
-				status: personstatus,
-			},
-			tag: 'TESTNORGE',
-			excludeTags: ['DOLLY'],
+		const searchValues = Object.assign(
+			{},
+			JSON.parse(JSON.stringify(fellesSearchValues)),
+			JSON.parse(JSON.stringify(values))
+		)
+
+		searchValues['randomSeed'] = randomSeed
+		searchValues['kunLevende'] = kunLevende
+		if (searchValues.relasjoner.harBarn === 'M') {
+			searchValues.relasjoner.harBarn = 'Y'
 		}
+
+		delete searchValues.identer
+		return searchValues
 	}
 }
 
@@ -115,23 +91,9 @@ export const yesNoOptions = [
 	{ value: 'N', label: 'Nei' },
 ]
 
-export const getIdent = (person: PdlData) => {
+export const getPdlIdent = (person: PdlData) => {
 	const identer = person.hentIdenter?.identer?.filter(
 		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
 	)
 	return identer.length > 0 ? identer[0].ident : ''
-}
-
-export const getFornavn = (person: PdlData) => {
-	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
-	return navn.length > 0 ? navn[0].fornavn : ''
-}
-
-export const getEtternavn = (person: PdlData) => {
-	const navn = person.hentPerson?.navn.filter((personNavn) => !personNavn.metadata.historisk)
-	return navn.length > 0 ? navn[0].etternavn : ''
-}
-
-export const getPdlKjoenn = (person: PdlData) => {
-	return person.hentPerson?.kjoenn[0] ? getKjoenn(person.hentPerson?.kjoenn[0].kjoenn) : 'U'
 }

@@ -19,6 +19,8 @@ public class IdentSearchController {
     @GetMapping
     public List<IdentdataDTO> getIdenter(String fragment) {
 
-        return identService.getIdenter(fragment);
+        return identService.getIdenter(fragment)
+                .collectList()
+                .block();
     }
 }

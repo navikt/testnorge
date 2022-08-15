@@ -19,6 +19,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Ro
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -49,7 +50,9 @@ public class CreatePersonUtenIdentifikatorService {
 
         if (isBlank(request.getStatsborgerskap())) {
 
-            relatertPerson.setStatsborgerskap(geografiskeKodeverkConsumer.getTilfeldigLand());
+            relatertPerson.setStatsborgerskap(isNotBlank(request.getRelatertStatsborgerskap()) ?
+                    request.getRelatertStatsborgerskap() :
+                    geografiskeKodeverkConsumer.getTilfeldigLand());
         }
 
         if (isNull(request.getKjoenn())) {

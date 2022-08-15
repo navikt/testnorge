@@ -23,3 +23,20 @@ altinn:
   service:
     code: 5748
     edition: 1
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

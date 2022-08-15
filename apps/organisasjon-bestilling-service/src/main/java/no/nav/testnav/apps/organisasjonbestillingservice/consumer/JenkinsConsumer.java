@@ -1,9 +1,5 @@
 package no.nav.testnav.apps.organisasjonbestillingservice.consumer;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetBEREG007Command;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetBEREG007LogCommand;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetCrumbCommand;
@@ -15,6 +11,10 @@ import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Component
 public class JenkinsConsumer {
@@ -25,11 +25,15 @@ public class JenkinsConsumer {
 
     public JenkinsConsumer(
             JenkinsServiceProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     private Mono<JenkinsCrumb> getCrumb(AccessToken accessToken) {

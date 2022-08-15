@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.person-search-service")
+@ConfigurationProperties(prefix = "consumers.testnav-person-search-service")
 public class PersonSearchServiceProperties extends ServerProperties {
 }

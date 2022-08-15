@@ -11,7 +11,7 @@ import {
 } from '~/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
@@ -22,6 +22,8 @@ import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partial
 import { FormikProps } from 'formik'
 import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { getPlaceholder, setNavn } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>
@@ -35,6 +37,7 @@ type OppholdsadresseFormValues = {
 
 type Target = {
 	value: string
+	label?: string
 }
 
 export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFormValues) => {
@@ -107,6 +110,9 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
+	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
@@ -135,6 +141,18 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				</DatepickerWrapper>
+				<DollySelect
+					name={`${path}.opprettCoAdresseNavn.fornavn`}
+					label="C/O adressenavn"
+					options={navnOptions}
+					size="xlarge"
+					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					isLoading={navnInfo.loading}
+					onChange={(navn: Target) =>
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+					}
+					value={_get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+				/>
 			</div>
 			<AvansertForm
 				path={path}

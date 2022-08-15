@@ -45,7 +45,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
-    implementation 'org.springframework.data:spring-data-elasticsearch'
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -56,6 +56,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'

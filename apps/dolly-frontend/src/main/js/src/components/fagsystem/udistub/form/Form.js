@@ -17,7 +17,7 @@ const attrPaths = [
 	'udistub.soeknadOmBeskyttelseUnderBehandling',
 ]
 
-const udiAttributt = 'udistub'
+export const udiAttributt = 'udistub'
 
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
@@ -32,9 +32,9 @@ export const UdistubForm = ({ formikBag }) => (
 			</Kategori>
 			<Arbeidsadgang formikBag={formikBag} />
 			<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
-				<Alias formikBag={formikBag} />
+				<Alias />
 			</Kategori>
-			<Annet formikBag={formikBag} />
+			<Annet />
 		</Panel>
 	</Vis>
 )

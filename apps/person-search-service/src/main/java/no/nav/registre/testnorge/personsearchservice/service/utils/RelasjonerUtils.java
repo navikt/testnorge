@@ -36,13 +36,14 @@ public class RelasjonerUtils {
                     addForeldreansvarQuery(queryBuilder, value);
                 });
         addSivilstandQuery(queryBuilder, search);
+        addManglerSivilstandQuery(queryBuilder, search);
     }
 
     private static void addRelasjonQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
         var relasjoner = search.getForelderBarnRelasjoner();
         if (nonNull(relasjoner) && !relasjoner.isEmpty()) {
             for (var relasjon : relasjoner) {
-                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, relasjon, true));
+                queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, relasjon, null));
             }
         }
     }
@@ -52,10 +53,11 @@ public class RelasjonerUtils {
         Optional.ofNullable(search.getHarBarn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
+                        var query = nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString(), false);
                         if (YES.equalsIgnoreCase(value)) {
-                            queryBuilder.must(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString(), false));
+                            queryBuilder.must(query);
                         } else if (NO.equalsIgnoreCase(value)) {
-                            queryBuilder.mustNot(nestedMatchQuery(FORELDER_BARN_RELASJON_PATH, RELATERT_PERSONS_ROLLE, PersonRolle.BARN.toString(), false));
+                            queryBuilder.mustNot(query);
                         }
                     }
                 });
@@ -65,10 +67,11 @@ public class RelasjonerUtils {
         Optional.ofNullable(search.getHarDoedfoedtBarn())
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
+                        var query = nestedExistsQuery(DOEDFOEDT_BARN_PATH, METADATA_FIELD, null);
                         if (YES.equalsIgnoreCase(value)) {
-                            queryBuilder.must(nestedExistsQuery(DOEDFOEDT_BARN_PATH, METADATA_FIELD, true));
+                            queryBuilder.must(query);
                         } else if (NO.equalsIgnoreCase(value)) {
-                            queryBuilder.mustNot(nestedExistsQuery(DOEDFOEDT_BARN_PATH, METADATA_FIELD, true));
+                            queryBuilder.mustNot(query);
                         }
                     }
                 });
@@ -80,6 +83,16 @@ public class RelasjonerUtils {
                 .ifPresent(value -> {
                     if (!value.isEmpty()) {
                         queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value, false));
+                    }
+                });
+    }
+
+    private static void addManglerSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+        Optional.ofNullable(search.getSivilstand())
+                .flatMap(value -> Optional.ofNullable(value.getManglerSivilstand()))
+                .ifPresent(value -> {
+                    if (Boolean.TRUE.equals(value)) {
+                        queryBuilder.mustNot(nestedExistsQuery(SIVILSTAND_PATH, METADATA_FIELD, null));
                     }
                 });
     }

@@ -50,6 +50,7 @@ export const tpsfAttributter = [
 export const rootPaths = [
 	'tpsf',
 	'tpsMessaging',
+	'bankkonto',
 	'pdldata.person',
 	'pdldata.opprettNyPerson.alder',
 	'pdldata.opprettNyPerson.foedtEtter',

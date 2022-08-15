@@ -28,13 +28,15 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 		const fetchEgneOrg = async () => {
 			const resp = await SelectOptionsOppslag.hentVirksomheterFraOrgforvalter()
 				.then((response) => {
-					if (!response || response.length === 0) return []
+					if (!response || response.length === 0) {
+						return []
+					}
 					return response.map((virksomhet: Virksomhet) => ({
 						value: virksomhet.orgnummer,
 						label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`,
 					}))
 				})
-				.catch((e: Error) => {
+				.catch((_e: Error) => {
 					return []
 				})
 			setEgneOrganisasjoner(resp)

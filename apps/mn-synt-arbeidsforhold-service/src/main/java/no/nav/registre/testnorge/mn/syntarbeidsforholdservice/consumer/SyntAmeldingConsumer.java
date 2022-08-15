@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -26,18 +27,18 @@ import java.util.List;
 @Component
 public class SyntAmeldingConsumer {
 
+    private static final String OPPRETTELSE_FEILMELDING = "Feil med opprettelse av arbeidsforhold: ";
     private final WebClient webClient;
     private final ServerProperties properties;
     private final TokenExchange tokenExchange;
     private final ObjectMapper objectMapper;
 
-    private static final String OPPRETTELSE_FEILMELDING = "Feil med opprettelse av arbeidsforhold: ";
-
     public SyntAmeldingConsumer(
             TokenExchange tokenExchange,
             SyntAmeldingProperties properties,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.objectMapper = objectMapper;
         this.tokenExchange = tokenExchange;
         this.properties = properties;
@@ -56,6 +57,7 @@ public class SyntAmeldingConsumer {
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

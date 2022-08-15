@@ -8,8 +8,8 @@ import { yesNoOptions } from '~/pages/testnorgePage/utils'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 const paths = {
-	sivistand: 'relasjoner.sivilstand',
-	harBarn: 'relasjoner.barn',
+	sivistand: 'sivilstand.type',
+	harBarn: 'relasjoner.harBarn',
 	harDoedfoedtBarn: 'relasjoner.harDoedfoedtBarn',
 	forelderBarnRelasjoner: 'relasjoner.forelderBarnRelasjoner',
 	foreldreansvar: 'relasjoner.foreldreansvar',
@@ -57,6 +57,8 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 					{ value: 'UGIFT', label: 'Ugift' },
 					{ value: 'SEPARERT', label: 'Separert' },
 					{ value: 'SKILT', label: 'Skilt' },
+					{ value: 'REGISTRERT_PARTNER', label: 'Registrert partner' },
+					{ value: 'SEPARERT_PARTNER', label: 'Separert partner' },
 				]}
 				size="medium"
 			/>
@@ -75,18 +77,23 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 			<div className="options-title">Har forelder</div>
 			<DollyCheckbox
 				label={foreldreRoller.FAR}
+				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.FAR)}
 				onChange={() => handleForelderChange(foreldreRoller.FAR)}
 				checkboxMargin={false}
 				size="small"
 			/>
 			<DollyCheckbox
 				label={foreldreRoller.MOR}
+				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.MOR)}
 				onChange={() => handleForelderChange(foreldreRoller.MOR)}
 				checkboxMargin={false}
 				size="small"
 			/>
 			<DollyCheckbox
 				label={foreldreRoller.MEDMOR}
+				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(
+					foreldreRoller.MEDMOR
+				)}
 				onChange={() => handleForelderChange(foreldreRoller.MEDMOR)}
 				checkboxMargin={false}
 				size="small"
@@ -102,10 +109,4 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 	)
 }
 
-export const RelasjonerPaths = {
-	[paths.sivistand]: 'string',
-	[paths.harBarn]: 'string',
-	[paths.harDoedfoedtBarn]: 'string',
-	[paths.forelderBarnRelasjoner]: 'list',
-	[paths.foreldreansvar]: 'string',
-}
+export const RelasjonerPaths = Object.values(paths)

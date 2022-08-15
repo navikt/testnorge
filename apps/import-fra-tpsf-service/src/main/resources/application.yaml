@@ -16,7 +16,6 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-person-faste-data-service
 
-
 consumers:
   dolly-backend:
     url: https://dolly-backend.dev-fss-pub.nais.io
@@ -33,3 +32,20 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-pdl-forvalter
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

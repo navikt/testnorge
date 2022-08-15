@@ -33,6 +33,17 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                 };
     }
 
+    private static HentIdenterRequest.Kjoenn mapKjoenn(KjoennDTO.Kjoenn kjoenn) {
+
+        return isNull(kjoenn) ?
+                null :
+                switch (kjoenn) {
+                    case MANN -> HentIdenterRequest.Kjoenn.MANN;
+                    case KVINNE -> HentIdenterRequest.Kjoenn.KVINNE;
+                    case UKJENT -> null;
+                };
+    }
+
     @Override
     public void register(MapperFactory factory) {
 
@@ -48,13 +59,14 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                             destinasjon.setFoedtFoer(LocalDate.now().minusYears(kilde.getAlder()).minusMonths(3));
                         }
 
-                        destinasjon.setKjoenn(KjoennDTO.Kjoenn.UKJENT == kilde.getKjoenn() ? null : kilde.getKjoenn());
+                        destinasjon.setKjoenn(mapKjoenn(kilde.getKjoenn()));
 
                         destinasjon.setAntall(1);
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
                     }
                 })
                 .exclude("identtype")
+                .exclude("kjoenn")
                 .byDefault()
                 .register();
 
@@ -75,8 +87,8 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                         }
 
                         if (nonNull(kilde.getPerson())) {
-                            destinasjon.setKjoenn(kilde.getPerson().getKjoenn().stream()
-                                    .findFirst().orElse(new KjoennDTO()).getKjoenn());
+                            destinasjon.setKjoenn(mapKjoenn(kilde.getPerson().getKjoenn().stream()
+                                    .findFirst().orElse(new KjoennDTO()).getKjoenn()));
                         }
 
                         destinasjon.setAntall(1);
@@ -84,6 +96,7 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     }
                 })
                 .exclude("identtype")
+                .exclude("kjoenn")
                 .byDefault()
                 .register();
     }

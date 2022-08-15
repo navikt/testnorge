@@ -79,11 +79,11 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
         return new LinkedMultiValueMap<>(
                 new LinkedHashMap<>(
                         Map.of("matrikkelId", filterArtifact(matrikkelId),
-                                "kommunenummer", filterArtifact(query.getKommunenummer()),
-                                "gaardsnummer", filterArtifact(nullcheck(query.getGaardsnummer())),
-                                "bruksnummer", filterArtifact(nullcheck(query.getBruksnummer())),
-                                "postnummer", filterArtifact(query.getPostnummer()),
-                                "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
+                                        "kommunenummer", filterArtifact(query.getKommunenummer()),
+                                        "gaardsnummer", filterArtifact(nullcheck(query.getGaardsnummer())),
+                                        "bruksnummer", filterArtifact(nullcheck(query.getBruksnummer())),
+                                        "postnummer", filterArtifact(query.getPostnummer()),
+                                        "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                                 .entrySet().stream()
                                 .filter(entry -> isNotBlank(entry.getValue()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));

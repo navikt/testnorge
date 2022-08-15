@@ -25,7 +25,9 @@ export default ({ index, selected, disabled, text, onClick }: KjedeItemProps) =>
 	const textColor = () => {
 		if (selected) {
 			return 'color-black'
-		} else return disabled ? 'color-grey' : 'color-lightblue'
+		} else {
+			return disabled ? 'color-grey' : 'color-lightblue'
+		}
 	}
 
 	const style = {

@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -27,10 +28,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.GIFT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -73,8 +71,9 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     @Override
     public void validate(SivilstandDTO sivilstand) {
 
-        if ((sivilstand.getType() == GIFT ||
-                sivilstand.getType() == REGISTRERT_PARTNER) &&
+        if ((sivilstand.isGift() ||
+                sivilstand.isSeparert() ||
+                sivilstand.getType() == SAMBOER) &&
                 isNotBlank(sivilstand.getRelatertVedSivilstand()) &&
                 !personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())) {
 
@@ -94,7 +93,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             }
         }
 
-        if (sivilstand.isGift() || sivilstand.isSeparert()) {
+        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
@@ -110,10 +109,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                     sivilstand.getNyRelatertPerson().setFoedtEtter(now().minusYears(60));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                    KjoennDTO.Kjoenn kjonn = hovedperson.getKjoenn().stream().findFirst()
+                    KjoennDTO.Kjoenn kjoenn = hovedperson.getKjoenn().stream().findFirst()
                             .map(KjoennDTO::getKjoenn)
                             .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
-                    sivilstand.getNyRelatertPerson().setKjoenn(kjonn == MANN ? KVINNE : MANN);
+                    sivilstand.getNyRelatertPerson().setKjoenn(KjoennUtility.getPartnerKjoenn(kjoenn));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
                     sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));

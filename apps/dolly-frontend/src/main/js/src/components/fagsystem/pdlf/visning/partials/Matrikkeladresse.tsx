@@ -16,6 +16,7 @@ interface MatrikkeladresseValues {
 		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
+		coAdressenavn?: string
 	}
 	idx: number
 }
@@ -29,6 +30,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		gyldigTilOgMed,
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
+		coAdressenavn,
 	} = adresse
 
 	return (
@@ -42,7 +44,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Postnummer">
 					{postnummer && (
 						<KodeverkConnector navn="Postnummer" value={postnummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : postnummer}</span>
 							)}
 						</KodeverkConnector>
@@ -51,7 +53,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Kommunenummer">
 					{kommunenummer && (
 						<KodeverkConnector navn="Kommuner" value={kommunenummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : kommunenummer}</span>
 							)}
 						</KodeverkConnector>
@@ -68,6 +70,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 					title="Sluttdato for kontrakt"
 					value={Formatters.formatDate(sluttdatoForKontrakt)}
 				/>
+				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
 	)

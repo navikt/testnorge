@@ -65,7 +65,6 @@ keytool -import -trustcacerts -alias MicrosoftLoginCert -file DIN_DOWNLOAD_DIR/D
 
  ![Sertifikat Download](docs/assets/cert_download.png)
 
-
 ### Kjøre Redis lokalt
 For å kjøre Redis-instans lokalt må du ha Docker kjørende og kjør kommandoen:
 ```
@@ -73,4 +72,5 @@ docker run --name redis-image -d -p 6379:6379 redis:6.2.6
 ```
 
 Deretter må du fjerne "dev" fra profiles i DevConfig og sette profile lik "dev" i ProdConfig (husk å endre dette tilbake 
-før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript. 
+før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript.
+

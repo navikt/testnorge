@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Panel from '~/components/ui/panel/Panel'
+import _orderBy from 'lodash/orderBy'
+import { DollyApi } from '~/service/Api'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 const Visning = ({ data }) => {
 	if (!data) return null
@@ -55,13 +58,49 @@ const Visning = ({ data }) => {
 	)
 }
 
-export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }) => {
-	if (loading) return <Loading label="Laster arena-data" />
-	if (!data) return false
+const ARENASYNT = 'ARENASYNT'
+
+export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard = true }) => {
+	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
+	const [tagsloading, setTagsLoading] = useState(false)
+	const mountedRef = useRef(true)
+
+	const execute = useCallback(() => {
+		const getTags = async () => {
+			setTagsLoading(true)
+			const resp = await DollyApi.getTagsForIdent(ident.ident)
+				.then((response) => {
+					return response.data
+				})
+				.catch((_e) => {
+					return []
+				})
+			if (mountedRef.current) {
+				setTagsLoading(false)
+				setHarArenasyntTag(resp && resp.includes(ARENASYNT))
+			}
+		}
+		return getTags()
+	}, [])
+
+	useEffect(() => {
+		if (ident.master === 'PDL') {
+			execute()
+		}
+		return () => {
+			mountedRef.current = false
+		}
+	}, [])
+	if (loading || tagsloading) return <Loading label="Laster arena-data" />
+	if (!data && !harArenasyntTag) return null
 
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
+
+	const sortedBestillinger =
+		arenaBestillinger?.length > 0 ? _orderBy(arenaBestillinger, ['id'], ['desc']) : []
+	const sisteArenaBestilling = sortedBestillinger?.[0]
 
 	const visningData = {
 		brukertype: undefined,
@@ -75,24 +114,28 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 
-	for (let bestilling of arenaBestillinger) {
-		if (bestilling.data.arenaforvalter !== undefined) {
-			fyllVisningData(bestilling, visningData)
-		}
-	}
+	fyllVisningData(sisteArenaBestilling, visningData)
+
+	const TagAlert = () => (
+		<AlertStripeInfo style={{ marginBottom: '20px' }}>
+			Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser.
+		</AlertStripeInfo>
+	)
+
 	return (
 		<div>
-			{useStandard && (
+			{useStandard ? (
 				<div>
 					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
+					{harArenasyntTag && !data && <TagAlert />}
 					<div className="person-visning_content">
 						<Visning data={visningData} />
 					</div>
 				</div>
-			)}
-			{!useStandard && (
+			) : (
 				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
 					<div className="person-visning">
+						{harArenasyntTag && !data && <TagAlert />}
 						<div className="person-visning_content">
 							<Visning data={visningData} />
 						</div>
@@ -104,6 +147,9 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 }
 
 function fyllVisningData(bestilling, visningData) {
+	if (!bestilling) {
+		return null
+	}
 	const {
 		arenaBrukertype,
 		kvalifiseringsgruppe,

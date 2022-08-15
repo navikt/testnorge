@@ -1,42 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { sokSelector } from '~/ducks/bestillingStatus'
+import React, { useState } from 'react'
 import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import { SearchField } from '~/components/searchField/SearchField'
 import Loading from '~/components/ui/loading/Loading'
-import { History } from 'history'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import OrganisasjonBestilling from './OrganisasjonBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import OrganisasjonListe from './OrganisasjonListe'
-import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
-import _isEmpty from 'lodash/isEmpty'
 import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
 import { PopoverOrientering } from 'nav-frontend-popover'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import {
+	useOrganisasjonBestilling,
+	useOrganisasjonerForBruker,
+} from '~/utils/hooks/useOrganisasjoner'
+import { sokSelector } from '~/ducks/bestillingStatus'
+import { useDispatch } from 'react-redux'
+import { resetPaginering } from '~/ducks/finnPerson'
 
 type OrganisasjonerProps = {
-	history: History
-	state: any
-	isFetching: boolean
-	bestillinger: Array<EnhetBestilling>
-	organisasjoner: Array<Organisasjon>
-	brukerId: string
-	brukertype: string
-	getOrganisasjonBestillingStatus: Function
-	getOrganisasjonBestilling: Function
-	fetchOrganisasjoner: Function
 	search?: string
-}
-
-type Organisasjon = {
-	organisasjonsnummer: string
-	id: string
-	organisasjonsnavn: string
-	enhetstype: string
+	sidetall: number
 }
 
 enum BestillingType {
@@ -47,102 +35,38 @@ enum BestillingType {
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default function Organisasjoner({
-	state,
-	search,
-	isFetching,
-	bestillinger,
-	organisasjoner,
-	brukerId,
-	brukertype,
-	getOrganisasjonBestillingStatus,
-	getOrganisasjonBestilling,
-	fetchOrganisasjoner,
-}: OrganisasjonerProps) {
+export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps) {
+	const {
+		currentBruker: { brukerId, brukertype },
+	} = useCurrentBruker()
+
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
-	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
+	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 
-	useEffect(() => {
-		getOrganisasjonBestillingStatus(brukerId)
-		getOrganisasjonBestilling(brukerId)
-	}, [organisasjoner?.length])
+	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
+	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
 
-	useEffect(() => {
-		if (!organisasjoner) {
-			fetchOrganisasjoner(brukerId)
-		}
-	}, [])
+	const byttVisning = (event: React.ChangeEvent<any>) => {
+		dispatch(resetPaginering())
+		setVisning(event.target.value)
+	}
+
+	const isFetching = loading || loadingOrganisasjoner
 
 	const searchfieldPlaceholderSelector = () => {
-		if (visning === VISNING_BESTILLINGER) return 'Søk i bestillinger'
+		if (visning === VISNING_BESTILLINGER) {
+			return 'Søk i bestillinger'
+		}
 		return 'Søk i organisasjoner'
 	}
 
-	const antallOrg = organisasjoner?.length
 	const antallBest = bestillinger?.length
 
 	const startBestilling = (type: string) => {
 		navigate('/organisasjoner/bestilling', { state: { opprettOrganisasjon: type } })
 	}
-
-	const sokSelectorOrg = (items: Array<Organisasjon>, searchStr: string) => {
-		if (!items) return []
-		if (!searchStr) return items
-
-		const query = searchStr.toLowerCase()
-		return items.filter((item) =>
-			Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query))
-		)
-	}
-
-	const hentOrgStatus = (
-		bestillingArray: Array<EnhetBestilling>,
-		bestillingId: string | number
-	) => {
-		if (!bestillingArray) return null
-		let orgStatus = 'Ferdig'
-		const bestilling = bestillingArray.find((obj) => {
-			return obj.id === bestillingId
-		})
-		if (!bestilling?.status) orgStatus = 'Feilet'
-		bestilling?.status?.[0].statuser?.forEach((status) => {
-			if (status?.melding !== 'OK') orgStatus = 'Avvik'
-		})
-		return orgStatus
-	}
-
-	function getBestillingIdFromOrgnummer(
-		bestillinger: Array<EnhetBestilling>,
-		organisasjonsnummer: string
-	) {
-		return bestillinger
-			.filter((org) => org.organisasjonNummer === organisasjonsnummer)
-			.map((org) => org.id)
-			.sort(function (a: number, b: number) {
-				return b - a
-			})
-	}
-
-	const mergeList = (organisasjoner: Array<Organisasjon>, bestillinger: Array<EnhetBestilling>) => {
-		if (_isEmpty(organisasjoner)) return null
-
-		return organisasjoner.map((orgInfo) => {
-			const bestillingId = getBestillingIdFromOrgnummer(bestillinger, orgInfo.organisasjonsnummer)
-			return {
-				orgInfo,
-				id: orgInfo.id,
-				organisasjonsnummer: orgInfo.organisasjonsnummer,
-				organisasjonsnavn: orgInfo.organisasjonsnavn,
-				enhetstype: orgInfo.enhetstype,
-				status: hentOrgStatus(bestillinger, bestillingId[0]),
-				bestillingId: bestillingId,
-			}
-		})
-	}
-
-	const filterOrg = () => sokSelectorOrg(mergeList(organisasjoner, bestillinger), search)
-	const filterBest = () => sokSelector(state, search)
 
 	return (
 		<ErrorBoundary>
@@ -163,7 +87,10 @@ export default function Organisasjoner({
 					</div>
 				</div>
 
-				<StatusListeConnector brukerId={brukerId} />
+				{bestillingerById && (
+					// @ts-ignore
+					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
+				)}
 
 				<div className="toolbar">
 					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
@@ -194,11 +121,16 @@ export default function Organisasjoner({
 				</div>
 
 				{visning === VISNING_ORGANISASJONER &&
-					(isFetching || antallOrg === undefined ? (
+					(isFetching ? (
 						<Loading label="Laster organisasjoner" panel />
-					) : antallOrg > 0 ? (
-						// @ts-ignore
-						<OrganisasjonListe bestillinger={bestillinger} organisasjoner={filterOrg()} />
+					) : antallOrg !== 0 ? (
+						<OrganisasjonListe
+							// @ts-ignore
+							bestillinger={bestillinger}
+							search={search}
+							setAntallOrg={setAntallOrg}
+							sidetall={sidetall}
+						/>
 					) : (
 						<TomOrgListe
 							startBestilling={startBestilling}
@@ -210,9 +142,10 @@ export default function Organisasjoner({
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
 						<OrganisasjonBestilling
+							sidetall={sidetall}
 							brukerId={brukerId}
 							brukertype={brukertype}
-							bestillinger={filterBest()}
+							bestillinger={sokSelector(bestillingerById, search)}
 						/>
 					) : (
 						<TomOrgListe

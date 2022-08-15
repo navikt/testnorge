@@ -1,7 +1,11 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import {
+	Kodeverk,
+	KodeverkValues,
+} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type AdresseData = {
 	adresse: {
@@ -17,6 +21,7 @@ type AdresseData = {
 			bygningEtasjeLeilighet?: string
 			regionDistriktOmraade?: string
 		}
+		coAdressenavn?: string
 	}
 	idx: number
 }
@@ -31,7 +36,7 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 		bygningEtasjeLeilighet,
 		regionDistriktOmraade,
 	} = adresse.utenlandskAdresse
-	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed } = adresse
+	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed, coAdressenavn } = adresse
 
 	return (
 		<>
@@ -41,12 +46,21 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Postnummer og -navn" value={postboksNummerNavn} />
 				<TitleValue title="Postkode" value={postkode} />
 				<TitleValue title="By eller sted" value={bySted} />
-				<TitleValue title="Land" value={landkode} kodeverk={AdresseKodeverk.StatsborgerskapLand} />
+				<TitleValue title="Land">
+					{landkode && (
+						<KodeverkConnector navn="Landkoder" value={landkode}>
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
+								<span>{verdi ? verdi.label : landkode}</span>
+							)}
+						</KodeverkConnector>
+					)}
+				</TitleValue>
 				<TitleValue title="Bygg-/leilighetsinfo" value={bygningEtasjeLeilighet} />
 				<TitleValue title="Region/distrikt/område" value={regionDistriktOmraade} />
 				<TitleValue title="Angitt flyttedato" value={Formatters.formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={Formatters.formatDate(gyldigTilOgMed)} />
+				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
 	)

@@ -49,7 +49,9 @@ const PdlForeldreansvarVisning = ({ data, idx }: VisningProps) => {
 }
 
 export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const gyldigeForeldreansvar = data.filter(
 		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk

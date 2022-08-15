@@ -44,7 +44,9 @@ const Adressedatoer = ({ kontaktadresseData }: any) => (
 )
 
 export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
-	if (!kontaktadresseData) return null
+	if (!kontaktadresseData) {
+		return null
+	}
 
 	return (
 		<>
@@ -67,7 +69,7 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 									navn="Postnummer"
 									value={kontaktadresseData.postboksadresse.postnummer}
 								>
-									{(v: Kodeverk, verdi: KodeverkValues) => (
+									{(_v: Kodeverk, verdi: KodeverkValues) => (
 										<span>
 											{verdi ? verdi.label : kontaktadresseData.postboksadresse.postnummer}
 										</span>
@@ -76,6 +78,7 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 							)}
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
+						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
 					</div>
 				</>
 			)}
@@ -102,7 +105,7 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 									navn="Postnummer"
 									value={kontaktadresseData.postadresseIFrittFormat.postnummer}
 								>
-									{(v: Kodeverk, verdi: KodeverkValues) => (
+									{(_v: Kodeverk, verdi: KodeverkValues) => (
 										<span>
 											{verdi ? verdi.label : kontaktadresseData.postadresseIFrittFormat.postnummer}
 										</span>
@@ -158,11 +161,14 @@ export const Kontaktadresse = ({
 	ident,
 	erPdlVisning = false,
 }: KontaktadresseTypes) => {
-	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1))
+	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
 		return null
+	}
 
 	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
-	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) return null
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
+		return null
+	}
 
 	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
 		const initKontaktadresse = Object.assign(
@@ -176,7 +182,9 @@ export const Kontaktadresse = ({
 		)
 		const slettetKontaktadressePdlf =
 			tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
-		if (slettetKontaktadressePdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetKontaktadressePdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const kontaktadresseValues = redigertKontaktadressePdlf
 			? redigertKontaktadressePdlf

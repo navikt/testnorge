@@ -1,17 +1,18 @@
 import { createActions } from 'redux-actions'
-import { DollyApi, OrgforvalterApi } from '~/service/Api'
+import { OrgforvalterApi } from '~/service/Api'
 import { handleActions } from '../utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
-import { Dispatch } from 'redux'
 import { getAdresseWithAdressetype } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { LOCATION_CHANGE } from 'redux-first-history'
 
 const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
-	for (let enhet of enheter) {
+	for (const enhet of enheter) {
 		if (enhet.underenheter && enhet.underenheter.length > 0) {
-			for (let underenhet of enhet.underenheter) {
-				if (underenhet.organisasjonsnummer === orgnr) return enhet.organisasjonsnummer
+			for (const underenhet of enhet.underenheter) {
+				if (underenhet.organisasjonsnummer === orgnr) {
+					return enhet.organisasjonsnummer
+				}
 			}
 		}
 	}
@@ -20,8 +21,6 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 
 export const actions = createActions(
 	{
-		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId,
-		getOrganisasjoner: OrgforvalterApi.getOrganisasjonerInfo,
 		getOrganisasjonerPaaBruker: OrgforvalterApi.getAlleOrganisasjonerPaaBruker,
 	},
 	{
@@ -40,24 +39,14 @@ export default handleActions(
 		[LOCATION_CHANGE](state: any, action: any) {
 			return initialState
 		},
-		[onSuccess(actions.getOrganisasjonBestilling)](
-			state: { bestillinger: [] },
-			action: { payload: { data: [] } }
-		) {
-			state.bestillinger = action.payload.data
-		},
-		[onSuccess(actions.getOrganisasjoner)](
-			state: { organisasjoner: [] },
-			action: { payload: { data: [] } }
-		) {
-			state.organisasjoner = action.payload.data
-		},
 		[onSuccess(actions.getOrganisasjonerPaaBruker)](
 			state: { egneOrganisasjoner: any[] },
 			action: { payload: Organisasjon[] }
 		) {
 			const response = action.payload
-			if (response.length === 0) state.egneOrganisasjoner = []
+			if (response.length === 0) {
+				state.egneOrganisasjoner = []
+			}
 			state.egneOrganisasjoner = response.map((org: Organisasjon) => {
 				const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
 				const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
@@ -77,12 +66,3 @@ export default handleActions(
 	},
 	initialState
 )
-
-export const fetchOrganisasjoner = (dispatch: Dispatch) => async (brukerId: string) => {
-	const { data } = await actions.getOrganisasjonBestilling(brukerId).payload
-	let orgNumre: string[] = []
-	data.forEach((org: { ferdig: boolean; organisasjonNummer: string }) => {
-		if (org.ferdig && org.organisasjonNummer !== 'NA') return orgNumre.push(org.organisasjonNummer)
-	})
-	dispatch(actions.getOrganisasjoner(orgNumre))
-}

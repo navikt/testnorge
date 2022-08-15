@@ -23,6 +23,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.BankkontoData;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -102,6 +103,7 @@ public class RsBestillingStatus {
         private RsSykemelding sykemelding;
         private PdlPersondata pdldata;
         private RsTpsMessaging tpsMessaging;
+        private BankkontoData bankkonto;
         private RsSkjerming skjerming;
     }
 }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
 import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
-import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,6 +32,7 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
     private static final String TEMA_GENERELL = "GEN";
 
     private final WebClient webClient;
+    private final String url;
     private final String ident;
     private final String token;
 
@@ -57,10 +58,11 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .variables(variables)
                 .build();
 
-
         return webClient
                 .post()
-                .uri("/pdl-api/graphql")
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .path("/graphql")
+                        .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(PdlHeaders.HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(PdlHeaders.TEMA, TEMA_GENERELL)

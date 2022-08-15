@@ -39,7 +39,7 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 					<TitleValue
 						title="Mandattype"
 						kodeverk={VergemaalKodeverk.Mandattype}
-						value={data.mandatType}
+						value={data.mandatType || data.vergeEllerFullmektig?.omfang}
 					/>
 					<TitleValue title="Gyldig f.o.m." value={Formatters.formatDate(data.gyldigFraOgMed)} />
 					<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(data.gyldigTilOgMed)} />
@@ -57,7 +57,9 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 }
 
 export const VergemaalVisning = ({ data, relasjoner }: VergemaalData) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 
 	return (
 		<div>

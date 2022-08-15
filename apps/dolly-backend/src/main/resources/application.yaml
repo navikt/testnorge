@@ -83,7 +83,8 @@ consumers:
   testnav-inst-proxy:
     name: testnav-testnorge-inst-proxy
     namespace: dolly
-    url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
+#    url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
+    url: https://testnav-testnorge-inst-proxy.dev.intern.nav.no
     cluster: dev-fss
   testnav-statisk-data-forvalter-proxy:
     name: testnav-statisk-data-forvalter-proxy
@@ -199,7 +200,7 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump
+      exposure.include: prometheus,heapdump,health
       path-mapping.prometheus: metrics
   endpoint:
     prometheus.enabled: true

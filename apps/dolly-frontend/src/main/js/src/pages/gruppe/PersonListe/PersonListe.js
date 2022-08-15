@@ -6,7 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
+import { ManIconItem, UnknownIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -16,6 +16,7 @@ import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
+import { useGruppeById } from '~/utils/hooks/useGruppe'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -27,10 +28,9 @@ const ikonTypeMap = {
 export default function PersonListe({
 	isFetching,
 	search,
+	gruppeId,
 	fagsystem,
 	bestillingStatuser,
-	gruppeInfo,
-	identer,
 	sidetall,
 	sideStoerrelse,
 	brukertype,
@@ -38,12 +38,12 @@ export default function PersonListe({
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
-	fetchIdenterById,
 	tmpPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const { gruppe: gruppeInfo, identer, loading } = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -51,16 +51,13 @@ export default function PersonListe({
 	)
 
 	useEffect(() => {
-		fetchIdenterById(gruppeInfo.id, sidetall, sideStoerrelse)
-		setIdentListe([])
-	}, [gruppeInfo.id, sidetall, sideStoerrelse, tmpPersoner.antallSlettedePersoner])
-
-	useEffect(() => {
-		const idents = Object.values(identer).map((ident) => {
-			if (ident) {
-				return { ident: ident.ident, master: ident.master }
-			}
-		})
+		const idents =
+			identer &&
+			Object.values(identer).map((ident) => {
+				if (ident) {
+					return { ident: ident.ident, master: ident.master }
+				}
+			})
 		if (!isEqual(idents, identListe)) {
 			setIdentListe(idents)
 		}
@@ -74,7 +71,7 @@ export default function PersonListe({
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson])
 
-	if (isFetching || (personListe?.length === 0 && !isEmpty(identer)))
+	if (isFetching || loading || (personListe?.length === 0 && !isEmpty(identer)))
 		return <Loading label="Laster personer" panel />
 
 	if (isEmpty(identer)) {
@@ -94,16 +91,26 @@ export default function PersonListe({
 		)
 	}
 
-	const updateAlder = () => {
+	const updatePersonHeader = () => {
 		personListe.map((person) => {
 			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			if (redigertPerson && !redigertPerson.doedsfall) {
-				person.alder = person.alder.split(' ')[0]
+			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+				: ''
+			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+
+			if (redigertPerson) {
+				if (!redigertPerson.doedsfall) {
+					person.alder = person.alder.split(' ')[0]
+				}
+				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
 			}
 		})
 	}
 
-	if (tmpPersoner) updateAlder()
+	if (tmpPersoner) updatePersonHeader()
 
 	const columns = [
 		{
@@ -112,7 +119,7 @@ export default function PersonListe({
 			dataField: 'identNr',
 			unique: true,
 
-			formatter: (cell, row) => <CopyButton value={row.identNr} />,
+			formatter: (_cell, row) => <CopyButton value={row.identNr} />,
 		},
 		{
 			text: 'Navn',
@@ -128,7 +135,7 @@ export default function PersonListe({
 			text: 'Bestilling-ID',
 			width: '20',
 			dataField: 'bestillingId',
-			formatter: (cell, row) => {
+			formatter: (_cell, row) => {
 				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
@@ -151,14 +158,14 @@ export default function PersonListe({
 			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
+			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
 			text: '',
 			width: '10',
 			dataField: 'harBeskrivelse',
 			centerItem: true,
-			formatter: (cell, row) => {
+			formatter: (_cell, row) => {
 				if (row.ident.beskrivelse) {
 					return (
 						<Tooltip
@@ -193,21 +200,30 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter - tmpPersoner.antallSlettedePersoner,
+					antallElementer: gruppeInfo.antallIdenter,
 					pageSize: sideStoerrelse,
 				}}
 				pagination
-				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				iconItem={(bruker) => {
+					if (bruker.kjonn === 'MANN') {
+						return <ManIconItem />
+					} else if (bruker.kjonn === 'KVINNE') {
+						return <WomanIconItem />
+					} else {
+						return <UnknownIconItem />
+					}
+				}}
 				visSide={sidetall}
 				visPerson={visPerson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector
-						personId={bruker.ident.ident}
-						bestillingId={bruker.ident.bestillingId[0]}
-						bestillingsIdListe={bruker.ident.bestillingId}
-						gruppeId={bruker.ident.gruppeId}
+						ident={bruker.ident}
+						personId={bruker.identNr}
+						bestillingIdListe={bruker.ident.bestillingId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
+						isAlive={!bruker.alder.includes('død')}
+						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
 				)}
 			/>

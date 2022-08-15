@@ -31,6 +31,7 @@ public class TagsOpprettingCommand implements Callable<Mono<ResponseEntity<JsonN
     private final String token;
 
     public Mono<ResponseEntity<JsonNode>> call() {
+        log.info("Oppretter tag(s) på ident(er).");
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

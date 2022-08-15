@@ -5,15 +5,19 @@ import { BVOptions } from './options/options'
 
 import './bestillingsveileder.less'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 export const BestillingsveilederContext = createContext()
 
-export const Bestillingsveileder = ({ error, brukertype, brukerId, sendBestilling }) => {
+export const Bestillingsveileder = ({ error, sendBestilling }) => {
+	const {
+		currentBruker: { brukerId, brukertype },
+	} = useCurrentBruker()
 	const location = useLocation()
 	const navigate = useNavigate()
 	const { gruppeId } = useParams()
 	const options = BVOptions(location.state, gruppeId)
-	const handleSubmit = (values, formikBag) => {
+	const handleSubmit = (values) => {
 		sendBestilling(values, options, gruppeId, navigate)
 	}
 

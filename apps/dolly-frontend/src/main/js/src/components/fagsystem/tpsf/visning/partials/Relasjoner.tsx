@@ -54,7 +54,9 @@ const getHeader = (navn: string) => {
 }
 
 export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
-	if (!relasjoner || relasjoner.length < 1) return null
+	if (!relasjoner || relasjoner.length < 1) {
+		return null
+	}
 
 	const barn = relasjoner.filter(
 		({ relasjonTypeNavn }) =>

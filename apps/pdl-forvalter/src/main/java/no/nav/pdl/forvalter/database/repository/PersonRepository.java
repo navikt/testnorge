@@ -35,7 +35,17 @@ public interface PersonRepository extends PagingAndSortingRepository<DbPerson, L
             + "and (:partialNavn1 is null or :partialNavn1 is not null and (upper(p.etternavn) like %:partialNavn1% or upper(p.fornavn) like %:partialNavn1%))"
             + "and (:partialNavn2 is null or :partialNavn2 is not null and (upper(p.etternavn) like %:partialNavn2% or upper(p.fornavn) like %:partialNavn2%))")
     List<DbPerson> findByWildcardIdent(@Param("partialIdent") String partialIdent,
-                                     @Param("partialNavn1") String partialNavn1,
-                                     @Param("partialNavn2") String partialNavn2,
-                                     Pageable pageable);
+                                       @Param("partialNavn1") String partialNavn1,
+                                       @Param("partialNavn2") String partialNavn2,
+                                       Pageable pageable);
+
+    @Query(value = "select * from person p "
+            + "where p.person -> 'sivilstand' -> 0 ->> 'relatertVedSivilstand' = :ident "
+            + "or p.person -> 'forelderBarnRelasjon' -> 0 ->> 'relatertPerson' = :ident "
+            + "or p.person -> 'foreldreansvar' -> 0 ->> 'ansvarlig' = :ident "
+            + "or p.person -> 'kontaktinformasjonForDoedsbo' -> 0 -> 'personSomKontakt' ->> 'identifikasjonsnummer' = :ident "
+            + "or p.person -> 'vergemaal' -> 0 ->> 'vergeIdent' = :ident "
+            + "or p.person -> 'fullmakt' -> 0 ->> 'motpartsPersonident' = :ident",
+            nativeQuery = true)
+    List<DbPerson> findByRelatertPerson(@Param("ident") String ident);
 }

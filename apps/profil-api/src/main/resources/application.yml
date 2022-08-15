@@ -30,3 +30,20 @@ consumers:
     namespace: dolly
     name: ${PERSON_ORG_TILGANG_NAME}
     url: ${PERSON_ORG_TILGANG_URL}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

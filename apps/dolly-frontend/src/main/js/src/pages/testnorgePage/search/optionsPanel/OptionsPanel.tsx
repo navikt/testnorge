@@ -1,6 +1,6 @@
 import React from 'react'
 import { useToggle } from 'react-use'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import './OptionsPanel.less'
 
 type OptionsPanelProps = {
@@ -8,8 +8,8 @@ type OptionsPanelProps = {
 	heading: string
 	content?: React.ReactNode
 	children?: React.ReactNode
-	selectionColor?: string
 	numSelected?: number
+	disabled?: boolean
 }
 
 export const OptionsPanel: React.FC<OptionsPanelProps> = ({
@@ -17,26 +17,33 @@ export const OptionsPanel: React.FC<OptionsPanelProps> = ({
 	heading,
 	content,
 	children,
-	selectionColor = 'blue',
 	numSelected = 0,
+	disabled = false,
 }: OptionsPanelProps) => {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 	const renderContent = children ? children : content
 
+	const handleClick = () => {
+		if (!disabled) {
+			toggleOpen()
+		}
+	}
+
+	const headerCn = disabled ? 'options-panel__header--disabled' : 'options-panel__header'
 	return (
 		<div className="options-panel">
-			<div className="options-panel-heading" onClick={toggleOpen}>
+			<div className={headerCn} onClick={handleClick}>
 				<h2>{heading}</h2>
-				{numSelected > 0 && (
-					<div className={`options-panel-heading_${selectionColor}-circle`}>
+				{numSelected > 0 && !disabled && (
+					<div className="options-panel__header__circle">
 						<p className="circle-text">{numSelected}</p>
 					</div>
 				)}
-				<span className="options-panel-heading_buttons">
-					<ExpandButton expanded={isOpen} onClick={toggleOpen} />
+				<span className={`${headerCn}__button`}>
+					<ExpandButton expanded={isOpen && !disabled} onClick={handleClick} disabled={disabled} />
 				</span>
 			</div>
-			{isOpen && <div className="options-panel-content">{renderContent}</div>}
+			{isOpen && !disabled && <div className="options-panel__content">{renderContent}</div>}
 		</div>
 	)
 }

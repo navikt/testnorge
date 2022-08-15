@@ -15,7 +15,9 @@ type Data = {
 }
 
 export const Telefonnummer = ({ data }: DataListe) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const TelefonnummerVisning = ({ item, idx }: Data) => {
 		const telefonnummer = item.nummer || item.telefonnummer

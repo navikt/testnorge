@@ -15,12 +15,15 @@ type LaasButtonProps = {
 }
 
 export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonProps) => {
-	if (loading) return <Loading label="låser..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+
+	if (loading) {
+		return <Loading label="låser..." />
+	}
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="lock">
+			<Button onClick={openModal} kind="lock" className="svg-icon-blue-line">
 				LÅS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">

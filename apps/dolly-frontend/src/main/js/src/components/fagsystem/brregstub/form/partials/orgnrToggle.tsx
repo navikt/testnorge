@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
-import { MiljoeApi } from '~/service/Api'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
@@ -10,6 +9,7 @@ import {
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 interface OrgnrToggleProps {
 	path: string
@@ -25,14 +25,7 @@ export const OrgnrToggle = ({
 	warningMessage,
 }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
-	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
-
-	useEffect(() => {
-		const fetchData = async () => {
-			setAktiveMiljoer(await MiljoeApi.getAktiveMiljoer())
-		}
-		fetchData()
-	}, [])
+	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
 	const handleToggleChange = (event: React.ChangeEvent<any>) => {
 		setInputType(event.target.value)
@@ -41,9 +34,15 @@ export const OrgnrToggle = ({
 
 	const clearEnhetsinfo = () => {
 		const oldValues = _get(formikBag.values, path)
-		if (oldValues.hasOwnProperty('foretaksNavn')) delete oldValues['foretaksNavn']
-		if (oldValues.hasOwnProperty('forretningsAdresse')) delete oldValues['forretningsAdresse']
-		if (oldValues.hasOwnProperty('postAdresse')) delete oldValues['postAdresse']
+		if (oldValues.hasOwnProperty('foretaksNavn')) {
+			delete oldValues['foretaksNavn']
+		}
+		if (oldValues.hasOwnProperty('forretningsAdresse')) {
+			delete oldValues['forretningsAdresse']
+		}
+		if (oldValues.hasOwnProperty('postAdresse')) {
+			delete oldValues['postAdresse']
+		}
 		oldValues['orgNr'] = ''
 		formikBag.setFieldValue(path, oldValues)
 	}

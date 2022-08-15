@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.brukerservice.domain;
 
-import no.nav.testnav.apps.brukerservice.client.dto.OrganisasjonDTO;
+import no.nav.testnav.apps.brukerservice.consumer.dto.OrganisasjonDTO;
 
 public class Organisasjon {
     private final String navn;

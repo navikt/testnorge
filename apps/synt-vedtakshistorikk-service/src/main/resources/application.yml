@@ -19,6 +19,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-vedtakshistorikk
+  synt-dagpenger:
+    url: https://synthdata-arena-dagpenger.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-dagpenger
   testnav-arena-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -29,13 +34,40 @@ consumers:
     namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
-  person-search-service:
-    cluster: dev-fss
+  testnav-person-search-service:
+    cluster: dev-gcp
     namespace: dolly
-    name: person-search-service
-    url: https://person-search-service.dev-fss-pub.nais.io
+    name: testnav-person-search-service
+    url: https://testnav-person-search-service.dev.intern.nav.no
   pdl-api-proxy:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+  testnav-inntektstub-proxy:
+    name: testnav-inntektstub-proxy
+    namespace: dolly
+    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-organisasjon-faste-data-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-faste-data-service
+    url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

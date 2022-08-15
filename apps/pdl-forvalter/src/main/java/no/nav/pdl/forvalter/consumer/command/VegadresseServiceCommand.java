@@ -72,13 +72,14 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
 
         return new LinkedMultiValueMap<>(
                 new LinkedHashMap<>(Map.of(
-                        "matrikkelId", filterArtifact(matrikkelId),
-                        "adressenavn", filterArtifact(query.getAdressenavn()),
-                        "husnummer", filterArtifact(query.getHusnummer()),
-                        "husbokstav", filterArtifact(query.getHusbokstav()),
-                        "postnummer", filterArtifact(query.getPostnummer()),
-                        "kommunenummer", filterArtifact(query.getKommunenummer()),
-                        "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
+                                "matrikkelId", filterArtifact(matrikkelId),
+                                "adressenavn", filterArtifact(query.getAdressenavn()),
+                                "husnummer", filterArtifact(query.getHusnummer()),
+                                "husbokstav", filterArtifact(query.getHusbokstav()),
+                                "postnummer", filterArtifact(query.getPostnummer()),
+                                "kommunenummer", filterArtifact(query.getKommunenummer()),
+                                "bydelsnummer", filterArtifact(query.getBydelsnummer()),
+                                "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                         .entrySet().stream()
                         .filter(entry -> isNotBlank(entry.getValue()))
                         .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));

@@ -32,7 +32,6 @@ public class PersonArtifactService {
     private final SivilstandService sivilstandService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
-    private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 
@@ -41,14 +40,14 @@ public class PersonArtifactService {
         // Orders below matters to some degree, don´t rearrange without checking consequences
         person.setKjoenn(kjoennService.convert(person));
         person.setFoedsel(foedselService.convert(person));
-        person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
+        person.setInnflytting(innflyttingService.convert(person));
         person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
         person.setNavn(navnService.convert(person.getNavn()));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
         person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
         person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
-        person.setUtflytting(utflyttingService.convert(person.getUtflytting()));
+        person.setUtflytting(utflyttingService.convert(person));
         person.setOpphold(oppholdService.convert(person.getOpphold()));
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
         person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));

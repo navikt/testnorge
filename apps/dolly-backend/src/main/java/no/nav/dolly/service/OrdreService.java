@@ -88,6 +88,7 @@ public class OrdreService {
         tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(),
                 DollyPerson.builder()
                         .hovedperson(ident)
+                        .master(progress.getMaster())
                         .build(),
                 progress, false);
 

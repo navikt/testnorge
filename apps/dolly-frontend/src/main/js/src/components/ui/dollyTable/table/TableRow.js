@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import cn from 'classnames'
 import Column from './TableColumn'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import { resetNavigering } from '~/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 
@@ -36,7 +36,7 @@ export default function TableRow({
 	return (
 		<div tabIndex={0} className={rowWrapperClass}>
 			<div className={rowClass} onClick={onRowClick}>
-				{icon && icon}
+				{icon}
 				<div className="dot-body-row-columns">
 					{children}
 					{expandComponent && (

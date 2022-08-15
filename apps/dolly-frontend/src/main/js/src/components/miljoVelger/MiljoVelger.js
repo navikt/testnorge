@@ -1,6 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { ErrorMessage, FieldArray } from 'formik'
+import { FieldArray } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
@@ -9,6 +8,9 @@ import styled from 'styled-components'
 import { ifPresent } from '~/utils/YupValidations'
 import * as Yup from 'yup'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import Loading from '~/components/ui/loading/Loading'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -49,8 +51,10 @@ const erMiljouavhengig = (bestilling) => {
 }
 
 export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
-	const environments = useSelector((state) => state.environments.data)
-	if (!environments) return null
+	const { dollyEnvironments, loading } = useDollyEnvironments()
+	if (loading) {
+		return <Loading label={'Laster miljøer...'} />
+	}
 
 	const filterEnvironments = (miljoer, erOrg, erBankIdBruker) => {
 		if (erBankIdBruker) return bankIdMiljoer
@@ -62,7 +66,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
-	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon, bankIdBruker)
+	const filteredEnvironments = filterEnvironments(dollyEnvironments, erOrganisasjon, bankIdBruker)
 
 	const order = ['T', 'Q']
 
@@ -73,7 +77,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 				<>
 					{disableAllEnvironments && (
 						<AlertStripeInfo>
-							Denne bestillingen er uavhengig av miljøer.<p> </p>
+							Denne bestillingen er uavhengig av miljøer.<p></p>
 						</AlertStripeInfo>
 					)}
 					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
@@ -109,7 +113,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
-											onChange={() => {}}
 											size={'xxsmall'}
 										/>
 									))}
@@ -120,7 +123,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 				}}
 			</FieldArray>
 
-			<ErrorMessage name="environments" className="error-message" component="div" />
+			<ErrorMessageWithFocus name="environments" className="error-message" component="div" />
 		</div>
 	)
 }

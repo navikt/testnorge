@@ -32,7 +32,9 @@ const Utflytting = ({ data, idx }: UtflyttingProps) => {
 }
 
 export const PdlUtflytting = ({ utflytting }: VisningProps) => {
-	if (utflytting?.length < 1) return null
+	if (utflytting?.length < 1) {
+		return null
+	}
 
 	const gyldigeUtflyttinger = utflytting.filter(
 		(flytting: UtflyttingFraNorge) => !flytting.metadata?.historisk

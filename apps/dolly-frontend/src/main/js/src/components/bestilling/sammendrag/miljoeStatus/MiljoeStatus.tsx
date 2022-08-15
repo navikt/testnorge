@@ -9,6 +9,7 @@ export type Miljostatus = {
 	bestilling: {
 		status: Bestillingsinformasjon[]
 		systeminfo: string
+		feil: string
 	}
 }
 
@@ -21,6 +22,7 @@ export type Bestillingsinformasjon = {
 export type Detaljert = {
 	miljo: string
 	identer: string[]
+	orgnummer: string
 }
 
 export type Status = {
@@ -70,8 +72,9 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 				status.detaljert.forEach((detaljertStatus: Detaljert) => {
 					statusListe.push({
 						...systeminfo,
-						miljo: detaljertStatus.miljo.toUpperCase(),
+						miljo: detaljertStatus.miljo?.toUpperCase(),
 						identer: detaljertStatus.identer,
+						orgnummer: detaljertStatus.orgnummer,
 					})
 				})
 			}

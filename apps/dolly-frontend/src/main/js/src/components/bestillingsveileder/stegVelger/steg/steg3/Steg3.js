@@ -29,14 +29,13 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 			if (harAvhukedeAttributter(formikBag.values)) {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
-			formikBag.setFieldValue('gruppeId', '')
+			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
 		} else {
 			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 		}
 	}, [])
 
 	const visMiljoeVelger = formikBag.values.hasOwnProperty('environments')
-
 	return (
 		<div>
 			{harAvhukedeAttributter(formikBag.values) && (
@@ -54,7 +53,17 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
-			{importTestnorge && <VelgGruppe formikBag={formikBag} />}
+			{importTestnorge && !opts.gruppe && <VelgGruppe formikBag={formikBag} />}
+			{importTestnorge && opts.gruppe && (
+				<div className="oppsummering">
+					<div className="bestilling-detaljer">
+						<h4>Gruppe for import</h4>
+						<div className="info-text">
+							<div style={{}}>{opts.gruppe.navn}</div>
+						</div>
+					</div>
+				</div>
+			)}
 			{!erOrganisasjon && !importTestnorge && (
 				<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
 			)}

@@ -2,8 +2,13 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: person-search-service
+    name: testnav-person-search-service
     description: Tjeneste for å søke etter personer.
+  autoconfigure:
+    exclude:
+      org.springframework.boot.actuate.autoconfigure.elasticsearch.ElasticSearchReactiveHealthContributorAutoConfiguration,
+      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRepositoriesAutoConfiguration,
+      org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration
   security:
     oauth2:
       resourceserver:
@@ -14,12 +19,31 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-fss:dolly:person-search-service
+          accepted-audience: dev-gcp:dolly:testnav-person-search-service
 
 consumers:
   testnav-pdl-proxy:
     name: testnav-pdl-proxy
     namespace: dolly
-    #url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-    url: https://testnav-pdl-proxy.dev.intern.nav.no
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+
+management:
+  health:
+    elasticsearch:
+      enabled: false
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

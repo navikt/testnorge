@@ -1,5 +1,11 @@
 import { startOfToday } from 'date-fns'
 
+const navn = {
+	fornavn: null as string,
+	mellomnavn: null as string,
+	etternavn: null as string,
+}
+
 export const initialPdlPerson = {
 	identtype: null as string,
 	kjoenn: null as string,
@@ -17,11 +23,7 @@ export const initialPdlPerson = {
 export const initialPdlBiPerson = {
 	foedselsdato: null as string,
 	kjoenn: null as string,
-	navn: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
+	navn: navn,
 	statsborgerskap: null as string,
 }
 
@@ -29,6 +31,7 @@ export const initialKontaktadresse = {
 	adressetype: null as string,
 	gyldigFraOgMed: null as string,
 	gyldigTilOgMed: null as string,
+	opprettCoAdresseNavn: null as object,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -140,8 +143,8 @@ export const initialStatsborgerskap = {
 }
 
 export const initialTilrettelagtKommunikasjon = {
-	spraakForTaletolk: '',
-	spraakForTegnspraakTolk: '',
+	spraakForTaletolk: null as string,
+	spraakForTegnspraakTolk: null as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
@@ -165,21 +168,13 @@ export const initialFoedsel = {
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as string,
 	organisasjonsnavn: null as string,
-	kontaktperson: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
+	kontaktperson: navn,
 }
 
 export const initialPerson = {
 	identifikasjonsnummer: null as string,
 	foedselsdato: null as string,
-	navn: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
+	navn: null as typeof navn,
 }
 
 export const initialNyPerson = {
@@ -258,8 +253,7 @@ export const initialForelder = {
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
-	relatertPerson: null as string,
-	nyRelatertPerson: initialPdlPerson,
+	typeForelderBarn: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -268,9 +262,8 @@ export const initialBarn = {
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
-	relatertPerson: null as string,
+	typeForelderBarn: null as string,
 	deltBosted: null as any,
-	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -319,6 +312,14 @@ export const initialOpphold = {
 	oppholdFra: null as Date,
 	oppholdTil: null as Date,
 	type: 'OPPLYSNING_MANGLER',
+	kilde: 'Dolly',
+	master: 'FREG',
+}
+
+export const initialPersonstatus = {
+	status: null as string,
+	gyldigFraOgMed: null as string,
+	gyldigTilOgMed: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

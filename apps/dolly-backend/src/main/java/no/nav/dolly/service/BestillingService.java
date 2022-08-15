@@ -36,10 +36,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static io.micrometer.core.instrument.util.StringUtils.isNotBlank;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -49,6 +53,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 
 @Slf4j
 @Service
@@ -70,9 +75,20 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
-    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingId) {
-        return bestillingRepository.findByIdContaining(bestillingId)
-                .orElse(emptyList());
+    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+        var searchQueries = bestillingFragment.split(" ");
+        String bestillingID = Arrays.stream(searchQueries)
+                .filter(word -> word.matches("\\d+"))
+                .findFirst()
+                .orElse("");
+        String gruppeNavn = Arrays.stream(searchQueries)
+                .filter(word -> !word.equals(bestillingID))
+                .collect(Collectors.joining(" "));
+        return Stream.concat(
+                        bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),
+                        bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)).stream())
+                .filter(distinctByKey(RsBestillingFragment::getid))
+                .toList();
     }
 
     public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
@@ -335,6 +351,10 @@ public class BestillingService {
         bestillingRepository.swapIdent(oldIdent, newIdent);
     }
 
+    private String wrapSearchString(String searchString) {
+        return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
+    }
+
     private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
         if (isBlank(bestilling.getMalBestillingNavn())) {
             return;
@@ -379,6 +399,7 @@ public class BestillingService {
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
                 .tpsMessaging(request.getTpsMessaging())
+                .bankkonto(request.getBankkonto())
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());

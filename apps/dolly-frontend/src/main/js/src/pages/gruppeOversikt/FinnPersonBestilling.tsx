@@ -51,6 +51,7 @@ const FinnPersonBestilling = ({
 	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
+	const [error, setError] = useState(feilmelding)
 
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
@@ -68,6 +69,7 @@ const FinnPersonBestilling = ({
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		setError(null)
 		if (!searchQuery) {
 			return null
 		}
@@ -77,9 +79,18 @@ const FinnPersonBestilling = ({
 		return setSearchQuery(null)
 	}, [searchQuery])
 
+	useEffect(() => {
+		if (fragment) {
+			setError(null)
+		}
+	}, [fragment])
+
 	function mapToPersoner(personList: any, personer: Array<Option>) {
+		if (!Array.isArray(personList)) {
+			return
+		}
 		personList
-			.filter((person: Person) => person.fornavn !== undefined && person.etternavn !== undefined)
+			.filter((person: Person) => person.fornavn && person.etternavn)
 			.map((person: Person) => {
 				const navn = person.mellomnavn
 					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
@@ -92,8 +103,11 @@ const FinnPersonBestilling = ({
 	}
 
 	const soekBestillinger = async (tekst: string): Promise<Option[]> => {
+		if (!tekst) {
+			return []
+		}
 		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
-			if (response?.data?.length < 1) {
+			if (!response?.data || response?.data?.length < 1) {
 				return []
 			}
 			return response.data?.map((resp) => ({
@@ -104,6 +118,9 @@ const FinnPersonBestilling = ({
 	}
 
 	const soekPersoner = async (tekst: string): Promise<Option[]> => {
+		if (!tekst) {
+			return []
+		}
 		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
 		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
 		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
@@ -117,7 +134,9 @@ const FinnPersonBestilling = ({
 	// @ts-ignore
 	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
 		async (tekst) => {
-			return soekType === SoekTypeValg.BESTILLING ? soekBestillinger(tekst) : soekPersoner(tekst)
+			return soekType === SoekTypeValg.BESTILLING
+				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
+				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
 		},
 		[soekType]
 	)
@@ -183,9 +202,9 @@ const FinnPersonBestilling = ({
 						}
 					/>
 				</div>
-				{feilmelding && (
+				{error && (
 					<div className="error-message" style={{ marginTop: '10px' }}>
-						{feilmelding}
+						{error}
 					</div>
 				)}
 			</div>

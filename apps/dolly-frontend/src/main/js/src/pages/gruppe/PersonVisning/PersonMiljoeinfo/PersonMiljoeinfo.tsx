@@ -11,11 +11,17 @@ type PersonMiljoeinfoProps = {
 }
 
 export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps) => {
-	if (!ident) return null
+	const state = useAsync(async () => {
+		if (ident) {
+			return bankIdBruker
+				? TpsMessagingApi.getTpsPersonInfo(ident, ['q1'])
+				: TpsMessagingApi.getTpsPersonInfoAllEnvs(ident)
+		}
+	}, [])
 
-	const state = bankIdBruker
-		? useAsync(async () => TpsMessagingApi.getTpsPersonInfo(ident, ['q1']), [])
-		: useAsync(async () => TpsMessagingApi.getTpsPersonInfoAllEnvs(ident), [])
+	if (!ident) {
+		return null
+	}
 
 	return (
 		<div>

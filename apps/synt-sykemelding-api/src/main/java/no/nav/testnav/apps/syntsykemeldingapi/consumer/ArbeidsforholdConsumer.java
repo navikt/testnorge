@@ -7,6 +7,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetArbeidsforhold
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
@@ -18,13 +19,15 @@ public class ArbeidsforholdConsumer {
 
     public ArbeidsforholdConsumer(
             TokenExchange tokenExchange,
-            ArbeidsforholdServiceProperties serviceProperties
-    ) {
+            ArbeidsforholdServiceProperties serviceProperties,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

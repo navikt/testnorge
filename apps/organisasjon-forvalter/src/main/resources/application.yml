@@ -26,10 +26,10 @@ consumers:
     name: generer-navn-service
     cluster: dev-gcp
     namespace: dolly
-  organisasjon-orgnummer-service:
-    url: https://organisasjon-orgnummer-service.dev.intern.nav.no
-    name: organisasjon-orgnummer-service
-    cluster: dev-fss
+  testnav-orgnummer-service:
+    url: https://testnav-orgnummer-service.dev.intern.nav.no
+    name: testnav-orgnummer-service
+    cluster: dev-gcp
     namespace: dolly
   organisasjon-bestilling-service:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no
@@ -52,3 +52,20 @@ consumers:
     name: testnav-miljoer-service
     cluster: dev-gcp
     namespace: dolly
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

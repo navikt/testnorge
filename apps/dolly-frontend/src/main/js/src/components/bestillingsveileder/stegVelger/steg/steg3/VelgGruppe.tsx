@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '~/components/velgGruppe/VelgGruppeToggle'
-import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { ErrorMessage, FormikProps } from 'formik'
+import { ifPresent } from '~/utils/YupValidations'
+import { FormikProps } from 'formik'
 import _get from 'lodash/get'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
+import * as Yup from 'yup'
 
 type VelgGruppeProps = {
 	formikBag: FormikProps<{}>
@@ -10,6 +12,8 @@ type VelgGruppeProps = {
 
 export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState(_get(formikBag.values, `gruppeId`))
+
+	useEffect(() => setValgtGruppe(valgtGruppe || '')) // for å vise feilmeldingsvisning
 
 	useEffect(() => {
 		formikBag.setFieldValue('gruppeId', valgtGruppe)
@@ -23,11 +27,16 @@ export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
 					<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setValgtGruppe} />
 				</div>
 			</div>
-			<ErrorMessage name="gruppeId" className="error-message" component="div" />
+			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
 		</div>
 	)
 }
 
 VelgGruppe.validation = {
-	gruppeId: ifPresent('$gruppeId', requiredString),
+	gruppeId: ifPresent(
+		'$gruppeId',
+		Yup.string().required(
+			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)'
+		)
+	),
 }

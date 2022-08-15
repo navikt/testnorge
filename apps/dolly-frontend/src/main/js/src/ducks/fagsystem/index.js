@@ -16,8 +16,7 @@ import {
 	TpsMessagingApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
-import { selectIdentById } from '~/ducks/gruppe'
-import { getBestillingById, successMiljoSelector } from '~/ducks/bestillingStatus'
+import { successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
 import { isNil } from 'lodash'
@@ -113,6 +112,13 @@ export const actions = createActions(
 			DollyApi.slettPerson,
 			(ident) => ({
 				ident,
+			}),
+		],
+		slettPersonOgPartner: [
+			DollyApi.slettPersonOgPartner,
+			(ident, partnerident) => ({
+				ident,
+				partnerident,
 			}),
 		],
 	},
@@ -241,22 +247,30 @@ export default handleActions(
 			state.instdata[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
-			delete state.tpsf[action.meta.ident]
-			delete state.sigrunstub[action.meta.ident]
-			delete state.inntektstub[action.meta.ident]
-			delete state.krrstub[action.meta.ident]
-			delete state.arenaforvalteren[action.meta.ident]
-			delete state.aareg[action.meta.ident]
-			delete state.pdl[action.meta.ident]
-			delete state.pdlforvalter[action.meta.ident]
-			delete state.instdata[action.meta.ident]
-			delete state.udistub[action.meta.ident]
-			delete state.pensjonforvalter[action.meta.ident]
-			delete state.brregstub[action.meta.ident]
+			deleteIdentState(state, action.meta.ident)
+		},
+		[onSuccess(actions.slettPersonOgPartner)](state, action) {
+			deleteIdentState(state, action.meta.ident)
+			deleteIdentState(state, action.meta.partnerident)
 		},
 	},
 	initialState
 )
+
+const deleteIdentState = (state, ident) => {
+	delete state.tpsf[ident]
+	delete state.sigrunstub[ident]
+	delete state.inntektstub[ident]
+	delete state.krrstub[ident]
+	delete state.arenaforvalteren[ident]
+	delete state.aareg[ident]
+	delete state.pdl[ident]
+	delete state.pdlforvalter[ident]
+	delete state.instdata[ident]
+	delete state.udistub[ident]
+	delete state.pensjonforvalter[ident]
+	delete state.brregstub[ident]
+}
 
 // Thunk
 export const fetchTpsfPersoner = (identer) => (dispatch) => {
@@ -292,14 +306,11 @@ export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
-	const state = getState()
-
-	// Person fra gruppe
-	const person = selectIdentById(state, personId)
+export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) => {
+	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
-	const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
+	const bestillinger = person.bestillingId.map((id) => bestillingerById?.[id])
 
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
@@ -308,7 +319,7 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 	const success = successMiljoSelector(statusArray)
 
 	// Samle alt fra PDL under en ID
-	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
+	if (Object.keys(success)?.some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'
 		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
@@ -397,7 +408,7 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 
 	if (!bestillingStatus) return totalStatus
 
-	bestillingStatus.status.forEach((fagsystem) => {
+	bestillingStatus?.status.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {
 			_get(status, 'detaljert', []).forEach((miljoe) => {
 				_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
@@ -412,7 +423,10 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 }
 
 export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
-	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+	if (
+		!identer ||
+		(_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+	)
 		return null
 
 	// Sortert etter bestillingsId
@@ -432,7 +446,8 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	return identListe.map((ident) => {
 		if (ident.master === 'TPSF') {
 			const tpsfIdent = fagsystem.tpsf[ident.ident]
-			return getTpsfIdentInfo(ident, bestillingStatuser, tpsfIdent)
+			const pdlfIdent = fagsystem.pdlforvalter?.[ident.ident]?.person
+			return getTpsfIdentInfo(ident, bestillingStatuser, tpsfIdent, pdlfIdent)
 		} else if (ident.master === 'PDLF') {
 			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, bestillingStatuser, pdlfIdent)
@@ -445,8 +460,10 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	})
 }
 
-const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
-	if (!tpsfIdent) return null
+const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent, pdlfIdent) => {
+	if (!tpsfIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TPS')
+	}
 	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 	return {
 		ident,
@@ -457,44 +474,55 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 		kilde: 'TPS',
 		navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 		kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
-		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		alder: Formatters.formatAlder(
+			tpsfIdent.alder,
+			tpsfIdent.doedsdato ? tpsfIdent.doedsdato : getPdlDoedsdato(pdlfIdent)
+		),
+		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
-	if (!pdlIdent) return null
+	if (!pdlIdent) {
+		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
+	}
 
+	const pdlFornavn = pdlIdent?.navn?.[0]?.fornavn || ''
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
 		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
 		: ''
+	const pdlEtternavn = pdlIdent?.navn?.[0]?.etternavn || ''
 
 	const pdlAlder = (foedselsdato) => {
 		if (!foedselsdato) return null
 		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
 		return Math.abs(diff.getUTCFullYear() - 1970)
 	}
-
 	return {
 		ident,
 		identNr: pdlIdent.ident,
 		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
 		kilde: 'PDL',
-		navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlMellomnavn} ${pdlIdent.navn?.[0]?.etternavn}`,
+		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: Formatters.formatAlder(
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
-			pdlIdent?.doedsfall?.[0]?.doedsdato
+			getPdlDoedsdato(pdlIdent)
 		),
-		status: hentPersonStatus(ident?.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
 
+const getPdlDoedsdato = (pdlIdent) => {
+	return pdlIdent?.doedsfall?.filter((doed) => !doed?.metadata?.historisk)?.[0]?.doedsdato
+}
+
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
-	if (!pdlData) return null
+	if (!pdlData || (!pdlData.person && !pdlData.hentPerson)) {
+		return getDefaultInfo(ident, bestillingStatuser, 'TEST-NORGE')
+	}
 	const person = pdlData.person || pdlData.hentPerson
-	if (!person) return null
 
 	const navn = person.navn[0]
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
@@ -511,7 +539,25 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
+	}
+}
+
+const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
+	return {
+		ident,
+		identNr: ident?.ident,
+		bestillingId: ident?.bestillingId,
+		importFra: '',
+		identtype: '',
+		kilde: kilde,
+		navn: '',
+		kjonn: '',
+		alder: '',
+		status:
+			ident?.bestillingId && bestillingStatuser
+				? hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]])
+				: '',
 	}
 }
 

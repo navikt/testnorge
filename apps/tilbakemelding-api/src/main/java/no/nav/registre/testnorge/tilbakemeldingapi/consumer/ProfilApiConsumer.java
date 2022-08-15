@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
@@ -22,12 +23,14 @@ public class ProfilApiConsumer {
 
     public ProfilApiConsumer(
             ProfilServiceProperties properties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

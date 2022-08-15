@@ -4,15 +4,9 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Testnorge-Bisys er adapteren mellom orkestratoren og bisys for opprettelse av syntetiske bistandsmeldinger.
 
-
-management.endpoints.web.base-path: /internal
-management.endpoints.web.exposure.include: prometheus
-
 consumers:
   bidragsmelding:
     url: https://dummy.dev.adeo.no
-  hodejegeren:
-    url: https://testnorge-hodejegeren.dev.adeo.no/api
   synt-bisys:
     url: https://synthdata-bisys.dev.intern.nav.no
     cluster: dev-gcp
@@ -22,3 +16,20 @@ consumers:
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 USE_HISTORICAL_MOTTATTDATO: 1
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

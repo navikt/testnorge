@@ -14,7 +14,9 @@ interface OmsorgspengerVisning {
 }
 
 export default ({ data }: OmsorgspengerVisning) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	return (
 		<>

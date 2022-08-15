@@ -6,7 +6,8 @@ import _isNil from 'lodash/isNil'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const defaultDateFormat = 'dd.MM.yyyy'
-export const defaultDateTimeFormat = 'dd.MM.yyyy hh:mm'
+export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
+export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy HH:mm:ss'
 
 const Formatters = {}
 
@@ -16,10 +17,13 @@ Formatters.formatAlder = (alder, dodsdato) => {
 }
 
 Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
-	if (_isNil(alder)) return ''
-	return doedfoedt
-		? `${alder.toString()} (dødfødt)`
-		: `${alder.toString()}${doedsdato ? ' (død)' : ''}`
+	if (_isNil(alder)) {
+		return ''
+	} else if (doedfoedt) {
+		return `${alder.toString()} (dødfødt)`
+	} else {
+		return `${alder.toString()}${doedsdato ? ' (død)' : ''}`
+	}
 }
 
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
@@ -38,6 +42,13 @@ Formatters.formatDateTime = (date) => {
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
 	return format(date, defaultDateTimeFormat)
+}
+
+Formatters.formatDateTimeWithSeconds = (date) => {
+	if (!date) return date
+	// Parse date if not date
+	if (!isDate(date)) date = new Date(date)
+	return format(date, defaultDateTimeWithSecondsFormat)
 }
 
 // Format string to Date format
@@ -129,12 +140,15 @@ Formatters.codeToNorskLabel = (value) => {
 }
 
 Formatters.oversettBoolean = (value) => {
-	if (_isNil(value)) return value
-	return value === true || value === 'true'
-		? 'Ja'
-		: value === false || value === 'false'
-		? 'Nei'
-		: value
+	if (_isNil(value)) {
+		return value
+	} else if (value === true || value === 'true') {
+		return 'Ja'
+	} else if (value === false || value === 'false') {
+		return 'Nei'
+	} else {
+		return value
+	}
 }
 
 Formatters.gtTypeLabel = (gtType) => {
@@ -150,21 +164,6 @@ Formatters.gtTypeLabel = (gtType) => {
 		default:
 			return ''
 	}
-}
-
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- * The value is no lower than min (or the next integer greater than min
- * if min isn't an integer) and no greater than max (or the next integer
- * lower than max if max isn't an integer).
- * Using Math.round() will give you a non-uniform distribution!
- *
- * https://stackoverflow.com/a/1527820/3336235
- */
-Formatters.randomIntInRange = (min, max) => {
-	min = Math.ceil(min)
-	max = Math.floor(max)
-	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 Formatters.showLabel = (optionsGruppe, value) => {

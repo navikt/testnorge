@@ -1,13 +1,17 @@
 package no.nav.registre.testnorge.arbeidsforholdservice.consumer;
 
-import static java.util.Objects.nonNull;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,11 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
-import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
@@ -34,8 +34,9 @@ public class AaregConsumer {
     public AaregConsumer(
             AaregServiceProperties serverProperties,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
 
@@ -51,6 +52,7 @@ public class AaregConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

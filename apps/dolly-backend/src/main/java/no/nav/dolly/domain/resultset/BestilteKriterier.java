@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.BankkontoData;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -49,6 +50,7 @@ public class BestilteKriterier {
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
     private RsTpsMessaging tpsMessaging;
+    private BankkontoData bankkonto;
     private RsSkjerming skjerming;
     private RsSykemelding sykemelding;
 }

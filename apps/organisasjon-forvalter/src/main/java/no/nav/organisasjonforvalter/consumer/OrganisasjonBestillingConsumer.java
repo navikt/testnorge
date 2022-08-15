@@ -1,9 +1,5 @@
 package no.nav.organisasjonforvalter.consumer;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-
 import no.nav.organisasjonforvalter.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingCommand;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingIdsCommand;
@@ -11,6 +7,10 @@ import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingStatu
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 @Service
 public class OrganisasjonBestillingConsumer {
@@ -21,11 +21,13 @@ public class OrganisasjonBestillingConsumer {
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties serviceProperties,
-            TokenExchange tokenExchange) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

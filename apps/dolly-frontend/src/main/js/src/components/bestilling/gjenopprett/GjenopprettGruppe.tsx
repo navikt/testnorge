@@ -3,37 +3,22 @@ import Formatters from '~/utils/DataFormatter'
 import React from 'react'
 import { GjenopprettModal } from '~/components/bestilling/gjenopprett/GjenopprettModal'
 import { DollyApi } from '~/service/Api'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type GjenopprettGruppeProps = {
 	onClose: any
 	gruppe: Gruppe
-	gruppeId: string
-	gruppenavn: string
-	bestillingStatuser: Record<string, BestillingStatus>
-	getBestillinger: any
-	brukertype: string
 }
 
-type Gruppe = {
-	id: string
-	navn: string
-	antallIdenter: string
-}
-
-type BestillingStatus = {
-	environments: Array<string>
-}
-
-export const GjenopprettGruppe = ({
-	onClose,
-	gruppe,
-	bestillingStatuser,
-	getBestillinger,
-	brukertype,
-}: GjenopprettGruppeProps) => {
+export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) => {
+	const { currentBruker } = useCurrentBruker()
+	const { bestillingerById } = useBestillingerGruppe(Number(gruppe.id))
+	const brukertype = currentBruker?.brukertype
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()
-		Object.values(bestillingStatuser).forEach((bestillingstatus: BestillingStatus) =>
+		Object.values(bestillingerById).forEach((bestillingstatus) =>
 			bestillingstatus.environments.forEach((miljo: string) => miljoer.add(miljo))
 		)
 		return [...miljoer]
@@ -67,7 +52,6 @@ export const GjenopprettGruppe = ({
 		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
-		await getBestillinger()
 		onClose()
 	}
 

@@ -25,12 +25,18 @@ export const SelectOptionsOppslag = {
 	hentGruppeIdentOptions: async (gruppeId: string) => {
 		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
 			return response.data?.identer?.map((person: PersonData) => {
-				if (person.master === 'PDL' || person.master === 'PDLF') return person.ident
+				if (person.master === 'PDL' || person.master === 'PDLF') {
+					return person.ident
+				}
 			})
 		})
-		if (gruppe?.length < 1) return null
+		if (gruppe?.length < 1) {
+			return null
+		}
 		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
-			if (gruppe.length < 1) return null
+			if (gruppe.length < 1) {
+				return null
+			}
 			const personListe: Array<{ value: string; label: string }> = []
 			response.data.forEach((id: Person) => {
 				personListe.push({
@@ -55,13 +61,6 @@ export const SelectOptionsOppslag = {
 
 	hentPersonnavn: () => {
 		return useAsync(async () => DollyApi.getPersonnavn(), [DollyApi.getPersonnavn])
-	},
-
-	hentGruppe: () => {
-		return useAsync(
-			async () => DollyApi.getFasteDatasettGruppe('DOLLY'),
-			[DollyApi.getFasteDatasettGruppe]
-		)
 	},
 
 	hentInntektsmeldingOptions: (enumtype: string) =>
@@ -113,7 +112,7 @@ export const SelectOptionsOppslag = {
 			const navnData = data?.value?.data || []
 			const options: { value: string; label: string }[] = []
 			navnData.length > 0 &&
-				navnData.forEach((navn) => {
+				navnData.forEach((navn: { [x: string]: any }) => {
 					options.push({ value: navn[type], label: navn[type] })
 				})
 			return options
@@ -180,7 +179,7 @@ export const SelectOptionsOppslag = {
 			return options
 		} else if (type === 'tags') {
 			const tags = data.value ? Object.entries(data.value.data) : []
-			const options = []
+			const options: Option[] = []
 			tags.forEach((leverandoer) => {
 				data = leverandoer[1]
 				options.push({ value: data.tag, label: data.beskrivelse })

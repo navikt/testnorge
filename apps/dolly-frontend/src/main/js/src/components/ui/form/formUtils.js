@@ -17,7 +17,7 @@ export const panelError = (formikBag, attributtPath) => {
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
 
-export const erForste = (values, attributter) => {
+const getValgteAttributter = (values) => {
 	const rootPaths = [
 		'pdldata.opprettNyPerson.alder',
 		'pdldata.person.foedsel',
@@ -37,6 +37,8 @@ export const erForste = (values, attributter) => {
 		'tpsMessaging.egenAnsattDatoTom',
 		'tpsMessaging.utenlandskBankkonto',
 		'tpsMessaging.norskBankkonto',
+		'bankkonto.utenlandskBankkonto',
+		'bankkonto.norskBankkonto',
 		'pdldata.person.bostedsadresse',
 		'pdldata.person.oppholdsadresse',
 		'pdldata.person.kontaktadresse',
@@ -45,18 +47,22 @@ export const erForste = (values, attributter) => {
 		'pdldata.person.doedfoedtBarn',
 		'pdldata.person.forelderBarnRelasjon',
 		'pdldata.person.foreldreansvar',
+		'pdldata.person.falskIdentitet',
+		'pdldata.person.utenlandskIdentifikasjonsnummer',
+		'pdldata.person.nyident',
+		'pdldata.person.kontaktinformasjonForDoedsbo',
 		'aareg',
 		'sigrunstub',
 		'inntektstub',
+		'inntektsmelding',
+		'pensjonforvalter.inntekt',
+		'pensjonforvalter.tp',
+		'arenaforvalter',
 		'sykemelding',
 		'brregstub',
 		'instdata',
 		'krrstub',
-		'arenaforvalter',
 		'udistub',
-		'pensjonforvalter.inntekt',
-		'pensjonforvalter.tp',
-		'inntektsmelding',
 		'dokarkiv',
 		'organisasjon.enhetstype',
 		'organisasjon.naeringskode',
@@ -78,5 +84,15 @@ export const erForste = (values, attributter) => {
 			valgteAttributter.push(path)
 		}
 	})
+	return valgteAttributter
+}
+
+export const erForste = (values, attributter) => {
+	const valgteAttributter = getValgteAttributter(values)
 	return attributter.includes(valgteAttributter[0])
+}
+
+export const harValgtAttributt = (values, attributter) => {
+	const valgteAttributter = getValgteAttributter(values)
+	return attributter.some((attr) => valgteAttributter.includes(attr))
 }
