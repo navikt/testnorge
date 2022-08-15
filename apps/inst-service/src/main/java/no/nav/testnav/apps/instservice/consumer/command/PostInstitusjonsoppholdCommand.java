@@ -53,14 +53,6 @@ public class PostInstitusjonsoppholdCommand implements Callable<Mono<OppholdResp
                         .filter(WebClientFilter::is5xxException))
                 .then(Mono.just(OppholdResponse.builder()
                         .status(HttpStatus.OK)
-                        .institusjonsopphold(Institusjonsopphold.builder()
-                                .personident(institusjonsopphold.getNorskident())
-                                .tssEksternId(institusjonsopphold.getTssEksternId())
-                                .startdato(institusjonsopphold.getStartdato())
-                                .forventetSluttdato(institusjonsopphold.getSluttdato())
-                                .registrertAv(institusjonsopphold.getRegistrertAv())
-                                .institusjonstype(institusjonsopphold.getInstitusjonstype())
-                                .build())
                         .build()))
                 .onErrorResume(throwable -> {
                     var message = getMessage(throwable);
