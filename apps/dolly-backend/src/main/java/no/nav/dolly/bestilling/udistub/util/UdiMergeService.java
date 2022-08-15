@@ -42,7 +42,7 @@ public class UdiMergeService {
         return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : emptyList(), Status.UPDATE, dollyPerson);
     }
 
-    public List<UdiAlias> getAliaser(RsAliasRequest request, List<String> environments, DollyPerson dollyPerson) {
+    public List<UdiAlias> getAliaser(DollyPerson dollyPerson) {
 
         if (dollyPerson.isPdlfMaster() && !dollyPerson.getIdenthistorikk().isEmpty()) {
             return dollyPerson.getIdenthistorikk().stream()

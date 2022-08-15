@@ -33,7 +33,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
     private MapperFacade mapperFacade;
-    private TpsfService tpsfService;
     private ExecutorService dollyForkJoinPool;
     private PdlDataConsumer pdlDataConsumer;
     private IdentService identService;
@@ -53,7 +52,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
         this.mapperFacade = mapperFacade;
-        this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
         this.identService = identService;
