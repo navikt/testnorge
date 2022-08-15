@@ -8,7 +8,7 @@ import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/s
 import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
-import { ForeldreBarnRelasjon, NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 interface PdlEksisterendePersonValues {
@@ -16,6 +16,7 @@ interface PdlEksisterendePersonValues {
 	eksisterendePersonPath: string
 	label: string
 	formikBag?: FormikProps<{}>
+	idx?: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
 }
@@ -25,6 +26,7 @@ export const PdlEksisterendePerson = ({
 	eksisterendePersonPath,
 	label,
 	formikBag,
+	idx,
 	disabled = false,
 	nyIdentValg = null,
 }: PdlEksisterendePersonValues) => {
@@ -47,12 +49,12 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
-	const valgteBarn = _get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
-		?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
-		?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
-
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
+		const valgteBarn = _get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
+			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
+			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
+
 		valgteBarn?.forEach((barn: string) => {
 			if (foreldreansvar.includes(barn)) {
 				harEksisterendeAnsvar = true
@@ -60,6 +62,19 @@ export const PdlEksisterendePerson = ({
 		})
 		return harEksisterendeAnsvar
 	}
+
+	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
+		const partnerErForelder = () =>
+			_get(formikBag?.values, 'pdldata.person.sivilstand')?.find(
+				(partner: Sivilstand) =>
+					partner.type && !gyldigeSivilstanderForPartner.includes(partner.type)
+			) &&
+			!_get(formikBag?.values, `pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
+		const antallEksisterendeForeldre = eksisterendeForeldre.length
+		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
+		return antallEksisterendeForeldre + antallNyeForeldre
+	}
+
 	const filterOptions = (person: Option) => {
 		if (harSivilstand) {
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
@@ -70,6 +85,20 @@ export const PdlEksisterendePerson = ({
 			eksisterendePersonPath?.includes('kontaktinformasjonForDoedsbo')
 		) {
 			return person.alder > 17
+		} else if (
+			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
+			_get(
+				formikBag?.values,
+				`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`
+			) === 'BARN'
+		) {
+			return (
+				getAntallForeldre(person.foreldre) < 3 &&
+				!_get(formikBag.values, 'pdldata.person.forelderBarnRelasjon').some(
+					(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
+						relasjon.relatertPerson === person.value && relasjonId !== idx
+				)
+			)
 		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
 			return (
 				!harForeldreansvarForValgteBarn(person.foreldreansvar) &&
@@ -80,23 +109,30 @@ export const PdlEksisterendePerson = ({
 		return true
 	}
 
+	const getFilteredOptionList = () => {
+		const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
+		// @ts-ignore
+		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
+			setIdentOptions(
+				response?.filter((person) => {
+					return person.value !== eksisterendeIdent && filterOptions(person)
+				})
+			)
+			setLoadingIdentOptions(false)
+		})
+	}
+
 	useEffect(() => {
 		if (!isTestnorgeIdent && gruppeId) {
-			const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
-			// @ts-ignore
-			SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
-				console.log('response: ', response) //TODO - SLETT MEG
-				setIdentOptions(
-					response?.filter((person) => {
-						return person.value !== eksisterendeIdent && filterOptions(person)
-					})
-				)
-				setLoadingIdentOptions(false)
-			})
+			getFilteredOptionList()
 		}
 	}, [])
 
-	console.log('identOptions: ', identOptions) //TODO - SLETT MEG
+	useEffect(() => {
+		if (formikBag) {
+			getFilteredOptionList()
+		}
+	}, [formikBag])
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg)
@@ -118,7 +154,7 @@ export const PdlEksisterendePerson = ({
 			) : (
 				!loadingIdentOptions && (
 					<AlertStripeInfo style={{ marginBottom: '15px' }}>
-						Det finnes ingen eksisterende personer i denne gruppen.
+						Det finnes ingen gyldige personer i denne gruppen.
 					</AlertStripeInfo>
 				)
 			)}

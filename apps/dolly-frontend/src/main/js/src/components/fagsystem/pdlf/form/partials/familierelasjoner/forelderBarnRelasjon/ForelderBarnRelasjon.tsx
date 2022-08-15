@@ -131,6 +131,8 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 							<PdlEksisterendePerson
 								eksisterendePersonPath={`${path}.relatertPerson`}
 								label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
+								formikBag={formikBag}
+								idx={idx}
 							/>
 						)}
 

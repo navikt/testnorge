@@ -22,6 +22,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const nyIdent = _get(bestilling, 'bestilling.pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
+	const forelderBarnRelasjon = _get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
+	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
+
 	return (
 		<div className="bestilling-detaljer">
 			<BestillingSammendrag bestilling={bestilling} />
@@ -33,11 +36,14 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 							GJENOPPRETT
 						</Button>
 					)}
-					{!alleredeMal && !harRelatertPersonVedSivilstand && !harEksisterendeNyIdent && (
-						<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
-							OPPRETT NY MAL
-						</Button>
-					)}
+					{!alleredeMal &&
+						!harRelatertPersonVedSivilstand &&
+						!harEksisterendeNyIdent &&
+						!harRelatertPersonBarn && (
+							<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
+								OPPRETT NY MAL
+							</Button>
+						)}
 				</div>
 			)}
 
