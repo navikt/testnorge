@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataIdenterCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
@@ -36,6 +37,7 @@ import static java.util.Objects.nonNull;
 public class PdlDataConsumer {
 
     private static final int BLOCK_SIZE = 10;
+    private static final String STANDALONE_URL = "/standalone/{standalone}";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
