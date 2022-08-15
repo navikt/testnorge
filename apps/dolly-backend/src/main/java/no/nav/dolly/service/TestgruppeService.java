@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.dto.TestidentDTO;
@@ -34,6 +35,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestgruppeService {
@@ -175,6 +177,6 @@ public class TestgruppeService {
         var testgruppe = fetchTestgruppeById(gruppeId);
         identService.saveIdentTilGruppe(ident, testgruppe, master, null);
         pdlDataConsumer.putStandalone(ident, true)
-                .subscribe(response -> String.format("Lagt til ident %s som standalone i PDL-forvalter", ident));
+                .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 }
