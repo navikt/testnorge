@@ -58,11 +58,7 @@ const informasjonstekst =
 	'til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
 
 export const IdentVelger = ({ formikBag }: Form) => {
-	const [type, setType] = useState(
-		_get(formikBag.values, `pdldata.opprettNyPerson.syntetisk`) === true
-			? IdentType.SYNTETISK
-			: IdentType.STANDARD
-	)
+	const [type, setType] = useState(IdentType.SYNTETISK)
 
 	const handleIdentTypeChange = (value: IdentType) => {
 		setType(value)
@@ -82,8 +78,8 @@ export const IdentVelger = ({ formikBag }: Form) => {
 				name="pdldata.opprettNyPerson.syntetisk"
 				legend=""
 				radios={[
-					{ label: 'Standard', value: IdentType.STANDARD },
 					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
+					{ label: 'Standard', value: IdentType.STANDARD },
 				]}
 				checked={type}
 				onChange={(e) =>
