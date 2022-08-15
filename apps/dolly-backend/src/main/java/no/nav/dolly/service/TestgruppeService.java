@@ -2,6 +2,7 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -45,6 +46,7 @@ public class TestgruppeService {
     private final BestillingService bestillingService;
     private final PersonService personService;
     private final GetUserInfo getUserInfo;
+    private final PdlDataConsumer pdlDataConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -114,7 +116,7 @@ public class TestgruppeService {
         try {
             return testgrupper.stream()
                     .map(testgruppeRepository::save)
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
@@ -172,12 +174,7 @@ public class TestgruppeService {
 
         var testgruppe = fetchTestgruppeById(gruppeId);
         identService.saveIdentTilGruppe(ident, testgruppe, master, null);
-    }
-
-    public void slettIdent(Long gruppeId, String ident) {
-
-        fetchTestgruppeById(gruppeId);
-        identService.getTestIdent(ident);
-        identService.slettTestident(ident);
+        pdlDataConsumer.putStandalone(ident, true)
+                .subscribe(response -> String.format("Lagt til ident %s som standalone i PDL-forvalter", ident));
     }
 }
