@@ -36,7 +36,6 @@ import static java.util.Objects.nonNull;
 public class PdlDataConsumer {
 
     private static final int BLOCK_SIZE = 10;
-    private static final String STANDALONE_URL = "/standalone/{standalone}";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
