@@ -57,7 +57,6 @@ export const SelectOptionsOppslag = {
 			}
 			const personListe: Array<PersonListe> = []
 			response.data.forEach((id: Person) => {
-				// console.log('id: ', id) //TODO - SLETT MEG
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
