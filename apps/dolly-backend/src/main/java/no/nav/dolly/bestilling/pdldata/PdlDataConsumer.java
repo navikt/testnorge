@@ -125,7 +125,7 @@ public class PdlDataConsumer {
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new PdlDataIdenterCommand(webClient, ident,
                         STANDALONE_URL.replace("{standalone}", standalone.toString()),
-                        serviceProperties.getAccessToken(tokenService))
+                        token.getTokenValue())
                         .call());
     }
 
