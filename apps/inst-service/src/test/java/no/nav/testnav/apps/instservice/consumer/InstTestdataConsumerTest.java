@@ -86,7 +86,19 @@ public class InstTestdataConsumerTest {
 
         var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(miljoe, institusjonsopphold);
 
-        assertThat(oppholdResponse.getStatus()).isEqualTo(HttpStatus.CREATED);
+        assertThat(oppholdResponse.getStatus()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldMapErrorInAddInstutisjonsopphold() {
+        var institusjonsopphold = InstitusjonsoppholdV2.builder().build();
+
+        stubErrorAddInstitusjonsopphold();
+
+        var oppholdResponse = instTestdataConsumer.leggTilInstitusjonsoppholdIInst2(miljoe, institusjonsopphold);
+
+        assertThat(oppholdResponse.getFeilmelding()).isNotEmpty();
+        assertThat(oppholdResponse.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void stubGetInstitusjonsopphold() {
@@ -112,5 +124,13 @@ public class InstTestdataConsumerTest {
                 .withHeader("accept", equalTo("application/json"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.CREATED.value())));
+    }
+
+    private void stubErrorAddInstitusjonsopphold() {
+        stubFor(post(urlPathMatching("(.*)/inst2/api/v1/institusjonsopphold/person"))
+                .withQueryParam("environments", equalTo(miljoe))
+                .withHeader("accept", equalTo("application/json"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())));
     }
 }

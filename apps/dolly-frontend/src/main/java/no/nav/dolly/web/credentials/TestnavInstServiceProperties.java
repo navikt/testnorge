@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnav-testnorge-inst-proxy")
-public class TestnavTestnorgeInstProxyProperties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-inst-service")
+public class TestnavInstServiceProperties extends ServerProperties {
 }
