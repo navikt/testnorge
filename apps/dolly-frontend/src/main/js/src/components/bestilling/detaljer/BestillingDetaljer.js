@@ -10,7 +10,7 @@ import _get from 'lodash/get'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
-	const [isOpenMalModalOpen, openOpenMalModal, closeOpenMalModal] = useBoolean(false)
+	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
@@ -40,7 +40,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						!harRelatertPersonVedSivilstand &&
 						!harEksisterendeNyIdent &&
 						!harRelatertPersonBarn && (
-							<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
+							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
 								OPPRETT NY MAL
 							</Button>
 						)}
@@ -71,7 +71,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				/>
 			)}
 
-			{isOpenMalModalOpen && <MalModal id={bestilling.id} closeModal={closeOpenMalModal} />}
+			{isMalModalOpen && <MalModal id={bestilling.id} closeModal={closeMalModal} />}
 		</div>
 	)
 }
