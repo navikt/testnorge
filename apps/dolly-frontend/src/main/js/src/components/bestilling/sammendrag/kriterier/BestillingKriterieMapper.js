@@ -178,7 +178,6 @@ const personRelatertTil = (personData, path) => {
 		statsborgerskapLandkode,
 		statsborgerskap,
 		gradering,
-		syntetisk,
 		nyttNavn,
 		navn,
 	} = _get(personData, path)
