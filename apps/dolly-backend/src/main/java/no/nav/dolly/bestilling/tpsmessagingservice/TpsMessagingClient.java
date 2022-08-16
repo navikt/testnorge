@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -42,8 +41,6 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 public class TpsMessagingClient implements ClientRegister {
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
-    private final KontoregisterConsumer kontoregisterConsumer;
-
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final ExecutorService dollyForkJoinPool;
@@ -279,30 +276,20 @@ public class TpsMessagingClient implements ClientRegister {
             if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
 
                 return (bestilling1, dollyPerson) ->
-                        Map.of("UtenlandskBankkonto-tps",
+                        Map.of("UtenlandskBankkonto",
                                 tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                                         dollyPerson.getHovedperson(),
                                         null,
-                                        bestilling1.getBankkonto().getUtenlandskBankkonto()),
-                                "UtenlandskBankkonto",
-                                kontoregisterConsumer.sendUtenlandskBankkontoRequest(
-                                        dollyPerson.getHovedperson(),
-                                        bestilling1.getBankkonto().getUtenlandskBankkonto())
-                        );
+                                        bestilling1.getBankkonto().getUtenlandskBankkonto()));
 
             } else if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
 
                 return (bestilling1, dollyPerson) ->
-                        Map.of("NorskBankkonto-tps",
+                        Map.of("NorskBankkonto",
                                 tpsMessagingConsumer.sendNorskBankkontoRequest(
                                         dollyPerson.getHovedperson(),
                                         null,
-                                        bestilling1.getBankkonto().getNorskBankkonto()),
-                                "NorskBankkonto",
-                                kontoregisterConsumer.sendNorskBankkontoRequest(
-                                        dollyPerson.getHovedperson(),
-                                        bestilling1.getBankkonto().getNorskBankkonto())
-                        );
+                                        bestilling1.getBankkonto().getNorskBankkonto()));
 
             }
         }
@@ -311,30 +298,20 @@ public class TpsMessagingClient implements ClientRegister {
         if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
 
             return (bestilling1, dollyPerson) ->
-                    Map.of("UtenlandskBankkonto-tps",
+                    Map.of("UtenlandskBankkonto",
                             tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                                     dollyPerson.getHovedperson(),
                                     null,
-                                    bestilling1.getTpsMessaging().getUtenlandskBankkonto()),
-                            "UtenlandskBankkonto",
-                            kontoregisterConsumer.sendUtenlandskBankkontoRequest(
-                                    dollyPerson.getHovedperson(),
-                                    bestilling1.getTpsMessaging().getUtenlandskBankkonto())
-                    );
+                                    bestilling1.getTpsMessaging().getUtenlandskBankkonto()));
 
         } else if (nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
 
             return (bestilling1, dollyPerson) ->
-                    Map.of("NorskBankkonto-tps",
+                    Map.of("NorskBankkonto",
                             tpsMessagingConsumer.sendNorskBankkontoRequest(
                                     dollyPerson.getHovedperson(),
                                     null,
-                                    bestilling1.getTpsMessaging().getNorskBankkonto()),
-                            "NorskBankkonto",
-                            kontoregisterConsumer.sendNorskBankkontoRequest(
-                                    dollyPerson.getHovedperson(),
-                                    bestilling1.getTpsMessaging().getNorskBankkonto())
-                    );
+                                    bestilling1.getTpsMessaging().getNorskBankkonto()));
         } else {
 
             return null;
