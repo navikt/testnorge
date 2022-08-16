@@ -34,11 +34,7 @@ export const isEmpty = (attributt, excludeList = []) => {
 			if (excludeList.includes(i)) {
 				continue
 			}
-			if (
-				typeof objekt[i] === 'object' &&
-				!(objekt[i] instanceof Date) &&
-				!Array.isArray(objekt[i])
-			) {
+			if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
 				const temp = flattenData(objekt[i])
 				for (const j in temp) {
 					result[i + '.' + j] = temp[j]
