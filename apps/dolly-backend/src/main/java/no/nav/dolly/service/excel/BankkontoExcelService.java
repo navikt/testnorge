@@ -1,6 +1,7 @@
 package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -31,6 +32,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BankkontoExcelService {
@@ -140,7 +142,8 @@ public class BankkontoExcelService {
                 .map(Testgruppe::getBestillinger)
                 .flatMap(Collection::stream)
                 .filter(bestilling -> nonNull(bestilling.getBestKriterier()))
-                .filter(bestilling -> bestilling.getBestKriterier().contains("Bankkonto"))
+                .filter(bestilling -> bestilling.getBestKriterier().contains("kontonummer"))
+                .peek(bestilling -> log.info("Kontonummer test: {}", bestilling.getBestKriterier()))
                 .map(Bestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(BestillingProgress::getIdent)
