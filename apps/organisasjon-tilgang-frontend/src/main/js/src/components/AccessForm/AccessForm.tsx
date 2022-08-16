@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import { SubmitForm } from '@/components/SubmitForm';
 import { OrganisasjonTilgangService } from '@/services';
 import { InputFormItem, TimePicker } from '@navikt/dolly-komponenter/lib';
+import styled from 'styled-components';
+
+const StyledTimepicker = styled(TimePicker)`
+  && {
+    width: 150px;
+  }
+`;
 
 const createDefaultDate = () => {
   const currentDate = new Date();
@@ -28,7 +35,7 @@ const AccessForm = () => {
         onBlur={(event) => setOrgnummer(event.target.value)}
       />
       {/* @ts-ignore */}
-      <TimePicker
+      <StyledTimepicker
         value={gyldigTil}
         label="Gyldig Til"
         onChange={(value: Date) => {
