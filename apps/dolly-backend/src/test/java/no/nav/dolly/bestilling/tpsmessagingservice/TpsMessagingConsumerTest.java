@@ -135,12 +135,18 @@ class TpsMessagingConsumerTest {
     @Test
     void generateDifferentBankkonto() {
         var kontoer = IntStream.range(1, 100).boxed()
-                .map((i) -> TpsMessagingConsumer.tilfeldigUtlandskBankkonto())
+                .map((i) -> TpsMessagingConsumer.tilfeldigUtlandskBankkonto(KontoregisterLandkode.SE.name()))
                 .sorted()
                 .collect(Collectors.toList());
 
         var unikKontoer = kontoer.stream().distinct().count();
 
         assertThat("forskjellige kontoer", unikKontoer == kontoer.size());
+    }
+
+    @Test
+    void generateBankkontoWithUknownLandkode() {
+        var konto = TpsMessagingConsumer.tilfeldigUtlandskBankkonto("AA");
+        assertThat("konto har data", !konto.isEmpty());
     }
 }
