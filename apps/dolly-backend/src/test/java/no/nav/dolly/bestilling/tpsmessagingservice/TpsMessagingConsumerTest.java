@@ -148,5 +148,12 @@ class TpsMessagingConsumerTest {
     void generateBankkontoWithUknownLandkode() {
         var konto = TpsMessagingConsumer.tilfeldigUtlandskBankkonto("AABB");
         assertThat("konto har data", !konto.isEmpty());
+        assertThat("konto begynner med AA", konto.substring(0, 2).equals("AA"));
+    }
+
+    @Test
+    void generateBankkontoWithIsoLandkode() {
+        var konto = TpsMessagingConsumer.tilfeldigUtlandskBankkonto("SWE");
+        assertThat("konto begynner med SE", konto.substring(0, 2).equals("SE"));
     }
 }
