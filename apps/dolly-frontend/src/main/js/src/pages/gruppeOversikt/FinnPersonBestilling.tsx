@@ -53,6 +53,10 @@ const FinnPersonBestilling = ({
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
 
+	const [tpsfIdenter, setTpsfIdenter] = useState([])
+	const [pdlfIdenter, setPdlfIdenter] = useState([])
+	const [pdlIdenter, setPdlIdenter] = useState([])
+
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
 			...provided,
@@ -69,6 +73,39 @@ const FinnPersonBestilling = ({
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		const feilmeldingIdent = feilmelding?.substring(0, 11)
+		let finnesTpsf = false
+		let finnesPdlf = false
+		let finnesPdl = false
+
+		if (feilmelding) {
+			if (tpsfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesTpsf = true
+			}
+			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdlf = true
+			}
+			if (pdlIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdl = true
+			}
+		}
+
+		let beskrivendeFeilmelding = feilmelding
+
+		if (finnesTpsf || finnesPdlf || finnesPdl) {
+			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
+			${finnesTpsf ? ' TPSF' : ''}
+			${finnesTpsf && finnesPdlf ? ', ' : ''}
+			${finnesPdlf ? 'PDLF' : ''}
+			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
+			${finnesPdl ? 'PDL' : ''}
+			, og eksisterer ikke i Dolly.`
+		}
+
+		setError(beskrivendeFeilmelding)
+	}, [feilmelding])
+
+	useEffect(() => {
 		setError(null)
 		if (!searchQuery) {
 			return null
@@ -80,7 +117,7 @@ const FinnPersonBestilling = ({
 	}, [searchQuery])
 
 	useEffect(() => {
-		if (fragment) {
+		if (fragment && !feilmelding) {
 			setError(null)
 		}
 	}, [fragment])
@@ -91,7 +128,7 @@ const FinnPersonBestilling = ({
 		}
 		personList
 			.filter((person: Person) => person.fornavn && person.etternavn)
-			.map((person: Person) => {
+			.forEach((person: Person) => {
 				const navn = person.mellomnavn
 					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
 					: `${person.fornavn} ${person.etternavn}`
@@ -128,6 +165,9 @@ const FinnPersonBestilling = ({
 		mapToPersoner(tpsfIdenter, personer)
 		mapToPersoner(pdlfIdenter, personer)
 		mapToPersoner(pdlIdenter, personer)
+		setTpsfIdenter(tpsfIdenter)
+		setPdlfIdenter(pdlfIdenter)
+		setPdlIdenter(pdlIdenter)
 		return personer
 	}
 
@@ -203,7 +243,7 @@ const FinnPersonBestilling = ({
 					/>
 				</div>
 				{error && (
-					<div className="error-message" style={{ marginTop: '10px' }}>
+					<div className="error-message" style={{ marginTop: '10px', maxWidth: '330px' }}>
 						{error}
 					</div>
 				)}
