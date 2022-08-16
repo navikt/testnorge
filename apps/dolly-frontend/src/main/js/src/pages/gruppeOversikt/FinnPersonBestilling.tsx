@@ -261,6 +261,7 @@ const FinnPersonBestilling = ({
 								? 'Søk etter navn eller ident'
 								: 'Søk etter bestilling'
 						}
+						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
 				{error && (
