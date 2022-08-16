@@ -7,7 +7,6 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -55,13 +54,11 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getHovedperson()));
         }
 
-        if (Master.PDL == dollyPerson.getMaster() && !isOpprettEndre) {
-
-            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                    .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-                            dollyPerson.getHovedperson(), response));
-        }
+        // Midlertidig ? publisering fra identhendelseslager
+        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
+                .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                        dollyPerson.getHovedperson(), response));
     }
 
     @Override

@@ -76,7 +76,7 @@ const findTema = (ytelse: string) => {
 	}
 }
 
-const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, idx: number) => {
+const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, _idx: number) => {
 	formikBag.setFieldValue('inntektsmelding.joarkMetadata.tema', value.tema)
 
 	const {

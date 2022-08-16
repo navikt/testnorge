@@ -42,7 +42,7 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 				<TitleValue title="Fødekommune">
 					{foedsel.foedekommune && (
 						<KodeverkConnector navn="Kommuner" value={foedsel.foedekommune}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : foedsel.foedekommune}</span>
 							)}
 						</KodeverkConnector>

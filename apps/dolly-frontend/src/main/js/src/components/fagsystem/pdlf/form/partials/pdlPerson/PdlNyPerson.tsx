@@ -28,7 +28,7 @@ export const PdlNyPerson = ({
 		_get(formikBag.values, `${nyPersonPath}.foedtEtter`) != null ||
 		_get(formikBag.values, `${nyPersonPath}.foedtFoer`) != null
 
-	const disableFoedtDato = _get(formikBag.values, `${nyPersonPath}.alder`) !== ''
+	const disableFoedtDato = !['', null].includes(_get(formikBag.values, `${nyPersonPath}.alder`))
 
 	const identtypeOptions =
 		erNyIdent && isLeggTil
@@ -89,12 +89,6 @@ export const PdlNyPerson = ({
 					disabled={hasEksisterendePerson}
 				/>
 			)}
-			<FormikCheckbox
-				name={`${nyPersonPath}.syntetisk`}
-				label="Er syntetisk"
-				disabled={hasEksisterendePerson}
-				checkboxMargin={erNyIdent}
-			/>
 			<FormikCheckbox
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"

@@ -25,10 +25,11 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
@@ -38,6 +39,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Slf4j
 @Service
 public class PensjonforvalterConsumer {
+
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
@@ -59,9 +61,10 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Set<String> getMiljoer() {
         try {
-            return new GetMiljoerCommand(webClient, serviceProperties.getAccessToken(tokenService))
-                    .call()
+            return tokenService.exchange(serviceProperties)
+                    .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
                     .block();
+
         } catch (RuntimeException e) {
             log.error("Feilet å lese tilgjengelige miljøer fra pensjon. {}", e.getMessage(), e);
             return emptySet();
@@ -129,23 +132,15 @@ public class PensjonforvalterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
-    public void sletteTpForhold(String pid) {
+    public void sletteTpForhold(List<String> identer) {
 
-        var response = new SletteTpForholdCommand(webClient, serviceProperties.getAccessToken(tokenService), pid)
-                .call()
-                .block();
-
-        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
-            log.info("Sletting mot TP forhold utført");
-        } else {
-            var status = response.getBody().getStatus().stream().map(s -> {
-                var httpStatus = s.getResponse().getHttpStatus();
-                return s.getMiljo() + ":" +
-                        (httpStatus != null ? httpStatus.getReasonPhrase() : "");
-            }).collect(Collectors.joining(", "));
-
-            log.info("Sletting mot TP forhold utført: {}", status);
-        }
+        tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call()
+                        .flatMapMany(miljoer -> Flux.range(0, identer.size())
+                                .map(index -> new SletteTpForholdCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call())))
+                .flatMap((Flux::from))
+                .collectList()
+                .subscribe(response -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})

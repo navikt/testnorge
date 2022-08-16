@@ -8,8 +8,7 @@ import { Enhetstre, OrgTree } from '~/components/enhetstre'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
 // @ts-ignore
-const getOrganisasjonInfo = (organisasjon) => {
-	const [selectedId, setSelectedId] = useState('0')
+const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
 	const orgTree = new OrgTree(organisasjon[1], '0')
 	return (
 		<div className="boks">
@@ -22,6 +21,7 @@ const getOrganisasjonInfo = (organisasjon) => {
 
 // @ts-ignore
 export const OrganisasjonDataVisning = ({ data }) => {
+	const [selectedId, setSelectedId] = useState('0')
 	if (!data) {
 		return null
 	}
@@ -34,7 +34,7 @@ export const OrganisasjonDataVisning = ({ data }) => {
 				const miljoe = organisasjoner[0]
 				return (
 					<Tooltip
-						overlay={getOrganisasjonInfo(organisasjoner)}
+						overlay={getOrganisasjonInfo(organisasjoner, selectedId, setSelectedId)}
 						placement="top"
 						align={{
 							offset: ['0', '-10'],

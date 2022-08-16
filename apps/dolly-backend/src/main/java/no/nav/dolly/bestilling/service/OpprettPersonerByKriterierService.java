@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
@@ -88,7 +89,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(ident -> {
-                            MDC.put("bestilling", bestilling.getId().toString());
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = null;
                             try {
@@ -113,7 +114,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
-                                MDC.remove("bestilling");
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

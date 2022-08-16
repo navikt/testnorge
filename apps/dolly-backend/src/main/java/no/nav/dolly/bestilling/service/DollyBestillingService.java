@@ -13,14 +13,11 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsfRelasjonRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -29,6 +26,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -36,7 +34,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -47,12 +44,12 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DollyBestillingService {
-
     protected static final String SUCCESS = "OK";
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
 
@@ -79,6 +76,8 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
+            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+
             var testident = identService.getTestIdent(bestilling.getIdent());
             var progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
 
@@ -133,44 +132,7 @@ public class DollyBestillingService {
 
         } finally {
             oppdaterBestillingFerdig(bestilling);
-        }
-    }
-
-    @Async
-    public void relasjonPersonAsync(String ident, RsDollyRelasjonRequest request, Bestilling bestilling) {
-
-        try {
-            var testident = identService.getTestIdent(bestilling.getIdent());
-            if (testident.isPdl()) {
-                throw new DollyFunctionalException("Importert person fra TESTNORGE kan ikke endres.");
-            }
-            var progress = new BestillingProgress(bestilling, ident, TPSF);
-            var tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
-            tpsfService.relasjonPerson(ident, tpsfBestilling);
-
-            RsDollyBestillingRequest utvidetBestilling = getDollyBestillingRequest(bestilling);
-
-            var dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
-            gjenopprettNonTpsf(dollyPerson, utvidetBestilling, progress, true);
-
-            oppdaterProgress(bestilling, progress);
-
-        } catch (WebClientResponseException e) {
-            try {
-                var message = (String) objectMapper.readValue(e.getResponseBodyAsString(), Map.class).get("message");
-                log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);
-                bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, message));
-
-            } catch (JsonProcessingException jme) {
-                log.error("Json kunne ikke hentes ut.", jme);
-            }
-
-        } catch (Exception e) {
-            log.error("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, e.getMessage(), e);
-            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
-
-        } finally {
-            oppdaterBestillingFerdig(bestilling);
+            MDC.remove(MDC_KEY_BESTILLING);
         }
     }
 

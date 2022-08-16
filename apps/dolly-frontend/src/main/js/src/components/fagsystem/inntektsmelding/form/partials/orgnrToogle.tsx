@@ -36,7 +36,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 						label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`,
 					}))
 				})
-				.catch((e: Error) => {
+				.catch((_e: Error) => {
 					return []
 				})
 			setEgneOrganisasjoner(resp)

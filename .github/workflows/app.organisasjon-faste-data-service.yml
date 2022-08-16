@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/faste-data-organisasjoner-forbedringer' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-organisasjon-faste-data-service') }}
     with:
       resource: 'apps/organisasjon-faste-data-service/config.yml'
       app-name: 'organisasjon-faste-data-service'

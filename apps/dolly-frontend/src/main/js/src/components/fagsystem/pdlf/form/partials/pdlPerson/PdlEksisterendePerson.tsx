@@ -135,8 +135,8 @@ export const PdlEksisterendePerson = ({
 	}, [formikBag])
 
 	const hasNyPersonValues = nyIdentValg
-		? !isEmpty(nyIdentValg)
-		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
+		? !isEmpty(nyIdentValg, ['syntetisk'])
+		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath), ['syntetisk'])
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 

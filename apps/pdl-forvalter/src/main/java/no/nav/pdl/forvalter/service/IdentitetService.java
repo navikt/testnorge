@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -63,5 +64,54 @@ public class IdentitetService {
                 PageRequest.of(paginering.getSidenummer(),
                         paginering.getSidestoerrelse(),
                         Sort.by(SORT_BY_FIELD).descending()));
+    }
+
+    @Transactional
+    public void updateStandalone(String ident, Boolean standalone) {
+
+        var personer = personRepository.findByRelatertPerson(ident);
+
+        personer.forEach(person -> person.getPerson().getSivilstand()
+                .forEach(sivilstand -> {
+                    if (ident.equals(sivilstand.getRelatertVedSivilstand())) {
+                        sivilstand.setEksisterendePerson(standalone);
+                    }
+                }));
+
+        personer.forEach(person -> person.getPerson().getForelderBarnRelasjon()
+                .forEach(relasjon -> {
+                    if (ident.equals(relasjon.getRelatertPerson())) {
+                        relasjon.setEksisterendePerson(standalone);
+                    }
+                }));
+
+        personer.forEach(person -> person.getPerson().getForeldreansvar()
+                        .forEach(ansvar -> {
+                            if (ident.equals(ansvar.getAnsvarlig())) {
+                                ansvar.setEksisterendePerson(standalone);
+                            }
+                        }));
+
+        personer.forEach(person -> person.getPerson().getKontaktinformasjonForDoedsbo()
+                .forEach(doedsbo -> {
+                    if (nonNull(doedsbo.getPersonSomKontakt()) &&
+                            ident.equals(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+                        doedsbo.getPersonSomKontakt().setEksisterendePerson(standalone);
+                    }
+                }));
+
+        personer.forEach(person -> person.getPerson().getVergemaal()
+                .forEach(vergemaal -> {
+                    if (ident.equals(vergemaal.getVergeIdent())) {
+                        vergemaal.setEksisterendePerson(standalone);
+                    }
+                }));
+
+        personer.forEach(person -> person.getPerson().getFullmakt()
+                .forEach(fullmakt -> {
+                    if (ident.equals(fullmakt.getMotpartsPersonident())) {
+                        fullmakt.setEksisterendePerson(standalone);
+                    }
+                }));
     }
 }

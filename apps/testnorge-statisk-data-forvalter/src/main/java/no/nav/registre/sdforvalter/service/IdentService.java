@@ -50,7 +50,6 @@ public class IdentService {
                 .filter(item -> !exisistingFnrs.contains(item.getFnr()))
                 .toList()
         );
-//        skdConsumer.createTpsIdenterMessagesInGroup(identer, staticDataPlaygroup);
         skdConsumer.send(staticDataPlaygroup, environment);
 
         //Person får ikke aktør-id automatisk ved opprettelse i TPS lenger. Må opprettes i PDL også for å få aktør-id

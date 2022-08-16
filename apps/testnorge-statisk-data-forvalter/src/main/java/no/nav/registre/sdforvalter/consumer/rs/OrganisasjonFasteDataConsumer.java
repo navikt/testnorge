@@ -2,7 +2,7 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonFasteDataServiceProperties;
-import no.nav.registre.sdforvalter.consumer.rs.commnad.SaveOrganisasjonFasteDataCommand;
+import no.nav.registre.sdforvalter.consumer.rs.command.SaveOrganisasjonFasteDataCommand;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTree;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.EregListe;

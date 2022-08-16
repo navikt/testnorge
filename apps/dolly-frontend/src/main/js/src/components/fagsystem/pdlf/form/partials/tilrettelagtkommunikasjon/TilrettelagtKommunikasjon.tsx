@@ -14,7 +14,7 @@ export const TilrettelagtKommunikasjon = () => {
 				newEntry={initialTilrettelagtKommunikasjon}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => (
+				{(path: string, _idx: number) => (
 					<>
 						<FormikSelect
 							name={`${path}.spraakForTaletolk`}
