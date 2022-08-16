@@ -7,7 +7,7 @@ import Button from '~/components/ui/button/Button'
 import FavoriteButton from '~/components/ui/button/FavoriteButton/FavoriteButton'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import { PersonIBrukButton } from '~/components/ui/button/PersonIBrukButton/PersonIBrukButton'
 
 // Loading

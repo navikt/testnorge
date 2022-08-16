@@ -98,7 +98,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		filer.map((fil) => {
 			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id && file.dokNavn)
 			if (eksisterendeFil) {
-				return (fil.dokNavn = eksisterendeFil.dokNavn)
+				fil.dokNavn = eksisterendeFil.dokNavn
 			}
 			return fil
 		})

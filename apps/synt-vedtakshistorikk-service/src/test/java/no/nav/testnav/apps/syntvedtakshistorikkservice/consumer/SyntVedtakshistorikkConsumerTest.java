@@ -44,7 +44,7 @@ class SyntVedtakshistorikkConsumerTest {
     }
 
     @Test
-    void shoudlGetVedtakshistorikk(){
+    void shouldGetVedtakshistorikk(){
         stubHistorikkResponse();
         var response = syntVedtakshistorikkConsumer.syntetiserVedtakshistorikk(2);
 

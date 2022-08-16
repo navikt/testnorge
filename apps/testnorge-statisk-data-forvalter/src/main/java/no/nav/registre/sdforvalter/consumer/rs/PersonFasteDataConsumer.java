@@ -2,7 +2,7 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.config.credentials.PersonFasteDataServiceProperties;
-import no.nav.registre.sdforvalter.consumer.rs.commnad.SavePersonFasteDataCommand;
+import no.nav.registre.sdforvalter.consumer.rs.command.SavePersonFasteDataCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -40,7 +39,7 @@ public class PersonFasteDataConsumer {
     public void opprett(TpsIdentListe tpsIdentListe) {
         tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.concat(
-                        tpsIdentListe.getListe().stream().map(value -> opprett(value, token)).collect(Collectors.toList())
+                        tpsIdentListe.getListe().stream().map(value -> opprett(value, token)).toList()
                 ))
                 .collectList()
                 .block();

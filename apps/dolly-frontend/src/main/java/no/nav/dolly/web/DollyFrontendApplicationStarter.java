@@ -20,7 +20,7 @@ import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
 import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
-import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
+import no.nav.dolly.web.credentials.TestnavInstServiceProperties;
 import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
@@ -74,7 +74,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavTestnorgeAaregProxyProperties testnavTestnorgeAaregProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
-    private final TestnavTestnorgeInstProxyProperties testnavTestnorgeInstProxyProperties;
+    private final TestnavInstServiceProperties testnavInstServiceProperties;
     private final TestnavSigrunstubProxyProperties testnavSigrunstubProxyProperties;
     private final TestnavPensjonTestdataFacadeProxyProperties testnavPensjonTestdataFacadeProxyProperties;
     private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
@@ -109,7 +109,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
                 .route(createRoute(testnavBrregstubProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
-                .route(createRoute(testnavTestnorgeInstProxyProperties))
+                .route(createRoute(testnavInstServiceProperties))
                 .route(createRoute(testnavTestnorgeAaregProxyProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))

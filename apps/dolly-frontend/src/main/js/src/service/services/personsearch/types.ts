@@ -2,8 +2,9 @@ export type Search = {
 	page: number
 	pageSize: number
 	terminateAfter: number
-	tag: string
+	tag?: string
 	excludeTags: Array<string>
+	tags?: Array<string>
 	kunLevende?: boolean
 	kjoenn?: string
 	foedsel?: {

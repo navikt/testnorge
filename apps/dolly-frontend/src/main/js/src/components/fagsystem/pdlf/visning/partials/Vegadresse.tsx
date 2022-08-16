@@ -53,7 +53,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				<TitleValue title="Postnummer">
 					{postnummer && (
 						<KodeverkConnector navn="Postnummer" value={postnummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : postnummer}</span>
 							)}
 						</KodeverkConnector>
@@ -62,7 +62,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				<TitleValue title="Bydelsnummer">
 					{bydelsnummer && (
 						<KodeverkConnector navn="Bydeler" value={bydelsnummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : bydelsnummer}</span>
 							)}
 						</KodeverkConnector>
@@ -71,7 +71,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				<TitleValue title="Kommunenummer">
 					{kommunenummer && (
 						<KodeverkConnector navn="Kommuner" value={kommunenummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : kommunenummer}</span>
 							)}
 						</KodeverkConnector>

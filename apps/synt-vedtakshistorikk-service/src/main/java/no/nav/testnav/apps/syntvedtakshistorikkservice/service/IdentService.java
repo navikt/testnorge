@@ -11,7 +11,6 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.Pdl
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.IdentMedKontonr;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Kontoinfo;
-import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.AlderSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;

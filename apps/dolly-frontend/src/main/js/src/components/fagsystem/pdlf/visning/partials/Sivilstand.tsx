@@ -39,7 +39,12 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 					/>
 					{!relasjoner && <TitleValue title="Relatert person" value={data.relatertVedSivilstand} />}
 				</div>
-				{relasjon && <RelatertPerson data={relasjon.relatertPerson} tittel="Ektefelle/partner" />}
+				{relasjon && (
+					<RelatertPerson
+						data={relasjon.relatertPerson}
+						tittel={data.type === 'SAMBOER' ? 'Samboer' : 'Ektefelle/partner'}
+					/>
+				)}
 			</ErrorBoundary>
 		</>
 	)

@@ -319,7 +319,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 	const success = successMiljoSelector(statusArray)
 
 	// Samle alt fra PDL under en ID
-	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
+	if (Object.keys(success)?.some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'
 		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
@@ -446,7 +446,8 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	return identListe.map((ident) => {
 		if (ident.master === 'TPSF') {
 			const tpsfIdent = fagsystem.tpsf[ident.ident]
-			return getTpsfIdentInfo(ident, bestillingStatuser, tpsfIdent)
+			const pdlfIdent = fagsystem.pdlforvalter?.[ident.ident]?.person
+			return getTpsfIdentInfo(ident, bestillingStatuser, tpsfIdent, pdlfIdent)
 		} else if (ident.master === 'PDLF') {
 			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, bestillingStatuser, pdlfIdent)
@@ -459,7 +460,7 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	})
 }
 
-const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
+const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent, pdlfIdent) => {
 	if (!tpsfIdent) {
 		return getDefaultInfo(ident, bestillingStatuser, 'TPS')
 	}
@@ -473,7 +474,10 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent) => {
 		kilde: 'TPS',
 		navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 		kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
-		alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
+		alder: Formatters.formatAlder(
+			tpsfIdent.alder,
+			tpsfIdent.doedsdato ? tpsfIdent.doedsdato : getPdlDoedsdato(pdlfIdent)
+		),
 		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
 }
@@ -504,10 +508,14 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: Formatters.formatAlder(
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
-			pdlIdent?.doedsfall?.[0]?.doedsdato
+			getPdlDoedsdato(pdlIdent)
 		),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
 	}
+}
+
+const getPdlDoedsdato = (pdlIdent) => {
+	return pdlIdent?.doedsfall?.filter((doed) => !doed?.metadata?.historisk)?.[0]?.doedsdato
 }
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {

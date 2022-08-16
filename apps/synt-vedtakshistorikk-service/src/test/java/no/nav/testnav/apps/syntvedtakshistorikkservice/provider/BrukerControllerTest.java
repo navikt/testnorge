@@ -71,7 +71,7 @@ public class BrukerControllerTest {
         var personer = Collections.singletonList(PersonDTO.builder().ident(fnr1).build());
 
         when(identService.getUtvalgteIdenterIAldersgruppe(1, MINIMUM_ALDER, MAKSIMUM_ALDER, false)).thenReturn(personer);
-        when(tagsService.opprettetTagsPaaIdenter(identer)).thenReturn(true);
+        when(tagsService.opprettetTagsPaaIdenterOgPartner(personer)).thenReturn(true);
         when(arenaForvalterService
                 .opprettArbeidssoekereUtenVedtak(identer, miljoe))
                 .thenReturn(oppfoelgingResponse);

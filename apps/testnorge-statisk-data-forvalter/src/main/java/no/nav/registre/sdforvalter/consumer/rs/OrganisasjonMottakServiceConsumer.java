@@ -121,7 +121,7 @@ public class OrganisasjonMottakServiceConsumer {
                         .setRedigertNavn(ereg.getRedigertNavn())
                         .build()
                 )
-                .setUnderenheter(orgTree.getUnderorganisasjon().stream().map(this::createOrganisasjon).collect(Collectors.toList()))
+                .setUnderenheter(orgTree.getUnderorganisasjon().stream().map(this::createOrganisasjon).toList())
                 .setInternettadresse(ereg.getInternetAdresse() != null ? Internettadresse.newBuilder().setInternettadresse(ereg.getInternetAdresse()).build() : null)
                 .setForretningsadresse(forretningsAdresse)
                 .setPostadresse(postadresse)

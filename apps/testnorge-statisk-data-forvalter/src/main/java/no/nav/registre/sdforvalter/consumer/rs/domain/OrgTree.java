@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.domain.Ereg;
 
@@ -35,7 +34,7 @@ public class OrgTree {
                 .stream()
                 .filter(ereg -> ereg.getJuridiskEnhet() != null && ereg.getJuridiskEnhet().equals(juridsikenhet.getOrgnr()))
                 .map(ereg -> OrgTree.from(ereg, liste))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

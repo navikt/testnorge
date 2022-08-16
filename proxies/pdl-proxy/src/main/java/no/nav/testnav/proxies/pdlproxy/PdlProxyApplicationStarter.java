@@ -61,6 +61,7 @@ public class PdlProxyApplicationStarter {
         return builder
                 .routes()
                 .route(createRoute("pdl-api", "http://pdl-api.pdl.svc.nais.local", addAuthorizationAndNavConsumerTokenToRouteFilter))
+                .route(createRoute("pdl-api-q1", "http://pdl-api-q1.pdl.svc.nais.local", addAuthorizationAndNavConsumerTokenToRouteFilter))
                 .route(createRoute("pdl-testdata", "http://pdl-testdata.pdl.svc.nais.local", addAuthenticationHeaderFilter))
                 .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addHendelselagerApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-npid", "https://pdl-aktor.dev.intern.nav.no", addAktoerAdminApiKeyAuthenticationHeader))

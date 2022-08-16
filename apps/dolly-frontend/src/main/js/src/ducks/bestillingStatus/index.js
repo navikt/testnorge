@@ -30,7 +30,7 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 		}
 		const suksessMiljoer = successMiljoSelector(bestillinger[id].status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
-		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiljoer.hasOwnProperty('ARENA')) {
+		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiljoer?.hasOwnProperty('ARENA')) {
 			bestillingsListe.push(bestilling)
 		}
 	}
@@ -51,8 +51,8 @@ export const sokSelector = (bestillingerById, searchStr) => {
 // Object med system som key, og OK-miljøer som value
 export const successMiljoSelector = (statusArray) => {
 	const success_list = statusArray
-		.filter((curr) => !_isNil(curr))
-		.reduce((acc, curr) => {
+		?.filter((curr) => !_isNil(curr))
+		?.reduce((acc, curr) => {
 			const statuser = curr.statuser.filter((v) => v.melding === 'OK')
 
 			if (statuser.length) {

@@ -109,7 +109,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 		const ameldingClone = _cloneDeep(amelding)
 
 		if (event.value === 'forenkletOppgjoersordning') {
-			ameldingClone.forEach((maaned: string, idx: number) => {
+			ameldingClone.forEach((_maaned: string, idx: number) => {
 				_set(ameldingClone[idx], 'arbeidsforhold', [initialForenkletOppgjoersordningOrg])
 			})
 		} else {
@@ -118,11 +118,11 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 					_set(ameldingClone[idx], 'arbeidsforhold', [initialArbeidsforholdOrg])
 				}
 				if (event.value === 'maritimtArbeidsforhold') {
-					maaned.arbeidsforhold.forEach((arbforh: Object, id: number) => {
+					maaned.arbeidsforhold.forEach((_arbforh: Object, id: number) => {
 						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, initialFartoy)
 					})
 				} else {
-					maaned.arbeidsforhold.forEach((arbforh: Object, id: number) => {
+					maaned.arbeidsforhold.forEach((_arbforh: Object, id: number) => {
 						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, undefined)
 					})
 				}
@@ -133,7 +133,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 	}
 
 	const handleNewEntry = () => {
-		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
+		ameldinger.forEach((_maaned: Amelding, idMaaned: number) => {
 			if (!erLenket && idMaaned !== selectedIndex) {
 				return
 			}
@@ -155,7 +155,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 	}
 
 	const handleRemoveEntry = (idArbeidsforhold: number) => {
-		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
+		ameldinger.forEach((_maaned: Amelding, idMaaned: number) => {
 			if (!erLenket && idMaaned !== selectedIndex) {
 				return
 			}

@@ -10,12 +10,19 @@ import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import Hjelpetekst from '~/components/hjelpetekst'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
 }
 
-const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
+const gyldigeSivilstander = [
+	'GIFT',
+	'REGISTRERT_PARTNER',
+	'SEPARERT',
+	'SEPARERT_PARTNER',
+	'SAMBOER',
+]
 
 export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 	const handleTypeChange = (selected: any, path: string) => {
@@ -47,6 +54,14 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							onChange={(selected: any) => handleTypeChange(selected, path)}
 							isClearable={false}
 						/>
+						{_get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
+							<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
+								<Hjelpetekst hjelpetekstFor="Type sivilstand">
+									Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand
+									vil derfor vises som ugift i fagsystemene.
+								</Hjelpetekst>
+							</div>
+						)}
 						<FormikDatepicker
 							name={`${path}.sivilstandsdato`}
 							label="Gyldig fra og med"

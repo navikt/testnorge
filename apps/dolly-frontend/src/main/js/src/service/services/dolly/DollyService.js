@@ -164,6 +164,10 @@ export default {
 		return Request.get(Endpoints.getTags())
 	},
 
+	getTagsForIdent(ident) {
+		return Request.get(Endpoints.getIdentTags(ident))
+	},
+
 	//* Excel
 	getExcelFil(groupId) {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
