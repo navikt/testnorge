@@ -87,7 +87,7 @@ public class PdlAdresseService {
                                 .build(),
                         "criteria",
                         Stream.of(
-                                buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), EQUALS),
+                                buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), FUZZY),
                                 buildCriteria("vegadresse.husnummer", request.getHusnummer(), EQUALS),
                                 buildCriteria("vegadresse.husbokstav", request.getHusbokstav(), EQUALS),
                                 buildCriteria("vegadresse.postnummer", request.getPostnummer(), EQUALS),

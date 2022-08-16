@@ -50,7 +50,9 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 }
 
 export const ForelderBarnRelasjonVisning = ({ data, relasjoner }: FamilieRelasjonerData) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 
 	return (
 		<div>

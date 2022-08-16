@@ -51,6 +51,11 @@ const FinnPersonBestilling = ({
 	const [soekType, setSoekType] = useState(SoekTypeValg.PERSON)
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
+	const [error, setError] = useState(feilmelding)
+
+	const [tpsfIdenter, setTpsfIdenter] = useState([])
+	const [pdlfIdenter, setPdlfIdenter] = useState([])
+	const [pdlIdenter, setPdlIdenter] = useState([])
 
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
@@ -68,6 +73,40 @@ const FinnPersonBestilling = ({
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		const feilmeldingIdent = feilmelding?.substring(0, 11)
+		let finnesTpsf = false
+		let finnesPdlf = false
+		let finnesPdl = false
+
+		if (feilmelding) {
+			if (tpsfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesTpsf = true
+			}
+			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdlf = true
+			}
+			if (pdlIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdl = true
+			}
+		}
+
+		let beskrivendeFeilmelding = feilmelding
+
+		if (finnesTpsf || finnesPdlf || finnesPdl) {
+			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
+			${finnesTpsf ? ' TPSF' : ''}
+			${finnesTpsf && finnesPdlf ? ', ' : ''}
+			${finnesPdlf ? 'PDLF' : ''}
+			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
+			${finnesPdl ? 'PDL' : ''}
+			, og eksisterer ikke i Dolly.`
+		}
+
+		setError(beskrivendeFeilmelding)
+	}, [feilmelding])
+
+	useEffect(() => {
+		setError(null)
 		if (!searchQuery) {
 			return
 		}
@@ -77,10 +116,19 @@ const FinnPersonBestilling = ({
 		return setSearchQuery(null)
 	}, [searchQuery])
 
+	useEffect(() => {
+		if (fragment && !feilmelding) {
+			setError(null)
+		}
+	}, [fragment])
+
 	function mapToPersoner(personList: any, personer: Array<Option>) {
+		if (!Array.isArray(personList)) {
+			return
+		}
 		personList
 			.filter((person: Person) => person.fornavn && person.etternavn)
-			.map((person: Person) => {
+			.forEach((person: Person) => {
 				const navn = person.mellomnavn
 					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
 					: `${person.fornavn} ${person.etternavn}`
@@ -92,8 +140,11 @@ const FinnPersonBestilling = ({
 	}
 
 	const soekBestillinger = async (tekst: string): Promise<Option[]> => {
+		if (!tekst) {
+			return []
+		}
 		return DollyApi.getBestillingerFragment(tekst).then((response: ResponsBestilling) => {
-			if (response?.data?.length < 1) {
+			if (!response?.data || response?.data?.length < 1) {
 				return []
 			}
 			return response.data?.map((resp) => ({
@@ -104,6 +155,9 @@ const FinnPersonBestilling = ({
 	}
 
 	const soekPersoner = async (tekst: string): Promise<Option[]> => {
+		if (!tekst) {
+			return []
+		}
 		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
 		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
 		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
@@ -111,13 +165,18 @@ const FinnPersonBestilling = ({
 		mapToPersoner(tpsfIdenter, personer)
 		mapToPersoner(pdlfIdenter, personer)
 		mapToPersoner(pdlIdenter, personer)
+		setTpsfIdenter(tpsfIdenter)
+		setPdlfIdenter(pdlfIdenter)
+		setPdlIdenter(pdlIdenter)
 		return personer
 	}
 
 	// @ts-ignore
 	const [options, fetchOptions]: Promise<Option[]> = useAsyncFn(
 		async (tekst) => {
-			return soekType === SoekTypeValg.BESTILLING ? soekBestillinger(tekst) : soekPersoner(tekst)
+			return soekType === SoekTypeValg.BESTILLING
+				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
+				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
 		},
 		[soekType]
 	)
@@ -183,9 +242,9 @@ const FinnPersonBestilling = ({
 						}
 					/>
 				</div>
-				{feilmelding && (
-					<div className="error-message" style={{ marginTop: '10px' }}>
-						{feilmelding}
+				{error && (
+					<div className="error-message" style={{ marginTop: '10px', maxWidth: '330px' }}>
+						{error}
 					</div>
 				)}
 			</div>

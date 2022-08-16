@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
+import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import { ToggleGruppe } from 'nav-frontend-skjema'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
 import Loading from '~/components/ui/loading/Loading'
-import { ToggleGroup } from '@navikt/ds-react'
 
 // @ts-ignore
 export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
@@ -15,7 +16,9 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 	}
 
 	const getMalOptions = (malbestillinger: Mal[]) => {
-		if (!malbestillinger) return []
+		if (!malbestillinger) {
+			return []
+		}
 		return malbestillinger.map((mal) => ({
 			value: mal.malNavn,
 			label: mal.malNavn,
@@ -60,16 +63,16 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 			<h2>Lagre som mal</h2>
 			<div className="flexbox--align-center">
 				<div className="toggle--wrapper">
-					<ToggleGroup
-						onChange={(value: MalTyper) => handleToggleChange(value)}
-						defaultValue={MalTyper.INGEN}
+					<ToggleGruppe
+						onChange={(e: BaseSyntheticEvent) => handleToggleChange(e.target.value)}
+						name={'arbeidsforhold'}
 					>
 						{toggleValues.map((type) => (
-							<ToggleGroup.Item key={type.value} value={type.value}>
+							<ToggleKnapp key={type.value} value={type.value} checked={type.value === typeMal}>
 								{type.label}
-							</ToggleGroup.Item>
+							</ToggleKnapp>
 						))}
-					</ToggleGroup>
+					</ToggleGruppe>
 				</div>
 			</div>
 			{typeMal === MalTyper.ENDRE ? (

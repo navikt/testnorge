@@ -101,7 +101,7 @@ export const Background = (props: any) => {
 	} else if (month >= 5 && month <= 7) {
 		return (
 			<>
-				{Array.from(Array(2 * round(millimeterNedboer) * 10).keys()).map((idx) => (
+				{Array.from(Array(3 * round(millimeterNedboer) * 10).keys()).map((idx) => (
 					<div key={idx} className="rain" />
 				))}
 				<SommerBackground>{props.children}</SommerBackground>

@@ -16,7 +16,9 @@ type Data = {
 }
 
 export const TilrettelagtKommunikasjon = ({ data }: DataListe) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const TilrettelagtKommunikasjonVisning = ({ item, idx }: Data) => {
 		return (

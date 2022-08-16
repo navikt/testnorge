@@ -2,35 +2,32 @@ import React, { useEffect, useState } from 'react'
 
 import './Utlogging.less'
 import DollyModal from '~/components/ui/modal/DollyModal'
+import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Api from '~/api'
+import ProgressBar from 'fremdriftslinje'
 import { WarningFilled } from '@navikt/ds-icons'
-import { useNavigate } from 'react-router-dom'
-import { Button, Stepper } from '@navikt/ds-react'
+import logoutBruker from './logoutBruker'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
 	const decodedCookie = decodeURIComponent(document.cookie)
 	const list = decodedCookie.split(';')
 	for (let value of list) {
-		while (value.charAt(0) == ' ') {
-			value = value.substring(1)
+		let val = value
+		while (val.charAt(0) === ' ') {
+			val = val.substring(1)
 		}
-		if (value.indexOf(name) == 0) {
-			return value.substring(name.length, value.length)
+		if (val.indexOf(name) === 0) {
+			return val.substring(name.length, val.length)
 		}
 	}
 	return ''
-}
-
-export const logoutBruker = (navigate: Function, feilmelding?: string) => {
-	navigate('/logout' + (feilmelding ? '?state=' + feilmelding : ''))
 }
 
 const SHOW_MODAL_WHEN_TIME_LEFT = 60 * 1000
 
 const Utlogging = () => {
 	const [serverTime, setServerTime] = useState(parseInt(getCookie('serverTime')))
-	const navigate = useNavigate()
 
 	const calculateOffset = () => {
 		const calcExpiry = parseInt(getCookie('sessionExpiry'))
@@ -56,14 +53,14 @@ const Utlogging = () => {
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		logoutBruker(navigate)
+		logoutBruker()
 	}
 
 	return (
 		<DollyModal
 			minWidth={670}
 			isOpen={milliseconds <= SHOW_MODAL_WHEN_TIME_LEFT}
-			onRequestClose={() => logoutBruker(navigate)}
+			onRequestClose={() => logoutBruker()}
 			noCloseButton={true}
 			contentLabel="Utlogging rute"
 		>
@@ -72,21 +69,21 @@ const Utlogging = () => {
 				<h1 className="utlogging__title">
 					Du har ikke vært aktiv på en stund, og vil snart bli logget ut av Dolly
 				</h1>
-				<Stepper
-					activeStep={milliseconds < 0 ? 0 : Math.round(progress)}
-					// status={milliseconds < 0 ? 'error' : 'inprogress'}
+				<ProgressBar
+					now={milliseconds < 0 ? 0 : Math.round(progress)}
+					status={milliseconds < 0 ? 'error' : 'inprogress'}
 				>
 					<p className="utlogging__progressbar__text">
 						Gjenstående tid: {Math.round(milliseconds / 1000)}s
 					</p>
-				</Stepper>
+				</ProgressBar>
 				<div className="utlogging__button-group">
-					<Button className="utlogging__button" onClick={() => logoutBruker(navigate)}>
+					<Knapp className="utlogging__button" onClick={() => logoutBruker()}>
 						Logg ut nå
-					</Button>
-					<Button variant={'primary'} className="utlogging__button" onClick={continueSession}>
+					</Knapp>
+					<Hovedknapp className="utlogging__button" onClick={continueSession}>
 						Forbli innlogget
-					</Button>
+					</Hovedknapp>
 				</div>
 			</div>
 		</DollyModal>

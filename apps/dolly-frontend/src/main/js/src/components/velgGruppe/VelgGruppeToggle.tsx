@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '~/components/velgGruppe/EksisterendeGruppe'
-import { ToggleGroup } from '@navikt/ds-react'
 
 interface VelgGruppeToggleProps {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -18,20 +18,28 @@ enum Gruppevalg {
 export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeToggleProps) => {
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.EKSISTERENDE)
 
-	const handleToggleChange = (value: Gruppevalg) => {
-		setGruppevalg(value)
+	const handleToggleChange = (e: React.ChangeEvent<any>) => {
+		setGruppevalg(e.target.value)
 		setValgtGruppe('')
 	}
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGroup onChange={handleToggleChange} defaultValue={Gruppevalg.EKSISTERENDE}>
-				<ToggleGroup.Item key={Gruppevalg.EKSISTERENDE} value={Gruppevalg.EKSISTERENDE}>
+			<ToggleGruppe onChange={handleToggleChange} name={togglenavn}>
+				<ToggleKnapp
+					key={Gruppevalg.EKSISTERENDE}
+					value={Gruppevalg.EKSISTERENDE}
+					checked={gruppevalg === Gruppevalg.EKSISTERENDE}
+				>
 					Eksisterende gruppe
-				</ToggleGroup.Item>
-				<ToggleGroup.Item key={Gruppevalg.NY} value={Gruppevalg.NY}>
+				</ToggleKnapp>
+				<ToggleKnapp
+					key={Gruppevalg.NY}
+					value={Gruppevalg.NY}
+					checked={gruppevalg === Gruppevalg.NY}
+				>
 					Ny gruppe
-				</ToggleGroup.Item>
-			</ToggleGroup>
+				</ToggleKnapp>
+			</ToggleGruppe>
 
 			{gruppevalg === Gruppevalg.EKSISTERENDE ? (
 				<EksisterendeGruppe setValgtGruppe={setValgtGruppe} valgtGruppe={valgtGruppe} />

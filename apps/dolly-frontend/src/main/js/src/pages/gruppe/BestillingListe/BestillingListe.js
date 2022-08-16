@@ -86,6 +86,7 @@ export default function BestillingListe({
 	return (
 		<ErrorBoundary>
 			<DollyTable
+				pagination
 				data={statusBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
@@ -98,7 +99,6 @@ export default function BestillingListe({
 						brukertype={brukertype}
 					/>
 				)}
-				pagination
 			/>
 		</ErrorBoundary>
 	)

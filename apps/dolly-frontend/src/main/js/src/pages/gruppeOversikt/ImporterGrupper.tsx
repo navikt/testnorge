@@ -32,7 +32,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 	const { brukere, loading } = useAlleBrukere()
 
 	const getZIdentOptions = () => {
-		return brukere?.reduce(function (filtered: Array<SelectOptions>, ident: ZIdent) {
+		return Object.values(brukere)?.reduce((filtered: Array<SelectOptions>, ident: ZIdent) => {
 			if (ident.navIdent) {
 				filtered.push({ value: ident.navIdent, label: ident.navIdent })
 			}
@@ -59,7 +59,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 
 	return (
 		<>
-			<NavButton variant={'primary'} onClick={openImportModal} style={{ marginTop: '10px' }}>
+			<NavButton type="hoved" onClick={openImportModal} style={{ marginTop: '10px' }}>
 				Importer grupper
 			</NavButton>
 
@@ -100,10 +100,14 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 									fastfield={false}
 								/>
 								<div className="import-buttons">
-									<NavButton onClick={closeImportModal} style={{ marginRight: '10px' }}>
+									<NavButton
+										type="standard"
+										onClick={closeImportModal}
+										style={{ marginRight: '10px' }}
+									>
 										Avbryt
 									</NavButton>
-									<NavButton variant={'primary'} type="submit">
+									<NavButton type="hoved" htmlType="submit">
 										Importer grupper
 									</NavButton>
 								</div>

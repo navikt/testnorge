@@ -28,7 +28,7 @@ export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10, autoR
 	const { data, error } = useSWR<Gruppe, Error>(
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 1000 : 5000 }
+		{ refreshInterval: autoRefresh ? 1000 : null }
 	)
 
 	return {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ErrorMessage, FieldArray } from 'formik'
+import { FieldArray } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
 
@@ -7,9 +7,10 @@ import './MiljoVelger.less'
 import styled from 'styled-components'
 import { ifPresent } from '~/utils/YupValidations'
 import * as Yup from 'yup'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import Loading from '~/components/ui/loading/Loading'
-import { Alert } from '@navikt/ds-react'
+import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -75,9 +76,9 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 			{bestillingsdata && (
 				<>
 					{disableAllEnvironments && (
-						<Alert variant={'warning'}>
+						<AlertStripeInfo>
 							Denne bestillingen er uavhengig av miljøer.<p></p>
-						</Alert>
+						</AlertStripeInfo>
 					)}
 					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
 				</>
@@ -112,7 +113,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
-											onChange={() => {}}
 											size={'xxsmall'}
 										/>
 									))}
@@ -123,7 +123,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 				}}
 			</FieldArray>
 
-			<ErrorMessage name="environments" className="error-message" component="div" />
+			<ErrorMessageWithFocus name="environments" className="error-message" component="div" />
 		</div>
 	)
 }

@@ -39,45 +39,54 @@ export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 
 AdressePanel.heading = 'Adresser'
 
-AdressePanel.initialValues = ({ set, del, has }: any) => ({
-	bostedsadresse: {
-		label: 'Bostedsadresse',
-		checked: has('pdldata.person.bostedsadresse'),
-		add() {
-			set('pdldata.person.bostedsadresse', [initialBostedsadresse])
+AdressePanel.initialValues = ({ set, del, has }: any) => {
+	const paths = {
+		bostedadresse: 'pdldata.person.bostedsadresse',
+		oppholdsadresse: 'pdldata.person.oppholdsadresse',
+		kontaktadresse: 'pdldata.person.kontaktadresse',
+		adressebeskyttelse: 'pdldata.person.adressebeskyttelse',
+	}
+
+	return {
+		bostedsadresse: {
+			label: 'Bostedsadresse',
+			checked: has(paths.bostedadresse),
+			add() {
+				set(paths.bostedadresse, [initialBostedsadresse])
+			},
+			remove() {
+				del(paths.bostedadresse)
+			},
 		},
-		remove() {
-			del('pdldata.person.bostedsadresse')
+		oppholdsadresse: {
+			label: 'Oppholdsadresse',
+			checked: has(paths.oppholdsadresse),
+			add() {
+				set(paths.oppholdsadresse, [initialOppholdsadresse])
+			},
+			remove() {
+				del(paths.oppholdsadresse)
+			},
 		},
-	},
-	oppholdsadresse: {
-		label: 'Oppholdsadresse',
-		checked: has('pdldata.person.oppholdsadresse'),
-		add() {
-			set('pdldata.person.oppholdsadresse', [initialOppholdsadresse])
+		kontaktadresse: {
+			label: 'Kontaktadresse',
+			checked: has(paths.kontaktadresse),
+			add() {
+				set(paths.kontaktadresse, [initialKontaktadresse])
+			},
+			remove() {
+				del(paths.kontaktadresse)
+			},
 		},
-		remove() {
-			del('pdldata.person.oppholdsadresse')
+		adressebeskyttelse: {
+			label: 'Adressebeskyttelse',
+			checked: has(paths.adressebeskyttelse),
+			add() {
+				set(paths.adressebeskyttelse, [initialAdressebeskyttelse])
+			},
+			remove() {
+				del(paths.adressebeskyttelse)
+			},
 		},
-	},
-	kontaktadresse: {
-		label: 'Kontaktadresse',
-		checked: has('pdldata.person.kontaktadresse'),
-		add() {
-			set('pdldata.person.kontaktadresse', [initialKontaktadresse])
-		},
-		remove() {
-			del('pdldata.person.kontaktadresse')
-		},
-	},
-	adressebeskyttelse: {
-		label: 'Adressebeskyttelse',
-		checked: has('pdldata.person.adressebeskyttelse'),
-		add() {
-			set('pdldata.person.adressebeskyttelse', [initialAdressebeskyttelse])
-		},
-		remove() {
-			del('pdldata.person.adressebeskyttelse')
-		},
-	},
-})
+	}
+}

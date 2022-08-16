@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.config.credentials.InstServiceProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -17,6 +17,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -50,12 +51,17 @@ public class InstdataConsumer {
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
 
-    public InstdataConsumer(TokenExchange tokenService, InstProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public InstdataConsumer(TokenExchange tokenService,
+                            InstServiceProperties serverProperties,
+                            ObjectMapper objectMapper,
+                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

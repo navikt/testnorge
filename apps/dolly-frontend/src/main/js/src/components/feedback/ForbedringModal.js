@@ -4,12 +4,12 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { v4 as _uuid } from 'uuid'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Logger from '~/logger'
+import { Textarea } from 'nav-frontend-skjema'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
 import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
 import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
-import { Textarea } from '@navikt/ds-react'
 
 export const ForbedringModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
@@ -48,7 +48,7 @@ export const ForbedringModal = ({ closeModal }) => {
 							placeholder={'Forsøk å være så spesifikk som mulig'}
 							maxLength={MAX_LENGTH}
 							onChange={(event) => setForbedring(event.target.value)}
-							error={
+							feil={
 								forbedring.length > MAX_LENGTH ? 'Tilbakemelding inneholder for mange tegn' : null
 							}
 						/>

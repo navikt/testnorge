@@ -3,7 +3,7 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PdlProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -28,7 +28,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.utils.ResourceUtil
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
+import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.TagsService.SYNT_TAGS;
 
 
 @ActiveProfiles("test")
@@ -136,7 +136,7 @@ class PdlConsumerTest {
     }
 
     private void stubOpprettTags() {
-        stubFor(post(urlEqualTo("/pdl/pdl-testdata/api/v1/bestilling/tags?tags=DOLLY&tags=ARENASYNT"))
+        stubFor(post(urlEqualTo("/pdl/pdl-testdata/api/v1/bestilling/tags?tags=ARENASYNT"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                 )

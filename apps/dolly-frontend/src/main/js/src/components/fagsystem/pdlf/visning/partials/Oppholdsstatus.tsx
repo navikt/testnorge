@@ -39,7 +39,9 @@ export const Visning = ({ data }: Data) => {
 }
 
 export const PdlOppholdsstatus = ({ data }: DataListe) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 	return (
 		<div>
 			<SubOverskrift label="Oppholdsstatus" iconKind="udi" />

@@ -57,6 +57,8 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 					{ value: 'UGIFT', label: 'Ugift' },
 					{ value: 'SEPARERT', label: 'Separert' },
 					{ value: 'SKILT', label: 'Skilt' },
+					{ value: 'REGISTRERT_PARTNER', label: 'Registrert partner' },
+					{ value: 'SEPARERT_PARTNER', label: 'Separert partner' },
 				]}
 				size="medium"
 			/>

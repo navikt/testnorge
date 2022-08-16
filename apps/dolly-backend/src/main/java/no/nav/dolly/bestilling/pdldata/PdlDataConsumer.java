@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataIdenterCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -19,6 +21,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,17 +37,23 @@ import static java.util.Objects.nonNull;
 public class PdlDataConsumer {
 
     private static final int BLOCK_SIZE = 10;
+    private static final String STANDALONE_URL = "/standalone/{standalone}";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final PdlDataForvalterProperties serviceProperties;
 
-    public PdlDataConsumer(TokenExchange tokenService, PdlDataForvalterProperties serviceProperties, ObjectMapper objectMapper) {
+    public PdlDataConsumer(TokenExchange tokenService,
+                           PdlDataForvalterProperties serviceProperties,
+                           ObjectMapper objectMapper,
+                           ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -95,19 +104,28 @@ public class PdlDataConsumer {
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {
 
-        return getPersoner(identer, 0, 10);
+        return getPersoner(identer, 0, 10).collectList().block();
     }
 
-    public List<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
+    public Flux<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
 
-        return List.of(new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
-                serviceProperties.getAccessToken(tokenService)).call().block());
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
+                        token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_identCheck"})
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
 
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pdl_identer_standalone"})
+    public Mono<Void> putStandalone(String ident, Boolean standalone) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new PdlDataStanaloneCommand(webClient, ident, standalone, token.getTokenValue())
+                        .call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})

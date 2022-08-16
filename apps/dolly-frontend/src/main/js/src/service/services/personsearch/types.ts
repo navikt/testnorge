@@ -2,8 +2,9 @@ export type Search = {
 	page: number
 	pageSize: number
 	terminateAfter: number
-	tag: string
+	tag?: string
 	excludeTags: Array<string>
+	tags?: Array<string>
 	kunLevende?: boolean
 	kjoenn?: string
 	foedsel?: {
@@ -12,8 +13,12 @@ export type Search = {
 	}
 	nasjonalitet?: {
 		statsborgerskap?: string
-		utflyttingFraNorge?: boolean
-		innflyttingTilNorge?: boolean
+		innflytting?: {
+			fraflyttingsland?: string
+		}
+		utflytting?: {
+			tilflyttingsland?: string
+		}
 	}
 	sivilstand?: {
 		type?: string

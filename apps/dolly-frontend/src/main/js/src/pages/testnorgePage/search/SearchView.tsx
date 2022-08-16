@@ -14,6 +14,8 @@ import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import { ImportModal } from '~/pages/testnorgePage/search/importModal/ImportModal'
+import { Gruppe } from '~/utils/hooks/useGruppe'
+import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 
 type Props = {
 	items?: PdlData[]
@@ -21,7 +23,13 @@ type Props = {
 	loading: boolean
 	valgtePersoner: ImportPerson[]
 	setValgtePersoner: (personer: ImportPerson[]) => void
-	importerPersoner: (valgtePersoner: ImportPerson[], navigate: Function) => void
+	importerPersoner: (
+		valgtePersoner: ImportPerson[],
+		mal: any,
+		navigate: Function,
+		gruppeId?: number
+	) => void
+	gruppe?: Gruppe
 }
 
 export type ImportPerson = {
@@ -63,8 +71,11 @@ export default ({
 	setValgtePersoner,
 	importerPersoner,
 	sidetall,
+	gruppe,
 }: Props) => {
-	if (loading) return <Loading label="Søker..." />
+	if (loading) {
+		return <Loading label="Søker..." />
+	}
 	if (!items || items.length === 0) {
 		return (
 			<ContentContainer>
@@ -155,10 +166,27 @@ export default ({
 				iconItem={(person: PdlData) =>
 					getPdlKjoenn(person) === 'M' ? <ManIconItem /> : <WomanIconItem />
 				}
-				onExpand={(person: PdlData) => <PdlVisning pdlData={person} />}
-				pagination
+				onExpand={(person: PdlData) => (
+					<>
+						<PdlVisning pdlData={person} />
+						<ArenaVisning
+							ident={{
+								ident: getPdlIdent(person),
+								master: 'PDL',
+							}}
+							data={null}
+							bestillinger={[]}
+							loading={false}
+						/>
+					</>
+				)}
+				pagination="simple"
 			/>
-			<ImportModal valgtePersoner={valgtePersoner} importerPersoner={importerPersoner} />
+			<ImportModal
+				valgtePersoner={valgtePersoner}
+				importerPersoner={importerPersoner}
+				gruppe={gruppe}
+			/>
 		</SearchView>
 	)
 }

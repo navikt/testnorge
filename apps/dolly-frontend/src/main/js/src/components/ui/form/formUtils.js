@@ -37,6 +37,8 @@ const getValgteAttributter = (values) => {
 		'tpsMessaging.egenAnsattDatoTom',
 		'tpsMessaging.utenlandskBankkonto',
 		'tpsMessaging.norskBankkonto',
+		'bankkonto.utenlandskBankkonto',
+		'bankkonto.norskBankkonto',
 		'pdldata.person.bostedsadresse',
 		'pdldata.person.oppholdsadresse',
 		'pdldata.person.kontaktadresse',

@@ -1,0 +1,6 @@
+elasticsearch:
+  client:
+    username: ${ELASTIC_USERNAME}
+    password: ${ELASTIC_PASSWORD}
+    host: ${ELASTIC_HOST}
+    port: ${ELASTIC_PORT}

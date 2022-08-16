@@ -41,7 +41,7 @@ export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin, ...props
 
 export const FormikCheckbox = ({ afterChange = null, fastfield = false, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
-		{({ field, form, meta }) => {
+		{({ field, _form, _meta }) => {
 			const handleChange = (event) => {
 				field.onChange(SyntEvent(field.name, event.target.checked))
 				if (afterChange) afterChange(event.target.checked)

@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -38,13 +39,18 @@ public class BrregstubConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public BrregstubConsumer(TokenExchange tokenService, BrregstubProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public BrregstubConsumer(TokenExchange tokenService,
+                             BrregstubProxyProperties serverProperties,
+                             ObjectMapper objectMapper,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

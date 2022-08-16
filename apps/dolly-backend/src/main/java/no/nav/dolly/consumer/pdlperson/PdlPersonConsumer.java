@@ -15,6 +15,7 @@ import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -50,13 +51,17 @@ public class PdlPersonConsumer {
     private final NaisServerProperties serviceProperties;
     private final WebClient webClient;
 
-    public PdlPersonConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public PdlPersonConsumer(TokenExchange tokenService,
+                             PdlProxyProperties serverProperties,
+                             ObjectMapper objectMapper,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -100,10 +105,9 @@ public class PdlPersonConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                        .map(index -> new PdlBolkPersonGetCommand(webClient,
+                        .flatMap(index -> new PdlBolkPersonGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                token.getTokenValue()).call())
-                        .flatMap(Flux::from));
+                                token.getTokenValue()).call()));
     }
 
     public Map<String, String> checkAlive() {

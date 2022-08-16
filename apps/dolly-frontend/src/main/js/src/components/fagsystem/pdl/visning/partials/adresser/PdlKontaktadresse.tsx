@@ -22,7 +22,9 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 }
 
 export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const gyldigeAdresser = data.filter((adresse: KontaktadresseData) => !adresse.metadata?.historisk)
 	const historiskeAdresser = data.filter(

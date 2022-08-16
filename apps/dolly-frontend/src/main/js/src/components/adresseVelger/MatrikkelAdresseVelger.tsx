@@ -62,7 +62,7 @@ export default ({ onSelect }: Props) => {
 			})
 			.catch((e: Error) => {
 				setLoading(false)
-				if (e && (e instanceof NotFoundError || e.name == 'NotFoundError')) {
+				if (e && (e instanceof NotFoundError || e.name === 'NotFoundError')) {
 					setNotFound(true)
 				} else {
 					setError(true)

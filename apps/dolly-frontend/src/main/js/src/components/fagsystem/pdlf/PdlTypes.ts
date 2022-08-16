@@ -117,6 +117,7 @@ export type ForeldreBarnRelasjon = {
 	minRolleForPerson: Rolle
 	relatertPerson?: string
 	relatertPersonUtenFolkeregisteridentifikator?: PersonUtenIdData
+	nyRelatertPerson?: NyIdent
 	relatertPersonsIdent: string
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
@@ -153,6 +154,7 @@ export type Vergemaal = {
 	vergeIdent?: string
 	vergeEllerFullmektig?: {
 		motpartsPersonident: string
+		omfang?: string
 	}
 	id: number
 }

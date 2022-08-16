@@ -17,7 +17,9 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 import { PensjonPanel } from '~/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
 
 export const identFraTestnorge = (opts: any) => {
-	if (opts?.is?.importTestnorge) return true
+	if (opts?.is?.importTestnorge) {
+		return true
+	}
 	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 

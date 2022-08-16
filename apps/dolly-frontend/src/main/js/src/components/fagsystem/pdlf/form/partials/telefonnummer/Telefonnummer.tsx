@@ -39,56 +39,63 @@ interface TelefonnummerProps {
 }
 
 export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
-	const tlfListe = _get(formikBag.values, 'pdldata.person.telefonnummer')
-	const tlfListeTps = _get(formikBag.values, 'tpsMessaging.telefonnummer')
-
-	if (!tlfListe) return null
+	const paths = {
+		pdlTelefonnummer: 'pdldata.person.telefonnummer',
+		tpsMTelefonnummer: 'tpsMessaging.telefonnummer',
+	}
+	const tlfListe = _get(formikBag.values, paths.pdlTelefonnummer)
+	const tlfListeTps = _get(formikBag.values, paths.tpsMTelefonnummer)
 
 	useEffect(() => {
-		if (tlfListe.length === 1) {
-			formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
-			formikBag.setFieldValue('tpsMessaging.telefonnummer[0].telefontype', 'MOBI')
+		if (tlfListe && tlfListe.length === 1) {
+			formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+			formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 		}
 	}, [tlfListe])
+
+	if (!tlfListe) {
+		return null
+	}
 
 	const optionsPrioritet = () => {
 		if (tlfListe.length === 1) {
 			return [{ value: 1, label: '1' }]
-		} else
+		} else {
 			return [
 				{ value: 1, label: '1' },
 				{ value: 2, label: '2' },
 			]
+		}
 	}
 
 	const handleNewEntry = () => {
-		formikBag.setFieldValue('pdldata.person.telefonnummer', [...tlfListe, initialTelefonnummer])
-		formikBag.setFieldValue('tpsMessaging.telefonnummer', [...tlfListeTps, initialTpsTelefonnummer])
+		formikBag.setFieldValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
+		formikBag.setFieldValue(paths.tpsMTelefonnummer, [...tlfListeTps, initialTpsTelefonnummer])
 	}
 
 	const handleRemoveEntry = (idx: number) => {
 		tlfListe.splice(idx, 1)
 		tlfListeTps.splice(idx, 1)
-		formikBag.setFieldValue('pdldata.person.telefonnummer', tlfListe)
-		formikBag.setFieldValue('tpsMessaging.telefonnummer', tlfListeTps)
-		formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
-		formikBag.setFieldValue('tpsMessaging.telefonnummer[0].telefontype', 'MOBI')
+		formikBag.setFieldValue(paths.pdlTelefonnummer, tlfListe)
+		formikBag.setFieldValue(paths.tpsMTelefonnummer, tlfListeTps)
+		formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
 	}
 
 	const handleChangeLandkode = (value: string, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.landskode`, value)
-		formikBag.setFieldValue(`tpsMessaging.telefonnummer[${idx}].landkode`, value)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, value)
 	}
 
 	const handleChangeNummer = (target: { value: string }, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.nummer`, target.value)
-		formikBag.setFieldValue(`tpsMessaging.telefonnummer[${idx}].telefonnummer`, target.value)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].telefonnummer`, target.value)
 	}
 
 	const handleChangePrioritet = (value: number, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.prioritet`, value)
 		formikBag.setFieldValue(
-			`tpsMessaging.telefonnummer[${idx}].telefontype`,
+			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
 			value === 2 ? 'HJET' : 'MOBI'
 		)
 	}
@@ -96,7 +103,7 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
-				name={'pdldata.person.telefonnummer'}
+				name={paths.pdlTelefonnummer}
 				header="Telefonnummer"
 				newEntry={initialTelefonnummer}
 				canBeEmpty={false}

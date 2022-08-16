@@ -56,11 +56,6 @@ public class OrganisasjonClient {
         Set<String> orgnumre = new HashSet<>();
 
         var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
-        organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
-                .bestilling(bestilling)
-                .organisasjonsnummer("Ubestemt")
-                .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
-                .build());
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 
@@ -100,6 +95,11 @@ public class OrganisasjonClient {
                 .build());
 
         deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer);
+    }
+
+    public void release(List<String> orgnummer) {
+
+        throw new UnsupportedOperationException("Release ikke implementert");
     }
 
     private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
@@ -142,7 +142,6 @@ public class OrganisasjonClient {
         }
     }
 
-
     private String mapStatusFraDeploy(Entry<String, List<EnvStatus>> orgStatus) {
 
         if (isNull(orgStatus)) {
@@ -166,10 +165,5 @@ public class OrganisasjonClient {
             }
         });
         return status.toString();
-    }
-
-    public void release(List<String> orgnummer) {
-
-        throw new UnsupportedOperationException("Release ikke implementert");
     }
 }

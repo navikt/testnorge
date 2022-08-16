@@ -147,7 +147,7 @@ export const Detaljer = ({
 				tag={number}
 				isOrganisasjon={true}
 			>
-				{(path: string, idx: number, curr: any, number: string) => {
+				{(path: string, idx: number, _curr: any, number: string) => {
 					return (
 						<Detaljer
 							key={idx}

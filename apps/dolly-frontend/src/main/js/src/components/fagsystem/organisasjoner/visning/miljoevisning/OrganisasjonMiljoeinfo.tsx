@@ -6,11 +6,15 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { OrganisasjonDataVisning } from '~/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonDataVisning'
 
 export const OrganisasjonMiljoeinfo = (props: { orgnummer: string }) => {
-	if (!props) return null
-
 	const state = useAsync(async () => {
-		return OrgforvalterApi.getOrganisasjonerMiljoeInfo(props.orgnummer)
+		if (props) {
+			return OrgforvalterApi.getOrganisasjonerMiljoeInfo(props.orgnummer)
+		}
 	}, [])
+
+	if (!props) {
+		return null
+	}
 
 	return (
 		<div>

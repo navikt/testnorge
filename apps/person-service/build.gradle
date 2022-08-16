@@ -30,6 +30,8 @@ test {
     useJUnitPlatform()
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -37,12 +39,17 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:reactive-security'
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation 'no.nav.testnav.libs:commands'
 
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -50,11 +57,11 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.4'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
+
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.hibernate.validator:hibernate-validator-annotation-processor:7.0.1.Final'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
@@ -63,4 +70,3 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
-java.sourceCompatibility = JavaVersion.VERSION_17

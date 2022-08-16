@@ -29,7 +29,9 @@ type FoedselVisningTypes = {
 }
 
 export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: FoedselTypes) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const FoedselLes = ({ foedsel, idx }: FoedselVisningTypes) => {
 		return (
@@ -40,7 +42,7 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 				<TitleValue title="Fødekommune">
 					{foedsel.foedekommune && (
 						<KodeverkConnector navn="Kommuner" value={foedsel.foedekommune}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : foedsel.foedekommune}</span>
 							)}
 						</KodeverkConnector>
@@ -63,7 +65,9 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 			(a: Person) => a.id === foedsel.id
 		)
 		const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
-		if (slettetFoedselPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetFoedselPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
 		const redigertFoedselValues = redigertFoedselPdlf

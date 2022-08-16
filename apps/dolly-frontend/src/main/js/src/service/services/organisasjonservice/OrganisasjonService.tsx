@@ -7,7 +7,9 @@ export default {
 	getOrganisasjonInfo(orgnummer: string, miljoe: string): Promise<OrgInfoResponse> {
 		return Request.get(`${orgServiceUrl}/${orgnummer}`, { miljo: miljoe ? miljoe : 'q1' }).then(
 			(response: OrgInfoResponse) => {
-				if (response != null) return response
+				if (response != null) {
+					return response
+				}
 			}
 		)
 	},

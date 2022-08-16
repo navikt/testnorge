@@ -41,13 +41,17 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 		})
 	}, [])
 
-	if (!varslinger) return null
+	if (!varslinger) {
+		return null
+	}
 
 	const usetteVarslinger =
 		isLoading === false &&
 		varslinger.length > 0 &&
 		varslinger.filter((varsel: Varsling) => !varslingerBruker.includes(varsel.varslingId))
-	if (!usetteVarslinger || usetteVarslinger.length < 1) return null
+	if (!usetteVarslinger || usetteVarslinger.length < 1) {
+		return null
+	}
 
 	const currentDate = new Date()
 	const gyldigeVarslinger = usetteVarslinger.filter(
@@ -59,7 +63,9 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 	)
 
 	const antallVarslinger = gyldigeVarslinger.length
-	if (antallVarslinger < 1) return null
+	if (antallVarslinger < 1) {
+		return null
+	}
 
 	const varslingerSteg = gyldigeVarslinger.map((varsling: Varsling) => ({
 		label: varsling.varslingId,

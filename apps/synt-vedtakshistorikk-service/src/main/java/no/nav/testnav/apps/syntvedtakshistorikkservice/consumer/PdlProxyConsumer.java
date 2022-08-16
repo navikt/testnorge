@@ -11,7 +11,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.Pdl
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.Tags;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -103,12 +103,12 @@ public class PdlProxyConsumer {
 
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {
                 var status = isNull(response) ? "" : "Status: " + response.getStatusCode();
-                log.error("Feil i opprettelse av tag(s) på ident(er).{}", status);
+                log.error("Feil i opprettelse av tag(s) på ident(er): {}", status);
                 return false;
             }
             return true;
         } catch (Exception e) {
-            log.error("Feil i opprettelse av tag(s) på ident(er).", e);
+            log.error("Feil i opprettelse av tag(s) på ident(er): ", e);
             return false;
         }
     }

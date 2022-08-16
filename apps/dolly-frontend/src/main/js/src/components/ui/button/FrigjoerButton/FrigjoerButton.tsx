@@ -24,9 +24,12 @@ export const FrigjoerButton = ({
 	importertPartner,
 	disabled = false,
 }: Props) => {
-	if (loading) return <Loading label="frigjører..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const mutate = useMatchMutate()
+
+	if (loading) {
+		return <Loading label="frigjører..." />
+	}
 
 	const infoTekst = () => {
 		if (importertPartner) {
@@ -72,7 +75,7 @@ export const FrigjoerButton = ({
 								}
 								return mutate(REGEX_BACKEND_GRUPPER)
 							}}
-							variant={'primary'}
+							type="hoved"
 						>
 							Ja, jeg er sikker
 						</NavButton>

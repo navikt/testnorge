@@ -46,11 +46,13 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump
+      exposure.include: prometheus,heapdump,health
       path-mapping.prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
+    health:
+      show-details: always
   metrics.export:
     prometheus.enabled: true
 server:

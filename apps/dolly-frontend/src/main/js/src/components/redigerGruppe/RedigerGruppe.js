@@ -70,7 +70,7 @@ export default class RedigerGruppe extends PureComponent {
 		)
 	}
 
-	onHandleSubmit = async (values, actions) => {
+	onHandleSubmit = async (values, _actions) => {
 		const { createGruppe, updateGruppe, gruppe, error } = this.props
 
 		const groupValues = {

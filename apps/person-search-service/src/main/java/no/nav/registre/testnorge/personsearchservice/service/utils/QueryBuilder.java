@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.isNull;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.AdresserUtils.addAdresserQueries;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.AlderUtils.addAlderQueries;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.IdentifikasjonUtils.addIdentifikasjonQueries;
@@ -32,7 +33,7 @@ public class QueryBuilder {
         var queryBuilder = QueryBuilders.boolQuery();
 
         addRandomScoreQuery(queryBuilder, search);
-        addTagsQueries(queryBuilder, search.getTag(), search.getExcludeTags());
+        addTagsQueries(queryBuilder, search.getTag(), search.getTags(), search.getExcludeTags());
         addIdentifikasjonQueries(queryBuilder, search);
         addAlderQueries(queryBuilder, search);
         addAdresserQueries(queryBuilder, search);
@@ -46,7 +47,7 @@ public class QueryBuilder {
     public static BoolQueryBuilder buildIdentSearchQuery(IdentSearch search) {
         var queryBuilder = QueryBuilders.boolQuery();
 
-        addTagsQueries(queryBuilder, search.getTag(), search.getExcludeTags());
+        addTagsQueries(queryBuilder, search.getTag(), search.getTags(), search.getExcludeTags());
         addIdentQuery(queryBuilder, search);
         addNameQuery(queryBuilder, search);
 
@@ -62,8 +63,22 @@ public class QueryBuilder {
                 });
     }
 
-    private static void addTagsQueries(BoolQueryBuilder queryBuilder, String tag, List<String> excludeTags) {
-        queryBuilder.must(QueryBuilders.matchQuery("tags", tag));
+    private static void addTagsQueries(BoolQueryBuilder queryBuilder, String tag, List<String> tags, List<String> excludeTags) {
+        if (isNull(tag) && (isNull(tags) || tags.isEmpty())) {
+            throw new RuntimeException("Mangler tag");
+        }
+
+        Optional.ofNullable(tag)
+                .ifPresent(value -> queryBuilder.must(QueryBuilders.matchQuery("tags", tag)));
+
+        Optional.ofNullable(tags)
+                .ifPresent(values -> {
+                    if (!values.isEmpty()) {
+                        for (var val: values){
+                            queryBuilder.must(QueryBuilders.matchQuery("tags", val));
+                        }
+                    }
+                });
 
         Optional.ofNullable(excludeTags)
                 .ifPresent(values -> {

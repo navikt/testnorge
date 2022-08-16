@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
@@ -37,6 +39,7 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
+    private final OrganisasjonProgressService progressService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/bestilling")
@@ -44,6 +47,13 @@ public class OrganisasjonController {
     public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
 
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
+
+        progressService.save(OrganisasjonBestillingProgress.builder()
+                .bestilling(bestilling)
+                .organisasjonsnummer("Ubestemt")
+                .organisasjonsforvalterStatus(request.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
+                .build());
+
         organisasjonClient.opprett(request, bestilling);
 
         return getStatus(bestilling, "Ubestemt");

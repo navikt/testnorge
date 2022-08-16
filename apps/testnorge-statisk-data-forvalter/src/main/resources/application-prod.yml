@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://b27dbvl007.preprod.local:5432/testnorge-statisk-data?useUnicode=yes&characterEncoding=UTF-8
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    locations: classpath:db/migration/postgresql
+  main:
+    banner-mode: off
+
+app:
+  db:
+    flyway:
+      role: testnorge-statisk-data-admin
+      backend: postgresql/preprod-fss/creds
+
+tps.statisk.avspillergruppeId: ${FAST_AVSPILLER_GRUPPE}
+
+########## Brukes disse fremdeles?
+VAULT_URL: https://vault.adeo.no
+##########

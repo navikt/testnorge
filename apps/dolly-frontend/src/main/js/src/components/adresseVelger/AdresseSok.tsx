@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { Search } from '@navikt/ds-react'
 
 type Props = {
-	onSubmit: (search: { adressenavn?: string; postnummer?: string; kommunenummer?: string }) => void
+	onSubmit: (search: { fritekst?: string; postnummer?: string; kommunenummer?: string }) => void
 	loading?: boolean
 }
 
@@ -20,7 +20,7 @@ const HeaderGroup = styled.div`
 `
 
 export default ({ onSubmit, loading = false }: Props) => {
-	const [adressenavn, setAdressenavn] = useState<string>('')
+	const [fritekst, setFritekst] = useState<string>('')
 	const [postnummer, setPostnummer] = useState<string>(null)
 	const [kommunenummer, setKommunenummer] = useState<string>(null)
 
@@ -37,8 +37,8 @@ export default ({ onSubmit, loading = false }: Props) => {
 				<DollyTextInput
 					name="adressenavn"
 					label="Adressenavn"
-					value={adressenavn}
-					onChange={(e: any) => setAdressenavn(e.target.value)}
+					value={fritekst}
+					onChange={(e: any) => setFritekst(e.target.value)}
 				/>
 				<DollySelect
 					name="postnummer"
@@ -58,9 +58,9 @@ export default ({ onSubmit, loading = false }: Props) => {
 				/>
 			</InputGroup>
 			<Search
-				onClick={() => onSubmit({ adressenavn, postnummer, kommunenummer })}
+				onClick={() => onSubmit({ fritekst, postnummer, kommunenummer })}
 				disabled={loading}
-				label={''}
+				loading={loading}
 			>
 				<span>Hent gyldige adresser</span>
 			</Search>

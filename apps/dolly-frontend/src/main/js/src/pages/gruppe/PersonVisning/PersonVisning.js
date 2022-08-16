@@ -54,7 +54,6 @@ export const PersonVisning = ({
 	slettPersonOgPartner,
 	leggTilPaaPerson,
 	iLaastGruppe,
-	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
 
@@ -77,13 +76,11 @@ export const PersonVisning = ({
 	}, [])
 
 	const pdlPartner = () => {
-		if (ident.master === 'PDL') {
-			return data.pdl?.hentPerson?.sivilstand?.filter(
-				(siv) => !siv?.metadata?.historisk && ['GIFT', 'SEPARERT'].includes(siv?.type)
-			)?.[0]?.relatertVedSivilstand
-		} else {
-			return null
-		}
+		return data.pdl?.hentPerson?.sivilstand?.filter(
+			(siv) =>
+				!siv?.metadata?.historisk &&
+				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
+		)?.[0]?.relatertVedSivilstand
 	}
 
 	return (
@@ -108,11 +105,12 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && ident.master === 'PDL' && isAlive && (
+					{!iLaastGruppe && (
 						<PartnerImportButton
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
 							gruppeIdenter={gruppeIdenter}
+							master={ident?.master}
 						/>
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
@@ -131,15 +129,13 @@ export const PersonVisning = ({
 					)}
 				</div>
 				{ident.master !== 'PDL' && (
-					<TpsfVisning
-						data={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
-						pdlData={data.pdlforvalter?.person}
+					<PdlfVisningConnector
+						data={data.pdlforvalter}
+						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
-						tmpPersoner={tmpPersoner?.pdlforvalter}
+						master={ident.master}
 					/>
-				)}
-				{ident.master !== 'PDL' && (
-					<PdlfVisningConnector data={data.pdlforvalter} loading={loading.pdlforvalter} />
 				)}
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
@@ -160,6 +156,7 @@ export const PersonVisning = ({
 					data={data.arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
+					ident={ident}
 				/>
 				<UdiVisning
 					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}

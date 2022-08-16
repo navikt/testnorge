@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.7"
-    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+    id 'org.springframework.boot' version "2.7.1"
+    id 'io.spring.dependency-management' version "1.0.12.RELEASE"
 }
 
 
@@ -23,7 +23,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.3'
     }
 }
 
@@ -34,6 +34,10 @@ test {
 repositories {
     mavenCentral()
     mavenLocal()
+
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
 }
 
 dependencies {
@@ -47,6 +51,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -61,21 +66,23 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-    implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

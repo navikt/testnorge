@@ -21,22 +21,22 @@ kafka:
 
 consumers:
   generer-navn-service:
-    url: http://generer-navn-service.dolly.svc.cluster.local
+    url: https://generer-navn-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: generer-navn-service
-  organisasjon-orgnummer-service:
-    url: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
-    cluster: dev-fss
+  testnav-orgnummer-service:
+    url: https://testnav-orgnummer-service.dev.intern.nav.no
+    cluster: dev-gcp
     namespace: dolly
-    name: organisasjon-orgnummer-service
+    name: testnav-orgnummer-service
 
 management:
   endpoints:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump
+      exposure.include: prometheus,heapdump,health
       path-mapping.prometheus: metrics
   endpoint:
     prometheus.enabled: true

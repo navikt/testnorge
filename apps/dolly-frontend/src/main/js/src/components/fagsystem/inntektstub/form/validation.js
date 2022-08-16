@@ -74,11 +74,11 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 	const tidsromSomIkkeKanOverlappe = index.map((idx) => tidsrom[idx])
 	const firstInterval = tidsromSomIkkeKanOverlappe[0]
 
-	return tidsromSomIkkeKanOverlappe.some((tidsrom, idx) => {
+	return tidsromSomIkkeKanOverlappe.some((t, idx) => {
 		if (idx === 0) return //Tester mot første tidsrom
 		return areIntervalsOverlapping(
 			{ start: firstInterval.start, end: addDays(firstInterval.end, 1) },
-			{ start: tidsrom.start, end: tidsrom.end }
+			{ start: t.start, end: t.end }
 		)
 	})
 }

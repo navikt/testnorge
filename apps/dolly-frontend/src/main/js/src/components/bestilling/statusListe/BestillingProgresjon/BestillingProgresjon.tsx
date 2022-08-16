@@ -34,20 +34,19 @@ export const BestillingProgresjon = ({
 	const sistOppdatert = bestilling.sistOppdatert
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const setDetaljertOrgStatus = (bestillingStatus: any) => {
-		const detaljertStatus =
-			bestillingStatus?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
+	const setDetaljertOrgStatus = (status: any) => {
+		const detaljertStatus = status?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
 		if (orgStatus !== detaljertStatus) {
 			setOrgStatus(detaljertStatus)
 		}
 	}
 
-	if (erOrganisasjon) {
-		const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
-		setDetaljertOrgStatus(bestillingStatus)
-	}
+	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
 
 	useEffect(() => {
+		if (erOrganisasjon) {
+			setDetaljertOrgStatus(bestillingStatus)
+		}
 		harBestillingFeilet(sistOppdatert)
 	}, [bestilling])
 
@@ -56,11 +55,11 @@ export const BestillingProgresjon = ({
 		const oldTimeStamp = new Date(sistOppdatertState).getTime()
 
 		const antallSekunderBrukt = (liveTimeStamp - oldTimeStamp) / 1000
-		const tidsBegrensing = erOrganisasjon
+		const tidsbegrensning = erOrganisasjon
 			? SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON
 			: SECONDS_BEFORE_WARNING_MESSAGE
 
-		if (antallSekunderBrukt > tidsBegrensing) {
+		if (antallSekunderBrukt > tidsbegrensning) {
 			setTimedOut(true)
 		}
 	}

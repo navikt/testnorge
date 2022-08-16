@@ -52,7 +52,7 @@ export const testDatoTom = (val, fomPath, feilmelding) => {
 
 const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
-		var feilmelding = null
+		let feilmelding = null
 		const values = this.options.context
 
 		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
@@ -545,20 +545,16 @@ const forelderBarnRelasjon = Yup.array().of(
 	})
 )
 
-const kjoenn = Yup.array().of(
-	Yup.object({
-		kjoenn: requiredString.nullable(),
-	})
-)
+export const kjoenn = Yup.object({
+	kjoenn: requiredString.nullable(),
+})
 
-const navn = Yup.array().of(
-	Yup.object({
-		fornavn: Yup.string().nullable(),
-		mellomnavn: Yup.string().nullable(),
-		etternavn: Yup.string().nullable(),
-		hasMellomnavn: Yup.boolean(),
-	})
-)
+export const navn = Yup.object({
+	fornavn: Yup.string().nullable(),
+	mellomnavn: Yup.string().nullable(),
+	etternavn: Yup.string().nullable(),
+	hasMellomnavn: Yup.boolean().nullable(),
+})
 
 const vergemaal = Yup.array().of(
 	Yup.object({
@@ -577,6 +573,37 @@ const foreldreansvar = Yup.array().of(
 		ansvar: testForeldreansvar(requiredString.nullable()),
 	})
 )
+
+const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
+	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {
+		if (value) {
+			if (inputValidation) {
+				const inputError = inputValidation(value)
+				if (inputError) {
+					return this.createError({ message: inputError })
+				}
+			}
+			return true
+		}
+
+		const path = this.path.substring(0, this.path.lastIndexOf('.'))
+		const values = this.options.context
+
+		const checkbox = _get(values, `${path}.${checkboxPath}`)
+
+		if (!checkbox) {
+			return this.createError({ message: feilmelding })
+		}
+
+		return true
+	})
+}
+
+export const folkeregisterpersonstatus = Yup.object({
+	status: requiredString.nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+})
 
 export const validation = {
 	pdldata: Yup.object({
@@ -658,8 +685,8 @@ export const validation = {
 			),
 			forelderBarnRelasjon: ifPresent('$pdldata.person.forelderBarnRelasjon', forelderBarnRelasjon),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
-			kjoenn: ifPresent('$pdldata.person.kjoenn', kjoenn),
-			navn: ifPresent('$pdldata.person.navn', navn),
+			kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),
+			navn: ifPresent('$pdldata.person.navn', Yup.array().of(navn)),
 			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
 			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
 		}).nullable(),
@@ -673,10 +700,29 @@ export const validation = {
 				'$tpsMessaging.egenAnsattDatoTom',
 				testDatoTom(Yup.string(), 'egenAnsattDatoFom')
 			),
+		})
+	),
+	bankkonto: ifPresent(
+		'$bankkonto',
+		Yup.object({
 			utenlandskBankkonto: ifPresent(
-				'$tpsMessaging.utenlandskBankkonto',
+				'$bankkonto.utenlandskBankkonto',
 				Yup.object().shape({
-					kontonummer: requiredString.nullable(),
+					kontonummer: validInputOrCheckboxTest(
+						Yup.string(),
+						'tilfeldigKontonummer',
+						messages.required,
+						(kontonummer) => {
+							if (kontonummer && (kontonummer.length < 1 || kontonummer.length > 36)) {
+								return 'Kontonummer kan være mellom 1 og 36 tegn'
+							}
+							if (!/^[A-Z0-9]*$/.test(kontonummer)) {
+								return 'Kontonummer kan kun bestå av tegnene A-Z eller 0-9'
+							}
+							return ''
+						}
+					),
+					tilfeldigKontonummer: Yup.object().nullable(),
 					swift: Yup.string().nullable().optional(),
 					landkode: requiredString.nullable(),
 					iban: Yup.string().nullable().optional(),
@@ -688,7 +734,7 @@ export const validation = {
 				})
 			),
 			norskBankkonto: ifPresent(
-				'$tpsMessaging.norskBankkonto',
+				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
 					kontonummer: requiredString.nullable(),
 				})

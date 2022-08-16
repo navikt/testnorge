@@ -10,14 +10,19 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import { Exception } from 'sass'
 import '../gruppe/PersonVisning/PersonVisning.less'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import Hjelpetekst from '~/components/hjelpetekst'
+import { PopoverOrientering } from 'nav-frontend-popover'
 import './TestnorgePage.less'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import * as Yup from 'yup'
 import DisplayFormikState from '~/utils/DisplayFormikState'
-import { bottom } from '@popperjs/core'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
-export default () => {
+type TestnorgePageProps = {
+	gruppe?: Gruppe
+}
+
+export default ({ gruppe }: TestnorgePageProps) => {
 	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
@@ -58,7 +63,7 @@ export default () => {
 		<div>
 			<div className="testnorge-page-header flexbox--align-center--justify-start">
 				<Title title="Søk og import fra Test-Norge" />
-				<Hjelpetekst placement={bottom}>
+				<Hjelpetekst hjelpetekstFor="Test-Norge" type={PopoverOrientering.Under}>
 					Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 					forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved
 					at personer fødes, dør, får barn, osv. Hele Test-Norge er tilgjengelig i PDL.
@@ -97,6 +102,7 @@ export default () => {
 												loading={loading}
 												valgtePersoner={valgtePersoner}
 												setValgtePersoner={setValgtePersoner}
+												gruppe={gruppe}
 											/>
 										)}
 									</>

@@ -22,7 +22,9 @@ export const PdlRelasjoner = ({ data }: PdlRelasjonerProps) => {
 	const foreldreBarn = data.forelderBarnRelasjon
 	const foreldreansvar = data.foreldreansvar
 
-	if (hasNoValues(partnere) && hasNoValues(doedfoedtBarn) && hasNoValues(foreldreBarn)) return null
+	if (hasNoValues(partnere) && hasNoValues(doedfoedtBarn) && hasNoValues(foreldreBarn)) {
+		return null
+	}
 
 	return (
 		<ErrorBoundary>

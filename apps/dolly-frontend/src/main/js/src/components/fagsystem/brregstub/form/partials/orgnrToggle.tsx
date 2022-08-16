@@ -8,14 +8,14 @@ import {
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import { Alert } from '@navikt/ds-react'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 	setEnhetsinfo: (org: any, path: string) => {}
-	warningMessage?: Alert
+	warningMessage?: AlertStripeAdvarsel
 }
 
 export const OrgnrToggle = ({
@@ -27,16 +27,22 @@ export const OrgnrToggle = ({
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
-	const handleToggleChange = (value: string) => {
-		setInputType(value)
+	const handleToggleChange = (event: React.ChangeEvent<any>) => {
+		setInputType(event.target.value)
 		clearEnhetsinfo()
 	}
 
 	const clearEnhetsinfo = () => {
 		const oldValues = _get(formikBag.values, path)
-		if (oldValues.hasOwnProperty('foretaksNavn')) delete oldValues['foretaksNavn']
-		if (oldValues.hasOwnProperty('forretningsAdresse')) delete oldValues['forretningsAdresse']
-		if (oldValues.hasOwnProperty('postAdresse')) delete oldValues['postAdresse']
+		if (oldValues.hasOwnProperty('foretaksNavn')) {
+			delete oldValues['foretaksNavn']
+		}
+		if (oldValues.hasOwnProperty('forretningsAdresse')) {
+			delete oldValues['forretningsAdresse']
+		}
+		if (oldValues.hasOwnProperty('postAdresse')) {
+			delete oldValues['postAdresse']
+		}
 		oldValues['orgNr'] = ''
 		formikBag.setFieldValue(path, oldValues)
 	}

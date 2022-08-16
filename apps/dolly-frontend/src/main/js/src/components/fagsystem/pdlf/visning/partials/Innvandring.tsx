@@ -29,10 +29,14 @@ export const Innvandring = ({
 	ident,
 	erPdlVisning = false,
 }: InnvandringTypes) => {
-	if (data.length < 1) return null
+	if (data.length < 1) {
+		return null
+	}
 
 	const InnvandringLes = ({ innvandringData, idx }: InnvandringVisningTypes) => {
-		if (!innvandringData) return null
+		if (!innvandringData) {
+			return null
+		}
 		return (
 			<div className="person-visning_redigerbar" key={idx}>
 				<TitleValue
@@ -57,7 +61,9 @@ export const Innvandring = ({
 			(a: InnvandringValues) => a.id === innvandringData.id
 		)
 		const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
-		if (slettetInnvandringPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetInnvandringPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const innvandringValues = redigertInnvandringPdlf ? redigertInnvandringPdlf : innvandringData
 		const redigertInnvandringValues = redigertInnvandringPdlf

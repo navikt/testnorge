@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import Button from '~/components/ui/button/Button'
@@ -9,7 +10,6 @@ import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
-import { Alert } from '@navikt/ds-react'
 
 export default ({ brukernavn }: { brukernavn: string }) => {
 	const [searchText, setSearchText] = useState('')
@@ -35,9 +35,9 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			text: 'Malnavn',
 			width: '80',
 			dataField: 'malNavn',
-			formatter: (cell: any, row: { id: string; malNavn: string }) =>
+			formatter: (_cell: any, row: { id: string; malNavn: string }) =>
 				erUnderRedigering(row.id) ? (
-					<EndreMalnavn malInfo={row} setMaler={null} avbrytRedigering={avbrytRedigering} />
+					<EndreMalnavn malInfo={row} avbrytRedigering={avbrytRedigering} />
 				) : (
 					row.malNavn
 				),
@@ -45,7 +45,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 		{
 			text: 'Rediger malnavn',
 			width: '13',
-			formatter: (cell: any, row: { id: string }) => {
+			formatter: (_cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
 						AVBRYT
@@ -61,7 +61,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			text: 'Slett',
 			width: '10',
 			dataField: 'status',
-			formatter: (cell: any, row: { id: any }) => (
+			formatter: (_cell: any, row: { id: any }) => (
 				<SlettButton action={() => slettMal(row.id, null)} loading={loading}>
 					Er du sikker på at du vil slette denne malen?
 				</SlettButton>
@@ -84,17 +84,16 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 							columns={columns}
 							header={false}
 							iconItem={<MalIconItem />}
-							pagination
 						/>
 					</ErrorBoundary>
 				) : (
-					<Alert variant={'info'}>Ingen maler samsvarte med søket ditt</Alert>
+					<AlertStripeInfo>Ingen maler samsvarte med søket ditt</AlertStripeInfo>
 				)
 			) : (
-				<Alert variant={'info'}>
+				<AlertStripeInfo>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
-				</Alert>
+				</AlertStripeInfo>
 			)}
 		</div>
 	)

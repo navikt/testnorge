@@ -8,8 +8,8 @@ import Loading from '~/components/ui/loading/Loading'
 import './TagsButton.less'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
-import { Alert } from '@navikt/ds-react'
 
 type Props = {
 	action: Function
@@ -23,25 +23,27 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 	const [tags, setTags] = useState(eksisterendeTags)
 	const mutate = useMatchMutate()
 
-	if (loading) return <Loading label="Sender tags..." />
+	if (loading) {
+		return <Loading label="Sender tags..." />
+	}
 
 	const tagsFraDolly = SelectOptionsOppslag.hentTagsFraDolly()
 	const tagOptions = SelectOptionsOppslag.formatOptions('tags', tagsFraDolly)
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="link">
+			<Button onClick={openModal} kind="link" className="svg-icon-blue">
 				TILKNYTT TAGS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<div className="tagsModal">
 					<div className="tagsModal tagsModal-content">
 						<h1>TILKNYTT TAGS</h1>
-						<Alert variant={'info'}>
+						<AlertStripeInfo>
 							Tags gir deg mulighet til å identifisere dine PDL-personer på egen “tagged”
 							Kafka-topic, der tags[dintag] legges til på responsen. Ta kontakt for ytterligere
 							informasjon.
-						</Alert>
+						</AlertStripeInfo>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
 						<DollySelect
 							options={tagOptions}

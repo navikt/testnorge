@@ -48,7 +48,7 @@ public class TpsfConsumer {
                 .build();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> saveSkdEndringsmeldingerInTPSF(
             Long gruppeId,
             List<RsMeldingstype> skdmeldinger
@@ -59,7 +59,7 @@ public class TpsfConsumer {
         return new PostSaveSkdEndringsmeldingerTpsfCommand(gruppeId, skdmeldinger, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public SkdMeldingerTilTpsRespons sendSkdmeldingerToTps(
             Long gruppeId,
             SendToTpsRequest sendToTpsRequest
@@ -68,12 +68,12 @@ public class TpsfConsumer {
         return new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
         return new GetMeldingsIdsCommand(gruppeId, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public List<Long> getMeldingIderTilhoerendeIdenter(
             Long avspillergruppeId,
             List<String> identer
@@ -81,7 +81,7 @@ public class TpsfConsumer {
         return new PostHentMeldingsIdsCommand(avspillergruppeId, identer, webClient).call();
     }
 
-    @Timed(value = "skd.resource.latency", extraTags = {"operation", "tpsf"})
+    @Timed(value = "skd.resource.latency", extraTags = { "operation", "tpsf" })
     public HttpStatus slettMeldingerFraTpsf(List<Long> meldingIder) {
         return new PostSlettMeldingerTpsfCommand(SlettSkdmeldingerRequest.builder().ids(meldingIder).build(), webClient).call();
     }

@@ -9,10 +9,10 @@ import { FormikProps } from 'formik'
 export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
 	const [kontonummer, setKontonummer] = useState(
-		_get(formikBag.values, 'tpsMessaging.norskBankkonto.kontonummer')
+		_get(formikBag.values, 'bankkonto.norskBankkonto.kontonummer')
 	)
 
-	const path = 'tpsMessaging.norskBankkonto'
+	const path = 'bankkonto.norskBankkonto'
 
 	useEffect(() => {
 		setValidKontoOptions(generateValidKontoOptions())

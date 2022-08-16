@@ -120,6 +120,7 @@ public class BestillingController {
         bestillingService.redigerBestilling(id, null);
     }
 
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {

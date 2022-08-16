@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: person-search-service
+  name: testnav-person-search-service
   namespace: dolly
   labels:
     team: dolly
@@ -19,6 +19,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
+          cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-frontend-dev
@@ -30,6 +31,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -46,11 +50,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/person-search-service/dolly
-        mountPath: /var/run/secrets/nais.io/vault
   resources:
     requests:
       cpu: 200m
@@ -59,5 +58,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://person-search-service.dev.intern.nav.no"
-    - "https://person-search-service.dev-fss-pub.nais.io"
+    - "https://testnav-person-search-service.dev.intern.nav.no"

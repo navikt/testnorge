@@ -9,7 +9,9 @@ type TpsMProps = {
 }
 
 export const TpsMPersonInfo = ({ data, loading = false }: TpsMProps) => {
-	if (loading) return <Loading />
+	if (loading) {
+		return <Loading />
+	}
 	return (
 		<>
 			<TpsMSkjerming data={data} />

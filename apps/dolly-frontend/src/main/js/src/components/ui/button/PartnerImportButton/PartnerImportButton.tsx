@@ -12,33 +12,47 @@ type Props = {
 	partnerIdent: string
 	gruppeId: string
 	gruppeIdenter: string[]
+	master: string
 }
 
-export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: Props) => {
-	if (!partnerIdent) {
-		return null
-	}
+export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, master }: Props) => {
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState(null)
+	const [fullfoert, setFullfoert] = useState(false)
+
+	if (!partnerIdent) {
+		return null
+	}
 
 	const disabled = gruppeIdenter.includes(partnerIdent)
 
 	const handleImport = async (ident: string) => {
 		setLoading(true)
 		setFeilmelding(null)
-		await DollyApi.importerPartner(gruppeId, ident)
-			.then((response) => {
+		await DollyApi.importerPartner(gruppeId, ident, master)
+			.then((_response) => {
 				setLoading(false)
+				setFullfoert(true)
 			})
 			.catch((_error) => {
 				setFeilmelding('Noe gikk galt')
+				setFullfoert(false)
 				setLoading(false)
 			})
 	}
 
 	if (loading) {
 		return <Loading label="importerer..." />
+	}
+
+	if (fullfoert) {
+		return (
+			<div className={'success-text'}>
+				<Icon size={16} kind={'feedback-check-circle'} />
+				<span>VENNLIGST LUKK VISNING</span>
+			</div>
+		)
 	}
 
 	return (
@@ -48,6 +62,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: P
 				disabled={disabled}
 				title={disabled ? 'Partner er allerede i gruppen' : ''}
 				kind="relasjoner"
+				className="svg-icon-blue"
 			>
 				IMPORTER PARTNER
 			</Button>
@@ -72,7 +87,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter }: P
 								closeModal()
 								handleImport(partnerIdent)
 							}}
-							variant={'primary'}
+							type="hoved"
 						>
 							Ja
 						</NavButton>

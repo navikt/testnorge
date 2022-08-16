@@ -2,11 +2,11 @@ import * as React from 'react'
 import { Bestillingsdata } from '~/components/bestillingsveileder/bestillingTypes'
 import { Alert } from '@navikt/ds-react'
 
-type BestillingInfoboks = {
+type BestillingInfoboksProps = {
 	bestillingsdata: Bestillingsdata
 }
 
-export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboks) => {
+export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboksProps) => {
 	const tpsfInfo = bestillingsdata.tpsf
 
 	const harRelasjonMedAdressebeskyttelse = () => {

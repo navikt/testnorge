@@ -34,6 +34,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
@@ -67,14 +68,14 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
 
         OrganisasjonBestillingProgress bestillingProgress;
-        OrgStatus orgStatus = null;
+        List<OrgStatus> orgStatusList = null;
 
         try {
             bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId)
                     .stream().findFirst().orElseThrow(() -> new NotFoundException("Status ikke funnet for bestillingId " + bestillingId));
 
             if (isNotTrue(bestilling.getFerdig())) {
-                orgStatus = getOrgforvalterStatus(bestilling, bestillingProgress);
+                orgStatusList = getOrgforvalterStatus(bestilling, bestillingProgress);
             }
 
         } catch (WebClientResponseException e) {
@@ -83,7 +84,7 @@ public class OrganisasjonBestillingService {
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatus) ? orgStatus.getDetails() : null))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatusList) ? orgStatusList : emptyList()))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
                 .organisasjonNummer(bestillingProgress.getOrganisasjonsnummer())
@@ -103,7 +104,7 @@ public class OrganisasjonBestillingService {
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(progress -> RsOrganisasjonBestillingStatus.builder()
-                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, null))
+                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, emptyList()))
                         .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(progress.getBestilling().getBestKriterier()))
                         .sistOppdatert(progress.getBestilling().getSistOppdatert())
                         .organisasjonNummer(progress.getOrganisasjonsnummer())
@@ -113,6 +114,7 @@ public class OrganisasjonBestillingService {
                         .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
                         .build())
+                .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
     }
 
@@ -195,18 +197,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    public OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
-
-        bestilling.setFeil(orgStatus.getError());
-        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
-        bestilling.setSistOppdatert(now());
-
-        bestillingRepository.save(bestilling);
-
-        return orgStatus;
-    }
-
-    @Transactional
     public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
@@ -216,17 +206,51 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
+    private void updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
 
-    @Transactional
-    public OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
+        var feil = orgStatus.stream()
+                .filter(o -> FAILED.equals(o.getStatus()))
+                .map(o -> o.getEnvironment() + ":" + o.getDetails())
+                .collect(Collectors.joining(","));
+
+        bestilling.setFeil(feil);
+
+        var ferdig = orgStatus.stream()
+                .anyMatch(o -> DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(o.getStatus())));
+
+        bestilling.setFerdig(ferdig);
+        bestilling.setSistOppdatert(now());
+
+    }
+
+    private String forvalterStatusDetails(OrgStatus orgStatus) {
+        if (isNull(orgStatus) || isNull(orgStatus.getStatus())) {
+            return "OK";
+        }
+        return switch (orgStatus.getStatus()) {
+            case COMPLETED -> "OK";
+            case ERROR, FAILED -> "Feil-" + orgStatus.getDetails();
+            default -> orgStatus.getStatus().name();
+        };
+    }
+
+    private List<OrgStatus> getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
 
         var organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(List.of(bestillingProgress.getOrganisasjonsnummer()));
 
-        var orgStatus = organisasjonDeployStatus.getOrgStatus()
-                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList()).stream()
-                .findFirst().orElse(new OrgStatus());
+        log.info("Status for org deploy på org: {} - {}", bestillingProgress.getOrganisasjonsnummer(), organisasjonDeployStatus);
 
-        return updateBestilling(bestilling, orgStatus);
+        var orgStatus = organisasjonDeployStatus.getOrgStatus()
+                .getOrDefault(bestillingProgress.getOrganisasjonsnummer(), emptyList());
+
+        updateBestilling(bestilling, orgStatus);
+
+        var forvalterStatus = orgStatus.stream()
+                .map(org -> org.getEnvironment() + ":" + forvalterStatusDetails(org))
+                .collect(Collectors.joining(","));
+        bestillingProgress.setOrganisasjonsforvalterStatus(forvalterStatus);
+
+        return orgStatus;
     }
 
     private String toJson(Object object) {

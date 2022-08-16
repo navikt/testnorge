@@ -38,7 +38,9 @@ const StatsborgerskapVisning = ({ data, idx }: StatsborgerskapProps) => {
 }
 
 export const PdlStatsborgerskap = ({ statsborgerskapListe }: VisningProps) => {
-	if (statsborgerskapListe?.length < 1) return null
+	if (statsborgerskapListe?.length < 1) {
+		return null
+	}
 
 	const gyldigeStatsborgerskap = statsborgerskapListe.filter(
 		(borgerskap: Statsborgerskap) => !borgerskap.metadata?.historisk

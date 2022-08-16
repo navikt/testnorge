@@ -164,12 +164,16 @@ export default {
 		return Request.get(Endpoints.getTags())
 	},
 
+	getTagsForIdent(ident) {
+		return Request.get(Endpoints.getIdentTags(ident))
+	},
+
 	//* Excel
 	getExcelFil(groupId) {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 
-	importerPartner(groupId, ident) {
-		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, 'PDL'))
+	importerPartner(groupId, ident, master) {
+		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
 }

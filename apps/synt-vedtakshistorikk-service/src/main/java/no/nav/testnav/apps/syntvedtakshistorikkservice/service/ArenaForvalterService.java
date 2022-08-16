@@ -3,7 +3,6 @@ package no.nav.testnav.apps.syntvedtakshistorikkservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.ArenaForvalterConsumer;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.PdlProxyConsumer;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.service.exception.ArbeidssoekerException;
@@ -13,6 +12,9 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrup
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.*;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,6 @@ import java.util.Map;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.VedtakshistorikkService.SYNT_TAGS;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ArenaBrukerUtils.hentIdentListe;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.RequestUtils.getFinnTiltakRequest;
 import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.ServiceUtils.EIER;
@@ -41,7 +42,7 @@ public class ArenaForvalterService {
     private static final String IARBS_HOVEDMAAL = "BEHOLDEA";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
-    private final PdlProxyConsumer pdlProxyConsumer;
+    private final TagsService tagsService;
     private final Random random = new Random();
     private final ArenaBrukerUtils arenaBrukerUtils;
 
@@ -98,24 +99,24 @@ public class ArenaForvalterService {
     }
 
     public void opprettArbeidssoekerVedtakshistorikk(
-            String personident,
+            PersonDTO person,
             String miljoe,
             NyttVedtak senesteVedtak,
             LocalDate aktiveringsDato
     ) {
         if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
-            opprettArbeidssoekerAap(personident, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase(), aktiveringsDato);
+            opprettArbeidssoekerAap(person, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase(), aktiveringsDato);
         } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
-            opprettArbeidssoeker(personident, miljoe, random.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM, aktiveringsDato);
+            opprettArbeidssoeker(person, miljoe, random.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM, aktiveringsDato);
         } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
-            opprettArbeidssoeker(personident, miljoe, random.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM, aktiveringsDato);
+            opprettArbeidssoeker(person, miljoe, random.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM, aktiveringsDato);
         } else {
             throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
         }
     }
 
     public Kvalifiseringsgrupper opprettArbeidssoekerTiltaksdeltakelse(
-            String personident,
+            PersonDTO person,
             String miljoe,
             RettighetType rettighetType,
             LocalDate aktiveringsDato
@@ -131,18 +132,18 @@ public class ArenaForvalterService {
             throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + rettighetType);
         }
 
-        opprettArbeidssoeker(personident, miljoe, kvalifiseringsgruppe, aktiveringsDato);
+        opprettArbeidssoeker(person, miljoe, kvalifiseringsgruppe, aktiveringsDato);
         return kvalifiseringsgruppe;
     }
 
     private void opprettArbeidssoekerAap(
-            String personident,
+            PersonDTO person,
             String miljoe,
             String aktivitetsfase,
             LocalDate aktiveringsDato
     ) {
         if (isNull(aktivitetsfase) || aktivitetsfase.isBlank()) {
-            opprettArbeidssoeker(personident, miljoe, Kvalifiseringsgrupper.BATT, aktiveringsDato);
+            opprettArbeidssoeker(person, miljoe, Kvalifiseringsgrupper.BATT, aktiveringsDato);
         } else {
             var formidlingsgruppe = arenaBrukerUtils.velgFormidlingsgruppeBasertPaaAktivitetsfase(aktivitetsfase);
             var kvalifiseringsgruppe = arenaBrukerUtils.velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
@@ -151,7 +152,7 @@ public class ArenaForvalterService {
             while (kvalifiseringsgruppe == Kvalifiseringsgrupper.BKART){
                 kvalifiseringsgruppe = arenaBrukerUtils.velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
             }
-            opprettArbeidssoeker(personident, miljoe, kvalifiseringsgruppe, aktiveringsDato);
+            opprettArbeidssoeker(person, miljoe, kvalifiseringsgruppe, aktiveringsDato);
 
             if (formidlingsgruppe.equals("IARBS")) {
                 try {
@@ -160,33 +161,42 @@ public class ArenaForvalterService {
                     Thread.currentThread().interrupt();
                     log.warn("Thread interrupted");
                 }
-                endreFormidlingsgruppeForBrukerTilIarbs(personident, miljoe, kvalifiseringsgruppe);
+                endreFormidlingsgruppeForBrukerTilIarbs(person.getIdent(), miljoe, kvalifiseringsgruppe);
             }
         }
     }
 
+    public void opprettArbeidssoekerDagpenger(
+            PersonDTO person,
+            String miljoe,
+            LocalDate aktiveringsDato
+    ) {
+        var kvalifiseringsgruppe = Kvalifiseringsgrupper.IKVAL;
+        opprettArbeidssoeker(person, miljoe, kvalifiseringsgruppe, aktiveringsDato);
+    }
+
     private void opprettArbeidssoeker(
-            String personident,
+            PersonDTO person,
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe,
             LocalDate aktiveringsDato
     ) {
-        if (arbeidssoekerIkkeOpprettetIArena(personident)) {
-            var nyeBrukereResponse = sendArbeidssoekereTilArenaForvalter(Collections.singletonList(personident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING, aktiveringsDato);
-            checkNyeBrukereResponse(nyeBrukereResponse, personident);
+        if (arbeidssoekerIkkeOpprettetIArena(person.getIdent())) {
+            var nyeBrukereResponse = sendArbeidssoekereTilArenaForvalter(Collections.singletonList(person.getIdent()), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING, aktiveringsDato);
+            checkNyeBrukereResponse(nyeBrukereResponse, person);
         }
     }
 
-    private void checkNyeBrukereResponse(NyeBrukereResponse nyeBrukereResponse, String personident) {
+    private void checkNyeBrukereResponse(NyeBrukereResponse nyeBrukereResponse, PersonDTO person) {
         String feilmelding = null;
         if (isNull(nyeBrukereResponse)) {
-            feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, "Ukjent feil.");
+            feilmelding = String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", person.getIdent(), "Ukjent feil.");
         } else if (nonNull(nyeBrukereResponse.getNyBrukerFeilList()) && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
-            feilmelding =  String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
+            feilmelding = String.format("Kunne ikke opprette ny bruker med fnr %s i Arena: %s", person.getIdent(), nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
         }
-        if (StringUtils.isNotBlank(feilmelding)){
+        if (StringUtils.isNotBlank(feilmelding)) {
             log.error(feilmelding);
-            pdlProxyConsumer.deleteTags(Collections.singletonList(personident), SYNT_TAGS);
+            tagsService.removeTagsPaaIdentOgPartner(person);
             throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
         }
     }
@@ -232,5 +242,13 @@ public class ArenaForvalterService {
             log.info("Fant ikke tiltak for tiltakdeltakelse.");
             return null;
         }
+    }
+
+    public DagpengerResponseDTO opprettDagpengesoknad(DagpengerRequestDTO request) {
+        return arenaForvalterConsumer.opprettDagpengerSoknad(request);
+    }
+
+    public DagpengerResponseDTO opprettDagpengevedtak(DagpengerRequestDTO request) {
+        return arenaForvalterConsumer.opprettDagpengerVedtak(request);
     }
 }

@@ -36,11 +36,11 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/krrstub
     cluster: dev-fss
-  testnav-inst-proxy:
+  testnav-inst-service:
     name: inst-mock
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/inst
-    cluster: dev-fss
+    cluster: dev-gcp
   testnav-sigrunstub-proxy:
     name: sigrunstub-mock
     namespace: dolly
@@ -72,6 +72,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     threads: 5
+  testnav-pensjon-testdata-facade-proxy:
+    url: http://localhost:${wiremock.server.port:0}/pensjon-testdata
+    name: testnav-pensjon-testdata-facade-proxy
+    namespace: dolly
+    cluster: dev-fss
 
 sts:
   token:

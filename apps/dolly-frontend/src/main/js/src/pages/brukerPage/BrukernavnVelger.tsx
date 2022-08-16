@@ -21,6 +21,7 @@ const feilmeldinger = {
 	ukjent: 'Noe gikk galt. Vennligst prøv på nytt.',
 	alleredeTatt: 'Brukernavn er allerede tatt. Vennligst velg et annet.',
 	feilLengde: 'Brukernavn må være minst 5 tegn og maksimalt 25 tegn.',
+	feilTegn: 'Brukernavn kan kun inneholde bokstaver og tall.',
 }
 
 export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
@@ -31,30 +32,37 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 	const onSubmit = () => {
 		setError(null)
 		setLoading(true)
+		BrukerApi.getBrukernavnStatus(brukernavn)
+			.then((status: number) => {
+				if (status === 404) {
+					BrukerApi.opprettBruker(brukernavn, organisasjon.organisasjonsnummer)
+						.then((response: Bruker) => {
+							if (response !== null) {
+								addToSession(organisasjon.organisasjonsnummer)
+							} else {
+								setError(feilmeldinger.ukjent)
+							}
+						})
+						.catch(() => setError(feilmeldinger.ukjent))
+				} else if (status === 200) {
+					setError(feilmeldinger.alleredeTatt)
+				} else {
+					setError(feilmeldinger.ukjent)
+				}
+			})
+			.catch(() => setError(feilmeldinger.ukjent))
+		setLoading(false)
+	}
+
+	const onChange = (brukernavn: string) => {
+		setBrukernavn(brukernavn)
 		if (brukernavn.length < 5 || brukernavn.length > 25) {
 			setError(feilmeldinger.feilLengde)
+		} else if (!/^[A-Za-z0-9]*$/.test(brukernavn)) {
+			setError(feilmeldinger.feilTegn)
 		} else {
-			BrukerApi.getBrukernavnStatus(brukernavn)
-				.then((status: number) => {
-					if (status === 404) {
-						BrukerApi.opprettBruker(brukernavn, organisasjon.organisasjonsnummer)
-							.then((response: Bruker) => {
-								if (response !== null) {
-									addToSession(organisasjon.organisasjonsnummer)
-								} else {
-									setError(feilmeldinger.ukjent)
-								}
-							})
-							.catch(() => setError(feilmeldinger.ukjent))
-					} else if (status === 200) {
-						setError(feilmeldinger.alleredeTatt)
-					} else {
-						setError(feilmeldinger.ukjent)
-					}
-				})
-				.catch(() => setError(feilmeldinger.ukjent))
+			setError(null)
 		}
-		setLoading(false)
 	}
 
 	return (
@@ -71,7 +79,7 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 					value={brukernavn}
 					// @ts-ignore
 					size="xlarge"
-					onChange={(e: any) => setBrukernavn(e.target.value)}
+					onChange={(e: any) => onChange(e.target.value)}
 					disabled={loading}
 					feil={
 						error && {
@@ -79,7 +87,12 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 						}
 					}
 				/>
-				<NavButton onClick={() => onSubmit()} variant={'primary'} className="videre-button">
+				<NavButton
+					onClick={() => onSubmit()}
+					type="hoved"
+					className="videre-button"
+					disabled={error}
+				>
 					Gå videre til Dolly
 				</NavButton>
 			</Selector>

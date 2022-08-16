@@ -28,7 +28,8 @@ public class SivilstandDTO extends DbVersjonDTO {
         REGISTRERT_PARTNER,
         SEPARERT_PARTNER,
         SKILT_PARTNER,
-        GJENLEVENDE_PARTNER
+        GJENLEVENDE_PARTNER,
+        SAMBOER
     }
 
     private LocalDateTime bekreftelsesdato;

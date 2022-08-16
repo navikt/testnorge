@@ -8,7 +8,7 @@ type PdlPerson = {
 	navn: { fornavn: string; mellomnavn: string; etternavn: string }
 }
 
-const PDL_SEARCH_URL = `/person-search-service/api/v1`
+const PDL_SEARCH_URL = `/testnav-person-search-service/api/v1`
 
 const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 	Api.fetch(
@@ -30,12 +30,14 @@ const searchPdlFragment = (fragment: string) =>
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
 	}).then((response) =>
-		response.json().then((items: [PdlPerson]) => ({
-			data: items.map((person) => ({
-				ident: person.ident,
-				...person.navn,
-			})),
-		}))
+		response.ok
+			? response.json().then((items: [PdlPerson]) => ({
+					data: items?.map((person) => ({
+						ident: person.ident,
+						...person.navn,
+					})),
+			  }))
+			: null
 	)
 
 const searchPdlPerson = async (

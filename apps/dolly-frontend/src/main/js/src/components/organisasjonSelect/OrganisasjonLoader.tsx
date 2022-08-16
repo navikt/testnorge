@@ -41,8 +41,12 @@ export const OrganisasjonLoader = ({
 		}
 	}, [])
 
-	if (isLoading) return <Loading label="Laster organisasjoner" />
-	if (!organisasjoner) return null
+	if (isLoading) {
+		return <Loading label="Laster organisasjoner" />
+	}
+	if (!organisasjoner) {
+		return null
+	}
 
 	const formatLabel = (org: Organisasjon) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`
 	const organisasjonerSorted = [...organisasjoner]
@@ -50,8 +54,12 @@ export const OrganisasjonLoader = ({
 			kanHaArbeidsforhold ? validEnhetstyper.includes(virksomhet.enhetstype) : true
 		)
 		.sort(function (a: Organisasjon, b: Organisasjon) {
-			if (a.opprinnelse < b.opprinnelse) return 1
-			if (a.opprinnelse > b.opprinnelse) return -1
+			if (a.opprinnelse < b.opprinnelse) {
+				return 1
+			}
+			if (a.opprinnelse > b.opprinnelse) {
+				return -1
+			}
 			return 0
 		})
 		.map((response: Organisasjon) => ({

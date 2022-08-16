@@ -2,6 +2,7 @@ package no.nav.dolly.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 
@@ -19,7 +20,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.ORGANISASJON_FORVALTER;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BestillingOrganisasjonStatusMapper {
 
-    public static List<RsOrganisasjonStatusRapport> buildOrganisasjonStatusMap(OrganisasjonBestillingProgress progress, String detaljertStatus) {
+    public static List<RsOrganisasjonStatusRapport> buildOrganisasjonStatusMap(OrganisasjonBestillingProgress progress, List<OrganisasjonDeployStatus.OrgStatus> orgStatuser) {
 
         if (isNull(progress) || isNull(progress.getOrganisasjonsforvalterStatus())) {
             return emptyList();
@@ -56,10 +57,17 @@ public class BestillingOrganisasjonStatusMapper {
                                 .detaljert(entry.getValue().stream().map(value -> RsOrganisasjonStatusRapport.Detaljert.builder()
                                         .miljo(value)
                                         .orgnummer(progress.getOrganisasjonsnummer())
-                                        .detaljertStatus(detaljertStatus)
+                                        .detaljertStatus(getOrgStatusDetailForMiljo(orgStatuser, value))
                                         .build()).collect(Collectors.toList()))
                                 .build())
                         .collect(Collectors.toList()))
                 .build());
+    }
+
+    private static String getOrgStatusDetailForMiljo(List<OrganisasjonDeployStatus.OrgStatus> orgStatuser, String miljo) {
+        return orgStatuser.stream()
+                .filter( orgStatus -> orgStatus.getEnvironment().equals(miljo))
+                .findFirst().orElseGet(() -> new OrganisasjonDeployStatus.OrgStatus())
+                .getDetails();
     }
 }

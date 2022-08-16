@@ -21,7 +21,7 @@ import java.util.Random;
 })
 public class AppConfig {
 
-    @Value("${testnorge-hodejegeren.rest-api.url}")
+    @Value("${consumers.testnorge-hodejegeren.url}")
     private String hodejegerenUrl;
 
     @Bean

@@ -79,31 +79,31 @@ export default function Liste({
 			text: 'Favoritt',
 			width: '15',
 			dataField: 'id',
-			formatter: (cell, row) =>
+			formatter: (_cell, row) =>
 				!row.erEierAvGruppe && <FavoriteButtonConnector hideLabel={true} groupId={row.id} />,
 		},
 		{
 			text: 'Låst',
 			width: '10',
 			dataField: 'erLaast',
-			formatter: (cell, row) => row.erLaast && <Icon kind={'lock'} />,
+			formatter: (_cell, row) => row.erLaast && <Icon kind={'lock'} />,
 		},
 		{
 			text: 'Tags',
 			width: '25',
 			dataField: 'tags',
-			formatter: (cell, row) =>
+			formatter: (_cell, row) =>
 				Formatters.arrayToString(row.tags?.length > 1 ? [...row.tags].sort() : row.tags),
 		},
 	]
 	return (
 		<ErrorBoundary>
 			<DollyTable
+				pagination
 				data={items}
 				columns={columns}
 				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
-				pagination
 				gruppeDetaljer={gruppeDetaljer}
 				visSide={visSide}
 			/>

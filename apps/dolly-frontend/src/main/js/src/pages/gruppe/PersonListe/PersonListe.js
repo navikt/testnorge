@@ -6,7 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import PersonIBrukButtonConnector from '~/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
 import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
-import { ManIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
+import { ManIconItem, UnknownIconItem, WomanIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -91,16 +91,26 @@ export default function PersonListe({
 		)
 	}
 
-	const updateAlder = () => {
+	const updatePersonHeader = () => {
 		personListe.map((person) => {
 			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			if (redigertPerson && !redigertPerson.doedsfall) {
-				person.alder = person.alder.split(' ')[0]
+			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+				: ''
+			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+
+			if (redigertPerson) {
+				if (!redigertPerson.doedsfall) {
+					person.alder = person.alder.split(' ')[0]
+				}
+				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
 			}
 		})
 	}
 
-	if (tmpPersoner) updateAlder()
+	if (tmpPersoner) updatePersonHeader()
 
 	const columns = [
 		{
@@ -109,7 +119,7 @@ export default function PersonListe({
 			dataField: 'identNr',
 			unique: true,
 
-			formatter: (cell, row) => <CopyButton value={row.identNr} />,
+			formatter: (_cell, row) => <CopyButton value={row.identNr} />,
 		},
 		{
 			text: 'Navn',
@@ -125,7 +135,7 @@ export default function PersonListe({
 			text: 'Bestilling-ID',
 			width: '20',
 			dataField: 'bestillingId',
-			formatter: (cell, row) => {
+			formatter: (_cell, row) => {
 				const arr = row.bestillingId
 				let str = arr[0]
 				if (arr.length > 1) str = `${str} ...`
@@ -148,14 +158,14 @@ export default function PersonListe({
 			text: 'Brukt',
 			width: '10',
 			dataField: 'ibruk',
-			formatter: (cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
+			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
 			text: '',
 			width: '10',
 			dataField: 'harBeskrivelse',
 			centerItem: true,
-			formatter: (cell, row) => {
+			formatter: (_cell, row) => {
 				if (row.ident.beskrivelse) {
 					return (
 						<Tooltip
@@ -194,7 +204,15 @@ export default function PersonListe({
 					pageSize: sideStoerrelse,
 				}}
 				pagination
-				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				iconItem={(bruker) => {
+					if (bruker.kjonn === 'MANN') {
+						return <ManIconItem />
+					} else if (bruker.kjonn === 'KVINNE') {
+						return <WomanIconItem />
+					} else {
+						return <UnknownIconItem />
+					}
+				}}
 				visSide={sidetall}
 				visPerson={visPerson}
 				onExpand={(bruker) => (

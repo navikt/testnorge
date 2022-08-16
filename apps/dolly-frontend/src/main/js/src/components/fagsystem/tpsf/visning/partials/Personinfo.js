@@ -5,6 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import _has from 'lodash/has'
+import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
 function hentSkjermingData(skjermingPath) {
 	if (!skjermingPath) {
@@ -82,9 +83,11 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 	)
 }
 
-export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }) => {
+export const TpsfPersoninfo = ({ data, visTittel = true, pdlData, environments }) => {
 	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
 	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
+
+	const tpsMessaging = TpsMessagingData(data?.ident, environments)
 
 	return (
 		<div>
@@ -160,8 +163,8 @@ export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 					size="medium"
 				/>
-				{hentSkjermingData(tpsMessagingData?.egenAnsattDatoFom ? tpsMessagingData : data)}
-				{hentSikkerhetstiltakData(tpsMessagingData?.sikkerhetstiltak || data?.sikkerhetstiltak)}
+				{hentSkjermingData(tpsMessaging?.egenAnsattDatoFom ? tpsMessaging : data)}
+				{hentSikkerhetstiltakData(tpsMessaging?.sikkerhetstiltak || data?.sikkerhetstiltak)}
 			</div>
 		</div>
 	)

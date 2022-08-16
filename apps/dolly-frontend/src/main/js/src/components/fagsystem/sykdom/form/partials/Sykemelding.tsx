@@ -84,7 +84,9 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 		setTypeSykemelding(value)
 		if (value === SykemeldingTyper.detaljert) {
 			formikBag.setFieldValue('sykemelding', initialValuesDetaljertSykemelding)
-		} else formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
+		} else {
+			formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
+		}
 	}
 
 	const toggleValues = [

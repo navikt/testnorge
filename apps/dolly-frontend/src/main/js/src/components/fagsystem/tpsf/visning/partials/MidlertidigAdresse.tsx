@@ -8,14 +8,14 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { isArray, isEmpty } from 'lodash'
 
 type AlleMidlertidigeAdresser = {
-	midlertidigAdresse: Array<MidlertidigAdresse>
+	midlertidigAdresse: Array<MidlertidigAdresseType>
 }
 
 type Enkeltadresse = {
-	midlertidigAdresse: MidlertidigAdresse
+	midlertidigAdresse: MidlertidigAdresseType
 }
 
-type MidlertidigAdresse = {
+type MidlertidigAdresseType = {
 	adressetype: string
 	gyldigTom: string
 	gatekode?: string
@@ -86,7 +86,7 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 						{adressetype === 'UTAD' && utland}
 						{postnr && (
 							<KodeverkConnector navn="Postnummer" value={postnr}>
-								{(v: PostnummerKodeverk, verdi: Postnummer) => (
+								{(_v: PostnummerKodeverk, verdi: Postnummer) => (
 									<span>{verdi ? verdi.label : postnr}</span>
 								)}
 							</KodeverkConnector>
@@ -111,8 +111,9 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 }
 
 export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdresser) => {
-	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || isEmpty(midlertidigAdresse))
+	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || isEmpty(midlertidigAdresse)) {
 		return null
+	}
 
 	return (
 		<ErrorBoundary>

@@ -532,5 +532,11 @@ public class PdlPerson {
         public boolean isAdresseNorge() {
             return false;
         }
+
+        @Override
+        @JsonIgnore
+        public boolean isAdresseUtland() {
+            return false;
+        }
     }
 }

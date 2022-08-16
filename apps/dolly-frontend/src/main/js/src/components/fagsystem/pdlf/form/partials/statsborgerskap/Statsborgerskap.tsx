@@ -43,7 +43,7 @@ export const Statsborgerskap = () => {
 				newEntry={initialStatsborgerskap}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <StatsborgerskapForm path={path} />}
+				{(path: string, _idx: number) => <StatsborgerskapForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

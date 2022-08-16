@@ -224,8 +224,8 @@ public class ArtifactUpdateService {
                 updateArtifact(person.getPerson().getInnflytting(), oppdatertInnflytting, id, "Innflytting"));
 
         innflyttingService.validate(oppdatertInnflytting);
-        innflyttingService.convert(person.getPerson().getInnflytting());
-        folkeregisterPersonstatusService.update(person.getPerson());
+        innflyttingService.convert(person.getPerson());
+        folkeregisterPersonstatusService.convert(person.getPerson());
     }
 
     public void updateUtflytting(String ident, Integer id, UtflyttingDTO oppdatertUtflytting) {
@@ -236,8 +236,8 @@ public class ArtifactUpdateService {
                 updateArtifact(person.getPerson().getUtflytting(), oppdatertUtflytting, id, "Utflytting"));
 
         utflyttingService.validate(oppdatertUtflytting);
-        utflyttingService.convert(person.getPerson().getUtflytting());
-        folkeregisterPersonstatusService.update(person.getPerson());
+        utflyttingService.convert(person.getPerson());
+        folkeregisterPersonstatusService.convert(person.getPerson());
     }
 
     public void updateDeltBosted(String ident, Integer id, DeltBostedDTO oppdatertDeltBosted) {
@@ -420,7 +420,7 @@ public class ArtifactUpdateService {
 
         var isEksisterendeId = id > 0 && id <= person.getPerson().getSivilstand().size();
 
-        var tidligereRelatert =  isEksisterendeId ?
+        var tidligereRelatert = isEksisterendeId ?
                 person.getPerson().getSivilstand().get(id - 1).getRelatertVedSivilstand() : null;
         var isEksisterendePerson = isEksisterendeId ?
                 person.getPerson().getSivilstand().get(id - 1).getEksisterendePerson() : null;
@@ -446,14 +446,18 @@ public class ArtifactUpdateService {
         }
     }
 
-    public void updateTelefonnummer(String ident, Integer id, TelefonnummerDTO oppdatertTelefonnummer) {
+    public void updateTelefonnummer(String ident, List<TelefonnummerDTO> oppdaterteTelefonnumre) {
 
         var person = getPerson(ident);
 
-        person.getPerson().setTelefonnummer(
-                updateArtifact(person.getPerson().getTelefonnummer(), oppdatertTelefonnummer, id, "Telefonnummer"));
+        oppdaterteTelefonnumre
+                .forEach(telefonnummer -> {
+                    telefonnummerService.validate(telefonnummer);
+                    telefonnummer.setIsNew(true);
+                    telefonnummer.setId(telefonnummer.getPrioritet());
+                });
 
-        telefonnummerService.validate(oppdatertTelefonnummer);
+        person.getPerson().setTelefonnummer(oppdaterteTelefonnumre);
         telefonnummerService.convert(person.getPerson().getTelefonnummer());
     }
 

@@ -28,7 +28,9 @@ export const Statsborgerskap = ({
 	ident,
 	erPdlVisning,
 }: StatsborgerskapTypes) => {
-	if (data.length < 1) return null
+	if (data.length < 1) {
+		return null
+	}
 
 	const StatsborgerskapLes = ({ statsborgerskapData, idx }: StatsborgerskapVisningTypes) => {
 		if (statsborgerskapData) {
@@ -62,7 +64,9 @@ export const Statsborgerskap = ({
 		)
 		const slettetStatsborgerskapPdlf =
 			tmpPersoner?.hasOwnProperty(ident) && !redigertStatsborgerskapPdlf
-		if (slettetStatsborgerskapPdlf) return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		if (slettetStatsborgerskapPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
 
 		const statsborgerskapValues = redigertStatsborgerskapPdlf
 			? redigertStatsborgerskapPdlf

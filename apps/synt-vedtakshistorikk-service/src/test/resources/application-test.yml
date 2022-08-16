@@ -25,10 +25,10 @@ consumers:
     namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
     url: http://localhost:${wiremock.server.port:0}/pensjon
-  person-search-service:
+  testnav-person-search-service:
     cluster: dummy
     namespace: dolly
-    name: person-search-service
+    name: testnav-person-search-service
     url: http://localhost:${wiremock.server.port:0}/search
   pdl-api-proxy:
     cluster: dummy
@@ -38,3 +38,9 @@ consumers:
 
 
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
+
+batch:
+  miljoe: test
+  antallMedHistorikk: 0
+  antallMedOppfoelging: 0
+  antallMedDagpenger: 0
