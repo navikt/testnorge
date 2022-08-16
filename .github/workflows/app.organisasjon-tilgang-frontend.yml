@@ -17,12 +17,13 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@bugfix/js-libs-build-error
+    #    ENDRE TIL @MASTER
     with:
       working-directory: 'apps/organisasjon-tilgang-frontend/'
       app-name: 'organisasjon-tilgang-frontend'
     secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
