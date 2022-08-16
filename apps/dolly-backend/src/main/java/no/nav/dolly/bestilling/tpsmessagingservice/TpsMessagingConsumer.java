@@ -68,6 +68,9 @@ public class TpsMessagingConsumer {
     }
 
     public static String tilfeldigUtlandskBankkonto(String landkode) {
+        if (landkode != null && landkode.length() > 2) {
+            landkode = landkode.substring(0, 2);
+        }
         var kontonummerLengde = 15;
 
         try {
