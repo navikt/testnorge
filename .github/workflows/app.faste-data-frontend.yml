@@ -23,7 +23,7 @@ jobs:
       working-directory: 'apps/faste-data-frontend/'
       app-name: 'faste-data-frontend'
     secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
