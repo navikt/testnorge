@@ -184,7 +184,7 @@ const personRelatertTil = (personData, path) => {
 	} = _get(personData, path)
 
 	return [
-		expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path)), [
+		expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path), ['syntetisk']), [
 			obj('Identtype', identtype),
 			obj('Kjønn', kjoenn),
 			obj('Født etter', Formatters.formatDate(foedtEtter)),
@@ -970,7 +970,6 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 						obj('Organisasjonsnavn', advokatSomKontakt.organisasjonsnavn),
 						...kontaktperson(advokatSomKontakt.kontaktperson),
 						...kontaktinfoAdresse,
-						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
 					]
 				}
 
@@ -982,7 +981,6 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 						obj('Organisasjonsnavn', organisasjonSomKontakt.organisasjonsnavn),
 						...kontaktperson(organisasjonSomKontakt.kontaktperson),
 						...kontaktinfoAdresse,
-						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
 					]
 				}
 
