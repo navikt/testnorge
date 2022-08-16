@@ -17,8 +17,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-#    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master TODO: ENDRE TIL DENNE
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@bugfix/js-libs-build-error
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
     with:
       working-directory: 'apps/endringsmelding-frontend/'
       app-name: 'endringsmelding-frontend'
