@@ -197,7 +197,6 @@ const personRelatertTil = (personData, path) => {
 				AdresseKodeverk.StatsborgerskapLand
 			),
 			obj('Gradering', Formatters.showLabel('gradering', gradering)),
-			obj('Er syntetisk', syntetisk && 'JA'),
 			obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
 			obj('Fornavn', navn?.fornavn),
 			obj('Mellomnavn', navn?.mellomnavn),
@@ -777,7 +776,6 @@ const mapForeldreansvar = (foreldreansvar, data) => {
 						AdresseKodeverk.StatsborgerskapLand
 					),
 					obj('Gradering', Formatters.showLabel('gradering', item.nyAnsvarlig?.gradering)),
-					obj('Syntetisk', item.nyAnsvarlig?.syntetisk && 'JA'),
 					obj('Har mellomnavn', item.nyAnsvarlig?.nyttNavn?.hasMellomnavn && 'JA'),
 					obj('Kjønn', item.ansvarligUtenIdentifikator?.kjoenn),
 					obj('Fødselsdato', Formatters.formatDate(item.ansvarligUtenIdentifikator?.foedselsdato)),
@@ -886,7 +884,6 @@ const mapNyIdent = (nyident, data) => {
 					obj('Født etter', Formatters.formatDate(item.foedtEtter)),
 					obj('Født før', Formatters.formatDate(item.foedtFoer)),
 					obj('Alder', item.alder),
-					obj('Er syntetisk', item.syntetisk && 'JA'),
 					obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
 				]
 			}),
