@@ -142,13 +142,15 @@ public class BankkontoExcelService {
                 .map(Testgruppe::getBestillinger)
                 .flatMap(Collection::stream)
                 .filter(bestilling -> nonNull(bestilling.getBestKriterier()))
+                .filter(bestilling -> bestilling.getBestKriterier().contains("Bankkonto"))
                 .peek(bestilling -> log.info("Kontonummer test: {}", bestilling.getBestKriterier()))
-                .filter(bestilling -> bestilling.getBestKriterier().contains("kontonummer"))
                 .map(Bestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(BestillingProgress::getIdent)
                 .distinct()
                 .toList();
+
+        log.info("Personer med kontonumre: {}", String.join(",", bankKontoIdenter));
 
         return Mono.zip(
                         kodeverkConsumer.getKodeverkByName(LANDKODER),
