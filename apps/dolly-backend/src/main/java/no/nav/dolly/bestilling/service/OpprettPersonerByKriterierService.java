@@ -18,6 +18,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
@@ -87,6 +89,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(ident -> {
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = null;
                             try {
@@ -111,6 +114,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

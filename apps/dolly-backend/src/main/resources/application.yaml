@@ -80,12 +80,11 @@ consumers:
     #url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
     url: https://testnav-inntektstub-proxy.dev.intern.nav.no
     cluster: dev-fss
-  testnav-inst-proxy:
-    name: testnav-testnorge-inst-proxy
+  testnav-inst-service:
+    name: testnav-inst-service
     namespace: dolly
-#    url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
-    url: https://testnav-testnorge-inst-proxy.dev.intern.nav.no
-    cluster: dev-fss
+    url: https://testnav-inst-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-statisk-data-forvalter-proxy:
     name: testnav-statisk-data-forvalter-proxy
     namespace: dolly

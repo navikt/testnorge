@@ -21,8 +21,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.when;
 import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
@@ -243,30 +247,6 @@ class PensjonforvalterConsumerTest {
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
         assertThat("Http status is 500", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(500));
-    }
-
-    @Test
-    void testSletteTpForhold_ok() {
-        stubDeleteSletteTpForhold(false);
-
-        pensjonforvalterConsumer.sletteTpForhold("000000");
-        assertThat("no exceptions", true);
-    }
-
-    @Test
-    void testSletteTpForhold_error() {
-        stubDeleteSletteTpForhold(true);
-
-        pensjonforvalterConsumer.sletteTpForhold("000000");
-        assertThat("no exceptions", true);
-    }
-
-    @Test
-    void testSletteTpForhold_withWrongFnr() {
-        stubDeleteSletteTpForhold_withWrongFnr();
-
-        pensjonforvalterConsumer.sletteTpForhold("000000");
-        assertThat("no exceptions", true);
     }
 
     @Test

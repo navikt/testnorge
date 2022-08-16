@@ -20,6 +20,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Service
 public class LeggTilPaaGruppeService extends DollyBestillingService {
@@ -78,6 +80,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(), testident.getMaster());
                             try {
                                 DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
@@ -89,6 +92,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

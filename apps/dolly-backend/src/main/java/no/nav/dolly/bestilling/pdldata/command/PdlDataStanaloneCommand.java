@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -17,28 +17,28 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataSlettCommand implements Callable<Flux<Void>> {
+public class PdlDataStanaloneCommand implements Callable<Mono<Void>> {
 
-    private static final String PDL_FORVALTER_URL = "/api/v1/personer/{ident}";
+    private static final String PDL_FORVALTER_IDENTER_STANDALONE_URL = "/api/v1/identiteter/{ident}/standalone/{standalone}";
 
     private final WebClient webClient;
     private final String ident;
+    private final Boolean standalone;
     private final String token;
 
-    public Flux<Void> call() {
+    public Mono<Void> call() {
 
         return webClient
-                .delete()
-                .uri(PDL_FORVALTER_URL, ident)
+                .put()
+                .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_IDENTER_STANDALONE_URL)
+                        .build(ident, standalone))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToFlux(Void.class)
+                .bodyToMono(Void.class)
+                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> error instanceof WebClientResponseException.NotFound,
-                        error -> log.warn(((WebClientResponseException) error).getResponseBodyAsString()))
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Flux.empty());
+                        .filter(WebClientFilter::is5xxException));
     }
 }
