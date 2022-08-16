@@ -27,10 +27,13 @@ export const setValue = (value, path, setFieldValue) => {
 	setFieldValue(`${path}`, value.value)
 }
 
-export const isEmpty = (attributt) => {
+export const isEmpty = (attributt, excludeList = []) => {
 	const flattenData = (objekt) => {
 		let result = {}
 		for (const i in objekt) {
+			if (excludeList.includes(i)) {
+				continue
+			}
 			if (typeof objekt[i] === 'object' && !Array.isArray(objekt[i])) {
 				const temp = flattenData(objekt[i])
 				for (const j in temp) {

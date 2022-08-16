@@ -84,7 +84,7 @@ const _renderStaticValue = (attributt, key) => {
 	)
 }
 
-const RenderExpandablePanel = (attributt, key) => {
+const RenderExpandablePanel = ({ attributt, key }) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
 	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) return null

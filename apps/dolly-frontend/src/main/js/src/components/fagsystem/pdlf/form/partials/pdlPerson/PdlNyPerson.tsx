@@ -90,12 +90,6 @@ export const PdlNyPerson = ({
 				/>
 			)}
 			<FormikCheckbox
-				name={`${nyPersonPath}.syntetisk`}
-				label="Er syntetisk"
-				disabled={hasEksisterendePerson}
-				checkboxMargin={erNyIdent}
-			/>
-			<FormikCheckbox
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
 				disabled={hasEksisterendePerson}
