@@ -38,7 +38,7 @@ public class CounterCustomRegistry {
 
         if (nonNull(bestilling.getPensjonforvalter())) {
             addTag(tags, nonNull(bestilling.getPensjonforvalter().getInntekt()), "POPPINNTEKT");
-            addTag(tags, !bestilling.getPensjonforvalter().getTp().isEmpty(), "TP-ORDNING");
+            addTag(tags, null != bestilling.getPensjonforvalter().getTp() && !bestilling.getPensjonforvalter().getTp().isEmpty(), "TP-ORDNING");
         }
 
         addTag(tags, !bestilling.getAareg().isEmpty(), "AAREG");
