@@ -46,8 +46,8 @@ export const PdlEksisterendePerson = ({
 	}, [])
 
 	const hasNyPersonValues = nyIdentValg
-		? !isEmpty(nyIdentValg)
-		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath))
+		? !isEmpty(nyIdentValg, ['syntetisk'])
+		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath), ['syntetisk'])
 
 	return (
 		<div className={'flexbox--full-width'}>
