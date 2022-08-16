@@ -298,7 +298,7 @@ public enum KontoregisterLandkode {
         return ibanLengde;
     }
 
-    private final static Map<String, String> landkodeIsoMapping = new HashMap<>();
+    private static final Map<String, String> landkodeIsoMapping = new HashMap<>();
 
     public static String getIso2FromIso(String iso) {
         if (landkodeIsoMapping.containsKey(iso)) {
