@@ -25,16 +25,16 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;
 
-    private String fnr = "12345678901";
-    private String environment = "t1";
-    private String routineName = "FS03-FDNUMMER-PERSDATA-O";
-
     /**
      * Testscenario: HVIS et kall gjøres til getStatusQuoFraAarsakskode med en aarsakskode, skal riktig servicerutine og feltnavn
      * bli sendt til hentStatusQuo()
      */
     @Test
     public void shouldFindFeltnavnAndServiceRoutineFromAarsakskode() throws IOException {
+        var fnr = "12345678901";
+        var environment = "t1";
+        var routineName = "FS03-FDNUMMER-PERSDATA-O";
+
         var endringskode = Endringskoder.NAVNEENDRING_FOERSTE.getEndringskode();
 
         endringskodeTilFeltnavnMapperService.getStatusQuoFraAarsakskode(endringskode, environment, fnr);
@@ -43,8 +43,6 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
         Mockito.verify(tpsStatusQuoService).hentStatusQuo(eq(routineName), captor.capture(), eq(environment), eq(fnr));
         List<String> actualRequestParams = captor.getValue();
 
-        assertThat(actualRequestParams).hasSize(2);
-        assertThat(actualRequestParams).contains(DATO_DO);
-        assertThat(actualRequestParams).contains(STATSBORGER);
+        assertThat(actualRequestParams).hasSize(2).contains(DATO_DO, STATSBORGER);
     }
 }

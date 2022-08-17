@@ -100,16 +100,14 @@ public class HistorikkServiceTest {
 
         var historikkIds = new ArrayList<>(Arrays.asList(historikkMedKilde.get(0).getId(), historikkMedKilde.get(1).getId()));
 
-        assertThat(historikkIds).hasSize(2);
-        assertThat(historikkIds).contains(id1, id2);
+        assertThat(historikkIds).hasSize(2).contains(id1, id2);
     }
 
     @Test
     public void shouldHenteIdsMedKilde() {
         var idsMedKilde = historikkService.hentIdsMedKilder(Collections.singletonList("aareg"));
 
-        assertThat(idsMedKilde).hasSize(2);
-        assertThat(idsMedKilde).contains(id1, id2);
+        assertThat(idsMedKilde).hasSize(2).contains(id1, id2);
     }
 
     @Test
@@ -131,12 +129,10 @@ public class HistorikkServiceTest {
     @Test
     public void shouldLeggeTilHistorikkPaaIdent() {
         var identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest1);
-        assertThat(identerLagtTil).hasSize(1);
-        assertThat(identerLagtTil).contains(id1);
+        assertThat(identerLagtTil).hasSize(1).contains(id1);
 
         identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest2);
-        assertThat(identerLagtTil).hasSize(1);
-        assertThat(identerLagtTil).contains(id2);
+        assertThat(identerLagtTil).hasSize(1).contains(id2);
 
         verify(syntHistorikkRepository, times(2)).save(any());
     }
@@ -166,8 +162,7 @@ public class HistorikkServiceTest {
 
         var identerOppdatert = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
-        assertThat(identerOppdatert).hasSize(1);
-        assertThat(identerOppdatert).contains(skdFnr);
+        assertThat(identerOppdatert).hasSize(1).contains(skdFnr);;
 
         verify(syntHistorikkRepository).findById(skdFnr);
         verify(syntHistorikkRepository).save(any());
@@ -194,8 +189,7 @@ public class HistorikkServiceTest {
 
         var identerLagtTil = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
-        assertThat(identerLagtTil).hasSize(1);
-        assertThat(identerLagtTil).contains(skdFnr);
+        assertThat(identerLagtTil).hasSize(1).contains(skdFnr);
 
         verify(syntHistorikkRepository, times(2)).findById(skdFnr);
         verify(syntHistorikkRepository).save(any());

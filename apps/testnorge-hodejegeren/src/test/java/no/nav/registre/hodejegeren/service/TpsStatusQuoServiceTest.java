@@ -30,10 +30,10 @@ public class TpsStatusQuoServiceTest {
     @Mock
     private TpsfConsumer tpsfConsumer;
 
-    private String fnr = "12345678901";
-    private String routineName = "FS03-FDNUMMER-KERNINFO-O";
+    private static final String FNR = "12345678901";
+    private static final String MILJOE = "t1";
+    private static final String ROUTINE_NAME = "FS03-FDNUMMER-KERNINFO-O";
     private URL jsonContent = Resources.getResource("files/FS03-FDNUMMER-KERNINFO-O.json");
-    private String environment = "t1";
 
     /**
      * Testscenario: HVIS hentStatusQuo blir kalt med et simpelt feltnavn, så skal den returnere servicerutine-feltets verdi i en
@@ -48,10 +48,9 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
+        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(ROUTINE_NAME, feltNavn, MILJOE, FNR);
 
-        assertThat(statusQuoValues).hasSize(1);
-        assertThat(statusQuoValues.get(STATSBORGERSKAP)).isEqualTo("NOR");
+        assertThat(statusQuoValues).hasSize(1).containsEntry(STATSBORGERSKAP, "NOR");
     }
 
     /**
@@ -67,10 +66,9 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
+        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(ROUTINE_NAME, feltNavn, MILJOE, FNR);
 
-        assertThat(statusQuoValues).hasSize(1);
-        assertThat(statusQuoValues.get(FNR_RELASJON)).isEqualTo("01065500791");
+        assertThat(statusQuoValues).hasSize(1).containsEntry(FNR_RELASJON, "01065500791");
     }
 
     /**
@@ -87,10 +85,11 @@ public class TpsStatusQuoServiceTest {
 
         when(tpsfConsumer.getTpsServiceRoutine(any(), any(), any(), any())).thenReturn(jsonNode);
 
-        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
+        var statusQuoValues = tpsStatusQuoService.hentStatusQuo(ROUTINE_NAME, feltNavn, MILJOE, FNR);
 
-        assertThat(statusQuoValues).hasSize(2);
-        assertThat(statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler")).isEqualTo("AJOURHD");
-        assertThat(statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.offAdresse.husnr")).isEqualTo("1289");
+        assertThat(statusQuoValues)
+                .hasSize(2)
+                .containsEntry("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler", "AJOURHD")
+                .containsEntry("$..bostedsAdresse.fullBostedsAdresse.offAdresse.husnr", "1289");
     }
 }

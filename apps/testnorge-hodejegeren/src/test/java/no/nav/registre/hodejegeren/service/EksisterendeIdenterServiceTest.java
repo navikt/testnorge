@@ -2,7 +2,6 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MAX_ALDER;
 import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MIN_ALDER;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 
@@ -61,24 +60,14 @@ public class EksisterendeIdenterServiceTest {
 
     private Long avspillergruppeId1 = 1L;
     private Long avspillergruppeId2 = 2L;
-    private List<String> levendeIdenter;
     private List<String> foedteIdenter;
 
     @Before
     public void setUp() {
-        levendeIdenter = new ArrayList<>();
-        levendeIdenter.add("20044249945");
-        levendeIdenter.add("20044249946");
-        levendeIdenter.add("20044249947");
-        levendeIdenter.add("20044249948");
-
         foedteIdenter = new ArrayList<>();
         foedteIdenter.add("20041751231");
 
         when(cacheService.hentFoedteIdenterCache(avspillergruppeId2)).thenReturn(foedteIdenter);
-
-        Map<String, String> status = new HashMap<>();
-        status.put(DATO_DO, "");
     }
 
     /**
@@ -101,8 +90,8 @@ public class EksisterendeIdenterServiceTest {
         var minAlder = 0;
         var maksAlder = 200;
         var foedte = eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId2, minAlder, maksAlder);
-        assertThat(foedte).hasSize(1);
-        assertThat(foedte).contains(foedteIdenter.get(0));
+
+        assertThat(foedte).hasSize(1).contains(foedteIdenter.get(0));
     }
 
     /**
@@ -153,7 +142,7 @@ public class EksisterendeIdenterServiceTest {
         verify(cacheService).hentLevendeIdenterCache(avspillergruppeId1);
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
-        assertThat(fnrMedStatusQuo.get(fnr1)).isEqualTo(jsonNode);
+        assertThat(fnrMedStatusQuo).containsEntry(fnr1, jsonNode);
     }
 
     @Test
@@ -266,8 +255,7 @@ public class EksisterendeIdenterServiceTest {
 
         var identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
 
-        assertThat(identerIkkeITps).contains(fnr2);
-        assertThat(identerIkkeITps).doesNotContain(fnr1);
+        assertThat(identerIkkeITps).contains(fnr2).doesNotContain(fnr1);
     }
 
     @Test
@@ -284,7 +272,6 @@ public class EksisterendeIdenterServiceTest {
 
         var identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
 
-        assertThat(identerSomKolliderer).contains(fnr1);
-        assertThat(identerSomKolliderer).doesNotContain(fnr2);
+        assertThat(identerSomKolliderer).contains(fnr1).doesNotContain(fnr2);
     }
 }

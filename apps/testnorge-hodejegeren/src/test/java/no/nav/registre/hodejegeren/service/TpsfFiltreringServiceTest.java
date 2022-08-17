@@ -73,39 +73,34 @@ public class TpsfFiltreringServiceTest {
     public void finnAlleIdenterTest() {
         var alle = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
         
-        assertThat(alle).hasSize(4);
-        assertThat(alle).contains(FNR1, FNR2, FNR3, FNR4);
+        assertThat(alle).hasSize(4).contains(FNR1, FNR2, FNR3, FNR4);
     }
 
     @Test
     public void finnLevendeIdenterTest() {
         var levende = tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId);
 
-        assertThat(levende).hasSize(3);
-        assertThat(levende).contains(FNR1, FNR2, FNR3);
+        assertThat(levende).hasSize(3).contains(FNR1, FNR2, FNR3);
     }
 
     @Test
     public void finnDoedeOgUtvandredeIdenterTest() {
         var doede = tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
 
-        assertThat(doede).hasSize(1);
-        assertThat(doede).contains(FNR4);
+        assertThat(doede).hasSize(1).contains(FNR4);
     }
 
     @Test
     public void finnGifteIdenterTest() {
         var gifte = tpsfFiltreringService.finnGifteIdenter(avspillergruppeId);
 
-        assertThat(gifte).hasSize(1);
-        assertThat(gifte).contains(FNR5);
+        assertThat(gifte).hasSize(1).contains(FNR5);
     }
 
     @Test
     public void finnFoedteIdenterTest() {
         var foedte = tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId);
 
-        assertThat(foedte).hasSize(1);
-        assertThat(foedte).contains(FNR5);
+        assertThat(foedte).hasSize(1).contains(FNR5);
     }
 }

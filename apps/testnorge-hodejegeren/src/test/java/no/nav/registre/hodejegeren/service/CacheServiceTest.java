@@ -25,7 +25,7 @@ public class CacheServiceTest {
     private CacheService cacheService;
 
     private Long avspillergruppeId = 123L;
-    private String fnr1 = "01010101010";
+    private static final String FNR1 = "01010101010";
 
     @Test
     public void shouldHenteAlleIdenterMedTomCache() {
@@ -39,14 +39,13 @@ public class CacheServiceTest {
     @Test
     public void shouldHenteAlleIdenterMedEksisterendeCache() {
         Map<Long, List<String>> alleIdenterCache = new HashMap<>();
-        alleIdenterCache.put(avspillergruppeId, Collections.singletonList(fnr1));
+        alleIdenterCache.put(avspillergruppeId, Collections.singletonList(FNR1));
 
         when(asyncCache.getAlleIdenterCache()).thenReturn(alleIdenterCache);
 
         var result = cacheService.hentAlleIdenterCache(avspillergruppeId);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).contains(fnr1);
+        assertThat(result).hasSize(1).contains(FNR1);
 
         verify(asyncCache).asyncOppdaterAlleIdenterCache(avspillergruppeId);
     }
@@ -63,14 +62,13 @@ public class CacheServiceTest {
     @Test
     public void shouldHenteLevendeIdenterMedEksisterendeCache() {
         Map<Long, List<String>> levendeIdenterCache = new HashMap<>();
-        levendeIdenterCache.put(avspillergruppeId, Collections.singletonList(fnr1));
+        levendeIdenterCache.put(avspillergruppeId, Collections.singletonList(FNR1));
 
         when(asyncCache.getLevendeIdenterCache()).thenReturn(levendeIdenterCache);
 
         var result = cacheService.hentLevendeIdenterCache(avspillergruppeId);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).contains(fnr1);
+        assertThat(result).hasSize(1).contains(FNR1);
 
         verify(asyncCache).asyncOppdaterLevendeIdenterCache(avspillergruppeId);
     }
@@ -87,14 +85,13 @@ public class CacheServiceTest {
     @Test
     public void shouldHenteDoedeOgUtvandredeIdenterMedEksisterendeCache() {
         Map<Long, List<String>> doedeOgUtvandredeIdenterCache = new HashMap<>();
-        doedeOgUtvandredeIdenterCache.put(avspillergruppeId, Collections.singletonList(fnr1));
+        doedeOgUtvandredeIdenterCache.put(avspillergruppeId, Collections.singletonList(FNR1));
 
         when(asyncCache.getDoedeOgUtvandredeIdenterCache()).thenReturn(doedeOgUtvandredeIdenterCache);
 
         var result = cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).contains(fnr1);
+        assertThat(result).hasSize(1).contains(FNR1);
 
         verify(asyncCache).asyncOppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
     }
@@ -111,14 +108,13 @@ public class CacheServiceTest {
     @Test
     public void shouldHenteGifteIdenterMedEksisterendeCache() {
         Map<Long, List<String>> gifteIdenterCache = new HashMap<>();
-        gifteIdenterCache.put(avspillergruppeId, Collections.singletonList(fnr1));
+        gifteIdenterCache.put(avspillergruppeId, Collections.singletonList(FNR1));
 
         when(asyncCache.getGifteIdenterCache()).thenReturn(gifteIdenterCache);
 
         var result = cacheService.hentGifteIdenterCache(avspillergruppeId);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).contains(fnr1);
+        assertThat(result).hasSize(1).contains(FNR1);
 
         verify(asyncCache).asyncOppdaterGifteIdenterCache(avspillergruppeId);
     }
@@ -135,14 +131,13 @@ public class CacheServiceTest {
     @Test
     public void shouldHenteFoedteIdenterMedEksisterendeCache() {
         Map<Long, List<String>> foedteIdenterCache = new HashMap<>();
-        foedteIdenterCache.put(avspillergruppeId, Collections.singletonList(fnr1));
+        foedteIdenterCache.put(avspillergruppeId, Collections.singletonList(FNR1));
 
         when(asyncCache.getFoedteIdenterCache()).thenReturn(foedteIdenterCache);
 
         var result = cacheService.hentFoedteIdenterCache(avspillergruppeId);
 
-        assertThat(result).hasSize(1);
-        assertThat(result).contains(fnr1);
+        assertThat(result).hasSize(1).contains(FNR1);
 
         verify(asyncCache).asyncOppdaterFoedteIdenterCache(avspillergruppeId);
     }
