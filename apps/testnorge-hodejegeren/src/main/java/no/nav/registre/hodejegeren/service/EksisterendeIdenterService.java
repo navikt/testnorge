@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.IdentIOException;
@@ -368,12 +366,11 @@ public class EksisterendeIdenterService {
                     var kode = status.findValue("kode");
                     if (kode != null && !"00".equals(kode.asText())) {
                         var statusFromTps = jsonNode.findValue("EFnr");
-                        List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                        var identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                         });
-                        identStatus.stream()
-                                .filter(map -> map.containsKey(SVARSTATUS))
+                        identStatus.stream().filter(map -> map.containsKey(SVARSTATUS))
                                 .forEach(map -> {
-                                    Map<String, String> svarStatus = objectMapper.convertValue(map.get(SVARSTATUS), new TypeReference<Map<String, String>>() {
+                                    var svarStatus = objectMapper.convertValue(map.get(SVARSTATUS), new TypeReference<Map<String, String>>() {
                                     });
                                     if ("08".equals(svarStatus.get("returStatus"))) {
                                         identerIkkeITps.add(String.valueOf(map.get("fnr")));
@@ -401,7 +398,7 @@ public class EksisterendeIdenterService {
                 var jsonNode = tpsfConsumer.hentTpsStatusPaaIdenter(AKSJONSKODE_A2, "q2", identer);
                 var statusFromTps = jsonNode.findValue("EFnr");
                 if (statusFromTps != null) {
-                    List<Map<String, Object>> identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
+                    var identStatus = objectMapper.convertValue(statusFromTps, new TypeReference<List<Map<String, Object>>>() {
                     });
                     for (var map : identStatus) {
                         if (!map.containsKey(SVARSTATUS)) {
