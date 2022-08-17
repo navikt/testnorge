@@ -3,7 +3,6 @@ package no.nav.registre.hodejegeren.provider.rs;
 import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MAX_ALDER;
 import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MIN_ALDER;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;

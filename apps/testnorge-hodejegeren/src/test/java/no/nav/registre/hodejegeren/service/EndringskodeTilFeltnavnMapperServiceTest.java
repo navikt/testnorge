@@ -2,8 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 
 import org.junit.Test;
@@ -44,8 +43,8 @@ public class EndringskodeTilFeltnavnMapperServiceTest {
         Mockito.verify(tpsStatusQuoService).hentStatusQuo(eq(routineName), captor.capture(), eq(environment), eq(fnr));
         List<String> actualRequestParams = captor.getValue();
 
-        assertEquals(2, actualRequestParams.size());
-        assertTrue(actualRequestParams.contains(DATO_DO));
-        assertTrue(actualRequestParams.contains(STATSBORGER));
+        assertThat(actualRequestParams).hasSize(2);
+        assertThat(actualRequestParams).contains(DATO_DO);
+        assertThat(actualRequestParams).contains(STATSBORGER);
     }
 }

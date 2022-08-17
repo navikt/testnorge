@@ -5,15 +5,8 @@ import static no.nav.registre.hodejegeren.provider.rs.HodejegerenController.MIN_
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
@@ -46,14 +38,11 @@ import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResp
 @RunWith(MockitoJUnitRunner.class)
 public class EksisterendeIdenterServiceTest {
 
-    private static final String ROUTINE_PERSDATA = "FS03-FDNUMMER-PERSDATA-O";
     private static final String ROUTINE_KERNINFO = "FS03-FDNUMMER-KERNINFO-O";
     private static final String AKSJONSKODE = "B0";
     private static final int MINIMUM_ALDER = 18;
 
     private final String miljoe = "t1";
-
-    private final List<String> statusFelter = Arrays.asList(DATO_DO, STATSBORGER);
 
     @Mock
     private TpsStatusQuoService tpsStatusQuoService;
@@ -73,16 +62,17 @@ public class EksisterendeIdenterServiceTest {
     private Long avspillergruppeId1 = 1L;
     private Long avspillergruppeId2 = 2L;
     private List<String> levendeIdenter;
+    private List<String> foedteIdenter;
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         levendeIdenter = new ArrayList<>();
         levendeIdenter.add("20044249945");
         levendeIdenter.add("20044249946");
         levendeIdenter.add("20044249947");
         levendeIdenter.add("20044249948");
 
-        List<String> foedteIdenter = new ArrayList<>();
+        foedteIdenter = new ArrayList<>();
         foedteIdenter.add("20041751231");
 
         when(cacheService.hentFoedteIdenterCache(avspillergruppeId2)).thenReturn(foedteIdenter);
@@ -98,7 +88,7 @@ public class EksisterendeIdenterServiceTest {
     @Test
     public void hentMyndigeIdenterIGruppeIngenIdenterTest() {
         var identer = eksisterendeIdenterService.hentLevendeIdenter(2L, miljoe, 2, MINIMUM_ALDER).collectList().block();
-        assertTrue(identer.isEmpty());
+        assertThat(identer).isEmpty();
     }
 
 
@@ -111,10 +101,8 @@ public class EksisterendeIdenterServiceTest {
         var minAlder = 0;
         var maksAlder = 200;
         var foedte = eksisterendeIdenterService.finnFoedteIdenter(avspillergruppeId2, minAlder, maksAlder);
-        assertEquals(1, foedte.size());
-        assertThat(foedte, containsInAnyOrder(
-                "20041751231"
-        ));
+        assertThat(foedte).hasSize(1);
+        assertThat(foedte).contains(foedteIdenter.get(0));
     }
 
     /**
@@ -122,9 +110,12 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentFnrMedNavKontor() throws IOException {
+        var navEnhet = "123";
+        var beskrivelse = "test";
+
         Map<String, String> status = new HashMap<>();
-        status.put(NAV_ENHET, "123");
-        status.put(NAV_ENHET_BESKRIVELSE, "test");
+        status.put(NAV_ENHET, navEnhet);
+        status.put(NAV_ENHET_BESKRIVELSE, beskrivelse);
         when(tpsStatusQuoService.hentStatusQuo(eq("FS03-FDNUMMER-KERNINFO-O"), eq(Arrays.asList(NAV_ENHET, NAV_ENHET_BESKRIVELSE)), eq(miljoe), any())).thenReturn(status);
 
         List<String> levendeIdenter = new ArrayList<>();
@@ -133,13 +124,13 @@ public class EksisterendeIdenterServiceTest {
 
         var navEnhetResponse = eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, levendeIdenter);
 
-        assertThat(navEnhetResponse.get(0).getIdent(), equalTo(levendeIdenter.get(0)));
-        assertThat(navEnhetResponse.get(0).getNavEnhet(), equalTo("123"));
-        assertThat(navEnhetResponse.get(0).getNavEnhetBeskrivelse(), equalTo("test"));
+        assertThat(navEnhetResponse.get(0).getIdent()).isEqualTo(levendeIdenter.get(0));
+        assertThat(navEnhetResponse.get(0).getNavEnhet()).isEqualTo(navEnhet);
+        assertThat(navEnhetResponse.get(0).getNavEnhetBeskrivelse()).isEqualTo(beskrivelse);
 
-        assertThat(navEnhetResponse.get(1).getIdent(), equalTo(levendeIdenter.get(1)));
-        assertThat(navEnhetResponse.get(1).getNavEnhet(), equalTo("123"));
-        assertThat(navEnhetResponse.get(1).getNavEnhetBeskrivelse(), equalTo("test"));
+        assertThat(navEnhetResponse.get(1).getIdent()).isEqualTo(levendeIdenter.get(1));
+        assertThat(navEnhetResponse.get(1).getNavEnhet()).isEqualTo(navEnhet);
+        assertThat(navEnhetResponse.get(1).getNavEnhetBeskrivelse()).isEqualTo(beskrivelse);
     }
 
     /**
@@ -162,7 +153,7 @@ public class EksisterendeIdenterServiceTest {
         verify(cacheService).hentLevendeIdenterCache(avspillergruppeId1);
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
-        assertThat(fnrMedStatusQuo.get(fnr1), equalTo(jsonNode));
+        assertThat(fnrMedStatusQuo.get(fnr1)).isEqualTo(jsonNode);
     }
 
     @Test
@@ -182,8 +173,8 @@ public class EksisterendeIdenterServiceTest {
         verify(cacheService).hentLevendeIdenterCache(avspillergruppeId1);
         verify(tpsStatusQuoService).getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, fnr1);
 
-        assertThat(fnrMedKontoinfo.get(0).getFnr(), equalTo(fnr1));
-        assertThat(fnrMedKontoinfo.get(0).getKontonummer(), equalTo("20000723267"));
+        assertThat(fnrMedKontoinfo.get(0).getFnr()).isEqualTo(fnr1);
+        assertThat(fnrMedKontoinfo.get(0).getKontonummer()).isEqualTo("20000723267");
     }
 
     @Test
@@ -197,7 +188,7 @@ public class EksisterendeIdenterServiceTest {
 
         var adressePaaIdenter = eksisterendeIdenterService.hentAdressePaaIdenter(miljoe, identer);
 
-        assertThat(adressePaaIdenter.get("23048801390").findValue("boAdresse1").asText(), equalTo("WALLDORFERSTRABE 1289"));
+        assertThat(adressePaaIdenter.get("23048801390").findValue("boAdresse1").asText()).isEqualTo("WALLDORFERSTRABE 1289");
     }
 
     @Test
@@ -210,10 +201,10 @@ public class EksisterendeIdenterServiceTest {
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentPersondata(fnr, miljoe);
 
-        assertThat(response.getFnr(), equalTo(fnr));
-        assertThat(response.getFornavn(), equalTo("USTABIL"));
-        assertThat(response.getEtternavn(), equalTo("PARASOLL"));
-        assertThat(response.getStatsborger(), equalTo("NORGE"));
+        assertThat(response.getFnr()).isEqualTo(fnr);
+        assertThat(response.getFornavn()).isEqualTo("USTABIL");
+        assertThat(response.getEtternavn()).isEqualTo("PARASOLL");
+        assertThat(response.getStatsborger()).isEqualTo("NORGE");
     }
 
     @Test
@@ -226,8 +217,8 @@ public class EksisterendeIdenterServiceTest {
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
 
-        assertThat(response.getFnr(), equalTo(fnr));
-        assertThat(response.getRelasjoner().size(), is(0));
+        assertThat(response.getFnr()).isEqualTo(fnr);
+        assertThat(response.getRelasjoner()).isEmpty();
     }
 
     @Test
@@ -240,9 +231,9 @@ public class EksisterendeIdenterServiceTest {
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
 
-        assertThat(response.getFnr(), equalTo(fnr));
-        assertThat(response.getRelasjoner().size(), is(1));
-        assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo("12021790069"));
+        assertThat(response.getFnr()).isEqualTo(fnr);
+        assertThat(response.getRelasjoner()).hasSize(1);
+        assertThat(response.getRelasjoner().get(0).getFnrRelasjon()).isEqualTo("12021790069");
     }
 
     @Test
@@ -255,10 +246,10 @@ public class EksisterendeIdenterServiceTest {
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
 
-        assertThat(response.getFnr(), equalTo(fnr));
-        assertThat(response.getRelasjoner().size(), is(2));
-        assertThat(response.getRelasjoner().get(0).getFnrRelasjon(), equalTo("12021790069"));
-        assertThat(response.getRelasjoner().get(1).getFnrRelasjon(), equalTo("17120080318"));
+        assertThat(response.getFnr()).isEqualTo(fnr);
+        assertThat(response.getRelasjoner()).hasSize(2);
+        assertThat(response.getRelasjoner().get(0).getFnrRelasjon()).isEqualTo("12021790069");
+        assertThat(response.getRelasjoner().get(1).getFnrRelasjon()).isEqualTo("17120080318");
     }
 
     @Test
@@ -275,8 +266,8 @@ public class EksisterendeIdenterServiceTest {
 
         var identerIkkeITps = eksisterendeIdenterService.hentIdenterSomIkkeErITps(avspillergruppeId, miljoe);
 
-        assertThat(identerIkkeITps, contains(fnr2));
-        assertThat(identerIkkeITps, not(contains(fnr1)));
+        assertThat(identerIkkeITps).contains(fnr2);
+        assertThat(identerIkkeITps).doesNotContain(fnr1);
     }
 
     @Test
@@ -293,7 +284,7 @@ public class EksisterendeIdenterServiceTest {
 
         var identerSomKolliderer = eksisterendeIdenterService.hentIdenterSomKolliderer(avspillergruppeId);
 
-        assertThat(identerSomKolliderer, contains(fnr1));
-        assertThat(identerSomKolliderer, not(contains(fnr2)));
+        assertThat(identerSomKolliderer).contains(fnr1);
+        assertThat(identerSomKolliderer).doesNotContain(fnr2);
     }
 }

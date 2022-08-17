@@ -1,10 +1,9 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,11 +61,11 @@ public class AsyncCacheTest {
 
         asyncCache.oppdaterAlleCacher();
 
-        assertThat(asyncCache.getAlleIdenterCache().get(avspillergruppeId), Matchers.containsInAnyOrder(alleIdenter.toArray()));
-        assertThat(asyncCache.getLevendeIdenterCache().get(avspillergruppeId), Matchers.containsInAnyOrder(levendeIdenter.toArray()));
-        assertThat(asyncCache.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId), Matchers.containsInAnyOrder(doedeOgUtvandredeIdenter.toArray()));
-        assertThat(asyncCache.getGifteIdenterCache().get(avspillergruppeId), Matchers.containsInAnyOrder(gifteIdenter.toArray()));
-        assertThat(asyncCache.getFoedteIdenterCache().get(avspillergruppeId), Matchers.containsInAnyOrder(foedteIdenter.toArray()));
+        assertThat(asyncCache.getAlleIdenterCache().get(avspillergruppeId)).containsExactlyInAnyOrderElementsOf(alleIdenter);
+        assertThat(asyncCache.getLevendeIdenterCache().get(avspillergruppeId)).containsExactlyInAnyOrderElementsOf(levendeIdenter);
+        assertThat(asyncCache.getDoedeOgUtvandredeIdenterCache().get(avspillergruppeId)).containsExactlyInAnyOrderElementsOf(doedeOgUtvandredeIdenter);
+        assertThat(asyncCache.getGifteIdenterCache().get(avspillergruppeId)).containsExactlyInAnyOrderElementsOf(gifteIdenter);
+        assertThat(asyncCache.getFoedteIdenterCache().get(avspillergruppeId)).containsExactlyInAnyOrderElementsOf(foedteIdenter);
 
         verify(tpsfFiltreringService).finnAlleIdenter(avspillergruppeId);
         verify(tpsfFiltreringService).finnLevendeIdenter(avspillergruppeId);

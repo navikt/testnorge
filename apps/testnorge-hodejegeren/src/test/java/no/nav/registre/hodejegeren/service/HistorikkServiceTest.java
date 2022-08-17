@@ -1,12 +1,6 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
@@ -85,8 +79,9 @@ public class HistorikkServiceTest {
     public void shouldHenteAllHistorikk() {
         var historikk = historikkService.hentAllHistorikk(0, 10);
 
-        assertThat(historikk.get(0).getId(), equalTo(id1));
-        assertThat(historikk.get(1).getId(), equalTo(id2));
+        assertThat(historikk).hasSize(2);
+        assertThat(historikk.get(0).getId()).isEqualTo(id1);
+        assertThat(historikk.get(1).getId()).isEqualTo(id2);
     }
 
     @Test
@@ -94,8 +89,8 @@ public class HistorikkServiceTest {
         var historikk1 = historikkService.hentHistorikkMedId(id1);
         var historikk2 = historikkService.hentHistorikkMedId(id2);
 
-        assertThat(historikk1.getId(), equalTo(id1));
-        assertThat(historikk2.getId(), equalTo(id2));
+        assertThat(historikk1.getId()).isEqualTo(id1);
+        assertThat(historikk2.getId()).isEqualTo(id2);
     }
 
     @Test
@@ -104,14 +99,17 @@ public class HistorikkServiceTest {
         var historikkMedKilde = historikkService.hentHistorikkMedKilder(Collections.singletonList("aareg"), 0, 10);
 
         var historikkIds = new ArrayList<>(Arrays.asList(historikkMedKilde.get(0).getId(), historikkMedKilde.get(1).getId()));
-        assertThat(historikkIds, containsInAnyOrder(id1, id2));
+
+        assertThat(historikkIds).hasSize(2);
+        assertThat(historikkIds).contains(id1, id2);
     }
 
     @Test
     public void shouldHenteIdsMedKilde() {
         var idsMedKilde = historikkService.hentIdsMedKilder(Collections.singletonList("aareg"));
 
-        assertThat(idsMedKilde, containsInAnyOrder(id1, id2));
+        assertThat(idsMedKilde).hasSize(2);
+        assertThat(idsMedKilde).contains(id1, id2);
     }
 
     @Test
@@ -119,23 +117,26 @@ public class HistorikkServiceTest {
         var historikk1 = historikkService.opprettHistorikk(syntHistorikk1);
         var historikk2 = historikkService.opprettHistorikk(syntHistorikk2);
 
-        assertThat(historikk1.getId(), equalTo(syntHistorikk1.getId()));
-        assertThat(historikk1.getKilder().get(0).getNavn(), is(equalTo("aareg")));
-        assertThat(historikk1.getKilder().get(0).getData().get(0).getDatoOpprettet(), is(notNullValue()));
-        assertThat(historikk1.getKilder().get(0).getData().get(0).getDatoEndret(), is(notNullValue()));
-        assertThat(historikk2.getId(), equalTo(syntHistorikk2.getId()));
-        assertThat(historikk2.getKilder().get(0).getNavn(), is(equalTo("aareg")));
-        assertThat(historikk2.getKilder().get(0).getData().get(0).getDatoOpprettet(), is(notNullValue()));
-        assertThat(historikk2.getKilder().get(0).getData().get(0).getDatoEndret(), is(notNullValue()));
+        assertThat(historikk1.getId()).isEqualTo(syntHistorikk1.getId());
+        assertThat(historikk1.getKilder().get(0).getNavn()).isEqualTo("aareg");
+        assertThat(historikk1.getKilder().get(0).getData().get(0).getDatoOpprettet()).isNotNull();
+        assertThat(historikk1.getKilder().get(0).getData().get(0).getDatoEndret()).isNotNull();
+
+        assertThat(historikk2.getId()).isEqualTo(syntHistorikk2.getId());
+        assertThat(historikk2.getKilder().get(0).getNavn()).isEqualTo("aareg");
+        assertThat(historikk2.getKilder().get(0).getData().get(0).getDatoOpprettet()).isNotNull();
+        assertThat(historikk2.getKilder().get(0).getData().get(0).getDatoEndret()).isNotNull();
     }
 
     @Test
     public void shouldLeggeTilHistorikkPaaIdent() {
         var identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest1);
-        assertThat(identerLagtTil, contains(id1));
+        assertThat(identerLagtTil).hasSize(1);
+        assertThat(identerLagtTil).contains(id1);
 
         identerLagtTil = historikkService.leggTilHistorikkPaaIdent(historikkRequest2);
-        assertThat(identerLagtTil, contains(id2));
+        assertThat(identerLagtTil).hasSize(1);
+        assertThat(identerLagtTil).contains(id2);
 
         verify(syntHistorikkRepository, times(2)).save(any());
     }
@@ -165,7 +166,8 @@ public class HistorikkServiceTest {
 
         var identerOppdatert = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
-        assertThat(identerOppdatert, contains(skdFnr));
+        assertThat(identerOppdatert).hasSize(1);
+        assertThat(identerOppdatert).contains(skdFnr);
 
         verify(syntHistorikkRepository).findById(skdFnr);
         verify(syntHistorikkRepository).save(any());
@@ -192,7 +194,8 @@ public class HistorikkServiceTest {
 
         var identerLagtTil = historikkService.oppdaterTpsPersonDokument(skdFnr, tpsPersonDokumentType);
 
-        assertThat(identerLagtTil, contains(skdFnr));
+        assertThat(identerLagtTil).hasSize(1);
+        assertThat(identerLagtTil).contains(skdFnr);
 
         verify(syntHistorikkRepository, times(2)).findById(skdFnr);
         verify(syntHistorikkRepository).save(any());
@@ -201,29 +204,34 @@ public class HistorikkServiceTest {
     @Test
     public void shouldSletteHistorikk() {
         var response = historikkService.slettHistorikk(id1);
+
         verify(syntHistorikkRepository).deleteById(id1);
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertThat(response.getBody().toString(), containsString("Historikk tilhørende id '" + id1 + "' ble slettet"));
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("Historikk tilhørende id '" + id1 + "' ble slettet");
     }
 
     @Test
     public void shouldReturnErrorOnUnsuccessfulDeleteOfHistorikk() {
         var response = historikkService.slettHistorikk("03030303030");
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
-        assertThat(response.getBody().toString(), containsString("Fant ingen historikk tilhørende id '03030303030'"));
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).contains("Fant ingen historikk tilhørende id '03030303030'");
     }
 
     @Test
     public void shouldSletteKilde() {
         var response = historikkService.slettKilde(id1, "aareg");
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-        assertThat(response.getBody().toString(), containsString("Kilde 'aareg' tilhørende id '" + id1 + "' ble slettet"));
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("Kilde 'aareg' tilhørende id '" + id1 + "' ble slettet");
     }
 
     @Test
     public void shouldReturnErrorOnUnsuccessfulDeleteOfKilde() {
         var response = historikkService.slettKilde(id1, "bisys");
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.NOT_FOUND));
-        assertThat(response.getBody().toString(), containsString("Fant ingen identMedData med navn 'bisys' tilhørende id '" + id1 + "'"));
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).contains("Fant ingen identMedData med navn 'bisys' tilhørende id '" + id1 + "'");
     }
 }

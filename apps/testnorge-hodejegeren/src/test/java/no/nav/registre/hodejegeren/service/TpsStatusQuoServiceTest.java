@@ -2,7 +2,7 @@ package no.nav.registre.hodejegeren.service;
 
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.FNR_RELASJON;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGERSKAP;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -50,8 +50,8 @@ public class TpsStatusQuoServiceTest {
 
         var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
-        assertEquals(1, statusQuoValues.size());
-        assertEquals("NOR", statusQuoValues.get(STATSBORGERSKAP));
+        assertThat(statusQuoValues).hasSize(1);
+        assertThat(statusQuoValues.get(STATSBORGERSKAP)).isEqualTo("NOR");
     }
 
     /**
@@ -69,9 +69,8 @@ public class TpsStatusQuoServiceTest {
 
         var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
-        assertEquals(1, statusQuoValues.size());
-        assertEquals("01065500791", statusQuoValues.get(FNR_RELASJON));
-
+        assertThat(statusQuoValues).hasSize(1);
+        assertThat(statusQuoValues.get(FNR_RELASJON)).isEqualTo("01065500791");
     }
 
     /**
@@ -90,8 +89,8 @@ public class TpsStatusQuoServiceTest {
 
         var statusQuoValues = tpsStatusQuoService.hentStatusQuo(routineName, feltNavn, environment, fnr);
 
-        assertEquals(2, statusQuoValues.size());
-        assertEquals("AJOURHD", statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler"));
-        assertEquals("1289", statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.offAdresse.husnr"));
+        assertThat(statusQuoValues).hasSize(2);
+        assertThat(statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.adrSaksbehandler")).isEqualTo("AJOURHD");
+        assertThat(statusQuoValues.get("$..bostedsAdresse.fullBostedsAdresse.offAdresse.husnr")).isEqualTo("1289");
     }
 }

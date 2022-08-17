@@ -5,9 +5,7 @@ import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.hodejegeren.service.Endringskoder.INNVANDRING;
 import static no.nav.registre.hodejegeren.service.Endringskoder.TILDELING_DNUMMER;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
@@ -20,7 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
@@ -35,23 +32,28 @@ public class TpsfFiltreringServiceTest {
     private TpsfFiltreringService tpsfFiltreringService;
 
     private Long avspillergruppeId = 1L;
+    private static final String FNR1 = "20044249945";
+    private static final String FNR2 = "20044249946";
+    private static final String FNR3 = "20044249947";
+    private static final String FNR4 = "20044249948";
+    private static final String FNR5 = "20041751231";
 
     @Before
     public void setUp() {
         Set<String> levendeIdenter = new LinkedHashSet<>();
-        levendeIdenter.add("20044249945");
-        levendeIdenter.add("20044249946");
-        levendeIdenter.add("20044249947");
-        levendeIdenter.add("20044249948");
+        levendeIdenter.add(FNR1);
+        levendeIdenter.add(FNR2);
+        levendeIdenter.add(FNR3);
+        levendeIdenter.add(FNR4);
 
         Set<String> doedeIdenter = new LinkedHashSet<>();
-        doedeIdenter.add("20044249948");
+        doedeIdenter.add(FNR4);
 
         Set<String> gifteIdenter = new LinkedHashSet<>();
-        gifteIdenter.add("20041751231");
+        gifteIdenter.add(FNR5);
 
         Set<String> foedteIdenter = new LinkedHashSet<>();
-        foedteIdenter.add("20041751231");
+        foedteIdenter.add(FNR5);
 
         when(tpsfConsumer.getIdenterFiltrertPaaAarsakskode(avspillergruppeId, Arrays.asList(
                 FOEDSELSMELDING.getAarsakskode(),
@@ -70,50 +72,40 @@ public class TpsfFiltreringServiceTest {
     @Test
     public void finnAlleIdenterTest() {
         var alle = tpsfFiltreringService.finnAlleIdenter(avspillergruppeId);
-        assertEquals(4, alle.size());
-        assertThat(alle, containsInAnyOrder(
-                "20044249945",
-                "20044249946",
-                "20044249947",
-                "20044249948"
-        ));
+        
+        assertThat(alle).hasSize(4);
+        assertThat(alle).contains(FNR1, FNR2, FNR3, FNR4);
     }
 
     @Test
     public void finnLevendeIdenterTest() {
         var levende = tpsfFiltreringService.finnLevendeIdenter(avspillergruppeId);
-        assertEquals(3, levende.size());
-        assertThat(levende, containsInAnyOrder(
-                "20044249945",
-                "20044249946",
-                "20044249947"
-        ));
+
+        assertThat(levende).hasSize(3);
+        assertThat(levende).contains(FNR1, FNR2, FNR3);
     }
 
     @Test
     public void finnDoedeOgUtvandredeIdenterTest() {
         var doede = tpsfFiltreringService.finnDoedeOgUtvandredeIdenter(avspillergruppeId);
-        assertEquals(1, doede.size());
-        assertThat(doede, containsInAnyOrder(
-                "20044249948"
-        ));
+
+        assertThat(doede).hasSize(1);
+        assertThat(doede).contains(FNR4);
     }
 
     @Test
     public void finnGifteIdenterTest() {
         var gifte = tpsfFiltreringService.finnGifteIdenter(avspillergruppeId);
-        assertEquals(1, gifte.size());
-        assertThat(gifte, containsInAnyOrder(
-                "20041751231"
-        ));
+
+        assertThat(gifte).hasSize(1);
+        assertThat(gifte).contains(FNR5);
     }
 
     @Test
     public void finnFoedteIdenterTest() {
         var foedte = tpsfFiltreringService.finnFoedteIdenter(avspillergruppeId);
-        assertEquals(1, foedte.size());
-        assertThat(foedte, containsInAnyOrder(
-                "20041751231"
-        ));
+
+        assertThat(foedte).hasSize(1);
+        assertThat(foedte).contains(FNR5);
     }
 }

@@ -1,10 +1,9 @@
 package no.nav.registre.hodejegeren.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -46,7 +45,8 @@ public class CacheServiceTest {
 
         var result = cacheService.hentAlleIdenterCache(avspillergruppeId);
 
-        assertThat(result, Matchers.containsInAnyOrder(fnr1));
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(fnr1);
 
         verify(asyncCache).asyncOppdaterAlleIdenterCache(avspillergruppeId);
     }
@@ -69,7 +69,8 @@ public class CacheServiceTest {
 
         var result = cacheService.hentLevendeIdenterCache(avspillergruppeId);
 
-        assertThat(result, Matchers.containsInAnyOrder(fnr1));
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(fnr1);
 
         verify(asyncCache).asyncOppdaterLevendeIdenterCache(avspillergruppeId);
     }
@@ -92,7 +93,8 @@ public class CacheServiceTest {
 
         var result = cacheService.hentDoedeOgUtvandredeIdenterCache(avspillergruppeId);
 
-        assertThat(result, Matchers.containsInAnyOrder(fnr1));
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(fnr1);
 
         verify(asyncCache).asyncOppdaterDoedeOgUtvandredeIdenterCache(avspillergruppeId);
     }
@@ -115,7 +117,8 @@ public class CacheServiceTest {
 
         var result = cacheService.hentGifteIdenterCache(avspillergruppeId);
 
-        assertThat(result, Matchers.containsInAnyOrder(fnr1));
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(fnr1);
 
         verify(asyncCache).asyncOppdaterGifteIdenterCache(avspillergruppeId);
     }
@@ -138,7 +141,8 @@ public class CacheServiceTest {
 
         var result = cacheService.hentFoedteIdenterCache(avspillergruppeId);
 
-        assertThat(result, Matchers.containsInAnyOrder(fnr1));
+        assertThat(result).hasSize(1);
+        assertThat(result).contains(fnr1);
 
         verify(asyncCache).asyncOppdaterFoedteIdenterCache(avspillergruppeId);
     }
