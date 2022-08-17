@@ -10,7 +10,7 @@ export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 	const historikkHeader = header !== '' ? header + ' historikk' : 'Historikk'
 
 	return (
-		<div className="med-historikk">
+		<div className="array-historikk">
 			{data?.length > 0 && (
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header={header} nested>
