@@ -57,7 +57,7 @@ public class RequestLogger implements WebFilter {
             contextMap.put("URI", uri);
 
             MDC.setContextMap(contextMap);
-            log.trace("[Request ] {} {}{}", method, host, uri);
+            log.info("[Request ] {} {}{}", method, host, uri);
             MDC.setContextMap(original);
 
         };
