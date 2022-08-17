@@ -51,10 +51,10 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 	const slettetTelefonnummerPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertTelefonnummerPdlf
 
 	const disableSlett = (telefonData: Array<TelefonData>) => {
-		if (telefonData.length < 2) {
+		if (telefonData.filter((obj) => obj !== null).length < 2) {
 			return null
 		} else {
-			return telefonData.map((tlf) => tlf.id).indexOf(1)
+			return telefonData.map((tlf) => tlf?.id).indexOf(1)
 		}
 	}
 
