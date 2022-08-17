@@ -100,7 +100,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 				newEntry={initialForeldreansvar}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => {
+				{(path: string, _idx: number) => {
 					const typeAnsvarlig = _get(formikBag.values, `${path}.typeAnsvarlig`)
 					const ansvar = _get(formikBag.values, `${path}.ansvar`)
 
@@ -129,6 +129,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 								<PdlEksisterendePerson
 									eksisterendePersonPath={`${path}.ansvarlig`}
 									label="Ansvarlig"
+									formikBag={formikBag}
 								/>
 							)}
 

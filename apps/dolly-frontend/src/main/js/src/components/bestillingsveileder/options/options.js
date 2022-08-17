@@ -27,12 +27,11 @@ export const BVOptions = (
 ) => {
 	let initialValues = {
 		antall: antall,
-		navSyntetiskIdent: false,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
 				identtype,
-				syntetisk: false,
+				syntetisk: true,
 			},
 		},
 		importPersoner: null,

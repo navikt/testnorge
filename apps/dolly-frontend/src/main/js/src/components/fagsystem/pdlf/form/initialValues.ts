@@ -12,7 +12,7 @@ export const initialPdlPerson = {
 	foedtEtter: null as string,
 	foedtFoer: null as string,
 	alder: '',
-	syntetisk: false,
+	syntetisk: true,
 	nyttNavn: {
 		hasMellomnavn: false,
 	},
@@ -290,7 +290,7 @@ export const initialNyIdent = {
 	foedtEtter: null as string,
 	foedtFoer: null as string,
 	alder: '',
-	syntetisk: false,
+	syntetisk: true,
 	nyttNavn: {
 		hasMellomnavn: false,
 	},

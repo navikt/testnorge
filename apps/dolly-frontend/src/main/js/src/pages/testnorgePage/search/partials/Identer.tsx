@@ -18,13 +18,14 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 				{({ insert, remove, push }) => (
 					<div style={{ marginTop: '10px' }}>
 						{values?.length > 0 &&
-							values.map((ident: string, index: number) => (
+							values.map((_ident: string, index: number) => (
 								<div className="flexbox--align-start" key={index}>
 									<div className="skjemaelement">
 										<Field
 											name={`${identerPath}.${index}`}
 											className="skjemaelement__input"
 											placeholder={'Ikke spesifisert'}
+											label={'Fødselsnummer eller D-dummer'}
 											type="text"
 											style={{ width: '220px' }}
 										/>

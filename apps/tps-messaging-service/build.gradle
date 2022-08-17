@@ -46,6 +46,10 @@ repositories {
     }
 }
 
+configurations.implementation {
+    exclude group: 'io.netty', module: 'netty-transport-native-epoll' // Avoid native Linux/Mac on non-Linux/Mac systems.
+}
+
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
@@ -55,6 +59,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.netty:netty-transport-native-epoll' // See above exclusion.
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

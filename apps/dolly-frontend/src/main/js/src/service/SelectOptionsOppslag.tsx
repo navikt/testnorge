@@ -3,6 +3,7 @@ import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi } from '~/ser
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { getAlder } from '~/ducks/fagsystem'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -10,6 +11,12 @@ export type Option = {
 	value: any
 	label: string
 	tema?: string
+	alder?: number
+	sivilstand?: string
+	vergemaal?: boolean
+	doedsfall?: boolean
+	foreldre?: Array<string>
+	foreldreansvar: Array<string>
 }
 
 type Data = {
@@ -19,6 +26,17 @@ type Data = {
 	value: {
 		data: any
 	}
+}
+
+type PersonListe = {
+	value: string
+	label: string
+	alder: number
+	sivilstand: string
+	vergemaal: boolean
+	doedsfall: boolean
+	foreldre: Array<string>
+	foreldreansvar: Array<string>
 }
 
 export const SelectOptionsOppslag = {
@@ -37,11 +55,21 @@ export const SelectOptionsOppslag = {
 			if (gruppe.length < 1) {
 				return null
 			}
-			const personListe: Array<{ value: string; label: string }> = []
+			const personListe: Array<PersonListe> = []
 			response.data.forEach((id: Person) => {
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
+					alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
+					sivilstand: id.person.sivilstand?.[0]?.type,
+					vergemaal: id.person.vergemaal?.length > 0,
+					doedsfall: id.person.doedsfall?.length > 0,
+					foreldre: id.relasjoner
+						?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
+						?.map((relasjon) => relasjon.relatertPerson?.ident),
+					foreldreansvar: id.relasjoner
+						?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
+						?.map((relasjon) => relasjon.relatertPerson?.ident),
 				})
 			})
 			return personListe

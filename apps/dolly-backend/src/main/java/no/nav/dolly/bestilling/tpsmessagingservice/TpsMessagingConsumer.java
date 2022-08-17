@@ -67,18 +67,31 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    public static String tilfeldigUtlandskBankkonto() {
+    public static String tilfeldigUtlandskBankkonto(String landkode) {
+        if (landkode != null && landkode.length() == 3) {
+            landkode = KontoregisterLandkode.getIso2FromIso(landkode);
+        }
+        if (landkode != null && landkode.length() > 2) {
+            landkode = landkode.substring(0, 2);
+        }
+
         var kontonummerLengde = 15;
 
-        return Stream.concat(
-            random.ints(2, 'A', 'Z')
-                    .boxed()
-                    .map(i -> Character.toString(i.intValue()))
-            ,
-            random.ints(kontonummerLengde, 0, 10)
+        try {
+            var kontoregisterLandkode = KontoregisterLandkode.valueOf(landkode);
+            if (kontoregisterLandkode.getIbanLengde() != null && kontoregisterLandkode.getIbanLengde() > 2) {
+                kontonummerLengde = kontoregisterLandkode.getIbanLengde() - 2; // -2 fordi først 2 er landkode
+            }
+        } catch (Exception e) {
+            log.warn("bruker ukjent 'landkode' {} for generere kontonummer", landkode);
+        }
+
+        var kontonummer = random.ints(kontonummerLengde, 0, 10)
                     .boxed()
                     .map(Integer::toUnsignedString)
-        ).collect(Collectors.joining());
+                    .collect(Collectors.joining());
+
+        return landkode + kontonummer;
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
@@ -87,7 +100,7 @@ public class TpsMessagingConsumer {
         if ((body instanceof BankkontonrUtlandDTO bankkontoUtland)
                 && (null != bankkontoUtland.getTilfeldigKontonummer())
                 && bankkontoUtland.getTilfeldigKontonummer()) {
-            body = bankkontoUtland.withKontonummer(tilfeldigUtlandskBankkonto());
+            body = bankkontoUtland.withKontonummer(tilfeldigUtlandskBankkonto(bankkontoUtland.getLandkode()));
         }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();

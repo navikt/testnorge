@@ -33,10 +33,10 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
 @TestPropertySource(
-        locations = "classpath:application-test.properties"
+        locations = "classpath:application-test.yml"
 )
 @Disabled
-public class OrkestreringsControllerAaregIntegrationTest {
+class OrkestreringsControllerAaregIntegrationTest {
 
     private static final String ENVIRONMENT = "t1";
 
@@ -50,7 +50,7 @@ public class OrkestreringsControllerAaregIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void shouldInitiateAaregFromDatabase() throws Exception {
+    void shouldInitiateAaregFromDatabase() throws Exception {
         final AaregModel aaregModel = createAaregModel("09876543213", "987654321");
         aaregRepository.save(aaregModel);
 

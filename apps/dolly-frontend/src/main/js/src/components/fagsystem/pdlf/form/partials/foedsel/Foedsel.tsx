@@ -101,7 +101,7 @@ export const Foedsel = ({ formikBag }: FoedselTypes) => {
 						: null
 				}
 			>
-				{(path: string, idx: number) => {
+				{(path: string, _idx: number) => {
 					return <FoedselForm formikBag={formikBag} path={path} />
 				}}
 			</FormikDollyFieldArray>

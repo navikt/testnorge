@@ -85,7 +85,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				const emptyableFields = Object.entries(fields).filter(
 					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2
 				)
-				for (const [key, val] of emptyableFields) {
+				for (const [key] of emptyableFields) {
 					if (!values[key] && key !== 'tilleggsinformasjonstype') {
 						values[key] = '<TOM>'
 					}

@@ -113,7 +113,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
-											onChange={() => {}}
 											size={'xxsmall'}
 										/>
 									))}

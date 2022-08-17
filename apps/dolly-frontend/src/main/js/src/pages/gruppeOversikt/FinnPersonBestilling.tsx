@@ -53,6 +53,10 @@ const FinnPersonBestilling = ({
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
 
+	const [tpsfIdenter, setTpsfIdenter] = useState([])
+	const [pdlfIdenter, setPdlfIdenter] = useState([])
+	const [pdlIdenter, setPdlIdenter] = useState([])
+
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
 			...provided,
@@ -69,6 +73,39 @@ const FinnPersonBestilling = ({
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		const feilmeldingIdent = feilmelding?.substring(0, 11)
+		let finnesTpsf = false
+		let finnesPdlf = false
+		let finnesPdl = false
+
+		if (feilmelding) {
+			if (tpsfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesTpsf = true
+			}
+			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdlf = true
+			}
+			if (pdlIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdl = true
+			}
+		}
+
+		let beskrivendeFeilmelding = feilmelding
+
+		if (finnesTpsf || finnesPdlf || finnesPdl) {
+			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
+			${finnesTpsf ? ' TPSF' : ''}
+			${finnesTpsf && finnesPdlf ? ', ' : ''}
+			${finnesPdlf ? 'PDLF' : ''}
+			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
+			${finnesPdl ? 'PDL' : ''}
+			, og eksisterer ikke i Dolly.`
+		}
+
+		setError(beskrivendeFeilmelding)
+	}, [feilmelding])
+
+	useEffect(() => {
 		setError(null)
 		if (!searchQuery) {
 			return null
@@ -80,18 +117,19 @@ const FinnPersonBestilling = ({
 	}, [searchQuery])
 
 	useEffect(() => {
-		if (fragment) {
+		if (fragment && !feilmelding) {
 			setError(null)
 		}
 	}, [fragment])
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
-		if (!Array.isArray(personList)) {
+		const personData = personList?.value?.data
+		if (!Array.isArray(personData)) {
 			return
 		}
-		personList
+		personData
 			.filter((person: Person) => person.fornavn && person.etternavn)
-			.map((person: Person) => {
+			.forEach((person: Person) => {
 				const navn = person.mellomnavn
 					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
 					: `${person.fornavn} ${person.etternavn}`
@@ -121,13 +159,36 @@ const FinnPersonBestilling = ({
 		if (!tekst) {
 			return []
 		}
-		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
-		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
-		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
+
+		const [tpsfValues, pdlfValues, pdlValues] = (await Promise.allSettled([
+			TpsfApi.soekPersoner(tekst),
+			PdlforvalterApi.soekPersoner(tekst),
+			PersonSearch.searchPdlFragment(tekst),
+		])) as any
+
 		const personer: Array<Option> = []
-		mapToPersoner(tpsfIdenter, personer)
-		mapToPersoner(pdlfIdenter, personer)
-		mapToPersoner(pdlIdenter, personer)
+
+		if (tpsfValues?.status === 'fulfilled') {
+			mapToPersoner(tpsfValues, personer)
+			setTpsfIdenter(tpsfValues?.value?.data)
+		} else {
+			setError(tpsfValues?.reason?.message)
+		}
+
+		if (pdlfValues?.status === 'fulfilled') {
+			mapToPersoner(pdlfValues, personer)
+			setPdlfIdenter(pdlfValues?.value?.data)
+		} else {
+			setError(pdlfValues?.reason?.message)
+		}
+
+		if (pdlValues?.status === 'fulfilled') {
+			mapToPersoner(pdlValues, personer)
+			setPdlIdenter(pdlValues?.value?.data)
+		} else {
+			setError(pdlValues?.reason?.message)
+		}
+
 		return personer
 	}
 
@@ -136,7 +197,7 @@ const FinnPersonBestilling = ({
 		async (tekst) => {
 			return soekType === SoekTypeValg.BESTILLING
 				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
-				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
+				: soekPersoner(tekst)
 		},
 		[soekType]
 	)
@@ -200,10 +261,11 @@ const FinnPersonBestilling = ({
 								? 'Søk etter navn eller ident'
 								: 'Søk etter bestilling'
 						}
+						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
 				{error && (
-					<div className="error-message" style={{ marginTop: '10px' }}>
+					<div className="error-message" style={{ marginTop: '10px', maxWidth: '330px' }}>
 						{error}
 					</div>
 				)}

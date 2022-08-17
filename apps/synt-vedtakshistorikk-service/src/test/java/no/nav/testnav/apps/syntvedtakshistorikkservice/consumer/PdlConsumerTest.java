@@ -136,7 +136,7 @@ class PdlConsumerTest {
     }
 
     private void stubOpprettTags() {
-        stubFor(post(urlEqualTo("/pdl/pdl-testdata/api/v1/bestilling/tags?tags=DOLLY&tags=ARENASYNT"))
+        stubFor(post(urlEqualTo("/pdl/pdl-testdata/api/v1/bestilling/tags?tags=ARENASYNT"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                 )

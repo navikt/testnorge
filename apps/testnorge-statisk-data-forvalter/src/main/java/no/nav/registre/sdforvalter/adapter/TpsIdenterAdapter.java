@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import no.nav.registre.sdforvalter.database.model.TagModel;
@@ -42,7 +41,7 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
                 .map(value -> new TpsIdent(
                         value,
                         tpsIdentTagAdapter.findAllTagsByIdent(value.getFnr())
-                )).collect(Collectors.toList());
+                )).toList();
         return new TpsIdentListe(list);
     }
 
@@ -52,7 +51,7 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
         List<TpsIdent> liste = tpsIdentModels.map(tpsIdentModel -> {
             List<TagModel> tagModels = fetchTagsByIdent(tpsIdentModel.getFnr());
             return new TpsIdent(tpsIdentModel, tagModels);
-        }).collect(Collectors.toList());
+        }).toList();
         return new TpsIdentListe(liste);
     }
 
@@ -63,7 +62,7 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
         List<TpsIdent> liste = tpsIdentModels.stream().map(tpsIdentModel -> {
             List<TagModel> tagModels = fetchTagsByIdent(tpsIdentModel.getFnr());
             return new TpsIdent(tpsIdentModel, tagModels);
-        }).collect(Collectors.toList());
+        }).toList();
 
         log.info("Fant {} personer fra gruppe {}", liste.size(), gruppe);
         return new TpsIdentListe(liste);
@@ -92,7 +91,7 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
             TpsIdentModel tpsIdentModel = tpsIdenterRepository.save(
                     new TpsIdentModel(tpsIdent, getOppinnelse(tpsIdent), getGruppe(tpsIdent))
             );
-            List<TagModel> tagModels = tpsIdent.getTags() == null ? Collections.emptyList() : tpsIdent.getTags().stream().map(tagsAdapter::save).collect(Collectors.toList());
+            List<TagModel> tagModels = tpsIdent.getTags() == null ? Collections.emptyList() : tpsIdent.getTags().stream().map(tagsAdapter::save).toList();
             tagModels.forEach(tagModel -> tpsIdentTagAdapter.save(
                     new TpsIdentTagModel(null, tpsIdentModel, tagModel)
             ));

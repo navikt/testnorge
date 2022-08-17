@@ -720,7 +720,7 @@ export const validation = {
 							if (!/^[A-Z0-9]*$/.test(kontonummer)) {
 								return 'Kontonummer kan kun bestå av tegnene A-Z eller 0-9'
 							}
-							return false
+							return ''
 						}
 					),
 					tilfeldigKontonummer: Yup.object().nullable(),
