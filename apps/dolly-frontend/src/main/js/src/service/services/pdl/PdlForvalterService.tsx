@@ -28,7 +28,8 @@ export default {
 		if (!ident) {
 			return
 		}
-		const endpoint = `${getPdlUrl()}/personer/${ident}/${attributt}/${id}`
+		const attributtId = id ? `/${id}` : ``
+		const endpoint = `${getPdlUrl()}/personer/${ident}/${attributt}${attributtId}`
 		return Request.putWithoutResponse(endpoint, data)
 	},
 	deleteAttributt(ident: string, attributt: string, id: number) {

@@ -316,6 +316,20 @@ export const initialOpphold = {
 	master: 'FREG',
 }
 
+export const initialTelefonnummer = {
+	landskode: '',
+	nummer: '',
+	prioritet: 2,
+	kilde: 'Dolly',
+	master: 'PDL',
+}
+
+export const initialTpsTelefonnummer = {
+	landkode: '',
+	telefonnummer: '',
+	telefontype: 'HJET',
+}
+
 export const initialPersonstatus = {
 	status: null as string,
 	gyldigFraOgMed: null as string,
