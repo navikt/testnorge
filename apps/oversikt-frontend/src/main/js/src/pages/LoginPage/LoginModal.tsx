@@ -1,5 +1,5 @@
+import { Knapp } from '@navikt/dolly-komponenter/lib'
 import React from 'react'
-import { Hovedknapp } from 'nav-frontend-knapper'
 
 export default () => {
 	const getOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -19,20 +19,15 @@ export default () => {
 					</a>
 					).
 				</p>
-				<Hovedknapp
-					className="login-modal_button-nav"
-					type="hoved"
-					onClick={getOnClick('/oauth2/authorization/aad')}
-				>
-					Logg inn med NAV-epost
-				</Hovedknapp>
-				<Hovedknapp
+				<Knapp className="login-modal_button-nav" onClick={getOnClick('/oauth2/authorization/aad')}>
+					Logg inn med NAV epost
+				</Knapp>
+				<Knapp
 					className="login-modal_button-bankid"
-					type="hoved"
 					onClick={getOnClick('/oauth2/authorization/idporten')}
 				>
 					Logg inn med BankId
-				</Hovedknapp>
+				</Knapp>
 			</div>
 		</div>
 	)

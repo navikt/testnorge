@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter'
 import { ProfilService } from '@/services'
 import LogoutButton from '@/components/LogoutButton'
+import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter/lib'
 
 type Props = {
 	children?: React.ReactNode

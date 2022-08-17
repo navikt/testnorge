@@ -91,12 +91,6 @@ export default () => {
             },
           ]}
         />
-        <DatePickerFormItem
-          id="foedselsdato-field"
-          label="Barnets fødselesdato*"
-          onBlur={(value) => dispatch({ type: Action.SET_FOEDSELSDATO_ACTION, value: value })}
-          error={state.validate && !notEmptyString(state.foedselsdato) ? 'Påkrevd' : null}
-        />
       </Line>
       <Line>
         <SelectFormItem
@@ -159,6 +153,14 @@ export default () => {
               label: 'Arv fra fars',
             },
           ]}
+        />
+      </Line>
+      <Line>
+        <DatePickerFormItem
+          id="foedselsdato-field"
+          label="Barnets fødselesdato*"
+          onBlur={(value) => dispatch({ type: Action.SET_FOEDSELSDATO_ACTION, value: value })}
+          required={true}
         />
       </Line>
     </EndringsmeldingForm>

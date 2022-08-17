@@ -1,8 +1,15 @@
-import { Form, Knapp, Line, Page, Pageable, SelectFormItem } from '@navikt/dolly-komponenter';
+import {
+  Form,
+  InputFormItem,
+  Knapp,
+  Line,
+  Page,
+  Pageable,
+  SelectFormItem,
+} from '@navikt/dolly-komponenter';
 import React, { useEffect, useState } from 'react';
 import { PersonFasteDataService, PersonService } from '@/service';
 import { CompareTable } from '@/components/compare-table';
-import { Input } from 'nav-frontend-skjema';
 import { PersonComperator } from '@/comperator';
 
 const grupper = [
@@ -85,7 +92,7 @@ const FastePersonDataPage = () => {
             onChange={(value: string) => setMiljo(value)}
             options={toOptions(miljoer)}
           />
-          <Input
+          <InputFormItem
             label="Tag"
             value={tag}
             onChange={(e) => {
@@ -94,7 +101,7 @@ const FastePersonDataPage = () => {
           />
         </Line>
         <Line>
-          <Input
+          <InputFormItem
             label="Opprinnelse"
             value={opprinnelse}
             onChange={(e) => {
@@ -103,7 +110,9 @@ const FastePersonDataPage = () => {
           />
           <Knapp
             disabled={loading}
-            onClick={(e) => {
+            loading={loading}
+            variant={'secondary'}
+            onClick={(e: { preventDefault: () => void }) => {
               e.preventDefault();
               onSearch(gruppe);
             }}

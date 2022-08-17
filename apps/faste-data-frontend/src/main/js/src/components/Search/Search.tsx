@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
   ErrorAlertstripe,
+  InputFormItem,
   Knapp,
   Line,
   SuccessAlertstripe,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { Input } from 'nav-frontend-skjema';
 import styled from 'styled-components';
 import { NotFoundError } from '@navikt/dolly-lib';
 
@@ -18,12 +18,11 @@ export type Props<T> = {
   onSearch: (value: string) => Promise<T>;
 };
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(InputFormItem)`
   flex-grow: 3;
 `;
 const StyledKnapp = styled(Knapp)`
   flex-grow: 1;
-  width: auto !important;
 `;
 
 const StyledErrorAlertstripe = styled(ErrorAlertstripe)`
@@ -78,8 +77,9 @@ const Search = <T extends unknown>({ labels, onSearch }: Props<T>) => {
         />
         <StyledKnapp
           disabled={loading}
-          spinner={loading}
-          onClick={(e) => {
+          loading={loading}
+          variant={'secondary'}
+          onClick={(e: { preventDefault: () => void }) => {
             e.preventDefault();
             setStatus(null);
 

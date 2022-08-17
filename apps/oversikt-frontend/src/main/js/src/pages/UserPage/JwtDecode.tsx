@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
-import { Input } from 'nav-frontend-skjema'
 import styled from 'styled-components'
-import { Hovedknapp } from 'nav-frontend-knapper'
+import { InputFormItem, Knapp } from '@navikt/dolly-komponenter/lib'
 
-const StyledHovedknapp = styled(Hovedknapp)`
+const StyledHovedknapp = styled(Knapp)`
 	margin-top: 32px;
 	margin-left: 5px;
 	margin-bottom: 5px;
@@ -18,7 +17,7 @@ const AccessTokenTextArea = styled.textarea`
 	background: white;
 `
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(InputFormItem)`
 	width: 100%;
 `
 

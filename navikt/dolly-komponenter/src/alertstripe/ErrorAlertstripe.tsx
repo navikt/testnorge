@@ -6,7 +6,7 @@ export type ErrorAlertstripeProps = {
 };
 
 const ErrorAlertstripe = ({ label, ...props }: ErrorAlertstripeProps) => (
-  <Alertstripe {...props} label={label} type="feil" />
+  <Alertstripe {...props} label={label} variant="error" />
 );
 
 ErrorAlertstripe.displayName = 'ErrorAlertstripe';

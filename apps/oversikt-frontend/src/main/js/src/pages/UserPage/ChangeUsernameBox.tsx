@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
 import styled from 'styled-components'
-import { Hovedknapp } from 'nav-frontend-knapper'
-import { Input } from 'nav-frontend-skjema'
 import BrukerService from '@/services/BrukerService'
+import { InputFormItem, Knapp } from '@navikt/dolly-komponenter/lib'
 
-const StyledHovedknapp = styled(Hovedknapp)`
+const StyledHovedknapp = styled(Knapp)`
 	margin: 5px 0;
 `
 
@@ -24,15 +23,15 @@ const ChangeUsernameBox = () => {
 			header="Endre brukernavn"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<Input label="Id" type="text" onBlur={(event) => setId(event.target.value)} />
-					<Input
+					<InputFormItem label="Id" type="text" onBlur={(event) => setId(event.target.value)} />
+					<InputFormItem
 						label="Brukernavn"
 						type="text"
 						onBlur={(event) => setUsername(event.target.value)}
 					/>
 
-					<Input label="Jwt" type="text" onBlur={(event) => setJwt(event.target.value)} />
-					<StyledHovedknapp spinner={loading} onClick={onSubmit}>
+					<InputFormItem label="Jwt" type="text" onBlur={(event) => setJwt(event.target.value)} />
+					<StyledHovedknapp loading={loading} onClick={onSubmit}>
 						Endre
 					</StyledHovedknapp>
 				</>
