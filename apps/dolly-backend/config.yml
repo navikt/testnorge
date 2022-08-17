@@ -19,6 +19,7 @@ spec:
           cluster: dev-gcp
         - application: etterlatte-testdata
           cluster: dev-gcp
+          namespace: etterlatte
   webproxy: true
   azure:
     application:
