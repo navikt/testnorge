@@ -32,7 +32,7 @@ public class TpsStatusQuoServiceTest {
 
     private String fnr = "12345678901";
     private String routineName = "FS03-FDNUMMER-KERNINFO-O";
-    private URL jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+    private URL jsonContent = Resources.getResource("files/FS03-FDNUMMER-KERNINFO-O.json");
     private String environment = "t1";
 
     /**
@@ -60,7 +60,7 @@ public class TpsStatusQuoServiceTest {
      */
     @Test
     public void shouldGetStatusQuoForFeltnavnRelasjon() throws IOException {
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("FS02-FDNUMMER-PERSRELA-O.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/FS02-FDNUMMER-PERSRELA-O.json"));
 
         List<String> feltNavn = new ArrayList<>();
         feltNavn.add(FNR_RELASJON);

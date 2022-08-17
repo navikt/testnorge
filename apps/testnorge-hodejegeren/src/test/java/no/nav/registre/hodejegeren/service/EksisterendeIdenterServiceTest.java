@@ -148,7 +148,7 @@ public class EksisterendeIdenterServiceTest {
     @Test
     @Ignore
     public void hentGittAntallIdenterMedStatusQuoTest() throws IOException {
-        var jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        var jsonContent = Resources.getResource("files/FS03-FDNUMMER-KERNINFO-O.json");
         var jsonNode = new ObjectMapper().readTree(jsonContent);
         var fnr1 = "23048801390";
         List<String> identer = new ArrayList<>();
@@ -168,7 +168,7 @@ public class EksisterendeIdenterServiceTest {
     @Test
     @Ignore
     public void hentGittAntallIdenterMedKontonummerTest() throws IOException {
-        var jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        var jsonContent = Resources.getResource("files/FS03-FDNUMMER-KERNINFO-O.json");
         var jsonNode = new ObjectMapper().readTree(jsonContent);
         var fnr1 = "23048801390";
         List<String> identer = new ArrayList<>();
@@ -188,7 +188,7 @@ public class EksisterendeIdenterServiceTest {
 
     @Test
     public void shouldHenteAdresserPaaIdent() throws IOException {
-        var jsonContent = Resources.getResource("FS03-FDNUMMER-KERNINFO-O.json");
+        var jsonContent = Resources.getResource("files/FS03-FDNUMMER-KERNINFO-O.json");
         var jsonNode = new ObjectMapper().readTree(jsonContent);
         var fnr1 = "23048801390";
         var identer = new ArrayList<>(Collections.singleton(fnr1));
@@ -205,7 +205,7 @@ public class EksisterendeIdenterServiceTest {
         var fnr = "12101816735";
         var miljoe = "t1";
 
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("persondata/persondata.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/persondata/persondata.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentPersondata(fnr, miljoe);
@@ -221,7 +221,7 @@ public class EksisterendeIdenterServiceTest {
         var fnr = "12090080405";
         var miljoe = "t1";
 
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/tom_relasjon.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/relasjoner/tom_relasjon.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
@@ -235,7 +235,7 @@ public class EksisterendeIdenterServiceTest {
         var fnr = "12090080405";
         var miljoe = "t1";
 
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjon.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/relasjoner/relasjon.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
@@ -250,7 +250,7 @@ public class EksisterendeIdenterServiceTest {
         var fnr = "12090080405";
         var miljoe = "t1";
 
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("relasjoner/relasjoner.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/relasjoner/relasjoner.json"));
 
         when(tpsStatusQuoService.getInfoOnRoutineName(anyString(), anyString(), anyString(), anyString())).thenReturn(jsonNode);
         var response = eksisterendeIdenterService.hentRelasjoner(fnr, miljoe);
@@ -268,7 +268,7 @@ public class EksisterendeIdenterServiceTest {
         var fnr2 = "12345678910";
         var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_status.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/tpsStatus/tps_status.json"));
 
         when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
         when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A0"), eq(miljoe), anyList())).thenReturn(jsonNode);
@@ -286,7 +286,7 @@ public class EksisterendeIdenterServiceTest {
         var fnr2 = "12345678910";
         var identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
-        var jsonNode = new ObjectMapper().readTree(Resources.getResource("tpsStatus/tps_kollisjon.json"));
+        var jsonNode = new ObjectMapper().readTree(Resources.getResource("files/tpsStatus/tps_kollisjon.json"));
 
         when(tpsfFiltreringService.finnAlleIdenter(avspillergruppeId)).thenReturn(identer);
         when(tpsfConsumer.hentTpsStatusPaaIdenter(eq("A2"), eq("q2"), anyList())).thenReturn(jsonNode);

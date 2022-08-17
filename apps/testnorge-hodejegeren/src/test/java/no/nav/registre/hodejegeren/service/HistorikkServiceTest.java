@@ -63,8 +63,8 @@ public class HistorikkServiceTest {
     @Before
     public void setUp() throws IOException {
         var objectMapper = new ObjectMapper();
-        syntHistorikk1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk1.json")), SyntHistorikk.class);
-        syntHistorikk2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk2.json")), SyntHistorikk.class);
+        syntHistorikk1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("files/historikk/historikk1.json")), SyntHistorikk.class);
+        syntHistorikk2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("files/historikk/historikk2.json")), SyntHistorikk.class);
 
         lagretHistorikk = new ArrayList<>(Arrays.asList(syntHistorikk1, syntHistorikk2));
 
@@ -77,8 +77,8 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.save(syntHistorikk1)).thenReturn(syntHistorikk1);
         when(syntHistorikkRepository.save(syntHistorikk2)).thenReturn(syntHistorikk2);
 
-        historikkRequest1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk-request1.json")), HistorikkRequest.class);
-        historikkRequest2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("historikk/historikk-request2.json")), HistorikkRequest.class);
+        historikkRequest1 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("files/historikk/historikk-request1.json")), HistorikkRequest.class);
+        historikkRequest2 = objectMapper.treeToValue(objectMapper.readTree(Resources.getResource("files/historikk/historikk-request2.json")), HistorikkRequest.class);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.ofNullable(skdHistorikk));
         when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
 
-        var resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
+        var resource = Resources.getResource("files/historikk/TpsPersonDokumentType.xml");
         var xmlMapper = new XmlMapper();
         var tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
 
@@ -186,7 +186,7 @@ public class HistorikkServiceTest {
         when(syntHistorikkRepository.findById(skdFnr)).thenReturn(Optional.empty());
         when(syntHistorikkRepository.save(any())).thenReturn(skdHistorikk);
 
-        var resource = Resources.getResource("historikk/TpsPersonDokumentType.xml");
+        var resource = Resources.getResource("files/historikk/TpsPersonDokumentType.xml");
         var xmlMapper = new XmlMapper();
         var tpsPersonDokumentType = xmlMapper.readValue(resource, TpsPersonDokumentType.class);
 

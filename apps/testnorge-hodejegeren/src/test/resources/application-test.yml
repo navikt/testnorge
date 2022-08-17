@@ -1,0 +1,19 @@
+testnorges.ida.credential.tpsf:
+  username: dummy
+  password: dummy
+
+consumers:
+  tps-forvalteren:
+    url: http://localhost:${wiremock.server.port:0}/tpsf
+
+spring:
+  data:
+    mongodb:
+      database: dummy
+      port: 0123
+      host: dummy
+  cloud:
+    vault:
+      enabled: false
+
+cache.avspillergrupper: 100000783, 100000784

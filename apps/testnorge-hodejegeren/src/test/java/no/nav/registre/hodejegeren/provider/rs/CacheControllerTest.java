@@ -22,7 +22,7 @@ public class CacheControllerTest {
     @Test
     public void shouldOppdatereCacheTilGruppe() {
         var avspillergruppeId = 123L;
-        cacheController.oppdaterGruppeCache(123L);
+        cacheController.oppdaterGruppeCache(avspillergruppeId);
         verify(cacheService).oppdaterAlleCacher(avspillergruppeId);
     }
 

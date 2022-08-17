@@ -34,7 +34,7 @@ public class TpsfConsumer {
 
     public TpsfConsumer(
             Executor executor,
-            @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
+            @Value("${consumers.tps-forvalteren.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
