@@ -87,21 +87,23 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
-		_get(formikBag.values, 'inntektsmelding.inntekter').forEach((inntekt: Inntekt, idx: number) => {
-			if (type === TypeArbeidsgiver.VIRKSOMHET) {
-				formikBag.setFieldValue(
-					`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
-					''
-				)
-				formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
-			} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
-				formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
-				formikBag.setFieldValue(
-					`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
-					''
-				)
+		_get(formikBag.values, 'inntektsmelding.inntekter').forEach(
+			(_inntekt: Inntekt, idx: number) => {
+				if (type === TypeArbeidsgiver.VIRKSOMHET) {
+					formikBag.setFieldValue(
+						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
+						''
+					)
+					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
+				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
+					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
+					formikBag.setFieldValue(
+						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
+						''
+					)
+				}
 			}
-		})
+		)
 	}
 
 	return (

@@ -57,8 +57,8 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 						{_get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
 							<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 								<Hjelpetekst hjelpetekstFor="Type sivilstand">
-									Samboer eksisterer ikke i PDL og TPS. Personer med denne typen sisvilstand vil
-									derfor vises som ugift i fagsystemene.
+									Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand
+									vil derfor vises som ugift i fagsystemene.
 								</Hjelpetekst>
 							</div>
 						)}
@@ -90,7 +90,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 								label={'PERSON RELATERT TIL'}
 								formikBag={formikBag}
 								isExpanded={
-									!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`)) ||
+									!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
 									_get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
 								}
 							/>

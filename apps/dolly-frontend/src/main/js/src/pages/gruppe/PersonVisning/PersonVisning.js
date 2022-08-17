@@ -105,7 +105,7 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && isAlive && (
+					{!iLaastGruppe && (
 						<PartnerImportButton
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
@@ -156,6 +156,7 @@ export const PersonVisning = ({
 					data={data.arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
+					ident={ident}
 				/>
 				<UdiVisning
 					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}

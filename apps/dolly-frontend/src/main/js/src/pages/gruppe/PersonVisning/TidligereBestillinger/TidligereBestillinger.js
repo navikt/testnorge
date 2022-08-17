@@ -11,9 +11,9 @@ const NavigerTilBestillingButton = styled(Button)`
 `
 
 export const TidligereBestillinger = ({ ids }) => {
-	if (ids.length <= 1) return false
-
 	const dispatch = useDispatch()
+
+	if (ids.length <= 1) return false
 
 	return (
 		<div className="tidligere-bestilling-panel">

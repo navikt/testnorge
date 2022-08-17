@@ -29,7 +29,7 @@ export const Doedsfall = () => {
 				newEntry={initialDoedsfall}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <DoedsfallForm path={path} />}
+				{(path: string, _idx: number) => <DoedsfallForm path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

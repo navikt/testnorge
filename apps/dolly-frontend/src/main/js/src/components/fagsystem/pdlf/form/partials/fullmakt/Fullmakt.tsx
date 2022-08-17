@@ -47,7 +47,7 @@ export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 							label={'FULLMEKTIG'}
 							formikBag={formikBag}
 							isExpanded={
-								!isEmpty(_get(formikBag.values, `${path}.nyFullmektig`)) ||
+								!isEmpty(_get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
 								_get(formikBag.values, `${path}.motpartsPersonident`) !== null
 							}
 						/>

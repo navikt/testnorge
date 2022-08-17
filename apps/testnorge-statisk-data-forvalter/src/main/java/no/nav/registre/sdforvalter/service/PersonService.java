@@ -37,13 +37,13 @@ public class PersonService {
                         .stream()
                         .map(ident -> new PersonStatus(new Person(ident), personMap.get(ident.getFnr())))
                         .filter(personStatus -> equal == null || personStatus.isEqual() == equal)
-                        .collect(Collectors.toList())
+                        .toList()
         );
     }
 
     public List<Person> getPerson(String gruppe) {
         TpsIdentListe tpsIdentListe = tpsIdenterAdapter.fetchBy(gruppe);
-        return tpsIdentListe.stream().map(Person::new).collect(Collectors.toList());
+        return tpsIdentListe.stream().map(Person::new).toList();
     }
 
     public TpsIdent getPersonByIdent(String ident) {

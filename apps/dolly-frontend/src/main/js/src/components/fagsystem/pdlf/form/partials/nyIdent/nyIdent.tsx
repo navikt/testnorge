@@ -35,7 +35,8 @@ export const NyIdent = ({ formikBag }: NyIdentForm) => (
 						formikBag={formikBag}
 						nyIdentValg={nyIdentValg}
 						isExpanded={
-							!isEmpty(nyIdentValg) || _get(formikBag.values, `${path}.eksisterendeIdent`) !== null
+							!isEmpty(nyIdentValg, ['syntetisk']) ||
+							_get(formikBag.values, `${path}.eksisterendeIdent`) !== null
 						}
 					/>
 					<AvansertForm path={path} kanVelgeMaster={true} />
