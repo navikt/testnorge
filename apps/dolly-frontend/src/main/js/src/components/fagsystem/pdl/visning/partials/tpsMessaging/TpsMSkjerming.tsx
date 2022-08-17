@@ -13,6 +13,7 @@ type Skjerming = {
 }
 
 export const TpsMSkjerming = ({ data }: TpsMSkjermingProps) => {
+	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data?.egenAnsattDatoFom) {
 		return null
 	}
