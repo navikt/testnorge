@@ -31,8 +31,8 @@ import no.nav.registre.hodejegeren.provider.rs.requests.skd.PersonDokumentWrappe
 import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
 import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class HistorikkService {
 
     private static final int INCREASE_IN_NUMBER_OF_RESULTS = 100;

@@ -3,7 +3,6 @@ package no.nav.registre.hodejegeren.consumer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.hodejegeren.consumer.command.GetTpsIdenterCommand;
 import no.nav.registre.hodejegeren.consumer.command.GetTpsServiceRoutineV1Command;
 import no.nav.registre.hodejegeren.consumer.command.GetTpsStatusPaaIdenterCommand;
@@ -27,7 +26,6 @@ import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
 
 
 @Component
-@Slf4j
 public class TpsfConsumer {
     private final WebClient webClient;
     private final Executor executor;
@@ -71,7 +69,7 @@ public class TpsfConsumer {
         return new ObjectMapper().readTree(response);
     }
 
-    public Mono<ServiceRoutineDTO> getTpsServiceRoutineV2(String routineName, String aksjonsKode, String miljoe, String fnr){
+    public Mono<ServiceRoutineDTO> getTpsServiceRoutineV2(String routineName, String aksjonsKode, String miljoe, String fnr) {
         return Mono.fromFuture(getFuture(routineName, aksjonsKode, miljoe, fnr));
     }
 
