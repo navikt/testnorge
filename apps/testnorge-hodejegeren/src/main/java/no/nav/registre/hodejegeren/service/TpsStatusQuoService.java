@@ -3,7 +3,6 @@ package no.nav.registre.hodejegeren.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
@@ -18,7 +17,6 @@ import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 
 @Slf4j
-@Getter
 @Service
 @RequiredArgsConstructor
 public class TpsStatusQuoService {
