@@ -23,7 +23,6 @@ spring:
       maximum-pool-size: 3
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
-
   security:
     oauth2:
       resourceserver:
@@ -31,10 +30,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:dolly-backend-dev
 
 consumers:
   testnav-profil-api:

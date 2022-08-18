@@ -57,11 +57,6 @@ spec:
     limits:
       cpu: 1500m
       memory: 2048Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/dolly-backend-dev/dolly
-        mountPath: /var/run/secrets/nais.io/vault
   gcp:
     sqlInstances:
       - type: POSTGRES_14
