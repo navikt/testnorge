@@ -2,6 +2,8 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 spring:
+  application:
+    name: dolly-backend-dev
   cloud:
     vault:
       host: vault.adeo.no
@@ -9,10 +11,30 @@ spring:
       fail-fast: true
       connection-timeout: 15000
       read-timeout: 30000
-      kv:
-        backend: kv/preprod/fss
-        application-name: dolly-backend/local
-        default-context: dolly-backend/local
+      generic:
+        enabled: false
+      database:
+        backend: postgresql/preprod-fss
+        enabled: true
+        role: dolly-test-admin
+  datasource:
+    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/dolly-test
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+    driver-class-name: org.postgresql.Driver
+
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:dolly-backend-dev
 
 consumers:
   testnav-profil-api:

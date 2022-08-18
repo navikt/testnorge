@@ -56,8 +56,10 @@ spec:
     limits:
       cpu: 10000m
       memory: 8192Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/dolly-backend/dolly
-        mountPath: /var/run/secrets/nais.io/vault
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-dolly-backend
+        databases:
+          - name: testnav-dolly-backend
+        autoBackupTime: "01:00"

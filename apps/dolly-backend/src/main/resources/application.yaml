@@ -1,12 +1,62 @@
-server.port: 8080
-server.compression.enabled: true
-server.compression.mime-types: application/json,text/html,text/xml,text/plain,application/javascript,text/css
-
-APP_NAME: dolly
-APP_VERSION: ${application.version}
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:dolly-backend-dev
+dolly:
+  api:
+    v1:
+      name: Dolly V2.0
+      description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
+        Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
+      version: Versjon 1
+      header:
+        nav-consumer-id: Navn på applikasjon som gjør kallet
+        nav-call-id: Unik identifikator, typisk UUID (128 bit)
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,text/html,text/xml,text/plain,application/javascript,text/css
+    servlet:
+      encoding:
+        charset: UTF-8
+    max-http-header-size: 70KB
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  flyway:
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  jpa:
+    properties:
+      hibernate:
+        default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQL82Dialect
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+          #The client_id of this application
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
 
 consumers:
   testnav-helsepersonell-service:
@@ -115,86 +165,33 @@ consumers:
     url: https://testnav-pdl-forvalter.dev.intern.nav.no
     cluster: dev-gcp
   testnav-arbeidsforhold-service:
-    url: https://testnav-arbeidsforhold-service.dev.intern.nav.no
     name: testnav-arbeidsforhold-service
-    cluster: dev-gcp
     namespace: dolly
+    url: https://testnav-arbeidsforhold-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-amelding-service:
-    url: https://testnav-amelding-service.dev.intern.nav.no
     name: testnav-amelding-service
-    cluster: dev-gcp
     namespace: dolly
+    url: https://testnav-amelding-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-sykemelding-api-proxy:
-    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
     name: testnav-sykemelding-api-proxy
+    namespace: dolly
+    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-    namespace: dolly
   testnav-organisasjon-service:
-    url: https://testnav-organisasjon-service.dev.intern.nav.no
     name: testnav-organisasjon-service
-    cluster: dev-gcp
     namespace: dolly
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    cluster: dev-gcp
     threads: 5
   tps-forvalteren-proxy:
-    url: https://tps-forvalteren-facade-proxy.dev-fss-pub.nais.io
     name: tps-forvalteren-proxy
-    cluster: dev-fss
     namespace: dolly
+    url: https://tps-forvalteren-facade-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly
     url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
     cluster: dev-fss
-
-#### APP DB ####
-? app.datasource.onsHosts
-
-springfox:
-  documentation:
-    swagger:
-      v2:
-        path: /internal/swagger-spec
-
-dolly:
-  api:
-    v1:
-      name: Dolly V2.0
-      description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
-        Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
-      version: Versjon 1
-      header:
-        nav-consumer-id: Navn på applikasjon som gjør kallet
-        nav-call-id: Unik identifikator, typisk UUID (128 bit)
-
-spring:
-  main:
-    allow-bean-definition-overriding: true
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
-          #The client_id of this application
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-management:
-  endpoints:
-    enabled-by-default: true
-    web:
-      base-path: /internal
-      exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
-  endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
-  metrics.export:
-    prometheus.enabled: true
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
-  max-http-header-size: 70KB

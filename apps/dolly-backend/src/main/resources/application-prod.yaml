@@ -1,5 +1,13 @@
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:dolly-backend
 
+spring:
+  datasource:
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_HOST}:${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_PORT}/${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_DATABASE}?user=${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_USERNAME}&password=${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+
 consumers:
   testnav-helsepersonell-service:
     url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
@@ -15,9 +23,9 @@ consumers:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-person-service:
     url: http://testnav-person-service.dolly.svc.cluster.local
-   testnav-inst-service:
+  testnav-inst-service:
     url: http://testnav-inst-service.dolly.svc.cluster.local
-   testnav-pdl-forvalter:
+  testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   testnav-arbeidsforhold-service:
     url: http://testnav-arbeidsforhold-service.dolly.svc.cluster.local
