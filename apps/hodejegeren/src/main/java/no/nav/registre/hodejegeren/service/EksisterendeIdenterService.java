@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
 import no.nav.registre.hodejegeren.exception.IdentIOException;
@@ -265,7 +266,7 @@ public class EksisterendeIdenterService {
         return identer.stream()
                 .filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident)
                         .isBefore(LocalDate.now().minusYears(minimumAlder)))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public List<String> finnLevendeIdenterIAldersgruppe(

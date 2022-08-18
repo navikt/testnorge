@@ -10,6 +10,7 @@ import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -42,8 +43,12 @@ public class TpsfConsumer {
                 .create()
                 .responseTimeout(Duration.ofMinutes(2));
 
-        this.webClient = WebClient
-                .builder()
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
                 .baseUrl(serverUrl)
                 .defaultHeaders(headers -> headers.setBasicAuth(username, password))
                 .clientConnector(new ReactorClientHttpConnector(client))
