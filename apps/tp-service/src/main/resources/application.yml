@@ -27,6 +27,12 @@ consumers:
     name: synthdata-tp-gcp
   testnorge-hodejegeren:
     url: https://testnorge-hodejegeren.dev.adeo.no/api
+  testnav-pensjon-testdata-facade-proxy:
+    name: testnav-pensjon-testdata-facade-proxy
+    namespace: dolly
+    #url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io TODO Bytte til denne når app er i GCP
+    url: https://testnav-pensjon-testdata-facade-proxy.dev.intern.nav.no
+    cluster: dev-fss
 
 management:
   endpoints:
