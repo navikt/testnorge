@@ -43,6 +43,10 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
