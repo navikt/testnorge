@@ -18,10 +18,13 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.ThreadLocalContextLifter;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Operators;
 
 import java.util.Collections;
 import java.util.List;
@@ -78,6 +81,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
     @Async
     public void executeAsync(Bestilling bestilling) {
+        Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
 

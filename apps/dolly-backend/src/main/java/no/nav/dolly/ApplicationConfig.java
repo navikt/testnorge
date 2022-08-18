@@ -1,6 +1,7 @@
 package no.nav.dolly;
 
 import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
+import no.nav.dolly.util.MdcWarraperExecutorService;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
@@ -29,6 +30,13 @@ public class ApplicationConfig {
 
     @Bean
     public ExecutorService dollyForkJoinPool() {
-        return new DelegatingSecurityContextExecutorService(new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true));
+        var executorService = new DelegatingSecurityContextExecutorService(
+                new MdcWarraperExecutorService(
+                        new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true)
+                )
+        );
+
+
+        return executorService;
     }
 }
