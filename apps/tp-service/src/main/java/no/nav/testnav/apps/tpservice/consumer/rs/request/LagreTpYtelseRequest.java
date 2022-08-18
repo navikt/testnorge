@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,8 +19,17 @@ public class LagreTpYtelseRequest {
     private String fnr;
 
     private String ordning;
-    private PensjonData.TpYtelseType ytelseType;
+    private TpYtelseType ytelseType;
     private LocalDate datoInnmeldtYtelseFom;
     private LocalDate datoYtelseIverksattFom;
     private LocalDate datoYtelseIverksattTom;
+
+    public enum TpYtelseType {
+        ALDER,
+        UFORE,
+        GJENLEVENDE,
+        BARN,
+        AFP,
+        UKJENT
+    }
 }
