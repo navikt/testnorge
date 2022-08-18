@@ -12,6 +12,7 @@ import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
@@ -28,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -95,19 +96,17 @@ public class TpsMessagingConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
+    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, BankkontonrUtlandDTO body) {
 
-        if ((body instanceof BankkontonrUtlandDTO bankkontoUtland)
-                && (null != bankkontoUtland.getTilfeldigKontonummer())
-                && bankkontoUtland.getTilfeldigKontonummer()) {
-            body = bankkontoUtland.withKontonummer(tilfeldigUtlandskBankkonto(bankkontoUtland.getLandkode()));
+        if (nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
+            body = body.withKontonummer(tilfeldigUtlandskBankkonto(body.getLandkode()));
         }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, Object body) {
+    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
