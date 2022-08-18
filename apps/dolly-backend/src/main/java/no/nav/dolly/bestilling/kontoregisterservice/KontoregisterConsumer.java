@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -65,7 +66,7 @@ public class KontoregisterConsumer {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO body) {
 
-        if ((null != body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
+        if ( nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
             body = body.withKontonummer(tilfeldigUtlandskBankkonto());
         }
 
