@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 
 public class ThreadLocalContextLifter<T> implements BiFunction<Scannable, CoreSubscriber<? super T>, CoreSubscriber<? super T>> {
 
-    private static Logger logger = LoggerFactory.getLogger(ThreadLocalContextLifter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThreadLocalContextLifter.class);
 
     private static final ThreadLocal<Context> contextHolder = new ThreadLocal<>();
 
@@ -28,6 +28,10 @@ public class ThreadLocalContextLifter<T> implements BiFunction<Scannable, CoreSu
 
     public static void setContext(Context context) {
         contextHolder.set(context);
+    }
+
+    public static void clearContext() {
+        contextHolder.remove();
     }
 
     @Override
@@ -80,11 +84,13 @@ public class ThreadLocalContextLifter<T> implements BiFunction<Scannable, CoreSu
         @Override
         public void onError(Throwable t) {
             delegate.onError(t);
+            clearContext();
         }
 
         @Override
         public void onComplete() {
             delegate.onComplete();
+            clearContext();
         }
     }
 }
