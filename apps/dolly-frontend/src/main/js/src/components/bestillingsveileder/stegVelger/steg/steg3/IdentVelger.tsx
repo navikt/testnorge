@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
-import { RadioPanelGruppe } from 'nav-frontend-skjema'
-import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikProps } from 'formik'
-import { PopoverOrientering } from 'nav-frontend-popover'
+import { RadioPanelGroup } from '@navikt/hoykontrast'
+import { bottom } from '@popperjs/core'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 
 type Form = {
 	formikBag: FormikProps<{}>
@@ -31,24 +31,24 @@ const Tittel = styled.div`
 	}
 `
 
-const TestpersonValg = styled(RadioPanelGruppe)`
-	legend {
-		.offscreen;
-	}
+const TestpersonValg = styled(RadioPanelGroup)`
+  legend {
+    .offscreen;
+  }
 
-	.inputPanelGruppe__inner {
-		.inputPanel {
-			margin-top: 10px;
-		}
+  .inputPanelGruppe__inner {
+    .inputPanel {
+      margin-top: 10px;
+    }
 
-		display: flex;
-		justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 
-		label {
-			width: 49%;
-			margin-bottom: 0.5rem;
-		}
-	}
+    label {
+      width: 49%;
+      margin-bottom: 0.5rem;
+    }
+  }
 `
 
 const informasjonstekst =
@@ -73,9 +73,7 @@ export const IdentVelger = ({ formikBag }: Form) => {
 		<IdentVelgerField>
 			<Tittel>
 				<h2>Velg type person</h2>
-				<Hjelpetekst hjelpetekstFor={'Identvelger'} type={PopoverOrientering.Under}>
-					{informasjonstekst}
-				</Hjelpetekst>
+				<Hjelpetekst placement={bottom}>{informasjonstekst}</Hjelpetekst>
 			</Tittel>
 
 			<TestpersonValg

@@ -27,8 +27,8 @@ export const OrgnrToggle = ({
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setInputType(event.target.value)
+	const handleToggleChange = (value: string) => {
+		setInputType(value)
 		clearEnhetsinfo()
 	}
 
@@ -53,11 +53,7 @@ export const OrgnrToggle = ({
 
 	return (
 		<div className="toggle--wrapper">
-			<OrganisasjonToogleGruppe
-				path={path}
-				inputType={inputType}
-				handleToggleChange={handleToggleChange}
-			/>
+			<OrganisasjonToogleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonLoaderConnector
 					path={`${path}.orgNr`}

@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { OrgnummerToggle } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
-import { ToggleGroup } from '~/components/ui/toggle/Toggle'
+import { ToggleGroup } from '@navikt/ds-react'
 
 type InntektstubVirksomhetToggleProps = {
 	formikBag: FormikProps<{}>
@@ -39,7 +39,11 @@ export const InntektstubVirksomhetToggle = ({
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGroup onChange={handleToggleChange} name={path} defaultValue={ToggleValg.ORGANISASJON}>
+			<ToggleGroup
+				size={'small'}
+				onChange={handleToggleChange}
+				defaultValue={ToggleValg.ORGANISASJON}
+			>
 				<ToggleGroup.Item key={ToggleValg.ORGANISASJON} value={ToggleValg.ORGANISASJON}>
 					Organisasjon
 				</ToggleGroup.Item>

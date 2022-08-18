@@ -1,20 +1,16 @@
 import React from 'react'
-import { ToggleGroup } from '~/components/ui/toggle/Toggle'
+import { ToggleGroup } from '@navikt/ds-react'
 
 interface OrganisasjonToogleGruppeProps {
-	path: string
 	inputType: string
 	handleToggleChange: (value: string) => void
 }
 
 export const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
-export const OrganisasjonToogleGruppe = ({
-	path,
-	handleToggleChange,
-}: OrganisasjonToogleGruppeProps) => {
+export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToogleGruppeProps) => {
 	return (
-		<ToggleGroup onChange={handleToggleChange} name={path} defaultValue={inputValg.fraEgenListe}>
+		<ToggleGroup size={'small'} onChange={handleToggleChange} defaultValue={inputValg.fraEgenListe}>
 			<ToggleGroup.Item key={inputValg.fraFellesListe} value={inputValg.fraFellesListe}>
 				Felles organisasjoner
 			</ToggleGroup.Item>

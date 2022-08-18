@@ -1,14 +1,19 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { ToggleGruppe } from 'nav-frontend-skjema'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
 import Loading from '~/components/ui/loading/Loading'
+import { ToggleGroup } from '@navikt/ds-react'
 
-// @ts-ignore
-export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
+type Props = {
+	brukerId: string
+	formikBag: { setFieldValue: (arg0: string, arg1: string) => void }
+	opprettetFraMal: string
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const MalForm = ({ brukerId, formikBag: { setFieldValue }, opprettetFraMal }: Props) => {
 	enum MalTyper {
 		INGEN = 'EGEN',
 		OPPRETT = 'OPPRETT',
@@ -50,11 +55,11 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
 		if (value === MalTyper.INGEN) {
-			formikBag.setFieldValue('malBestillingNavn', undefined)
+			setFieldValue('malBestillingNavn', undefined)
 		} else if (value === MalTyper.OPPRETT) {
-			formikBag.setFieldValue('malBestillingNavn', '')
+			setFieldValue('malBestillingNavn', '')
 		} else if (value === MalTyper.ENDRE) {
-			formikBag.setFieldValue('malBestillingNavn', opprettetFraMal || '')
+			setFieldValue('malBestillingNavn', opprettetFraMal || '')
 		}
 	}
 
@@ -63,16 +68,16 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 			<h2>Lagre som mal</h2>
 			<div className="flexbox--align-center">
 				<div className="toggle--wrapper">
-					<ToggleGruppe
-						onChange={(e: BaseSyntheticEvent) => handleToggleChange(e.target.value)}
-						name={'arbeidsforhold'}
+					<ToggleGroup
+						onChange={(value: MalTyper) => handleToggleChange(value)}
+						defaultValue={MalTyper.INGEN}
 					>
 						{toggleValues.map((type) => (
-							<ToggleKnapp key={type.value} value={type.value} checked={type.value === typeMal}>
+							<ToggleGroup.Item key={type.value} value={type.value}>
 								{type.label}
-							</ToggleKnapp>
+							</ToggleGroup.Item>
 						))}
-					</ToggleGruppe>
+					</ToggleGroup>
 				</div>
 			</div>
 			{typeMal === MalTyper.ENDRE ? (

@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -6,7 +6,7 @@ import InntektStub from '~/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { ToggleGroup } from '~/components/ui/toggle/Toggle'
+import { ToggleGroup } from '@navikt/ds-react'
 
 const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
 
@@ -88,15 +88,11 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 		<>
 			<div className="toggle--wrapper">
 				<ToggleGroup
-					onChange={(event: BaseSyntheticEvent) => changeFormType(event.target?.value)}
-					name="toggler"
+					defaultValue={FormType.STANDARD}
+					onChange={(value: FormType) => changeFormType(value)}
 				>
-					<ToggleGroup.Item value={FormType.STANDARD} checked={!formSimple}>
-						Standard
-					</ToggleGroup.Item>
-					<ToggleGroup.Item value={FormType.FORENKLET} checked={formSimple}>
-						Forenklet
-					</ToggleGroup.Item>
+					<ToggleGroup.Item value={FormType.STANDARD}>Standard</ToggleGroup.Item>
+					<ToggleGroup.Item value={FormType.FORENKLET}>Forenklet</ToggleGroup.Item>
 				</ToggleGroup>
 			</div>
 			<FormikDollyFieldArray

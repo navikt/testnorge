@@ -72,7 +72,11 @@ export const Detaljer = ({
 			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
-						<ToggleGroup onChange={handleToggleChange} defaultValue={TypeUnderenhet.JURIDISKENHET}>
+						<ToggleGroup
+							size={'small'}
+							onChange={handleToggleChange}
+							defaultValue={TypeUnderenhet.JURIDISKENHET}
+						>
 							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
 								value={TypeUnderenhet.JURIDISKENHET}

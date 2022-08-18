@@ -7,7 +7,7 @@ import './varslingerModal.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { VarslingerApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
-import { StepIndicator } from '@navikt/ds-react'
+import { Stepper } from '@navikt/ds-react'
 
 interface Varslinger {
 	updateVarslingerBruker: Function
@@ -80,9 +80,7 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 		<ErrorBoundary>
 			<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
 				<div className="varslinger-modal">
-					{/* 
-                //@ts-ignore */}
-					{antallVarslinger > 1 && <StepIndicator activeStep={steg} children={varslingerSteg} />}
+					{antallVarslinger > 1 && <Stepper activeStep={steg}>{varslingerSteg}</Stepper>}
 
 					<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
 

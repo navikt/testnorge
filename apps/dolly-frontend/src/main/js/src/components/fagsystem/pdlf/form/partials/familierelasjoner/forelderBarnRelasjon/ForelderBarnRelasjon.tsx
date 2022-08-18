@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { BaseSyntheticEvent } from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -20,7 +19,7 @@ import { TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { ToggleGroup } from '~/components/ui/toggle/Toggle'
+import { ToggleGroup } from '@navikt/ds-react'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
@@ -84,14 +83,13 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 					<div className="flexbox--flex-wrap">
 						<div className="toggle--wrapper">
 							<ToggleGroup
-								onChange={(event: BaseSyntheticEvent) => {
-									const toggleBarn = event.target.value
+								onChange={(value: string) => {
 									formikBag.setFieldValue(
 										path,
-										toggleBarn === RELASJON_BARN ? initialBarn : initialForelder
+										value === RELASJON_BARN ? initialBarn : initialForelder
 									)
 								}}
-								name={'toggler' + idx}
+								defaultValue={RELASJON_BARN}
 							>
 								<ToggleGroup.Item value={RELASJON_BARN}>
 									{RELASJON_BARN.toUpperCase()}

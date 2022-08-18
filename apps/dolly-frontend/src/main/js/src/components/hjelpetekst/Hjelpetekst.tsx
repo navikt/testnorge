@@ -5,13 +5,21 @@ import { ThumbsRating } from '../rating'
 import { HelpText, HelpTextProps } from '@navikt/ds-react'
 import { bottom } from '@popperjs/core'
 
-export const Hjelpetekst = ({ children, placement = bottom }: HelpTextProps) => {
+interface HjelpetekstProps extends HelpTextProps {
+	requestFeedback?: boolean
+}
+
+export const Hjelpetekst = ({
+	children,
+	placement = bottom,
+	requestFeedback = true,
+}: HjelpetekstProps) => {
 	return (
-		<div>
-			<HelpText placement={placement}>
-				{children}
+		<HelpText placement={placement}>
+			{children}
+			{requestFeedback && (
 				<ThumbsRating ratingFor={`Hjelpetekst`} label="Svarte teksten på spørsmålet ditt?" />
-			</HelpText>
-		</div>
+			)}
+		</HelpText>
 	)
 }

@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
-import { ImportFraEtikett } from '~/components/ui/etikett'
 import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
 const getImportFra = (opts) => {
@@ -53,12 +52,7 @@ export const BestillingsveilederHeader = () => {
 				)}
 				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Test-Norge" />}
 				{opts.is.leggTil && <Header.TitleValue title="Legg til/endre på person" value={ident} />}
-				{importFra !== undefined && (
-					<Header.TitleValue
-						title="Importert fra"
-						value={<ImportFraEtikett variant="info" importFra={importFra} />}
-					/>
-				)}
+				{importFra !== undefined && <Header.TitleValue title="Importert fra" value={importFra} />}
 			</div>
 		</Header>
 	)

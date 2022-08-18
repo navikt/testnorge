@@ -2,6 +2,7 @@ import React from 'react'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { top } from '@popperjs/core'
 
 const brukerveiledning = (
 	<a
@@ -74,7 +75,7 @@ export default () => {
 				>
 					Logg inn med BankId
 				</NavButton>
-				<Hjelpetekst>
+				<Hjelpetekst placement={top} requestFeedback={false}>
 					For å ta i bruk BankId innlogging må du være tilknyttet en organisasjon som har tilgang
 					til Dolly. Ta kontakt med en administrator i din organisasjon hvis tilgang mangler.
 				</Hjelpetekst>

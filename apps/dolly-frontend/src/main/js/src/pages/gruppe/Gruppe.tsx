@@ -1,10 +1,9 @@
-import React, { BaseSyntheticEvent } from 'react'
+import React from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -17,6 +16,7 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
+import { ToggleGroup } from '@navikt/ds-react'
 
 export type GruppeProps = {
 	visning: string
@@ -28,7 +28,7 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default function Gruppe({ visning, setVisning }: GruppeProps) {
+export default ({ visning, setVisning }: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -45,10 +45,10 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 		return <Loading label="Laster personer" panel />
 	}
 
-	const byttVisning = (event: BaseSyntheticEvent) => {
+	const byttVisning = (value: VisningType) => {
 		dispatch(resetNavigering())
 		dispatch(resetPaginering())
-		setVisning(typeof event === 'string' ? event : event.target.value)
+		setVisning(value)
 	}
 
 	const startBestilling = (values: {}) =>
@@ -82,7 +82,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 					)}
 
 					<NavButton
-						type={brukertype === 'BANKID' ? 'hoved' : 'standard'}
+						variant={brukertype === 'BANKID' ? 'primary' : 'secondary'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
@@ -102,32 +102,24 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 					<FinnPersonBestillingConnector />
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp
-							key={visning}
-							value={VisningType.VISNING_PERSONER}
-							checked={visning === VisningType.VISNING_PERSONER}
-						>
+					<ToggleGroup size={'small'} value={visning} onChange={byttVisning}>
+						<ToggleGroup.Item key={visning} value={VisningType.VISNING_PERSONER}>
 							<Icon
 								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter})`}
-						</ToggleKnapp>
-						<ToggleKnapp
-							key={visning}
-							value={VisningType.VISNING_BESTILLING}
-							checked={visning === VisningType.VISNING_BESTILLING}
-						>
+						</ToggleGroup.Item>
+						<ToggleGroup.Item key={visning} value={VisningType.VISNING_BESTILLING}>
 							<Icon
 								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
 							{`Bestillinger (${Object.keys(bestillingerById).length})`}
-						</ToggleKnapp>
-					</ToggleGruppe>
+						</ToggleGroup.Item>
+					</ToggleGroup>
 				</div>
 			</div>
 

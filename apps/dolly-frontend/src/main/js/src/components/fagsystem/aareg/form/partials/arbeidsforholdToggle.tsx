@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent, ReactElement, useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
-import { Alert } from '@navikt/ds-react'
+import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -14,7 +14,6 @@ import {
 } from '../initialValues'
 import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import { FormikProps } from 'formik'
-import { ToggleGroup } from '~/components/ui/toggle/Toggle'
 
 interface ArbeidsforholdToggleProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
