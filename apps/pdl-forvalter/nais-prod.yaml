@@ -50,6 +50,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-import-fra-tpsf-service

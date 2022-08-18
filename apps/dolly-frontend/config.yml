@@ -42,6 +42,7 @@ spec:
         - application: testnav-bruker-service
         - application: testnav-person-search-service
         - application: testnav-inst-service
+        - application: dolly-backend
       external:
         - host: udi-stub.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
@@ -82,7 +83,7 @@ spec:
     - name: DOLLY_BACKEND_NAME
       value: dolly-backend
     - name: DOLLY_BACKEND_URL
-      value: https://dolly-backend.dev-fss-pub.nais.io
+      value: http://dolly-backend.dolly.svc.cluster.local
     - name: TPS_FORVALTERN_PROXY_NAME
       value: tps-forvalteren-proxy
     - name: TPS_FORVALTERN_PROXY_URL
@@ -94,22 +95,22 @@ spec:
     - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME
       value: testnav-person-organisasjon-tilgang-service
     - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL
-      value: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+      value: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
     - name: PDL_FORVALTER_URL
-      value: https://testnav-pdl-forvalter.dev.intern.nav.no
+      value: http://testnav-pdl-forvalter.dolly.svc.cluster.local
     - name: PDL_FORVALTER_NAME
       value: testnav-pdl-forvalter
     - name: TESTNAV_BRUKER_SERVICE_NAME
       value: testnav-bruker-service
     - name: TESTNAV_BRUKER_SERVICE_URL
-      value: https://testnav-bruker-service.dev.intern.nav.no
+      value: http://testnav-bruker-service.dolly.svc.cluster.local
     - name: VARSLINGER_NAME
       value: testnav-varslinger-service
     - name: VARSLINGER_URL
-      value: https://testnav-varslinger-service.dev.intern.nav.no
+      value: http://testnav-varslinger-service.dolly.svc.cluster.local
     - name: TESTNORGE_PROFIL_API_NAME
       value: testnorge-profil-api
     - name: TESTNORGE_PROFIL_API_URL
-      value: https://testnorge-profil-api.dev.intern.nav.no
+      value: http://testnorge-profil-api.dolly.svc.cluster.local
     - name: IDPORTEN_ISSUER_URI
       value: https://oidc.difi.no/idporten-oidc-provider/
