@@ -30,13 +30,10 @@ public class ApplicationConfig {
 
     @Bean
     public ExecutorService dollyForkJoinPool() {
-        var executorService = new DelegatingSecurityContextExecutorService(
+        return new DelegatingSecurityContextExecutorService(
                 new MdcWarraperExecutorService(
                         new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true)
                 )
         );
-
-
-        return executorService;
     }
 }
