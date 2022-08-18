@@ -31,6 +31,8 @@ public class KontoregisterConsumer {
 
     private static final Random random = new SecureRandom();
 
+    private static final int KONTONUMMER_LENGDE = 15;
+
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
@@ -49,15 +51,13 @@ public class KontoregisterConsumer {
                 .build();
     }
 
-    public static String tilfeldigUtlandskBankkonto() {
-        var kontonummerLengde = 15;
-
+    private static String tilfeldigUtlandskBankkonto() {
         return Stream.concat(
             random.ints(2, 'A', 'Z')
                     .boxed()
                     .map(i -> Character.toString(i.intValue()))
             ,
-            random.ints(kontonummerLengde, 0, 10)
+            random.ints(KONTONUMMER_LENGDE, 0, 10)
                     .boxed()
                     .map(Integer::toUnsignedString)
         ).collect(Collectors.joining());
