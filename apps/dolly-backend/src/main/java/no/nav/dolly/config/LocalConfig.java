@@ -1,7 +1,10 @@
 package no.nav.dolly.config;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
@@ -11,6 +14,8 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
 @Profile("local")
+@Import({FlywayConfiguration.class,
+        VaultHikariConfiguration.class})
 @RequiredArgsConstructor
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class LocalConfig extends AbstractVaultConfiguration {
