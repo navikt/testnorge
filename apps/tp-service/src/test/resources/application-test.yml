@@ -24,7 +24,7 @@ consumers:
     namespace: dolly
     name: synthdata-tp-gcp
   testnorge-hodejegeren:
-    url: http://localhost:${wiremock.server.port:0}/hodejegeren/api
+    url: http://localhost:${wiremock.server.port:0}/hodejegeren
 
 tp.db:
   q2:
