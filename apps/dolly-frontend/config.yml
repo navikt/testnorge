@@ -42,6 +42,7 @@ spec:
         - application: testnav-bruker-service
         - application: testnav-person-search-service
         - application: testnav-inst-service
+        - application: dolly-backend
       external:
         - host: udi-stub.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
