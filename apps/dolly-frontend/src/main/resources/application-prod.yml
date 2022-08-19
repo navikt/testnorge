@@ -1,6 +1,6 @@
 # Prod config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend.dolly.svc.cluster.local/login
-REDIS_HOST: http://dolly-redis-session.dolly.svc.cluster.local
+REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
   redis:

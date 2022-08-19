@@ -1,6 +1,6 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
-REDIS_HOST: http://dolly-dev-redis-session.dolly.svc.cluster.local
+REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
 IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 spring:
