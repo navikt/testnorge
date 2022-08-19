@@ -13,10 +13,10 @@ Denne applikasjonen belager seg på flere andre applikasjoner for å kunne legge
 
 De følgende applikasjonene må være kjørende for å kunne legge inn all data i et miljø. 
 
- - [TP](https://stash.adeo.no/projects/FEL/repos/testnorge-tp/browse) for å legge inn i TP databasen, skal ikke være 
+ - [TP](https://github.com/navikt/testnorge/tree/master/apps/tp-service) for å legge inn i TP databasen, skal ikke være 
  nødvendig, men denne gjør det raskere enn selve TP applikasjonen som lytter på distribusjonsmeldinger fra TPS 
- - [SKD adapter](https://stash.adeo.no/projects/FEL/repos/testnorge-skd/browse) for oppretting av testpersoner i TPS
- - [AAreg](https://stash.adeo.no/projects/FEL/repos/testnorge-aareg/browse) for arbeidsforhold
+ - [SKD adapter](https://github.com/navikt/testnorge/tree/master/apps/skd-service) for oppretting av testpersoner i TPS
+ - [AAreg](https://github.com/navikt/testnorge/tree/master/apps/testnorge-aareg) for arbeidsforhold
  
 ## Statiske data
 

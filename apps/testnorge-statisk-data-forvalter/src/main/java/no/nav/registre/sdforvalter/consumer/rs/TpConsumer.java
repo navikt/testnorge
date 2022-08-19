@@ -1,33 +1,38 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import no.nav.registre.sdforvalter.config.credentials.TpServiceProperties;
+import no.nav.registre.sdforvalter.consumer.rs.command.OpprettPersonerTpCommand;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Collections;
-import java.util.Set;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 
 @Slf4j
 @Component
 public class TpConsumer {
 
-    private final RestTemplate restTemplate;
-    private final String tpUrl;
+    private final WebClient webClient;
+    private final TpServiceProperties serverProperties;
+    private final TokenExchange tokenExchange;
 
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
-    };
+    public TpConsumer(
+            TpServiceProperties serverProperties,
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
-    public TpConsumer(RestTemplate restTemplate, @Value("${consumers.testnorge-tp.url}") String tpUrl) {
-        this.restTemplate = restTemplate;
-        this.tpUrl = tpUrl + "/v1";
+        this.serverProperties = serverProperties;
+        this.tokenExchange = tokenExchange;
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     /**
@@ -35,28 +40,15 @@ public class TpConsumer {
      * @param environment Miljøet de skal legges til i
      * @return true hvis den ble lagret i tp, false hvis de ikke ble lagret
      */
-    public boolean send(Set<String> data, String environment) {
-        UriTemplate uriTemplate = new UriTemplate(tpUrl + "/orkestrering/opprettPersoner/{miljoe}");
-        RequestEntity<Set<String>> requestEntity = new RequestEntity<>(data, HttpMethod.POST, uriTemplate.expand(environment));
-        ResponseEntity<Set> responseEntity = restTemplate.exchange(requestEntity, Set.class);
-        if (responseEntity.getStatusCode() != HttpStatus.OK) {
+    public boolean send(List<String> data, String environment) {
+        var response = tokenExchange.exchange(serverProperties)
+                .flatMap(accessToken -> new OpprettPersonerTpCommand(webClient, accessToken.getTokenValue(), data, environment).call())
+                .block();
+
+        if (isNull(response)){
             log.warn("Noe skjedde med initialisering av TP i gitt miljø. Det kan være at databasen ikke er koblet opp til miljø {}", environment);
             return false;
         }
         return true;
-    }
-
-    /**
-     * @param environment Miljøet som skal brukes for å finne fnr
-     * @return Et set med fnr som finnes i gitt miljø
-     */
-    @SuppressWarnings("Duplicates")
-    public Set<String> findFnrs(String environment) {
-        UriTemplate uriTemplate = new UriTemplate(tpUrl + "/orkestrering/personer/{miljoe}");
-        ResponseEntity<Set<String>> response = restTemplate.exchange(uriTemplate.expand(environment), HttpMethod.GET, null, RESPONSE_TYPE_SET);
-        if (response.getBody() != null) {
-            return response.getBody();
-        }
-        return Collections.emptySet();
     }
 }
