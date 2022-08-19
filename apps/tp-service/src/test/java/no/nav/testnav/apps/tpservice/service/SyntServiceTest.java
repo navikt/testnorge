@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.tpservice.service;
 
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
 import no.nav.testnav.apps.tpservice.consumer.rs.TpSyntConsumer;
 import no.nav.testnav.apps.tpservice.database.models.HistorikkComposityKey;
 import no.nav.testnav.apps.tpservice.database.models.TForholdYtelseHistorikk;
@@ -51,9 +50,6 @@ public class SyntServiceTest {
     @Mock
     private HodejegerenConsumer hodejegerenConsumer;
 
-    @Mock
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
-
     @InjectMocks
     private SyntService syntService;
 
@@ -86,7 +82,7 @@ public class SyntServiceTest {
         when(tForholdRepository.save(any())).thenReturn(expectedForhold);
         when(tYtelseRepository.save(any())).thenReturn(ytelse1);
         when(tForholdYtelseHistorikkRepository.save(any())).thenReturn(new TForholdYtelseHistorikk(new HistorikkComposityKey(2, 3)));
-        when(hodejegerenHistorikkConsumer.saveHistory(any())).thenReturn(fnrs);
+        when(hodejegerenConsumer.saveHistory(any())).thenReturn(fnrs);
     }
 
     /**

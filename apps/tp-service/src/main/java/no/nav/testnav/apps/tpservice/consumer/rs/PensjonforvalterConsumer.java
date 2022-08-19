@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpservice.consumer.rs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpservice.consumer.rs.command.*;
+import no.nav.testnav.apps.tpservice.consumer.rs.command.tp.*;
 import no.nav.testnav.apps.tpservice.consumer.rs.credential.PensjonforvalterProxyProperties;
 import no.nav.testnav.apps.tpservice.consumer.rs.request.LagreTpForholdRequest;
 import no.nav.testnav.apps.tpservice.consumer.rs.request.LagreTpYtelseRequest;

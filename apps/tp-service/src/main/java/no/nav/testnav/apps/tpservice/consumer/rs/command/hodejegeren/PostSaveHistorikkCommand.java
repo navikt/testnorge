@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tpservice.consumer.rs.command;
+package no.nav.testnav.apps.tpservice.consumer.rs.command.hodejegeren;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpservice.domain.TpSaveInHodejegerenRequest;
@@ -26,7 +26,7 @@ public class PostSaveHistorikkCommand implements Callable<List<String>> {
 
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/v1/historikk")
+                        builder.path("/api/v1/historikk")
                                 .build()
                 )
                 .body(BodyInserters.fromPublisher(Mono.just(request), TpSaveInHodejegerenRequest.class))

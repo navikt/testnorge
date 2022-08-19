@@ -3,8 +3,7 @@ package no.nav.testnav.apps.tpservice.service;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
 import no.nav.testnav.apps.tpservice.consumer.rs.TpSyntConsumer;
 import no.nav.testnav.apps.tpservice.database.models.HistorikkComposityKey;
 import no.nav.testnav.apps.tpservice.database.models.TForholdYtelseHistorikk;
@@ -47,7 +46,6 @@ public class SyntService {
     private final TPersonRepository tPersonRepository;
     private final TpSyntConsumer tpSyntConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     private static final Integer MIN_AGE = 13;
     private static final String TP_NAME = "tp";
@@ -86,7 +84,7 @@ public class SyntService {
                 .identMedData(identerMedData)
                 .build();
 
-        var savedIds = hodejegerenHistorikkConsumer.saveHistory(tpSaveInHodejegerenRequest);
+        var savedIds = hodejegerenConsumer.saveHistory(tpSaveInHodejegerenRequest);
 
         if (savedIds.size() < identerMedData.size()) {
             List<String> identerSomIkkeBleLagret = new ArrayList<>(identerMedData.size());

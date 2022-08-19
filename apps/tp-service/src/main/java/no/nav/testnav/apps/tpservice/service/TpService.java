@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tpservice.service;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.testnav.apps.tpservice.database.models.TPerson;
 import no.nav.testnav.apps.tpservice.database.repository.TForholdRepository;
 import no.nav.testnav.apps.tpservice.database.repository.TPersonRepository;
@@ -26,7 +26,6 @@ public class TpService {
     public static final String EIER = "synt";
 
     private final HodejegerenConsumer hodejegerenConsumer;
-
     private final TForholdRepository tForholdRepository;
 
     private final TPersonRepository tPersonRepository;

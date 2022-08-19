@@ -2,7 +2,9 @@ package no.nav.testnav.apps.tpservice.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpservice.consumer.rs.command.PostSaveHistorikkCommand;
+import no.nav.testnav.apps.tpservice.consumer.rs.command.hodejegeren.GetAlleLevendeCommand;
+import no.nav.testnav.apps.tpservice.consumer.rs.command.hodejegeren.GetLevendeIdenterCommand;
+import no.nav.testnav.apps.tpservice.consumer.rs.command.hodejegeren.PostSaveHistorikkCommand;
 import no.nav.testnav.apps.tpservice.domain.TpSaveInHodejegerenRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,11 +15,11 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class HodejegerenHistorikkConsumer {
+public class HodejegerenConsumer {
 
     private final WebClient webClient;
 
-    public HodejegerenHistorikkConsumer(
+    public HodejegerenConsumer(
             @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenServerUrl,
             ExchangeFilterFunction metricsWebClientFilterFunction
     ) {
@@ -33,6 +35,21 @@ public class HodejegerenHistorikkConsumer {
             TpSaveInHodejegerenRequest request
     ) {
         return new PostSaveHistorikkCommand(request, webClient).call();
+    }
+
+    public List<String> getLevende(
+            Long avspillergruppeId
+    ) {
+        return new GetAlleLevendeCommand(avspillergruppeId, webClient).call();
+    }
+
+    public List<String> getLevende(
+            Long avspillergruppeId,
+            String miljoe,
+            int antallIdenter,
+            int minAlder
+    ) {
+        return new GetLevendeIdenterCommand(avspillergruppeId, miljoe, antallIdenter, minAlder, webClient).call();
     }
 
 }

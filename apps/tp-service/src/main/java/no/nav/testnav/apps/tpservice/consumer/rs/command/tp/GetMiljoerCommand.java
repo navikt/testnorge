@@ -1,11 +1,12 @@
-package no.nav.testnav.apps.tpservice.consumer.rs.command;
+package no.nav.testnav.apps.tpservice.consumer.rs.command.tp;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import static no.nav.testnav.apps.tpservice.util.CallIdUtil.generateCallId;
@@ -16,26 +17,23 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetTpForholdCommand implements Callable<Mono<JsonNode>> {
+public class GetMiljoerCommand implements Callable<Mono<Set<String>>> {
 
     private final WebClient webClient;
     private final String token;
-    private final String ident;
-    private final String miljoe;
 
-    public Mono<JsonNode> call() {
+    public Mono<Set<String>> call() {
+
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/v1/tp/forhold")
-                        .queryParam("fnr", ident)
-                        .queryParam("miljo", miljoe)
+                .uri(uriBuilder -> uriBuilder.path("/api/v1/miljo")
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
-                .bodyToMono(JsonNode.class)
+                .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
+                })
                 .onErrorResume(throwable -> {
                     log.error(throwable.getMessage(), throwable);
                     return Mono.empty();

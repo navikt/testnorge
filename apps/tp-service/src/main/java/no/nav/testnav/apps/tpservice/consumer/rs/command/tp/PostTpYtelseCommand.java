@@ -1,8 +1,8 @@
-package no.nav.testnav.apps.tpservice.consumer.rs.command;
+package no.nav.testnav.apps.tpservice.consumer.rs.command.tp;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpservice.consumer.rs.request.LagreTpForholdRequest;
+import no.nav.testnav.apps.tpservice.consumer.rs.request.LagreTpYtelseRequest;
 import no.nav.testnav.apps.tpservice.consumer.rs.response.PensjonforvalterResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -15,24 +15,24 @@ import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_C
 import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.CONSUMER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+
 @Slf4j
 @RequiredArgsConstructor
-public class PostTpForholdCommand implements Callable<Mono<PensjonforvalterResponse>> {
-
+public class PostTpYtelseCommand implements Callable<Mono<PensjonforvalterResponse>> {
     private final WebClient webClient;
     private final String token;
-    private final LagreTpForholdRequest lagreTpForholdRequest;
+    private final LagreTpYtelseRequest lagreTpYtelseRequest;
 
     public Mono<PensjonforvalterResponse> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/api/v1/tp/forhold")
+                        .path("/api/v1/tp/ytelse")
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreTpForholdRequest)
+                .bodyValue(lagreTpYtelseRequest)
                 .retrieve()
                 .bodyToMono(PensjonforvalterResponse.class)
                 .onErrorResume(throwable -> {

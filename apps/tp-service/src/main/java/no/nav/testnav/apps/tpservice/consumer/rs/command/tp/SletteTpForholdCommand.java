@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tpservice.consumer.rs.command;
+package no.nav.testnav.apps.tpservice.consumer.rs.command.tp;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,6 @@
-package no.nav.testnav.apps.tpservice.consumer.rs.command;
+package no.nav.testnav.apps.tpservice.consumer.rs.command.synt;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpservice.database.models.TYtelse;
 import no.nav.testnav.apps.tpservice.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,7 +12,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@Slf4j
 @RequiredArgsConstructor
 public class GetSyntTpYtelserCommand implements Callable<Mono<List<TYtelse>>> {
 

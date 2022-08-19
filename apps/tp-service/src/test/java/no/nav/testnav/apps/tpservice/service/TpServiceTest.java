@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.testnav.apps.tpservice.database.models.TPerson;
 import no.nav.testnav.apps.tpservice.database.repository.TForholdRepository;
 import no.nav.testnav.apps.tpservice.database.repository.TPersonRepository;

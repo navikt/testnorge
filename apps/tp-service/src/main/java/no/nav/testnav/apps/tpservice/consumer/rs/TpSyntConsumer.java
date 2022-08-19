@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpservice.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpservice.consumer.rs.command.GetSyntTpYtelserCommand;
+import no.nav.testnav.apps.tpservice.consumer.rs.command.synt.GetSyntTpYtelserCommand;
 import no.nav.testnav.apps.tpservice.consumer.rs.credential.SyntTpProperties;
 import no.nav.testnav.apps.tpservice.database.models.TYtelse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

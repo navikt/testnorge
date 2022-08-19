@@ -26,7 +26,7 @@ consumers:
     namespace: dolly
     name: synthdata-tp-gcp
   testnorge-hodejegeren:
-    url: https://testnorge-hodejegeren.dev.adeo.no/api
+    url: https://testnorge-hodejegeren.dev.adeo.no
   testnav-pensjon-testdata-facade-proxy:
     name: testnav-pensjon-testdata-facade-proxy
     namespace: dolly
