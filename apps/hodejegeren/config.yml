@@ -28,6 +28,4 @@ spec:
       memory: 2048Mi
   image: {{ image }}
   ingresses:
-    - "https://testnorge-hodejegeren.nais.preprod.local"
-    - "https://testnorge-hodejegeren.dev.adeo.no"
     - "https://testnorge-hodejegeren.dev.intern.nav.no"
