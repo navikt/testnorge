@@ -1,0 +1,40 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+spring:
+  session:
+    timeout: 60m
+  redis:
+    host: localhost
+    port: 6379
+
+server:
+  port: 8020
+
+POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
+
+consumers:
+  tps-forvalteren-proxy:
+    name: tps-forvalteren-dev-proxy
+    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+  dolly-backend:
+    name: dolly-backend-dev
+    url: https://dolly-backend-dev.dev-fss-pub.nais.io
+  testnorge-profil-api:
+    name: testnorge-profil-api-dev
+    url: https://testnorge-profil-api-dev.dev.intern.nav.no
+  testnav-varslinger-service:
+    name: testnav-varslinger-service-dev
+    url: https://testnav-varslinger-service-dev.dev.intern.nav.no
+  testnav-person-organisasjon-tilgang-service:
+    name: testnav-person-organisasjon-tilgang-service-dev
+    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+  testnav-bruker-service:
+    name: testnav-bruker-service-dev
+    url: https://testnav-varslinger-service-dev.dev.intern.nav.no
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter-dev
+    url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+
+

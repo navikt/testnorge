@@ -9,12 +9,12 @@ import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
-@Profile("dev")
+@Profile("local")
 @VaultPropertySource(value = "kv/preprod/fss/dolly-frontend-dev/dev", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "secret/.common/idporten/ver2", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "secret/.common/tokenx/dev/app-1", ignoreSecretNotFound = false)
-public class DevVaultConfig extends AbstractVaultConfiguration {
+public class LocalVaultConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
