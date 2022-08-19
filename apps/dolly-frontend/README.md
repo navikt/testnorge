@@ -66,6 +66,10 @@ keytool -import -trustcacerts -alias MicrosoftLoginCert -file DIN_DOWNLOAD_DIR/D
  ![Sertifikat Download](docs/assets/cert_download.png)
 
 ### Kjøre Redis lokalt
+Evt last ned colima og kjør 
+```
+colima start
+```
 For å kjøre Redis-instans lokalt må du ha Docker kjørende og kjør kommandoen:
 ```
 docker run --name redis-image -d -p 6379:6379 redis:6.2.6
