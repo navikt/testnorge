@@ -22,12 +22,13 @@ jobs:
       working-directory: 'apps/endringsmelding-frontend/'
       app-name: 'endringsmelding-frontend'
     secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-endringsmelding-frontend') }}
     with:
       resource: 'apps/endringsmelding-frontend/config.yml'
       app-name: 'endringsmelding-frontend'

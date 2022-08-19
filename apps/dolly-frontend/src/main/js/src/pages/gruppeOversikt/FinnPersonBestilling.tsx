@@ -123,10 +123,11 @@ const FinnPersonBestilling = ({
 	}, [fragment])
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
-		if (!Array.isArray(personList)) {
+		const personData = personList?.value?.data
+		if (!Array.isArray(personData)) {
 			return
 		}
-		personList
+		personData
 			.filter((person: Person) => person.fornavn && person.etternavn)
 			.forEach((person: Person) => {
 				const navn = person.mellomnavn
@@ -158,16 +159,36 @@ const FinnPersonBestilling = ({
 		if (!tekst) {
 			return []
 		}
-		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
-		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
-		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
+
+		const [tpsfValues, pdlfValues, pdlValues] = (await Promise.allSettled([
+			TpsfApi.soekPersoner(tekst),
+			PdlforvalterApi.soekPersoner(tekst),
+			PersonSearch.searchPdlFragment(tekst),
+		])) as any
+
 		const personer: Array<Option> = []
-		mapToPersoner(tpsfIdenter, personer)
-		mapToPersoner(pdlfIdenter, personer)
-		mapToPersoner(pdlIdenter, personer)
-		setTpsfIdenter(tpsfIdenter)
-		setPdlfIdenter(pdlfIdenter)
-		setPdlIdenter(pdlIdenter)
+
+		if (tpsfValues?.status === 'fulfilled') {
+			mapToPersoner(tpsfValues, personer)
+			setTpsfIdenter(tpsfValues?.value?.data)
+		} else {
+			setError(tpsfValues?.reason?.message)
+		}
+
+		if (pdlfValues?.status === 'fulfilled') {
+			mapToPersoner(pdlfValues, personer)
+			setPdlfIdenter(pdlfValues?.value?.data)
+		} else {
+			setError(pdlfValues?.reason?.message)
+		}
+
+		if (pdlValues?.status === 'fulfilled') {
+			mapToPersoner(pdlValues, personer)
+			setPdlIdenter(pdlValues?.value?.data)
+		} else {
+			setError(pdlValues?.reason?.message)
+		}
+
 		return personer
 	}
 
@@ -176,7 +197,7 @@ const FinnPersonBestilling = ({
 		async (tekst) => {
 			return soekType === SoekTypeValg.BESTILLING
 				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
-				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
+				: soekPersoner(tekst)
 		},
 		[soekType]
 	)
@@ -240,6 +261,7 @@ const FinnPersonBestilling = ({
 								? 'Søk etter navn eller ident'
 								: 'Søk etter bestilling'
 						}
+						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
 				{error && (

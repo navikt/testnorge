@@ -129,6 +129,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 								<PdlEksisterendePerson
 									eksisterendePersonPath={`${path}.ansvarlig`}
 									label="Ansvarlig"
+									formikBag={formikBag}
 								/>
 							)}
 

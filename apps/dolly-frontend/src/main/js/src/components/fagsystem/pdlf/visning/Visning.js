@@ -57,7 +57,11 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPersoner} ident={ident} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
 						<Nasjonalitet data={data?.person} tmpPersoner={tmpPersoner} />
-						<Telefonnummer data={data?.person?.telefonnummer} />
+						<Telefonnummer
+							data={data?.person?.telefonnummer}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
 						<VergemaalVisning data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
 						<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
 						<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />

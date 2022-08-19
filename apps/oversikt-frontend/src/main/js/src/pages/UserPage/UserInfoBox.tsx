@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
 import styled from 'styled-components'
-import BrukerService, { Bruker } from '@/services/BrukerService'
+import BrukerService from '@/services/BrukerService'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
 // @ts-ignore

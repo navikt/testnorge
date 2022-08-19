@@ -1,10 +1,10 @@
 import React, { useReducer } from 'react';
 import { Search } from '@/components/search';
-import { Hovedknapp } from 'nav-frontend-knapper';
 
 import {
   ErrorAlertstripe,
   Form,
+  Knapp,
   Line,
   SuccessAlertstripe,
   WarningAlertstripe,
@@ -45,7 +45,10 @@ export default <T extends {}>({
 }: Props<T>) => {
   const [state, dispatch] = useReducer(reducer, initState);
 
-  console.log(state.warningMessages);
+  if (state.warningMessages) {
+    console.log(state.warningMessages);
+  }
+
   const onSearch = (value: string) =>
     EndringsmeldingService.fetchMiljoer(value)
       .then((response) => {
@@ -98,14 +101,14 @@ export default <T extends {}>({
         <>
           {children}
           <Line reverse={true}>
-            <Hovedknapp
+            <Knapp
+              variant={'primary'}
               onClick={onSubmit}
-              htmlType="submit"
               disabled={state.loading}
-              spinner={state.loading}
+              loading={state.loading}
             >
               {labels.submit}
-            </Hovedknapp>
+            </Knapp>
           </Line>
         </>
       )}

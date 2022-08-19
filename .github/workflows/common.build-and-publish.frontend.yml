@@ -10,6 +10,8 @@ on:
     secrets:
       NAV_TOKEN:
         required: false
+      READER_TOKEN:
+        required: false
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
@@ -32,12 +34,15 @@ jobs:
             ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-gradle-
             ${{ runner.os }}-
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@navikt'
       - name: Install js libs
-        run: |
-          npm ci
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}/src/main/js
       - name: Build js
         run: |

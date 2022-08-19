@@ -36,8 +36,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: testnav-testnorge-inst-proxy
-          cluster: dev-fss
   azure:
     application:
       enabled: true
