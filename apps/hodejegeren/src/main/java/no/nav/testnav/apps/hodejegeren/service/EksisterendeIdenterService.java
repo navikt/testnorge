@@ -2,6 +2,7 @@ package no.nav.testnav.apps.hodejegeren.service;
 
 import static no.nav.testnav.apps.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.testnav.apps.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
+import static no.nav.testnav.apps.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -98,7 +99,7 @@ public class EksisterendeIdenterService {
         log.info("Fjerner personer som er død...");
         return utvalgteIdenter
                 .parallelStream()
-                .map(ident -> Flux.from(tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, TpsStatusQuoService.AKSJONSKODE, miljoe, ident)))
+                .map(ident -> Flux.from(tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident)))
                 .reduce(Flux.empty(), Flux::concat)
                 .filter(value -> value.getResponse().getData1().getDatoDo() == null || Strings.isBlank(value.getResponse().getData1().getDatoDo()))
                 .filter(value -> value.getResponse().getData1().getFnr() != null)
@@ -169,7 +170,7 @@ public class EksisterendeIdenterService {
         for (int i = 0; i < antallIdenter; i++) {
             var tilfeldigIdent = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
             try {
-                utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, TpsStatusQuoService.AKSJONSKODE, miljoe, tilfeldigIdent));
+                utvalgteIdenterMedStatusQuo.put(tilfeldigIdent, tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, tilfeldigIdent));
             } catch (IOException e) {
                 log.error(STATUS_QUO_FEILMELDING, tilfeldigIdent, e);
             }
@@ -196,7 +197,7 @@ public class EksisterendeIdenterService {
         while (i < antallIdenter && !alleIdenter.isEmpty()) {
             String ident = alleIdenter.remove(rand.nextInt(alleIdenter.size()));
             try {
-                var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, TpsStatusQuoService.AKSJONSKODE, miljoe, ident);
+                var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
                 if (statusQuoTilIdent == null) {
                     continue;
                 }
@@ -243,7 +244,7 @@ public class EksisterendeIdenterService {
         for (var ident : identer) {
             navnOgAdresse = mapper.createObjectNode();
             try {
-                var infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, TpsStatusQuoService.AKSJONSKODE, miljoe, ident);
+                var infoOnRoutineName = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_KERNINFO, AKSJONSKODE, miljoe, ident);
 
                 navnOgAdresse.set("personnavn", infoOnRoutineName.findValue("personnavn"));
                 navnOgAdresse.set(BOSTEDSADRESSE, infoOnRoutineName.findValue(BOSTEDSADRESSE));
@@ -291,7 +292,7 @@ public class EksisterendeIdenterService {
             String miljoe
     ) {
         try {
-            var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, TpsStatusQuoService.AKSJONSKODE, miljoe, ident);
+            var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
             log.trace("Status Quo til identen: {}", statusQuoTilIdent);
             if (statusQuoTilIdent.toString().contains("PERSON IKKE FUNNET")) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Fant ingen personer med ident: %s", ident));
@@ -324,7 +325,7 @@ public class EksisterendeIdenterService {
     ) {
         RelasjonsResponse relasjonsResponse = null;
         try {
-            var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, TpsStatusQuoService.AKSJONSKODE, miljoe, ident);
+            var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSRELA, AKSJONSKODE, miljoe, ident);
             var antallRelasjoner = 0;
             JsonNode antallRelasjonerJsonNode = statusQuoTilIdent.findValue("antallRelasjoner");
             if (antallRelasjonerJsonNode != null) {
