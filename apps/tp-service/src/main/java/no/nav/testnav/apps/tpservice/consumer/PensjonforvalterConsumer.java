@@ -2,10 +2,13 @@ package no.nav.testnav.apps.tpservice.consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpservice.consumer.command.tp.*;
+import no.nav.testnav.apps.tpservice.consumer.command.tp.GetMiljoerCommand;
+import no.nav.testnav.apps.tpservice.consumer.command.tp.GetTpForholdCommand;
+import no.nav.testnav.apps.tpservice.consumer.command.tp.PostTpForholdCommand;
+import no.nav.testnav.apps.tpservice.consumer.command.tp.PostTpYtelseCommand;
+import no.nav.testnav.apps.tpservice.consumer.command.tp.SletteTpForholdCommand;
 import no.nav.testnav.apps.tpservice.consumer.credential.PensjonforvalterProxyProperties;
 import no.nav.testnav.apps.tpservice.consumer.response.PensjonforvalterResponse;
-import no.nav.testnav.apps.tpservice.consumer.rs.command.tp.*;
 import no.nav.testnav.apps.tpservice.consumer.request.LagreTpForholdRequest;
 import no.nav.testnav.apps.tpservice.consumer.request.LagreTpYtelseRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

@@ -12,7 +12,7 @@ public class GetLevendeIdenterCommand implements Callable<List<String>> {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-    private final Long avspillergruppeId;;
+    private final Long avspillergruppeId;
     private final String miljoe;
     private final int antallIdenter;
     private final int minAlder;
