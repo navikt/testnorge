@@ -20,7 +20,8 @@ consumers:
     url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   dolly-backend:
     name: dolly-backend-dev
-    url: https://dolly-backend-dev.dev-fss-pub.nais.io
+    url: https://dolly-backend-dev.dev.intern.nav.no
+    cluster: dev-gcp
   testnorge-profil-api:
     name: testnorge-profil-api-dev
     url: https://testnorge-profil-api-dev.dev.intern.nav.no
