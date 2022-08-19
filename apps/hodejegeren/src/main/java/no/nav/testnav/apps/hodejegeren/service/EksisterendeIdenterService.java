@@ -442,10 +442,10 @@ public class EksisterendeIdenterService {
         var identerOverAlder = identer.stream()
                 .filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident)
                         .isBefore(LocalDate.now().minusYears(minimumAlder)))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
         return identerOverAlder.stream()
                 .filter(ident -> IdentUtil.getFoedselsdatoFraIdent(ident)
                         .isAfter(LocalDate.now().minusYears(maksimumAlder)))
-                .toList();
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
