@@ -6,12 +6,15 @@ nav_order: 3
 ---
 
 # Hodejegeren
-Testnorge-Hodejegeren er en applikasjon som henter identer fra avspillergrupper i TPSF. Den har mulighet til å filtrere identene på en rekke ulike egenskaper, og kan også returnere detaljert informasjon om identene, hentet fra TPS.
+Testnorge-Hodejegeren er en applikasjon som henter identer fra avspillergrupper i TPSF. Den har mulighet til å filtrere 
+identene på en rekke ulike egenskaper, og kan også returnere detaljert informasjon om identene, hentet fra TPS.
 
-Applikasjonen tilbyr også en søkefunksjon, der man kan søke etter visse egenskaper, og få identene som tilfredsstiler egenskapene i retur. Dette er mulig fordi applikasjonen har sin egen database som lagrer informasjon om identene, noe som muligjør indeksering av egenskaper.
+Applikasjonen tilbyr også en søkefunksjon, der man kan søke etter visse egenskaper, og få identene som tilfredsstiler 
+egenskapene i retur. Dette er mulig fordi applikasjonen har sin egen database som lagrer informasjon om identene, noe 
+som muligjør indeksering av egenskaper.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-hodejegeren.dev.intern.nav.no/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-hodejegeren.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør HodejegerenApplicationStarter med følgende argumenter:
