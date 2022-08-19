@@ -10,7 +10,12 @@ import reactor.core.publisher.Mono;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.tpservice.util.CallIdUtil.generateCallId;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.CONSUMER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,12 +35,14 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
                         .queryParam("miljoer", String.join(",", miljoer))
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
-//                .header(HEADER_NAV_CALL_ID, generateCallId())
-//                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("pid", ident)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
-//                .doOnError(Exception.class, error -> log.error(error.getMessage(), error))
-                .onErrorResume(Exception.class, error -> Mono.empty());
+                .onErrorResume(throwable -> {
+                    log.error(throwable.getMessage(), throwable);
+                    return Mono.empty();
+                });
     }
 }

@@ -9,7 +9,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.tpservice.util.CallIdUtil.generateCallId;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.CONSUMER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,10 +30,14 @@ public class PostTpYtelseCommand implements Callable<Mono<PensjonforvalterRespon
                         .path("/api/v1/tp/ytelse")
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
-//                .header(HEADER_NAV_CALL_ID, generateCallId())
-//                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(lagreTpYtelseRequest)
                 .retrieve()
-                .bodyToMono(PensjonforvalterResponse.class);
+                .bodyToMono(PensjonforvalterResponse.class)
+                .onErrorResume(throwable -> {
+                    log.error(throwable.getMessage(), throwable);
+                    return Mono.empty();
+                });
     }
 }

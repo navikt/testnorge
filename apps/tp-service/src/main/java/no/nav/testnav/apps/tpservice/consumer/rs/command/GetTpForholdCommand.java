@@ -2,13 +2,19 @@ package no.nav.testnav.apps.tpservice.consumer.rs.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.tpservice.util.CallIdUtil.generateCallId;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.testnav.apps.tpservice.util.CommonKeysAndUtils.CONSUMER;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@Slf4j
 @RequiredArgsConstructor
 public class GetTpForholdCommand implements Callable<Mono<JsonNode>> {
 
@@ -26,9 +32,13 @@ public class GetTpForholdCommand implements Callable<Mono<JsonNode>> {
                         .queryParam("miljo", miljoe)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
-//                .header(HEADER_NAV_CALL_ID, generateCallId())
-//                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
-                .bodyToMono(JsonNode.class);
+                .bodyToMono(JsonNode.class)
+                .onErrorResume(throwable -> {
+                    log.error(throwable.getMessage(), throwable);
+                    return Mono.empty();
+                });
     }
 }

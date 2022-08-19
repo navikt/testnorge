@@ -16,6 +16,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -38,14 +39,14 @@ public class PensjonforvalterConsumer {
     }
 
     public PensjonforvalterResponse lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest) {
+        var response = tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new PostTpForholdCommand(webClient, accessToken.getTokenValue(), lagreTpForholdRequest).call())
+                .block();
 
-        try {
-            return tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new PostTpForholdCommand(webClient, accessToken.getTokenValue(), lagreTpForholdRequest).call())
-                    .block();
-        } catch (Exception e) {
+        if (isNull(response)) {
             throw new RuntimeException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
         }
+        return response;
     }
 
     public void sletteTpForhold(List<String> identer) {
@@ -59,38 +60,27 @@ public class PensjonforvalterConsumer {
     }
 
     public JsonNode getTpForhold(String ident, String miljoe) {
-        try {
-            return tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new GetTpForholdCommand(webClient, accessToken.getTokenValue(), ident, miljoe).call())
-                    .block();
-        } catch (Exception e) {
+        var response = tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new GetTpForholdCommand(webClient, accessToken.getTokenValue(), ident, miljoe).call())
+                .block();
+        if (isNull(response)) {
             throw new RuntimeException(String.format("Klarte ikke å hente TP forhold for %s i %s fra TP (pensjon)", ident, miljoe));
         }
-
-//        if (isNull(response) || !response.hasBody()) {
-//            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra TP (pensjon)", ident, miljoe));
-//        }
-
+        return response;
     }
 
     public PensjonforvalterResponse lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest) {
 
-        try {
-            return tokenExchange.exchange(serviceProperties)
-                    .flatMap(accessToken -> new PostTpYtelseCommand(webClient, accessToken.getTokenValue(), lagreTpYtelseRequest).call())
-                    .block();
-        } catch (Exception e) {
+        var response = tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new PostTpYtelseCommand(webClient, accessToken.getTokenValue(), lagreTpYtelseRequest).call())
+                .block();
+        if (isNull(response)) {
             throw new RuntimeException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
         }
-
-
-//        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
-//            throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
-//        }
-//
-//        if (isNull(response.getBody().getStatus()) || response.getBody().getStatus().isEmpty()) {
-//            throw new DollyFunctionalException(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
-//        }
+        if (isNull(response.getStatus()) || response.getStatus().isEmpty()) {
+            throw new RuntimeException(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
+        }
+        return response;
 
     }
 
