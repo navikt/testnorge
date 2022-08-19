@@ -1,30 +1,33 @@
-server:
-  port: 8020
-
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
-DOLLY_BACKEND_NAME: dolly-backend-dev
-DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.intern.nav.no
-TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
-TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
-TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME: testnav-person-organisasjon-tilgang-service-dev
-TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
-PDL_FORVALTER_URL: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
-PDL_FORVALTER_NAME: testnav-pdl-forvalter-dev
-TESTNAV_BRUKER_SERVICE_NAME: testnav-bruker-service-dev
-TESTNAV_BRUKER_SERVICE_URL: https://testnav-bruker-service-dev.dev.intern.nav.no
-TESTNORGE_PROFIL_API_NAME: testnorge-profil-api-dev
-TESTNORGE_PROFIL_API_URL: https://testnorge-profil-api-dev.dev.intern.nav.no
-VARSLINGER_NAME: testnav-varslinger-service-dev
-VARSLINGER_URL: https://testnav-varslinger-service-dev.dev.intern.nav.no
-
-POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+#Dev config
+POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
+REDIS_HOST: http://dolly-dev-redis-session.dolly.svc.cluster.local
 IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 spring:
-  session:
-    timeout: 60m
   redis:
-    host: localhost
+    host: ${REDIS_HOST}
     port: 6379
+
+consumers:
+# Konsumenter for dev-miljø
+  tps-forvalteren-proxy:
+    name: tps-forvalteren-dev-proxy
+    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+  dolly-backend:
+    name: dolly-backend-dev
+    url: https://dolly-backend-dev.dev-fss-pub.nais.io
+  testnorge-profil-api:
+    name: testnorge-profil-api-dev
+    url: http://testnorge-profil-api-dev.dolly.svc.cluster.local
+  testnav-varslinger-service:
+    name: testnav-varslinger-service-dev
+    url: http://testnav-varslinger-service-dev.dolly.svc.cluster.local
+  testnav-person-organisasjon-tilgang-service:
+    name: testnav-person-organisasjon-tilgang-service-dev
+    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
+  testnav-bruker-service:
+    name: testnav-bruker-service-dev
+    url: http://testnav-varslinger-service-dev.dolly.svc.cluster.local
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter-dev
+    url: http://testnav-pdl-forvalter-dev.dolly.svc.cluster.local

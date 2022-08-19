@@ -22,7 +22,7 @@ strict-ssl=false
 ```
 
 ### Java
-For å kjøre lokalt (DollyFrontendApplicationStarter) må active profile settes til `dev`. I tillegg, må cloud vault token 
+For å kjøre lokalt (DollyFrontendApplicationStarter) må active profile settes til `local`. I tillegg, må cloud vault token 
 hentes fra Vault. Vault token hentes ved at man logger inn i Vault, trykker på nedtrekksmenyen oppe til høyre, og 
 trykker på "Copy token".
 
@@ -32,7 +32,7 @@ Run -> Edit Configurations -> VM Options
 
 ```
 -Dspring.cloud.vault.token=(Copy token fra Vault)
--Dspring.profiles.active=dev
+-Dspring.profiles.active=local
 ```
 
 #### Utviklerimage
@@ -71,6 +71,6 @@ For å kjøre Redis-instans lokalt må du ha Docker kjørende og kjør kommandoe
 docker run --name redis-image -d -p 6379:6379 redis:6.2.6
 ```
 
-Deretter må du fjerne "dev" fra profiles i DevConfig og sette profile lik "dev" i ProdConfig (husk å endre dette tilbake 
+Deretter må du fjerne "local" fra profiles i LocalConfig og legge til "local" i profiles for ProdConfig (husk å endre dette tilbake 
 før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript.
 
