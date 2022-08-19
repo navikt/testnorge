@@ -4,7 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -13,7 +15,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,6 +23,9 @@ import static org.junit.Assert.assertEquals;
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class TpSyntConsumerTest {
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private TpSyntConsumer tpSyntConsumer;
@@ -32,11 +37,12 @@ public class TpSyntConsumerTest {
         stubForTpSynt();
         stubToken();
         var ytelser = tpSyntConsumer.getSyntYtelser(numToGen);
-        assertEquals(3, ytelser.size());
-        assertEquals("UKJENT", ytelser.get(0).getKYtelseT());
-        assertEquals("0", ytelser.get(0).getErGyldig());
-        assertEquals("10625315", ytelser.get(1).getFunkYtelseId());
-        assertEquals("2", ytelser.get(0).getVersjon());
+
+        assertThat(ytelser).hasSize(3);
+        assertThat(ytelser.get(0).getKYtelseT()).isEqualTo("UKJENT");
+        assertThat(ytelser.get(0).getErGyldig()).isEqualTo("0");
+        assertThat(ytelser.get(1).getFunkYtelseId()).isEqualTo("10625315");
+        assertThat(ytelser.get(0).getVersjon()).isEqualTo("2");
     }
 
     private void stubForTpSynt() {

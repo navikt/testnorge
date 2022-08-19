@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.tpservice.provider;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -11,12 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class OrkestreringControllerTest {
@@ -30,8 +28,8 @@ public class OrkestreringControllerTest {
     @Test
     public void initializeDatabase() {
         when(tpService.initializeTpDbForEnvironment(anyLong())).thenReturn(1);
-        ResponseEntity entity = orkestreringController.initializeDatabase(new OrkestreringRequest(1L, "q2"));
-        assertEquals(1, entity.getBody());
+        var entity = orkestreringController.initializeDatabase(new OrkestreringRequest(1L, "q2"));
+        assertThat(entity.getBody()).isEqualTo(1);
     }
 
     @Test
@@ -43,9 +41,11 @@ public class OrkestreringControllerTest {
 
         List<String> feiletPersoner = new ArrayList<>(1);
         feiletPersoner.add("123");
+
         when(tpService.createPeople(any())).thenReturn(feiletPersoner);
         var entity = orkestreringController.addPeople("q", fnrs);
-        assertEquals(2, Objects.requireNonNull(entity.getBody()).size());
 
+        assertThat(entity).isNotNull();
+        assertThat(entity.getBody()).hasSize(2);
     }
 }
