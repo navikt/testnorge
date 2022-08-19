@@ -29,7 +29,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/hodejegeren/nais.yaml'
+      resource: 'apps/hodejegeren/config.yml'
       app-name: 'testnorge-hodejegeren'
       cluster: 'dev-fss'
     secrets:
