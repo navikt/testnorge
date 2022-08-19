@@ -3,7 +3,7 @@ package no.nav.testnav.apps.tpservice.service;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
+import no.nav.testnav.apps.tpservice.consumer.HodejegerenConsumer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.tpservice.service;
 
-import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
-import no.nav.testnav.apps.tpservice.consumer.rs.TpSyntConsumer;
+import no.nav.testnav.apps.tpservice.consumer.HodejegerenConsumer;
+import no.nav.testnav.apps.tpservice.consumer.TpSyntConsumer;
 import no.nav.testnav.apps.tpservice.database.models.HistorikkComposityKey;
 import no.nav.testnav.apps.tpservice.database.models.TForholdYtelseHistorikk;
 import no.nav.testnav.apps.tpservice.database.models.TPerson;
@@ -11,7 +11,7 @@ import no.nav.testnav.apps.tpservice.database.repository.TForholdRepository;
 import no.nav.testnav.apps.tpservice.database.repository.TForholdYtelseHistorikkRepository;
 import no.nav.testnav.apps.tpservice.database.repository.TPersonRepository;
 import no.nav.testnav.apps.tpservice.database.repository.TYtelseRepository;
-import no.nav.testnav.apps.tpservice.provider.rs.request.SyntetiseringsRequest;
+import no.nav.testnav.apps.tpservice.provider.request.SyntetiseringsRequest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

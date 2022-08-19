@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import no.nav.testnav.apps.tpservice.consumer.rs.HodejegerenConsumer;
+import no.nav.testnav.apps.tpservice.consumer.HodejegerenConsumer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
