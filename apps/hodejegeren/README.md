@@ -1,10 +1,3 @@
----
-layout: default
-title: Hodejegeren
-parent: Applikasjoner
-nav_order: 3
----
-
 # Hodejegeren
 Testnorge-Hodejegeren er en applikasjon som henter identer fra avspillergrupper i TPSF. Den har mulighet til å filtrere 
 identene på en rekke ulike egenskaper, og kan også returnere detaljert informasjon om identene, hentet fra TPS.
