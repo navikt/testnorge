@@ -35,14 +35,14 @@ jobs:
 #      cluster: 'dev-fss'
 #    secrets:
 #      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-backend-dev')}}
-    with:
-      resource: 'apps/dolly-backend/config.dev.yml'
-      app-name: 'testnav-dolly-backend'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+#  deploy-dev:
+#    name: Deploy dev
+#    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+#    needs: build
+#    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-backend-dev')}}
+#    with:
+#      resource: 'apps/dolly-backend/config.dev.yml'
+#      app-name: 'testnav-dolly-backend'
+#      cluster: 'dev-fss'
+#    secrets:
+#      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
