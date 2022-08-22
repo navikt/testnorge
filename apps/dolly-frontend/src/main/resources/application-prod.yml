@@ -21,7 +21,7 @@ consumers:
   testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   dolly-backend:
-    url: https://testnav-dolly-backend.dev.intern.nav.no # muligens endre senere, svc.cluster fungerte ikke
+    url: https://testnav-dolly-backend.dolly.svc.cluster.local
   # Konsumenter felles
   testnav-tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
