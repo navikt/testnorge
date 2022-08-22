@@ -46,8 +46,6 @@ public class TpsMessagingConsumer {
     private static final String TELEFONNUMMER_URL = BASE_URL + "/telefonnumre";
     private static final String ADRESSE_UTLAND_URL = BASE_URL + "/adresse-utland";
 
-    private static final Random random = new SecureRandom();
-
     private static final List<String> TELEFONTYPER_LISTE = Arrays.asList("ARBT", "HJET", "MOBI");
 
     private final WebClient webClient;

@@ -39,7 +39,7 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class KontoregisterConsumerTest {
+class KontoregisterConsumerTest {
     private static final String IDENT = "12345678901";
     private static final String KONTONUMMER = "1234567890";
 
