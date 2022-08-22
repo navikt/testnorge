@@ -60,5 +60,5 @@ spec:
       - type: POSTGRES_14
         name: testnav-dolly-backend-dev
         databases:
-          - name: testnav-dolly-backend-dev-1
+          - name: testnav-dolly-backend-dev
         autoBackupTime: "01:00"
