@@ -22,7 +22,7 @@ import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.registre.aareg.properties.Environment;
 
 @ExtendWith(MockitoExtension.class)
-public class StsSamlFasitConsumerTest {
+class StsSamlFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
     private static final String SAML_ALIAS = "securityTokenService";
@@ -35,7 +35,7 @@ public class StsSamlFasitConsumerTest {
     private StsSamlFasitConsumer stsSamlFasitConsumer;
 
     @Test
-    public void getStsSamlService_ok() {
+    void getStsSamlService_ok() {
         var stsService = "sts saml service";
         Map<String, String> properties = new HashMap<>();
         properties.put("url", stsService);

@@ -1,13 +1,12 @@
 ---
-title: Dokumentasjon
 layout: default
+title: Hjem
 nav_order: 1
+permalink: /
 ---
 
-# {{ page.title }}
+Testnav Monorepo
+================================
 
-## Innhold
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
+Testnav-Monorepo er et samlerepo som inneholder frontend- og backend-applikasjoner som støtter opp tjenester
+tilknyttet Dolly-selvbetjeningsløsning og andre applikasjoner tilknyttet syntetiske testdata.

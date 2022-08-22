@@ -14,8 +14,8 @@ export default ({ path, formikBag }: InntektsinformasjonLister) => {
 	return (
 		<>
 			<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
-			<FradragForm formikBag={formikBag} inntektsinformasjonPath={path} />
-			<ForskuddstrekkForm formikBag={formikBag} inntektsinformasjonPath={path} />
+			<FradragForm inntektsinformasjonPath={path} />
+			<ForskuddstrekkForm inntektsinformasjonPath={path} />
 			<ArbeidsforholdForm formikBag={formikBag} inntektsinformasjonPath={path} />
 		</>
 	)

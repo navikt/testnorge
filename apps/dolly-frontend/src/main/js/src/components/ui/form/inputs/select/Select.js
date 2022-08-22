@@ -71,13 +71,19 @@ export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
 
 export const DollySelect = (props) => (
 	<InputWrapper {...props}>
-		<Label containerClass="dollyselect" name={props.name} label={props.label} feil={props.feil}>
+		<Label
+			containerClass="dollyselect"
+			name={props.name}
+			label={props.label}
+			feil={props.feil}
+			info={props.info}
+		>
 			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
 		</Label>
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ fastfield, feil, ...props }) => {
+const P_FormikSelect = ({ _fastfield, feil, ...props }) => {
 	const [field, meta] = useField(props)
 	const handleChange = (selected, meta) => {
 		let value

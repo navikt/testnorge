@@ -6,7 +6,10 @@ import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-const Statsborgerskap = ({ statsborgerskap }) => {
+const Statsborgerskap = ({ statsborgerskap, sprak }) => {
+	if (!statsborgerskap) {
+		return null
+	}
 	return (
 		<div className="person-visning_content">
 			<TitleValue
@@ -22,12 +25,41 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 				title="Statsborgerskap til"
 				value={Formatters.formatDate(statsborgerskap.statsborgerskapTildato)}
 			/>
+			<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprak} />
 		</div>
 	)
 }
 
-export const Nasjonalitet = ({ data, visTittel = true }) => {
+const InnvandretUtvandret = ({ data }) => {
+	if (!data || data?.length < 1) return null
+	return (
+		<ErrorBoundary>
+			<DollyFieldArray data={data} header={'Innvandret/utvandret'} nested>
+				{(innvandringUtvandring) => (
+					<>
+						<TitleValue title="Status" value={innvandringUtvandring.innutvandret} />
+						<TitleValue
+							title="Land"
+							value={innvandringUtvandring.landkode}
+							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+						/>
+						<TitleValue
+							title="Flyttedato"
+							value={Formatters.formatDate(innvandringUtvandring.flyttedato)}
+						/>
+					</>
+				)}
+			</DollyFieldArray>
+		</ErrorBoundary>
+	)
+}
+
+export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+
+	if (!statsborgerskap) {
+		return null
+	}
 
 	return (
 		<div>
@@ -36,42 +68,22 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 				{statsborgerskap.length > 1 ? (
 					<ErrorBoundary>
 						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
-							{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
+							{(borgerskap) => <Statsborgerskap statsborgerskap={borgerskap} />}
 						</DollyFieldArray>
+						<TitleValue
+							title="Språk"
+							kodeverk={PersoninformasjonKodeverk.Spraak}
+							value={sprakKode}
+						/>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
+					<Statsborgerskap
+						statsborgerskap={statsborgerskap[0] || statsborgerskap}
+						sprak={sprakKode}
+					/>
 				)}
-				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
+				<InnvandretUtvandret data={innvandretUtvandret} />
 			</div>
-
-			{innvandretUtvandret.length > 0 && (
-				<ErrorBoundary>
-					<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
-						{(id, idx) => (
-							<React.Fragment>
-								{innvandretUtvandret && (
-									<>
-										<TitleValue
-											title={
-												innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
-													? 'Utvandret til'
-													: 'Innvandret fra'
-											}
-											kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-											value={innvandretUtvandret[idx].landkode}
-										/>
-										<TitleValue
-											title="Flyttedato"
-											value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
-										/>
-									</>
-								)}
-							</React.Fragment>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			)}
 		</div>
 	)
 }

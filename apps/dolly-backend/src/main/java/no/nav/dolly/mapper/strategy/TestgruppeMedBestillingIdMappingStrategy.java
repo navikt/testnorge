@@ -18,7 +18,8 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Component
 public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy {
 
-    @Override public void register(MapperFactory factory) {
+    @Override
+    public void register(MapperFactory factory) {
         factory.classMap(Testgruppe.class, RsTestgruppeMedBestillingId.class)
                 .customize(new CustomMapper<Testgruppe, RsTestgruppeMedBestillingId>() {
                     @Override

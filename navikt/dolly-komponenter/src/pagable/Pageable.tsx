@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-import Pagination from 'paginering';
+import { Pagination } from '@navikt/ds-react';
 
 export type PaginationProps<T> = {
   items: T[];
@@ -22,10 +21,9 @@ function Pageable<T>({ items, render, itemsPerPage = ITEMS_PER_PAGE }: Paginatio
         position
       )}
       <Pagination
-        itemsPerPage={itemsPerPage}
-        numberOfItems={items.length}
-        currentPage={position + 1}
-        onChange={(value) => setPosition(value - 1)}
+        count={items.length}
+        page={position + 1}
+        onPageChange={(value) => setPosition(value - 1)}
       />
     </>
   );

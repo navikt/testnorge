@@ -1,8 +1,23 @@
 package no.nav.organisasjonforvalter.controller;
 
+import static java.util.Objects.nonNull;
+import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
 import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
 import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
@@ -16,21 +31,7 @@ import no.nav.organisasjonforvalter.service.ImportService;
 import no.nav.organisasjonforvalter.service.OrdreService;
 import no.nav.organisasjonforvalter.service.OrdreStatusService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
-import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static java.util.Objects.nonNull;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 
 @RestController
 @RequestMapping("api/v2/organisasjoner")
@@ -43,7 +44,7 @@ public class OrganisasjonController {
     private final OrganisasjonService organisasjonService;
     private final ImportService importService;
     private final DrivervirksomheterService drivervirksomheterService;
-    private final AuthenticationTokenResolver authenticationTokenResolver;
+    private final GetAuthenticatedId getAuthenticatedId;
 
     @CacheEvict(value = CACHE_BEDRIFT, allEntries = true)
     @PostMapping
@@ -74,6 +75,13 @@ public class OrganisasjonController {
         return organisasjonService.getOrganisasjoner(orgnumre);
     }
 
+    @GetMapping("/alle")
+    @Operation(description = "Hent organisasjoner for brukerid fra database (org-forvalter)")
+    public List<RsOrganisasjon> getAlleOrganisasjoner(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
+        var id = getAuthenticatedId.call();
+        return organisasjonService.getOrganisasjoner(nonNull(brukerid) ? brukerid : id);
+    }
+
     @GetMapping("/framiljoe")
     @Operation(description = "Hent organisasjon fra EREG")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
@@ -85,7 +93,7 @@ public class OrganisasjonController {
     @GetMapping("/virksomheter")
     @Operation(description = "Hent virksomheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
     public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
-
-        return drivervirksomheterService.getUnderenheter(nonNull(brukerid) ? brukerid : authenticationTokenResolver.getOid());
+        var id = getAuthenticatedId.call();
+        return drivervirksomheterService.getUnderenheter(nonNull(brukerid) ? brukerid : id);
     }
 }

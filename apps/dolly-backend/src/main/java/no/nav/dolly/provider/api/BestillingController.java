@@ -6,10 +6,15 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
+import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.MalBestillingService;
+import no.nav.dolly.service.NavigasjonService;
+import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -31,6 +36,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Transactional
 @RestController
@@ -40,6 +46,8 @@ public class BestillingController {
 
     private final MapperFacade mapperFacade;
     private final BestillingService bestillingService;
+    private final OrganisasjonBestillingService organisasjonBestillingService;
+    private final NavigasjonService navigasjonService;
     private final MalBestillingService malBestillingService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
@@ -48,6 +56,20 @@ public class BestillingController {
     @Operation(description = "Hent Bestilling med bestillingsId")
     public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
+    }
+
+    @GetMapping("/soekBestilling")
+    @Operation(description = "Hent Bestillinger basert på fragment")
+    public List<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {
+        return bestillingService.fetchBestillingByFragment(fragment);
+    }
+
+    @Operation(description = "Naviger til ønsket bestilling")
+    @Transactional
+    @GetMapping("/naviger/{bestillingId}")
+    public RsWhereAmI navigerTilBestilling(@PathVariable Long bestillingId) {
+
+        return navigasjonService.navigerTilBestilling(bestillingId);
     }
 
     @Cacheable(value = CACHE_BESTILLING)
@@ -60,9 +82,11 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
-    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
-        Bestilling bestilling = bestillingService.cancelBestilling(bestillingId);
-        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "organisasjonBestilling", required = false) Boolean organisasjonBestilling) {
+
+        return isTrue(organisasjonBestilling)
+                ? mapperFacade.map(organisasjonBestillingService.cancelBestilling(bestillingId), RsBestillingStatus.class)
+                : mapperFacade.map(bestillingService.cancelBestilling(bestillingId), RsBestillingStatus.class);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
@@ -82,6 +106,13 @@ public class BestillingController {
         return malBestillingService.getMalBestillinger();
     }
 
+    @GetMapping("/malbestilling/bruker")
+    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
+    public List<RsMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
+
+        return malBestillingService.getMalbestillingByNavnAndUser(brukerId, malNavn);
+    }
+
     @DeleteMapping("/malbestilling/{id}")
     @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {
@@ -89,6 +120,7 @@ public class BestillingController {
         bestillingService.redigerBestilling(id, null);
     }
 
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {

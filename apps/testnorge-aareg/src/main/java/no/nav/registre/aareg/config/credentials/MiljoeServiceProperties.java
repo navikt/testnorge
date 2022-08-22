@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "miljoer-service")
+@ConfigurationProperties(prefix = "consumers.miljoer-service")
 public class MiljoeServiceProperties extends ServerProperties {
 }

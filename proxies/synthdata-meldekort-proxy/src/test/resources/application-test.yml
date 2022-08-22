@@ -1,0 +1,10 @@
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+  openid:
+    config:
+      issuer: dummy
+      jwks:
+        uri: dummy

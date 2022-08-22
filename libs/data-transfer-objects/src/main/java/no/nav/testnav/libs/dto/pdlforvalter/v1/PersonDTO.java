@@ -1,16 +1,24 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
 import static java.util.Objects.isNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
 
 @Data
 @Builder
@@ -20,34 +28,35 @@ import static java.util.Objects.isNull;
 public class PersonDTO implements Serializable {
 
     private String ident;
+    private Identtype identtype;
 
-    private List<FoedselDTO> foedsel;
     private List<NavnDTO> navn;
-    private List<KjoennDTO> kjoenn;
+    private List<FoedselDTO> foedsel;
+    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
+    private List<SivilstandDTO> sivilstand;
+    private List<DoedsfallDTO> doedsfall;
     private List<BostedadresseDTO> bostedsadresse;
     private List<KontaktadresseDTO> kontaktadresse;
+    private List<KjoennDTO> kjoenn;
     private List<OppholdsadresseDTO> oppholdsadresse;
     private List<InnflyttingDTO> innflytting;
     private List<UtflyttingDTO> utflytting;
     private List<DeltBostedDTO> deltBosted;
-    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
     private List<ForeldreansvarDTO> foreldreansvar;
     private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
     private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
     private List<FalskIdentitetDTO> falskIdentitet;
     private List<AdressebeskyttelseDTO> adressebeskyttelse;
-    private List<DoedsfallDTO> doedsfall;
     private List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
     private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
     private List<StatsborgerskapDTO> statsborgerskap;
     private List<OppholdDTO> opphold;
-    private List<SivilstandDTO> sivilstand;
     private List<TelefonnummerDTO> telefonnummer;
     private List<FullmaktDTO> fullmakt;
     private List<VergemaalDTO> vergemaal;
-
-    private List<DoedfoedtBarnDTO> doedfoedtBarn;
+    private List<SikkerhetstiltakDTO> sikkerhetstiltak;
     private List<IdentRequestDTO> nyident;
+    private List<DoedfoedtBarnDTO> doedfoedtBarn;
 
     public List<IdentRequestDTO> getNyident() {
         if (isNull(nyident)) {
@@ -89,7 +98,6 @@ public class PersonDTO implements Serializable {
             forelderBarnRelasjon = new ArrayList<>();
         }
         return forelderBarnRelasjon;
-
     }
 
     public List<AdressebeskyttelseDTO> getAdressebeskyttelse() {
@@ -230,5 +238,36 @@ public class PersonDTO implements Serializable {
             doedfoedtBarn = new ArrayList<>();
         }
         return doedfoedtBarn;
+    }
+
+    public List<SikkerhetstiltakDTO> getSikkerhetstiltak() {
+        if (isNull(sikkerhetstiltak)) {
+            sikkerhetstiltak = new ArrayList<>();
+        }
+        return sikkerhetstiltak;
+    }
+
+    @JsonIgnore
+    public boolean isStatusIn(FolkeregisterPersonstatus... statuser) {
+
+        return Arrays.asList(statuser).contains(getFolkeregisterPersonstatus().stream()
+                .findFirst().orElse(FolkeregisterPersonstatusDTO.builder()
+                        .status(FOEDSELSREGISTRERT)
+                        .build())
+                .getStatus());
+    }
+
+    public Identtype getIdenttype() {
+
+        if (isNull(ident)) {
+            return null;
+        }
+        if (parseInt(ident.substring(2, 3)) % 4 >= 2) {
+            return NPID;
+        } else if (parseInt(ident.substring(0, 1)) >= 4) {
+            return DNR;
+        } else {
+            return FNR;
+        }
     }
 }

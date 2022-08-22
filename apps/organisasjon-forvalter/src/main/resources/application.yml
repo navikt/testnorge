@@ -5,6 +5,17 @@ spring:
     name: Testnav-Organisasjon-Forvalter
     version: 1.0
     description: Bestilling, persistering og opphenting av testorganisasjoner
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:testnav-organisasjon-forvalter
 
 kafka:
   groupid: organisasjon-forvalter-v1
@@ -15,10 +26,10 @@ consumers:
     name: generer-navn-service
     cluster: dev-gcp
     namespace: dolly
-  organisasjon-orgnummer-service:
-    url: https://organisasjon-orgnummer-service.dev.intern.nav.no
-    name: organisasjon-orgnummer-service
-    cluster: dev-fss
+  testnav-orgnummer-service:
+    url: https://testnav-orgnummer-service.dev.intern.nav.no
+    name: testnav-orgnummer-service
+    cluster: dev-gcp
     namespace: dolly
   organisasjon-bestilling-service:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no
@@ -41,3 +52,20 @@ consumers:
     name: testnav-miljoer-service
     cluster: dev-gcp
     namespace: dolly
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

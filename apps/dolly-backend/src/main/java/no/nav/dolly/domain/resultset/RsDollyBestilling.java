@@ -19,7 +19,10 @@ import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.BankkontoData;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.ArrayList;
@@ -40,34 +43,23 @@ public class RsDollyBestilling {
 
     @Schema(description = "Navn på malbestillling")
     private String malBestillingNavn;
-
     private RsPdldata pdlforvalter;
-
     private PdlPersondata pdldata;
-
     private RsDigitalKontaktdata krrstub;
-
     private List<RsInstdata> instdata;
-
     private List<RsAareg> aareg;
-
     private List<OpprettSkattegrunnlag> sigrunstub;
-
     private InntektMultiplierWrapper inntektstub;
-
     private Arenadata arenaforvalter;
-
     private RsUdiPerson udistub;
-
     private PensjonData pensjonforvalter;
-
     private RsInntektsmelding inntektsmelding;
-
     private RsBregdata brregstub;
-
     private RsDokarkiv dokarkiv;
-
     private RsSykemelding sykemelding;
+    private RsTpsMessaging tpsMessaging;
+    private BankkontoData bankkonto;
+    private RsSkjerming skjerming;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

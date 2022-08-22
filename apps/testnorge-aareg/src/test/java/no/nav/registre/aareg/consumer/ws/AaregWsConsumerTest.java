@@ -36,7 +36,7 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeid
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class AaregWsConsumerTest {
+class AaregWsConsumerTest {
 
     private Sikkerhetsbegrensning faultInfo = new Sikkerhetsbegrensning();
     private DatatypeFactory datatypeFactory;
@@ -70,7 +70,7 @@ public class AaregWsConsumerTest {
     }
 
     @Test
-    public void opprettArbeidsforhold_OK() throws Exception {
+    void opprettArbeidsforhold_OK() throws Exception {
         var response = aaregWsConsumer.opprettArbeidsforhold(RsAaregOpprettRequest
                 .builder()
                 .arbeidsforhold(RsArbeidsforhold.builder().build())
@@ -79,12 +79,12 @@ public class AaregWsConsumerTest {
 
         assertThat(response.getStatusPerMiljoe().get("t0"), is(equalTo("OK")));
         verify(mapperFacade).map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class));
-        verify(behandleArbeidsforholdV1Proxy).getServiceByEnvironment(eq("t0"));
+        verify(behandleArbeidsforholdV1Proxy).getServiceByEnvironment("t0");
         verify(behandleArbeidsforholdPortType).opprettArbeidsforhold(any(OpprettArbeidsforholdRequest.class));
     }
 
     @Test
-    public void opprettArbeidsforhold_throwSikkerhetsbegrensning() throws Exception {
+    void opprettArbeidsforhold_throwSikkerhetsbegrensning() throws Exception {
         var sikkerhetsbegrensning =
                 new OpprettArbeidsforholdSikkerhetsbegrensning("Ingen tilgang", faultInfo);
 
@@ -104,7 +104,7 @@ public class AaregWsConsumerTest {
     }
 
     @Test
-    public void oppdaterArbeidsforhold_OK() throws Exception {
+    void oppdaterArbeidsforhold_OK() throws Exception {
         var rsAaregOppdaterRequest = new RsAaregOppdaterRequest();
         rsAaregOppdaterRequest.setEnvironments(singletonList("t1"));
         rsAaregOppdaterRequest.setArbeidsforhold(RsArbeidsforhold.builder().build());
@@ -115,12 +115,12 @@ public class AaregWsConsumerTest {
         assertThat(status.get("t1"), is(equalTo("OK")));
         verify(mapperFacade).map(any(RsArbeidsforhold.class), eq(Arbeidsforhold.class));
         verify(mapperFacade).map(any(LocalDateTime.class), eq(XMLGregorianCalendar.class));
-        verify(behandleArbeidsforholdV1Proxy).getServiceByEnvironment(eq("t1"));
+        verify(behandleArbeidsforholdV1Proxy).getServiceByEnvironment("t1");
         verify(behandleArbeidsforholdPortType).oppdaterArbeidsforhold(any(OppdaterArbeidsforholdRequest.class));
     }
 
     @Test
-    public void oppdaterArbeidsforhold_throwsSikkerhetsbegrensning() throws Exception {
+    void oppdaterArbeidsforhold_throwsSikkerhetsbegrensning() throws Exception {
         var sikkerhetsbegrensning =
                 new OppdaterArbeidsforholdSikkerhetsbegrensning("Ingen tilgang", faultInfo);
 

@@ -19,8 +19,6 @@ spec:
           cluster: dev-gcp
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
-        - application: oppsummeringsdokument-frontend
-          cluster: dev-gcp
         - application: testnav-generer-arbeidsforhold-populasjon-service
           cluster: dev-gcp
         - application: testnav-amelding-service
@@ -29,7 +27,8 @@ spec:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
         - host: elastic-dolly-testdata-gjeter-nav-dev.aivencloud.com
-  elastic:
+        - host: opensearch-dolly-testdata-gjeter-nav-dev.aivencloud.com
+  openSearch:
     instance: testdata-gjeter
     access: admin
   tokenx:
@@ -48,6 +47,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1
@@ -59,6 +61,6 @@ spec:
       cpu: 1000m
       memory: 2048Mi
   envFrom:
-    - secret: teamdolly-elastic
+    - secret: teamdolly-opensearch
   ingresses:
     - "https://oppsummeringsdokument-service.dev.intern.nav.no"

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
+import no.nav.pdl.forvalter.consumer.IdentPoolConsumer.Bruker;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
@@ -18,13 +19,17 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +38,7 @@ import reactor.core.publisher.Flux;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +47,10 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -63,9 +73,10 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final UnhookEksternePersonerService unhookEksternePersonerService;
 
     @Transactional
-    public String updatePerson(String ident, PersonUpdateRequestDTO request) {
+    public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
 
         if (!isNumeric(ident) || ident.length() != 11) {
 
@@ -73,19 +84,14 @@ public class PersonService {
         }
 
         checkAlias(ident);
-        var dbPerson = personRepository.findByIdent(ident)
-                .orElseGet(() -> personRepository.save(DbPerson.builder()
-                        .ident(ident)
-                        .person(PersonDTO.builder()
-                                .ident(ident)
-                                .build())
-                        .sistOppdatert(now())
-                        .build()));
+        var dbPerson = getDbPerson(ident, overwrite);
 
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
-        validateArtifactsService.validate(mergedPerson);
+        if (isNotTrue(relaxed)) {
+            validateArtifactsService.validate(mergedPerson);
+        }
 
-        var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
+        var extendedArtifacts = personArtifactService.buildPerson(mergedPerson, relaxed);
         dbPerson.setPerson(extendedArtifacts);
         dbPerson.setFornavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
         dbPerson.setMellomnavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
@@ -104,26 +110,55 @@ public class PersonService {
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
                 new NotFoundException(format("Ident %s ble ikke funnet", ident)));
 
-        var personer = Stream.of(List.of(dbPerson),
+        unhookEksternePersonerService.unhook(dbPerson);
+
+        var identer = Stream.of(List.of(dbPerson.getIdent()),
                         dbPerson.getRelasjoner().stream()
                                 .map(DbRelasjon::getRelatertPerson)
-                                .collect(Collectors.toList()))
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getIdent)
+                                .toList(),
+                        dbPerson.getRelasjoner().stream()
+                                .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
+                                .map(DbRelasjon::getRelatertPerson)
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getForeldreansvar)
+                                .flatMap(Collection::stream)
+                                .filter(ansvar -> !ansvar.isEksisterendePerson())
+                                .map(ForeldreansvarDTO::getAnsvarlig)
+                                .toList())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-        var identer = personer.stream()
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),
-                        identPoolConsumer.releaseIdents(identer),
+                        identPoolConsumer.releaseIdents(identer, Bruker.PDLF),
                         Flux.just(personRepository.deleteByIdentIn(identer)))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();
 
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
+    }
+
+    @Transactional
+    public void deletePersonerUtenom(Set<String> identer) {
+
+        var startTime = currentTimeMillis();
+
+        var dbIdenter = personRepository.findByIdentIn(identer, Pageable.unpaged()).stream()
+                .map(DbPerson::getIdent)
+                .collect(Collectors.toSet());
+
+        Stream.of(
+                        pdlTestdataConsumer.delete(identer),
+                        identPoolConsumer.releaseIdents(identer, Bruker.TPSF),
+                        Flux.just(personRepository.deleteByIdentIn(dbIdenter)))
+                .reduce(Flux.empty(), Flux::merge)
+                .collectList()
+                .block();
+
+        log.info("Sletting av identer {} tok {} ms", identer.stream().collect(Collectors.joining(",")), currentTimeMillis() - startTime);
     }
 
     @Transactional(readOnly = true)
@@ -189,13 +224,17 @@ public class PersonService {
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
         }
-        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty()) {
+        if (request.getPerson().getSivilstand().isEmpty()) {
+            request.getPerson().getSivilstand().add(new SivilstandDTO());
+        }
+        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
+                Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {
             request.getPerson().getFolkeregisterPersonstatus().add(new FolkeregisterPersonstatusDTO());
         }
 
         return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
                 .person(request.getPerson())
-                .build());
+                .build(), null, null);
     }
 
     private void checkAlias(String ident) {
@@ -205,5 +244,20 @@ public class PersonService {
             throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
+    }
+
+    private DbPerson getDbPerson(String ident, Boolean overwrite) {
+
+        if (isTrue(overwrite)) {
+            personRepository.deleteByIdent(ident);
+        }
+        return personRepository.findByIdent(ident)
+                .orElseGet(() -> personRepository.save(DbPerson.builder()
+                        .ident(ident)
+                        .person(PersonDTO.builder()
+                                .ident(ident)
+                                .build())
+                        .sistOppdatert(now())
+                        .build()));
     }
 }

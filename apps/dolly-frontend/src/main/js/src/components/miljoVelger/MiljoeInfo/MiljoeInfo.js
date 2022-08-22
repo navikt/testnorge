@@ -5,23 +5,19 @@ import { ArenaApi, InstApi, PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const {
-		instdata,
-		pdlforvalter,
-		pdldata,
-		arenaforvalter,
-		pensjonforvalter,
-		sykemelding,
-		udistub,
-	} = bestillingsdata
+	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, udistub } =
+		bestillingsdata
 	if (
 		!instdata &&
-		!pdlforvalter &&
-		!pdldata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
 		!sykemelding &&
-		!_get(udistub, 'oppholdStatus')
+		!_get(udistub, 'oppholdStatus') &&
+		!_get(pdldata, 'bostedsadresse') &&
+		!_get(pdldata, 'fullmakt') &&
+		!_get(pdldata, 'falskIdentitet') &&
+		!_get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
+		!_get(pdldata, 'kontaktinformasjonForDoedsbo')
 	)
 		return null
 
@@ -40,13 +36,12 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{pdldata && pdldata.person?.bostedsadresse && <li>Utenlandsk boadresse: Q2</li>}
-				{pdldata && pdldata.person?.fullmakt && <li>Fullmakt: Q2</li>}
-				{pdldata && pdldata.person?.falskIdentitet && <li>Falsk identitet: Q2</li>}
-				{pdldata && pdldata.person?.utenlandskIdentifikasjonsnummer && (
+				{pdldata?.person?.fullmakt && <li>Fullmakt: Q2</li>}
+				{pdldata?.person?.falskIdentitet && <li>Falsk identitet: Q2</li>}
+				{pdldata?.person?.utenlandskIdentifikasjonsnummer && (
 					<li>Utenlandsk identifikasjonsnummer: Q2</li>
 				)}
-				{pdlforvalter && pdlforvalter.kontaktinformasjonForDoedsbo && (
+				{pdldata?.person?.kontaktinformasjonForDoedsbo && (
 					<li>Kontaktinformasjon for dødsbo: Q2</li>
 				)}
 
@@ -60,9 +55,12 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{pensjonforvalter && (
+				{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) && (
 					<li>
-						POPP:&nbsp;
+						Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
+						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
+						{pensjonforvalter?.tp && 'TP'}
+						):&nbsp;
 						<TilgjengeligeMiljoer
 							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
 							dollyEnvironments={dollyEnvironments}
@@ -70,7 +68,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{sykemelding && <li>Sykemelding: Både Q1 og Q2 må velges</li>}
+				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
 
 				{udistub && udistub.oppholdStatus && (
 					<li>

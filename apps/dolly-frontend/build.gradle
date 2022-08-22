@@ -1,7 +1,7 @@
 plugins {
     id "org.sonarqube" version "3.3"
     id 'java'
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -11,7 +11,7 @@ sonarqube {
         property "sonar.projectKey", "dolly-frontend"
         property "sonar.projectName", "dolly-frontend"
         property 'sonar.sources', 'src/main/java,src/main/js'
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -37,13 +37,15 @@ repositories {
     mavenLocal()
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:reactive-proxy'
     implementation 'no.nav.testnav.libs:reactive-session-security'
     implementation 'no.nav.testnav.libs:reactive-frontend'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:reactive-proxy'
 
     // Session
     implementation 'redis.clients:jedis'
@@ -59,8 +61,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' //TODO remove legacy bootstrap config
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
 

@@ -1,5 +1,5 @@
 const path = require('path')
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common.js')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetsPlugin = require('css-minimizer-webpack-plugin')
@@ -8,7 +8,6 @@ const TerserPlugin = require('terser-webpack-plugin')
 module.exports = merge(common, {
 	mode: 'production',
 	devtool: 'source-map',
-	stats: 'minimal',
 	plugins: [
 		new OptimizeCssAssetsPlugin(),
 		new MiniCssExtractPlugin({

@@ -51,7 +51,7 @@ function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableCompo
 	if (error) {
 		return (
 			<Alert>
-				Noe gikk galt! Trykk på "Prøv på nytt" eller kontakt team Dolly.
+				Noe gikk galt! Trykk på "Prøv på nytt" eller kontakt Team Dolly.
 				<Knapp
 					form="kompakt"
 					onClick={(event) => {

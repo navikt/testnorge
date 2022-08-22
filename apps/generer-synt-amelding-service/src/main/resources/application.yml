@@ -21,12 +21,28 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-generer-synt-amelding-service
 
-consumers.syntrest-proxy:
-  url: https://testnav-syntrest-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: testnav-syntrest-proxy
+consumers:
+  synt-amelding:
+    url: https://synthdata-amelding.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-amelding
 
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
 server:
   error:
     include-message: always
+  servlet:
+    encoding:
+      charset: UTF-8

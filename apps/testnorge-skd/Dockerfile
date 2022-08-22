@@ -1,8 +1,8 @@
 FROM navikt/java:17
-LABEL maintainer="Team Registre"
+LABEL maintainer="Team Dolly"
+
+COPY /build/libs/app.jar /app/app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
-
-ADD apps/testnorge-skd/build/libs/app.jar /app/app.jar
 
 EXPOSE 8080

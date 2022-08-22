@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import no.nav.registre.aareg.properties.CredentialsProps;
 
 @ExtendWith(MockitoExtension.class)
-public class StsOidcServiceTest {
+class StsOidcServiceTest {
 
     private static final String ENV = "u1";
 
@@ -45,7 +45,7 @@ public class StsOidcServiceTest {
 
 
     @Test
-    public void getIdToken_ok() {
+    void getIdToken_ok() {
         when(jsonNode.get("expires_in")).thenReturn(jsonNode2);
         when(jsonNode.get("access_token")).thenReturn(jsonNode2);
 

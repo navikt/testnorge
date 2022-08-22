@@ -9,8 +9,11 @@ import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
 import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
+import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 
-export const ForbedringModal = ({ closeModal, brukerBilde }) => {
+export const ForbedringModal = ({ closeModal }) => {
+	const { brukerBilde } = useBrukerProfilBilde()
+
 	const MAX_LENGTH = 2000
 	const [uuid] = useState(_uuid())
 	const [forbedring, setForbedring] = useState('')
@@ -35,7 +38,7 @@ export const ForbedringModal = ({ closeModal, brukerBilde }) => {
 					{isAnonym ? (
 						<Icon kind="user" size={40} className="bruker-ikon" />
 					) : (
-						<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
+						<img alt="Profilbilde" src={brukerBilde || dolly} />
 					)}
 
 					<div className="modal-input">

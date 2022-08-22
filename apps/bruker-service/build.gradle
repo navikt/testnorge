@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -10,7 +10,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "testnav-bruker-service"
         property "sonar.projectName", "testnav-bruker-service"
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -20,14 +20,24 @@ sonarqube {
 bootJar {
     archiveFileName = "app.jar"
 }
+
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
-test {
-    useJUnitPlatform()
+def test = tasks.named("test") {
+    useJUnitPlatform {
+        excludeTags "integration"
+    }
+}
+
+def iTest = tasks.register("iTest", Test) {
+    useJUnitPlatform {
+        includeTags "integration"
+    }
+    shouldRunAfter test
 }
 
 repositories {
@@ -50,9 +60,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.4'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.r2dbc:r2dbc-h2'
@@ -66,8 +78,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.21.0'
+    testImplementation 'no.nav.testnav.libs:integration-test'
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
+java.sourceCompatibility = JavaVersion.VERSION_17

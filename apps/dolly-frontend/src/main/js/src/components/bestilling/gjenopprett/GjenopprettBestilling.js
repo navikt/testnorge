@@ -2,18 +2,26 @@ import React from 'react'
 import Formatters from '~/utils/DataFormatter'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { GjenopprettModal } from './GjenopprettModal'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_ORGANISASJONER,
+	useMatchMutate,
+} from '~/utils/hooks/useMutate'
 
 export default function GjenopprettBestilling(props) {
-	const { bestilling, closeModal } = props
+	const { bestilling, closeModal, brukertype } = props
 	const { environments } = bestilling
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
+
+	const mutate = useMatchMutate()
 
 	const submitFormik = async (values) => {
 		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 		erOrganisasjon
 			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
 			: await props.gjenopprettBestilling(envsQuery)
-		await props.getBestillinger()
+		mutate(REGEX_BACKEND_ORGANISASJONER)
+		mutate(REGEX_BACKEND_BESTILLINGER)
 		closeModal()
 	}
 
@@ -33,6 +41,7 @@ export default function GjenopprettBestilling(props) {
 			submitFormik={submitFormik}
 			closeModal={closeModal}
 			bestilling={bestilling}
+			brukertype={brukertype}
 		/>
 	)
 }

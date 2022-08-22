@@ -25,7 +25,7 @@ public class TpConsumer {
     private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
     };
 
-    public TpConsumer(RestTemplate restTemplate, @Value("${testnorge.tp.rest.api.url}") String tpUrl) {
+    public TpConsumer(RestTemplate restTemplate, @Value("${consumers.testnorge-tp.url}") String tpUrl) {
         this.restTemplate = restTemplate;
         this.tpUrl = tpUrl + "/v1";
     }

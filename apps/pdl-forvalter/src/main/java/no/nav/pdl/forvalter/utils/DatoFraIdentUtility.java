@@ -15,7 +15,9 @@ import static java.lang.Integer.parseInt;
 @UtilityClass
 public class DatoFraIdentUtility {
 
-    public LocalDate getDato(String ident) {
+    private static final long MYNDIG = 18;
+
+    public static LocalDate getDato(String ident) {
 
         var year = parseInt(ident.substring(4, 6));
         var individ = parseInt(ident.substring(6, 9));
@@ -38,19 +40,12 @@ public class DatoFraIdentUtility {
     }
 
     private int getDay(String ident) {
-        // Fix D-number
-        return ident.charAt(0) >= '4' ? parseInt(ident.substring(0, 2)) - 40 :
-                parseInt(ident.substring(0, 2));
+
+        return parseInt(ident.substring(0, 2)) % 40;
     }
 
     private int getMonth(String ident) {
-        // Fix B-number and syntetisk
-        if (ident.charAt(2) >= '6') {
-            return parseInt(ident.substring(2, 4)) - 60;
-        } else if (ident.charAt(2) >= '4') {
-            return parseInt(ident.substring(2, 4)) - 40;
-        } else {
-            return parseInt(ident.substring(2, 4));
-        }
+
+        return parseInt(ident.substring(2, 4)) % 20;
     }
 }

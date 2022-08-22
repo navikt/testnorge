@@ -4,13 +4,96 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
+import _has from 'lodash/has'
+import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
-export const Personinfo = ({ data, visTittel = true }) => {
+function hentSkjermingData(skjermingPath) {
+	if (!skjermingPath) {
+		return null
+	}
+	return (
+		<>
+			{skjermingPath.egenAnsattDatoFom && (
+				<>
+					<TitleValue
+						title="Har skjerming"
+						value={
+							skjermingPath.egenAnsattDatoTom &&
+							isBefore(new Date(skjermingPath.egenAnsattDatoTom), addDays(new Date(), -1))
+								? 'NEI'
+								: 'JA'
+						}
+					/>
+					<TitleValue
+						title="Skjerming fra"
+						value={Formatters.formatDate(skjermingPath.egenAnsattDatoFom)}
+					/>
+					{skjermingPath.egenAnsattDatoTom && (
+						<TitleValue
+							title="Skjerming til"
+							value={Formatters.formatDate(skjermingPath.egenAnsattDatoTom)}
+						/>
+					)}
+				</>
+			)}
+		</>
+	)
+}
+
+function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
+	if (!sikkerhetstiltakPath) {
+		return null
+	}
+	return (
+		<div className="person-visning_content">
+			<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
+			{sikkerhetstiltakPath.typeSikkerhetTiltak && (
+				<div className="person-visning_content">
+					<TitleValue
+						title="Type sikkerhetstiltak"
+						value={`${sikkerhetstiltakPath.typeSikkerhetTiltak} - ${sikkerhetstiltakPath.beskrSikkerhetTiltak}`}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak starter"
+						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoFom)}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak opphører"
+						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoTom)}
+					/>
+				</div>
+			)}
+			{sikkerhetstiltakPath.tiltakstype && (
+				<div className="person-visning_content">
+					<TitleValue
+						title="Type sikkerhetstiltak"
+						value={`${sikkerhetstiltakPath.tiltakstype} - ${sikkerhetstiltakPath.beskrivelse}`}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak starter"
+						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak opphører"
+						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigTilOgMed)}
+					/>
+				</div>
+			)}
+		</div>
+	)
+}
+
+export const TpsfPersoninfo = ({ data, visTittel = true, pdlData, environments }) => {
+	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
+	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
+
+	const tpsMessaging = TpsMessagingData(data?.ident, environments)
+
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 			<div className="person-visning_content">
-				<TitleValue title={data.identtype} value={data.ident} />
+				<TitleValue title={data.identtype} value={data.ident} visKopier />
 				<TitleValue title="Fornavn" value={data.fornavn} />
 
 				<TitleValue title="Mellomnavn" value={data.mellomnavn} />
@@ -32,7 +115,7 @@ export const Personinfo = ({ data, visTittel = true }) => {
 				<TitleValue
 					title="Sivilstand"
 					kodeverk={PersoninformasjonKodeverk.Sivilstander}
-					value={data.sivilstand}
+					value={data.sivilstand instanceof String ? data.sivilstand : data.sivilstand?.sivilstand}
 				/>
 
 				<TitleValue title="Bankkontonummer" value={data.bankkontonr} />
@@ -52,7 +135,7 @@ export const Personinfo = ({ data, visTittel = true }) => {
 					value={data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`}
 				/>
 
-				{data.spesreg !== 'UFB' && (
+				{data.spesreg !== 'UFB' && !harPdlAdressebeskyttelse && (
 					<TitleValue
 						title="Diskresjonskoder"
 						kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
@@ -60,7 +143,7 @@ export const Personinfo = ({ data, visTittel = true }) => {
 					/>
 				)}
 
-				{(data.utenFastBopel || data.spesreg === 'UFB') && (
+				{(data.utenFastBopel || data.spesreg === 'UFB') && !harPdlUfb && (
 					<TitleValue title="Uten fast bopel" value="JA" />
 				)}
 
@@ -80,45 +163,8 @@ export const Personinfo = ({ data, visTittel = true }) => {
 					value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 					size="medium"
 				/>
-				{data.egenAnsattDatoFom && (
-					<>
-						<TitleValue
-							title="Har skjerming"
-							value={
-								data.egenAnsattDatoTom &&
-								isBefore(new Date(data.egenAnsattDatoTom), addDays(new Date(), -1))
-									? 'NEI'
-									: 'JA'
-							}
-						/>
-						<TitleValue
-							title="Skjerming fra"
-							value={Formatters.formatDate(data.egenAnsattDatoFom)}
-						/>
-						{data.egenAnsattDatoTom && (
-							<TitleValue
-								title="Skjerming til"
-								value={Formatters.formatDate(data.egenAnsattDatoTom)}
-							/>
-						)}
-					</>
-				)}
-				{data.typeSikkerhetTiltak && (
-					<>
-						<TitleValue
-							title="Type sikkerhetstiltak"
-							value={`${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`}
-						/>
-						<TitleValue
-							title="Sikkerhetstiltak starter"
-							value={Formatters.formatDate(data.sikkerhetTiltakDatoFom)}
-						/>
-						<TitleValue
-							title="Sikkerhetstiltak opphører"
-							value={Formatters.formatDate(data.sikkerhetTiltakDatoTom)}
-						/>
-					</>
-				)}
+				{hentSkjermingData(tpsMessaging?.egenAnsattDatoFom ? tpsMessaging : data)}
+				{hentSikkerhetstiltakData(tpsMessaging?.sikkerhetstiltak || data?.sikkerhetstiltak)}
 			</div>
 		</div>
 	)

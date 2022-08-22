@@ -7,6 +7,10 @@ import BestillingSammendrag from '~/components/bestilling/sammendrag/BestillingS
 export const BestillingSammendragModal = ({ bestilling }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
+	if (!bestilling) {
+		return null
+	}
+
 	return (
 		<div className="flexbox--align-center--justify-end">
 			<Button onClick={openModal} kind="details">

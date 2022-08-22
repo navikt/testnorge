@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.pdl.forvalter.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,7 +13,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -32,14 +35,13 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
 
     protected static String getMessage(Throwable error) {
 
-        return error instanceof WebClientResponseException ?
-                ((WebClientResponseException) error).getResponseBodyAsString() :
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
     }
 
     @Override
     public Mono<List<IdentDTO>> call() {
-
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).query(query).build())
@@ -54,6 +56,10 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                                 .build())
                         .map(IdentDTO.class::cast)
                         .collect(Collectors.toList())))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException)
+                        .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) ->
+                                new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException) {

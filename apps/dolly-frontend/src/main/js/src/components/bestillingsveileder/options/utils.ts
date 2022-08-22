@@ -6,7 +6,7 @@ import {
 } from '~/components/fagsystem/aareg/form/initialValues'
 import { initialValues as initialValuesInntektsmelding } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { initialValues as initialValuesInst } from '~/components/fagsystem/inst/form/Form'
-import { initialValuesDoedfoedt } from '~/components/fagsystem/tpsf/form/familierelasjoner/partials/Barn'
+import { initialDoedfoedtBarn } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const initialValues = {
 	inntektstub: initialValuesInntektstub,
@@ -15,7 +15,7 @@ export const initialValues = {
 	utenlandsopphold: initialUtenlandsopphold,
 	inntektsmelding: initialValuesInntektsmelding,
 	instdata: initialValuesInst,
-	barnDoedfoedt: initialValuesDoedfoedt,
+	barnDoedfoedt: initialDoedfoedtBarn,
 	boadresse: {
 		bolignr: '',
 		// @ts-ignore
@@ -98,23 +98,6 @@ export const initialValues = {
 			},
 		},
 	],
-	partnere: {
-		identtype: 'FNR',
-		kjonn: '',
-		sivilstander: [
-			{
-				sivilstand: '',
-				// @ts-ignore
-				sivilstandRegdato: null,
-			},
-		],
-		harFellesAdresse: false,
-		spesreg: '',
-		utenFastBopel: false,
-		statsborgerskap: '',
-		statsborgerskapRegdato: '',
-		statsborgerskapTildato: '',
-	},
 	barn: {
 		identtype: 'FNR',
 		kjonn: '',

@@ -1,9 +1,3 @@
----
-layout: default
-title: app-tilgang-analyse-service
-parent: Applikasjoner
----
-
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navit_testnorge_app_tilgang_analyse_service&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=navit_testnorge_app_tilgang_analyse_service)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navit_testnorge_app_tilgang_analyse_service&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=navit_testnorge_app_tilgang_analyse_service)
 
@@ -12,7 +6,8 @@ parent: Applikasjoner
 Appen brukes for å finne avehingheter mellom apper basert på `inbound` og `outbound` regler i nias. 
  
 ## Swagger
-Swagger finnes under [/api](https://https://testnav-app-tilgang-analyse-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-app-tilgang-analyse-service.dev.intern.nav.no/swagger) -endepunktet til
+applikasjonen.
 
 ## Lokal kjøring
 

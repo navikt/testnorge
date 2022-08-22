@@ -7,9 +7,10 @@ import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoComma
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,25 +18,28 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class SafConsumer {
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
-            AccessTokenService accessTokenService
-    ) {
-        this.accessTokenService = accessTokenService;
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(
                         ExchangeStrategies.builder()
                                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
-                .baseUrl(properties.getUrl()).build();
+                .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public Journalpost getJournalpost(Integer journalpostId, String miljo) {
-        return accessTokenService
-                .generateToken(properties)
+        return tokenExchange
+                .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentInfoCommand(
                         webClient,
                         accessToken.getTokenValue(),
@@ -50,8 +54,8 @@ public class SafConsumer {
     }
 
     public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
-        return accessTokenService
-                .generateToken(properties)
+        return tokenExchange
+                .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
@@ -64,8 +68,8 @@ public class SafConsumer {
     }
 
     public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
-        return accessTokenService
-                .generateToken(properties)
+        return tokenExchange
+                .exchange(properties)
                 .flatMap(accessToken -> new GetPDFCommand(
                                 webClient,
                                 accessToken.getTokenValue(),

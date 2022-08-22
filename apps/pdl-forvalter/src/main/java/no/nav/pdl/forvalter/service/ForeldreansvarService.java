@@ -9,21 +9,24 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.PersonnavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -31,8 +34,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MEDMOR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MOR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -71,7 +80,6 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
                 handle(type, person);
             }
         }
@@ -129,20 +137,33 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         if ((foreldreansvar.getAnsvar() == Ansvar.FELLES) &&
                 isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
-                !isRelasjonMor(hovedperson) && !isRelasjonFar(hovedperson)) {
+                !isRelasjonForeldre(hovedperson)) {
             throw new InvalidRequestException(INVALID_RELASJON_FELLES_EXCEPTION);
         }
     }
 
+    private boolean isRelasjonForeldre(PersonDTO hovedperson) {
+
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon -> relasjon.isForeldre() && isNotTrue(relasjon.getPartnerErIkkeForelder())) &&
+                hovedperson.getSivilstand().stream()
+                        .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert()));
+    }
+
     private boolean isRelasjonMor(PersonDTO hovedperson) {
 
-        return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
-            Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
-            return barn.isPresent() &&
-                    barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
-                            forelderRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
-                                    forelderRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR);
-        });
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon ->
+                        MOR == relasjon.getMinRolleForPerson() ||
+                                MEDMOR == relasjon.getMinRolleForPerson() ||
+
+                                (FORELDER == relasjon.getMinRolleForPerson() &&
+                                        (Kjoenn.KVINNE == hovedperson.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
+                                                Kjoenn.KVINNE == KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()))) ||
+
+                                isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
+                                        hovedperson.getSivilstand().stream()
+                                                .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert())));
     }
 
     private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO hovedperson) {
@@ -157,19 +178,24 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                     .build())
-                            .findFirst().get();
+                            .toList();
                 })
-                .collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     private boolean isRelasjonFar(PersonDTO hovedperson) {
 
-        return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
-            Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
-            return barn.isPresent() &&
-                    barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
-                            forelderRelasjon.getRelatertPersonsRolle() == Rolle.FAR);
-        });
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .anyMatch(relasjon -> FAR == relasjon.getMinRolleForPerson() ||
+
+                        (FORELDER == relasjon.getMinRolleForPerson() &&
+                                (Kjoenn.MANN == hovedperson.getKjoenn().stream().findFirst().orElse(new KjoennDTO()).getKjoenn() ||
+                                        Kjoenn.MANN == KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()))) ||
+
+                        isNotTrue(relasjon.getPartnerErIkkeForelder()) &&
+                                hovedperson.getSivilstand().stream()
+                                        .anyMatch(sivilstand -> sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
     private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO hovedperson) {
@@ -183,9 +209,10 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                     .build())
-                            .findFirst().get();
+                            .toList();
                 })
-                .collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     private void handle(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
@@ -199,11 +226,14 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             setRelasjoner(barnFarRelasjoner, foreldreansvar);
 
         } else if (foreldreansvar.getAnsvar() == Ansvar.FELLES) {
-            var barnFellesRelasjoner = getBarnMorRelasjoner(hovedperson);
+            var barnFellesRelasjoner = new ArrayList<>(getBarnMorRelasjoner(hovedperson));
             barnFellesRelasjoner.addAll(getBarnFarRelasjoner(hovedperson));
             setRelasjoner(barnFellesRelasjoner, foreldreansvar);
 
         } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
+
+            foreldreansvar.setEksisterendePerson(isNotBlank(foreldreansvar.getAnsvarlig()));
+
             if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
                 makeAnsvarligUtenIdentifier(foreldreansvar, hovedperson);
@@ -277,8 +307,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getFoedselsdato())) {
             foreldreansvar.getAnsvarligUtenIdentifikator().setFoedselsdato(
-                    DatoFraIdentUtility.getDato(hovedperson.getIdent())
-                            .plusDays(random.nextInt(365)).atStartOfDay());
+                    FoedselsdatoUtility.getFoedselsdato(hovedperson)
+                            .plusDays(random.nextInt(365)));
         }
     }
 
@@ -290,6 +320,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                     .add(0, ForeldreansvarDTO.builder()
                             .ansvar(foreldreansvar.getAnsvar())
                             .ansvarlig(relasjon.getAnsvarlig())
+                            .eksisterendePerson(foreldreansvar.getEksisterendePerson())
                             .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
                             .kilde(foreldreansvar.getKilde())
                             .master(foreldreansvar.getMaster())
@@ -299,7 +330,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                             .build());
 
             if (nonNull(relasjon.getAnsvarlig())) {
-                relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getAnsvarlig(), FORELDREANSVAR);
+                relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getAnsvarlig(), FORELDREANSVAR_FORELDER);
+                relasjonService.setRelasjon(relasjon.getAnsvarlig(), relasjon.getBarn().getIdent(), FORELDREANSVAR_BARN);
             }
         });
     }

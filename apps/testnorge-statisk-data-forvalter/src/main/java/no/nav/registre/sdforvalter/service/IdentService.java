@@ -1,16 +1,18 @@
 package no.nav.registre.sdforvalter.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.consumer.rs.*;
+import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
+import no.nav.registre.sdforvalter.consumer.rs.GenererNavnConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.HodejegerenConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.SkdConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.TpConsumer;
+import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.domain.TpsIdent;
-import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 
 @Service
 @Slf4j
@@ -46,9 +48,8 @@ public class IdentService {
         TpsIdentListe identer = new TpsIdentListe(liste
                 .stream()
                 .filter(item -> !exisistingFnrs.contains(item.getFnr()))
-                .collect(Collectors.toList())
+                .toList()
         );
-        skdConsumer.createTpsIdenterMessagesInGroup(identer, staticDataPlaygroup);
         skdConsumer.send(staticDataPlaygroup, environment);
 
         //Person får ikke aktør-id automatisk ved opprettelse i TPS lenger. Må opprettes i PDL også for å få aktør-id
@@ -93,7 +94,7 @@ public class IdentService {
             } else {
                 return ident;
             }
-        }).collect(Collectors.toList());
+        }).toList();
         return new TpsIdentListe(tpsIdentListe);
     }
 }

@@ -4,10 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getResponseStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.marshallToXML;
@@ -31,10 +34,14 @@ public class EgenansattService {
     private final EndringsmeldingConsumer endringsmeldingConsumer;
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
-    public EgenansattService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
+    public EgenansattService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer,
+                             TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+
         this.mapperFacade = mapperFacade;
         this.endringsmeldingConsumer = endringsmeldingConsumer;
+        this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
 
         this.requestContext = JAXBContext.newInstance(EgenansattRequest.class);
         this.responseContext = JAXBContext.newInstance(EgenansattResponse.class);
@@ -52,44 +59,40 @@ public class EgenansattService {
         return request;
     }
 
-    public Map<String, EndringsmeldingResponseDTO> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
 
         return endreEgenansatt(true, ident, fraOgMed, miljoer);
     }
 
-    public Map<String, EndringsmeldingResponseDTO> opphoerEgenansatt(String ident, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerEgenansatt(String ident, List<String> miljoer) {
 
         return endreEgenansatt(false, ident, null, miljoer);
     }
 
-    private Map<String, EndringsmeldingResponseDTO> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
-        try {
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", ident);
-            context.setProperty("fraOgMed", fraOgMed);
+    private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
 
-            var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
+        miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 
-            var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
-            var miljoerResponse = endringsmeldingConsumer.sendEndringsmelding(requestXml, miljoer);
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
+        context.setProperty("fraOgMed", fraOgMed);
 
-            return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(Entry::getKey, entry -> {
+        var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
 
-                        try {
-                            var response = (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
+        var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
+        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
-                        } catch (JAXBException e) {
-                            log.error(e.getMessage(), e);
-                            return getErrorStatus(e);
-                        }
-                    }));
+        return miljoerResponse.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, entry -> {
 
-        } catch (JAXBException e) {
+                    try {
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
-            log.error(e.getMessage(), e);
-            return Map.of("NA", getErrorStatus(e));
-        }
+                    } catch (JAXBException e) {
+                        log.error(e.getMessage(), e);
+                        return getErrorStatus(e);
+                    }
+                }));
     }
 }

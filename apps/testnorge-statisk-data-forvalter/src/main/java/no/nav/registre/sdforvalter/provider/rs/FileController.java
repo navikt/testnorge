@@ -4,6 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.sdforvalter.adapter.EregAdapter;
+import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
+import no.nav.registre.sdforvalter.converter.csv.EregCsvConverter;
+import no.nav.registre.sdforvalter.converter.csv.TpsIdentCsvConverter;
+import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.sdforvalter.domain.EregListe;
+import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.registre.sdforvalter.service.IdentService;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +25,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.converter.csv.EregCsvConverter;
-import no.nav.registre.sdforvalter.converter.csv.TpsIdentCsvConverter;
-import no.nav.registre.sdforvalter.domain.Ereg;
-import no.nav.registre.sdforvalter.domain.EregListe;
-import no.nav.registre.sdforvalter.domain.TpsIdent;
-import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import no.nav.registre.sdforvalter.service.IdentService;
 
 @RestController
 @RequestMapping("/api/v1/faste-data/file")
@@ -46,11 +51,11 @@ public class FileController {
 
     @Operation(summary = "Hent organisasjoner fra Team Dollys database")
     @GetMapping("/ereg")
-    public void exportEreg(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
+    public void exportEreg(@RequestParam(name = "gruppe", required = false) Gruppe gruppe, HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=ereg-" + LocalDateTime.now().toString() + ".csv");
-        EregListe eregListe = eregAdapter.fetchBy(gruppe);
+        EregListe eregListe = eregAdapter.fetchBy(gruppe.name());
 
         EregCsvConverter.inst().write(response.getWriter(), eregListe.getListe());
     }
@@ -65,12 +70,12 @@ public class FileController {
 
     @Operation(summary = "Hent personer fra Team Dollys database")
     @GetMapping("/tpsIdenter")
-    public void exportTpsIdenter(@RequestParam(name = "gruppe", required = false) String gruppe, HttpServletResponse response) throws IOException {
+    public void exportTpsIdenter(@RequestParam(name = "gruppe", required = false) Gruppe gruppe, HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=tpsIdent-" + LocalDateTime.now().toString() + ".csv");
 
-        TpsIdentListe tpsIdentListe = tpsIdenterAdapter.fetchBy(gruppe);
+        TpsIdentListe tpsIdentListe = tpsIdenterAdapter.fetchBy(gruppe.name());
         TpsIdentCsvConverter.inst().write(response.getWriter(), tpsIdentListe.getListe());
     }
 

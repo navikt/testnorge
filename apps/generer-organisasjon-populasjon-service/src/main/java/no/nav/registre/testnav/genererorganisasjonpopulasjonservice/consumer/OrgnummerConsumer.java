@@ -1,22 +1,25 @@
 package no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer.command.GetOrgnummerCommand;
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.credentials.OrgnummerServiceProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class OrgnummerConsumer {
 
     private final WebClient webClient;
     private final OrgnummerServiceProperties properties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
-    public OrgnummerConsumer(OrgnummerServiceProperties properties, AccessTokenService accessTokenService) {
+    public OrgnummerConsumer(OrgnummerServiceProperties properties,
+                             TokenExchange tokenExchange,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.properties = properties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
@@ -24,7 +27,7 @@ public class OrgnummerConsumer {
     }
 
     public String getOrgnummer() {
-        var tokenValue = accessTokenService.generateToken(properties).block().getTokenValue();
+        var tokenValue = tokenExchange.exchange(properties).block().getTokenValue();
         return new GetOrgnummerCommand(webClient, tokenValue, 1).call().stream().findFirst().orElseThrow();
     }
 

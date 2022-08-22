@@ -40,6 +40,9 @@ public class ArbeidsforholdMappingUtil {
 
     }
 
+    private static final String SPORINGSINFO = "sporingsinformasjon";
+    private static final String PERIODE = "periode";
+
     public static Arbeidsforhold mapToArbeidsforhold(JsonNode arbeidsforholdNode) {
         return Arbeidsforhold.builder()
                 .navArbeidsforholdId(findLongNullSafe(arbeidsforholdNode, "navArbeidsforholdId"))
@@ -56,7 +59,7 @@ public class ArbeidsforholdMappingUtil {
                 .innrapportertEtterAOrdningen(arbeidsforholdNode.get("innrapportertEtterAOrdningen") != null ? arbeidsforholdNode.get("innrapportertEtterAOrdningen").asBoolean() : null)
                 .registrert(findLocalDateTimeNullSafe(arbeidsforholdNode, "registrert"))
                 .sistBekreftet(findLocalDateTimeNullSafe(arbeidsforholdNode, "sistBekreftet"))
-                .sporingsinformasjon(mapSporingsinformasjon(arbeidsforholdNode.get("sporingsinformasjon")))
+                .sporingsinformasjon(mapSporingsinformasjon(arbeidsforholdNode.get(SPORINGSINFO)))
                 .build();
     }
 
@@ -114,10 +117,10 @@ public class ArbeidsforholdMappingUtil {
 
     private static Ansettelsesperiode mapAnsettelsesperiode(JsonNode ansettelsesperiode) {
         return Ansettelsesperiode.builder()
-                .periode(mapPeriode(ansettelsesperiode.get("periode")))
+                .periode(mapPeriode(ansettelsesperiode.get(PERIODE)))
                 .varslingskode(findStringNullSafe(ansettelsesperiode, "varslingskode"))
                 .bruksperiode(mapBruksperiode(ansettelsesperiode.get("bruksperiode")))
-                .sporingsinformasjon(mapSporingsinformasjon(ansettelsesperiode.get("sporingsinformasjon")))
+                .sporingsinformasjon(mapSporingsinformasjon(ansettelsesperiode.get(SPORINGSINFO)))
                 .build();
     }
 
@@ -161,7 +164,7 @@ public class ArbeidsforholdMappingUtil {
                 .sistStillingsendring(findLocalDateNullSafe(arbeidsavtale, "sistStillingsendring"))
                 .bruksperiode(mapBruksperiode(arbeidsavtale.get("bruksperiode")))
                 .gyldighetsperiode(mapGyldighetsperiode(arbeidsavtale.get("gyldighetsperiode")))
-                .sporingsinformasjon(mapSporingsinformasjon(arbeidsavtale.get("sporingsinformasjon")))
+                .sporingsinformasjon(mapSporingsinformasjon(arbeidsavtale.get(SPORINGSINFO)))
                 .build();
     }
 
@@ -173,11 +176,11 @@ public class ArbeidsforholdMappingUtil {
         for (var permisjonPermittering : permisjonPermitteringer) {
             permisjonPermitteringListe.add(PermisjonPermittering.builder()
                     .permisjonPermitteringId(findStringNullSafe(permisjonPermittering, "permisjonPermitteringId"))
-                    .periode(mapPeriode(permisjonPermittering.get("periode")))
+                    .periode(mapPeriode(permisjonPermittering.get(PERIODE)))
                     .prosent(findDoubleNullSafe(permisjonPermittering, "prosent"))
                     .type(findStringNullSafe(permisjonPermittering, "type"))
                     .varslingskode(findStringNullSafe(permisjonPermittering, "varslingskode"))
-                    .sporingsinformasjon(mapSporingsinformasjon(permisjonPermittering.get("sporingsinformasjon")))
+                    .sporingsinformasjon(mapSporingsinformasjon(permisjonPermittering.get(SPORINGSINFO)))
                     .build());
         }
         return permisjonPermitteringListe;
@@ -190,10 +193,10 @@ public class ArbeidsforholdMappingUtil {
         List<AntallTimerForTimeloennet> antallTimerForTimeloennetListe = new ArrayList<>();
         for (var antallTimer : antallTimerForTimeloennet) {
             antallTimerForTimeloennetListe.add(AntallTimerForTimeloennet.builder()
-                    .periode(mapPeriode(antallTimer.get("periode")))
+                    .periode(mapPeriode(antallTimer.get(PERIODE)))
                     .antallTimer(findDoubleNullSafe(antallTimer, "antallTimer"))
                     .rapporteringsperiode(findYearMonthNullSage(antallTimer, "rapporteringsperiode"))
-                    .sporingsinformasjon(mapSporingsinformasjon(antallTimer.get("sporingsinformasjon")))
+                    .sporingsinformasjon(mapSporingsinformasjon(antallTimer.get(SPORINGSINFO)))
                     .build());
         }
         return antallTimerForTimeloennetListe;
@@ -206,10 +209,10 @@ public class ArbeidsforholdMappingUtil {
         List<Utenlandsopphold> utenlandsoppholdListe = new ArrayList<>();
         for (var opphold : utenlandsopphold) {
             utenlandsoppholdListe.add(Utenlandsopphold.builder()
-                    .periode(mapPeriode(opphold.get("periode")))
+                    .periode(mapPeriode(opphold.get(PERIODE)))
                     .landkode(findStringNullSafe(opphold, "landkode"))
                     .rapporteringsperiode(findYearMonthNullSage(opphold, "rapporteringsperiode"))
-                    .sporingsinformasjon(mapSporingsinformasjon(opphold.get("sporingsinformasjon")))
+                    .sporingsinformasjon(mapSporingsinformasjon(opphold.get(SPORINGSINFO)))
                     .build());
         }
         return utenlandsoppholdListe;

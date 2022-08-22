@@ -16,4 +16,11 @@ public class TpsSystemInfo {
 
     private String kilde;
     private String brukerID;
+
+    public static TpsSystemInfo getDefault() {
+        return TpsSystemInfo.builder()
+                .kilde("Dolly")
+                .brukerID("anonymousUser")
+                .build();
+    }
 }

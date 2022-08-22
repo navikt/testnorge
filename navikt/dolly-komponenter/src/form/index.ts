@@ -1,4 +1,4 @@
-import { InputFormItem, DatePickerFormItem, SelectFormItem } from './item';
+import { DatePickerFormItem, InputFormItem, SelectFormItem } from './item';
 import styled from 'styled-components';
 
 const Form = styled.form`

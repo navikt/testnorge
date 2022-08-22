@@ -17,7 +17,7 @@ const attrPaths = [
 	'udistub.soeknadOmBeskyttelseUnderBehandling',
 ]
 
-const udiAttributt = 'udistub'
+export const udiAttributt = 'udistub'
 
 export const UdistubForm = ({ formikBag }) => (
 	<Vis attributt={attrPaths}>
@@ -25,16 +25,16 @@ export const UdistubForm = ({ formikBag }) => (
 			heading="UDI"
 			hasErrors={panelError(formikBag, attrPaths)}
 			iconType="udi"
-			startOpen={() => erForste(formikBag.values, [udiAttributt])}
+			startOpen={erForste(formikBag.values, [udiAttributt])}
 		>
 			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
 				<Oppholdsstatus formikBag={formikBag} />
 			</Kategori>
 			<Arbeidsadgang formikBag={formikBag} />
 			<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
-				<Alias formikBag={formikBag} />
+				<Alias />
 			</Kategori>
-			<Annet formikBag={formikBag} />
+			<Annet />
 		</Panel>
 	</Vis>
 )

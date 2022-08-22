@@ -1,4 +1,4 @@
-import { LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'redux-first-history'
 import { createAction } from 'redux-actions'
 
 export const setSearchText = createAction('SEARCH/SET_TEXT')

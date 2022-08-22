@@ -1,15 +1,14 @@
 package no.nav.registre.testnorge.organisasjonmottak.config;
 
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
-
 @Configuration
 @Import({
-        SecureOAuth2ServerToServerConfiguration.class,
+        InsecureJwtServerToServerConfiguration.class,
         ApplicationCoreConfig.class
 })
 @EnableScheduling

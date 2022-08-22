@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 export const validation = {
 	sykemelding: ifPresent(
@@ -43,8 +44,8 @@ export const validation = {
 					perioder: Yup.array().of(
 						Yup.object({
 							aktivitet: Yup.object({}),
-							fom: requiredDate,
-							tom: requiredDate,
+							fom: testDatoFom(requiredDate, 'tom'),
+							tom: testDatoTom(requiredDate, 'fom'),
 						})
 					),
 				})

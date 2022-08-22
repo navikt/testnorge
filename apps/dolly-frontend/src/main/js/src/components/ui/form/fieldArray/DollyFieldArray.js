@@ -153,24 +153,30 @@ export const DollyFieldArray = ({
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 				{data.map((curr, idx) => {
-					return nested ? (
-						<DollyFaBlokkNested key={idx} idx={idx}>
-							{children(curr, idx)}
-						</DollyFaBlokkNested>
-					) : expandable ? (
-						<ExpandableBlokk
-							key={idx}
-							idx={idx}
-							getHeader={getHeader ? getHeader : () => header}
-							data={curr}
-						>
-							{children(curr, idx)}
-						</ExpandableBlokk>
-					) : (
-						<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
-							{children(curr, idx)}
-						</DollyFaBlokk>
-					)
+					if (nested) {
+						return (
+							<DollyFaBlokkNested key={idx} idx={idx}>
+								{children(curr, idx)}
+							</DollyFaBlokkNested>
+						)
+					} else if (expandable) {
+						return (
+							<ExpandableBlokk
+								key={idx}
+								idx={idx}
+								getHeader={getHeader ? getHeader : () => header}
+								data={curr}
+							>
+								{children(curr, idx)}
+							</ExpandableBlokk>
+						)
+					} else {
+						return (
+							<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
+								{children(curr, idx)}
+							</DollyFaBlokk>
+						)
+					}
 				})}
 			</DollyFieldArrayWrapper>
 		</ErrorBoundary>
@@ -191,6 +197,8 @@ export const FormikDollyFieldArray = ({
 	isOrganisasjon = false,
 	handleNewEntry = null,
 	handleRemoveEntry = null,
+	maxEntries = null,
+	maxReachedDescription = null,
 }) => (
 	<FieldArray name={name}>
 		{(arrayHelpers) => {
@@ -240,10 +248,10 @@ export const FormikDollyFieldArray = ({
 							)
 						})}
 						<FieldArrayAddButton
-							hoverText={title}
+							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
 							addEntryButtonText={header}
 							onClick={addNewEntry}
-							disabled={disabled}
+							disabled={disabled || maxEntries === values.length}
 						/>
 					</DollyFieldArrayWrapper>
 				</ErrorBoundary>

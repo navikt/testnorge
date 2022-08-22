@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-// @ts-ignore
-import { navLogo } from '@navikt/dolly-assets';
+import { navLogo } from '@navikt/dolly-assets/src';
 
 const StyledHeader = styled.header`
   max-height: 70px;

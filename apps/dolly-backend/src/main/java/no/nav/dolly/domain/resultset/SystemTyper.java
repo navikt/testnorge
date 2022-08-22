@@ -24,15 +24,17 @@ public enum SystemTyper {
     INNTK("Inntektskomponenten (INNTK)"),
     PEN_FORVALTER("Pensjon (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
+    TP_FORVALTER("Tjenestepensjon (TP)"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
+    TPS_MESSAGING("Meldinger til TPS"),
     SYKEMELDING("Testnorge Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
     PDLIMPORT("Import av identer (TESTNORGE)"),
-    SKJERMINGSREGISTER("NAV-ansatt Skjermingsregister"),
+    SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
-    ORGANISASJON_FORVALTER("Forvalter av syntetiske organisasjoner"),
+    ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDL_DATA("Persondataløsning (PDL) ny");
 
     private String beskrivelse;

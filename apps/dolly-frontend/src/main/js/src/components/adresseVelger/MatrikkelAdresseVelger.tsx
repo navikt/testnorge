@@ -62,7 +62,7 @@ export default ({ onSelect }: Props) => {
 			})
 			.catch((e: Error) => {
 				setLoading(false)
-				if (e && (e instanceof NotFoundError || e.name == 'NotFoundError')) {
+				if (e && (e instanceof NotFoundError || e.name === 'NotFoundError')) {
 					setNotFound(true)
 				} else {
 					setError(true)
@@ -73,7 +73,7 @@ export default ({ onSelect }: Props) => {
 	return (
 		<StyledAdresseVelger>
 			<MatrikkelAdresseSok onSubmit={onSubmit} loading={loading} />
-			{error && <Feil>Noe gikk galt! Prøv på nytt eller kontakt team Dolly.</Feil>}
+			{error && <Feil>Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.</Feil>}
 			{notFound && (
 				<Advarsel>Fant ikke et resultat. Prøv å endre kombinasjon av felter i søket.</Advarsel>
 			)}

@@ -21,7 +21,7 @@ type Change = {
 	value: boolean
 }
 
-const krrAttributt = 'krrstub'
+export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
@@ -53,8 +53,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 				heading="Kontakt- og reservasjonsregisteret"
 				hasErrors={panelError(formikBag, krrAttributt)}
 				iconType="krr"
-				//@ts-ignore
-				startOpen={() => erForste(formikBag.values, [krrAttributt])}
+				startOpen={erForste(formikBag.values, [krrAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<DollySelect
@@ -112,7 +111,7 @@ KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: Yup.string(),
 		gyldigFra: Yup.date().nullable(),
-		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
+		mobil: Yup.string().matches(/^\d*$/, 'Ugyldig mobilnummer'),
 		sdpAdresse: Yup.string(),
 		sdpLeverandoer: Yup.string(),
 		spraak: Yup.string(),

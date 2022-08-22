@@ -1,0 +1,38 @@
+[
+  {
+    "Name": "DAVIK OG HORTEN",
+    "OrganizationNumber": "811306312",
+    "OrganizationForm": "AS",
+    "Status": "Active"
+  },
+  {
+    "Name": "DAVIK OG EIDSLANDET",
+    "OrganizationNumber": "811306622",
+    "OrganizationForm": "BEDR",
+    "Status": "Active"
+  },
+  {
+    "Name": "DAVIK OG ABELVÆR",
+    "OrganizationNumber": "811307602",
+    "OrganizationForm": "BEDR",
+    "Status": "Active"
+  },
+  {
+    "Name": "DAVIK OG ULNES",
+    "OrganizationNumber": "811307432",
+    "OrganizationForm": "BEDR",
+    "Status": "Active"
+  },
+  {
+    "Name": "DAVIK OG SÆTERVIK",
+    "OrganizationNumber": "811307122",
+    "OrganizationForm": "BEDR",
+    "Status": "Active"
+  },
+  {
+    "Name": "DAVIK OG HAMARØY",
+    "OrganizationNumber": "811306932",
+    "OrganizationForm": "BEDR",
+    "Status": "Active"
+  }
+]

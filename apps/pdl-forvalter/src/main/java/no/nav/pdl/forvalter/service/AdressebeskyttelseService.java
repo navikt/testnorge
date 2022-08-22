@@ -34,7 +34,6 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
                 handle(type, person);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
             }
         }
         return person.getAdressebeskyttelse();
@@ -44,8 +43,8 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
     public void validate(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
 
         if (FNR != IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
-                STRENGT_FORTROLIG == adressebeskyttelse.getGradering() ||
-                FORTROLIG == adressebeskyttelse.getGradering()) {
+                (STRENGT_FORTROLIG == adressebeskyttelse.getGradering() ||
+                FORTROLIG == adressebeskyttelse.getGradering())) {
             throw new InvalidRequestException(VALIDATION_INVALID_BESKYTTELSE);
         }
         if (STRENGT_FORTROLIG_UTLAND == adressebeskyttelse.getGradering() &&

@@ -17,7 +17,7 @@ import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
 
 @ExtendWith(MockitoExtension.class)
-public class AaregBehandleArbeidsforholdTest {
+class AaregBehandleArbeidsforholdTest {
 
     @Mock
     private MiljoerConsumer miljoerConsumer;
@@ -26,7 +26,7 @@ public class AaregBehandleArbeidsforholdTest {
     private AaregBehandleArbeidsforhold behandleArbeidsforhold;
 
     @Test
-    public void fetchWsUrslAllEnvironments_OK() {
+    void fetchWsUrslAllEnvironments_OK() {
 
         when(miljoerConsumer.hentMiljoer()).thenReturn(new MiljoerResponse(List.of("q2", "t2")));
 

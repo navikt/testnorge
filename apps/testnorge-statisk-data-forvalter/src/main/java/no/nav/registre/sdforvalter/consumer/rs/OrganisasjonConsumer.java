@@ -1,7 +1,12 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
+import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -9,12 +14,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServiceProperties;
-import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
-import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -26,19 +25,21 @@ public class OrganisasjonConsumer {
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serverProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
     private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
-        AccessToken accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {

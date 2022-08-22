@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import 'nav-frontend-tabell-style';
 import { SuccessAlert, WarningAlert, LoadableComponent } from '@navikt/dolly-komponenter';
 import { Link } from 'react-router-dom';
 

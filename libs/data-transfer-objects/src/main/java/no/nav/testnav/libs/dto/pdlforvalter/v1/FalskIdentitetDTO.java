@@ -1,6 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FalskIdentitetDTO extends DbVersjonDTO {
 
     @Schema(description = "Informasjon om rett identitet for folkeregisterperson som er opphørt som fiktiv, eller falsk. " +
@@ -43,7 +43,6 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class IdentifiserendeInformasjonDTO implements Serializable {
 
         private LocalDateTime foedselsdato;
@@ -63,12 +62,16 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class FalsktNavnDTO implements Serializable {
 
         private String etternavn;
         private String fornavn;
         private String mellomnavn;
         private Boolean hasMellomnavn;
+    }
+
+    @JsonIgnore
+    public boolean isFalskIdentitet() {
+        return isTrue(getErFalsk());
     }
 }

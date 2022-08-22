@@ -1,13 +1,14 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.aareg.amelding.command.GetOrganisasjonCommand;
+import no.nav.dolly.bestilling.aareg.command.OrganisasjonGetCommand;
 import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 public class OrganisasjonServiceConsumer {
@@ -28,12 +31,16 @@ public class OrganisasjonServiceConsumer {
     private final ExecutorService executorService;
     private final NaisServerProperties serviceProperties;
 
-    public OrganisasjonServiceConsumer(TokenExchange tokenService, OrganisasjonServiceProperties serviceProperties) {
+    public OrganisasjonServiceConsumer(TokenExchange tokenService,
+                                       OrganisasjonServiceProperties serviceProperties,
+                                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -44,7 +51,10 @@ public class OrganisasjonServiceConsumer {
 
         for (CompletableFuture<OrganisasjonDTO> future : futures) {
             try {
-                list.add(future.get());
+                var org = future.get();
+                if (nonNull(org)) {
+                    list.add(org);
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Klarer ikke å hente ut alle organisasjoner", e);
             }
@@ -58,7 +68,7 @@ public class OrganisasjonServiceConsumer {
 
     private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, String accessToken, String miljo) {
         return CompletableFuture.supplyAsync(
-                () -> new GetOrganisasjonCommand(webClient, accessToken, orgnummer, miljo).call(),
+                () -> new OrganisasjonGetCommand(webClient, accessToken, orgnummer, miljo).call(),
                 executorService
         );
     }

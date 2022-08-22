@@ -7,6 +7,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
@@ -32,7 +34,7 @@ import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPe
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
-import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
+import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -44,22 +46,20 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
 
-    private static List<String> mapIdents(String idents) {
-        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
-    }
-
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
-                .customize(new CustomMapper<Bestilling, RsBestillingStatus>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
-                        bestillingStatus.setAntallLevert(bestilling.getProgresser().size());
+                        bestillingStatus.setAntallLevert(bestilling.getProgresser().stream()
+                                .filter(BestillingProgress::isIdentGyldig)
+                                .toList().size());
                         bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
-                        bestillingStatus.getStatus().addAll(buildTpsfStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
@@ -91,8 +91,11 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .brregstub(bestillingRequest.getBrregstub())
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
+                                .skjerming(bestillingRequest.getSkjerming())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
+                                .tpsMessaging(bestillingRequest.getTpsMessaging())
+                                .bankkonto(bestillingRequest.getBankkonto())
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())
@@ -103,5 +106,22 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .exclude("bruker")
                 .byDefault()
                 .register();
+
+        factory.classMap(OrganisasjonBestilling.class, RsBestillingStatus.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(OrganisasjonBestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
+
+                        bestillingStatus.setAntallLevert(0);
+                        bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
+                    }
+                })
+                .byDefault()
+                .register();
+
+    }
+
+    private static List<String> mapIdents(String idents) {
+        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
     }
 }

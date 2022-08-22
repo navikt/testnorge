@@ -35,9 +35,9 @@ Løsingen vil være å vi ta i bruk AzureAD når vi skal håndtere innlogging ti
 
 *Vi har også et behov for eksterene skal kunne få tilgang til Dolly. Da kan vi opprette gjestekontoer i Azure.*
 
-### Implemtasjon
+### Implementasjon
 
-Siden secrets i Azure ikke håndteres av Vualt må vi brukere team namespace i kubernestes klusteret for de appene som som skal ha personligee sikkerhetsmekanismer. I praksis vil det bety at Dolly appene (frontend og backend) må ligge i dette namespacet. Noe som betyr at vi må bruke ingressene til andre apper utenfor (noe som kan medføre treghet). 
+Siden secrets i Azure ikke håndteres av Vault må vi brukere team namespace i kubernestes klusteret for de appene som som skal ha personlige sikkerhetsmekanismer. I praksis vil det bety at Dolly appene (frontend og backend) må ligge i dette namespacet. Noe som betyr at vi må bruke ingressene til andre apper utenfor (noe som kan medføre treghet). 
 
 Får å støtte utviklermiljø og produksjon i samme namespace oppretter vi 4 apper i det namespace
 ```

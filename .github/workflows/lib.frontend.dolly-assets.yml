@@ -1,0 +1,20 @@
+name: Frontend lib dolly-assets
+
+on:
+  push:
+    paths:
+      - navikt/dolly-assets/**
+      - .github/workflows/lib.frontend.dolly-assets.yml
+
+jobs:
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.js.build.yml@master
+    with:
+      working-directory: 'navikt/dolly-assets/'
+  publish:
+    name: Publish
+    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@master
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
+    with:
+      working-directory: 'navikt/dolly-assets/'

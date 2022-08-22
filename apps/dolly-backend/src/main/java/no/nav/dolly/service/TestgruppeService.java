@@ -1,7 +1,10 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
@@ -32,6 +35,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestgruppeService {
@@ -44,6 +48,7 @@ public class TestgruppeService {
     private final BestillingService bestillingService;
     private final PersonService personService;
     private final GetUserInfo getUserInfo;
+    private final PdlDataConsumer pdlDataConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -59,8 +64,10 @@ public class TestgruppeService {
     }
 
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize) {
+
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
-        Page<Testident> testidentPage = identService.getBestillingerFromGruppePaginert(gruppeId, pageNo, pageSize);
+        var testidentPage = identService.getBestillingerFromGruppePaginert(gruppeId, pageNo, pageSize);
+
         testgruppe.setTestidenter(testidentPage.toList());
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
@@ -111,7 +118,7 @@ public class TestgruppeService {
         try {
             return testgrupper.stream()
                     .map(testgruppeRepository::save)
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
@@ -121,15 +128,17 @@ public class TestgruppeService {
 
     public void deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
         transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
                 .map(Testident::getIdent)
-                .collect(Collectors.toList()));
+                .toList());
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
+
+        personService.recyclePersoner(testIdenter);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         testgruppeRepository.deleteTestgruppeById(gruppeId);
-        personService.recyclePersoner(testgruppe.getTestidenter().stream().map(Testident::getIdent).collect(Collectors.toList()));
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
@@ -161,5 +170,13 @@ public class TestgruppeService {
         }
 
         return testgruppe;
+    }
+
+    public void leggTilIdent(Long gruppeId, String ident, Testident.Master master) {
+
+        var testgruppe = fetchTestgruppeById(gruppeId);
+        identService.saveIdentTilGruppe(ident, testgruppe, master, null);
+        pdlDataConsumer.putStandalone(ident, true)
+                .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 }

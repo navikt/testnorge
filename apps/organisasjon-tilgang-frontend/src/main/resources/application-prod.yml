@@ -1,0 +1,6 @@
+consumers:
+  testnav-organisasjon-tilgang-service:
+    cluster: prod-gcp
+    namespace: dolly
+    name: testnav-organisasjon-tilgang-service
+    url: http://testnav-organisasjon-tilgang-service.dolly.svc.cluster.local

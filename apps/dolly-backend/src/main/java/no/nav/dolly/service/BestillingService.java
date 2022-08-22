@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -35,10 +36,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static io.micrometer.core.instrument.util.StringUtils.isNotBlank;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -46,7 +51,9 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
+import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 
 @Slf4j
 @Service
@@ -68,9 +75,34 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
     }
 
+    public List<RsBestillingFragment> fetchBestillingByFragment(String bestillingFragment) {
+        var searchQueries = bestillingFragment.split(" ");
+        String bestillingID = Arrays.stream(searchQueries)
+                .filter(word -> word.matches("\\d+"))
+                .findFirst()
+                .orElse("");
+        String gruppeNavn = Arrays.stream(searchQueries)
+                .filter(word -> !word.equals(bestillingID))
+                .collect(Collectors.joining(" "));
+        return Stream.concat(
+                        bestillingRepository.findByIdContaining(wrapSearchString(bestillingID)).stream(),
+                        bestillingRepository.findByGruppenavnContaining(wrapSearchString(gruppeNavn)).stream())
+                .filter(distinctByKey(RsBestillingFragment::getid))
+                .toList();
+    }
+
+    public List<Bestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        var bestillinger = nonNull(malNavn)
+                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
+                : bestillingRepository.findMalBestillingByUser(bruker);
+        return bestillinger.orElse(emptyList());
+    }
+
     @Transactional
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
         try {
+            overskrivDuplikateMalbestillinger(bestilling);
             return bestillingRepository.save(bestilling);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
@@ -86,10 +118,15 @@ public class BestillingService {
         return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
 
+    public Optional<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
+
+        return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
+    }
+
     @Transactional
     public Bestilling cancelBestilling(Long bestillingId) {
-        Optional<BestillingKontroll> bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
-        if (!bestillingKontroll.isPresent()) {
+        var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
+        if (bestillingKontroll.isEmpty()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
                     .bestillingId(bestillingId)
                     .stoppet(true)
@@ -314,6 +351,23 @@ public class BestillingService {
         bestillingRepository.swapIdent(oldIdent, newIdent);
     }
 
+    private String wrapSearchString(String searchString) {
+        return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
+    }
+
+    private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
+        if (isBlank(bestilling.getMalBestillingNavn())) {
+            return;
+        }
+        List<Bestilling> gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
+        if (!gamleMalBestillinger.isEmpty()) {
+            gamleMalBestillinger.forEach(malBestilling -> {
+                malBestilling.setMalBestillingNavn(null);
+                saveBestillingToDB(malBestilling);
+            });
+        }
+    }
+
     private Bruker fetchOrCreateBruker() {
         return brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
     }
@@ -344,6 +398,9 @@ public class BestillingService {
                 .inntektsmelding(request.getInntektsmelding())
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
+                .tpsMessaging(request.getTpsMessaging())
+                .bankkonto(request.getBankkonto())
+                .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());
     }

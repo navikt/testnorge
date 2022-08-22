@@ -1,10 +1,11 @@
 plugins {
-    id "com.gradle.enterprise" version "3.7.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'generer-organisasjon-populasjon-service'
 
 includeBuild '../../libs/database'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/data-transfer-objects'

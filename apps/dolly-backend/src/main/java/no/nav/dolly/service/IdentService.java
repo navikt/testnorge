@@ -32,6 +32,11 @@ public class IdentService {
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final MapperFacade mapperFacade;
 
+    @Transactional(readOnly = true)
+    public boolean exists(String ident){
+        return identRepository.existsByIdent(ident);
+    }
+
     @Transactional
     public void persisterTestidenter(List<RsTestident> personIdentListe) {
 
@@ -90,7 +95,13 @@ public class IdentService {
 
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
-        identRepository.swapIdent(oldIdent, newIdent);
+
+        if (identRepository.findByIdent(newIdent).isPresent()) {
+            identRepository.deleteTestidentByIdent(oldIdent);
+
+        } else {
+            identRepository.swapIdent(oldIdent, newIdent);
+        }
     }
 
     public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {
@@ -100,7 +111,8 @@ public class IdentService {
 
     public Page<Testident> getBestillingerFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
-        return identRepository.getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
+        return identRepository
+                .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
     }
 
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {

@@ -1,20 +1,19 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.config.credentials.PersonFasteDataServiceProperties;
+import no.nav.registre.sdforvalter.consumer.rs.command.SavePersonFasteDataCommand;
+import no.nav.registre.sdforvalter.domain.TpsIdent;
+import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.stream.Collectors;
-
-import no.nav.registre.sdforvalter.config.credentials.PersonFasteDataServiceProperties;
-import no.nav.registre.sdforvalter.consumer.rs.commnad.SavePersonFasteDataCommand;
-import no.nav.registre.sdforvalter.domain.TpsIdent;
-import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 
 @Slf4j
 @Component
@@ -25,20 +24,22 @@ public class PersonFasteDataConsumer {
 
     public PersonFasteDataConsumer(
             PersonFasteDataServiceProperties serverProperties,
-            TokenExchange tokenExchange
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
     public void opprett(TpsIdentListe tpsIdentListe) {
-        tokenExchange.generateToken(serverProperties)
+        tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.concat(
-                        tpsIdentListe.getListe().stream().map(value -> opprett(value, token)).collect(Collectors.toList())
+                        tpsIdentListe.getListe().stream().map(value -> opprett(value, token)).toList()
                 ))
                 .collectList()
                 .block();

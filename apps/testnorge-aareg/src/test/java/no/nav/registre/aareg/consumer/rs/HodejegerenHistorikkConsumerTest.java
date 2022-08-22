@@ -37,9 +37,9 @@ import no.nav.registre.aareg.domain.RsPersonAareg;
 
 @ExtendWith(MockitoExtension.class)
 @RestClientTest(HodejegerenHistorikkConsumer.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class HodejegerenHistorikkConsumerTest {
+class HodejegerenHistorikkConsumerTest {
 
     @Autowired
     private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
@@ -47,7 +47,7 @@ public class HodejegerenHistorikkConsumerTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Value("${testnorge-hodejegeren.rest-api.url}")
+    @Value("${consumers.testnorge-hodejegeren.url}")
     private String serverUrl;
 
     private AaregSaveInHodejegerenRequest aaregSaveInHodejegerenRequest;
@@ -91,7 +91,7 @@ public class HodejegerenHistorikkConsumerTest {
     }
 
     @Test
-    public void shouldSendHistorikkToHodejegeren() throws JsonProcessingException {
+    void shouldSendHistorikkToHodejegeren() throws JsonProcessingException {
         var expectedUri = serverUrl + "/v1/historikk/";
         stubSaveInHodejegeren(expectedUri);
 

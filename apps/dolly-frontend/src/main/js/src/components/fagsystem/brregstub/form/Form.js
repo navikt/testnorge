@@ -8,7 +8,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
 
-const brregAttributt = 'brregstub'
+export const brregAttributt = 'brregstub'
 
 export const BrregstubForm = ({ formikBag }) => {
 	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
@@ -20,7 +20,7 @@ export const BrregstubForm = ({ formikBag }) => {
 				heading="Brønnøysundregistrene"
 				hasErrors={panelError(formikBag, brregAttributt)}
 				iconType="brreg"
-				startOpen={() => erForste(formikBag.values, [brregAttributt])}
+				startOpen={erForste(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect

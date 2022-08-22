@@ -24,7 +24,6 @@ import java.util.List;
 public class PdlFalskIdentitet extends DbVersjonDTO {
 
     private Boolean erFalsk;
-    private Folkeregistermetadata folkeregistermetadata;
     private RettIdentitet rettIdentitet;
 
     @Data

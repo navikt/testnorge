@@ -1,10 +1,7 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-consumers.tps-forvalteren-proxy:
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-    namespace: dolly
-    name: tps-forvalteren-proxy
+config:
+  miljoer: t0, t1, t3, t4, t5, t13, q1, q2, q4, q5, qx
 
 spring:
   main:
@@ -23,3 +20,20 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-miljoer-service
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

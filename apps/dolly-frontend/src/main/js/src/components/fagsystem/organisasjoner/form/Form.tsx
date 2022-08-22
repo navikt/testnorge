@@ -24,8 +24,7 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 					heading="Detaljer"
 					hasErrors={panelError(formikBag, detaljerPaths)}
 					iconType={'personinformasjon'}
-					// @ts-ignore
-					startOpen={() => erForste(formikBag.values, detaljerPaths)}
+					startOpen={erForste(formikBag.values, detaljerPaths)}
 				>
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
 				</Panel>
@@ -39,7 +38,9 @@ const testSektorkode = (schema: any) => {
 		'sektorkode',
 		'Juridisk enhet må ha sektorkode hvis valgt',
 		function harSektorkode(value: string) {
-			if (value === undefined || value !== '') return true
+			if (value === undefined || value !== '') {
+				return true
+			}
 			return this.createError({
 				message: 'Feltet er påkrevd',
 			})

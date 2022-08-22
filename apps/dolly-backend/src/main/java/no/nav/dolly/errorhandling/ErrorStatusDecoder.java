@@ -9,6 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,15 +27,6 @@ public class ErrorStatusDecoder {
     private static final String FEIL = "Feil= ";
 
     private final ObjectMapper objectMapper;
-
-    public static String encodeStatus(String toBeEncoded) {
-        return Objects.nonNull(toBeEncoded) ?
-                toBeEncoded.replaceAll("\\[\\s", "")
-                        .replace("[", "")
-                        .replace("]", "")
-                        .replace(',', ';')
-                        .replace(':', '=') : "";
-    }
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
@@ -83,12 +75,12 @@ public class ErrorStatusDecoder {
 
             if (e instanceof HttpClientErrorException && !((HttpClientErrorException) e).getResponseBodyAsString().isEmpty()) {
 
-                appendStatusMessage(((HttpClientErrorException) e).getResponseBodyAsString(), builder);
+                appendStatusMessage(((HttpClientErrorException) e).getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else if (e instanceof WebClientResponseException && !((WebClientResponseException) e).getResponseBodyAsString().isEmpty()) {
 
-                appendStatusMessage(((WebClientResponseException) e).getResponseBodyAsString(), builder);
-                log.error(((WebClientResponseException) e).getResponseBodyAsString(), e);
+                appendStatusMessage(((WebClientResponseException) e).getResponseBodyAsString(StandardCharsets.UTF_8), builder);
+                log.error(((WebClientResponseException) e).getResponseBodyAsString(StandardCharsets.UTF_8), e);
 
             } else {
                 builder.append(e.getMessage());
@@ -101,6 +93,15 @@ public class ErrorStatusDecoder {
         }
 
         return builder.toString();
+    }
+
+    public static String encodeStatus(String toBeEncoded) {
+        return Objects.nonNull(toBeEncoded) ?
+                toBeEncoded.replaceAll("\\[\\s", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(',', ';')
+                        .replace(':', '=') : "";
     }
 
     private void appendStatusMessage(String responseBody, StringBuilder builder) {

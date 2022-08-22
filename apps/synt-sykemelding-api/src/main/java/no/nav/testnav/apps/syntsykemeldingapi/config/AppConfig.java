@@ -1,10 +1,9 @@
 package no.nav.testnav.apps.syntsykemeldingapi.config;
 
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-
-import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 
 @Configuration
 @Import({

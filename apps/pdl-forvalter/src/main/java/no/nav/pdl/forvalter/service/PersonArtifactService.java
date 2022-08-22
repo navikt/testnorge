@@ -32,27 +32,27 @@ public class PersonArtifactService {
     private final SivilstandService sivilstandService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
     private final ForeldreansvarService foreldreansvarService;
-    private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
+    private final SikkerhetstiltakService sikkerhetstiltakService;
 
-    public PersonDTO buildPerson(PersonDTO person) {
+    public PersonDTO buildPerson(PersonDTO person, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
         person.setKjoenn(kjoennService.convert(person));
-        person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
-        person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setBostedsadresse(bostedAdresseService.convert(person));
         person.setFoedsel(foedselService.convert(person));
+        person.setInnflytting(innflyttingService.convert(person));
+        person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
+        person.setStatsborgerskap(statsborgerskapService.convert(person));
         person.setNavn(navnService.convert(person.getNavn()));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
         person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
         person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
-        person.setUtflytting(utflyttingService.convert(person.getUtflytting()));
+        person.setUtflytting(utflyttingService.convert(person));
         person.setOpphold(oppholdService.convert(person.getOpphold()));
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
         person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
         person.setFullmakt(fullmaktService.convert(person));
-        person.setKontaktadresse(kontaktAdresseService.convert(person));
+        person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
         person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
                 .convert(person.getUtenlandskIdentifikasjonsnummer()));
         person.setVergemaal(vergemaalService.convert(person));
@@ -61,10 +61,11 @@ public class PersonArtifactService {
         person.setSivilstand(sivilstandService.convert(person));
         person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
         person.setForeldreansvar(foreldreansvarService.convert(person));
-        person.setDeltBosted(deltBostedService.convert(person));
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
-        person.setIdent(identtypeService.convert(person));
+        person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+
+        person = identtypeService.convert(person);
 
         return person;
     }

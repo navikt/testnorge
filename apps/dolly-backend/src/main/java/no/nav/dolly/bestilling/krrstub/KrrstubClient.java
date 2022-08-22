@@ -10,11 +10,13 @@ import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.ResponseHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -27,7 +29,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class KrrstubClient implements ClientRegister {
 
     private final KrrstubConsumer krrstubConsumer;
-    private final KrrstubResponseHandler krrstubResponseHandler;
+    private final ResponseHandler responseHandler;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -40,7 +42,8 @@ public class KrrstubClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub()) ||
-                (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()))) {
+                (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) ||
+                (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode()))) {
 
             try {
                 DigitalKontaktdata digitalKontaktdata = mapperFacade.map(
@@ -51,11 +54,11 @@ public class KrrstubClient implements ClientRegister {
                 kobleMaalformTilSpraak(bestilling, digitalKontaktdata);
 
                 if (!isOpprettEndre) {
-                    deleteIdent(dollyPerson.getHovedperson());
+                    krrstubConsumer.deleteKontaktdata(List.of(dollyPerson.getHovedperson())).block();
                 }
 
                 ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
-                progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
+                progress.setKrrstubStatus(responseHandler.extractResponse(krrstubResponse));
 
             } catch (RuntimeException e) {
 
@@ -67,8 +70,18 @@ public class KrrstubClient implements ClientRegister {
 
     private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
 
-        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
-            digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode().toLowerCase());
+        String maalform = null;
+
+        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) {
+            maalform = bestilling.getTpsf().getSprakKode();
+
+        } else if (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode())) {
+            maalform = bestilling.getTpsMessaging().getSpraakKode();
+        }
+
+        if (isNotBlank(maalform) && isBlank(digitalKontaktdata.getSpraak())) {
+
+            digitalKontaktdata.setSpraak(isNotBlank(maalform) ? maalform.toLowerCase() : maalform); //NOSONAR
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
             digitalKontaktdata.setRegistrert(true);
         }
@@ -77,25 +90,13 @@ public class KrrstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(this::deleteIdent);
-    }
-
-    private void deleteIdent(String ident) {
-
         try {
-            ResponseEntity<List<DigitalKontaktdata>> response = krrstubConsumer.getDigitalKontaktdata(ident);
-
-            if (response.hasBody()) {
-                response.getBody().forEach(dkif -> {
-                    if (nonNull(dkif.getId())) {
-                        krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
-                    }
-                });
-            }
+            krrstubConsumer.deleteKontaktdata(identer)
+                    .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å slette ident {} fra KRR-Stub", ident, e);
+            log.error("Feilet å slette identer fra krrstub: ", identer.stream().collect(Collectors.joining(", ")), e);
         }
     }
 }

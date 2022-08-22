@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -38,7 +39,6 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                         person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
             }
         }
         return person.getFoedsel();
@@ -46,14 +46,17 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private void handle(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
-        if (isNull(foedsel.getFoedselsdato())) {
+        if (nonNull(foedsel.getFoedselsaar())) {
+            var fodselsdato = DatoFraIdentUtility.getDato(ident);
+            foedsel.setFoedselsdato(LocalDateTime.of(foedsel.getFoedselsaar(), fodselsdato.getMonth(), fodselsdato.getDayOfMonth(), 0, 0));
+
+        } else if (isNull(foedsel.getFoedselsdato())) {
             foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
         foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
 
         setFoedeland(foedsel, ident, bostedadresse, innflytting);
-
-        setFodekommune(foedsel, bostedadresse);
+        setFoedekommune(foedsel, bostedadresse);
     }
 
     private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
@@ -70,18 +73,18 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
         }
     }
 
-    private void setFodekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
-        if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFodekommune())) {
+    private void setFoedekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
+        if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFoedekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {
-                    foedsel.setFodekommune(bostedadresse.getVegadresse().getKommunenummer());
+                    foedsel.setFoedekommune(bostedadresse.getVegadresse().getKommunenummer());
                 } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-                    foedsel.setFodekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
+                    foedsel.setFoedekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
                 } else if (nonNull(bostedadresse.getUkjentBosted())) {
-                    foedsel.setFodekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+                    foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
                 }
             } else {
-                foedsel.setFodekommune(geografiskeKodeverkConsumer.getTilfeldigKommune());
+                foedsel.setFoedekommune(geografiskeKodeverkConsumer.getTilfeldigKommune());
             }
         }
     }

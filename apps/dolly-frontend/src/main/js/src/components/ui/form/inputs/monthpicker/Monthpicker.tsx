@@ -13,6 +13,7 @@ interface MonthpickerProps {
 	date: Date
 	handleDateChange: (dato: string, type: string) => void
 	minDate?: Date
+	maxDate?: Date
 }
 
 export const Monthpicker = ({
@@ -22,11 +23,13 @@ export const Monthpicker = ({
 	date,
 	handleDateChange,
 	minDate = null,
+	maxDate = null,
 }: MonthpickerProps) => {
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
 		const feilmelding = _get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
+	const formattedDate = date instanceof Date || date === null ? date : new Date(date)
 
 	return (
 		<InputWrapper size={'medium'}>
@@ -35,7 +38,7 @@ export const Monthpicker = ({
 					className={'skjemaelement__input'}
 					locale="nb"
 					dateFormat="yyyy-MM"
-					selected={date}
+					selected={formattedDate}
 					onChange={handleDateChange}
 					placeholderText={'yyyy-MM'}
 					showMonthYearPicker
@@ -43,6 +46,7 @@ export const Monthpicker = ({
 					dropdownMode="select"
 					autoComplete="off"
 					minDate={minDate}
+					maxDate={maxDate}
 				/>
 			</Label>
 		</InputWrapper>

@@ -27,7 +27,7 @@ import no.nav.registre.aareg.testutils.MapperTestUtils;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
 
-public class AaregMappingStrategyTest {
+class AaregMappingStrategyTest {
 
     private static RsArbeidsforhold rsArbeidsforhold = buildRsArbeidforhold();
     private CustomConverter calendarConverter = new XmlGregorianCalendarCustomMapping();
@@ -40,7 +40,7 @@ public class AaregMappingStrategyTest {
     }
 
     @Test
-    public void mapAaregArbeidsforholdHoveddel_OK() {
+    void mapAaregArbeidsforholdHoveddel_OK() {
         var arbeidsforhold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class);
 
         assertThat(arbeidsforhold.getAnsettelsesPeriode().getFom(), is(equalTo(mapper.map(rsArbeidsforhold.getAnsettelsesPeriode().getFom(), XMLGregorianCalendar.class))));
@@ -54,7 +54,7 @@ public class AaregMappingStrategyTest {
     }
 
     @Test
-    public void mapAaregArbeidsforholdArbeidsavtale_OK() {
+    void mapAaregArbeidsforholdArbeidsavtale_OK() {
         var arbeidsavtale = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getArbeidsavtale();
 
         assertThat(arbeidsavtale.getAntallKonverterteTimer(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getArbeidsavtale().getAntallKonverterteTimer())));
@@ -70,7 +70,7 @@ public class AaregMappingStrategyTest {
     }
 
     @Test
-    public void mapAaregArbeidsforholdAntallTimerForTimeloennede_OK() {
+    void mapAaregArbeidsforholdAntallTimerForTimeloennede_OK() {
         var antallTimerIPerioden = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getAntallTimerForTimeloennet().get(0);
 
         assertThat(antallTimerIPerioden.getAntallTimer(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getAntallTimerForTimeloennet().get(0).getAntallTimer())));
@@ -144,7 +144,7 @@ public class AaregMappingStrategyTest {
     }
 
     @Test
-    public void mapAaregArbeidsforholdPermisjon_OK() {
+    void mapAaregArbeidsforholdPermisjon_OK() {
         var permisjon = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getPermisjon().get(0);
 
         assertThat(permisjon.getPermisjonsId(), is(equalTo(rsArbeidsforhold.getPermisjon().get(0).getPermisjonId())));

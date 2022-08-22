@@ -21,7 +21,6 @@ module.exports = {
 		'regenerator-runtime/runtime',
 		'./src/index.js',
 	],
-
 	output: {
 		path: path.join(__dirname, 'dist/dev'),
 		filename: 'bundle.js',
@@ -55,13 +54,21 @@ module.exports = {
 		},
 		extensions: ['.js', '.json', '.ts', '.tsx'],
 	},
+	externals: {
+		'@navikt/ds-css': {
+			commonjs: '@navikt/ds-css',
+			commonjs2: '@navikt/ds-css',
+			amd: '@navikt/ds-css',
+			root: '@navikt/ds-css',
+		},
+	},
 	module: {
 		rules: [
 			{
 				test: /\.js|.ts(x?)$/,
 				include: path.resolve(__dirname, 'src'),
 				exclude: /node_modules/,
-				use: ['babel-loader'],
+				use: ['babel-loader?sourceMap&cacheDirectory'],
 			},
 			{
 				test: /\.svg$/,
@@ -71,6 +78,17 @@ module.exports = {
 				// images
 				test: /\.(ico|jpe?g|png|gif|woff|woff2|eot|otf|ttf)$/,
 				use: ['file-loader'],
+			},
+			{
+				test: /\.s[ac]ss$/i,
+				use: [
+					// Creates `style` nodes from JS strings
+					'style-loader',
+					// Translates CSS into CommonJS
+					'css-loader',
+					// Compiles Sass to CSS
+					'sass-loader',
+				],
 			},
 		],
 	},

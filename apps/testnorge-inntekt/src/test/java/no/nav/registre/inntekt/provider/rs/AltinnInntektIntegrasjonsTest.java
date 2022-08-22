@@ -37,7 +37,7 @@ import java.io.InputStreamReader;
 @ActiveProfiles("test")
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
-public class AltinnInntektIntegrasjonsTest {
+class AltinnInntektIntegrasjonsTest {
 
     @Value("${path.altinninntekt.satisfactory.json}")
     private String satisfactoryJsonPath;
@@ -73,7 +73,7 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Test
     @Disabled
-    public void passingCall() throws Exception {
+    void passingCall() throws Exception {
         stubForInntektsmelding();
         stubForAuthorization();
         stubForJournalpost();
@@ -88,7 +88,7 @@ public class AltinnInntektIntegrasjonsTest {
 
     @Test
     @Disabled
-    public void passingCallNoXml() throws Exception {
+    void passingCallNoXml() throws Exception {
         stubForInntektsmelding();
         stubForAuthorization();
         stubForJournalpost();

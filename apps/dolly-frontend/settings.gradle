@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.7.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'dolly-frontend'
@@ -10,6 +10,7 @@ includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-frontend'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/security-core'
 
 gradleEnterprise {
     buildScan {

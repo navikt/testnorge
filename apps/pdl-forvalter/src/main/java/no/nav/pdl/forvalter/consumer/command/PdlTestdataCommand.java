@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
@@ -14,8 +15,9 @@ public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseD
 
     protected static String getMessage(Throwable error) {
 
-        return error instanceof WebClientResponseException ?
-                ((WebClientResponseException) error).getResponseBodyAsString() :
+        return error instanceof WebClientResponseException webClientResponseException &&
+                StringUtils.isNotBlank(webClientResponseException.getResponseBodyAsString()) ?
+                webClientResponseException.getResponseBodyAsString() :
                 error.getMessage();
     }
 

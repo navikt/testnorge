@@ -1,17 +1,20 @@
 import React from 'react'
 import _orderBy from 'lodash/orderBy'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
 import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 import Spinner from '~/components/ui/loading/Spinner'
 import Formatters from '~/utils/DataFormatter'
+import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
 
 type OrganisasjonBestillingProps = {
 	brukerId: string
+	brukertype: string
 	bestillinger: Array<OrgStatus>
+	sidetall: number
 }
 
 const ikonTypeMap = {
@@ -23,13 +26,17 @@ const ikonTypeMap = {
 
 export default function OrganisasjonBestilling({
 	brukerId,
+	brukertype,
 	bestillinger,
+	sidetall,
 }: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
 		return null
 	}
 
 	const sortedOrgliste = _orderBy(bestillinger, ['id'], ['desc'])
+	// @ts-ignore
+	const bestillingStatuser = bestillingStatusMapper(sortedOrgliste)
 
 	const columns = [
 		{
@@ -48,7 +55,7 @@ export default function OrganisasjonBestilling({
 			width: '20',
 			dataField: 'sistOppdatert',
 			formatter(cell: string): string {
-				return Formatters.formatDate(cell)
+				return Formatters.formatDateTime(cell)
 			},
 		},
 		{
@@ -84,13 +91,19 @@ export default function OrganisasjonBestilling({
 		<ErrorBoundary>
 			{/* @ts-ignore */}
 			<DollyTable
-				data={sortedOrgliste}
+				data={bestillingStatuser}
 				columns={columns}
+				visSide={sidetall}
 				pagination
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {
 					return (
-						<BestillingDetaljer bestilling={bestilling} iLaastGruppe={null} brukerId={brukerId} />
+						<BestillingDetaljer
+							bestilling={bestilling}
+							iLaastGruppe={null}
+							brukerId={brukerId}
+							brukertype={brukertype}
+						/>
 					)
 				}}
 			/>

@@ -20,6 +20,30 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
 
     private static final String PDL_FORVALTER = "PDLF";
 
+    private static HentIdenterRequest.Identtype mapIdenttype(Identtype identtype) {
+
+        return isNull(identtype) ?
+
+                HentIdenterRequest.Identtype.FNR :
+
+                switch (identtype) {
+                    case FNR -> HentIdenterRequest.Identtype.FNR;
+                    case DNR -> HentIdenterRequest.Identtype.DNR;
+                    case NPID -> HentIdenterRequest.Identtype.BOST;
+                };
+    }
+
+    private static HentIdenterRequest.Kjoenn mapKjoenn(KjoennDTO.Kjoenn kjoenn) {
+
+        return isNull(kjoenn) ?
+                null :
+                switch (kjoenn) {
+                    case MANN -> HentIdenterRequest.Kjoenn.MANN;
+                    case KVINNE -> HentIdenterRequest.Kjoenn.KVINNE;
+                    case UKJENT -> null;
+                };
+    }
+
     @Override
     public void register(MapperFactory factory) {
 
@@ -28,19 +52,21 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PersonRequestDTO kilde, HentIdenterRequest destinasjon, MappingContext context) {
 
-                        if (isNull(kilde.getIdenttype())) {
-                            destinasjon.setIdenttype(Identtype.FNR);
-                        }
+                        destinasjon.setIdenttype(mapIdenttype(kilde.getIdenttype()));
 
                         if (nonNull(kilde.getAlder()) && kilde.getAlder() > 0) {
                             destinasjon.setFoedtEtter(LocalDate.now().minusYears(kilde.getAlder()).minusYears(1));
                             destinasjon.setFoedtFoer(LocalDate.now().minusYears(kilde.getAlder()).minusMonths(3));
                         }
 
+                        destinasjon.setKjoenn(mapKjoenn(kilde.getKjoenn()));
+
                         destinasjon.setAntall(1);
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
                     }
                 })
+                .exclude("identtype")
+                .exclude("kjoenn")
                 .byDefault()
                 .register();
 
@@ -49,11 +75,9 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BestillingRequestDTO kilde, HentIdenterRequest destinasjon, MappingContext context) {
 
-                        if (isNull(kilde.getIdenttype())) {
-                            destinasjon.setIdenttype(Identtype.FNR);
-                        }
+                        destinasjon.setIdenttype(mapIdenttype(kilde.getIdenttype()));
 
-                        if (nonNull(kilde.getAlder()) && kilde.getAlder() > 0)  {
+                        if (nonNull(kilde.getAlder()) && kilde.getAlder() > 0) {
                             destinasjon.setFoedtEtter(LocalDate.now().minusYears(kilde.getAlder()).minusYears(1));
                             destinasjon.setFoedtFoer(LocalDate.now().minusYears(kilde.getAlder()).minusMonths(3));
 
@@ -63,14 +87,16 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                         }
 
                         if (nonNull(kilde.getPerson())) {
-                            destinasjon.setKjoenn(kilde.getPerson().getKjoenn().stream()
-                                    .findFirst().orElse(new KjoennDTO()).getKjoenn());
+                            destinasjon.setKjoenn(mapKjoenn(kilde.getPerson().getKjoenn().stream()
+                                    .findFirst().orElse(new KjoennDTO()).getKjoenn()));
                         }
 
                         destinasjon.setAntall(1);
                         destinasjon.setRekvirertAv(PDL_FORVALTER);
                     }
                 })
+                .exclude("identtype")
+                .exclude("kjoenn")
                 .byDefault()
                 .register();
     }

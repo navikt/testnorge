@@ -68,8 +68,7 @@ public final class BestillingPdlForvalterStatusMapper {
 
         if (!pdlDataStatus.isEmpty()) {
             pdlDataStatus.stream().findFirst().get()
-                    .getStatuser().stream()
-                    .filter(status -> !OKEY.equals(status.getMelding()))
+                    .getStatuser()
                     .forEach(status -> addPdlDataStatus(statusRapporter, status));
         }
 

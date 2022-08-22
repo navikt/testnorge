@@ -8,11 +8,12 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -34,12 +35,16 @@ public class ProfilApiConsumer {
 
     public ProfilApiConsumer(TokenExchange tokenService,
                              ProfilApiProperties serverProperties,
-                             GetUserInfo getUserInfo) {
+                             GetUserInfo getUserInfo,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.getUserInfo = getUserInfo;
         this.webClient = WebClient.builder()
-                .baseUrl(serverProperties.getUrl()).build();
+                .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public ResponseEntity<ProfilDTO> getProfil() {

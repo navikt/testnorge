@@ -8,8 +8,8 @@ import no.nav.dolly.config.credentials.PdlProxyProperties;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,7 +66,7 @@ public class PdlForvalterConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(PdlProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(PdlProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class PdlForvalterConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
 
-        ResponseEntity<JsonNode> response = pdlForvalterConsumer.deleteIdent(IDENT);
+        var response = pdlForvalterConsumer.deleteIdent(IDENT);
 
         assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
     }

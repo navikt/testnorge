@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -17,16 +16,16 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
@@ -34,12 +33,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
     private MapperFacade mapperFacade;
-    private TpsfService tpsfService;
     private ExecutorService dollyForkJoinPool;
     private PdlDataConsumer pdlDataConsumer;
     private IdentService identService;
 
-    public OpprettPersonerFraIdenterMedKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+    public OpprettPersonerFraIdenterMedKriterierService(TpsfService tpsfService,
                                                         DollyPersonCache dollyPersonCache, IdentService identService,
                                                         BestillingProgressService bestillingProgressService,
                                                         BestillingService bestillingService, MapperFacade mapperFacade,
@@ -47,13 +45,13 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
+                pdlDataConsumer, errorStatusDecoder);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
         this.mapperFacade = mapperFacade;
-        this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
         this.identService = identService;
@@ -66,8 +64,9 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            var tilgjengeligeIdenter = new AvailCheckCommand(bestilling.getOpprettFraIdenter(),
-                    bestKriterier.getPdldata(), tpsfService, pdlDataConsumer).call();
+            var tilgjengeligeIdenter = new AvailCheckCommand(
+                    bestilling.getOpprettFraIdenter(),
+                    pdlDataConsumer).call();
 
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.parallelStream()
@@ -77,23 +76,19 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), identStatus.getMaster());
 
                             try {
+                                MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                                 if (identStatus.isAvailable()) {
 
-                                    var leverteIdenter = new OpprettCommand(identStatus, bestKriterier, tpsfService,
+                                    var opprettetIdent = new OpprettCommand(identStatus, bestKriterier,
                                             pdlDataConsumer, mapperFacade).call();
 
-                                    if (identStatus.isTpsf()) {
-                                        sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(",")),
-                                                leverteIdenter, bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
-
-                                    } else {
-                                        identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
-                                                PDL, bestKriterier.getBeskrivelse());
-                                    }
+                                    identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
+                                            identStatus.getMaster(), bestKriterier.getBeskrivelse());
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
-                                            .hovedperson(leverteIdenter.get(0))
+                                            .hovedperson(opprettetIdent)
                                             .master(identStatus.getMaster())
+                                            .tags(bestilling.getGruppe().getTags())
                                             .build();
 
                                     gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
@@ -104,6 +99,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
 

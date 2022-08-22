@@ -2,17 +2,8 @@ import Request from '~/service/services/Request'
 import Endpoints from './DollyEndpoints'
 
 export default {
-	//* Grupper
-	getGrupper() {
-		return Request.get(Endpoints.gruppe())
-	},
-
-	getGrupperPaginert(page, pageSize) {
-		return Request.get(Endpoints.gruppePaginert(page, pageSize))
-	},
-
-	getGruppeByIdPaginert(gruppeId, pageNo = 0, pageSize = 10) {
-		return Request.get(Endpoints.gruppeByIdPaginert(gruppeId, pageNo, pageSize))
+	getSkjerming(ident) {
+		return Request.get(Endpoints.skjermingByIdent(ident))
 	},
 
 	getGruppeById(gruppeId) {
@@ -47,6 +38,10 @@ export default {
 		return Request.put(Endpoints.laasGruppe(gruppeId), data)
 	},
 
+	updateGruppeSendTags(gruppeId, data) {
+		return Request.post(Endpoints.sendGruppeTags(gruppeId), data)
+	},
+
 	gjenopprettGruppe(gruppeId, envs) {
 		return Request.put(Endpoints.gjenopprettGruppe(gruppeId, envs))
 	},
@@ -69,20 +64,15 @@ export default {
 	},
 
 	navigerTilPerson(ident) {
-		return Request.get(Endpoints.naviger(ident))
+		return Request.get(Endpoints.navigerTilIdent(ident))
 	},
 
-	//* Bruker
-	getBrukere() {
-		return Request.get(Endpoints.bruker())
+	navigerTilBestilling(bestillingId) {
+		return Request.get(Endpoints.navigerTilBestilling(bestillingId))
 	},
 
-	getBrukereById(brukerId) {
-		return Request.get(Endpoints.brukerById())
-	},
-
-	getCurrentBruker() {
-		return Request.get(Endpoints.currentBruker())
+	sendOrdre(ident) {
+		return Request.post(Endpoints.ordre(ident))
 	},
 
 	addFavorite(groupId) {
@@ -102,32 +92,29 @@ export default {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
 	},
 
+	//* Udistub
+	getUdiPerson(ident) {
+		return Request.get(Endpoints.udiPerson(ident))
+	},
+
 	//* Bestilling
-	getBestillinger(gruppeId) {
-		return Request.get(Endpoints.bestillinger(gruppeId))
-	},
-
-	getBestillingMaler() {
-		return Request.get(Endpoints.bestillingMal())
-	},
-
-	getBestillingStatus(bestillingId) {
-		return Request.get(Endpoints.bestillingStatus(bestillingId))
+	getBestillingerFragment(fragment) {
+		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
 
-	postOpenAmBestilling(bestillingId) {
-		return Request.post(Endpoints.openAmBestilling(bestillingId))
-	},
-
-	cancelBestilling(bestillingId) {
-		return Request.delete(Endpoints.removeBestilling(bestillingId))
+	cancelBestilling(bestillingId, erOrganisasjon) {
+		return Request.delete(Endpoints.removeBestilling(bestillingId, erOrganisasjon))
 	},
 
 	slettPerson(ident) {
+		return Request.delete(Endpoints.slettPerson(ident))
+	},
+
+	slettPersonOgPartner(ident, _partnerident) {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
@@ -135,25 +122,19 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
 	},
 
-	//* Oppslag
-	getEnhetByTknr(tknr) {
-		return Request.get(Endpoints.enhetByTknr(tknr))
+	importerPersonerFraPdl: (gruppeId, request) => {
+		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
 	getPersonFraPdl(ident) {
 		return Request.get(Endpoints.personoppslag(ident))
 	},
-
-	getFasteOrgnummer() {
-		return Request.get(Endpoints.fasteOrgnummer())
+	getPersonerFraPdl(identer) {
+		return Request.get(Endpoints.personoppslagMange(identer))
 	},
 
 	getArbeidsforhold(ident, miljoe) {
 		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
-	},
-
-	getFasteDatasettGruppe(gruppe) {
-		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
 	},
 
 	getPersonnavn() {
@@ -164,21 +145,10 @@ export default {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
 	},
 
-	getDokarkivDokumentinfo(journalpostId, miljoe) {
-		return Request.get(Endpoints.dokarkivDokumentinfo(journalpostId, miljoe))
-	},
-
 	//* Organisasjoner
-	getOrganisasjonsnummerByUserId(userId) {
-		return Request.get(Endpoints.organisasjonStatusByUser(userId))
-	},
 
 	createOrganisasjonBestilling(data) {
 		return Request.post(Endpoints.organisasjonBestilling(), data)
-	},
-
-	getOrganisasjonBestillingStatus(bestillingId) {
-		return Request.get(Endpoints.organisasjonStatusByBestillingId(bestillingId))
 	},
 
 	gjenopprettOrganisasjonBestilling(bestillingId, envs) {
@@ -187,5 +157,23 @@ export default {
 
 	deleteOrganisasjonOrgnummer(orgnummer) {
 		return Request.delete(Endpoints.deleteOrganisasjonOrgnummer(orgnummer))
+	},
+
+	//* Tags
+	getTags() {
+		return Request.get(Endpoints.getTags())
+	},
+
+	getTagsForIdent(ident) {
+		return Request.get(Endpoints.getIdentTags(ident))
+	},
+
+	//* Excel
+	getExcelFil(groupId) {
+		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
+	},
+
+	importerPartner(groupId, ident, master) {
+		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
 }

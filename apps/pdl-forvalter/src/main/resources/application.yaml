@@ -18,10 +18,10 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
   ident-pool:
-    url: https://testnav-ident-pool-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
+    url: https://testnav-ident-pool.dev.intern.nav.no
+    cluster: dev-gcp
     namespace: dolly
-    name: testnav-ident-pool-proxy
+    name: testnav-ident-pool
   org-forvalter:
     url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
     cluster: dev-gcp
@@ -32,3 +32,25 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-geografiske-kodeverk-service
+
+spring:
+  datasource:
+    testOnBorrow: true
+    validationQuery: select 1
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping.prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  metrics.export:
+    prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8

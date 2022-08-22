@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,7 @@ public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
     @Override
     protected void handle(TelefonnummerDTO type) {
 
-        // Ingen håndtering for enkeltpost
+        type.setMaster(Master.PDL);
     }
 
     @Override

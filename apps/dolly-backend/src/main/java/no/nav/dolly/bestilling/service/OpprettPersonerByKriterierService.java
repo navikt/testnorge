@@ -5,31 +5,35 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.ThreadLocalContextLifter;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Operators;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
+import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
@@ -43,7 +47,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private ExecutorService dollyForkJoinPool;
     private PdlDataConsumer pdlDataConsumer;
 
-    public OpprettPersonerByKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+    public OpprettPersonerByKriterierService(TpsfService tpsfService,
                                              DollyPersonCache dollyPersonCache, IdentService identService,
                                              BestillingProgressService bestillingProgressService,
                                              BestillingService bestillingService, MapperFacade mapperFacade,
@@ -51,9 +55,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                              ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                              PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -69,24 +73,27 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         return BestillingProgress.builder()
                 .bestilling(bestilling)
                 .ident("?")
-                .feil("NA:" + error)
+                .feil(TPSF == master ? ("NA:" + error) : null)
+                .pdlDataStatus(PDLF == master ? error : null)
                 .master(master)
                 .build();
     }
 
     @Async
     public void executeAsync(Bestilling bestilling) {
+        Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
-        RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
 
-            var originator = new OriginatorCommand(bestKriterier, mapperFacade).call();
+            var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
             dollyForkJoinPool.submit(() -> {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(ident -> {
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = null;
                             try {
@@ -95,18 +102,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 var dollyPerson = DollyPerson.builder()
                                         .hovedperson(opprettedeIdenter.get(0))
                                         .master(originator.getMaster())
+                                        .tags(bestilling.getGruppe().getTags())
                                         .build();
 
                                 progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
 
-                                if (originator.isTpsf()) {
-                                    sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(",")),
-                                            opprettedeIdenter, bestilling.getGruppe(), progress, bestKriterier.getBeskrivelse());
-
-                                } else {
-                                    identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                            PDL, bestKriterier.getBeskrivelse());
-                                }
+                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
+                                        originator.getMaster(), bestKriterier.getBeskrivelse());
 
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
 
@@ -116,9 +118,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
-
                 oppdaterBestillingFerdig(bestilling);
             });
 
@@ -130,8 +132,16 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
     private List<String> getOpprettedeIdenter(OriginatorCommand.Originator originator) {
 
-        return originator.isTpsf() ?
-                tpsfService.opprettIdenterTpsf(originator.getTpsfBestilling()) :
-                List.of(pdlDataConsumer.opprettPdl(originator.getPdlBestilling()));
+        if (originator.isTpsf()) {
+            return tpsfService.opprettIdenterTpsf(originator.getTpsfBestilling());
+
+        } else if (originator.isPdlf()) {
+            var ident = pdlDataConsumer.opprettPdl(originator.getPdlBestilling());
+            log.info("Opprettet person med ident {} ", ident);
+            return List.of(ident);
+
+        } else {
+            throw new DollyFunctionalException("Bestilling er ikke støttet.");
+        }
     }
 }

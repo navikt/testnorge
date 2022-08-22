@@ -36,14 +36,12 @@ public class DatoFraIdentUtil {
     }
 
     private int getDay(String ident) {
-        // Fix D-number
-        return ident.charAt(0) >= '4' ? parseInt(ident.substring(0, 2)) - 40 :
-                parseInt(ident.substring(0, 2));
+
+        return parseInt(ident.substring(0, 2)) % 40;
     }
 
     private int getMonth(String ident) {
-        // Fix B-number
-        return ident.charAt(2) >= '2' ? parseInt(ident.substring(2, 4)) - 20 :
-                parseInt(ident.substring(2, 4));
+
+        return parseInt(ident.substring(2, 4)) % 20;
     }
 }

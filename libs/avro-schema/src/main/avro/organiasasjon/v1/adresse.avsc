@@ -13,7 +13,11 @@
     },
     {
       "name": "kommunenummer",
-      "type": "string"
+      "default": null,
+      "type": [
+        "null",
+        "string"
+      ]
     },
     {
       "name": "poststed",

@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.reactivesecurity.action;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -8,9 +9,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
+@Slf4j
 abstract class JwtResolver {
 
     Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
@@ -19,13 +20,13 @@ abstract class JwtResolver {
                 .switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))
                 .map(SecurityContext::getAuthentication)
                 .map(JwtAuthenticationToken.class::cast)
+                .doOnError(throwable -> log.error("Klarte ikke hente Jwt Auth Token: ", throwable))
                 .doOnSuccess(jwtAuthenticationToken -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
-                    if (expiresAt == null || expiresAt.isBefore(LocalDateTime.now(ZoneOffset.UTC).toInstant(ZoneOffset.UTC))) {
-                        throw new CredentialsExpiredException("Jwt er utloept");
+                    if (expiresAt == null || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
+                        throw new CredentialsExpiredException("Jwt er utløpt eller utløper innen kort tid");
                     }
                 });
     }
-
 }

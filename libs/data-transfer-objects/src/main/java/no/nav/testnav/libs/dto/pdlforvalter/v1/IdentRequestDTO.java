@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +15,6 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class IdentRequestDTO extends DbVersjonDTO {
 
     // All fields are optional
@@ -26,6 +24,7 @@ public class IdentRequestDTO extends DbVersjonDTO {
     private LocalDateTime foedtFoer;
     private Integer alder;
     private Boolean syntetisk;
+    private String eksisterendeIdent;
 
     private NyttNavnDTO nyttNavn;
 
@@ -33,7 +32,6 @@ public class IdentRequestDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class NyttNavnDTO implements Serializable {
 
         private Boolean hasMellomnavn;

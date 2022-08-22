@@ -11,12 +11,16 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer
 import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -41,12 +45,17 @@ public class OrganisasjonConsumer {
     private final WebClient webClient;
     private final OrganisasjonForvalterProperties serviceProperties;
 
-    public OrganisasjonConsumer(TokenExchange tokenService, OrganisasjonForvalterProperties serviceProperties, ObjectMapper objectMapper) {
+    public OrganisasjonConsumer(TokenExchange tokenService,
+                                OrganisasjonForvalterProperties serviceProperties,
+                                ObjectMapper objectMapper,
+                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -67,6 +76,8 @@ public class OrganisasjonConsumer {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(OrganisasjonDetaljer.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -87,6 +98,8 @@ public class OrganisasjonConsumer {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToMono(OrganisasjonDeployStatus.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -104,6 +117,8 @@ public class OrganisasjonConsumer {
                 .bodyValue(bestillingRequest)
                 .retrieve()
                 .toEntity(BestillingResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -131,6 +146,8 @@ public class OrganisasjonConsumer {
                 .bodyValue(deployRequest)
                 .retrieve()
                 .toEntity(DeployResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 

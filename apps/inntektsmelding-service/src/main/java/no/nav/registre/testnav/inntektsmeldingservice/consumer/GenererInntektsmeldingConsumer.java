@@ -1,34 +1,38 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.InntektsmeldingGeneratorServiceProperties;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.GenererInntektsmeldingCommand;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
 public class GenererInntektsmeldingConsumer {
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
     public GenererInntektsmeldingConsumer(
             InntektsmeldingGeneratorServiceProperties properties,
-            AccessTokenService accessTokenService
-    ) {
-        this.accessTokenService = accessTokenService;
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
-        return accessTokenService.generateToken(properties)
+        return tokenExchange.exchange(properties)
                 .flatMap(token -> new GenererInntektsmeldingCommand(webClient, inntektsmelding, token.getTokenValue()).call())
                 .block();
     }

@@ -1,7 +1,7 @@
 package no.nav.registre.inntekt.provider.rs;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,11 +19,11 @@ import no.nav.registre.inntekt.service.SyntetiseringService;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class SyntetiseringsController {
 
-    @Autowired
-    private SyntetiseringService syntetiseringService;
+    private final SyntetiseringService syntetiseringService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/syntetisering/generer")

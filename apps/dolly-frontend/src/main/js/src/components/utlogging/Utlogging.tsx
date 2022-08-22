@@ -6,18 +6,19 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Api from '~/api'
 import ProgressBar from 'fremdriftslinje'
 import { WarningFilled } from '@navikt/ds-icons'
+import logoutBruker from './logoutBruker'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
 	const decodedCookie = decodeURIComponent(document.cookie)
 	const list = decodedCookie.split(';')
-	for (let index = 0; index < list.length; index++) {
-		let value = list[index]
-		while (value.charAt(0) == ' ') {
-			value = value.substring(1)
+	for (let value of list) {
+		let val = value
+		while (val.charAt(0) === ' ') {
+			val = val.substring(1)
 		}
-		if (value.indexOf(name) == 0) {
-			return value.substring(name.length, value.length)
+		if (val.indexOf(name) === 0) {
+			return val.substring(name.length, val.length)
 		}
 	}
 	return ''
@@ -49,19 +50,17 @@ const Utlogging = () => {
 		}
 	}, [milliseconds])
 
-	const logout = () =>
-		Api.fetch('/logout', { method: 'POST' }).then((response) => location.replace(response.url))
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		logout()
+		logoutBruker()
 	}
 
 	return (
 		<DollyModal
 			minWidth={670}
 			isOpen={milliseconds <= SHOW_MODAL_WHEN_TIME_LEFT}
-			onRequestClose={logout}
+			onRequestClose={() => logoutBruker()}
 			noCloseButton={true}
 			contentLabel="Utlogging rute"
 		>
@@ -79,7 +78,7 @@ const Utlogging = () => {
 					</p>
 				</ProgressBar>
 				<div className="utlogging__button-group">
-					<Knapp className="utlogging__button" onClick={logout}>
+					<Knapp className="utlogging__button" onClick={() => logoutBruker()}>
 						Logg ut nå
 					</Knapp>
 					<Hovedknapp className="utlogging__button" onClick={continueSession}>

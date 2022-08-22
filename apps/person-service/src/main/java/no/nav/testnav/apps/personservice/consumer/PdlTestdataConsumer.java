@@ -10,12 +10,13 @@ import no.nav.testnav.apps.personservice.consumer.command.PostTagsCommand;
 import no.nav.testnav.apps.personservice.consumer.exception.PdlCreatePersonException;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,8 +31,9 @@ public class PdlTestdataConsumer {
     public PdlTestdataConsumer(
             PdlServiceProperties serviceProperties,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper
-    ) {
+            ObjectMapper objectMapper,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
@@ -46,6 +48,7 @@ public class PdlTestdataConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -80,7 +83,7 @@ public class PdlTestdataConsumer {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
         try {
-            var accessToken = tokenExchange.generateToken(serviceProperties).block();
+            var accessToken = tokenExchange.exchange(serviceProperties).block();
             opprettPerson(person, kilde, accessToken);
             opprettNavn(person, kilde, accessToken);
             opprettAdresse(person, kilde, accessToken);

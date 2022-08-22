@@ -26,3 +26,31 @@ export const setNavn = (navn, path, setFieldValue) => {
 export const setValue = (value, path, setFieldValue) => {
 	setFieldValue(`${path}`, value.value)
 }
+
+export const isEmpty = (attributt, excludeList = []) => {
+	const flattenData = (objekt) => {
+		let result = {}
+		for (const i in objekt) {
+			if (excludeList.includes(i)) {
+				continue
+			}
+			if (
+				typeof objekt[i] === 'object' &&
+				!(objekt[i] instanceof Date) &&
+				!Array.isArray(objekt[i])
+			) {
+				const temp = flattenData(objekt[i])
+				for (const j in temp) {
+					result[i + '.' + j] = temp[j]
+				}
+			} else {
+				result[i] = objekt[i]
+			}
+		}
+		return result
+	}
+	return (
+		attributt?.empty ||
+		Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
+	)
+}

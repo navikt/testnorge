@@ -1,11 +1,10 @@
 testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
-syntrest.rest.api.url: https://syntrest.nais.preprod.local/api
 inntektstub.rest.api.url: https://inntektstub.nais.preprod.local/api
 inntektstub-u1.rest.api.url: https://inntektstub-u1.nais.preprod.local/api
 inntektstub-t4.rest.api.url: https://inntektstub-t4.nais.preprod.local/api
 altinnInntekt.rest.api.url: https://inntektsmelding-stub.nais.preprod.local/api
 dokmot.joark.rest.api.url: https://dokarkiv-{miljoe}.nais.preprod.local/
-testnorge-aareg.rest.api.url: https://testnorge-aareg.nais.preprod.local/api
+testnorge-aareg.rest.api.url: https://testnorge-aareg.dev.intern.nav.no/api
 testnorges.ida.credential.inntektstub.username: asd
 testnorges.ida.credential.inntektstub.password: asd
 andelNyeIdenter: 3

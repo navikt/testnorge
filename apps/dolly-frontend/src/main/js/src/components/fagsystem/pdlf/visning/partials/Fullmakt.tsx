@@ -6,46 +6,27 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FullmaktKodeverk } from '~/config/kodeverk'
 import styled from 'styled-components'
+import { FullmaktData, Relasjon } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
 type Data = {
 	data: FullmaktData
-	relasjoner: Array<relasjon>
+	relasjoner: Array<Relasjon>
 }
 
 type DataListe = {
 	data: Array<FullmaktData>
-	relasjoner: Array<relasjon>
-}
-
-type FullmaktData = {
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-	omraader: Array<string>
-	motpartsPersonident: string
-	id: number
-}
-
-type relasjon = {
-	relasjonType: string
-	relatertPerson: {
-		ident: string
-		navn: Array<{
-			fornavn: string
-			mellomnavn?: string
-			etternavn: string
-		}>
-		kjoenn: Array<{
-			kjoenn: string
-		}>
-	}
+	relasjoner: Array<Relasjon>
 }
 
 const Tema = styled.div`
+	margin-bottom: 20px;
 	h4 {
 		width: 100%;
 		margin-bottom: 10px;
 		margin-top: 0px;
 	}
+
 	TitleValue {
 		margin-bottom: 5px;
 	}
@@ -53,10 +34,9 @@ const Tema = styled.div`
 
 export const Visning = ({ data, relasjoner }: Data) => {
 	const fullmektigIdent = data.motpartsPersonident
-	const fullmektig = relasjoner.find(
+	const fullmektig = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
 	)
-	const { fornavn, mellomnavn, etternavn } = fullmektig?.relatertPerson?.navn?.[0]
 
 	return (
 		<>
@@ -70,6 +50,12 @@ export const Visning = ({ data, relasjoner }: Data) => {
 						title="Gyldig til og med"
 						value={Formatters.formatDate(data.gyldigTilOgMed)}
 					/>
+					{!fullmektig && (
+						<TitleValue
+							title="Fullmektig"
+							value={data.motpartsPersonident || data.vergeEllerFullmektig?.motpartsPersonident}
+						/>
+					)}
 				</div>
 				<Tema>
 					<h4>Tema</h4>
@@ -86,21 +72,16 @@ export const Visning = ({ data, relasjoner }: Data) => {
 						)
 					)}
 				</Tema>
-				<div className="person-visning_content">
-					<h4 style={{ width: '100%' }}>Fullmektig</h4>
-					<TitleValue title="Ident" value={fullmektig?.relatertPerson?.ident} />
-					<TitleValue title="Fornavn" value={fornavn} />
-					<TitleValue title="Mellomnavn" value={mellomnavn} />
-					<TitleValue title="Etternavn" value={etternavn} />
-					<TitleValue title="Kjønn" value={fullmektig?.relatertPerson?.kjoenn?.[0].kjoenn} />
-				</div>
+				{fullmektig && <RelatertPerson data={fullmektig.relatertPerson} tittel="Fullmektig" />}
 			</ErrorBoundary>
 		</>
 	)
 }
 
 export const Fullmakt = ({ data, relasjoner }: DataListe) => {
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 	const fullmaktRelasjoner = relasjoner?.filter(
 		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG'
 	)

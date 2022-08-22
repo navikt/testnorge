@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
@@ -37,6 +40,9 @@ public class OrganisasjonBestillingCommand implements Callable<Mono<BestillingSt
                                 .miljoe(status.getMiljoe())
                                 .itemDtos(Arrays.asList(value))
                                 .build()))
+
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
 
                 .doOnError(throwable -> {
                     log.error(throwable instanceof WebClientResponseException ?

@@ -48,15 +48,9 @@ export const AppError = ({ error, stackTrace, style }) => (
 			Noe gikk galt under visning av elementet. <br />
 			Dersom refresh av siden ikke fungerer, forsøk å trykke{' '}
 			<b>
-				<a
-					href={
-						window.location.protocol + '//' + window.location.host + '/oauth2/authorization/aad'
-					}
-				>
-					her
-				</a>
+				<a href={window.location.protocol + '//' + window.location.host + '/logout'}>her</a>
 			</b>
-			, slette cache eller kontakt Team Dolly på slack{' '}
+			, clear cookies eller kontakt Team Dolly på slack{' '}
 			<b>
 				<a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a>
 			</b>{' '}

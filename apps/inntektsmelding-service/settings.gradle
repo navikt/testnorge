@@ -1,10 +1,11 @@
 plugins {
-    id "com.gradle.enterprise" version "3.7.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'inntektsmelding-service'
 
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 

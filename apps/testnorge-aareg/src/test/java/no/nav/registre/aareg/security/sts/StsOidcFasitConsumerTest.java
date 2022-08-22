@@ -21,7 +21,7 @@ import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
 import no.nav.registre.aareg.properties.Environment;
 
 @ExtendWith(MockitoExtension.class)
-public class StsOidcFasitConsumerTest {
+class StsOidcFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
     private static final String OIDC_ALIAS = "security-token-service-token";
@@ -35,7 +35,7 @@ public class StsOidcFasitConsumerTest {
 
 
     @Test
-    public void getStsOidcService_ok() {
+    void getStsOidcService_ok() {
         var serviceUrl = "sts oidc service url";
         Map<String, String> properties = new HashMap<>();
         properties.put("url", serviceUrl);

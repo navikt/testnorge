@@ -8,7 +8,9 @@ import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 
 export const SykemeldingVisning = ({ data }: Sykemelding) => {
 	// Viser foreløpig bestillingsdata
-	if (!data || data.length < 1) return null
+	if (!data || data.length < 1) {
+		return null
+	}
 
 	return (
 		<div>
@@ -30,7 +32,9 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 }
 
 SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: string) => {
-	if (!bestillinger) return null
+	if (!bestillinger) {
+		return null
+	}
 	return bestillinger.filter(
 		(bestilling: any) =>
 			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident)

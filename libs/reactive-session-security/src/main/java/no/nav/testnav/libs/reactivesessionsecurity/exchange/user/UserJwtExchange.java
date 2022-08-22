@@ -26,7 +26,7 @@ public class UserJwtExchange {
 
 
     public Mono<String> generateJwt(String id, ServerWebExchange exchange) {
-        return tokenExchange.generateToken(serviceProperties, exchange)
+        return tokenExchange.exchange(serviceProperties, exchange)
                 .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call());
     }
 }

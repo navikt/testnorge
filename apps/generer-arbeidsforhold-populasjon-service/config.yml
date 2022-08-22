@@ -28,8 +28,8 @@ spec:
         - application: oppsummeringsdokument-service
         - application: testnav-generer-organisasjon-populasjon-service
         - application: testnav-organisasjon-service
+        - application: synthdata-amelding
       external:
-        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
         - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
@@ -41,6 +41,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

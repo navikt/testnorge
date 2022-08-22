@@ -1,5 +1,6 @@
 package no.nav.dolly.service;
 
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -76,6 +77,9 @@ public class TestgruppeServiceTest {
 
     @Mock
     private PersonService personService;
+
+    @Mock
+    private MapperFacade mapperFacade;
 
     @Mock
     private NonTransientDataAccessException nonTransientDataAccessException;

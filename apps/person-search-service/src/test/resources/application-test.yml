@@ -1,1 +1,16 @@
-spring.cloud.vault.token: dummy
+spring:
+  cloud:
+    vault:
+      token: dummy
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+elasticsearch:
+  client:
+    username: dummy
+    password: dummy
+    host: dummy

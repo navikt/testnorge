@@ -8,11 +8,12 @@ export type Journalpost = {
 	kanal: string
 	dokumenter: Dokument[]
 	miljoe: string
+	bestillingId?: number
 }
 
 export type Dokument = {
 	dokumentInfoId: number
-	tittel: string
+	tittel?: string
 }
 
 type AvsenderMottaker = {
@@ -66,7 +67,7 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 			window.open(fileURL)
 		})
 		.catch((error) => {
-			console.log(error)
+			console.error(error)
 		})
 
 export default {

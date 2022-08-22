@@ -41,17 +41,31 @@ public class PdlProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService,
+                                           @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
+                                           @Value("${person.aktor.admin.api}") String aktoerAdminApiKey,
+                                           @Value("${elastic.username}") String elasticUsername,
+                                           @Value("${elastic.password}") String elasticPassword) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
+                .bearerAuthenticationHeaderFilter(stsOidcTokenService::getToken);
         var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
+                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
+        var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .apiKeyAuthenticationHeaderFilter(hendelselagerApiKey);
+        var addAktoerAdminApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .apiKeyAuthenticationHeaderFilter(aktoerAdminApiKey);
+        var addElasticSearchBasicAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
+                .basicAuthAuthenticationHeaderFilter(elasticUsername, elasticPassword);
 
         return builder
                 .routes()
-                .route(createRoute("pdl-api", "https://pdl-api.dev.adeo.no", addAuthorizationAndNavConsumerTokenToRouteFilter))
-                .route(createRoute("pdl-testdata", "https://pdl-testdata.dev.adeo.no", addAuthenticationHeaderFilter))
+                .route(createRoute("pdl-api", "http://pdl-api.pdl.svc.nais.local", addAuthorizationAndNavConsumerTokenToRouteFilter))
+                .route(createRoute("pdl-api-q1", "http://pdl-api-q1.pdl.svc.nais.local", addAuthorizationAndNavConsumerTokenToRouteFilter))
+                .route(createRoute("pdl-testdata", "http://pdl-testdata.pdl.svc.nais.local", addAuthenticationHeaderFilter))
+                .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addHendelselagerApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-npid", "https://pdl-aktor.dev.intern.nav.no", addAktoerAdminApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
                 .build();
     }
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import Bestillingskriterier from './kriterier/Bestillingskriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
-import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 
 export default function BestillingSammendrag({ bestilling }) {
 	if ((!bestilling.antallIdenter || !bestilling.gruppeId) && !bestilling.organisasjonNummer) {
@@ -18,15 +17,15 @@ export default function BestillingSammendrag({ bestilling }) {
 				bestilling={bestilling.bestilling}
 				bestillingsinformasjon={{
 					antallIdenter: bestilling.antallIdenter,
+					antallLevert: bestilling.antallLevert,
 					sistOppdatert: bestilling.sistOppdatert,
 					opprettetFraId: bestilling.opprettetFraId,
 					opprettetFraGruppeId: bestilling.opprettetFraGruppeId,
-					navSyntetiskIdent: bestilling.bestilling.navSyntetiskIdent,
+					navSyntetiskIdent: bestilling.bestilling.pdldata?.opprettNyPerson?.syntetisk,
 					beskrivelse: bestilling.bestilling.beskrivelse,
 				}}
 				header="Bestillingskriterier"
 			/>
-			<JiraLenker openAm={bestilling.openamSent && bestilling.openamSent.split(',')} />
 		</div>
 	)
 }

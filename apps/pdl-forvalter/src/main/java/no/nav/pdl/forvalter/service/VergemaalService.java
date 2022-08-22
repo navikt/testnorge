@@ -43,7 +43,6 @@ public class VergemaalService implements Validation<VergemaalDTO> {
                 handle(type, person.getIdent());
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
         return person.getVergemaal();
@@ -72,6 +71,8 @@ public class VergemaalService implements Validation<VergemaalDTO> {
 
     private void handle(VergemaalDTO fullmakt, String ident) {
 
+        fullmakt.setEksisterendePerson(isNotBlank(fullmakt.getVergeIdent()));
+
         if (isBlank(fullmakt.getVergeIdent())) {
 
             if (isNull(fullmakt.getNyVergeIdent())) {
@@ -91,10 +92,6 @@ public class VergemaalService implements Validation<VergemaalDTO> {
             }
 
             fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()).getIdent());
-
-        } else {
-
-            fullmakt.setIsIdentExternal(true);
         }
 
         relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,

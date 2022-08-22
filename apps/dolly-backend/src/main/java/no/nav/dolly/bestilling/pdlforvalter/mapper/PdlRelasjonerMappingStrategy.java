@@ -38,13 +38,13 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 @Component
 public class PdlRelasjonerMappingStrategy implements MappingStrategy {
 
-    private static Sivilstand mapSivilstand(Sivilstatus sivilstatus) {
+    private static Sivilstand mapSivilstand(Sivilstatus sivilstatus, boolean isMyndig) {
 
         if (isNull(sivilstatus)) {
-            return UOPPGITT;
+            return isMyndig ? UGIFT : UOPPGITT;
         } else {
             return switch (sivilstatus) {
-                case UGIF -> UGIFT;
+                case UGIF, SAMB -> UGIFT;
                 case GIFT -> GIFT;
                 case ENKE -> ENKE_ELLER_ENKEMANN;
                 case SKIL -> SKILT;
@@ -90,7 +90,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Person person, PdlSivilstand sivilstand, MappingContext context) {
 
-                        sivilstand.setType(mapSivilstand(person.getSivilstand()));
+                        sivilstand.setType(mapSivilstand(person.getSivilstand(), person.isMyndig()));
                         sivilstand.setSivilstandsdato(mapperFacade.map(person.getSivilstandRegdato(), LocalDate.class));
                         sivilstand.setRelatertVedSivilstand(person.getRelasjoner().stream()
                                 .filter(relasjon -> relasjon.isPartner() && person.isSivilstandGift())
@@ -125,7 +125,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(SivilstandWrapper wrapper, PdlSivilstand sivilstand, MappingContext context) {
 
-                        sivilstand.setType(mapSivilstand(wrapper.getSivilstand().getSivilstand()));
+                        sivilstand.setType(mapSivilstand(wrapper.getSivilstand().getSivilstand(), wrapper.getPerson().isMyndig()));
                         sivilstand.setSivilstandsdato(
                                 mapperFacade.map(wrapper.getSivilstand().getSivilstandRegdato(), LocalDate.class));
                         sivilstand.setRelatertVedSivilstand(wrapper.getSivilstand().isGift() ?

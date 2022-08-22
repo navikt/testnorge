@@ -1,7 +1,7 @@
 import React from 'react'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
@@ -10,12 +10,6 @@ interface InntektsmeldingSelect {
 	label: string
 	kodeverk: string
 	size?: string
-}
-
-type Option = {
-	label: string
-	value: string
-	tema?: string
 }
 
 export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelect) => {

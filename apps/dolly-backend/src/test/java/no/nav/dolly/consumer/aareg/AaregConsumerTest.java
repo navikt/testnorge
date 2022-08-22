@@ -9,8 +9,8 @@ import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.config.credentials.TestnorgeAaregProxyProperties;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,9 +72,13 @@ public class AaregConsumerTest {
 
     private AaregResponse slettResponse;
 
+    private static String asJsonString(final Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
+    }
+
     @BeforeEach
     public void setUp() {
-        when(tokenService.generateToken(ArgumentMatchers.any(TestnorgeAaregProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(TestnorgeAaregProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         opprettRequest = AaregOpprettRequest.builder()
                 .arbeidsforhold(Arbeidsforhold.builder()
@@ -114,9 +118,9 @@ public class AaregConsumerTest {
     public void slettArbeidsforhold() throws JsonProcessingException {
         stubSlettIdentFraAlleMiljoer(slettResponse);
 
-        AaregResponse response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(ident);
+        var response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(List.of(ident)).block();
 
-        assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
+        assertThat(response.get(0).getStatusPerMiljoe().get(miljoe), equalTo("OK"));
     }
 
     private void stubOpprettArbeidsforhold(AaregResponse response) throws JsonProcessingException {
@@ -144,9 +148,5 @@ public class AaregConsumerTest {
                 .willReturn(ok()
                         .withBody(asJsonString(response))
                         .withHeader("Content-Type", "application/json")));
-    }
-
-    private static String asJsonString(final Object object) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(object);
     }
 }

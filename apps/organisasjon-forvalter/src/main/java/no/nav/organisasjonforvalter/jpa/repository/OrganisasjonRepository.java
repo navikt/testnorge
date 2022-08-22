@@ -17,5 +17,9 @@ public interface OrganisasjonRepository extends CrudRepository<Organisasjon, Lon
             "and o.enhetstype in ('BEDR', 'AAFY')")
     List<Organisasjon> findDriftsenheterByBrukerId(@Param(value = "brukerId") String brukerid);
 
+    @Query(value = "select o from Organisasjon as o " +
+            "where o.brukerId = :brukerId ")
+    List<Organisasjon> findOrganisasjonerByBrukerId(@Param(value = "brukerId") String brukerid);
+
     Optional<Organisasjon> findByOrganisasjonsnummer(String orgnr);
 }

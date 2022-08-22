@@ -1,0 +1,46 @@
+spring:
+  cloud:
+    vault:
+      token: dummy
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+consumers:
+  synt-vedtakshistorikk:
+    url: http://localhost:${wiremock.server.port:0}/synt
+    cluster: dummy
+    namespace: dolly
+    name: synthdata-arena-vedtakshistorikk
+  testnav-arena-forvalteren-proxy:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-arena-forvalteren-proxy
+    url: http://localhost:${wiremock.server.port:0}/arena
+  testnav-pensjon-testdata-facade-proxy:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-pensjon-testdata-facade-proxy
+    url: http://localhost:${wiremock.server.port:0}/pensjon
+  testnav-person-search-service:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-person-search-service
+    url: http://localhost:${wiremock.server.port:0}/search
+  pdl-api-proxy:
+    cluster: dummy
+    namespace: dolly
+    name: testnav-pdl-proxy
+    url: http://localhost:${wiremock.server.port:0}/pdl
+
+
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
+
+batch:
+  miljoe: test
+  antallMedHistorikk: 0
+  antallMedOppfoelging: 0
+  antallMedDagpenger: 0

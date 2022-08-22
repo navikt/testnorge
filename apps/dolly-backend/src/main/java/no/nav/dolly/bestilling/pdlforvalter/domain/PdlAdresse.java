@@ -1,10 +1,12 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.deserialization.OppholdAnnetStedEnumDeserializer;
 
 import java.time.LocalDate;
 
@@ -15,16 +17,16 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class PdlAdresse extends PdlOpplysning {
 
-    public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND}
-
-    public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
-
     private String adresseIdentifikatorFraMatrikkelen;
     private Adressegradering adressegradering;
     private LocalDate gyldigFraOgMed;
     private LocalDate gyldigTilOgMed;
     private String coAdressenavn;
-
     private String naerAdresseIdentifikatorFraMatrikkelen;
     private PdlVegadresse vegadresse;
+
+    public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND}
+
+    @JsonDeserialize(using = OppholdAnnetStedEnumDeserializer.class)
+    public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
 }

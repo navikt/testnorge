@@ -27,5 +27,6 @@ package no.nav.testnav.libs.dto.pdlforvalter.v1;
         PDL_TILRETTELAGT_KOMMUNIKASJON,
         PDL_UTENLANDS_IDENTIFIKASJON_NUMMER,
         PDL_UTFLYTTING,
-        PDL_VERGEMAAL
+        PDL_VERGEMAAL,
+        PDL_SIKKERHETSTILTAK_URL
     }

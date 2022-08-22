@@ -4,7 +4,6 @@ import Button from '~/components/ui/button/Button'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 interface AvansertFormValues {
 	path: string
@@ -34,7 +33,8 @@ export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues
 						options={Options('master')}
 						disabled={!kanVelgeMaster}
 					/>
-					<FormikCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />
+					{/*Gjeldende skjules frem til vi finner en måte å håndtere den på*/}
+					{/*<FormikCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />*/}
 				</div>
 			)}
 		</div>

@@ -20,12 +20,16 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnorge-synt-sykemelding-api
           cluster: dev-fss
     outbound:
@@ -42,6 +46,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

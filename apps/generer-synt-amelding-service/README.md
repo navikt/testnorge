@@ -1,9 +1,3 @@
----
-layout: default
-title: Generer Synt Amelding Service
-parent: Applikasjoner
----
-
 # Testnav-generer-synt-amelding-service
 App for å generere syntetiske ameldinger.
 

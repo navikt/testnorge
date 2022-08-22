@@ -1,19 +1,18 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,17 +34,8 @@ public class RsPostadresse {
 
     @JsonIgnore
     public boolean isValid() {
-        int count = 0;
-        if (isNotBlank(postLinje1)) {
-            count++;
-        }
-        if (isNotBlank(postLinje2)) {
-            count++;
-        }
-        if (isNotBlank(postLinje3)) {
-            count++;
-        }
-        return count > 0;
+
+        return (isNotBlank(postLinje1) || isNotBlank(postLinje2)) && isNotBlank(postLinje3);
     }
 
     @JsonIgnore

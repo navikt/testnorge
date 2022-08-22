@@ -3,7 +3,6 @@ import * as Yup from 'yup'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { TpsfForm } from '~/components/fagsystem/tpsf/form/Form'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '~/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '~/components/fagsystem/inntektstub/form/Form'
@@ -15,36 +14,53 @@ import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
-import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
+import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
+import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
+import { ifPresent } from '~/utils/YupValidations'
+
+const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
+
+const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
+	if (leggTil) {
+		return 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
+	} else if (importTestnorge) {
+		return (
+			<span>
+				Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til
+				{gruppe === null && <> gruppe du velger i neste steg.</>}
+				{gruppe !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
+			</span>
+		)
+	}
+	return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
+}
 
 export const Steg2 = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const leggTil = opts.is.leggTil
+	const importTestnorge = opts.is.importTestnorge
+	const gruppe = opts.gruppe
 
 	if (!harAvhukedeAttributter(formikBag.values)) {
-		const message = leggTil
-			? 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
-			: 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
-
-		return <AlertStripeInfo>{message}</AlertStripeInfo>
+		return <AlertStripeInfo>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</AlertStripeInfo>
 	}
 
 	return (
 		<div>
-			<TpsfForm formikBag={formikBag} />
 			<PdlfForm formikBag={formikBag} />
 			<AaregForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
-			<PensjonForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
 			<InntektsmeldingForm formikBag={formikBag} />
+			<PensjonForm formikBag={formikBag} />
+			<TjenestepensjonForm formikBag={formikBag} />
+			<ArenaForm formikBag={formikBag} />
 			<SykdomForm formikBag={formikBag} />
 			<BrregstubForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
-			<ArenaForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 			<DokarkivForm formikBag={formikBag} />
 			<OrganisasjonForm formikBag={formikBag} />
@@ -55,11 +71,9 @@ export const Steg2 = ({ formikBag }) => {
 Steg2.label = 'Velg verdier'
 
 Steg2.validation = Yup.object({
-	...TpsfForm.validation,
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...SigrunstubForm.validation,
-	...PensjonForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SykdomForm.validation,
@@ -70,4 +84,11 @@ Steg2.validation = Yup.object({
 	...UdistubForm.validation,
 	...DokarkivForm.validation,
 	...OrganisasjonForm.validation,
+	pensjonforvalter: ifPresent(
+		'$pensjonforvalter',
+		Yup.object({
+			...PensjonForm.validation,
+			...TjenestepensjonForm.validation,
+		})
+	),
 })

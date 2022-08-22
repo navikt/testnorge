@@ -15,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Order(2)
@@ -30,13 +32,17 @@ public class PdlDataClient implements ClientRegister {
 
         try {
             if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
-                    pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
-                            PersonUpdateRequestDTO.builder()
-                                    .person(bestilling.getPdldata().getPerson())
-                                    .build());
+                pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
+                        PersonUpdateRequestDTO.builder()
+                                .person(bestilling.getPdldata().getPerson())
+                                .build());
             }
 
-            progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
+            if (!progress.isPdl()  && isBlank(progress.getPdlDataStatus())) {
+                progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(),
+                        progress.isTpsf(),
+                        isTrue(bestilling.getEkskluderEksternePersoner())));
+            }
 
         } catch (WebClientResponseException e) {
 
@@ -47,6 +53,6 @@ public class PdlDataClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        pdlDataConsumer.slettPdl(identer);
+        // Sletting gjøres nå i PersonService
     }
 }

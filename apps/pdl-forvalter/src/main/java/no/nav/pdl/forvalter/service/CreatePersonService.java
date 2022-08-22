@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -16,6 +17,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Slf4j
 @Service
@@ -69,6 +73,17 @@ public class CreatePersonService {
                 .build();
     }
 
+    private static SivilstandDTO getUgift() {
+
+        return SivilstandDTO.builder()
+                .type(Sivilstand.UGIFT)
+                .isNew(true)
+                .id(1)
+                .master(FREG)
+                .kilde("Dolly")
+                .build();
+    }
+
     public PersonDTO execute(PersonRequestDTO request) {
 
         var startTime = currentTimeMillis();
@@ -85,13 +100,13 @@ public class CreatePersonService {
                 .block();
 
         mergedPerson.setIdent(delivery.stream()
-                .filter(list -> list.stream().anyMatch(item -> item instanceof IdentDTO))
+                .filter(list -> list.stream().anyMatch(IdentDTO.class::isInstance))
                 .flatMap(Collection::stream)
                 .map(IdentDTO.class::cast)
                 .findFirst().get().getIdent());
 
         Stream.of(
-                        Flux.just(bostedAdresseService.convert(mergedPerson)),
+                        Flux.just(bostedAdresseService.convert(mergedPerson, null)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
                         Flux.just(foedselService.convert(mergedPerson)),
@@ -99,6 +114,10 @@ public class CreatePersonService {
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();
+
+        if (FoedselsdatoUtility.isMyndig(mergedPerson)) {
+            mergedPerson.getSivilstand().add(getUgift());
+        }
 
         folkeregisterPersonstatusService.convert(mergedPerson);
 

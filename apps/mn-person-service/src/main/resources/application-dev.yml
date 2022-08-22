@@ -1,7 +1,0 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
-consumers:
-  personapi:
-    client_id: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
-    url: https://testnorge-person-api-dev.dev.adeo.no

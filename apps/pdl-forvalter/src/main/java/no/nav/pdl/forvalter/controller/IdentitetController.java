@@ -8,6 +8,8 @@ import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.IdentitetService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonIDDTO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,5 +39,15 @@ public class IdentitetController {
                 .sidenummer(sidenummer)
                 .sidestoerrelse(sidestorrelse)
                 .build());
+    }
+
+    @PutMapping(value = "/{ident}/standalone/{standalone}")
+    @Operation(description = "Oppdaterer angitt person med standalone satt (true/false).<br>" +
+            "Når satt, blir dette håndtert som en ekstern person som ikke skal inkluderes ved sletting.")
+    public void updateStandalone(@Parameter(description = "Ident for testperson")
+                                 @PathVariable String ident,
+                                 @PathVariable Boolean standalone) {
+
+        identitetService.updateStandalone(ident, standalone);
     }
 }

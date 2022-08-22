@@ -41,6 +41,7 @@ public class ValidateArtifactsService {
     private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
     private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
+    private final SikkerhetstiltakService sikkerhetstiltakService;
 
     public void validate(PersonDTO person) {
 
@@ -68,7 +69,7 @@ public class ValidateArtifactsService {
                 validate(sivilstandService, person.getSivilstand()),
                 validate(forelderBarnRelasjonService, person.getForelderBarnRelasjon()),
                 validate(foreldreansvarService, person.getForeldreansvar(), person),
-                validate(deltBostedService, person.getDeltBosted(), person),
+                validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),
                 validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
                 validate(identtypeService, person.getNyident())
         )

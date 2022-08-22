@@ -2,13 +2,15 @@ package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.dto.ItemDTO;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.dto.ItemDTO;
-import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +30,8 @@ public class GetQueueItemCommand implements Callable<ItemDTO> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(ItemDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

@@ -7,8 +7,8 @@ import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +25,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -60,12 +62,16 @@ public class SigrunStubConsumerTest {
 
     private OpprettSkattegrunnlag skattegrunnlag;
 
+    private static String asJsonString(final Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
+    }
+
     @BeforeEach
     public void setup() {
 
         WireMock.reset();
 
-        when(tokenService.generateToken(ArgumentMatchers.any(SigrunstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(SigrunstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         skattegrunnlag = OpprettSkattegrunnlag.builder()
                 .inntektsaar("1978")
@@ -96,7 +102,7 @@ public class SigrunStubConsumerTest {
 
         stubDeleteSkattegrunnlagOK();
 
-        sigrunStubConsumer.deleteSkattegrunnlag(IDENT);
+        sigrunStubConsumer.deleteSkattegrunnlag(List.of(IDENT)).block();
     }
 
     private void stubOpprettSkattegrunnlagOK() {
@@ -122,9 +128,5 @@ public class SigrunStubConsumerTest {
                 .willReturn(ok()
                         .withBody("{}")
                         .withHeader("Content-Type", "application/json")));
-    }
-
-    private static String asJsonString(final Object object) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(object);
     }
 }

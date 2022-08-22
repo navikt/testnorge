@@ -1,0 +1,9 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+consumers:
+  testnav-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-tilgang-service
+    url: https://testnav-organisasjon-tilgang-service.dev.intern.nav.no

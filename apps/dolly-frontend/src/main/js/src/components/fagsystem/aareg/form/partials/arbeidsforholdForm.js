@@ -22,9 +22,9 @@ import {
 	initialForenkletOppgjoersordningOrg,
 	initialForenkletOppgjoersordningPers,
 } from '../initialValues'
-import { EgenOrganisasjonSelect } from '~/components/organisasjonSelect/EgenOrganisasjonSelect'
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
 import { isDate } from 'date-fns'
+import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -33,6 +33,7 @@ export const ArbeidsforholdForm = ({
 	formikBag,
 	erLenket,
 	arbeidsgiverType,
+	warningMessage,
 }) => {
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
@@ -48,9 +49,9 @@ export const ArbeidsforholdForm = ({
 			return (field) => {
 				const value = isDate(field) ? field : field?.value || field?.target?.value || null
 				const amelding = _get(formikBag.values, 'aareg[0].amelding')
-				amelding.forEach((maaned, idx) => {
+				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
-						return
+						return null
 					} else {
 						const arbeidsforholdClone = _cloneDeep(
 							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
@@ -134,10 +135,12 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
-					<EgenOrganisasjonSelect
-						name={`${path}.arbeidsgiver.orgnummer`}
-						isClearable={false}
-						onChange={onChangeLenket('arbeidsgiver.orgnummer')}
+					<EgneOrganisasjonerConnector
+						path={`${path}.arbeidsgiver.orgnummer`}
+						formikBag={formikBag}
+						handleChange={onChangeLenket('arbeidsgiver.orgnummer')}
+						warningMessage={warningMessage}
+						filterValidEnhetstyper={true}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.felles && (
@@ -184,9 +187,7 @@ export const ArbeidsforholdForm = ({
 						kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 						size="xlarge"
 						onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-						disabled={
-							_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null ? true : false
-						}
+						disabled={_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null}
 					/>
 				)}
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
@@ -211,41 +212,10 @@ export const ArbeidsforholdForm = ({
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 				<>
-					<TimeloennetForm
-						path={`${path}.antallTimerForTimeloennet`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
-
-					<UtenlandsoppholdForm
-						path={`${path}.utenlandsopphold`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
-
-					<PermisjonForm
-						path={`${path}.permisjon`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
-
-					<PermitteringForm
-						path={`${path}.permittering`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
+					<TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
+					<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} />
+					<PermisjonForm path={`${path}.permisjon`} />
+					<PermitteringForm path={`${path}.permittering`} />
 				</>
 			)}
 		</React.Fragment>

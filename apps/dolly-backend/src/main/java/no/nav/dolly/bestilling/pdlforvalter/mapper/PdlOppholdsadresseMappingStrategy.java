@@ -73,6 +73,7 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                         historikk.getPdlAdresser().addAll(
                                 postadresser.stream()
                                         .filter(RsPostadresse::isUtenlandsk)
+                                        .filter(adr -> !person.isKode6())
                                         .map(postadresse -> {
                                             PdlOppholdsadresse oppholdsadresse = new PdlOppholdsadresse();
                                             oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(

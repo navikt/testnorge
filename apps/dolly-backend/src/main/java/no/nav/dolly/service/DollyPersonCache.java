@@ -1,14 +1,15 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident.Master;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
@@ -16,6 +17,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
 import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
 import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,12 +32,13 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DollyPersonCache {
 
     private final TpsfService tpsfService;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final ObjectMapper objectMapper;
+    private final PdlDataConsumer pdlDataConsumer;
     private final MapperFacade mapperFacade;
 
     @SneakyThrows
@@ -52,28 +55,28 @@ public class DollyPersonCache {
                     .filter(Relasjon::isPartner)
                     .map(Relasjon::getPersonRelasjonMed)
                     .map(Person::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
 
             dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(
                     dollyPerson.getPartnere().stream()
                             .filter(ident -> isNull(dollyPerson.getPerson(ident)))
-                            .collect(Collectors.toList())));
+                            .toList()));
 
             dollyPerson.setBarn(new ArrayList<>(Stream.of(
-                    person.getRelasjoner().stream()
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toSet()),
-                    dollyPerson.getPartnere().stream()
-                            .map(dollyPerson::getPerson)
-                            .filter(Objects::nonNull)
-                            .map(Person::getRelasjoner)
-                            .flatMap(Collection::stream)
-                            .filter(Relasjon::isBarn)
-                            .map(Relasjon::getPersonRelasjonMed)
-                            .map(Person::getIdent)
-                            .collect(Collectors.toSet()))
+                            person.getRelasjoner().stream()
+                                    .filter(Relasjon::isBarn)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .collect(Collectors.toSet()),
+                            dollyPerson.getPartnere().stream()
+                                    .map(dollyPerson::getPerson)
+                                    .filter(Objects::nonNull)
+                                    .map(Person::getRelasjoner)
+                                    .flatMap(Collection::stream)
+                                    .filter(Relasjon::isBarn)
+                                    .map(Relasjon::getPersonRelasjonMed)
+                                    .map(Person::getIdent)
+                                    .collect(Collectors.toSet()))
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet())));
 
@@ -81,25 +84,25 @@ public class DollyPersonCache {
                     .filter(Relasjon::isForelder)
                     .map(Relasjon::getPersonRelasjonMed)
                     .map(Person::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
             dollyPerson.setIdenthistorikk(person.getIdentHistorikk().stream()
                     .map(IdentHistorikk::getAliasPerson)
                     .map(Person::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
             dollyPerson.setVerger(person.getVergemaal().stream()
                     .map(RsVergemaal::getVerge)
                     .map(RsSimplePerson::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
             dollyPerson.setFullmektige(person.getFullmakt().stream()
                     .map(RsFullmakt::getFullmektig)
                     .map(RsSimplePerson::getIdent)
-                    .collect(Collectors.toList()));
+                    .toList());
         }
 
         Set<String> identer =
                 Stream.of(List.of(dollyPerson.getHovedperson()), dollyPerson.getPartnere(),
-                        dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
-                        dollyPerson.getVerger(), dollyPerson.getFullmektige())
+                                dollyPerson.getBarn(), dollyPerson.getForeldre(), dollyPerson.getIdenthistorikk(),
+                                dollyPerson.getVerger(), dollyPerson.getFullmektige())
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet());
 
@@ -107,19 +110,37 @@ public class DollyPersonCache {
                 .filter(ident -> dollyPerson.getPersondetaljer().stream()
                         .map(Person::getIdent)
                         .noneMatch(ident2 -> ident2.equals(ident)))
-                .collect(Collectors.toList());
+                .toList();
+
+        if (dollyPerson.isPdlfMaster()) {
+            if (isNull(dollyPerson.getPdlfPerson())) {
+                dollyPerson.setPdlfPerson(pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()))
+                        .stream().findFirst().orElse(new FullPersonDTO()));
+            }
+            dollyPerson.setPersondetaljer(mapperFacade.mapAsList(Stream.of(
+                                    List.of(dollyPerson.getPdlfPerson().getPerson()),
+                                    dollyPerson.getPdlfPerson().getRelasjoner().stream()
+                                            .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                            .toList())
+                            .flatMap(Collection::stream)
+                            .toList(),
+                    Person.class));
+        }
 
         if (!manglendeIdenter.isEmpty()) {
             if (dollyPerson.isTpsfMaster()) {
                 dollyPerson.getPersondetaljer().addAll(tpsfService.hentTestpersoner(manglendeIdenter));
-            } else {
-                PdlPersonBolk pdlPersonBolk = objectMapper.readValue(
-                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter).toString(),
-                        PdlPersonBolk.class);
-                dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.getData().getHentPersonBolk(), Person.class));
+            } else if (dollyPerson.isPdlMaster()) {
+                var pdlPersonBolk =
+                        pdlPersonConsumer.getPdlPersoner(manglendeIdenter)
+                                .collectList()
+                                .block();
+
+                if (!pdlPersonBolk.isEmpty()) {
+                    dollyPerson.getPersondetaljer().addAll(mapperFacade.mapAsList(pdlPersonBolk.get(0).getData().getHentPersonBolk(), Person.class));
+                }
             }
         }
-
         return dollyPerson;
     }
 
@@ -153,20 +174,32 @@ public class DollyPersonCache {
                         .filter(sivilstand -> !sivilstand.getMetadata().isHistorisk() &&
                                 nonNull(sivilstand.getRelatertVedSivilstand()))
                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .barn(pdlPerson.getData().getHentPerson().getForelderBarnRelasjon().stream()
                         .filter(relasjon -> !relasjon.getMetadata().isHistorisk() && relasjon.isBarn())
                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                        .collect(Collectors.toList()))
+                        .filter(Objects::nonNull)
+                        .toList())
                 .foreldre(pdlPerson.getData().getHentPerson().getForelderBarnRelasjon().stream()
                         .filter(relasjon -> !relasjon.getMetadata().isHistorisk() && relasjon.isForelder())
                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                        .collect(Collectors.toList()))
+                        .filter(Objects::nonNull)
+                        .toList())
                 .identhistorikk(pdlPerson.getData().getHentPerson().getFolkeregisteridentifikator().stream()
                         .filter(ident -> ident.getMetadata().isHistorisk())
                         .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
-                        .collect(Collectors.toList()))
+                        .toList())
                 .master(Master.PDL)
+                .tags(List.of(Tags.DOLLY))
+                .build();
+    }
+
+    public DollyPerson preparePdlfPerson(FullPersonDTO pdlfPerson) {
+
+        return DollyPerson.builder()
+                .hovedperson(pdlfPerson.getPerson().getIdent())
+                .pdlfPerson(pdlfPerson)
+                .master(Master.PDLF)
                 .build();
     }
 }

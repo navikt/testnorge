@@ -1,0 +1,24 @@
+name: Lib reactive-frontend
+
+on:
+  push:
+    paths:
+      - libs/reactive-frontend/**
+      - .github/workflows/lib.reactive-frontend.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'libs/reactive-frontend/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.java-build.yml@master
+    with:
+      working-directory: 'libs/reactive-frontend/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useState } from 'react'
 import { useToggle } from 'react-use'
 import { ThumbsRating } from '../rating'
-import { Rating } from '../../logger/types'
+import { Rating } from '~/logger/types'
 import Logger from '../../logger'
 import { Textarea } from 'nav-frontend-skjema'
 import { Knapp } from 'nav-frontend-knapper'
@@ -14,16 +14,18 @@ import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
+import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 
 interface FeedbackProps {
 	label: string
 	feedbackFor: string
-	brukerBilde: Response
 }
 
 const MAX_LENGTH = 2000
 
-export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => {
+export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
+	const { brukerBilde } = useBrukerProfilBilde()
+
 	const [rating, setRating] = useState<Rating>()
 	const [text, setText] = useState('')
 	const [uuid] = useState(_uuid())
@@ -43,7 +45,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 						{isAnonym ? (
 							<Icon kind="user" size={40} className="bruker-ikon" />
 						) : (
-							<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
+							<img alt="Profilbilde" src={brukerBilde || dolly} />
 						)}
 						<div className="feedback-input">
 							<Textarea

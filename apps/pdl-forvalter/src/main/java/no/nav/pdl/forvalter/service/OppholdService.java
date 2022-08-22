@@ -12,7 +12,6 @@ import static java.util.Objects.nonNull;
 @Service
 public class OppholdService extends PdlArtifactService<OppholdDTO> {
 
-    private static final String VALIDATION_OPPHOLD_FRA_ERROR = "Opphold med oppholdFra må angis";
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: oppholdFra må være før oppholdTil";
     private static final String VALIDATION_TYPE_ERROR = "Type av opphold må angis";
     private static final String VALIDATION_OPPHOLD_OVELAP_ERROR = "Feil: Overlappende opphold er detektert";
@@ -24,10 +23,7 @@ public class OppholdService extends PdlArtifactService<OppholdDTO> {
             throw new InvalidRequestException(VALIDATION_TYPE_ERROR);
         }
 
-        if (isNull(opphold.getOppholdFra())) {
-            throw new InvalidRequestException(VALIDATION_OPPHOLD_FRA_ERROR);
-
-        } else if (nonNull(opphold.getOppholdTil()) && !opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
+        if (nonNull(opphold.getOppholdFra()) && nonNull(opphold.getOppholdTil()) && !opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
     }

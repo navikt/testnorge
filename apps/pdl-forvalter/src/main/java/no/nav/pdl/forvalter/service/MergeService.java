@@ -40,6 +40,9 @@ public class MergeService {
 
     public PersonDTO merge(PersonDTO request, PersonDTO dbPerson) {
 
+        if (!request.getTelefonnummer().isEmpty()) {
+            dbPerson.setTelefonnummer(null);
+        }
         Stream.of(request.getClass().getDeclaredFields()).forEach(field -> {
 
             if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {

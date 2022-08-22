@@ -7,7 +7,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -41,17 +40,15 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            List<String> environments = arenaForvalterConsumer.getEnvironments();
+            var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
 
-            List<String> availEnvironments = new ArrayList<>(environments);
+            var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
 
             availEnvironments.retainAll(bestilling.getEnvironments());
 
             if (!availEnvironments.isEmpty()) {
 
-                if (!isOpprettEndre) {
-                    deleteServicebruker(dollyPerson.getHovedperson(), availEnvironments);
-                }
+                arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
                 List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
@@ -71,15 +68,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
                 sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
                 dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
-
             }
-
-            List<String> notSupportedEnvironments = new ArrayList<>(bestilling.getEnvironments());
-            notSupportedEnvironments.removeAll(environments);
-            notSupportedEnvironments.forEach(environment ->
-                    status.append(',')
-                            .append(environment)
-                            .append("$Feil: Miljø ikke støttet"));
 
             if (status.length() > 1) {
                 progress.setArenaforvalterStatus(status.substring(1));
@@ -90,30 +79,14 @@ public class ArenaForvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        identer.forEach(ident -> {
-            ResponseEntity<ArenaArbeidssokerBruker> existingServicebruker = arenaForvalterConsumer.getIdent(ident);
-            if (existingServicebruker.hasBody()) {
-                existingServicebruker.getBody().getArbeidsokerList().forEach(list -> {
-                    if (nonNull(list.getMiljoe())) {
-                        List.of(list.getMiljoe().split(",")).forEach(
-                                environment -> arenaForvalterConsumer.deleteIdent(ident, environment));
-                    }
-                });
-            }
-        });
-    }
-
-    private void deleteServicebruker(String ident, List<String> availEnvironments) {
-
         try {
-            availEnvironments.forEach(environment ->
-                    arenaForvalterConsumer.deleteIdent(ident, environment));
+            arenaForvalterConsumer.deleteIdenter(identer)
+                    .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
 
         } catch (RuntimeException e) {
 
-            log.error("Feilet å inaktivere testperson: {} i ArenaForvalter: ", ident, e);
+            log.error("Feilet å slette identer mot Arena-forvalteren: {}", String.join(", ", identer), e);
         }
-
     }
 
     private void sendArenadagpenger(ArenaDagpenger arenaNyeDagpenger, StringBuilder status) {

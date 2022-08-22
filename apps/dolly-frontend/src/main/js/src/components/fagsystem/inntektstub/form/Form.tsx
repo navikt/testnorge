@@ -32,7 +32,7 @@ export const initialValues: Inntektsinformasjon = {
 	arbeidsforholdsliste: [],
 }
 
-const inntektstubAttributt = 'inntektstub'
+export const inntektstubAttributt = 'inntektstub'
 const inntektstubPath = 'inntektstub.inntektsinformasjon'
 
 const infotekst =
@@ -42,11 +42,10 @@ export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 	//@ts-ignore
 	<Vis attributt={inntektstubAttributt}>
 		<Panel
-			heading="A-ordningen (Inntektskomponenten)"
+			heading="A-ordningen (Inntektstub)"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
 			iconType="inntektstub"
-			//@ts-ignore
-			startOpen={() => erForste(formikBag.values, [inntektstubAttributt])}
+			startOpen={erForste(formikBag.values, [inntektstubAttributt])}
 		>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray

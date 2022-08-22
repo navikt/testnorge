@@ -19,8 +19,7 @@ public class TimeoutFeature extends AbstractFeature {
     @Override
     public void initialize(Client client, Bus bus) {
         var conduit = client.getConduit();
-        if (conduit instanceof HTTPConduit) {
-            var httpConduit = (HTTPConduit) conduit;
+        if (conduit instanceof HTTPConduit httpConduit) {
             if (httpConduit.getClient() == null) {
                 var policy = new HTTPClientPolicy();
                 policy.setReceiveTimeout(receiveTimeout);

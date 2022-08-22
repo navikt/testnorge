@@ -1,8 +1,10 @@
 package no.nav.dolly;
 
 import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
+import no.nav.dolly.util.MdcWarraperExecutorService;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -14,8 +16,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
 @SpringBootApplication
-@Import({ ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class })
+@Import({ApplicationCoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class,
+        InsecureJwtServerToServerConfiguration.class})
 public class ApplicationConfig {
 
     private static final int THREADS_COUNT = 10;
@@ -27,6 +30,10 @@ public class ApplicationConfig {
 
     @Bean
     public ExecutorService dollyForkJoinPool() {
-        return new DelegatingSecurityContextExecutorService(new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true));
+        return new DelegatingSecurityContextExecutorService(
+                new MdcWarraperExecutorService(
+                        new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true)
+                )
+        );
     }
 }

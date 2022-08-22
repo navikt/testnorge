@@ -2,12 +2,15 @@ package no.nav.testnav.libs.commands;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +31,8 @@ public class SaveOrganisasjonCommand implements Runnable {
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OrganisasjonDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

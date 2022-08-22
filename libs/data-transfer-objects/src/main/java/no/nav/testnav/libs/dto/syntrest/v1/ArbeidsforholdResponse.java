@@ -39,7 +39,10 @@ public class ArbeidsforholdResponse {
     @JsonAlias("PERMISJONER")
     List<PermisjonDTO> permisjoner;
     String historikk;
+    @JsonAlias("FARTOEY")
     FartoeyDTO fartoey;
+    @JsonAlias("INNTEKTER")
     List<InntektDTO> inntekter;
+    @JsonAlias("AVVIK")
     AvvikDTO avvik;
 }

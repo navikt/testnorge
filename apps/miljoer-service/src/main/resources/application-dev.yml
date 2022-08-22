@@ -1,8 +1,2 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
-
-consumers.tps-forvalteren-proxy:
-  url: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
-  cluster: dev-fss
-  namespace: dolly
-  name: tps-forvalteren-dev-proxy

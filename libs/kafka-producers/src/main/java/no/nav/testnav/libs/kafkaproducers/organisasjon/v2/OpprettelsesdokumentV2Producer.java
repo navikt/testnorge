@@ -23,7 +23,7 @@ public class OpprettelsesdokumentV2Producer extends RecreateKafkaProducer<Oppret
         return new KafkaProducer<>(groupId) {
             @Override
             ListenableFuture<SendResult<String, Opprettelsesdokument>> send(String key, Opprettelsesdokument value) {
-                log.info("Sender opprettelsesdokument med uuid {} for organisasjon {}.", key, value.getOrganisasjon().getOrgnummer());
+                log.info("Sender opprettelsesdokument med uuid {} for organisasjon {}.", key, value.toString());
                 return getKafkaTemplate().send(OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON, key, value);
             }
         };

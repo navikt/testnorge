@@ -1,22 +1,27 @@
 const path = require('path')
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common.js')
-const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = (env) =>
 	merge(common, {
 		mode: 'development',
-		devtool: 'inline-source-map',
+		devtool: 'eval-source-map',
+		resolve: {
+			alias: {
+				'react-dom$': 'react-dom/profiling',
+			},
+		},
 		devServer: {
+			static: path.join(__dirname, 'dist/dev'),
+			compress: true,
 			port: 3000,
 			open: {
-				target: [`http://localhost:3000/oauth2/authorization/aad`],
+				target: [`http://localhost:3000/login`],
 				app: {
 					name: 'Google Chrome',
 				},
 			},
-			static: path.join(__dirname, 'public'),
 			historyApiFallback: true,
 			client: {
 				overlay: {
@@ -36,7 +41,15 @@ module.exports = (env) =>
 					target: env.backend,
 					secure: false,
 				},
+				'/oauth2/authorization/idporten': {
+					target: env.backend,
+					secure: false,
+				},
 				'/login/oauth2/code/aad': {
+					target: env.backend,
+					secure: false,
+				},
+				'/login/oauth2/code/idporten': {
 					target: env.backend,
 					secure: false,
 				},
@@ -44,11 +57,24 @@ module.exports = (env) =>
 					target: env.backend,
 					secure: false,
 				},
+				'/oauth2/logout': {
+					target: env.backend,
+					secure: false,
+				},
 				'/session/ping': {
 					target: env.backend,
 					secure: false,
 				},
+				'/session/user': {
+					target: env.backend,
+					secure: false,
+				},
 				'/testnav-organisasjon-faste-data-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
+				'/testnav-tps-messaging-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
@@ -68,12 +94,12 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/tps-forvalteren-proxy/api': {
+				'/testnav-norg2-proxy/norg2': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-hodejegeren-proxy/api': {
+				'/tps-forvalteren-proxy/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
@@ -98,7 +124,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-testnorge-inst-proxy/api': {
+				'/testnav-inst-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
@@ -148,12 +174,22 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/person-search-service/api': {
+				'/testnav-person-search-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
+				'/testnav-person-organisasjon-tilgang-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
 				},
 				'/testnav-pdl-forvalter/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
+				'/testnav-bruker-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,

@@ -39,7 +39,7 @@ class FullmaktServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 fullmaktService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Omraader for fullmakt må angis"));
+        assertThat(exception.getMessage(), containsString("Områder for fullmakt må angis"));
     }
 
     @Test

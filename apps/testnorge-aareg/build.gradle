@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -11,7 +11,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "testnorge-aareg"
         property "sonar.projectName", "testnorge-aareg"
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -44,6 +44,8 @@ repositories {
     mavenLocal()
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 dependencies {
 
     implementation('org.codehaus.woodstox:stax2-api') {
@@ -69,6 +71,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
@@ -79,7 +84,7 @@ dependencies {
 
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.2.0'
@@ -91,6 +96,7 @@ dependencies {
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
     implementation 'com.sun.xml.ws:jaxws-ri:2.3.5'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -101,6 +107,7 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     testImplementation 'org.springframework:spring-test'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
 }
 
 description = 'testnorge-aareg'

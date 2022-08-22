@@ -5,7 +5,7 @@ import { panelError, erForste } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { ArbeidsforholdToggle } from './partials/arbeidsforholdToggle'
 
-const aaregAttributt = 'aareg'
+export const aaregAttributt = 'aareg'
 
 export const AaregForm = ({ formikBag }) => (
 	<Vis attributt={aaregAttributt}>
@@ -13,7 +13,7 @@ export const AaregForm = ({ formikBag }) => (
 			heading="Arbeidsforhold (Aareg)"
 			hasErrors={panelError(formikBag, aaregAttributt)}
 			iconType="arbeid"
-			startOpen={() => erForste(formikBag.values, [aaregAttributt])}
+			startOpen={erForste(formikBag.values, [aaregAttributt])}
 		>
 			<ArbeidsforholdToggle formikBag={formikBag} />
 		</Panel>

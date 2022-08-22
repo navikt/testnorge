@@ -1,9 +1,7 @@
 import styled from 'styled-components';
-import { Knapp as NavKnapp } from 'nav-frontend-knapper';
+import { Button } from '@navikt/ds-react';
 
-const Knapp = styled(NavKnapp)`
-  width: 25%;
-  height: 30px;
+const Knapp = styled(Button)`
   align-self: flex-end;
   margin-left: 20px;
 `;

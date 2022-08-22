@@ -19,7 +19,6 @@ public class PdlVergemaal extends DbVersjonDTO {
 
     private String embete;
     private VergemaalType type;
-    private Folkeregistermetadata folkeregistermetadata;
     private VergeEllerFullmektig vergeEllerFullmektig;
 
     public enum VergemaalType {

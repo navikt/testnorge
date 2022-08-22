@@ -1,20 +1,20 @@
 package no.nav.registre.testnorge.helsepersonellservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.helsepersonellservice.config.credentials.HodejegerenServerProperties;
+import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetAlleIdenterCommand;
+import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetPersondataCommand;
+import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
-import no.nav.registre.testnorge.helsepersonellservice.config.credentials.HodejegerenServerProperties;
-import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetAlleIdenterCommand;
-import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetPersondataCommand;
-import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
 @Component
@@ -23,23 +23,27 @@ public class HodejegerenConsumer {
     private final Executor executor;
     private final Long helsepersonellAvspillingsgruppeId;
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final HodejegerenServerProperties hodejegerenServerProperties;
 
     public HodejegerenConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             HodejegerenServerProperties hodejegerenServerProperties,
-            @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId
-    ) {
+            @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.hodejegerenServerProperties = hodejegerenServerProperties;
-        this.accessTokenService = accessTokenService;
-        this.webClient = WebClient.builder().baseUrl(hodejegerenServerProperties.getUrl()).build();
+        this.tokenExchange = tokenExchange;
+        this.webClient = WebClient.builder()
+                .baseUrl(hodejegerenServerProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
         this.executor = Executors.newFixedThreadPool(hodejegerenServerProperties.getThreads());
         this.helsepersonellAvspillingsgruppeId = helsepersonellAvspillingsgruppeId;
     }
 
     public CompletableFuture<Persondata> getPersondata(String ident) {
-        var accessToken = accessTokenService.generateToken(hodejegerenServerProperties).block();
+        var accessToken = tokenExchange.exchange(hodejegerenServerProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> new Persondata(new GetPersondataCommand(ident, MILJOE, webClient, accessToken.getTokenValue()).call()),
                 executor
@@ -47,7 +51,7 @@ public class HodejegerenConsumer {
     }
 
     public Set<String> getHelsepersonell() {
-        var accessToken = accessTokenService.generateToken(hodejegerenServerProperties).block();
+        var accessToken = tokenExchange.exchange(hodejegerenServerProperties).block();
         return new GetAlleIdenterCommand(helsepersonellAvspillingsgruppeId, webClient, accessToken.getTokenValue()).call();
     }
 }

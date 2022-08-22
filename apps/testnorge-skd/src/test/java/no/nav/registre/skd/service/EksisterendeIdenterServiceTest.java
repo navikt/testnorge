@@ -1,33 +1,17 @@
 package no.nav.registre.skd.service;
 
-import static no.nav.registre.skd.service.EksisterendeIdenterService.DATO_DO;
-import static no.nav.registre.skd.service.EksisterendeIdenterService.FNR_RELASJON;
-import static no.nav.registre.skd.service.EksisterendeIdenterService.RELASJON_MOR;
-import static no.nav.registre.skd.service.EksisterendeIdenterService.SIVILSTAND;
-import static no.nav.registre.skd.service.EksisterendeIdenterService.STATSBORGER;
-import static no.nav.registre.skd.domain.Endringskoder.FARSKAP_MEDMORSKAP;
-import static no.nav.registre.skd.domain.Endringskoder.SKILSMISSE;
-import static no.nav.registre.skd.domain.KoderForSivilstand.GIFT;
-import static no.nav.registre.skd.domain.KoderForSivilstand.SKILT;
-import static no.nav.registre.skd.testutils.Utils.testLoggingInClass;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
+import no.nav.registre.skd.consumer.HodejegerenSkdConsumer;
 import no.nav.registre.skd.consumer.dto.Relasjon;
 import no.nav.registre.skd.consumer.response.RelasjonsResponse;
+import no.nav.registre.skd.domain.Endringskoder;
+import no.nav.registre.skd.domain.KoderForSivilstand;
+import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
+import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
+import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,12 +30,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import no.nav.registre.skd.domain.Endringskoder;
-import no.nav.registre.skd.domain.KoderForSivilstand;
-import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
-import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
-import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
+import static no.nav.registre.skd.domain.Endringskoder.FARSKAP_MEDMORSKAP;
+import static no.nav.registre.skd.domain.Endringskoder.SKILSMISSE;
+import static no.nav.registre.skd.domain.KoderForSivilstand.GIFT;
+import static no.nav.registre.skd.domain.KoderForSivilstand.SKILT;
+import static no.nav.registre.skd.service.EksisterendeIdenterService.DATO_DO;
+import static no.nav.registre.skd.service.EksisterendeIdenterService.FNR_RELASJON;
+import static no.nav.registre.skd.service.EksisterendeIdenterService.RELASJON_MOR;
+import static no.nav.registre.skd.service.EksisterendeIdenterService.SIVILSTAND;
+import static no.nav.registre.skd.service.EksisterendeIdenterService.STATSBORGER;
+import static no.nav.registre.skd.testutils.Utils.testLoggingInClass;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @Slf4j
@@ -61,7 +60,7 @@ public class EksisterendeIdenterServiceTest {
     public final ExpectedException expectedException = ExpectedException.none();
 
     @Mock
-    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
+    private HodejegerenSkdConsumer hodejegerenConsumerSkd;
 
     @Mock
     private FoedselService foedselService;
@@ -277,7 +276,7 @@ public class EksisterendeIdenterServiceTest {
     }
 
     /**
-     * Testscenario: HVIS metoden {@link HodejegerenConsumerSkd#getStatusQuoTilhoerendeEndringskode(String, String, String)} kaster
+     * Testscenario: HVIS metoden {@link HodejegerenSkdConsumer#getStatusQuoTilhoerendeEndringskode(String, String, String)} kaster
      * {@link ManglendeInfoITpsException} ved behandling av en ident, skal metoden
      * findExistingPersonStatusInTps prøve å finne en ny ident, og be om status quo på denne.
      */

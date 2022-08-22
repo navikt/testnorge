@@ -10,11 +10,17 @@ export const Kategori = ({
 	flex = true,
 	vis = null,
 	hjelpetekst = null,
+	flexRow = null,
 	children,
 }) => {
-	const css = cn({
-		'form-kategori-flex': flex,
-	})
+	const css = flexRow
+		? cn({
+				'form-kategori-flex-row': flex,
+		  })
+		: cn({
+				'form-kategori-flex': flex,
+		  })
+
 	const render = (
 		<div className="form-kategori">
 			{title && (

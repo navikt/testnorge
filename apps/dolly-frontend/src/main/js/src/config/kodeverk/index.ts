@@ -46,6 +46,7 @@ export enum ArbeidKodeverk {
 	Skipsregistre = 'Skipsregistre',
 	Skipstyper = 'Skipstyper',
 	Fartsområder = 'Fartsområder',
+	Valutaer = 'Valutaer',
 }
 
 export enum InntektstubKodeverk {

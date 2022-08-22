@@ -94,10 +94,25 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                 Stream.of(
                                                 postadresser.stream()
                                                         .filter(RsPostadresse::isNorsk)
+                                                        .filter(RsPostadresse::isValid)
                                                         .map(postadresse -> {
                                                             PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
                                                             kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
                                                                     postadresse, PostadresseIFrittFormat.class));
+                                                            kontaktadresse.setKilde(CONSUMER);
+                                                            kontaktadresse.setMaster(Master.FREG);
+                                                            setUtgaatt(kontaktadresse, context);
+                                                            return kontaktadresse;
+                                                        })
+                                                        .collect(Collectors.toList()),
+
+                                                postadresser.stream()
+                                                        .filter(RsPostadresse::isUtenlandsk)
+                                                        .filter(adr -> !person.isKode6())
+                                                        .map(postadresse -> {
+                                                            PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
+                                                            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
+                                                                    postadresse, UtenlandskAdresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
                                                             kontaktadresse.setMaster(Master.PDL);
                                                             kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
@@ -107,21 +122,9 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                         })
                                                         .collect(Collectors.toList()),
 
-                                                postadresser.stream()
-                                                        .filter(RsPostadresse::isUtenlandsk)
-                                                        .map(postadresse -> {
-                                                            PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
-                                                            kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
-                                                                    postadresse, UtenlandskAdresseIFrittFormat.class));
-                                                            kontaktadresse.setKilde(CONSUMER);
-                                                            kontaktadresse.setMaster(Master.FREG);
-                                                            setUtgaatt(kontaktadresse, context);
-                                                            return kontaktadresse;
-                                                        })
-                                                        .collect(Collectors.toList()),
-
                                                 midlertidigAdresser.stream()
                                                         .filter(MidlertidigAdresse::isGateAdr)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(midlertidigAdresse -> {
                                                             PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse, context);
                                                             kontaktadresse.setVegadresseForPost(
@@ -132,6 +135,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                                 midlertidigAdresser.stream()
                                                         .filter(MidlertidigAdresse::isPostBox)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(midlertidigAdresse -> {
                                                             PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse, context);
                                                             kontaktadresse.setPostboksadresse(
@@ -142,6 +146,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                                 midlertidigAdresser.stream()
                                                         .filter(MidlertidigAdresse::isUtenlandsk)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(midlertidigAdresse -> {
                                                             PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse, context);
                                                             kontaktadresse.setUtenlandskAdresseIFrittFormat(

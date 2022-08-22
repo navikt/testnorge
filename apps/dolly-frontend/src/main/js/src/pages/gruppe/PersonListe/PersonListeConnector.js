@@ -1,30 +1,25 @@
 import { connect } from 'react-redux'
-import {
-	actions as actionList,
-	fetchTpsfPersoner,
-	selectPersonListe,
-	sokSelector,
-} from '~/ducks/fagsystem'
-import { actions } from '~/ducks/gruppe'
-import { getBestillinger } from '~/ducks/bestillingStatus'
+import { actions as actionList, fetchPdlPersoner, fetchTpsfPersoner } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import personListe from './PersonListe'
 
 const loadingSelector = createLoadingSelector([
-	actions.getById,
 	actionList.getTpsf,
-	getBestillinger,
+	actionList.getPDLPersoner,
+	actionList.getPdlForvalter,
 ])
-const mapStateToProps = (state, ownProps) => {
-	return {
-		personListe: sokSelector(selectPersonListe(state), state.search),
-		gruppeInfo: state.gruppe.gruppeInfo,
-		identer: state.gruppe.ident,
-		isFetching: loadingSelector(state),
-		visPerson: state.finnPerson.visPerson,
-	}
-}
 
-const mapDispatchToProps = { fetchTpsfPersoner }
+const mapStateToProps = (state) => ({
+	search: state.search,
+	bestillingStatuser: state.bestillingStatuser,
+	fagsystem: state.fagsystem,
+	isFetching: loadingSelector(state),
+	sidetall: state.finnPerson.sidetall,
+	visPerson: state.finnPerson.visPerson,
+	sideStoerrelse: state.finnPerson.sideStoerrelse,
+	tmpPersoner: state.redigertePersoner,
+})
+
+const mapDispatchToProps = { fetchTpsfPersoner, fetchPdlPersoner }
 
 export default connect(mapStateToProps, mapDispatchToProps)(personListe)

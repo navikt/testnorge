@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -12,7 +12,7 @@ sonarqube {
         property "sonar.projectKey", "testnav-oversikt-frontend"
         property "sonar.projectName", "testnav-oversikt-frontend"
         property 'sonar.sources', 'src/main/java,src/main/js'
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -25,7 +25,7 @@ bootJar {
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
-        mavenBom 'org.springframework.session:spring-session-bom:2021.0.3'
+        mavenBom 'org.springframework.session:spring-session-bom:2021.1.0'
     }
 }
 
@@ -50,9 +50,13 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.session:spring-session-core'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.4'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -62,3 +66,4 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
+java.sourceCompatibility = JavaVersion.VERSION_17

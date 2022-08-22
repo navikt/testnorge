@@ -1,10 +1,17 @@
-import { Form, Knapp, Line, Page, Pageable, SelectFormItem } from '@navikt/dolly-komponenter';
+import {
+  Form,
+  InputFormItem,
+  Knapp,
+  Line,
+  Page,
+  Pageable,
+  SelectFormItem,
+} from '@navikt/dolly-komponenter';
 import React, { useEffect, useState } from 'react';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
 import { Organisasjon as FasteDataOrganisasjon } from '@/service/OrganisasjonFasteDataService';
 import { CompareTable } from '@/components/compare-table';
 import { OrganisasjonComperator } from '@/comperator';
-import { Input } from 'nav-frontend-skjema';
 import { CodeSearch } from '@/components/CodeSearch';
 
 const grupper = [
@@ -99,7 +106,7 @@ const FasteOrganisasjonDataPage = () => {
             onChange={(value: string) => setMiljo(value)}
             options={toOptions(miljoer)}
           />
-          <Input
+          <InputFormItem
             label="Tag"
             value={tag}
             onChange={(e) => {
@@ -108,7 +115,7 @@ const FasteOrganisasjonDataPage = () => {
           />
         </Line>
         <Line>
-          <Input
+          <InputFormItem
             label="Opprinnelse"
             value={opprinnelse}
             onChange={(e) => {
@@ -117,7 +124,9 @@ const FasteOrganisasjonDataPage = () => {
           />
           <Knapp
             disabled={loading}
-            onClick={(e) => {
+            loading={loading}
+            variant={'secondary'}
+            onClick={(e: { preventDefault: () => void }) => {
               e.preventDefault();
               onSearch(gruppe);
             }}

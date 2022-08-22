@@ -6,14 +6,14 @@ import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent } from '~/utils/YupValidations'
 
-const sigrunAttributt = 'sigrunstub'
+export const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
 	<Vis attributt={sigrunAttributt}>
 		<Panel
 			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
 			iconType="sigrun"
-			startOpen={() => erForste(formikBag.values, [sigrunAttributt])}
+			startOpen={erForste(formikBag.values, [sigrunAttributt])}
 		>
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
@@ -34,21 +34,17 @@ SigrunstubForm.validation = {
 								.typeError('Tast inn et gyldig beløp'),
 						})
 					)
-					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(val) {
+					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(_val) {
 						const values = this.options.context
 						const path = this.options.path
 						const index = path.charAt(path.indexOf('[') + 1)
 						if (values.sigrunstub[index].tjeneste === 'BEREGNET_SKATT') {
-							if (values.sigrunstub[index].grunnlag.length > 0) {
-								return true
-							} else return false
+							return values.sigrunstub[index].grunnlag.length > 0
 						} else if (values.sigrunstub[index].tjeneste === 'SUMMERT_SKATTEGRUNNLAG') {
-							if (
+							return (
 								values.sigrunstub[index].grunnlag.length > 0 ||
 								values.sigrunstub[index].svalbardGrunnlag.length > 0
-							) {
-								return true
-							} else return false
+							)
 						} else return true
 					}),
 				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),

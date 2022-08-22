@@ -2,23 +2,26 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor
 public class GenerateStartArbeidsforholdCommand implements Callable<ArbeidsforholdResponse> {
     private final WebClient webClient;
     private final LocalDate startdate;
+    private final String token;
 
     @Override
     public ArbeidsforholdResponse call() {
@@ -27,11 +30,14 @@ public class GenerateStartArbeidsforholdCommand implements Callable<Arbeidsforho
         try {
             ArbeidsforholdResponse[] array = webClient
                     .post()
-                    .uri("/api/v1/generate/amelding/arbeidsforhold/start")
-                    .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
+                    .uri("/api/v1/arbeidsforhold/start")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
                     .retrieve()
                     .bodyToMono(ArbeidsforholdResponse[].class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
 
             if (array == null || array.length < 1) {

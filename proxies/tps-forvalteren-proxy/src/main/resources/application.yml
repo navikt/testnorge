@@ -19,5 +19,3 @@ spring:
     gateway:
       httpclient:
         response-timeout: 1200s
-
-proxy.url: ${PROXY_URL}

@@ -2,18 +2,24 @@ package no.nav.dolly.bestilling.skjermingsregister;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterDeleteCommand;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.config.credentials.SkjermingsregisterProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +29,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -37,12 +42,17 @@ public class SkjermingsRegisterConsumer {
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public SkjermingsRegisterConsumer(TokenExchange tokenService, SkjermingsregisterProxyProperties serverProperties, ObjectMapper objectMapper) {
+    public SkjermingsRegisterConsumer(TokenExchange tokenService,
+                                      SkjermingsregisterProxyProperties serverProperties,
+                                      ObjectMapper objectMapper,
+                                      ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -56,17 +66,19 @@ public class SkjermingsRegisterConsumer {
                         .path(SKJERMINGSREGISTER_URL)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callid)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(skjermingsDataRequest)
-                .retrieve().toEntityList(SkjermingsDataResponse.class)
+                .retrieve()
+                .toEntityList(SkjermingsDataResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-hent" })
-    public ResponseEntity<SkjermingsDataResponse> getSkjerming(String ident) {
+    public SkjermingsDataResponse getSkjerming(String ident) {
 
         String callid = getNavCallId();
         logInfoSkjermingsMelding(callid);
@@ -76,10 +88,12 @@ public class SkjermingsRegisterConsumer {
                         .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callid)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve().toEntity(SkjermingsDataResponse.class)
+                .retrieve()
+                .bodyToMono(SkjermingsDataResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
@@ -94,29 +108,25 @@ public class SkjermingsRegisterConsumer {
                         .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callid)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve().toEntity(String.class)
+                .retrieve()
+                .toEntity(String.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-slett" })
-    public void deleteSkjerming(String fnr) {
+    public Mono<List<Void>> deleteSkjerming(List<String> identer) {
 
-        String callid = getNavCallId();
-        logInfoSkjermingsMelding(callid);
-
-        webClient.delete().uri(uriBuilder -> uriBuilder
-                        .path(SKJERMINGSREGISTER_URL)
-                        .pathSegment(fnr)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, callid)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve().toEntity(String.class)
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(100))
+                        .map(index -> new SkjermingsregisterDeleteCommand(webClient,
+                                identer.get(index), token.getTokenValue()).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     public Map<String, String> checkAlive() {

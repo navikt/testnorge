@@ -76,9 +76,6 @@ public class Bestilling {
     @Column(name = "BEST_KRITERIER")
     private String bestKriterier;
 
-    @Column(name = "OPENAM_SENT")
-    private String openamSent;
-
     @Column(name = "OPPRETT_FRA_IDENTER")
     private String opprettFraIdenter;
 

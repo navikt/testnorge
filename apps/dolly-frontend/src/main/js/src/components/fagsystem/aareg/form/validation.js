@@ -3,12 +3,13 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
-const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
+const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
 	const errorMsgMonth =
 		'Dato må være innenfor ansettelsesforhold, og i samme kalendermåned og år som fra-dato'
-	return validation.test(
+	return periodeValidation.test(
 		'range',
 		validateFomMonth ? errorMsgMonth : errorMsg,
 		function isWithinTest(val) {
@@ -46,23 +47,27 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 	)
 }
 
-const fullArbeidsforholdTest = (validation) => {
+const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 	const fullArbeidsforholdTyper = ['', 'ordinaertArbeidsforhold', 'maritimtArbeidsforhold']
-	return validation.test('isRequired', 'Feltet er påkrevd', function checkRequired(val) {
-		let gyldig = true
-		const values = this.options.context
-		const index = this.options.index
-		const arbeidsforholdType = _get(values, `aareg[${index}].arbeidsforholdstype`)
-		if (fullArbeidsforholdTyper.some((value) => value === arbeidsforholdType) && !val) {
-			gyldig = false
+	return arbeidsforholdValidation.test(
+		'isRequired',
+		'Feltet er påkrevd',
+		function checkRequired(val) {
+			let gyldig = true
+			const values = this.options.context
+			const index = this.options.index
+			const arbeidsforholdType = _get(values, `aareg[${index}].arbeidsforholdstype`)
+			if (fullArbeidsforholdTyper.some((value) => value === arbeidsforholdType) && !val) {
+				gyldig = false
+			}
+			return gyldig
 		}
-		return gyldig
-	})
+	)
 }
 
 const ansettelsesPeriode = Yup.object({
-	fom: requiredDate,
-	tom: Yup.date().nullable(),
+	fom: testDatoFom(requiredDate, 'tom'),
+	tom: testDatoTom(Yup.date().nullable(), 'fom'),
 	sluttaarsak: Yup.string().nullable(),
 })
 
@@ -71,13 +76,13 @@ const arbeidsgiver = Yup.object({
 	orgnummer: Yup.string().when('aktoertype', {
 		is: 'ORG',
 		then: Yup.string()
-			.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+			.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
 			.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9),
 	}),
 	ident: Yup.string().when('aktoertype', {
 		is: 'PERS',
 		then: Yup.string()
-			.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
+			.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
 			.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
 	}),
 })
@@ -238,8 +243,8 @@ export const validation = {
 			genererPeriode: ifPresent(
 				'$aareg[0].amelding',
 				Yup.object({
-					fom: requiredPeriode,
-					tom: requiredPeriode,
+					fom: testDatoFom(requiredPeriode, 'tom'),
+					tom: testDatoTom(requiredPeriode, 'fom'),
 				})
 			),
 		})

@@ -5,11 +5,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.OrganisasjonBestillingService;
-import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,9 +41,6 @@ public class OrganisasjonClientTest {
 
     @Mock
     private static OrganisasjonConsumer organisasjonConsumer;
-
-    @Mock
-    private OrganisasjonNummerService organisasjonNummerService;
 
     @Mock
     private OrganisasjonProgressService organisasjonProgressService;
@@ -110,7 +107,9 @@ public class OrganisasjonClientTest {
     @Test
     public void should_run_deploy_organisasjon_exactly_one_time_for_one_hovedorganisasjon() {
 
-        organisasjonClient.opprett(bestilling, BESTILLING_ID);
+        organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
+                .id(BESTILLING_ID)
+                .build());
 
         verify(organisasjonConsumer, times(1)
                 .description("Skal bare deploye organisasjoner en gang for en hoved organisasjon"))
@@ -118,21 +117,13 @@ public class OrganisasjonClientTest {
     }
 
     @Test
-    public void should_run_orgnummer_save_exactly_one_time_for_one_hovedorganisasjon_with_one_underenhet() {
-
-        organisasjonClient.opprett(bestilling, BESTILLING_ID);
-
-        verify(organisasjonNummerService, times(1)
-                .description("Skal lagre orgnummer nøyaktig en gang for en hovedorg med en underenhet"))
-                .save(any());
-    }
-
-    @Test
     public void should_set_bestillingfeil_for_invalid_orgnummer_response() {
 
         when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
 
-        organisasjonClient.opprett(bestilling, BESTILLING_ID);
+        organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
+                .id(BESTILLING_ID)
+                .build());
 
         verify(organisasjonBestillingService, times(1)
                 .description("Skal sette feil på bestillingen nøyaktig en gang"))

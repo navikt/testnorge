@@ -1,6 +1,6 @@
 import React from 'react'
 import _orderBy from 'lodash/orderBy'
-import DollyTable from '~/components/ui/dollyTable/DollyTable'
+import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
@@ -9,6 +9,8 @@ import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -18,25 +20,32 @@ const ikonTypeMap = {
 }
 
 export default function BestillingListe({
-	bestillinger,
 	searchActive,
-	isFetchingBestillinger,
 	iLaastGruppe,
+	brukertype,
+	gruppeId,
+	navigerBestillingId,
+	visBestilling,
+	sidetall,
 }) {
-	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
-	if (!bestillinger) return null
+	const { bestillingerById, loading } = useBestillingerGruppe(gruppeId)
+	if (loading) return <Loading label="Laster bestillinger" panel />
+	if (!bestillingerById) return null
+	const bestillingListe = Object.values(bestillingerById)
 
-	if (bestillinger.length === 0) {
-		return (
-			<ContentContainer>
-				{searchActive
-					? 'Søket gav ingen resultater.'
-					: 'Trykk på opprett personer-knappen for å starte en bestilling.'}
-			</ContentContainer>
-		)
+	if (bestillingListe.length === 0) {
+		let infoTekst = 'Trykk på opprett personer-knappen for å starte en bestilling.'
+		if (searchActive) infoTekst = 'Søket gav ingen resultater.'
+		else if (brukertype === 'BANKID')
+			infoTekst =
+				'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
+
+		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
-	const sortedBestillinger = _orderBy(bestillinger, ['id'], ['desc'])
+	const sortedBestillinger = _orderBy(bestillingListe, ['id'], ['desc'])
+
+	const statusBestillinger = bestillingStatusMapper(Object.values(sortedBestillinger))
 
 	const columns = [
 		{
@@ -77,13 +86,19 @@ export default function BestillingListe({
 	return (
 		<ErrorBoundary>
 			<DollyTable
-				data={sortedBestillinger}
+				pagination
+				data={statusBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
+				visBestilling={visBestilling || navigerBestillingId}
+				visSide={sidetall}
 				onExpand={(bestilling) => (
-					<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
+					<BestillingDetaljer
+						bestilling={bestilling}
+						iLaastGruppe={iLaastGruppe}
+						brukertype={brukertype}
+					/>
 				)}
-				pagination
 			/>
 		</ErrorBoundary>
 	)

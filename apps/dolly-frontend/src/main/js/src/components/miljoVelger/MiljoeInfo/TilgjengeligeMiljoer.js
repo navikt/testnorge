@@ -3,12 +3,13 @@ import { useAsync } from 'react-use'
 import Formatters from '~/utils/DataFormatter'
 
 export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
-	if (!endepunkt) return false
-
 	const state = useAsync(async () => {
-		const response = await endepunkt()
-		return response
+		if (endepunkt) {
+			return endepunkt()
+		}
 	}, [endepunkt])
+
+	if (!endepunkt) return false
 
 	let message = 'Laster tilgjengelige miljøer..'
 

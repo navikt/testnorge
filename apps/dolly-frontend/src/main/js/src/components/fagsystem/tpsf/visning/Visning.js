@@ -1,31 +1,37 @@
 import React from 'react'
 import _has from 'lodash/has'
 import {
-	Boadresse,
+	TpsfBoadresse,
 	Fullmakt,
-	Identhistorikk,
+	TpsfIdenthistorikk,
 	MidlertidigAdresse,
-	Nasjonalitet,
-	Personinfo,
+	TpsfNasjonalitet,
+	NorskBankkonto,
 	Postadresse,
 	Relasjoner,
-	Vergemaal,
+	TpsfPersoninfo,
+	UtenlandskBankkonto,
+	TpsfVergemaal,
 } from './partials'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
 export const TpsfVisning = ({ data }) => {
 	if (!data) return null
 
 	return (
 		<div>
-			<Personinfo data={data} />
-			<Nasjonalitet data={data} />
-			<Vergemaal data={data.vergemaal} />
-			<Fullmakt data={data.fullmakt} />
-			<Boadresse boadresse={data.boadresse} />
-			<Postadresse postadresse={data.postadresse} />
-			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
-			<Identhistorikk identhistorikk={data.identHistorikk} />
-			<Relasjoner relasjoner={data.relasjoner} />
+			<TpsfPersoninfo data={data} />
+			<TpsfNasjonalitet data={data} />
+			<TpsfVergemaal data={data?.vergemaal} />
+			<Fullmakt data={data?.fullmakt} relasjoner={data?.relasjoner} />
+			<TpsfBoadresse boadresse={data?.boadresse} />
+			<Postadresse postadresse={data?.postadresse} />
+			<MidlertidigAdresse midlertidigAdresse={data?.midlertidigAdresse} />
+			<Telefonnummer data={data?.telefonnumre} />
+			<UtenlandskBankkonto data={data?.bankkontonrUtland} />
+			<NorskBankkonto data={data?.bankkontonrNorsk} />
+			<TpsfIdenthistorikk identhistorikk={data?.identHistorikk} />
+			<Relasjoner relasjoner={data?.relasjoner} />
 		</div>
 	)
 }
@@ -43,8 +49,9 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 	if (harFoedselsinnvandring)
 		data = {
 			...data,
-			innvandretUtvandret: data.innvandretUtvandret.filter(
-				(i, idx) => idx !== data.innvandretUtvandret.length - 1
+			innvandretUtvandret: data?.innvandretUtvandret?.filter(
+				(element, idx) =>
+					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET'
 			),
 		}
 	return data

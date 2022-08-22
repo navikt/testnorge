@@ -6,6 +6,11 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: PERSON_ORG_TILGANG_NAME
+      value: testnav-person-organisasjon-tilgang-service
+    - name: PERSON_ORG_TILGANG_URL
+      value: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
   image: {{image}}
   tokenx:
     enabled: true
@@ -25,13 +30,11 @@ spec:
           cluster: dev-fss
         - application: endringsmelding-frontend
           cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
-        - application: testnorge-tilbakemelding-api
+        - application: dolly-backend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
+        - application: testnorge-tilbakemelding-api
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
@@ -40,8 +43,6 @@ spec:
         - application: testnav-applikasjonsanalyse-frontend
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
     outbound:
       rules:
@@ -56,6 +57,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

@@ -2,6 +2,10 @@ task build {
     dependsOn gradle.includedBuilds*.task(':build')
 }
 
+task assemble {
+    dependsOn gradle.includedBuilds*.task(':assemble')
+}
+
 task sonarqube {
     dependsOn gradle.includedBuilds*.task(':sonarqube')
 }

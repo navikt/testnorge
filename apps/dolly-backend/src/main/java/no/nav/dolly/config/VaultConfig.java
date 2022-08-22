@@ -14,7 +14,6 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Configuration
 @Profile({"dev", "prod"})
 @RequiredArgsConstructor
-@VaultPropertySource(value = "serviceuser/dev/srvfregdolly", propertyNamePrefix = "jira.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/test/srvdolly-backend", propertyNamePrefix = "credentials.test.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/dev/srvdolly-preprod-env", propertyNamePrefix = "credentials.preprod.", ignoreSecretNotFound = false)
 public class VaultConfig extends AbstractVaultConfiguration {
@@ -25,6 +24,10 @@ public class VaultConfig extends AbstractVaultConfiguration {
 
     @Override
     public ClientAuthentication clientAuthentication() {
+        var token = System.getProperty("spring.cloud.vault.token");
+        if (token == null) {
+            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+        }
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }
 }

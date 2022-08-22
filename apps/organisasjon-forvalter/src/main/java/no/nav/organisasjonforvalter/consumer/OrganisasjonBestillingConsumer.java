@@ -6,46 +6,49 @@ import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingIdsCo
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingStatusCommand;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 @Service
 public class OrganisasjonBestillingConsumer {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final OrganisasjonBestillingServiceProperties serviceProperties;
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties serviceProperties,
-            AccessTokenService accessTokenService) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
     }
 
     public Flux<BestillingStatus> getBestillingStatus(Status status) {
 
-        return Flux.from(accessTokenService.generateToken(serviceProperties)
+        return Flux.from(tokenExchange.exchange(serviceProperties)
                 .flatMap(token -> new OrganisasjonBestillingStatusCommand(webClient, status,
                         token.getTokenValue()).call()));
     }
 
     public Flux<Status> getBestillingId(Status status) {
 
-        return Flux.from(accessTokenService.generateToken(serviceProperties)
+        return Flux.from(tokenExchange.exchange(serviceProperties)
                 .flatMap(token -> new OrganisasjonBestillingIdsCommand(webClient, status,
                         token.getTokenValue()).call()));
     }
 
     public BestillingStatus getBestillingStatus(String uuid) {
 
-        return accessTokenService.generateToken(serviceProperties)
+        return tokenExchange.exchange(serviceProperties)
                 .flatMap(token -> new OrganisasjonBestillingCommand(webClient, Status.builder()
                         .uuid(uuid)
                         .build(),

@@ -37,7 +37,7 @@ export default class RedigerGruppe extends PureComponent {
 
 		const buttons = (
 			<Fragment>
-				<NavButton type={'fare'} onClick={() => this.onCancel()}>
+				<NavButton htmlType={'reset'} type={'fare'} onClick={() => this.onCancel()}>
 					Avbryt
 				</NavButton>
 				<NavButton type="hoved" htmlType="submit">
@@ -56,7 +56,7 @@ export default class RedigerGruppe extends PureComponent {
 					<Form className="opprett-tabellrad" autoComplete="off">
 						<div className="fields">
 							<FormikTextInput name="navn" label="NAVN" size="grow" autoFocus />
-							<FormikTextInput name="hensikt" label="HENSIKT" size="grow" />
+							<FormikTextInput name="hensikt" label="HENSIKT" size="grow" useOnChange={true} />
 							{buttons}
 						</div>
 						{error && (
@@ -70,14 +70,19 @@ export default class RedigerGruppe extends PureComponent {
 		)
 	}
 
-	onHandleSubmit = async (values, actions) => {
+	onHandleSubmit = async (values, _actions) => {
 		const { createGruppe, updateGruppe, gruppe, error } = this.props
 
 		const groupValues = {
 			hensikt: values.hensikt,
 			navn: values.navn,
 		}
-		this.erRedigering ? await updateGruppe(gruppe.id, groupValues) : await createGruppe(groupValues)
+		this.erRedigering
+			? await updateGruppe(gruppe.id, groupValues)
+			: await createGruppe(groupValues).then((response) => {
+					const gruppeId = response.value?.data?.id
+					if (gruppeId) window.location.href = `/gruppe/${gruppeId}`
+			  })
 		return !error && this.onCancel()
 	}
 

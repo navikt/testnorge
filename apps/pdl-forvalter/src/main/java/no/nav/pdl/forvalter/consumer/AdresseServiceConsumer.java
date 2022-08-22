@@ -6,9 +6,10 @@ import no.nav.pdl.forvalter.consumer.command.MatrikkeladresseServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -24,12 +25,16 @@ public class AdresseServiceConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
-    public AdresseServiceConsumer(TokenExchange tokenExchange, AdresseServiceProperties properties) {
+    public AdresseServiceConsumer(TokenExchange tokenExchange,
+                                  AdresseServiceProperties properties,
+                                  ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -38,7 +43,7 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
 
         try {
-            var adresser = tokenExchange.generateToken(properties).flatMap(
+            var adresser = tokenExchange.exchange(properties).flatMap(
                             token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())
                     .block();
 
@@ -59,7 +64,7 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
 
         try {
-            var adresser = tokenExchange.generateToken(properties).flatMap(
+            var adresser = tokenExchange.exchange(properties).flatMap(
                             token -> new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
                     .block();
 

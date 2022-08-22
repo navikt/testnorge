@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
 import { Tema, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -18,12 +18,6 @@ interface InntektsmeldingSelect {
 	size?: string
 }
 
-type Option = {
-	label: string
-	value: string
-	tema?: string
-}
-
 export default ({
 	path,
 	idx,
@@ -35,9 +29,11 @@ export default ({
 	const ytelsePath = `${path}.ytelse`
 
 	const feil = (feilmelding: Feilmelding) => {
-		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '')
+		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '') {
 			return { feilmelding: 'Feltet er påkrevd' }
-		else return feilmelding
+		} else {
+			return feilmelding
+		}
 	}
 
 	return (
@@ -71,13 +67,16 @@ export default ({
 }
 
 const findTema = (ytelse: string) => {
-	if (ytelse === Ytelser.Sykepenger) return Tema.Syk
-	else if (ytelse === Ytelser.Foreldrepenger || ytelse === Ytelser.Svangerskapspenger)
+	if (ytelse === Ytelser.Sykepenger) {
+		return Tema.Syk
+	} else if (ytelse === Ytelser.Foreldrepenger || ytelse === Ytelser.Svangerskapspenger) {
 		return Tema.For
-	else return Tema.Oms
+	} else {
+		return Tema.Oms
+	}
 }
 
-const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, idx: number) => {
+const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, _idx: number) => {
 	formikBag.setFieldValue('inntektsmelding.joarkMetadata.tema', value.tema)
 
 	const {

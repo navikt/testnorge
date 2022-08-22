@@ -10,11 +10,6 @@ spec:
   port: 8080
   tokenx:
     enabled: true
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: "altinn:serviceowner/reportees"
   accessPolicy:
     inbound:
       rules:
@@ -37,8 +32,12 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   envFrom:
     - secret: altinn-prod
+    - secret: maskinporten-dolly-dev-gcp
   replicas:
     min: 1
     max: 1
@@ -52,7 +51,11 @@ spec:
   ingresses:
     - "https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no"
   env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service
     - name: ALTINN_URL
       value: https://altinn.no
+    - name: TOKENDINGS_URL
+      value: https://tokendings.dev-gcp.nais.io

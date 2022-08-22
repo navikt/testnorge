@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -17,6 +17,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Service
 public class GjenopprettBestillingService extends DollyBestillingService {
@@ -35,14 +37,15 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private BestillingProgressService bestillingProgressService;
     private ExecutorService dollyForkJoinPool;
 
-    public GjenopprettBestillingService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, DollyPersonCache dollyPersonCache,
+    public GjenopprettBestillingService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
                                         IdentService identService, BestillingProgressService bestillingProgressService,
                                         BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
                                         ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                        PdlPersonConsumer pdlPersonConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
+                                        PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
+                pdlDataConsumer, errorStatusDecoder);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -56,10 +59,12 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
+            bestKriterier.setEkskluderEksternePersoner(true);
             dollyForkJoinPool.submit(() -> {
                 bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(gjenopprettFraProgress -> {
+                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = new BestillingProgress(bestilling, gjenopprettFraProgress.getIdent(),
                                     gjenopprettFraProgress.getMaster());
@@ -67,7 +72,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
 
                             try {
-                                Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);
+                                Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                                 if (dollyPerson.isPresent()) {
 
@@ -84,6 +89,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
                             } finally {
                                 oppdaterProgress(bestilling, progress);
+                                MDC.remove(MDC_KEY_BESTILLING);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);

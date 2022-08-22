@@ -3,22 +3,35 @@ package no.nav.registre.testnorge.personsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.personsearchservice.consumer.ElasticSearchConsumer;
+import no.nav.registre.testnorge.personsearchservice.domain.Person;
+import no.nav.registre.testnorge.personsearchservice.service.utils.QueryBuilder;
+import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
+import org.elasticsearch.action.search.SearchRequest;
 import org.springframework.stereotype.Service;
-
-import no.nav.registre.testnorge.personsearchservice.adapter.PersonSearchAdapter;
-import no.nav.registre.testnorge.personsearchservice.domain.PersonList;
-import no.nav.registre.testnorge.personsearchservice.controller.search.PersonSearch;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonSearchService {
-    private final PersonSearchAdapter personSearchAdapter;
 
+    private final ElasticSearchConsumer elasticSearchConsumer;
 
     @SneakyThrows
-    public PersonList search(PersonSearch search){
-        return personSearchAdapter.search(search);
+    public Flux<Person> search(PersonSearch search) {
+        var searchRequest = createSearchRequest(search);
+        return elasticSearchConsumer.search(searchRequest)
+                .map(Person::new);
     }
 
+    public Flux<String> searchPdlPersoner(PersonSearch search) {
+        var searchRequest = createSearchRequest(search);
+        return elasticSearchConsumer.searchWithJsonResponse(searchRequest);
+    }
+
+    private SearchRequest createSearchRequest(PersonSearch search) {
+        var query = QueryBuilder.buildPersonSearchQuery(search);
+        return QueryBuilder.getSearchRequest(query, search.getPage(), search.getPageSize(), search.getTerminateAfter());
+    }
 }

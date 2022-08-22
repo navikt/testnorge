@@ -18,7 +18,7 @@ import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.aareg.service.SyntetiseringService;
 
 @ExtendWith(MockitoExtension.class)
-public class SyntetiseringControllerTest {
+class SyntetiseringControllerTest {
 
     @Mock
     private SyntetiseringService syntetiseringService;
@@ -38,7 +38,7 @@ public class SyntetiseringControllerTest {
     }
 
     @Test
-    public void shouldStartSyntetisering() {
+    void shouldStartSyntetisering() {
         when(syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende)).thenReturn(ResponseEntity.status(HttpStatus.OK).build());
 
         var result = syntetiseringController.genererArbeidsforholdsmeldinger(sendAlleEksisterende, syntetiserAaregRequest);

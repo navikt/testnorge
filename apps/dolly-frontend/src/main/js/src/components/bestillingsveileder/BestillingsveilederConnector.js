@@ -6,9 +6,9 @@ const mapStateToProps = (state) => ({
 	error: state.bestveil.error,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-	sendBestilling: (values, opts) =>
-		dispatch(sendBestilling(values, opts, ownProps.match.params.gruppeId)),
+const mapDispatchToProps = (dispatch) => ({
+	sendBestilling: (values, opts, gruppeId, navigate) =>
+		dispatch(sendBestilling(values, opts, gruppeId, navigate)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bestillingsveileder)

@@ -1,0 +1,15 @@
+{
+  "arbeidsokerList": [
+    {
+      "personident": "09838817873",
+      "miljoe": "q1",
+      "status": "OK",
+      "eier": "Dolly",
+      "servicebehov": true,
+      "automatiskInnsendingAvMeldekort": true,
+      "aap115": true,
+      "aap": true
+    }
+  ],
+  "antallSider": 2
+}

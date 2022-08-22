@@ -19,6 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -31,6 +33,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SkjermingsRegisterClientTest {
 
     @Mock
@@ -93,7 +96,7 @@ public class SkjermingsRegisterClientTest {
     public void should_return_created_for_post_aktiv_skjermet() {
 
         when(skjermingsRegisterConsumer.postSkjerming(any())).thenReturn(new ResponseEntity<>(Collections.singletonList(response), HttpStatus.CREATED));
-        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.NOT_FOUND));
+        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(response);
 
         skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
         assertThat(progress.getSkjermingsregisterStatus()).isNotNull().isEqualTo("OK");
@@ -104,7 +107,7 @@ public class SkjermingsRegisterClientTest {
 
         bestilling.getTpsf().setEgenAnsattDatoTom(yesterday);
         when(skjermingsRegisterConsumer.putSkjerming(any())).thenReturn(new ResponseEntity<>("", HttpStatus.OK));
-        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(new ResponseEntity<>(response, HttpStatus.OK));
+        when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(response);
 
         skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
         assertThat(progress.getSkjermingsregisterStatus()).isNotNull().isEqualTo("OK");
@@ -115,8 +118,8 @@ public class SkjermingsRegisterClientTest {
 
         person.getPersondetaljer().get(0).setEgenAnsattDatoFom(null);
 
-        skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);
-        assertThat(progress.getSkjermingsregisterStatus()).isEqualTo("null");
+        skjermingsRegisterClient.gjenopprett(new RsDollyUtvidetBestilling(), person, progress, false);
+        assertThat(progress.getSkjermingsregisterStatus()).isNull();
     }
 
 }

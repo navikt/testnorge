@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 
 @Data
 @Builder
@@ -14,5 +13,5 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO
 @AllArgsConstructor
 public class SfeTilbakeMelding {
 
-    private EndringsmeldingResponseDTO svarStatus;
+    private TpsMeldingResponse svarStatus;
 }

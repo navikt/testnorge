@@ -16,8 +16,5 @@
   ],
   "exclude": [
     "node_modules",
-    "lib",
-    "src/**/*.stories.tsx",
-    "src/**/*.stories.mdx"
   ]
 }

@@ -1,43 +1,59 @@
 package no.nav.registre.testnorge.personsearchservice.domain;
 
+import no.nav.registre.testnorge.personsearchservice.model.DoedsfallModel;
+import no.nav.registre.testnorge.personsearchservice.model.FoedselModel;
+import no.nav.registre.testnorge.personsearchservice.model.KjoennModel;
+import no.nav.registre.testnorge.personsearchservice.model.NavnModel;
+import no.nav.registre.testnorge.personsearchservice.model.Response;
+import no.nav.registre.testnorge.personsearchservice.model.SivilstandModel;
+import no.nav.registre.testnorge.personsearchservice.model.StatsborgerskapModel;
+import no.nav.registre.testnorge.personsearchservice.model.WithMetadata;
+import no.nav.testnav.libs.dto.personsearchservice.v1.DoedsfallDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.FolkeregisterpersonstatusDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personsearchservice.v1.SivilstandDTO;
+
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.registre.testnorge.personsearchservice.adapter.model.FoedselModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.KjoennModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.NavnModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.Response;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.SivilstandModel;
-import no.nav.registre.testnorge.personsearchservice.adapter.model.WithMetadata;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.FoedselDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.PersonDTO;
-import no.nav.registre.testnorge.personsearchservice.controller.dto.SivilstandDTO;
-
 public class Person {
+
     private final Response response;
     private final Statsborgerskap statsborgerskap;
     private final UtfyttingFraNorge utfyttingFraNorge;
     private final InnflyttingTilNorge innflyttingTilNorge;
+    private final ForelderBarnRelasjon forelderBarnRelasjon;
 
     public Person(Response response) {
         this.response = response;
-        var statsborgerskap = getCurrent(response.getHentPerson().getStatsborgerskap()).orElse(null);
-        this.statsborgerskap = statsborgerskap != null ? new Statsborgerskap(statsborgerskap) : null;
-        var utfyttingFraNorge = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
-        this.utfyttingFraNorge = utfyttingFraNorge != null ? new UtfyttingFraNorge(utfyttingFraNorge) : null;
-        var innflyttingTilNorge = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
-        this.innflyttingTilNorge = innflyttingTilNorge != null ? new InnflyttingTilNorge(innflyttingTilNorge) : null;
+        var borgerskap = getAllCurrentStatborgerskap(response.getHentPerson().getStatsborgerskap());
+        this.statsborgerskap = borgerskap != null ? new Statsborgerskap(borgerskap) : null;
+        var utfytting = getCurrent(response.getHentPerson().getUtflyttingFraNorge()).orElse(null);
+        this.utfyttingFraNorge = utfytting != null ? new UtfyttingFraNorge(utfytting) : null;
+        var innflytting = getCurrent(response.getHentPerson().getInnflyttingTilNorge()).orElse(null);
+        this.innflyttingTilNorge = innflytting != null ? new InnflyttingTilNorge(innflytting) : null;
+        var relasjoner = response.getHentPerson().getForelderBarnRelasjon();
+        this.forelderBarnRelasjon = relasjoner != null ? new ForelderBarnRelasjon(relasjoner) : null;
     }
 
     private static <T extends WithMetadata> Optional<T> getCurrent(List<T> list) {
-        if(list == null) {
+        if (list == null) {
             return Optional.empty();
         }
         return list
                 .stream()
                 .filter(value -> !value.getMetadata().getHistorisk())
                 .findFirst();
+    }
+
+    private static List<StatsborgerskapModel> getAllCurrentStatborgerskap(List<StatsborgerskapModel> list) {
+        if (list == null) {
+            return Collections.emptyList();
+        }
+        return list.stream().filter(value -> !value.getMetadata().getHistorisk()).toList();
     }
 
     private Optional<NavnModel> getNavn() {
@@ -60,12 +76,21 @@ public class Person {
         return getCurrent(response.getHentPerson().getFoedsel()).map(FoedselModel::getFoedselsdato).orElse(null);
     }
 
+    private LocalDate getDoedsdato() {
+        return getCurrent(response.getHentPerson().getDoedsfall()).map(DoedsfallModel::getDoedsdato).orElse(null);
+    }
+
     private String getKjoenn() {
         return getCurrent(response.getHentPerson().getKjoenn()).map(KjoennModel::getKjoenn).orElse(null);
     }
 
-    private String getSivilstand() {
-        return getCurrent(response.getHentPerson().getSivilstand()).map(SivilstandModel::getType).orElse(null);
+    private SivilstandDTO getSivilstand() {
+        return getCurrent(response.getHentPerson().getSivilstand())
+                .map(sivilstand -> SivilstandDTO.builder()
+                        .type(sivilstand.getType())
+                        .relatertVedSivilstand(sivilstand.getRelatertVedSivilstand())
+                        .build())
+                .orElse(new SivilstandDTO());
     }
 
     private String getIdent() {
@@ -90,11 +115,25 @@ public class Person {
                 .getIdent();
     }
 
+    private List<FolkeregisterpersonstatusDTO> getPersonstatus() {
+        return response
+                .getHentPerson()
+                .getFolkeregisterpersonstatus()
+                .stream()
+                .filter(personstatus -> !personstatus.getMetadata().getHistorisk())
+                .map(personstatus -> FolkeregisterpersonstatusDTO.builder()
+                        .status(personstatus.getStatus())
+                        .gyldighetstidspunkt(personstatus.getFolkeregistermetadata().getGyldighetstidspunkt())
+                        .build()
+                )
+                .toList();
+    }
+
     private List<String> getTags() {
         return response.getTags();
     }
 
-    private <T> T toDTO(WithDTO<T> withDTO){
+    private <T> T toDTO(WithDTO<T> withDTO) {
         return Optional.ofNullable(withDTO).map(WithDTO::toDTO).orElse(null);
     }
 
@@ -107,12 +146,15 @@ public class Person {
                 .aktorId(getAktorId())
                 .ident(getIdent())
                 .kjoenn(getKjoenn())
-                .tag(getTags().stream().findFirst().orElse(null))
+                .tags(getTags())
                 .foedsel(FoedselDTO.builder().foedselsdato(getFoedselsdato()).build())
-                .sivilstand(SivilstandDTO.builder().type(getSivilstand()).build())
+                .doedsfall(DoedsfallDTO.builder().doedsdato(getDoedsdato()).build())
+                .sivilstand(getSivilstand())
                 .statsborgerskap(toDTO(statsborgerskap))
                 .utfyttingFraNorge(toDTO(utfyttingFraNorge))
                 .innfyttingTilNorge(toDTO(innflyttingTilNorge))
+                .forelderBarnRelasjoner(toDTO(forelderBarnRelasjon))
+                .folkeregisterpersonstatus(getPersonstatus())
                 .build();
     }
 }

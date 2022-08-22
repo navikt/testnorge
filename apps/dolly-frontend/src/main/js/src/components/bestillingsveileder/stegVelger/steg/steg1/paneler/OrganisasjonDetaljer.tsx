@@ -42,86 +42,99 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 OrganisasjonDetaljerPanel.heading = 'Detaljer'
 
 OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
+	const paths = {
+		enhetstype: 'organisasjon.enhetstype',
+		naeringskode: 'organisasjon.naeringskode',
+		sektorkode: 'organisasjon.sektorkode',
+		formaal: 'organisasjon.formaal',
+		stiftelsesdato: 'organisasjon.stiftelsesdato',
+		maalform: 'organisasjon.maalform',
+		telefon: 'organisasjon.telefon',
+		epost: 'organisasjon.epost',
+		nettside: 'organisasjon.nettside',
+		forretningsadresse: 'organisasjon.forretningsadresse',
+		postadresse: 'organisasjon.postadresse',
+	}
 	return {
 		enhetstype: {
 			label: 'Enhetstype',
-			checked: has('organisasjon.enhetstype'),
-			add: () => set('organisasjon.enhetstype', ''),
-			remove: () => del('organisasjon.enhetstype'),
+			checked: has(paths.enhetstype),
+			add: () => set(paths.enhetstype, ''),
+			remove: () => del(paths.enhetstype),
 		},
 		naeringskode: {
 			label: 'Næringskode',
-			checked: has('organisasjon.naeringskode'),
-			add: () => set('organisasjon.naeringskode', ''),
-			remove: () => del('organisasjon.naeringskode'),
+			checked: has(paths.naeringskode),
+			add: () => set(paths.naeringskode, ''),
+			remove: () => del(paths.naeringskode),
 		},
 		sektorkode: {
 			label: 'Sektorkode',
-			checked: has('organisasjon.sektorkode'),
-			add: () => set('organisasjon.sektorkode', ''),
-			remove: () => del('organisasjon.sektorkode'),
+			checked: has(paths.sektorkode),
+			add: () => set(paths.sektorkode, ''),
+			remove: () => del(paths.sektorkode),
 		},
 		formaal: {
 			label: 'Formål',
-			checked: has('organisasjon.formaal'),
-			add: () => set('organisasjon.formaal', ''),
-			remove: () => del('organisasjon.formaal'),
+			checked: has(paths.formaal),
+			add: () => set(paths.formaal, ''),
+			remove: () => del(paths.formaal),
 		},
 		stiftelsesdato: {
 			label: 'Stiftelsesdato',
-			checked: has('organisasjon.stiftelsesdato'),
-			add: () => set('organisasjon.stiftelsesdato', ''),
-			remove: () => del('organisasjon.stiftelsesdato'),
+			checked: has(paths.stiftelsesdato),
+			add: () => set(paths.stiftelsesdato, ''),
+			remove: () => del(paths.stiftelsesdato),
 		},
 		maalform: {
 			label: 'Målform',
-			checked: has('organisasjon.maalform'),
-			add: () => set('organisasjon.maalform', ''),
-			remove: () => del('organisasjon.maalform'),
+			checked: has(paths.maalform),
+			add: () => set(paths.maalform, ''),
+			remove: () => del(paths.maalform),
 		},
 		telefon: {
 			label: 'Telefon',
-			checked: has('organisasjon.telefon'),
-			add: () => set('organisasjon.telefon', ''),
-			remove: () => del('organisasjon.telefon'),
+			checked: has(paths.telefon),
+			add: () => set(paths.telefon, ''),
+			remove: () => del(paths.telefon),
 		},
 		epost: {
 			label: 'E-postadresse',
-			checked: has('organisasjon.epost'),
-			add: () => set('organisasjon.epost', ''),
-			remove: () => del('organisasjon.epost'),
+			checked: has(paths.epost),
+			add: () => set(paths.epost, ''),
+			remove: () => del(paths.epost),
 		},
 		nettside: {
 			label: 'Internettadresse',
-			checked: has('organisasjon.nettside'),
-			add: () => set('organisasjon.nettside', ''),
-			remove: () => del('organisasjon.nettside'),
+			checked: has(paths.nettside),
+			add: () => set(paths.nettside, ''),
+			remove: () => del(paths.nettside),
 		},
 		forretningsadresse: {
 			label: 'Forretningsadresse',
-			checked: has('organisasjon.forretningsadresse'),
+			checked: has(paths.forretningsadresse),
 			add: () =>
-				set('organisasjon.forretningsadresse', {
+				set(paths.forretningsadresse, {
 					adresselinjer: ['', '', ''],
 					postnr: '',
 					kommunenr: '',
 					landkode: 'NO',
 					poststed: '',
 				}),
-			remove: () => del('organisasjon.forretningsadresse'),
+			remove: () => del(paths.forretningsadresse),
 		},
 		postadresse: {
 			label: 'Postadresse',
-			checked: has('organisasjon.postadresse'),
+			checked: has(paths.postadresse),
 			add: () =>
-				set('organisasjon.postadresse', {
+				set(paths.postadresse, {
 					adresselinjer: ['', '', ''],
 					postnr: '',
 					kommunenr: '',
 					landkode: 'NO',
 					poststed: '',
 				}),
-			remove: () => del('organisasjon.postadresse'),
+			remove: () => del(paths.postadresse),
 		},
 	}
 }

@@ -4,21 +4,23 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
+import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
+import no.nav.registre.aareg.util.WebClientFilter;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
-
-import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
-import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 @Slf4j
@@ -31,7 +33,10 @@ public class MiljoerConsumer {
     private final WebClient webClient;
     private final MiljoeServiceProperties serviceProperties;
 
-    public MiljoerConsumer(MiljoeServiceProperties serviceProperties, TokenExchange tokenExchange) {
+    public MiljoerConsumer(MiljoeServiceProperties serviceProperties,
+                           TokenExchange tokenExchange,
+                           ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
@@ -44,13 +49,15 @@ public class MiljoerConsumer {
                                                 connection
                                                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
                                                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))
-                                        )))).build();
+                                        ))))
+                .filter(metricsWebClientFilterFunction)
+                .build();
 
     }
 
     public MiljoerResponse hentMiljoer() {
         log.info("Genererer AccessToken for {}", serviceProperties.getName());
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         List<String> response = webClient
                 .get()
                 .uri(MILJOER_URL)
@@ -58,6 +65,8 @@ public class MiljoerConsumer {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
                 })
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
 
         if (response == null) {

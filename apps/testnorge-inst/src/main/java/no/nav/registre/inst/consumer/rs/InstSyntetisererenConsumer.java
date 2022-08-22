@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.consumer.rs.command.GetSyntInstMeldingerCommand;
 import no.nav.registre.inst.consumer.rs.credential.SyntInstGcpProperties;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,16 +18,17 @@ import java.util.List;
 @Slf4j
 public class InstSyntetisererenConsumer {
 
-    private final AccessTokenService tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
     public InstSyntetisererenConsumer(
             SyntInstGcpProperties syntInstGcpProperties,
-            AccessTokenService accessTokenService
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = syntInstGcpProperties;
-        this.tokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
@@ -34,13 +36,14 @@ public class InstSyntetisererenConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(syntInstGcpProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
 
     @Timed(value = "inst.resource.latency", extraTags = {"operation", "inst-syntetisereren"})
     public List<InstitusjonsoppholdV2> hentInstMeldingerFromSyntRest(int numToGenerate) {
-        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
+        var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntInstMeldingerCommand(numToGenerate, accessToken, webClient).call();
     }
 }

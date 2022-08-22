@@ -1,14 +1,12 @@
 import React from 'react'
 import * as yup from 'yup'
 import useBoolean from '~/utils/hooks/useBoolean'
-import { useAsync } from 'react-use'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import { DollyApi } from '~/service/Api'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Form, Formik } from 'formik'
 import './ImporterGrupper.less'
-import { AsyncState } from 'react-use/lib/useAsync'
+import { useAlleBrukere } from '~/utils/hooks/useBruker'
 
 type ImporterGrupperProps = {
 	importZIdent: Function
@@ -31,13 +29,10 @@ type SelectOptions = {
 export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) {
 	const [isImportModalOpen, openImportModal, closeImportModal] = useBoolean(false)
 
-	const ZIdenter: AsyncState<any> = useAsync(async () => {
-		const response = await DollyApi.getBrukere()
-		return response.data
-	}, [])
+	const { brukere, loading } = useAlleBrukere()
 
 	const getZIdentOptions = () => {
-		return ZIdenter.value.reduce(function (filtered: Array<SelectOptions>, ident: ZIdent) {
+		return Object.values(brukere)?.reduce((filtered: Array<SelectOptions>, ident: ZIdent) => {
 			if (ident.navIdent) {
 				filtered.push({ value: ident.navIdent, label: ident.navIdent })
 			}
@@ -45,7 +40,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 		}, [])
 	}
 
-	const ZIdentOptions = ZIdenter.value ? getZIdentOptions() : []
+	const ZIdentOptions = brukere ? getZIdentOptions() : []
 
 	const importerZIdenter = ({ identer }: Identer) => {
 		let request = identer[0]
@@ -75,7 +70,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 				overflow="auto"
 			>
 				<div className="importer-grupper-modal">
-					<h1>Importer testdatagrupper fra Z-ident</h1>
+					<h1>Importer grupper fra Z-ident</h1>
 					<h3>Velg hvilke Z-brukere du ønsker å importere. Vær klar over følgende:</h3>
 					<ul>
 						<li>
@@ -98,7 +93,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 									name="identer"
 									label="Z-identer"
 									options={ZIdentOptions}
-									isLoading={ZIdenter.loading}
+									isLoading={loading}
 									isMulti={true}
 									size="grow"
 									isClearable={false}

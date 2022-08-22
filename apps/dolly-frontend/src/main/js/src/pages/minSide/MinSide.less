@@ -55,7 +55,7 @@
 
 	.blokk {
 		display: inline-block;
-		width: 85px;
+		width: 125px;
 		font-weight: bold;
 		margin: 0;
 	}
@@ -66,5 +66,40 @@
 		border-radius: 50%;
 		border: 4px solid white;
 		margin-right: 20px;
+	}
+}
+
+.slettbruker {
+	&__button{
+		cursor: pointer;
+		background-color: @color-error !important;
+		color: white;
+		height: 40px;
+		width: 200px;
+		border: none;
+		margin: 0 0 15px 15px;
+		align-self: flex-end;
+	}
+
+	&__modal{
+		text-align: center;
+
+		h1 {
+			font-size: 3rem;
+		}
+
+		h3 {
+			margin: 25px 0 25px 0;
+			font-weight: normal;
+		}
+
+		.nei-button {
+			padding: 0 60px 0 60px;
+			margin-bottom: 20px;
+		}
+		.ja-button {
+			padding: 0 15px 0 15px;
+			margin: 0 0 16px 20px;
+		}
 	}
 }

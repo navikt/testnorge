@@ -24,7 +24,6 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 	}
 
 	const egenskapOptions = getEgenskapOptions()
-	const antallEgenskaper = 5 // Det finnes fem ulike egenskaper for personroller, som hver kan velges én gang
 	const colorStyles = {
 		placeholder: (defaultStyles) => {
 			return {
@@ -39,10 +38,8 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 			name={`${path}.personroller`}
 			header="Personrolle"
 			newEntry={initialValues}
-			disabled={personroller.length >= antallEgenskaper}
-			title={
-				personroller.length >= antallEgenskaper ? 'Alle mulige personroller er lagt til' : null
-			}
+			maxEntries={5} // Det finnes fem ulike egenskaper for personroller, som hver kan velges én gang
+			maxReachedDescription={'Alle mulige personroller er lagt til'}
 		>
 			{(path) => {
 				const egenskap = `${path}.egenskap`

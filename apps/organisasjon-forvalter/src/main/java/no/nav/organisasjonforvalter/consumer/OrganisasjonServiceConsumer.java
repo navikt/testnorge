@@ -8,8 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.OrganisasjonServiceProperties;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -27,20 +28,22 @@ import static java.util.Objects.nonNull;
 @Service
 public class OrganisasjonServiceConsumer {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final OrganisasjonServiceProperties serviceProperties;
     private final ExecutorService executorService;
 
     public OrganisasjonServiceConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            AccessTokenService accessTokenService) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
     }
 
@@ -58,7 +61,7 @@ public class OrganisasjonServiceConsumer {
 
         long startTime = currentTimeMillis();
 
-        var token = accessTokenService.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
 
         var completables = miljoer.stream()
                 .map(miljoe -> OrgFutureDTO.builder()

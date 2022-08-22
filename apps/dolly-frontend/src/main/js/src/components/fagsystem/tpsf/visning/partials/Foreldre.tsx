@@ -42,19 +42,24 @@ type Person = {
 }
 
 export const Foreldre = ({ person, type }: Data) => {
-	if (!person) return null
 	const [foreldreInfo, setForeldreInfo] = useState(null)
 	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
-		const fetchData = async () => {
-			setIsLoading(true)
-			const respons = await TpsfApi.getPersoner([person.ident])
-			setForeldreInfo(respons.data)
-			setIsLoading(false)
+		if (person) {
+			const fetchData = async () => {
+				setIsLoading(true)
+				const respons = await TpsfApi.getPersoner([person.ident])
+				setForeldreInfo(respons.data)
+				setIsLoading(false)
+			}
+			fetchData()
 		}
-		fetchData()
 	}, [])
+
+	if (!person) {
+		return null
+	}
 
 	return (
 		<>
@@ -80,10 +85,10 @@ export const Foreldre = ({ person, type }: Data) => {
 					<TitleValue title="Barn" value={finnBarn(foreldreInfo[0].relasjoner).join(', ')} />
 				)}
 			</div>
-			{person.boadresse.length > 0 && (
+			{person.boadresse?.length > 0 && (
 				<Historikk component={Adressevisning} propName="boadresse" data={person.boadresse} />
 			)}
-			{person.postadresse.length > 0 && (
+			{person.postadresse?.length > 0 && (
 				<Historikk
 					component={PostadresseVisning}
 					propName="postadresse"

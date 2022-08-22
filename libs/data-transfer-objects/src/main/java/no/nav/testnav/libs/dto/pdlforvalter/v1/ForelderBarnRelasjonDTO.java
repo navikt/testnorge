@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
@@ -18,15 +20,35 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     private String relatertPerson;
     private Rolle relatertPersonsRolle;
 
+    private RelatertBiPersonDTO relatertPersonUtenFolkeregisteridentifikator;
+
     private Boolean borIkkeSammen;
     private PersonRequestDTO nyRelatertPerson;
     private Boolean partnerErIkkeForelder;
 
-    public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
+    private Boolean eksisterendePerson;
+
+    private DeltBostedDTO deltBosted;
+
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
 
     @JsonIgnore
     public boolean hasBarn() {
 
         return Rolle.BARN == relatertPersonsRolle;
     }
+
+    @JsonIgnore
+    public boolean isForeldre() {
+
+        return Rolle.FORELDER == minRolleForPerson ||
+                Rolle.MOR == minRolleForPerson ||
+                Rolle.FAR == minRolleForPerson ||
+                Rolle.MEDMOR == minRolleForPerson;
+    }
+
+    public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
 }

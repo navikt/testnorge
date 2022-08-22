@@ -15,13 +15,13 @@ interface InntektsinformasjonForm {
 
 export default ({ path, formikBag }: InntektsinformasjonForm) => {
 	const [date, setDate] = useState(
-		_get(formikBag.values, `${path}.sisteAarMaaned`) != ''
+		_get(formikBag.values, `${path}.sisteAarMaaned`) !== ''
 			? Date.parse(_get(formikBag.values, `${path}.sisteAarMaaned`))
 			: null
 	)
 
 	const [rapporteringsdate, setRapporteringsdato] = useState(
-		_get(formikBag.values, `${path}.rapporteringsdato`) != ''
+		_get(formikBag.values, `${path}.rapporteringsdato`) !== ''
 			? Date.parse(_get(formikBag.values, `${path}.rapporteringsdato`))
 			: null
 	)
@@ -60,7 +60,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 				<FormikDateTimepicker
 					formikBag={formikBag}
 					name={`${path}.rapporteringsdato`}
-					label="Rapporteringsdato"
+					label="Rapporteringstidspunkt"
 					date={rapporteringsdate}
 					onChange={handleRapporteringDateChange}
 				/>

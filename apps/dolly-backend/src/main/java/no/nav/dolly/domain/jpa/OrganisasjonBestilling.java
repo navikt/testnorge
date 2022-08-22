@@ -57,7 +57,7 @@ public class OrganisasjonBestilling {
     private String feil;
 
     @Column(name = "ferdig", columnDefinition = "Boolean default false")
-    private Boolean ferdig = false;
+    private Boolean ferdig;
 
     @Column(name = "opprettet_fra_id")
     private Long opprettetFraId;
@@ -69,7 +69,7 @@ public class OrganisasjonBestilling {
     @JoinColumn(name = "bruker_id", nullable = false)
     private Bruker bruker;
 
-    @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
     private List<OrganisasjonBestillingProgress> progresser;
 
     public List<OrganisasjonBestillingProgress> getProgresser() {

@@ -10,5 +10,6 @@ public class OMSApplicationStarter {
 
     public static void main(String[] args) {
         SpringApplication.run(OMSApplicationStarter.class, args);
+
     }
 }

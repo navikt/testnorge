@@ -1,5 +1,16 @@
 spring.cloud.vault.token: dummy
+
+azure.app.client.id: dummy
+azure.app.client.secret: dummy
+
+TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL: http://localhost:0
+TESTNAV_BRUKER_SERVICE_URL: http://localhost:0
+TESTNORGE_PROFIL_API_URL: http://localhost:0
 VARSLINGER_URL: http://localhost:0
 DOLLY_BACKEND_URL: http://localhost:0
 TPS_FORVALTERN_PROXY_URL: http://localhost:0
 PDL_FORVALTER_URL: http://localhost:0
+
+POST_LOGOUT_REDIRECT_URI: http://localhost:0/login
+IDPORTEN_CLIENT_ID: dummy
+IDPORTEN_CLIENT_JWK: "{}"

@@ -30,8 +30,9 @@ spec:
           namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
-      external:
-        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: synthdata-amelding
+          cluster: dev-gcp
   tokenx:
     enabled: true
   azure:
@@ -48,6 +49,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

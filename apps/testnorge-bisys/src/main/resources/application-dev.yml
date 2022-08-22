@@ -3,3 +3,10 @@ azure:
     client:
       id: ${client_id}
       secret: ${client_secret}
+
+elasticsearch:
+  client:
+    username:
+    password:
+    host: localhost
+    port: 9200

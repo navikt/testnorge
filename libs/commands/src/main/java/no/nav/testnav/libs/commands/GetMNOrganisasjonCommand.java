@@ -3,13 +3,15 @@ package no.nav.testnav.libs.commands;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +36,8 @@ public class GetMNOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
         } catch (HttpClientErrorException.NotFound e) {
             return null;

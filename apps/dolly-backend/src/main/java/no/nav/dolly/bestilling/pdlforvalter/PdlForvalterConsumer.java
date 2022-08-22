@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.pdlforvalter.command.PdlAktoerNpidCommand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted;
@@ -28,20 +29,27 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.dolly.util.IdentTypeUtil;
+import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
@@ -91,41 +99,60 @@ public class PdlForvalterConsumer {
     private final NaisServerProperties serviceProperties;
     private final WebClient webClient;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final ObjectMapper objectMapper;
 
-    public PdlForvalterConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ErrorStatusDecoder errorStatusDecoder, ObjectMapper objectMapper) {
+    public PdlForvalterConsumer(TokenExchange tokenService,
+                                PdlProxyProperties serverProperties,
+                                ErrorStatusDecoder errorStatusDecoder,
+                                ObjectMapper objectMapper,
+                                ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.errorStatusDecoder = errorStatusDecoder;
+        this.objectMapper = objectMapper;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_deletePerson" })
+    @Timed(name = "providers", tags = {"operation", "pdl_deletePerson"})
     public ResponseEntity<JsonNode> deleteIdent(String ident) {
-        return webClient.delete()
-                .uri(uriBuilder -> uriBuilder
-                        .path(PDL_FORVALTER_URL)
-                        .path(PDL_BESTILLING_SLETTING_URL)
-                        .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(HEADER_NAV_PERSON_IDENT, ident)
-                .retrieve().toEntity(JsonNode.class)
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient.delete()
+                        .uri(uriBuilder -> uriBuilder
+                                .path(PDL_FORVALTER_URL)
+                                .path(PDL_BESTILLING_SLETTING_URL)
+                                .build())
+                        .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
+                        .header(HEADER_NAV_PERSON_IDENT, ident)
+                        .retrieve()
+                        .toEntity(JsonNode.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_opprettPerson" })
+    @Timed(name = "providers", tags = {"operation", "pdl_opprettPerson"})
     public ResponseEntity<JsonNode> postOpprettPerson(PdlOpprettPerson opprettPerson, String ident) {
 
-        return postRequest(
-                opprettPerson.getHistoriskeIdenter(),
-                opprettPerson, ident, "opprett person");
+        if (IdentType.BOST == IdentTypeUtil.getIdentType(ident)) {
+            tokenService.exchange(serviceProperties)
+                    .flatMap(token -> new PdlAktoerNpidCommand(webClient, ident, token.getTokenValue()).call())
+                    .block();
+            return ResponseEntity.of(Optional.of(objectMapper.valueToTree("opprett person")));
+
+        } else {
+            return postRequest(
+                    opprettPerson.getHistoriskeIdenter(),
+                    opprettPerson, ident, "opprett person");
+        }
     }
 
-
-    @Timed(name = "providers", tags = { "operation", "pdl_navn" })
+    @Timed(name = "providers", tags = {"operation", "pdl_navn"})
     public ResponseEntity<JsonNode> postNavn(PdlNavn pdlNavn, String ident) {
 
         return postRequest(
@@ -133,7 +160,7 @@ public class PdlForvalterConsumer {
                 pdlNavn, ident, "navn");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_kjoenn" })
+    @Timed(name = "providers", tags = {"operation", "pdl_kjoenn"})
     public ResponseEntity<JsonNode> postKjoenn(PdlKjoenn pdlKjoenn, String ident) {
 
         return postRequest(
@@ -141,7 +168,7 @@ public class PdlForvalterConsumer {
                 pdlKjoenn, ident, "kjønn");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_kontaktinfoDoedsbo" })
+    @Timed(name = "providers", tags = {"operation", "pdl_kontaktinfoDoedsbo"})
     public ResponseEntity<JsonNode> postKontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo kontaktinformasjonForDoedsbo, String ident) {
 
         return postRequest(
@@ -149,7 +176,7 @@ public class PdlForvalterConsumer {
                 kontaktinformasjonForDoedsbo, ident);
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_utenlandsIdentitet" })
+    @Timed(name = "providers", tags = {"operation", "pdl_utenlandsIdentitet"})
     public ResponseEntity<JsonNode> postUtenlandskIdentifikasjonsnummer(PdlUtenlandskIdentifikasjonsnummer utenlandskIdentifikasjonsnummer, String ident) {
 
         return postRequest(
@@ -157,14 +184,14 @@ public class PdlForvalterConsumer {
                 utenlandskIdentifikasjonsnummer, ident);
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_falskIdentitet" })
+    @Timed(name = "providers", tags = {"operation", "pdl_falskIdentitet"})
     public ResponseEntity<JsonNode> postFalskIdentitet(PdlFalskIdentitet falskIdentitet, String ident) {
 
         return postRequest(
                 PDL_BESTILLING_FALSK_IDENTITET_URL, falskIdentitet, ident);
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_statsborgerskap" })
+    @Timed(name = "providers", tags = {"operation", "pdl_statsborgerskap"})
     public ResponseEntity<JsonNode> postStatsborgerskap(PdlStatsborgerskap pdlStatsborgerskap, String ident) {
 
         return postRequest(
@@ -172,7 +199,7 @@ public class PdlForvalterConsumer {
                 pdlStatsborgerskap, ident, "statsborgerskap");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_doedsfall" })
+    @Timed(name = "providers", tags = {"operation", "pdl_doedsfall"})
     public ResponseEntity<JsonNode> postDoedsfall(PdlDoedsfall pdlDoedsfall, String ident) {
 
         return postRequest(
@@ -180,7 +207,7 @@ public class PdlForvalterConsumer {
                 pdlDoedsfall, ident, "dødsmelding");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_doedfoedtBarn" })
+    @Timed(name = "providers", tags = {"operation", "pdl_doedfoedtBarn"})
     public ResponseEntity<JsonNode> postDoedfoedtBarn(PdlDoedfoedtBarn doedfoedtBarn, String ident) {
 
         return postRequest(
@@ -188,7 +215,7 @@ public class PdlForvalterConsumer {
                 doedfoedtBarn, ident, "dødfødtBarn");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_foedsel" })
+    @Timed(name = "providers", tags = {"operation", "pdl_foedsel"})
     public ResponseEntity<JsonNode> postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
 
         return postRequest(
@@ -196,7 +223,7 @@ public class PdlForvalterConsumer {
                 pdlFoedsel, ident, "fødselsmelding");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_adressebeskyttelse" })
+    @Timed(name = "providers", tags = {"operation", "pdl_adressebeskyttelse"})
     public ResponseEntity<JsonNode> postAdressebeskyttelse(PdlAdressebeskyttelse pdlAdressebeskyttelse, String ident) {
 
         return postRequest(
@@ -204,7 +231,7 @@ public class PdlForvalterConsumer {
                 pdlAdressebeskyttelse, ident, "adressebeskyttelse");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_familierelasjon" })
+    @Timed(name = "providers", tags = {"operation", "pdl_familierelasjon"})
     public ResponseEntity<JsonNode> postForeldreBarnRelasjon(PdlForelderBarnRelasjon familierelasjonn, String ident) {
 
         return postRequest(
@@ -212,7 +239,7 @@ public class PdlForvalterConsumer {
                 familierelasjonn, ident, "familierelasjon");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_telefonnummer" })
+    @Timed(name = "providers", tags = {"operation", "pdl_telefonnummer"})
     public ResponseEntity<JsonNode> postTelefonnummer(PdlTelefonnummer.Entry telefonnummer, String ident) {
 
         return postRequest(
@@ -220,7 +247,7 @@ public class PdlForvalterConsumer {
                 telefonnummer, ident, "telefonnummer");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_sivilstand" })
+    @Timed(name = "providers", tags = {"operation", "pdl_sivilstand"})
     public ResponseEntity<JsonNode> postSivilstand(PdlSivilstand sivilstand, String ident) {
 
         return postRequest(
@@ -228,7 +255,7 @@ public class PdlForvalterConsumer {
                 sivilstand, ident, "sivilstand");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_oppholdsadresse" })
+    @Timed(name = "providers", tags = {"operation", "pdl_oppholdsadresse"})
     public ResponseEntity<JsonNode> postOppholdsadresse(PdlOppholdsadresse oppholdsadresse, String ident) {
 
         return postRequest(
@@ -236,7 +263,7 @@ public class PdlForvalterConsumer {
                 oppholdsadresse, ident, "oppholdsadresse");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_kontaktadresse" })
+    @Timed(name = "providers", tags = {"operation", "pdl_kontaktadresse"})
     public ResponseEntity<JsonNode> postKontaktadresse(PdlKontaktadresse kontaktadresse, String ident) {
 
         return postRequest(
@@ -244,7 +271,7 @@ public class PdlForvalterConsumer {
                 kontaktadresse, ident, "kontaktadresse");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_bostedadresse" })
+    @Timed(name = "providers", tags = {"operation", "pdl_bostedadresse"})
     public ResponseEntity<JsonNode> postBostedadresse(PdlBostedadresse bostedadresse, String ident) {
 
         return postRequest(
@@ -252,7 +279,7 @@ public class PdlForvalterConsumer {
                 bostedadresse, ident, "bostedadresse");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_delt_bosted" })
+    @Timed(name = "providers", tags = {"operation", "pdl_delt_bosted"})
     public ResponseEntity<JsonNode> postDeltBosted(PdlDeltBosted deltBosted, String ident) {
 
         return postRequest(
@@ -260,7 +287,7 @@ public class PdlForvalterConsumer {
                 deltBosted, ident, "deltBosted");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_folkeregisterpersonstatus" })
+    @Timed(name = "providers", tags = {"operation", "pdl_folkeregisterpersonstatus"})
     public ResponseEntity<JsonNode> postFolkeregisterpersonstatus(PdlFolkeregisterpersonstatus folkeregisterpersonstatus, String ident) {
 
         return postRequest(
@@ -268,7 +295,7 @@ public class PdlForvalterConsumer {
                 folkeregisterpersonstatus, ident, "folkeregisterpersonstatus");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_foreldreansvar" })
+    @Timed(name = "providers", tags = {"operation", "pdl_foreldreansvar"})
     public ResponseEntity<JsonNode> postForeldreansvar(PdlForeldreansvar foreldreansvar, String ident) {
 
         return postRequest(
@@ -276,7 +303,7 @@ public class PdlForvalterConsumer {
                 foreldreansvar, ident, "foreldreansvar");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_innflytting" })
+    @Timed(name = "providers", tags = {"operation", "pdl_innflytting"})
     public ResponseEntity<JsonNode> postInnflytting(PdlInnflytting innflytting, String ident) {
 
         return postRequest(
@@ -284,7 +311,7 @@ public class PdlForvalterConsumer {
                 innflytting, ident, "innflytting");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_utflytting" })
+    @Timed(name = "providers", tags = {"operation", "pdl_utflytting"})
     public ResponseEntity<JsonNode> postUtflytting(PdlUtflytting utflytting, String ident) {
 
         return postRequest(
@@ -292,7 +319,7 @@ public class PdlForvalterConsumer {
                 utflytting, ident, "utflytting");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_opphold" })
+    @Timed(name = "providers", tags = {"operation", "pdl_opphold"})
     public ResponseEntity<JsonNode> postOpphold(PdlOpphold opphold, String ident) {
 
         return postRequest(
@@ -300,7 +327,7 @@ public class PdlForvalterConsumer {
                 opphold, ident, "opphold");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_vergemaal" })
+    @Timed(name = "providers", tags = {"operation", "pdl_vergemaal"})
     public ResponseEntity<JsonNode> postVergemaal(PdlVergemaal vergemaal, String ident) {
 
         return postRequest(
@@ -308,7 +335,7 @@ public class PdlForvalterConsumer {
                 vergemaal, ident, "vergemaal");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_fullmakt" })
+    @Timed(name = "providers", tags = {"operation", "pdl_fullmakt"})
     public ResponseEntity<JsonNode> postFullmakt(PdlFullmakt fullmakt, String ident) {
 
         return postRequest(
@@ -316,7 +343,7 @@ public class PdlForvalterConsumer {
                 fullmakt, ident, "fullmakt");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_sikkerhetstiltak" })
+    @Timed(name = "providers", tags = {"operation", "pdl_sikkerhetstiltak"})
     public ResponseEntity<JsonNode> postSikkerhetstiltak(PdlSikkerhetstiltak sikkerhetstiltak, String ident) {
 
         return postRequest(
@@ -336,18 +363,21 @@ public class PdlForvalterConsumer {
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident, String beskrivelse) {
 
         try {
-            return
-                    webClient.post()
+            return tokenService.exchange(serviceProperties)
+                    .flatMap(token -> webClient.post()
                             .uri(uriBuilder -> uriBuilder
                                     .path(PDL_FORVALTER_URL)
                                     .path(url)
                                     .build())
                             .contentType(APPLICATION_JSON)
-                            .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                            .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
                             .header(HEADER_NAV_PERSON_IDENT, ident)
                             .bodyValue(body)
-                            .retrieve().toEntity(JsonNode.class)
-                            .block();
+                            .retrieve()
+                            .toEntity(JsonNode.class)
+                            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                    .filter(WebClientFilter::is5xxException)))
+                    .block();
 
         } catch (RuntimeException e) {
 
@@ -359,19 +389,22 @@ public class PdlForvalterConsumer {
     private ResponseEntity<JsonNode> postRequest(List<String> historiskeIdenter, Object body, String ident, String beskrivelse) {
 
         try {
-            return
-                    webClient.post()
+            return tokenService.exchange(serviceProperties)
+                    .flatMap(token -> webClient.post()
                             .uri(uriBuilder -> uriBuilder
                                     .path(PDL_FORVALTER_URL)
                                     .path(PDL_BESTILLING_OPPRETT_PERSON)
                                     .queryParam(PDL_IDENTHISTORIKK_QUERY, historiskeIdenter)
                                     .build())
                             .contentType(APPLICATION_JSON)
-                            .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                            .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
                             .header(HEADER_NAV_PERSON_IDENT, ident)
                             .bodyValue(body)
-                            .retrieve().toEntity(JsonNode.class)
-                            .block();
+                            .retrieve()
+                            .toEntity(JsonNode.class)
+                            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                    .filter(WebClientFilter::is5xxException)))
+                    .block();
 
         } catch (RuntimeException e) {
             throw new DollyFunctionalException(format(SEND_ERROR, beskrivelse,
@@ -381,17 +414,20 @@ public class PdlForvalterConsumer {
 
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident) {
 
-        return
-                webClient.post()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient.post()
                         .uri(uriBuilder -> uriBuilder
                                 .path(PDL_FORVALTER_URL)
                                 .path(url)
                                 .build())
                         .contentType(APPLICATION_JSON)
-                        .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                        .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
                         .header(HEADER_NAV_PERSON_IDENT, ident)
                         .bodyValue(body)
-                        .retrieve().toEntity(JsonNode.class)
-                        .block();
+                        .retrieve()
+                        .toEntity(JsonNode.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
+                .block();
     }
 }

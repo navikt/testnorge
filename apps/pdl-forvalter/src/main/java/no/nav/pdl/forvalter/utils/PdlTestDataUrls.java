@@ -25,6 +25,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK_URL;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_STATSBORGERSKAP;
@@ -66,6 +67,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_DOEDFOEDT_BARN = PDL_BESTILLING_URL + "/doedfoedtbarn";
     private static final String PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL = PDL_BESTILLING_URL + "/tilrettelagtkommunikasjon";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
+    private static final String PDL_BESTILLING_SIKKERHETSTILTAK_URL = PDL_BESTILLING_URL + "/sikkerhetstiltak";
 
     private static final Map<PdlArtifact, String> bestillingUrl = new EnumMap<>(PdlArtifact.class);
 
@@ -97,6 +99,7 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_SLETTING, PDL_SLETTING_URL);
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
         bestillingUrl.put(PDL_DOEDFOEDT_BARN, PDL_BESTILLING_DOEDFOEDT_BARN);
+        bestillingUrl.put(PDL_SIKKERHETSTILTAK_URL, PDL_BESTILLING_SIKKERHETSTILTAK_URL);
     }
 
     public static Map<PdlArtifact, String> getBestillingUrl() {

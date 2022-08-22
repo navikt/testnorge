@@ -28,8 +28,7 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-      external:
-        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+        - application: testnav-orgnummer-service
   gcp:
     sqlInstances:
       - type: POSTGRES_12
@@ -45,6 +44,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

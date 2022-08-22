@@ -7,7 +7,9 @@ import EditIcon from '~/assets/icons/nav-ikoner/line/SVG/01-edition/pencil-2.svg
 import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
 import Skull from '~/assets/icons/nav-ikoner/line/SVG/01-edition/skull-1.svg'
 import Lock from '~/assets/icons/nav-ikoner/line/SVG/01-edition/line-version-lock-close-2.svg'
+import Lock_Black from '~/assets/icons/nav-ikoner/line/SVG/01-edition/lock-black.svg'
 import ChatBubble from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/bubble-chat-1.svg'
+import Telephone from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/Telephone.svg'
 import ThumbsUp from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-up-2.svg'
 import ThumbsDown from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-down-2.svg'
 import Star from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1.svg'
@@ -30,6 +32,7 @@ import Copy from '~/assets/icons/nav-ikoner/line/SVG/17-files/copy-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
+import Kryss from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/kryss.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
 import Logout from '~/assets/icons/nav-ikoner/line/SVG/19-interface/logout.svg'
@@ -47,6 +50,7 @@ import Globe from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-1.svg'
 import Globe2 from '~/assets/icons/nav-ikoner/line/SVG/26-places/globe-2.svg'
 import Hierarchy3 from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3.svg'
 import Hierarchy3Light from '~/assets/icons/nav-ikoner/line/SVG/33-hierarchy/hierarchy-3Light.svg'
+import Infants from '~/assets/icons/nav-ikoner/line/SVG/people/Infants.svg'
 import Eraser from '~/assets/icons/nav-ikoner/filled/SVG/36-text/eraser.svg'
 import ArrowLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-left-10.svg'
 import ArrowRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-10.svg'
@@ -68,13 +72,17 @@ import ManLight from '~/assets/icons/custom/ManLight.svg'
 import Man2 from '~/assets/icons/custom/Man2.svg'
 import Man2Light from '~/assets/icons/custom/Man2Light.svg'
 import Woman from '~/assets/icons/custom/Woman.svg'
+import Person from '~/assets/icons/custom/Person.svg'
 import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
+import ChildHalo from '~/assets/icons/custom/ChildHalo2.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
+import RIP from '~/assets/icons/custom/RIP.svg'
 
 import './Icon.less'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const icons = {
 	trashcan: Trashcan,
@@ -92,6 +100,7 @@ export const icons = {
 	'arrow-right': ArrowRight,
 	details: Details,
 	synchronize: Synchronize,
+	kryss: Kryss,
 	'report-problem-circle': ReportProblemCircle,
 	'feedback-check-circle': CheckCircle,
 	'report-problem-triangle': ProblemTriangle,
@@ -103,7 +112,7 @@ export const icons = {
 	collapse: ChevronUp,
 	ThumbsUp: ThumbsUp,
 	ThumbsDown: ThumbsDown,
-	lock: Lock,
+	lock: Lock_Black,
 	logout: Logout,
 
 	man: Man,
@@ -111,10 +120,12 @@ export const icons = {
 	man2: Man2,
 	man2Light: Man2Light,
 	woman: Woman,
+	person: Person,
 	group: Group,
 	groupLight: GroupLight,
 	groupDark: GroupDark,
 	lockedGroup: LockedGroup,
+	sikkerhetstiltak: Lock,
 	bestilling: FileChecklist,
 	bestillingLight: FileChecklistLight,
 	newFile: NewFile,
@@ -134,12 +145,14 @@ export const icons = {
 	institusjon: Institusjon,
 	arbeid: Wrench,
 	sigrun: BankNote,
+	bankkonto: BankNote,
 	inntektstub: MoneyBag,
 	inntektsmelding: CoinBankNote,
 	udi: Globe,
 	kommentar: ChatBubble,
 	partner: Love,
 	barn: Baby,
+	doedfoedt: ChildHalo,
 	dolly: Dolly,
 	pensjon: PiggyBank,
 	brreg: BrregLogo,
@@ -154,6 +167,10 @@ export const icons = {
 	fullmakt: Group2,
 	link: Link,
 	linkBroken: LinkBroken,
+	telephone: Telephone,
+	foedsel: Infants,
+	foreldreansvar: Group2,
+	grav: RIP,
 }
 
 const px = (v) => `${v}px`
@@ -170,5 +187,14 @@ export default function Icon({
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
-	return <SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} />
+	return (
+		<ErrorBoundary>
+			<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} role={'img'}>
+				<img
+					src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
+					alt="fallback"
+				/>
+			</SVG>
+		</ErrorBoundary>
+	)
 }

@@ -16,6 +16,7 @@ import JoarkDokumentService, {
 	Journalpost,
 } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
+import Panel from '~/components/ui/panel/Panel'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -24,7 +25,9 @@ interface InntektsmeldingVisningProps {
 
 export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningProps) => {
 	//Viser data fra bestillingen
-	if (!liste || liste.length < 1) return null
+	if (!liste || liste.length < 1) {
+		return null
+	}
 
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		return JoarkDokumentService.hentJournalpost(
@@ -78,16 +81,32 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 						return (
 							<>
 								<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-								<DollyFieldArray
-									ignoreOnSingleElement={true}
-									header="Inntektsmelding"
-									data={gyldigeBestillinger}
-									expandable
-								>
-									{(inntekter: BestillingData) => (
-										<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
-									)}
-								</DollyFieldArray>
+								{data.length > 5 ? (
+									// @ts-ignore
+									<Panel heading={`Inntektsmeldinger`}>
+										<DollyFieldArray
+											ignoreOnSingleElement={true}
+											header="Inntektsmelding"
+											data={gyldigeBestillinger}
+											expandable
+										>
+											{(inntekter: BestillingData) => (
+												<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+											)}
+										</DollyFieldArray>
+									</Panel>
+								) : (
+									<DollyFieldArray
+										ignoreOnSingleElement={true}
+										header="Inntektsmelding"
+										data={gyldigeBestillinger}
+										expandable
+									>
+										{(inntekter: BestillingData) => (
+											<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+										)}
+									</DollyFieldArray>
+								)}
 							</>
 						)
 					}
@@ -99,7 +118,9 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 }
 
 InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
-	if (!bestillinger) return false
+	if (!bestillinger) {
+		return false
+	}
 
 	return bestillinger.filter(
 		(bestilling: any) =>

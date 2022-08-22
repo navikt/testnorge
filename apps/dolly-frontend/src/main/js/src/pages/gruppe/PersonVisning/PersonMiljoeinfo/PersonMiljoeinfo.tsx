@@ -1,27 +1,27 @@
 import React from 'react'
 import { useAsync } from 'react-use'
-import { TpsfApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import { TpsDataVisning } from './TpsDataVisning'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TpsMessagingApi } from '~/service/Api'
 
 type PersonMiljoeinfoProps = {
+	bankIdBruker: boolean
 	ident: string
-	miljoe: Array<string>
 }
 
-export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfoProps) => {
-	if (!ident) return null
-
-	const request = {
-		ident: ident,
-		miljoe: miljoe,
-	}
-
+export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps) => {
 	const state = useAsync(async () => {
-		const response = await TpsfApi.hentTpsInnhold(request)
-		return response
+		if (ident) {
+			return bankIdBruker
+				? TpsMessagingApi.getTpsPersonInfo(ident, ['q1'])
+				: TpsMessagingApi.getTpsPersonInfoAllEnvs(ident)
+		}
 	}, [])
+
+	if (!ident) {
+		return null
+	}
 
 	return (
 		<div>

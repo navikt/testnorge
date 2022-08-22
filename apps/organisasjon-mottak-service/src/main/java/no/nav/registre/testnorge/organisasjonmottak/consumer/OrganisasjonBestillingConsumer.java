@@ -1,31 +1,33 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.registre.testnorge.organisasjonmottak.config.properties.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterBestillingCommand;
 import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
 public class OrganisasjonBestillingConsumer {
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,
-            AccessTokenService accessTokenService
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.properties = properties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -38,15 +40,12 @@ public class OrganisasjonBestillingConsumer {
                     .uuid(uuid)
                     .build();
 
-            var order = accessTokenService.generateClientCredentialAccessToken(properties)
+            var order = tokenExchange.exchange(properties)
                     .flatMap(accessToken -> new RegisterBestillingCommand(webClient, accessToken.getTokenValue(), orderDTO).call())
                     .block();
             log.info("Ordre med {} opprettet.", order.getId());
         } catch (Exception ex) {
             log.error("Noe gikk galt med innsending til organisasjon-bestilling-service.", ex);
         }
-
     }
-
-
 }

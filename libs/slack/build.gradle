@@ -9,7 +9,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "testnav-slack"
         property "sonar.projectName", "testnav-slack"
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -17,7 +17,7 @@ sonarqube {
 }
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.6'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.7'
     }
 }
 

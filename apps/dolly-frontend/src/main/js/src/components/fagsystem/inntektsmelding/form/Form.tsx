@@ -28,9 +28,10 @@ import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
+import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
@@ -73,7 +74,7 @@ export const initialValues = (type: string) => ({
 	ytelse: '',
 })
 
-const inntektsmeldingAttributt = 'inntektsmelding'
+export const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
 export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => {
@@ -83,24 +84,26 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 			: TypeArbeidsgiver.VIRKSOMHET
 	)
 
-	const handleArbeidsgiverChange = (type: string) => {
+	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
-		_get(formikBag.values, 'inntektsmelding.inntekter').forEach((inntekt: Inntekt, idx: number) => {
-			if (type === TypeArbeidsgiver.VIRKSOMHET) {
-				formikBag.setFieldValue(
-					`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
-					''
-				)
-				formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
-			} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
-				formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
-				formikBag.setFieldValue(
-					`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
-					''
-				)
+		_get(formikBag.values, 'inntektsmelding.inntekter').forEach(
+			(_inntekt: Inntekt, idx: number) => {
+				if (type === TypeArbeidsgiver.VIRKSOMHET) {
+					formikBag.setFieldValue(
+						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
+						''
+					)
+					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
+				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
+					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
+					formikBag.setFieldValue(
+						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
+						''
+					)
+				}
 			}
-		})
+		)
 	}
 
 	return (
@@ -111,8 +114,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
-				//@ts-ignore
-				startOpen={() => erForste(formikBag.values, [inntektsmeldingAttributt])}
+				startOpen={erForste(formikBag.values, [inntektsmeldingAttributt])}
 			>
 				{!_has(formikBag.values, 'aareg') && (
 					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
@@ -125,7 +127,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 						{ value: TypeArbeidsgiver.VIRKSOMHET, label: 'Virksomhet' },
 						{ value: TypeArbeidsgiver.PRIVATPERSON, label: 'Privatperson' },
 					]}
-					onChange={(type) => handleArbeidsgiverChange(type.value)}
+					onChange={(type: { value: TypeArbeidsgiver }) => handleArbeidsgiverChange(type.value)}
 					value={typeArbeidsgiver}
 					isClearable={false}
 				/>
@@ -153,29 +155,35 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 										kodeverk={Kodeverk.Ytelse}
 										formikBag={formikBag}
 									/>
-									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
-										<FormikTextInput
-											name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
-											label="Arbeidsgiver (fnr/dnr/bost)"
-										/>
-									)}
 									<FormikDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
 										label="Innsendingstidspunkt"
 									/>
-									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
-										<OrganisasjonMedArbeidsforholdSelect
-											path={`${path}.arbeidsgiver.virksomhetsnummer`}
-											label="Arbeidsgiver (orgnr)"
-											//@ts-ignore
-											isClearable={false}
-										/>
+									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
+										<>
+											<FormikTextInput
+												name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
+												label="Arbeidsgiver (fnr/dnr/npid)"
+											/>
+											<FormikCheckbox
+												name={`${path}.naerRelasjon`}
+												label="Nær relasjon"
+												checkboxMargin
+											/>
+										</>
 									)}
-									<FormikCheckbox
-										name={`${path}.naerRelasjon`}
-										label="Nær relasjon"
-										checkboxMargin
-									/>
+
+									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
+										<div className={'flexbox'}>
+											<OrgnrToggle
+												path={`${path}.arbeidsgiver.virksomhetsnummer`}
+												formikBag={formikBag}
+											/>
+											<div style={{ margin: '70px 0 0 30px' }}>
+												<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
+											</div>
+										</div>
+									)}
 								</div>
 								<ArbeidsforholdForm path={`${path}.arbeidsforhold`} ytelse={ytelse} />
 								<Kategori title="Refusjon">
@@ -225,23 +233,29 @@ InntektsmeldingForm.validation = {
 	inntektsmelding: Yup.object({
 		inntekter: Yup.array().of(
 			Yup.object({
-				aarsakTilInnsending: requiredString,
+				aarsakTilInnsending: requiredString.nullable(),
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString
+						requiredString.nullable().matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer')
 					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString
+						requiredString.nullable().matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer')
 					),
 				}),
 				arbeidsforhold: Yup.object({
 					beregnetInntekt: Yup.object({
 						beloep: requiredNumber.typeError(messages.required),
 					}),
+					avtaltFerieListe: Yup.array().of(
+						Yup.object({
+							fom: testDatoFom(Yup.string(), 'tom'),
+							tom: testDatoTom(Yup.string(), 'fom'),
+						})
+					),
 				}),
 				avsendersystem: Yup.object({
 					innsendingstidspunkt: requiredDate,

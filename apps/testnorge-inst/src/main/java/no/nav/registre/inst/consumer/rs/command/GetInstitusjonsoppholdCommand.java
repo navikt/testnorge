@@ -6,11 +6,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
+import no.nav.registre.inst.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
@@ -52,6 +55,8 @@ public class GetInstitusjonsoppholdCommand implements Callable<InstitusjonRespon
                     .header(NORSKIDENT, ident)
                     .retrieve()
                     .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException))
                     .block();
             response = nonNull(listResponseEntity)
                     ? listResponseEntity.getBody()

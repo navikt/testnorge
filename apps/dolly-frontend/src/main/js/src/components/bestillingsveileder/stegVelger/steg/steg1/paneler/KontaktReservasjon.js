@@ -1,8 +1,10 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { harValgtAttributt } from '~/components/ui/form/formUtils'
+import { krrAttributt } from '~/components/fagsystem/krrstub/form/Form'
 
-export const KontaktReservasjonsPanel = ({ stateModifier }) => {
+export const KontaktReservasjonsPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(KontaktReservasjonsPanel.initialValues)
 
 	const infoTekst = `KRR - benyttes for offentlige virksomheter for å avklare om den enkelte bruker har reservert seg mot digital kommunikasjon eller ikke.
@@ -17,6 +19,7 @@ export const KontaktReservasjonsPanel = ({ stateModifier }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="krr"
+			startOpen={harValgtAttributt(formikBag.values, [krrAttributt])}
 		>
 			<AttributtKategori>
 				<Attributt attr={sm.attrs.krrstub} />

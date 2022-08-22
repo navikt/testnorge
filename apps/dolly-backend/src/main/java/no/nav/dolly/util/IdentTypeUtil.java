@@ -18,7 +18,7 @@ public class IdentTypeUtil {
         if (parseInt(String.valueOf(ident.charAt(0))) > 3) {
             return DNR;
 
-        } else if (parseInt(String.valueOf(ident.charAt(2))) > 2) {
+        } else if (parseInt(String.valueOf(ident.charAt(2))) % 4 >= 2) {
             return BOST;
 
         } else if ("000".equals(ident.substring(6, 9))) {

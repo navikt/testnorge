@@ -1,30 +1,54 @@
 import React from 'react'
-import _get from 'lodash'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { Adressat } from './Adressat'
+import { Kontakt } from './Kontakt'
 import { Adresse } from './Adresse'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { initialKontaktinfoForDoedebo } from '~/components/fagsystem/pdlf/form/initialValues'
+import Panel from '~/components/ui/panel/Panel'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { Vis } from '~/components/bestillingsveileder/VisAttributt'
+
+export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 	return (
-		<React.Fragment>
-			<Adressat formikBag={formikBag} />
-			<Adresse formikBag={formikBag} />
-
-			<Kategori title="Diverse">
-				<FormikSelect
-					name="pdlforvalter.kontaktinformasjonForDoedsbo.skifteform"
-					label="Skifteform"
-					options={Options('skifteform')}
-					isClearable={false}
-				/>
-				<FormikDatepicker
-					name="pdlforvalter.kontaktinformasjonForDoedsbo.utstedtDato"
-					label="Skifteform utstedt"
-				/>
-			</Kategori>
-		</React.Fragment>
+		<Vis attributt={doedsboAttributt}>
+			<Panel
+				heading="Kontaktinformasjon for dødsbo"
+				hasErrors={panelError(formikBag, doedsboAttributt)}
+				iconType="doedsbo"
+				startOpen={erForste(formikBag.values, [doedsboAttributt])}
+			>
+				<FormikDollyFieldArray
+					name="pdldata.person.kontaktinformasjonForDoedsbo"
+					header="Kontaktinformasjon for dødsbo"
+					newEntry={initialKontaktinfoForDoedebo}
+					canBeEmpty={false}
+				>
+					{(path) => {
+						return (
+							<>
+								<FormikSelect
+									name={`${path}.skifteform`}
+									label="Skifteform"
+									options={Options('skifteform')}
+									isClearable={false}
+								/>
+								<FormikDatepicker
+									name={`${path}.attestutstedelsesdato`}
+									label="Utstedelsesdato skifteattest"
+								/>
+								<Kontakt formikBag={formikBag} path={path} />
+								<Adresse formikBag={formikBag} path={`${path}.adresse`} />
+								<AvansertForm path={path} kanVelgeMaster={false} />
+							</>
+						)
+					}}
+				</FormikDollyFieldArray>
+			</Panel>
+		</Vis>
 	)
 }

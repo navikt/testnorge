@@ -2,9 +2,11 @@ package no.nav.dolly.domain.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
+import no.nav.dolly.domain.resultset.Tags;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,6 +25,8 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +35,7 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -67,13 +70,19 @@ public class Testgruppe {
 
     @OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
     @Column(unique = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private List<Testident> testidenter;
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Bruker> favorisertAv;
 
     @OrderBy("id")
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Bestilling> bestillinger;
 
     @Column(name = "ER_LAAST")
@@ -81,6 +90,9 @@ public class Testgruppe {
 
     @Column(name = "LAAST_BESKRIVELSE")
     private String laastBeskrivelse;
+
+    @Column(name = "TAGS")
+    private String tags;
 
     public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
@@ -94,6 +106,13 @@ public class Testgruppe {
             favorisertAv = new HashSet<>();
         }
         return favorisertAv;
+    }
+
+    public List<Tags> getTags() {
+        if (isNull(tags)) {
+            return Collections.emptyList();
+        }
+        return Arrays.stream(tags.split(",")).map(Tags::valueOf).toList();
     }
 
     @Override
@@ -128,17 +147,6 @@ public class Testgruppe {
                 .append(getErLaast())
                 .append(getLaastBeskrivelse())
                 .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Testgruppe{" +
-                "navn='" + navn + '\'' +
-                ", hensikt='" + hensikt + '\'' +
-                ", datoEndret=" + datoEndret +
-                ", erLaast=" + erLaast +
-                ", laastBeskrivelse='" + laastBeskrivelse + '\'' +
-                '}';
     }
 }
 

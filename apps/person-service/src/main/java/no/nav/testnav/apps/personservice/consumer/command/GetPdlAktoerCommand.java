@@ -5,16 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
 import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -29,6 +32,7 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
     private static final String TEMA_GENERELL = "GEN";
 
     private final WebClient webClient;
+    private final String url;
     private final String ident;
     private final String token;
 
@@ -54,10 +58,11 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .variables(variables)
                 .build();
 
-
         return webClient
                 .post()
-                .uri("/pdl-api/graphql")
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .path("/graphql")
+                        .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(PdlHeaders.HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(PdlHeaders.TEMA, TEMA_GENERELL)
@@ -65,6 +70,8 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .retrieve()
                 .bodyToMono(PdlAktoer.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(

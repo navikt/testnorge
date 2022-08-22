@@ -22,7 +22,7 @@ public class IdportenOcidLogoutUrlResolver implements OcidLogoutUriResolver {
     }
 
     @Override
-    public Mono<URI> generateUrl(DefaultOidcUser user) {
+    public Mono<URI> generateUrl(DefaultOidcUser user, String state) {
         return webClient
                 .get()
                 .uri(wellKnownUrl)
@@ -32,6 +32,7 @@ public class IdportenOcidLogoutUrlResolver implements OcidLogoutUriResolver {
                         .fromUri(URI.create(config.getEndSessionEndpoint()))
                         .queryParam("id_token_hint", user.getIdToken().getTokenValue())
                         .queryParam("post_logout_redirect_uri", postLogoutRedirectUri)
+                        .queryParam("state", state)
                         .build()
                         .toUri()
                 );

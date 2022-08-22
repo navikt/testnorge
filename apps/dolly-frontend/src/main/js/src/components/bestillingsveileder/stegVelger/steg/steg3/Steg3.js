@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
@@ -6,11 +6,49 @@ import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
 import { IdentVelger } from './IdentVelger'
+import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import _get from 'lodash/get'
 
-export const Steg3 = ({ formikBag, erNyIdent }) => {
+export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const importTestnorge = opts.is.importTestnorge
+	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+	const bankIdBruker = brukertype === 'BANKID'
 
+	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
+	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
+
+	const nyIdent = _get(formikBag.values, 'pdldata.person.nyident')
+	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
+
+	const forelderBarnRelasjon = _get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
+
+	const alleredeValgtMiljoe = () => {
+		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
+			return ['q1']
+		}
+		return []
+	}
+
+	useEffect(() => {
+		if (importTestnorge) {
+			if (harAvhukedeAttributter(formikBag.values)) {
+				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+			}
+			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
+		} else {
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		}
+		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
+			formikBag.setFieldValue('malBestillingNavn', undefined)
+		}
+	}, [])
+
+	const visMiljoeVelger = formikBag.values.hasOwnProperty('environments')
 	return (
 		<div>
 			{harAvhukedeAttributter(formikBag.values) && (
@@ -20,9 +58,33 @@ export const Steg3 = ({ formikBag, erNyIdent }) => {
 				</div>
 			)}
 			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
-			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
-			{!erOrganisasjon && <MalForm formikBag={formikBag} />}
-			{!erOrganisasjon && <OppsummeringKommentarForm formikBag={formikBag} />}
+			{visMiljoeVelger && (
+				<MiljoVelger
+					bestillingsdata={formikBag.values}
+					heading="Hvilke miljøer vil du opprette i?"
+					bankIdBruker={bankIdBruker}
+					alleredeValgtMiljoe={alleredeValgtMiljoe()}
+				/>
+			)}
+			{importTestnorge && !opts.gruppe && <VelgGruppe formikBag={formikBag} />}
+			{importTestnorge && opts.gruppe && (
+				<div className="oppsummering">
+					<div className="bestilling-detaljer">
+						<h4>Gruppe for import</h4>
+						<div className="info-text">
+							<div style={{}}>{opts.gruppe.navn}</div>
+						</div>
+					</div>
+				</div>
+			)}
+			{!erOrganisasjon &&
+				!importTestnorge &&
+				!harRelatertPersonVedSivilstand &&
+				!harEksisterendeNyIdent &&
+				!harRelatertPersonBarn && (
+					<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+				)}
+			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>
 	)
 }
@@ -30,13 +92,5 @@ export const Steg3 = ({ formikBag, erNyIdent }) => {
 Steg3.label = 'Oppsummering'
 
 Steg3.validation = Yup.object(
-	Object.assign(
-		{},
-		{
-			environments: Yup.array()
-				.of(Yup.string().required('Velg et navn'))
-				.min(1, 'Må minst velge et miljø'),
-		},
-		MalForm.validation
-	)
+	Object.assign({}, MiljoVelger.validation, MalForm.validation, VelgGruppe.validation)
 )

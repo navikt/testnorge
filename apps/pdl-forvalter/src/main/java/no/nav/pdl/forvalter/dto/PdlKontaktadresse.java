@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,18 @@ public class PdlKontaktadresse extends AdresseDTO {
     private Postboksadresse postboksadresse;
     private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;
     private VegadresseForPost vegadresseForPost;
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseNorge() {
+        return false;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAdresseUtland() {
+        return false;
+    }
 
     @Getter
     @Setter

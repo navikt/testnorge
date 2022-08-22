@@ -10,16 +10,16 @@ type TpsData = {
 }
 
 type Data = {
-	environment: string
+	miljoe: string
 	person: object
 }
 
 export const TpsDataVisning = ({ data }: TpsData) => {
 	data.sort(function (a, b) {
-		if (a.environment < b.environment) {
+		if (a.miljoe < b.miljoe) {
 			return -1
 		}
-		if (a.environment > b.environment) {
+		if (a.miljoe > b.miljoe) {
 			return 1
 		}
 		return 0
@@ -49,7 +49,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 						key={idx}
 						overlayStyle={{ opacity: 1 }}
 					>
-						<div className="miljoe-knapp">{miljoe.environment.toUpperCase()}</div>
+						<div className="miljoe-knapp">{miljoe.miljoe.toUpperCase()}</div>
 					</Tooltip>
 				)
 			})}

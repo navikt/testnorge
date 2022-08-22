@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.instdata;
 
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.config.credentials.InstServiceProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +25,7 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -59,7 +60,7 @@ public class InstdataConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(InstServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -67,9 +68,9 @@ public class InstdataConsumerTest {
 
         stubDeleteInstData();
 
-        instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT);
+        instdataConsumer.deleteInstdata(List.of(IDENT)).block();
 
-        verify(tokenService).generateToken(ArgumentMatchers.any(InstProxyProperties.class));
+        verify(tokenService).exchange(ArgumentMatchers.any(InstServiceProperties.class));
     }
 
     @Test
@@ -97,5 +98,10 @@ public class InstdataConsumerTest {
                 .withQueryParam("miljoe", equalTo(ENVIRONMENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
+
+        stubFor(get(urlPathMatching("(.*)/api/v1/miljoer"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[\"" + ENVIRONMENT + "\"]")));
     }
 }

@@ -17,13 +17,15 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.G
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SKILT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SivilstandServiceTest {
 
-    private static final String IDENT = "12345678901";
+    private static final String IDENT = "12315678901";
 
     @Mock
     private PersonRepository personRepository;
@@ -32,41 +34,14 @@ class SivilstandServiceTest {
     private SivilstandService sivilstandService;
 
     @Test
-    void whenTypeIsMissing_thenThrowExecption() {
-
-        var request = SivilstandDTO.builder()
-                        .isNew(true)
-                        .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Type av sivilstand må oppgis"));
-    }
-
-    @Test
-    void whenSivilstandDatoIsMissing_thenThrowExecption() {
-
-        var request = SivilstandDTO.builder()
-                        .type(SKILT)
-                        .isNew(true)
-                        .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Sivilstand: dato for sivilstand må oppgis"));
-    }
-
-    @Test
     void whenRelatertPersonDontExist_thenThrowExecption() {
 
         var request = SivilstandDTO.builder()
-                        .type(GIFT)
-                        .sivilstandsdato(LocalDateTime.now())
-                        .relatertVedSivilstand(IDENT)
-                        .isNew(true)
-                        .build();
+                .type(GIFT)
+                .sivilstandsdato(LocalDateTime.now())
+                .relatertVedSivilstand(IDENT)
+                .isNew(true)
+                .build();
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
@@ -77,9 +52,10 @@ class SivilstandServiceTest {
     }
 
     @Test
-    void whenSivilstandDatoHasInvalidOrdering_thenThrowExecption() {
+    void whenSivilstandDatoHasInvalidOrdering_fixIt() {
 
         var request = PersonDTO.builder()
+                .ident(IDENT)
                 .sivilstand(List.of(SivilstandDTO.builder()
                                 .type(SKILT)
                                 .sivilstandsdato(LocalDateTime.now().minusYears(3))
@@ -91,9 +67,9 @@ class SivilstandServiceTest {
                                 .build()))
                 .build();
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.convert(request));
+        var target = sivilstandService.convert(request);
 
-        assertThat(exception.getMessage(), containsString("Sivilstand: overlappende datoer er ikke gyldig"));
+        assertThat(target.get(0).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(1).getSivilstandsdato())));
+        assertThat(target.get(1).getSivilstandsdato(), is(equalTo(request.getSivilstand().get(0).getSivilstandsdato())));
     }
 }

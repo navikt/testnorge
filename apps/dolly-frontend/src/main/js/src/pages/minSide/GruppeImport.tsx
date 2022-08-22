@@ -7,10 +7,8 @@ export default function GruppeImport() {
 			<hr />
 			<div className="flexbox--space">
 				<div>
-					<h2>Import av testdatagrupper</h2>
-					<p>
-						Savner du testdatagruppene fra dine tidligere Z-identer? Da kan du importere dem her.
-					</p>
+					<h2>Import av grupper</h2>
+					<p>Savner du gruppene fra dine tidligere Z-identer? Da kan du importere dem her.</p>
 				</div>
 				<ImporterGrupperConnector />
 			</div>

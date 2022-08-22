@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'
+import React, { BaseSyntheticEvent, useEffect } from 'react'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -7,6 +7,13 @@ import { useBoolean } from 'react-use'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
+
+const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
+
+export enum FormType {
+	STANDARD = 'standard',
+	FORENKLET = 'forenklet',
+}
 
 const initialValues = {
 	beloep: '',
@@ -51,11 +58,15 @@ const simpleValues = {
 }
 
 export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
-	const [formSimple, setFormSimple] = useBoolean(false)
+	const [formSimple, setFormSimple] = useBoolean(
+		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET
+	)
 
-	const changeFormType = (event: SyntheticEvent<EventTarget, Event>) => {
-		// @ts-ignore
-		const eventValueSimple = event.target?.value.includes('forenklet')
+	useEffect(() => formSimple && changeFormType(FormType.FORENKLET), [])
+
+	const changeFormType = (type: FormType) => {
+		const eventValueSimple = type === FormType.FORENKLET
+		sessionStorage.setItem(INNTEKTSTYPE_TOGGLE, type)
 		setFormSimple(eventValueSimple)
 
 		const restValues = eventValueSimple && { ...simpleValues }
@@ -76,11 +87,14 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 	return (
 		<>
 			<div className="toggle--wrapper">
-				<ToggleGruppe onChange={changeFormType} name="toggler">
-					<ToggleKnapp value="standard" checked={!formSimple}>
+				<ToggleGruppe
+					onChange={(event: BaseSyntheticEvent) => changeFormType(event.target?.value)}
+					name="toggler"
+				>
+					<ToggleKnapp value={FormType.STANDARD} checked={!formSimple}>
 						Standard
 					</ToggleKnapp>
-					<ToggleKnapp value="forenklet" checked={formSimple}>
+					<ToggleKnapp value={FormType.FORENKLET} checked={formSimple}>
 						Forenklet
 					</ToggleKnapp>
 				</ToggleGruppe>

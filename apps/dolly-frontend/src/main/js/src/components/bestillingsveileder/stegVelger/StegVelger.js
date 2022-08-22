@@ -11,20 +11,30 @@ import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import DisplayFormikState from '~/utils/DisplayFormikState'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	REGEX_BACKEND_ORGANISASJONER,
+	useMatchMutate,
+} from '~/utils/hooks/useMutate'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
-export const StegVelger = ({ initialValues, onSubmit, children }) => {
+export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
-
+	const mutate = useMatchMutate()
 	const { personFoerLeggTil, tidligereBestillinger } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = () => {
+	const handleBack = (formikBag) => {
+		if (isLastStep()) {
+			const { setSubmitting } = formikBag
+			setSubmitting(false)
+		}
 		if (step !== 0) setStep(step - 1)
 	}
 
@@ -38,7 +48,11 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 		}
 
 		sessionStorage.clear()
-		return onSubmit(values, formikBag)
+
+		onSubmit(values)
+		mutate(REGEX_BACKEND_GRUPPER)
+		mutate(REGEX_BACKEND_ORGANISASJONER)
+		return mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
 	const CurrentStepComponent = STEPS[step]
@@ -72,7 +86,8 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 						<CurrentStepComponent
 							formikBag={formikBag}
 							stateModifier={stateModifier}
-							erNyIdent={!personFoerLeggTil}
+							brukertype={brukertype}
+							brukerId={brukerId}
 						/>
 
 						{devEnabled && <DisplayFormikState {...formikBag} />}

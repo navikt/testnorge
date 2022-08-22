@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.dolly.exceptions.JiraException;
 import no.nav.dolly.exceptions.KodeverkException;
 import no.nav.dolly.exceptions.MissingHttpHeaderException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -40,6 +39,28 @@ public class HttpExceptionAdvice {
                 .build();
     }
 
+    @ResponseBody
+    @ExceptionHandler({TpsfException.class})
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    ExceptionInformation internalServerError(RuntimeException exception) {
+        return informationForException(exception, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({DollyFunctionalException.class, ConstraintViolationException.class,
+            MissingHttpHeaderException.class, KodeverkException.class, WebClientResponseException.BadRequest.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    ExceptionInformation badRequest(RuntimeException exception) {
+        return informationForException(exception, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseBody
+    @ExceptionHandler({NotFoundException.class, WebClientResponseException.NotFound.class})
+    @ResponseStatus(value = HttpStatus.OK)
+    ExceptionInformation notFoundRequest(RuntimeException exception) {
+        return informationForException(exception, HttpStatus.NOT_FOUND);
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -51,27 +72,5 @@ public class HttpExceptionAdvice {
         private String path;
         private Integer status;
         private LocalDateTime timestamp;
-    }
-
-    @ResponseBody
-    @ExceptionHandler({ TpsfException.class })
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    ExceptionInformation internalServerError(RuntimeException exception) {
-        return informationForException(exception, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ResponseBody
-    @ExceptionHandler({ DollyFunctionalException.class, ConstraintViolationException.class, MissingHttpHeaderException.class,
-            JiraException.class, KodeverkException.class })
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    ExceptionInformation badRequest(RuntimeException exception) {
-        return informationForException(exception, HttpStatus.BAD_REQUEST);
-    }
-
-    @ResponseBody
-    @ExceptionHandler({ NotFoundException.class, WebClientResponseException.NotFound.class })
-    @ResponseStatus(value = HttpStatus.OK)
-    ExceptionInformation notFoundRequest(RuntimeException exception) {
-        return informationForException(exception, HttpStatus.NOT_FOUND);
     }
 }

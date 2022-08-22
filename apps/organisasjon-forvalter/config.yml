@@ -27,12 +27,12 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
-        - application: dolly-frontend
-          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
@@ -40,6 +40,8 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
@@ -60,8 +62,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
-      external:
-        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+        - application: testnav-orgnummer-service
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12
@@ -77,9 +79,12 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
-    max: 1
+    max: 2
   resources:
     requests:
       cpu: 200m

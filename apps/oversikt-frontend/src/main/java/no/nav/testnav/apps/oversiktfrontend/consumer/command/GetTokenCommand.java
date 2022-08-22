@@ -1,13 +1,14 @@
 package no.nav.testnav.apps.oversiktfrontend.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.apps.oversiktfrontend.consumer.dto.BrukerDTO;
 
 @RequiredArgsConstructor
 public class GetTokenCommand implements Callable<Mono<String>> {
@@ -22,6 +23,8 @@ public class GetTokenCommand implements Callable<Mono<String>> {
                 .uri(builder ->builder.path("/api/v1/brukere/{id}/token").build(id))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

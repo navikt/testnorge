@@ -1,5 +1,4 @@
 import React from 'react';
-import 'nav-frontend-tabell-style';
 import styled from 'styled-components';
 
 type Mismatch = {

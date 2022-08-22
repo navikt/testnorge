@@ -5,14 +5,16 @@ import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.config.credentials.HelsepersonellServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Map;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -40,7 +42,7 @@ public class HelsepersonellConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "leger-hent" })
-    public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
 
         log.info("Henter helsepersonell...");
         return webClient
@@ -50,7 +52,9 @@ public class HelsepersonellConsumer {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .toEntity(HelsepersonellListeDTO.class)
+                .bodyToMono(HelsepersonellListeDTO.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 

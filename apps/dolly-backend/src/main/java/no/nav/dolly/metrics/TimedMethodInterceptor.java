@@ -1,17 +1,18 @@
 package no.nav.dolly.metrics;
 
-import java.util.Arrays;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import lombok.RequiredArgsConstructor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.stereotype.Component;
 
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
-import lombok.RequiredArgsConstructor;
+import java.io.Serializable;
+import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
-public class TimedMethodInterceptor implements MethodInterceptor {
+public class TimedMethodInterceptor implements MethodInterceptor, Serializable {
     private final MeterRegistry registry;
 
     @Override

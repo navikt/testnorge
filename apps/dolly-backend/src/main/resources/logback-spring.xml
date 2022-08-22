@@ -15,6 +15,7 @@
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.tomcat\..*</exclude>
                 </throwableConverter>
+                <includeMdcKeyName>bestillingId</includeMdcKeyName>
             </encoder>
         </appender>
         <root level="INFO">
@@ -37,6 +38,9 @@
     </springProfile>
 
     <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">
+        <level value="TRACE"/>
+    </logger>
+    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
 </configuration>

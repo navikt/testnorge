@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
 @Getter
@@ -94,6 +95,9 @@ public class BestillingProgress {
     @Column(name = "TPS_IMPORT_STATUS")
     private String tpsImportStatus;
 
+    @Column(name = "TPS_MESSAGING_STATUS")
+    private String tpsMessagingStatus;
+
     @Column(name = "PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
@@ -118,7 +122,18 @@ public class BestillingProgress {
     }
 
     @JsonIgnore
+    public boolean isPdlf() {
+        return getMaster() == Master.PDLF;
+    }
+
+    @JsonIgnore
     public boolean isPdl() {
         return getMaster() == Master.PDL;
+    }
+
+    @JsonIgnore
+    public boolean isIdentGyldig() {
+
+        return isNotBlank(getIdent()) && getIdent().length() == 11;
     }
 }

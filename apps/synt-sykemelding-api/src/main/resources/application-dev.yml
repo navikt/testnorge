@@ -1,7 +1,2 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
-
-consumers:
-  organisasjonapi:
-    url: https://testnorge-organisasjon-api-dev.dev.adeo.no
-    client_id: 32d4b32e-95d1-4e40-b594-304945a1a24a

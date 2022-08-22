@@ -9,12 +9,6 @@ export default {
 		return Request.post(endpoint, userArray)
 	},
 
-	checkpersoner(userArray) {
-		if (!userArray) return
-		const endpoint = getTpsfUrl() + '/dolly/testdata/checkpersoner'
-		return Request.post(endpoint, userArray)
-	},
-
 	hentTpsInnhold(identMiljoe) {
 		if (!identMiljoe) return
 		const endpoint = getTpsfUrl() + '/dolly/testdata/import'

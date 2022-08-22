@@ -17,50 +17,52 @@ export const panelError = (formikBag, attributtPath) => {
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
 
-export const erForste = (values, attributt) => {
+const getValgteAttributter = (values) => {
 	const rootPaths = [
-		'tpsf.alder',
-		'tpsf.identtype',
-		'tpsf.foedtEtter',
-		'tpsf.foedtFoer',
-		'tpsf.doedsdato',
-		'tpsf.statsborgerskap',
-		'tpsf.innvandretFraLand',
-		'tpsf.utvandretTilLand',
-		'tpsf.kjonn',
-		'tpsf.harMellomnavn',
-		'tpsf.harNyttNavn',
-		'tpsf.sivilstand',
-		'tpsf.sprakKode',
-		'tpsf.egenAnsattDatoFom',
-		'tpsf.egenAnsattDatoTom',
-		'tpsf.spesreg',
-		'tpsf.erForsvunnet',
-		'tpsf.harBankkontonr',
-		'tpsf.telefonnummer_1',
-		'tpsf.identHistorikk',
-		'tpsf.vergemaal',
-		'tpsf.fullmakt',
-		'tpsf.boadresse',
-		'tpsf.harIngenAdresse',
-		'tpsf.postadresse',
-		'tpsf.midlertidigAdresse',
+		'pdldata.opprettNyPerson.alder',
+		'pdldata.person.foedsel',
+		'pdldata.person.doedsfall',
+		'pdldata.person.statsborgerskap',
+		'pdldata.person.innflytting',
+		'pdldata.person.utflytting',
+		'pdldata.person.kjoenn',
+		'pdldata.person.navn',
+		'pdldata.person.telefonnummer',
+		'pdldata.person.vergemaal',
+		'pdldata.person.fullmakt',
+		'pdldata.person.sikkerhetstiltak',
+		'pdldata.person.tilrettelagtKommunikasjon',
+		'tpsMessaging.spraakKode',
+		'tpsMessaging.egenAnsattDatoFom',
+		'tpsMessaging.egenAnsattDatoTom',
+		'tpsMessaging.utenlandskBankkonto',
+		'tpsMessaging.norskBankkonto',
+		'bankkonto.utenlandskBankkonto',
+		'bankkonto.norskBankkonto',
 		'pdldata.person.bostedsadresse',
-		'tpsf.relasjoner',
+		'pdldata.person.oppholdsadresse',
+		'pdldata.person.kontaktadresse',
+		'pdldata.person.adressebeskyttelse',
+		'pdldata.person.sivilstand',
+		'pdldata.person.doedfoedtBarn',
+		'pdldata.person.forelderBarnRelasjon',
+		'pdldata.person.foreldreansvar',
+		'pdldata.person.falskIdentitet',
+		'pdldata.person.utenlandskIdentifikasjonsnummer',
+		'pdldata.person.nyident',
+		'pdldata.person.kontaktinformasjonForDoedsbo',
 		'aareg',
 		'sigrunstub',
 		'inntektstub',
+		'inntektsmelding',
+		'pensjonforvalter.inntekt',
+		'pensjonforvalter.tp',
+		'arenaforvalter',
 		'sykemelding',
 		'brregstub',
-		'pdlforvalter.falskIdentitet',
-		'pdlforvalter.utenlandskIdentifikasjonsnummer',
-		'pdlforvalter.kontaktinformasjonForDoedsbo',
 		'instdata',
 		'krrstub',
-		'arenaforvalter',
 		'udistub',
-		'pensjonforvalter',
-		'inntektsmelding',
 		'dokarkiv',
 		'organisasjon.enhetstype',
 		'organisasjon.naeringskode',
@@ -82,5 +84,15 @@ export const erForste = (values, attributt) => {
 			valgteAttributter.push(path)
 		}
 	})
-	return attributt.includes(valgteAttributter[0])
+	return valgteAttributter
+}
+
+export const erForste = (values, attributter) => {
+	const valgteAttributter = getValgteAttributter(values)
+	return attributter.includes(valgteAttributter[0])
+}
+
+export const harValgtAttributt = (values, attributter) => {
+	const valgteAttributter = getValgteAttributter(values)
+	return attributter.some((attr) => valgteAttributter.includes(attr))
 }

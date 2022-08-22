@@ -1,15 +1,20 @@
+import Formatters from '~/utils/DataFormatter'
+
 const uri = `/dolly-backend/api/v1`
 
 const groupBase = `${uri}/gruppe`
+const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
+const udiBase = `${uri}/udistub`
 const bestillingBase = `${uri}/bestilling`
 const openamBase = `${uri}/openam`
 const personoppslagBase = `${uri}/pdlperson`
 const fasteOrgnummerBase = `${uri}/orgnummer`
 const fasteDatasettBase = `${uri}/fastedatasett`
 const dokarkivBase = `${uri}/dokarkiv`
+const skjermingBase = `${uri}/skjerming`
 const inntektsmeldingBase = `${uri}/inntektsmelding`
 const organisasjonBase = `${uri}/organisasjon`
 
@@ -18,17 +23,8 @@ export default class DollyEndpoints {
 		return groupBase
 	}
 
-	static gruppePaginert(page = 0, pageSize = 10) {
-		return `${groupBase}/page/${page}?pageSize=${pageSize}`
-	}
-
 	static gruppeById(gruppeId) {
 		return `${groupBase}/${gruppeId}`
-	}
-
-	static gruppeByIdPaginert(gruppeId, pageNo = 0, pageSize = 10) {
-		if (!gruppeId) return null
-		return `${groupBase}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}`
 	}
 
 	static gruppeByUser(userId) {
@@ -47,24 +43,32 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/importFraTps`
 	}
 
+	static gruppeBestillingImportFraPdl(gruppeId) {
+		return `${groupBase}/${gruppeId}/bestilling/importfrapdl`
+	}
+
 	static laasGruppe(gruppeId) {
 		return `${groupBase}/${gruppeId}/laas`
 	}
 
-	static gruppeBestillingStatus(gruppeId) {
-		return `${groupBase}/${gruppeId}/bestillingStatus`
+	static sendGruppeTags(gruppeId) {
+		return `${tagsBase}/gruppe/${gruppeId}`
+	}
+
+	static getTags() {
+		return `${tagsBase}`
+	}
+
+	static getIdentTags(ident) {
+		return `${tagsBase}/ident/${ident}`
 	}
 
 	static organisasjonBestilling() {
 		return `${organisasjonBase}/bestilling`
 	}
 
-	static organisasjonStatusByBestillingId(bestillingId) {
-		return `${organisasjonBase}/bestilling?bestillingId=${bestillingId}`
-	}
-
-	static organisasjonStatusByUser(userId) {
-		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
+	static skjermingByIdent(ident) {
+		return `${skjermingBase}/${ident}`
 	}
 
 	static gjenopprettOrganisasjonBestilling(bestillingId, envs) {
@@ -77,18 +81,6 @@ export default class DollyEndpoints {
 
 	static gjenopprettGruppe(gruppeId, envs) {
 		return `${groupBase}/${gruppeId}/gjenopprett?miljoer=${envs}`
-	}
-
-	static bruker() {
-		return brukerBase
-	}
-
-	static brukerById(brukerId) {
-		return `${brukerBase}/${brukerId}`
-	}
-
-	static currentBruker() {
-		return `${brukerBase}/current`
 	}
 
 	static addFavorite() {
@@ -107,36 +99,43 @@ export default class DollyEndpoints {
 		return `${kodeverkBase}/${kodeverkNavn}`
 	}
 
-	static dokarkivDokumentinfo(journalpostId, env) {
-		return `${dokarkivBase}/${journalpostId}?miljoe=${env}`
-	}
-
 	static bestillinger(gruppeId) {
 		return `${bestillingBase}/gruppe/${gruppeId}`
+	}
+
+	static bestillingerFragment(fragment) {
+		return `${bestillingBase}/soekBestilling?fragment=${fragment}`
 	}
 
 	static bestillingStatus(bestillingId) {
 		return `${bestillingBase}/${bestillingId}`
 	}
 
-	static bestillingMal() {
-		return `${bestillingBase}/malbestilling`
-	}
-
 	static gjenopprettBestilling(bestillingId, envs) {
 		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
 	}
 
-	static openAmBestilling(bestillingId) {
-		return `${openamBase}/bestilling/${bestillingId}?bestillingId=${bestillingId}`
-	}
-
-	static removeBestilling(bestillingId) {
-		return `${bestillingBase}/stop/${bestillingId}`
+	static removeBestilling(bestillingId, erOrganisasjon) {
+		return `${bestillingBase}/stop/${bestillingId}?organisasjonBestilling=${erOrganisasjon}`
 	}
 
 	static personoppslag(ident) {
 		return `${personoppslagBase}/ident/${ident}`
+	}
+
+	static personoppslagMange(identer) {
+		return `${personoppslagBase}/identer?identer=${Formatters.arrayToString(identer).replaceAll(
+			' ',
+			''
+		)}`
+	}
+
+	static gruppeExcelFil(gruppeId) {
+		return `${uri}/excel/gruppe/${gruppeId}`
+	}
+
+	static udiPerson(ident) {
+		return `${udiBase}/${ident}`
 	}
 
 	//TESTPERSON-CONTROLLER
@@ -156,8 +155,16 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/ibruk?iBruk=${ibruk}`
 	}
 
-	static naviger(ident) {
+	static navigerTilIdent(ident) {
 		return `${identBase}/naviger/${ident}`
+	}
+
+	static navigerTilBestilling(bestillingId) {
+		return `${bestillingBase}/naviger/${bestillingId}`
+	}
+
+	static ordre(ident) {
+		return `${identBase}/ident/${ident}/ordre`
 	}
 
 	static kobleIdenter(ident) {
@@ -180,5 +187,9 @@ export default class DollyEndpoints {
 
 	static getArbeidsforhold(ident, miljoe) {
 		return `${uri}/aareg/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
+	}
+
+	static leggTilPersonIGruppe(gruppeId, ident, master) {
+		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}
 }

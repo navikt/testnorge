@@ -8,17 +8,18 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse.EnvStatus;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
-import no.nav.dolly.domain.jpa.OrganisasjonNummer;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.OrganisasjonBestillingService;
-import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
+import no.nav.dolly.util.EnvironmentsCrossConnect;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,31 +37,25 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class OrganisasjonClient {
 
-    private static final String FEIL_UGYLDIGE_ORGNUMRE = "FEIL= Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke";
     public static final String FEIL_STATUS_ORGFORVALTER_DEPLOY = "FEIL= Mottok ikke status fra Org-Forvalter deploy";
-
+    private static final String FEIL_UGYLDIGE_ORGNUMRE = "FEIL= Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke";
     private final OrganisasjonConsumer organisasjonConsumer;
-    private final OrganisasjonNummerService organisasjonNummerService;
     private final OrganisasjonProgressService organisasjonProgressService;
     private final OrganisasjonBestillingService organisasjonBestillingService;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
     @Async
-    public void opprett(RsOrganisasjonBestilling bestilling, Long bestillingId) {
+    @Transactional
+    public void opprett(RsOrganisasjonBestilling request, OrganisasjonBestilling bestilling) {
 
         BestillingRequest bestillingRequest = BestillingRequest.builder()
-                .organisasjoner(List.of(mapperFacade.map(bestilling.getOrganisasjon(), BestillingRequest.SyntetiskOrganisasjon.class)))
+                .organisasjoner(List.of(mapperFacade.map(request.getOrganisasjon(), BestillingRequest.SyntetiskOrganisasjon.class)))
                 .build();
 
         Set<String> orgnumre = new HashSet<>();
 
-        organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
-                .bestillingId(bestillingId)
-                .organisasjonsnummer("NA")
-                .uuid("NA")
-                .organisasjonsforvalterStatus(bestilling.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
-                .build());
+        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 
@@ -69,59 +64,54 @@ public class OrganisasjonClient {
                 ResponseEntity<BestillingResponse> response = organisasjonConsumer.postOrganisasjon(bestillingRequest);
 
                 orgnumre.addAll(requireNonNull(response.getBody()).getOrgnummer());
-                if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
-                    List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+                if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId()).isEmpty()) {
+                    List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId());
                     OrganisasjonBestillingProgress organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
-                    organisasjonBestillingProgress.setBestillingId(bestillingId);
+                    organisasjonBestillingProgress.setBestilling(bestilling);
                     organisasjonBestillingProgress.setOrganisasjonsnummer(requireNonNull(response.getBody().getOrgnummer().iterator().next()));
-                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(bestilling.getEnvironments().stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
+                    organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")));
 
                     organisasjonProgressService.save(organisasjonBestillingProgress);
-                    saveOrgnumreToDb(orgnumre, bestillingId, bestilling.getEnvironments());
-                    deployOrganisasjon(orgnumre, bestillingId, bestilling.getEnvironments());
+                    saveErrorToDb(orgnumre, bestilling.getId(), miljoer);
+                    deployOrganisasjon(orgnumre, bestilling, miljoer);
                 }
             } catch (RuntimeException e) {
 
                 log.error("Feilet med å opprette organisasjon(er)", e);
-                organisasjonBestillingService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
-                organisasjonProgressService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
-                organisasjonBestillingService.setBestillingFerdig(bestillingId);
+                organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeRuntimeException(e));
+                organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeRuntimeException(e));
             }
         });
     }
 
     @Async
-    public void gjenopprett(DeployRequest request, Long bestillingId) {
+    public void gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
 
+        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
-                .bestillingId(bestillingId)
+                .bestilling(bestilling)
                 .organisasjonsnummer(request.getOrgnumre().iterator().next())
-                .uuid("NA")
-                .organisasjonsforvalterStatus(request.getEnvironments().stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
+                .organisasjonsforvalterStatus(miljoer.stream().map(env -> env + ":Deployer").collect(Collectors.joining(",")))
                 .build());
 
-        organisasjonNummerService.save(OrganisasjonNummer.builder()
-                .bestillingId(bestillingId)
-                .organisasjonsnr(request.getOrgnumre().iterator().next())
-                .build());
-
-        deployOrganisasjon(request.getOrgnumre(), bestillingId, request.getEnvironments());
+        deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer);
     }
 
-    private void saveOrgnumreToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
+    public void release(List<String> orgnummer) {
+
+        throw new UnsupportedOperationException("Release ikke implementert");
+    }
+
+    private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
 
         log.info("Deployer orgnumre fra Organisasjon Forvalter");
         if (isNull(orgnumre) || orgnumre.isEmpty() || isNull(environments) || environments.isEmpty()) {
             organisasjonBestillingService.setBestillingFeil(bestillingId, FEIL_UGYLDIGE_ORGNUMRE);
             throw new DollyFunctionalException("Ugyldig deployment, liste med miljø eller orgnumre eksisterer ikke");
         }
-        orgnumre.forEach(orgnummer -> organisasjonNummerService.save(OrganisasjonNummer.builder()
-                .bestillingId(bestillingId)
-                .organisasjonsnr(orgnummer)
-                .build()));
     }
 
-    private void deployOrganisasjon(Set<String> orgnumre, Long bestillingId, List<String> environments) {
+    private void deployOrganisasjon(Set<String> orgnumre, OrganisasjonBestilling bestilling, List<String> environments) {
         ResponseEntity<DeployResponse> deployResponse = organisasjonConsumer.deployOrganisasjon(new DeployRequest(orgnumre, environments));
 
         if (deployResponse.hasBody()) {
@@ -129,29 +119,28 @@ public class OrganisasjonClient {
 
                 OrganisasjonBestillingProgress organisasjonBestillingProgress = new OrganisasjonBestillingProgress();
 
-                if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId).isEmpty()) {
-                    List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+                if (!organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId()).isEmpty()) {
+                    List<OrganisasjonBestillingProgress> organisasjonBestillingProgresses = organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestilling.getId());
                     organisasjonBestillingProgress = organisasjonBestillingProgresses.get(0);
                 }
 
                 if (deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).get(0).getStatus().name().contains("ERROR")) {
                     organisasjonBestillingService.setBestillingFeil(
-                            bestillingId,
+                            bestilling.getId(),
                             deployResponse.getBody().getOrgStatus().get(organisasjonBestillingProgress.getOrganisasjonsnummer()).get(0).getDetails());
                 }
 
-                organisasjonBestillingProgress.setBestillingId(bestillingId);
+                organisasjonBestillingProgress.setBestilling(bestilling);
                 organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
                 organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
 
                 organisasjonProgressService.save(organisasjonBestillingProgress);
             });
         } else {
-            organisasjonBestillingService.setBestillingFeil(bestillingId, FEIL_STATUS_ORGFORVALTER_DEPLOY);
+            organisasjonBestillingService.setBestillingFeil(bestilling.getId(), FEIL_STATUS_ORGFORVALTER_DEPLOY);
             log.error(FEIL_STATUS_ORGFORVALTER_DEPLOY);
         }
     }
-
 
     private String mapStatusFraDeploy(Entry<String, List<EnvStatus>> orgStatus) {
 
@@ -176,10 +165,5 @@ public class OrganisasjonClient {
             }
         });
         return status.toString();
-    }
-
-    public void release(List<String> orgnummer) {
-
-        throw new UnsupportedOperationException("Release ikke implementert");
     }
 }

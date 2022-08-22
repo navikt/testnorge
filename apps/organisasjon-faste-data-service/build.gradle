@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -10,7 +10,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "testnav-organisasjon-faste-data-service"
         property "sonar.projectName", "testnav-organisasjon-faste-data-service"
-        property "sonar.organization", "navit"
+        property "sonar.organization", "navikt"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -43,6 +43,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:kafka-config'
@@ -57,6 +58,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'io.confluent:kafka-avro-serializer:7.0.0'
     implementation 'javax.validation:validation-api:2.0.1.Final'
@@ -66,8 +70,8 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'org.postgresql:postgresql'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -78,3 +82,4 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
+java.sourceCompatibility = JavaVersion.VERSION_17

@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
@@ -11,7 +11,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -38,10 +37,9 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
+                handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
             }
         }
         return person.getStatsborgerskap();
@@ -60,12 +58,12 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         }
     }
 
-    private void handle(StatsborgerskapDTO statsborgerskap, String ident, InnflyttingDTO innflytting) {
+    private void handle(StatsborgerskapDTO statsborgerskap, PersonDTO person, InnflyttingDTO innflytting) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
                 statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
-            } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
+            } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
                 statsborgerskap.setLandkode(geografiskeKodeverkConsumer.getTilfeldigLand());
@@ -73,11 +71,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
         }
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
-            statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
-        }
-
-        if (isNull(statsborgerskap.getBekreftelsesdato()) && Master.PDL == statsborgerskap.getMaster()) {
-            statsborgerskap.setBekreftelsesdato(LocalDateTime.now());
+            statsborgerskap.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
         }
     }
 }

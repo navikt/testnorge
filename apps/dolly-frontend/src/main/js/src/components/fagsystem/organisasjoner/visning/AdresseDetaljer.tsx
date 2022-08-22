@@ -18,12 +18,12 @@ export default ({ adresse }: Props) => (
 			<div>{adresse.adresselinjer[2]}</div>
 			<div>
 				<KodeverkConnector navn="Postnummer" value={adresse.postnr}>
-					{(v: any, verdi: any) => <span>{verdi ? verdi.label : adresse.postnummer}</span>}
+					{(_v: any, verdi: any) => <span>{verdi ? verdi.label : adresse.postnummer}</span>}
 				</KodeverkConnector>
 			</div>
 			<div>
 				<KodeverkConnector navn="LandkoderISO2" value={adresse.landkode}>
-					{(v: any, verdi: any) => <span>{verdi ? verdi.label : adresse.landkode}</span>}
+					{(_v: any, verdi: any) => <span>{verdi ? verdi.label : adresse.landkode}</span>}
 				</KodeverkConnector>
 			</div>
 		</TitleValue>

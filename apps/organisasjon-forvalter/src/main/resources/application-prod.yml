@@ -2,8 +2,8 @@
 consumers:
   generer-navn-service:
     url: http://generer-navn-service.dolly.svc.cluster.local
-  organisasjon-orgnummer-service:
-    url: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+  testnav-orgnummer-service:
+    url: http://testnav-orgnummer-service.dolly.svc.cluster.local
   organisasjon-bestilling-service:
     url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
   testnav-adresse-service:
@@ -30,14 +30,3 @@ spring:
     properties:
       hibernate:
         default-schema: public
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-organisasjon-forvalter

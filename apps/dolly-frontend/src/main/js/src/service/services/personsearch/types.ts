@@ -1,18 +1,24 @@
-export type Pageing = {
+export type Search = {
 	page: number
 	pageSize: number
-}
-
-export type Search = {
-	pageing: Pageing
-	tag: string
+	terminateAfter: number
+	tag?: string
+	excludeTags: Array<string>
+	tags?: Array<string>
+	kunLevende?: boolean
 	kjoenn?: string
 	foedsel?: {
 		fom?: string
 		tom?: string
 	}
-	statsborgerskap?: {
-		land?: string
+	nasjonalitet?: {
+		statsborgerskap?: string
+		innflytting?: {
+			fraflyttingsland?: string
+		}
+		utflytting?: {
+			tilflyttingsland?: string
+		}
 	}
 	sivilstand?: {
 		type?: string
@@ -20,6 +26,36 @@ export type Search = {
 	alder?: {
 		fra?: number
 		til?: number
+	}
+	identer?: Array<string>
+	identifikasjon?: {
+		identtype?: string
+		adressebeskyttelse?: string
+		falskIdentitet?: boolean
+		utenlandskIdentitet?: boolean
+	}
+	adresser?: {
+		bostedsadresse?: {
+			borINorge?: string
+			postnummer?: string
+			bydelsnummer?: string
+			kommunenummer?: string
+			historiskBydelsnummer?: string
+			historiskPostnummer?: string
+			historiskKommunenummer?: string
+		}
+		harUtenlandskAdresse?: string
+		harKontaktadresse?: string
+		harOppholdsadresse?: string
+	}
+	personstatus?: {
+		status?: string
+	}
+	relasjoner?: {
+		harBarn?: string
+		harDoedfoedtBarn?: string
+		forelderBarnRelasjoner?: string[]
+		foreldreansvar?: string
 	}
 }
 
@@ -30,14 +66,23 @@ export type Person = {
 	etternavn?: string
 	kjoenn?: string
 	aktorId: string
-	tag: string
+	tags: string[]
 	foedsel?: {
 		foedselsdato?: string
+	}
+	doedsfall?: {
+		doedsdato?: string
 	}
 	sivilstand?: {
 		type?: string
 	}
 	statsborgerskap?: {
-		land?: string
+		land?: string[]
 	}
+	folkeregisterpersonstatus?: [Personstatus]
+}
+
+type Personstatus = {
+	status?: string
+	gyldighetstidspunkt?: string
 }

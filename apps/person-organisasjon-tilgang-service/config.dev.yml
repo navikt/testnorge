@@ -46,6 +46,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1
@@ -61,7 +64,11 @@ spec:
   ingresses:
     - "https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no"
   env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service-dev
     - name: ALTINN_URL
       value: https://tt02.altinn.no
+    - name: TOKENDINGS_URL
+      value: https://tokendings.dev-gcp.nais.io

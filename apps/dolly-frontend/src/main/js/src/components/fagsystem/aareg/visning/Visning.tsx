@@ -54,8 +54,12 @@ const getHeader = (data: Arbeidsforhold) => {
 }
 
 export const AaregVisning = ({ liste, loading }: AaregVisningProps) => {
-	if (loading) return <Loading label="Laster Aareg-data" />
-	if (!liste) return null
+	if (loading) {
+		return <Loading label="Laster Aareg-data" />
+	}
+	if (!liste) {
+		return null
+	}
 
 	const sortedData = liste
 		.slice()

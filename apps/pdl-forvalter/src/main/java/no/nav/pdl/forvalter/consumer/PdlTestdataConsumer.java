@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
+import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
@@ -11,19 +12,23 @@ import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
+import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
@@ -38,19 +43,21 @@ public class PdlTestdataConsumer {
 
     public PdlTestdataConsumer(TokenExchange tokenExchange,
                                PdlServiceProperties properties,
-                               ObjectMapper objectMapper) {
+                               ObjectMapper objectMapper,
+                               ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
         this.objectMapper = objectMapper;
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(List<Ordre> orders) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(accessToken -> Flux.concat(orders
                         .stream()
                         .map(order -> order.apply(accessToken))
@@ -58,10 +65,10 @@ public class PdlTestdataConsumer {
                 ));
     }
 
-    public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(List<String> identer) {
+    public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
 
         return Flux.from(tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(accessToken -> identer
                         .stream()
                         .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
@@ -74,8 +81,10 @@ public class PdlTestdataConsumer {
         String body;
         try {
             var artifact = value.getBody();
-            artifact.setMetadata(nonNull(artifact.getMetadata()) ? artifact.getMetadata() : new FolkeregistermetadataDTO());
-            artifact.getMetadata().setGjeldende(nonNull(artifact.getMetadata().getGjeldende()) ? artifact.getMetadata().getGjeldende() : artifact.getGjeldende());
+            if (isNull(artifact.getFolkeregistermetadata())) {
+                artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
+            }
+            artifact.getFolkeregistermetadata().setGjeldende(artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(
@@ -97,13 +106,22 @@ public class PdlTestdataConsumer {
                         ).call());
 
             case PDL_OPPRETT_PERSON:
-                return Flux.from(
-                        new PdlOpprettPersonCommandPdl(webClient,
-                                getBestillingUrl().get(value.getArtifact()),
-                                value.getIdent(),
-                                (HistoriskIdent) value.getBody(),
-                                accessToken.getTokenValue()
-                        ).call());
+
+                return Identtype.NPID == getIdenttype(value.getIdent()) ?
+
+                        Flux.from(
+                                new PdlAktoerNpidCommand(webClient,
+                                        value.getIdent(),
+                                        accessToken.getTokenValue()
+                                ).call()) :
+
+                        Flux.from(
+                                new PdlOpprettPersonCommandPdl(webClient,
+                                        getBestillingUrl().get(value.getArtifact()),
+                                        value.getIdent(),
+                                        (HistoriskIdent) value.getBody(),
+                                        accessToken.getTokenValue()
+                                ).call());
 
             default:
                 return Flux.from(

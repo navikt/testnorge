@@ -7,33 +7,59 @@ const TYPE = Object.freeze({
 	LEGG_TIL: 'LEGG_TIL',
 	NY_ORGANISASJON: 'NY_ORGANISASJON',
 	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
+	IMPORT_TESTNORGE: 'IMPORT_TESTNORGE',
 })
 
-export const BVOptions = ({
-	antall = 1,
-	identtype = 'FNR',
-	mal,
-	opprettFraIdenter,
-	personFoerLeggTil,
-	tidligereBestillinger,
-	opprettOrganisasjon = null,
-} = {}) => {
+export const BVOptions = (
+	{
+		antall = 1,
+		identtype = 'FNR',
+		mal,
+		opprettFraIdenter,
+		personFoerLeggTil,
+		tidligereBestillinger,
+		importPersoner,
+		identMaster,
+		opprettOrganisasjon = null,
+		gruppe,
+	} = {},
+	gruppeId
+) => {
 	let initialValues = {
+		antall: antall,
+		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: {
+				identtype,
+				syntetisk: true,
+			},
+		},
+		importPersoner: null,
+	}
+
+	let initialValuesLeggTil = {
 		antall,
 		environments: [],
-		navSyntetiskIdent: false,
 		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: null,
+		},
+	}
+
+	let initialValuesOpprettFraIdenter = {
+		pdldata: {
+			opprettNyPerson: {},
+		},
+		opprettFraIdenter: opprettFraIdenter,
 	}
 
 	let initialValuesOrganisasjon = {
-		environments: [],
 		organisasjon: {
 			enhetstype: '',
 		},
 	}
 
 	let initialValuesStandardOrganisasjon = {
-		environments: [],
 		organisasjon: {
 			enhetstype: 'AS',
 			naeringskode: '01.451',
@@ -67,11 +93,20 @@ export const BVOptions = ({
 
 	if (opprettFraIdenter) {
 		bestType = TYPE.OPPRETT_FRA_IDENTER
-		initialValues.antall = opprettFraIdenter.length
+		initialValues = initialValuesOpprettFraIdenter
 	}
 
 	if (personFoerLeggTil) {
 		bestType = TYPE.LEGG_TIL
+		initialValues = initialValuesLeggTil
+	}
+
+	if (importPersoner) {
+		bestType = TYPE.IMPORT_TESTNORGE
+		initialValues.antall = importPersoner.length
+		initialValues.pdldata = undefined
+		initialValues.importPersoner = importPersoner
+		antall = importPersoner.length
 	}
 
 	if (opprettOrganisasjon) {
@@ -86,12 +121,16 @@ export const BVOptions = ({
 
 	return {
 		initialValues,
+		gruppeId,
 		antall,
 		identtype,
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
+		importPersoner,
+		identMaster,
 		tidligereBestillinger,
+		gruppe,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
 			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,
@@ -99,6 +138,7 @@ export const BVOptions = ({
 			leggTil: bestType === TYPE.LEGG_TIL,
 			nyOrganisasjon: bestType === TYPE.NY_ORGANISASJON,
 			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON,
+			importTestnorge: bestType === TYPE.IMPORT_TESTNORGE,
 		},
 	}
 }

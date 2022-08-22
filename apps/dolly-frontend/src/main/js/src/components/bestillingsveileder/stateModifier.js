@@ -2,8 +2,13 @@ import _has from 'lodash/has'
 import _set from 'lodash/fp/set'
 import _omit from 'lodash/omit'
 import _isEmpty from 'lodash/isEmpty'
+import _get from 'lodash/get'
+import { useDispatch } from 'react-redux'
 
-export const stateModifierFns = (initial, setInitial, options = null) => {
+export const stateModifierFns = (initial, setInitial, options = null, dispatch = null) => {
+	if (dispatch == null) {
+		dispatch = useDispatch()
+	}
 	const opts = options
 	const set = (path, value) => setInitial(_set(path, value, initial))
 	const has = (path) => _has(initial, path)
@@ -11,8 +16,10 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 		let newObj = _omit(initial, path)
 
 		// Ingen tomme objekter guard
-		const rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
-		if (_isEmpty(newObj[rootPath])) newObj = _omit(newObj, rootPath)
+		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
+		if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
+			rootPath = 'pdldata.person'
+		if (_isEmpty(_get(newObj, rootPath))) newObj = _omit(newObj, rootPath)
 
 		setInitial(newObj)
 	}
@@ -35,7 +42,7 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 			const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
 			if (ignores.includes(curr)) return acc
 
-			const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts)(fn)
+			const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts, dispatch)(fn)
 			sm_local.attrs[curr][key]()
 			return acc
 		}, Object.assign({}, initial))
@@ -44,7 +51,7 @@ export const stateModifierFns = (initial, setInitial, options = null) => {
 	}
 
 	return (fn) => {
-		const attrs = fn({ set, setMulti, del, has, opts, initial, setInitial }) || {}
+		const attrs = fn({ set, setMulti, del, has, dispatch, opts, initial, setInitial }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,

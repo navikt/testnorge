@@ -16,7 +16,6 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @RequiredArgsConstructor
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "kv/preprod/fss/dolly-backend/local", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "serviceuser/dev/srvfregdolly", propertyNamePrefix = "jira.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/test/srvdolly-backend", propertyNamePrefix = "credentials.test.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/dev/srvdolly-preprod-env", propertyNamePrefix = "credentials.preprod.", ignoreSecretNotFound = false)
 public class VaultLocalConfig extends AbstractVaultConfiguration {
@@ -27,6 +26,10 @@ public class VaultLocalConfig extends AbstractVaultConfiguration {
 
     @Override
     public ClientAuthentication clientAuthentication() {
+        var token = System.getProperty("spring.cloud.vault.token");
+        if (token == null) {
+            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+        }
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }
 }

@@ -1,7 +1,7 @@
-import { api } from './api'
+import { malerApi } from './MalerApi'
 
 export const slettMal = (malId, setMaler) => {
-	return api.slettMal(malId).then(() => {
+	return malerApi.slettMal(malId).then(() => {
 		setMaler((maler) => maler.filter((mal) => mal.id !== malId))
 	})
 }

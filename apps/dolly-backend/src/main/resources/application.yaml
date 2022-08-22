@@ -24,6 +24,11 @@ consumers:
     namespace: dolly
     url: https://testnav-inntektsmelding-service.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-tps-messaging-service:
+    name: testnav-tps-messaging-service
+    namespace: dolly
+    url: https://testnav-tps-messaging-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-generer-navn-service:
     name: generer-navn-service
     namespace: dolly
@@ -75,12 +80,11 @@ consumers:
     #url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
     url: https://testnav-inntektstub-proxy.dev.intern.nav.no
     cluster: dev-fss
-  testnav-inst-proxy:
-    name: testnav-testnorge-inst-proxy
+  testnav-inst-service:
+    name: testnav-inst-service
     namespace: dolly
-    #url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io TODO: Bytte til denne når backend er i GCP
-    url: https://testnav-testnorge-inst-proxy.dev.intern.nav.no
-    cluster: dev-fss
+    url: https://testnav-inst-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-statisk-data-forvalter-proxy:
     name: testnav-statisk-data-forvalter-proxy
     namespace: dolly
@@ -102,7 +106,7 @@ consumers:
   testnav-pdl-proxy:
     name: testnav-pdl-proxy
     namespace: dolly
-    #    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    #url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     url: https://testnav-pdl-proxy.dev.intern.nav.no
     cluster: dev-fss
   testnav-sigrunstub-proxy:
@@ -154,6 +158,11 @@ consumers:
     #    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
     url: https://testnav-udistub-proxy.dev.intern.nav.no/udistub-dev
     cluster: dev-fss
+  testnav-kontoregister-person-service:
+    name: sokos-kontoregister-person
+    namespace: okonomi
+    url: https://sokos-kontoregister-person.dev.intern.nav.no
+    cluster: dev-gcp
 
 #### APP DB ####
 ? app.datasource.onsHosts
@@ -195,10 +204,15 @@ management:
     enabled-by-default: true
     web:
       base-path: /internal
-      exposure.include: prometheus,heapdump
+      exposure.include: prometheus,heapdump,health
       path-mapping.prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
   metrics.export:
     prometheus.enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  max-http-header-size: 70KB

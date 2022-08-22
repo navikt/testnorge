@@ -27,6 +27,10 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: testnav-generer-organisasjon-populasjon-service
@@ -47,6 +51,9 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
   replicas:
     min: 1
     max: 1

@@ -1,10 +1,10 @@
 plugins {
-    id "com.gradle.enterprise" version "3.7.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'pdl-forvalter'
 
-
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-core'

@@ -45,6 +45,7 @@ export const SortKodeverkArray = (data) => {
 		data.name === 'Postnummer' ||
 		data.name === 'Postnummer vegadresser' ||
 		data.name === 'Kommuner' ||
+		data.name === 'Bydeler' ||
 		data.name === 'Næringskoder' ||
 		data.name === 'Sektorkoder'
 	) {
@@ -76,7 +77,7 @@ export const SortKodeverkArray = (data) => {
 
 	if (data.name === 'Arbeidsforholdstyper') {
 		// Kodeverket for arbeidsforholdstyper har en type som AAREG per i dag ikke støtter
-		const arbeidsforhold = kodeverk
+		return kodeverk
 			.filter((kode) => kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold')
 			.map((kode) => {
 				if (kode.value === 'frilanserOppdragstakerHonorarPersonerMm') {
@@ -87,7 +88,6 @@ export const SortKodeverkArray = (data) => {
 				}
 				return kode
 			})
-		return arbeidsforhold
 	}
 
 	if (data.name === 'Landkoder') {

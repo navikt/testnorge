@@ -26,7 +26,7 @@ const getColumnHeader = (cell, data) => {
 // Fallback til row index
 const getRowKey = (row, columns) => {
 	const hasUnique = columns.find((c) => c.unique)
-	return hasUnique && _get(row, `${hasUnique.dataField}`).toString()
+	return hasUnique && _get(row, `${hasUnique.dataField}`)?.toString()
 }
 
 const getIconType = (iconItem, row) => {
@@ -44,6 +44,7 @@ export default function Table({
 	onRowClick,
 	header = true,
 	visPerson,
+	visBestilling,
 	onExpand,
 }) {
 	const headerClass = cn('dot-header', {
@@ -61,6 +62,7 @@ export default function Table({
 				</div>
 			)}
 			{data.map((row, rowIdx) => {
+				if (!row) return null
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
 				const iconType = getIconType(iconItem, row)
@@ -69,6 +71,10 @@ export default function Table({
 					expandComponent &&
 					visPerson &&
 					_get(expandComponent, 'props.personId') === visPerson.toString()
+				const expandBestilling =
+					expandComponent &&
+					visBestilling &&
+					_get(expandComponent, 'props.bestilling.id')?.toString() === visBestilling.toString()
 
 				return (
 					<Row
@@ -77,6 +83,7 @@ export default function Table({
 						navLink={navLink}
 						expandComponent={expandComponent}
 						expandPerson={expandPerson}
+						expandBestilling={expandBestilling}
 					>
 						{columns.map((columnCell, idx) => (
 							<Column

@@ -7,7 +7,7 @@ import Button from '~/components/ui/button/Button'
 import FavoriteButton from '~/components/ui/button/FavoriteButton/FavoriteButton'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import { PersonIBrukButton } from '~/components/ui/button/PersonIBrukButton/PersonIBrukButton'
 
 // Loading
@@ -104,8 +104,8 @@ export default function () {
 			</Panel>
 
 			<h2>Text Editor</h2>
-			<TextEditor placeholder="Skriv en tekst" handleSubmit={(v) => {}} />
-			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={(v) => {}} />
+			<TextEditor placeholder="Skriv en tekst" handleSubmit={(_v) => {}} />
+			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={(_v) => {}} />
 
 			<h2>ContentContainer</h2>
 			<ContentContainer>Dette er en ContentContainer</ContentContainer>

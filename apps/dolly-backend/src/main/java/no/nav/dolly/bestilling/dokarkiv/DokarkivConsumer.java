@@ -8,13 +8,17 @@ import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,12 +38,17 @@ public class DokarkivConsumer {
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
 
-    public DokarkivConsumer(DokarkivProxyServiceProperties properties, TokenExchange tokenService, ObjectMapper objectMapper) {
+    public DokarkivConsumer(DokarkivProxyServiceProperties properties,
+                            TokenExchange tokenService,
+                            ObjectMapper objectMapper,
+                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = properties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -58,6 +67,8 @@ public class DokarkivConsumer {
                 .bodyValue(dokarkivRequest)
                 .retrieve()
                 .bodyToMono(DokarkivResponse.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException webClientResponseException) {
                         log.error(

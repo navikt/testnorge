@@ -12,7 +12,6 @@ import java.util.List;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO.OppholdType.MIDLERTIDIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO.OppholdType.OPPLYSNING_MANGLER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO.OppholdType.PERMANENT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -24,20 +23,6 @@ class OppholdServiceTest {
 
     @InjectMocks
     private OppholdService oppholdService;
-
-    @Test
-    void whenGyldigFraIsMissing_thenThrowExecption() {
-
-        var request = OppholdDTO.builder()
-                .type(PERMANENT)
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Opphold med oppholdFra må angis"));
-    }
 
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {

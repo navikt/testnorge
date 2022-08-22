@@ -1,12 +1,13 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
+import no.nav.organisasjonforvalter.config.credentials.TestnavOrgnummerServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -22,26 +23,28 @@ import static java.util.Objects.requireNonNull;
 @Service
 public class OrganisasjonOrgnummerServiceConsumer {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final OrganisasjonOrgnummerServiceProperties serviceProperties;
+    private final TestnavOrgnummerServiceProperties serviceProperties;
 
     public OrganisasjonOrgnummerServiceConsumer(
-            OrganisasjonOrgnummerServiceProperties serviceProperties,
-            AccessTokenService accessTokenService) {
+            TestnavOrgnummerServiceProperties serviceProperties,
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
     }
 
     public List<String> getOrgnummer(Integer antall) {
 
         long startTime = currentTimeMillis();
         try {
-            var response = accessTokenService.generateToken(serviceProperties)
+            var response = tokenExchange.exchange(serviceProperties)
                     .flatMap(token -> new OrganisasjonOrgnummerServiceCommand(webClient, antall, token.getTokenValue()).call())
                     .block();
 
@@ -54,7 +57,7 @@ public class OrganisasjonOrgnummerServiceConsumer {
             throw new HttpClientErrorException(e.getStatusCode(), requireNonNull(e.getMessage()));
 
         } catch (RuntimeException e) {
-            String error = format("Organisasjon-orgnummer-service svarte ikke etter %d ms", currentTimeMillis() - startTime);
+            String error = format("Testnav-orgnummer-service svarte ikke etter %d ms", currentTimeMillis() - startTime);
             log.error(error, e);
             throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);
         }

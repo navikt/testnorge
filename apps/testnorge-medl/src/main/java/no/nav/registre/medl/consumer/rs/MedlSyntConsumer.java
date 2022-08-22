@@ -4,30 +4,31 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.medl.consumer.rs.command.GetSyntMeldMeldingerCommand;
 import no.nav.registre.medl.consumer.rs.credential.SyntMedlGcpProperties;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
-
 @Component
 @Slf4j
 public class MedlSyntConsumer {
 
-    private final AccessTokenService tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
     public MedlSyntConsumer(
             SyntMedlGcpProperties syntMedlGcpProperties,
-            AccessTokenService accessTokenService
-    ) {
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
         this.serviceProperties = syntMedlGcpProperties;
-        this.tokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
@@ -35,6 +36,7 @@ public class MedlSyntConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(syntMedlGcpProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -42,7 +44,7 @@ public class MedlSyntConsumer {
     public List<MedlSyntResponse> hentMedlemskapsmeldingerFromSyntRest(
             int numToGenerate
     ) {
-        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
+        var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntMeldMeldingerCommand(numToGenerate, accessToken, webClient).call();
     }
 }
