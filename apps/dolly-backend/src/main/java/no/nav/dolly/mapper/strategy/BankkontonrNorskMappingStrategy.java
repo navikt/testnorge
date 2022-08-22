@@ -16,7 +16,6 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(BankkontonrNorskDTO bestilling, OppdaterKontoRequestDTO kontoregister, MappingContext context) {
-                        kontoregister.setKontonummer(bestilling.getKontonummer());
                         kontoregister.setOpprettetAv("Dolly");
                         kontoregister.setUtenlandskKonto(null);
                     }

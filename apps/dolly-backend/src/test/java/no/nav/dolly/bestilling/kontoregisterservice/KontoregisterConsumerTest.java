@@ -250,7 +250,7 @@ class KontoregisterConsumerTest {
                                 .withBody(hentKontoResponse())
                                 .withHeader("Content-Type", "application/json")));
 
-        var hentResponse = kontoregisterConsumer.sendHentKontoRequest(IDENT);
+        var hentResponse = kontoregisterConsumer.sendHentKontoRequest(IDENT).block();
 
         var hentBankkontoer = WireMock.getAllServeEvents()
                 .stream()
