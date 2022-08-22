@@ -69,7 +69,7 @@ const getDisabledNasjonalitetField = (opts: any) => {
 		}
 	}
 
-	return false
+	return ''
 }
 
 // @ts-ignore
