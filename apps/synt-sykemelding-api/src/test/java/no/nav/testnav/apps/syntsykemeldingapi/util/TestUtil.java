@@ -6,10 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.Metadata;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellDTO;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntDiagnoserDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingDTO;
@@ -17,12 +18,31 @@ import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistor
 
 public class TestUtil {
 
-    public static PersondataDTO getTestPersonDataDTO(String ident) {
-        return PersondataDTO.builder()
-                .fornavn("Hans")
-                .mellomnavn("Ole")
-                .etternavn("Hansen")
-                .fnr(ident)
+    public static PdlPerson getTestPdlPerson(String ident) {
+        var metadata = new Metadata(false);
+
+        var identer = PdlPerson.HentIdenter.builder()
+                .identer(Collections.singletonList(PdlPerson.Identer.builder()
+                        .gruppe(PdlPerson.Gruppe.FOLKEREGISTERIDENT)
+                        .historisk(false)
+                        .ident(ident)
+                        .build()
+                ))
+                .build();
+        var hentPersoner = PdlPerson.HentPerson.builder()
+                .navn(Collections.singletonList(PdlPerson.Navn.builder()
+                        .fornavn("Hans")
+                        .mellomnavn("Ole")
+                        .etternavn("Hansen")
+                        .metadata(metadata)
+                        .build()))
+                .build();
+
+        return PdlPerson.builder()
+                .data(PdlPerson.Data.builder()
+                        .hentPerson(hentPersoner)
+                        .hentIdenter(identer)
+                        .build())
                 .build();
     }
 

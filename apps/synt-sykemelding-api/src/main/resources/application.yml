@@ -6,8 +6,6 @@ spring.application:
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers:
-  hodejegeren:
-    url: https://testnorge-hodejegeren.dev.intern.nav.no
   synt-sykemelding:
     url: https://synthdata-elsam-gcp.dev.intern.nav.no
     name: synthdata-elsam-gcp
@@ -30,6 +28,12 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-helsepersonell-service
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    #url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    url: https://testnav-pdl-proxy.dev.intern.nav.no
+    cluster: dev-fss
 
 management:
   endpoints:

@@ -5,11 +5,12 @@ import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestArbeid
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestHistorikk;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestLegeListeDTO;
 import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestOrganisasjonDTO;
-import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestPersonDataDTO;
+import static no.nav.testnav.apps.syntsykemeldingapi.util.TestUtil.getTestPdlPerson;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,6 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.Helsepersonell;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Person;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
@@ -46,7 +46,7 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-public class SyntSykemeldingControllerIntegrationTest {
+class SyntSykemeldingControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -55,11 +55,10 @@ public class SyntSykemeldingControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     private static final String ident = "01019049945";
-    private static final String miljoe = "q1";
     private static final String orgnr = "123456789";
     private static final String arbeidsforholdId = "1";
 
-    private static final String hodejegerenUrl = "(.*)/hodejegeren/api/v1/persondata";
+    private static final String pdlProxyUrl = "(.*)/pdl/pdl-api/graphql";
     private static final String arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
     private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
     private static final String historikkUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
@@ -67,7 +66,7 @@ public class SyntSykemeldingControllerIntegrationTest {
     private static final String sykemeldingUrl = "(.*)/sykemelding/api/v1/sykemeldinger";
 
     private SyntSykemeldingDTO dto;
-    private PersondataDTO hodejegerenResponse;
+    private PdlPerson pdlResponse;
     private ArbeidsforholdDTO arbeidsforholdResponse;
     private OrganisasjonDTO organisasjonResponse;
     private final Map<String, String> historikkRequest = Map.of(ident, LocalDate.now().toString());
@@ -86,7 +85,7 @@ public class SyntSykemeldingControllerIntegrationTest {
                 .startDato(LocalDate.now())
                 .build();
 
-        hodejegerenResponse = getTestPersonDataDTO(ident);
+        pdlResponse = getTestPdlPerson(ident);
         arbeidsforholdResponse = getTestArbeidsforholdDTO(arbeidsforholdId, orgnr);
         organisasjonResponse = getTestOrganisasjonDTO(orgnr);
 
@@ -99,7 +98,7 @@ public class SyntSykemeldingControllerIntegrationTest {
         helsepersonellResponse = getTestLegeListeDTO();
 
         sykemeldingRequest = new Sykemelding(
-                new Person(hodejegerenResponse),
+                new Person(pdlResponse),
                 historikkResponse.get(ident),
                 dto,
                 new Helsepersonell(helsepersonellResponse.getHelsepersonell().get(0)),
@@ -107,14 +106,12 @@ public class SyntSykemeldingControllerIntegrationTest {
     }
 
     @Test
-    public void shouldOpprettSyntSykemelding() throws Exception {
+    void shouldOpprettSyntSykemelding() throws Exception {
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(hodejegerenUrl)
-                .withQueryParam("ident", ident)
-                .withQueryParam("miljoe", miljoe)
-                .withResponseBody(hodejegerenResponse)
-                .stubGet();
+                .withUrlPathMatching(pdlProxyUrl)
+                .withResponseBody(pdlResponse)
+                .stubPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -161,11 +158,9 @@ public class SyntSykemeldingControllerIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(hodejegerenUrl)
-                .withQueryParam("ident", ident)
-                .withQueryParam("miljoe", miljoe)
-                .withResponseBody(hodejegerenResponse)
-                .verifyGet();
+                .withUrlPathMatching(pdlProxyUrl)
+                .withResponseBody(pdlResponse)
+                .verifyPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)

@@ -82,10 +82,10 @@ public class Sykemelding {
         var pasient = PasientDTO
                 .builder()
                 .ident(this.pasient.getIdent())
-                .fornavn(this.pasient.getFornvan())
+                .fornavn(this.pasient.getFornavn())
                 .mellomnavn(this.pasient.getMellomnavn())
                 .etternavn(this.pasient.getEtternavn())
-//                .foedselsdato(this.pasient.getFoedselsdato())
+                .foedselsdato(this.pasient.getFoedselsdato())
                 .navKontor("ST.HANSHAUGEN")
                 .build();
         var perioder = sykemeldinger

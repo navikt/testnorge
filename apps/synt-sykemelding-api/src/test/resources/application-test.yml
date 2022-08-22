@@ -13,8 +13,6 @@ spring:
       token: dummy
 
 consumers:
-  hodejegeren:
-    url: http://localhost:${wiremock.server.port}/hodejegeren
   synt-sykemelding:
     url: http://localhost:${wiremock.server.port}/synt
     name: synthdata-elsam-gcp
@@ -37,3 +35,8 @@ consumers:
     cluster: dummy
     namespace: dummy
     name: testnav-helsepersonell-service
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dummy
+    url: http://localhost:${wiremock.server.port}/pdl
+    cluster: dummy

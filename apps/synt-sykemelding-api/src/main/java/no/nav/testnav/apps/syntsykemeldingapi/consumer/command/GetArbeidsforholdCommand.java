@@ -15,6 +15,8 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.testnav.apps.syntsykemeldingapi.util.Headers.AUTHORIZATION;
+
 @Slf4j
 @RequiredArgsConstructor
 public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
@@ -34,7 +36,7 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
                         .path("/api/v1/arbeidsforhold/{ident}/{orgnummer}/{arbeidsforholdId}")
                         .build(ident, orgnummer, arbeidsforholdId)
                 )
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .header(AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", "q1")
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(
