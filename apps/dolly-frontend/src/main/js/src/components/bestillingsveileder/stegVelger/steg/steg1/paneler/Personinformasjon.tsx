@@ -64,11 +64,8 @@ const getDisabledNasjonalitetField = (opts: any) => {
 			const sisteUtflytting = Math.max(
 				utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
 			)
-			if (sisteInnflytting > sisteUtflytting) {
-				return innField
-			} else {
-				return utField
-			}
+
+			return sisteInnflytting > sisteUtflytting ? innField : utField
 		}
 	}
 
