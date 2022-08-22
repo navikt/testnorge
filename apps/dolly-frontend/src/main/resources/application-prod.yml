@@ -8,8 +8,8 @@ spring:
     port: 6379
 
 consumers:
-# Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
-# Konsumenter for prod
+  # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
+  # Konsumenter for prod
   testnorge-profil-api:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-varslinger-service:
@@ -21,8 +21,8 @@ consumers:
   testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   dolly-backend:
-    url: https://dolly-backend.dolly.svc.cluster.local
-# Konsumenter felles
+    url: https://testnav-dolly-backend.dolly.svc.cluster.local
+  # Konsumenter felles
   testnav-tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
   testnav-organisasjon-faste-data-service:
