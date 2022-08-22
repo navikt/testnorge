@@ -1,6 +1,5 @@
 import { ClientFunction, RequestMock } from 'testcafe'
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
-import { mockHeaders } from '@smartive/testcafe-utils'
 
 const miljoer = new RegExp(/\/miljoer/)
 const dollyLogg = new RegExp(/\/dolly-logg/)
@@ -11,6 +10,7 @@ const bilde = new RegExp(/\/bilde/)
 const hentGrupper = new RegExp(/\/gruppe\?/)
 const spesifikkGruppe = new RegExp(/\/gruppe/)
 const bestillingGruppe = new RegExp(/\/bestilling\/gruppe/)
+const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
 const varslinger = new RegExp(/\/varslinger/)
 const ids = new RegExp(/\/ids/)
 
@@ -27,7 +27,6 @@ const gjeldendeBruker = {
 	brukernavn: 'Cafe, Test',
 	brukertype: 'BASIC',
 	epost: 'testcafe@nav.no',
-	favoritter: [],
 }
 
 const gruppeHentet = {
@@ -44,13 +43,14 @@ const gruppeHentet = {
 	erLaast: false,
 	identer: [],
 }
+
 const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
 	.respond('["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]', 200)
 	.onRequestTo(hentGrupper)
-	.respond('[]', 200)
+	.respond([gruppeHentet], 200)
 	.onRequestTo(spesifikkGruppe)
-	.respond(gruppeHentet, 200)
+	.respond(null, 200, { 'content-disposition': 'undefined', 'content-type': 'text/html' })
 	.onRequestTo(varslinger)
 	.respond('[{"varslingId":"VELKOMMEN_TIL_DOLLY","fom":null,"tom":null}]', 200)
 	.onRequestTo(ids)
@@ -60,32 +60,36 @@ const cookieMock = RequestMock()
 	.onRequestTo(dollyLogg)
 	.respond(null, 200)
 	.onRequestTo(bestillingGruppe)
-	.respond(spesifikkGruppe, 201)
+	.respond({}, 201)
 	.onRequestTo(current)
-	.respond(gjeldendeBruker, 200, mockHeaders)
+	.respond(gjeldendeBruker, 200)
 	.onRequestTo(profil)
-	.respond(gjeldendeProfil, 200, mockHeaders)
+	.respond(gjeldendeProfil, 200)
 	.onRequestTo(bilde)
-	.respond(null, 404, mockHeaders)
+	.respond(null, 404)
+	.onRequestTo(bestillingMaler)
+	.respond('[]', 200)
 
 fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
 })
 
-test('Godta varslinger og opprett en gruppe', async (testController) => {
+test('Godta varslinger, teste avbryt og opprett en gruppe', async (testController) => {
 	const getLocation = ClientFunction(() => document.location.href)
 
 	await testController.click(ReactSelector('NavButton').withText('Lukk'))
 
 	await testController
 		.click(ReactSelector('NavButton').withText('Ny gruppe'))
+		.click(ReactSelector('NavButton').withText('Avbryt'))
+
+		.click(ReactSelector('NavButton').withText('Ny gruppe'))
 		.typeText(ReactSelector('FormikTextInput').withProps({ label: 'NAVN' }), 'Testcafe testing')
 		.typeText(
 			ReactSelector('FormikTextInput').withProps({ label: 'HENSIKT' }),
 			'Saftig testing med testcafe..'
 		)
-		.click(ReactSelector('NavButton').withText('Opprett og gå til gruppe'))
-
+		.pressKey('enter')
 		.expect(getLocation())
 		.contains('gruppe/1')
 })

@@ -1,6 +1,5 @@
 import { ClientFunction, RequestMock } from 'testcafe'
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
-import { mockHeaders } from '@smartive/testcafe-utils'
 
 const miljoer = new RegExp(/\/miljoer/)
 const dollyLogg = new RegExp(/\/dolly-logg/)
@@ -23,7 +22,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(azureAuth)
 	.respond("<script>window.location.href='http://localhost:3000/';</script>", 200)
 	.onRequestTo(current)
-	.respond(currentBruker, 200, mockHeaders)
+	.respond(currentBruker, 200)
 
 fixture`Loginside`.page`http://localhost:3000/login`
 	.requestHooks(cookieMock)
@@ -35,7 +34,7 @@ test('Trykk logg inn med Nav og bli redirected til Dolly hovedside', async (test
 	const getLocation = ClientFunction(() => document.location.href)
 
 	await testController
-		.click(ReactSelector('NavButton').withProps({ type: 'hoved' }))
+		.click(ReactSelector('NavButton').withText('NAV epost'))
 		.expect(getLocation())
 		.notContains('login')
 })
