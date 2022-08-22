@@ -20,9 +20,9 @@ export const {
 	setSidetall: (sidetall) => sidetall,
 	setSideStoerrelse: (sideStoerrelse) => sideStoerrelse,
 	setVisning: (visning) => visning,
-	resetNavigering,
-	resetPaginering,
-	resetFeilmelding,
+	resetNavigering() {},
+	resetPaginering() {},
+	resetFeilmelding() {},
 })
 
 const initialState = {

@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useState } from 'react'
+import React, { useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
@@ -33,9 +33,9 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
 
-	const handleToggleChange = (event: BaseSyntheticEvent) => {
-		setInputType(event.target.value)
-		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, event.target.value)
+	const handleToggleChange = (value: string) => {
+		setInputType(value)
+		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		formikBag.setFieldValue(path, '')
 	}
 
@@ -54,7 +54,7 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 		setLoading(true)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljo)
-			.then((response) => {
+			.then((response: { data: { enhetType: string; juridiskEnhet: any; orgnummer: any } }) => {
 				setLoading(false)
 				if (!validEnhetstyper.includes(response.data.enhetType)) {
 					setError('Organisasjonen må være av type BEDR eller AAFY')
@@ -73,11 +73,7 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 
 	return (
 		<div className="toggle--wrapper">
-			<OrganisasjonToogleGruppe
-				path={path}
-				inputType={inputType}
-				handleToggleChange={handleToggleChange}
-			/>
+			<OrganisasjonToogleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonMedArbeidsforholdSelect
 					afterChange={handleChange}

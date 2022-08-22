@@ -23,10 +23,10 @@ export default ({
 
 	return (
 		<div className={css}>
-			<NavButton type={'fare'} onClick={onAvbryt}>
+			<NavButton variant={'danger'} onClick={onAvbryt}>
 				Avbryt
 			</NavButton>
-			<NavButton type="hoved" onClick={onSubmit} disabled={disabled} title={submitTitle}>
+			<NavButton variant={'primary'} onClick={onSubmit} disabled={disabled} title={submitTitle}>
 				{submitknapp}
 			</NavButton>
 		</div>

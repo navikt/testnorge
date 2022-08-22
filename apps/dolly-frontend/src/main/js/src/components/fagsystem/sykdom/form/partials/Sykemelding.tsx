@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { get as _get } from 'lodash'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
 import { Diagnose, SykemeldingForm } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import { ToggleGroup } from '@navikt/ds-react'
 
 const initialValuesSyntSykemelding = {
 	syntSykemelding: {
@@ -80,9 +80,9 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 			: SykemeldingTyper.synt
 	)
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setTypeSykemelding(event.target.value)
-		if (event.target.value === SykemeldingTyper.detaljert) {
+	const handleToggleChange = (value: SykemeldingTyper) => {
+		setTypeSykemelding(value)
+		if (value === SykemeldingTyper.detaljert) {
 			formikBag.setFieldValue('sykemelding', initialValuesDetaljertSykemelding)
 		} else {
 			formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
@@ -102,13 +102,17 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGruppe onChange={handleToggleChange} name="sykemelding">
+			<ToggleGroup
+				size={'small'}
+				onChange={handleToggleChange}
+				defaultValue={SykemeldingTyper.detaljert}
+			>
 				{toggleValues.map((val) => (
-					<ToggleKnapp key={val.value} value={val.value} checked={typeSykemelding === val.value}>
+					<ToggleGroup.Item key={val.value} value={val.value}>
 						{val.label}
-					</ToggleKnapp>
+					</ToggleGroup.Item>
 				))}
-			</ToggleGruppe>
+			</ToggleGroup>
 			{typeSykemelding === SykemeldingTyper.synt && <SyntSykemelding />}
 			{typeSykemelding === SykemeldingTyper.detaljert && (
 				<DetaljertSykemelding formikBag={formikBag} />

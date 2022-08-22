@@ -54,21 +54,15 @@ module.exports = {
 		},
 		extensions: ['.js', '.json', '.ts', '.tsx'],
 	},
-	externals: {
-		'@navikt/ds-css': {
-			commonjs: '@navikt/ds-css',
-			commonjs2: '@navikt/ds-css',
-			amd: '@navikt/ds-css',
-			root: '@navikt/ds-css',
-		},
-	},
 	module: {
 		rules: [
 			{
-				test: /\.js|.ts(x?)$/,
-				include: path.resolve(__dirname, 'src'),
+				test: /\.(jsx|tsx|ts|js)?$/,
 				exclude: /node_modules/,
-				use: ['babel-loader?sourceMap&cacheDirectory'],
+				loader: 'babel-loader',
+				options: {
+					presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-flow'],
+				},
 			},
 			{
 				test: /\.svg$/,

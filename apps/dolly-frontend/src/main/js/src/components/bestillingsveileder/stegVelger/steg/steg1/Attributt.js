@@ -1,6 +1,6 @@
 import React from 'react'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { CheckboxGruppe } from 'nav-frontend-skjema'
+import { CheckboxGroup } from '@navikt/ds-react'
 
 export const Attributt = ({ attr, vis = true, disabled = false, title = null }) => {
 	return (
@@ -12,6 +12,7 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null }) 
 					attributtCheckbox={true}
 					onChange={attr.checked ? attr.remove : attr.add}
 					checked={attr.checked}
+					value={attr}
 					disabled={disabled}
 				/>
 			</div>
@@ -26,10 +27,10 @@ export const AttributtKategori = ({ title, children }) => {
 	)
 	return (
 		attributterSomSkalVises && (
-			<CheckboxGruppe>
+			<CheckboxGroup legend={title}>
 				{title && <h3>{title}</h3>}
 				<div className="attributt-velger_panelsubcontent">{children}</div>
-			</CheckboxGruppe>
+			</CheckboxGroup>
 		)
 	)
 }

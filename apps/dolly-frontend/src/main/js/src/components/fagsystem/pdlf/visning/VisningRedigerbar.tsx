@@ -20,14 +20,14 @@ import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/a
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { AdressebeskyttelseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import {
-	doedsfall,
-	innflytting,
-	statsborgerskap,
-	utflytting,
 	adressebeskyttelse,
 	bostedsadresse,
+	doedsfall,
+	innflytting,
 	kontaktadresse,
 	oppholdsadresse,
+	statsborgerskap,
+	utflytting,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
 
@@ -75,6 +75,7 @@ const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 8px;
 	margin-top: -10px;
+
 	&&& {
 		button {
 			position: relative;
@@ -243,7 +244,7 @@ export const VisningRedigerbar = ({
 											closeModal()
 											return handleDelete()
 										}}
-										type="hoved"
+										variant={'primary'}
 									>
 										Ja, jeg er sikker
 									</NavButton>
@@ -271,8 +272,7 @@ export const VisningRedigerbar = ({
 									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
 									<Knappegruppe>
 										<NavButton
-											type="standard"
-											htmlType="reset"
+											type="reset"
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
@@ -280,8 +280,8 @@ export const VisningRedigerbar = ({
 											Avbryt
 										</NavButton>
 										<NavButton
-											type="hoved"
-											htmlType="submit"
+											variant={'primary'}
+											type="submit"
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

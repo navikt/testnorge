@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent, ReactElement, useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -13,14 +13,13 @@ import {
 	initialValues,
 } from '../initialValues'
 import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-import { AlertStripeAdvarsel, AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
 
 interface ArbeidsforholdToggleProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
 }
 
-const ToggleArbeidsgiver = styled(ToggleGruppe)`
+const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 `
@@ -79,12 +78,12 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 	}
 
 	const warningMessage = (
-		<AlertStripeAdvarsel>
+		<Alert variant={'warning'}>
 			Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for person. For å
 			lage dine egne organisasjoner trykk {<a href="/organisasjoner">her</a>}. For å opprette person
 			med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere, velg en annen kategori
 			ovenfor.
-		</AlertStripeAdvarsel>
+		</Alert>
 	)
 
 	return (
@@ -94,13 +93,9 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 				name={'arbeidsforhold'}
 			>
 				{toggleValues.map((type) => (
-					<ToggleKnapp
-						key={type.value}
-						value={type.value}
-						checked={type.value === typeArbeidsgiver}
-					>
+					<ToggleGroup.Item key={type.value} value={type.value}>
 						{type.label}
-					</ToggleKnapp>
+					</ToggleGroup.Item>
 				))}
 			</ToggleArbeidsgiver>
 			{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
@@ -112,11 +107,11 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 				</>
 			) : (
 				<>
-					<AlertStripeInfo>
+					<Alert variant={'info'}>
 						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
 						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere med
 						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
-					</AlertStripeInfo>
+					</Alert>
 					<FormikDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"

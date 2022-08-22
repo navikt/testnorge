@@ -13,11 +13,7 @@ export default ({ startBestilling, bestillingstype }: Props) => (
 			Du har for øyeblikket ingen organisasjoner. Trykk på knappen under for å opprette en
 			organisasjon med standard oppsett.
 		</p>
-		<NavButton
-			type="standard"
-			onClick={() => startBestilling(bestillingstype)}
-			style={{ marginTop: '10px' }}
-		>
+		<NavButton onClick={() => startBestilling(bestillingstype)} style={{ marginTop: '10px' }}>
 			Opprett standard organisasjon
 		</NavButton>
 	</ContentContainer>

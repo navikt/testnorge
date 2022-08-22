@@ -1,9 +1,7 @@
 // - Normalize.css
-@import '~nav-frontend-core/less/core';
+@import '~@navikt/ds-css';
 @import './variables';
 @import './utils';
-
-@import '~nav-frontend-tabell-style';
 
 // TODO: rydd i shared styling
 // shared stylings across pages
@@ -11,6 +9,8 @@
 @import './shared/Toolbar';
 
 body {
+  line-height: unset;
+  font-size: unset;
   font-family: 'Source Sans Pro', sans-serif;
   background-color: @color-bg-grey;
   color: @color-textbase;
@@ -27,8 +27,17 @@ h1 {
   margin: 40px 0 20px;
 }
 
-h3 {
-  font-size: 1rem;
+a {
+  background-color: unset;
+  color: unset;
+
+  :hover {
+    cursor: pointer;
+  }
+}
+
+.navds-button svg {
+  fill: #0067c5;
 }
 
 // NAV skjema override
@@ -63,9 +72,6 @@ h3 {
 
   .svg-icon {
     pointer-events: none;
-    position: absolute;
-    top: 9px;
-    right: 8px;
   }
 }
 
@@ -74,8 +80,13 @@ h3 {
 }
 
 // NAV hjelpetekst
-.hjelpetekst {
+.navds-help-text {
   margin-left: 10px;
+  margin-bottom: 4px;
+}
+
+.navds-button {
+  min-width: unset;
 }
 
 .popover {

@@ -1,42 +1,25 @@
 import React from 'react'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
+import { ToggleGroup } from '@navikt/ds-react'
 
 interface OrganisasjonToogleGruppeProps {
-	path: string
 	inputType: string
-	handleToggleChange: (event: React.ChangeEvent<any>) => void
+	handleToggleChange: (value: string) => void
 }
 
 export const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skrivSelv: 'skriv' }
 
-export const OrganisasjonToogleGruppe = ({
-	path,
-	inputType,
-	handleToggleChange,
-}: OrganisasjonToogleGruppeProps) => {
+export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToogleGruppeProps) => {
 	return (
-		<ToggleGruppe onChange={handleToggleChange} name={path}>
-			<ToggleKnapp
-				key={inputValg.fraFellesListe}
-				value={inputValg.fraFellesListe}
-				checked={inputType === inputValg.fraFellesListe}
-			>
+		<ToggleGroup size={'small'} onChange={handleToggleChange} defaultValue={inputValg.fraEgenListe}>
+			<ToggleGroup.Item key={inputValg.fraFellesListe} value={inputValg.fraFellesListe}>
 				Felles organisasjoner
-			</ToggleKnapp>
-			<ToggleKnapp
-				key={inputValg.fraEgenListe}
-				value={inputValg.fraEgenListe}
-				checked={inputType === inputValg.fraEgenListe}
-			>
+			</ToggleGroup.Item>
+			<ToggleGroup.Item key={inputValg.fraEgenListe} value={inputValg.fraEgenListe}>
 				Egen organisasjon
-			</ToggleKnapp>
-			<ToggleKnapp
-				key={inputValg.skrivSelv}
-				value={inputValg.skrivSelv}
-				checked={inputType === inputValg.skrivSelv}
-			>
+			</ToggleGroup.Item>
+			<ToggleGroup.Item key={inputValg.skrivSelv} value={inputValg.skrivSelv}>
 				Skriv inn org.nr.
-			</ToggleKnapp>
-		</ToggleGruppe>
+			</ToggleGroup.Item>
+		</ToggleGroup>
 	)
 }

@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { BaseSyntheticEvent, useState } from 'react'
 import Logger from '../../logger'
-import { Rating } from '../../logger/types'
+import { Rating } from '~/logger/types'
 // @ts-ignore
 import Icon from '~/components/ui/icon/Icon'
 import NavButton from '../ui/button/NavButton/NavButton'
-import './ThumbsRating.less'
 import styled from 'styled-components'
+import './ThumbsRating.less'
 
 interface ThumbsRatingProps {
 	label: string
@@ -19,11 +19,12 @@ interface ThumbsRatingProps {
 const ThumbsButton = styled(NavButton)`
 	&& {
 		border: 0;
-		padding: 0 8px;
+		padding: 6px 10px;
 		border-radius: 50%;
 		margin-left: 7px;
 	}
-	&& :focus {
+
+	&& :hover {
 		outline: none;
 		box-shadow: 0 0 2px @color-nav-black;
 	}
@@ -67,10 +68,24 @@ export const ThumbsRating = ({ label, ratingFor, onClick, uuid, children }: Thum
 	return (
 		<div className="thumbs-rating flexbox--all-center">
 			<p>{label}</p>
-			<ThumbsButton form="kompakt" onClick={() => _onClick(Rating.Positive)}>
+			<ThumbsButton
+				variant={'secondary'}
+				size={'small'}
+				onClick={(event: BaseSyntheticEvent) => {
+					event.stopPropagation()
+					_onClick(Rating.Positive)
+				}}
+			>
 				<ThumpsUp className="thumbs-rating__icon thumbs-rating__icon__left" />
 			</ThumbsButton>
-			<ThumbsButton form="kompakt" onClick={() => _onClick(Rating.Negative)}>
+			<ThumbsButton
+				variant={'secondary'}
+				size={'small'}
+				onClick={(event: BaseSyntheticEvent) => {
+					event.stopPropagation()
+					_onClick(Rating.Negative)
+				}}
+			>
 				<ThumpsDown className="thumbs-rating__icon thumbs-rating__icon__right" />
 			</ThumbsButton>
 		</div>

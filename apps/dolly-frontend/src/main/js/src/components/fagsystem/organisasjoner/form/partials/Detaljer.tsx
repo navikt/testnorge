@@ -10,11 +10,11 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OrganisasjonKodeverk } from '~/config/kodeverk'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
 import { EnhetBestilling } from '../../types'
 import { Kontaktdata } from './Kontaktdata'
 import { Adresser } from './Adresser'
+import { ToggleGroup } from '@navikt/ds-react'
 
 type DetaljerProps = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
@@ -55,13 +55,13 @@ export const Detaljer = ({
 			: TypeUnderenhet.VIRKSOMHET
 	)
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setTypeUnderenhet(event.target.value)
+	const handleToggleChange = (value: TypeUnderenhet) => {
+		setTypeUnderenhet(value)
 		formikBag.setFieldValue(`${path}.enhetstype`, '')
-		if (event.target.value === TypeUnderenhet.VIRKSOMHET) {
+		if (value === TypeUnderenhet.VIRKSOMHET) {
 			formikBag.setFieldValue(`${path}.underenheter`, undefined)
 			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, undefined)
-		} else if (event.target.value === TypeUnderenhet.JURIDISKENHET && level < 4) {
+		} else if (value === TypeUnderenhet.JURIDISKENHET && level < 4) {
 			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
 			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, '')
 		}
@@ -72,22 +72,21 @@ export const Detaljer = ({
 			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
-						<ToggleGruppe onChange={handleToggleChange} name={path}>
-							<ToggleKnapp
+						<ToggleGroup
+							size={'small'}
+							onChange={handleToggleChange}
+							defaultValue={TypeUnderenhet.JURIDISKENHET}
+						>
+							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
 								value={TypeUnderenhet.JURIDISKENHET}
-								checked={typeUnderenhet === TypeUnderenhet.JURIDISKENHET}
 							>
 								Juridisk enhet
-							</ToggleKnapp>
-							<ToggleKnapp
-								key={TypeUnderenhet.VIRKSOMHET}
-								value={TypeUnderenhet.VIRKSOMHET}
-								checked={typeUnderenhet === TypeUnderenhet.VIRKSOMHET}
-							>
+							</ToggleGroup.Item>
+							<ToggleGroup.Item key={TypeUnderenhet.VIRKSOMHET} value={TypeUnderenhet.VIRKSOMHET}>
 								Virksomhet
-							</ToggleKnapp>
-						</ToggleGruppe>
+							</ToggleGroup.Item>
+						</ToggleGroup>
 					)}
 					<FormikSelect
 						name={`${path}.enhetstype`}
