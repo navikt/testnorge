@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.kontoregisterservice.dto;
+package no.nav.testnav.libs.dto.kontoregisterservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class UtenlandskKontoDto {
+public class UtenlandskKontoDTO {
     private String banknavn;
     private String bankkode;
     private String bankLandkode;
