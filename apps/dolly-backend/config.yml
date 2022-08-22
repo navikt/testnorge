@@ -34,9 +34,7 @@ spec:
     max: 1
   port: 8080
   ingresses:
-#    - https://dolly-backend.dev.adeo.no
-    - https://testnav-dolly-backend.dev.intern.nav.no
-#    - https://dolly-backend.dev-fss-pub.nais.io
+    - https://dolly-backend.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
