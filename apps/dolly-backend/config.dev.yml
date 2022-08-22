@@ -55,10 +55,10 @@ spec:
     limits:
       cpu: 1500m
       memory: 2048Mi
-gcp:
-  sqlInstances:
-    - type: POSTGRES_14
-      name: testnav-dolly-backend-dev
-      databases:
-        - name: testnav-dolly-backend-dev
-      autoBackupTime: "01:00"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-dolly-backend-dev
+        databases:
+          - name: testnav-dolly-backend-dev
+        autoBackupTime: "01:00"
