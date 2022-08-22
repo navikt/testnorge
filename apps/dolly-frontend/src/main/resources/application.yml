@@ -104,7 +104,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: dolly-backend
-    url: https://testnav-dolly-backend.dev.intern.nav.no
+    url: https://dolly-backend.dev.intern.nav.no
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
