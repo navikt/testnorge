@@ -35,7 +35,7 @@ export const Switch = ({ id, ...restProps }) => {
 
 export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin, ...props }) => (
 	<InputWrapper size={size} checkboxMargin={checkboxMargin}>
-		{isSwitch ? <Switch {...props} /> : <Checkbox {...props} />}
+		{isSwitch ? <Switch {...props} /> : <Checkbox {...props}>{props.name}</Checkbox>}
 	</InputWrapper>
 )
 

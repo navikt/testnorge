@@ -12,16 +12,11 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }) => 
 		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
 			<div className="start-bestilling-modal">
 				<h1>Opprett personer</h1>
-				<RadioGroup
-					name="eksisterende"
-					legend="Type bestilling"
-					checked={type}
-					onChange={(e) => setType(e.target.value)}
-				>
-					<Radio value={'ny'} id={'ny'}>
+				<RadioGroup legend="Type bestilling" value={type} onChange={(value) => setType(value)}>
+					<Radio value={'ny'} key={'ny'}>
 						Ny person
 					</Radio>
-					<Radio value={'eksisterende'} id={'eksisterende'}>
+					<Radio value={'eksisterende'} key={'eksisterende'}>
 						Eksisterende person
 					</Radio>
 				</RadioGroup>

@@ -12,6 +12,7 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null }) 
 					attributtCheckbox={true}
 					onChange={attr.checked ? attr.remove : attr.add}
 					checked={attr.checked}
+					value={attr}
 					disabled={disabled}
 				/>
 			</div>
@@ -26,7 +27,7 @@ export const AttributtKategori = ({ title, children }) => {
 	)
 	return (
 		attributterSomSkalVises && (
-			<CheckboxGroup>
+			<CheckboxGroup legend={title}>
 				{title && <h3>{title}</h3>}
 				<div className="attributt-velger_panelsubcontent">{children}</div>
 			</CheckboxGroup>

@@ -103,17 +103,23 @@ export default ({ visning, setVisning }: GruppeProps) => {
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGroup size={'small'} value={visning} onChange={byttVisning}>
-						<ToggleGroup.Item key={visning} value={VisningType.VISNING_PERSONER}>
+						<ToggleGroup.Item
+							key={VisningType.VISNING_PERSONER}
+							value={VisningType.VISNING_PERSONER}
+						>
 							<Icon
-								key={visning}
+								key={VisningType.VISNING_PERSONER}
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter})`}
 						</ToggleGroup.Item>
-						<ToggleGroup.Item key={visning} value={VisningType.VISNING_BESTILLING}>
+						<ToggleGroup.Item
+							key={VisningType.VISNING_BESTILLING}
+							value={VisningType.VISNING_BESTILLING}
+						>
 							<Icon
-								key={visning}
+								key={VisningType.VISNING_BESTILLING}
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
