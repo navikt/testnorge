@@ -20,6 +20,8 @@ consumers:
     url: http://testnav-varslinger-service.dolly.svc.cluster.local
   testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+  dolly-backend:
+    url: https://dolly-backend.dolly.svc.cluster.local
 # Konsumenter felles
   testnav-tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
