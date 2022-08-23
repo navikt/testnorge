@@ -633,10 +633,12 @@ const validateIban = (kontonummer, form) => {
 		}
 
 		const kontoregisterLandkode = landkoder.find((k) => k.landkode === mappedLandkode)
-		if (kontoregisterLandkode && kontoregisterLandkode.ibanLengde) {
-			if (kontonummer.length !== kontoregisterLandkode.ibanLengde) {
-				return `Kontonummer for ${mappedLandkode} må være ${kontoregisterLandkode.ibanLengde} tegn (nå er den ${kontonummer.length} tegn)`
-			}
+		if (
+			kontoregisterLandkode &&
+			kontoregisterLandkode.ibanLengde &&
+			kontonummer.length !== kontoregisterLandkode.ibanLengde
+		) {
+			return `Kontonummer for ${mappedLandkode} må være ${kontoregisterLandkode.ibanLengde} tegn (nå er den ${kontonummer.length} tegn)`
 		}
 	}
 
