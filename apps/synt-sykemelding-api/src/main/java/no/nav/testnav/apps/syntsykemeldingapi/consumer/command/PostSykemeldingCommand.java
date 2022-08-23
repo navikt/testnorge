@@ -37,7 +37,7 @@ public class PostSykemeldingCommand implements Callable<Mono<String>> {
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error("Feil oppsto i oppretting av sykemelding", throwable);
-                    throw new GenererSykemeldingerException("Klarte ikke å opprette sykemelding for " + sykemelding.getIdent());
+                    throw new GenererSykemeldingerException("Klarte ikke opprette sykemelding for " + sykemelding.getIdent());
                 });
     }
 }

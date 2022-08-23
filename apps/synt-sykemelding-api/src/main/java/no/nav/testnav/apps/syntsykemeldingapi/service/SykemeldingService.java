@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SykemeldingService {
-    private final SyntSykemeldingHistorikkConsumer historikkConsumer;
+    private final SyntElsamConsumer syntElsamConsumer;
     private final HelsepersonellConsumer helsepersonellConsumer;
     private final SykemeldingConsumer sykemeldingConsumer;
     private final ArbeidsforholdAdapter arbeidsforholdAdapter;
@@ -29,7 +29,7 @@ public class SykemeldingService {
                 dto.getArbeidsforholdId()
         );
 
-        var historikk = historikkConsumer.genererSykemeldinger(
+        var historikk = syntElsamConsumer.genererSykemeldinger(
                 dto.getIdent(),
                 dto.getStartDato()
         );

@@ -23,7 +23,7 @@ public class SykemeldingConsumer {
                 .build();
     }
 
-    public String opprettSykemelding(Sykemelding sykemelding) {
-        return new PostSykemeldingCommand(webClient, sykemelding).call().block();
+    public void opprettSykemelding(Sykemelding sykemelding) {
+        new PostSykemeldingCommand(webClient, sykemelding).call().block();
     }
 }

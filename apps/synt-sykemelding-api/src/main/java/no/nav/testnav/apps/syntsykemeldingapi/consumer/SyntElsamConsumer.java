@@ -20,13 +20,13 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
-public class SyntSykemeldingHistorikkConsumer {
+public class SyntElsamConsumer {
 
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
-    public SyntSykemeldingHistorikkConsumer(
+    public SyntElsamConsumer(
             SyntSykemeldingProperties syntProperties,
             TokenExchange tokenExchange,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
