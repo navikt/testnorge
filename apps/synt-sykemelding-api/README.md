@@ -8,7 +8,7 @@ parent: Applikasjoner
 API for syntetisering av sykemeldinger
 
 ### Swagger
-Swagger finnes under [/swagger](https://testnorge-synt-sykemelding-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-synt-sykemelding-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
 Ha naisdevice kjørende og kjør SyntSykemeldingApiApplicationStarter med følgende argumenter:

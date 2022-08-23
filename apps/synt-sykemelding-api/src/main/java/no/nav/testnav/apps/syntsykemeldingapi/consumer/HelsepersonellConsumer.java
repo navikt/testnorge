@@ -6,7 +6,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.HelsepersonellS
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetHelsepersonellCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.HelsepersonellNotFoundException;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,10 +42,10 @@ public class HelsepersonellConsumer {
                 .flatMap(accessToken -> new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call())
                 .block();
 
-        if (nonNull(response)){
+        if (nonNull(response)) {
             log.info("{} helsepersonell hentet", response.getHelsepersonell().size());
             return new HelsepersonellListe(response);
-        }else{
+        } else {
             log.warn("Feil oppsto i henting av helsepersonell");
             throw new HelsepersonellNotFoundException("Feil i henting av helsepersonell");
         }

@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnorge-sykemelding")
+@ConfigurationProperties(prefix = "consumers.sykemelding-api")
 public class TestnorgeSykemeldingProperties extends ServerProperties {
 }

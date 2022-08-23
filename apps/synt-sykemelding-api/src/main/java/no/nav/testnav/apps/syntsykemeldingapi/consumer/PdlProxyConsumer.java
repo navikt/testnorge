@@ -6,7 +6,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetPdlPersonComma
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
 import no.nav.testnav.apps.syntsykemeldingapi.util.FilLaster;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;

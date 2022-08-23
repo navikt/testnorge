@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 public class PostSykemeldingCommand implements Callable<Mono<String>> {
 
     private final WebClient webClient;
+    private final String token;
     private final Sykemelding sykemelding;
 
     @SneakyThrows
@@ -28,8 +29,9 @@ public class PostSykemeldingCommand implements Callable<Mono<String>> {
         log.info("Sender sykemelding til sykemelding-api: {}", Json.pretty(sykemelding));
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/api/v1/sykemeldinger").build()
+                        builder.path("/sykemelding/api/v1/sykemeldinger").build()
                 )
+                .header("Authorization", "Bearer " + token)
                 .body(BodyInserters.fromValue(sykemelding.toDTO()))
                 .retrieve()
                 .bodyToMono(String.class)

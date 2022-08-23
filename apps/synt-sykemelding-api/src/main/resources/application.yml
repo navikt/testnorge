@@ -1,9 +1,21 @@
-spring.application:
-  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-  name: testnorge-synt-sykemelding-api
-  description: Api for opprettelse av syntetiske sykemeldinger
-
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: application.version.todo
+    name: testnav-synt-sykemelding-api
+    description: Api for opprettelse av syntetiske sykemeldinger
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
   synt-sykemelding:
@@ -11,8 +23,11 @@ consumers:
     name: synthdata-elsam-gcp
     cluster: dev-gcp
     namespace: dolly
-  testnorge-sykemelding:
-    url: https://testnorge-sykemelding-api.dev.intern.nav.no
+  sykemelding-api:
+    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
+    name: testnav-sykemelding-api-proxy
+    cluster: dev-fss
+    namespace: dolly
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
     name: testnav-organisasjon-service
@@ -31,8 +46,7 @@ consumers:
   testnav-pdl-proxy:
     name: testnav-pdl-proxy
     namespace: dolly
-    #url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-    url: https://testnav-pdl-proxy.dev.intern.nav.no
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
 
 management:
