@@ -28,11 +28,11 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master'}}
     with:
       resource: 'apps/dolly-backend/config.yml'
       app-name: 'testnav-dolly-backend'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
@@ -43,6 +43,6 @@ jobs:
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

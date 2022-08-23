@@ -57,16 +57,35 @@ const informasjonstekst =
 	'personene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer ' +
 	'til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
 
+const syntetiskePaths = {
+	forelderBarnRelasjon: 'nyRelatertPerson.syntetisk',
+	foreldreansvar: 'nyAnsvarlig.syntetisk',
+	fullmakt: 'nyFullmektig.syntetisk',
+	kontaktinformasjonForDoedsbo: 'personSomKontakt.nyKontaktperson.syntetisk',
+	nyident: 'syntetisk',
+	sivilstand: 'nyRelatertPerson.syntetisk',
+	vergemaal: 'nyVergeIdent.syntetisk',
+}
+
 export const IdentVelger = ({ formikBag }: Form) => {
-	const [type, setType] = useState(
-		_get(formikBag.values, `pdldata.opprettNyPerson.syntetisk`) === true
-			? IdentType.SYNTETISK
-			: IdentType.STANDARD
-	)
+	const [type, setType] = useState(IdentType.SYNTETISK)
 
 	const handleIdentTypeChange = (value: IdentType) => {
 		setType(value)
-		formikBag.setFieldValue(`pdldata.opprettNyPerson.syntetisk`, value === IdentType.SYNTETISK)
+		const erSyntetisk = value === IdentType.SYNTETISK
+		formikBag.setFieldValue(`pdldata.opprettNyPerson.syntetisk`, erSyntetisk)
+
+		for (const [key, value] of Object.entries(syntetiskePaths)) {
+			const items = _get(formikBag.values, `pdldata.person.${key}`)
+			if (items !== undefined && !items.isEmpty) {
+				for (let i = 0; i < items.length; i++) {
+					const path = `pdldata.person.${key}[${i}].${value}`
+					if (_get(formikBag.values, path) !== undefined) {
+						formikBag.setFieldValue(path, erSyntetisk)
+					}
+				}
+			}
+		}
 	}
 
 	return (
@@ -80,8 +99,8 @@ export const IdentVelger = ({ formikBag }: Form) => {
 				name="pdldata.opprettNyPerson.syntetisk"
 				legend=""
 				radios={[
-					{ label: 'Standard', value: IdentType.STANDARD },
 					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
+					{ label: 'Standard', value: IdentType.STANDARD },
 				]}
 				checked={type}
 				onChange={(e) =>

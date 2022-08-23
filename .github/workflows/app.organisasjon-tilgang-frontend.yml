@@ -22,7 +22,7 @@ jobs:
       working-directory: 'apps/organisasjon-tilgang-frontend/'
       app-name: 'organisasjon-tilgang-frontend'
     secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master

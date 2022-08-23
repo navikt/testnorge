@@ -5,6 +5,8 @@ spring:
     name: dolly-frontend
   main:
     banner-mode: off
+  session:
+    timeout: 60m
   security:
     oauth2:
       client:
@@ -28,6 +30,10 @@ spring:
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           idporten:
             issuer-uri: ${IDPORTEN_ISSUER_URI}
+
+POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.dev.intern.nav.no/login
+IDPORTEN_ISSUER_URI: https://oidc.difi.no/idporten-oidc-provider/
+
 consumers:
   testnav-tps-messaging-service:
     cluster: dev-gcp
@@ -62,8 +68,8 @@ consumers:
   tps-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly
-    name: ${TPS_FORVALTERN_PROXY_NAME}
-    url: ${TPS_FORVALTERN_PROXY_URL}
+    name: tps-forvalteren-proxy
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
   testnav-arena-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -95,20 +101,20 @@ consumers:
     name: testnav-pensjon-testdata-facade-proxy
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
   dolly-backend:
-    cluster: dev-fss
+    cluster: dev-gcp
     namespace: dolly
-    name: ${DOLLY_BACKEND_NAME}
-    url: ${DOLLY_BACKEND_URL}
+    name: dolly-backend
+    url: https://dolly-backend.dev.intern.nav.no
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
-    name: ${TESTNORGE_PROFIL_API_NAME}
-    url: ${TESTNORGE_PROFIL_API_URL}
+    name: testnorge-profil-api
+    url: https://testnorge-profil-api.dev.intern.nav.no
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly
-    name: ${VARSLINGER_NAME}
-    url: ${VARSLINGER_URL}
+    name: testnav-varslinger-service
+    url: https://testnav-varslinger-service.dev.intern.nav.no
   testnav-organisasjon-forvalter:
     cluster: dev-gcp
     namespace: dolly
@@ -142,18 +148,18 @@ consumers:
   testnav-person-organisasjon-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
-    name: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME}
-    url: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL}
+    name: testnav-person-organisasjon-tilgang-service
+    url: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
-    name: ${TESTNAV_BRUKER_SERVICE_NAME}
-    url: ${TESTNAV_BRUKER_SERVICE_URL}
+    name: testnav-bruker-service
+    url: https://testnav-bruker-service.dev.intern.nav.no
   testnav-pdl-forvalter:
     cluster: dev-gcp
     namespace: dolly
-    name: ${PDL_FORVALTER_NAME}
-    url: ${PDL_FORVALTER_URL}
+    name: testnav-pdl-forvalter
+    url: https://testnav-pdl-forvalter.dev.intern.nav.no
 
 management:
   endpoints:

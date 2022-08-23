@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-lib",
-  "version": "1.1.9",
+  "version": "1.2.11",
   "description": "Bibliotek for dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
@@ -13,16 +13,10 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.2.4",
-    "prettier": "2.2.1"
+    "typescript": "^4.7.4",
+    "prettier": "^2.7.1"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/navikt/testnorge.git"
-  },
+  "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
     "singleQuote": true,
     "semi": true,

@@ -90,7 +90,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 								label={'PERSON RELATERT TIL'}
 								formikBag={formikBag}
 								isExpanded={
-									!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`)) ||
+									!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
 									_get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
 								}
 							/>

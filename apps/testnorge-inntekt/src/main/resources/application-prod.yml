@@ -1,4 +1,4 @@
-testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.nais.preprod.local/api
+testnorge-hodejegeren.rest-api.url: https://testnorge-hodejegeren.dev.intern.nav.no/api
 inntektstub.rest.api.url: https://inntektstub.nais.preprod.local/api
 inntektstub-u1.rest.api.url: https://inntektstub-u1.nais.preprod.local/api
 inntektstub-t4.rest.api.url: https://inntektstub-t4.nais.preprod.local/api

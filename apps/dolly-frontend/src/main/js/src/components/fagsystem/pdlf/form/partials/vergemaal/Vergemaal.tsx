@@ -54,7 +54,7 @@ export const Vergemaal = ({ formikBag }: VergemaalForm) => {
 								label={'VERGE'}
 								formikBag={formikBag}
 								isExpanded={
-									!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`)) ||
+									!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
 									_get(formikBag.values, `${path}.vergeIdent`) !== null
 								}
 							/>

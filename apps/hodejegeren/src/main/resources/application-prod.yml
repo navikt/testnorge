@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: ${SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE}
+      username: ${HODEJEGEREN_DB_USERNAME}
+      password: ${HODEJEGEREN_DB_PASSWORD}
+      database: ${SPRING_DATA_MONGODB_DATABASE}
+      port: ${SPRING_DATA_MONGODB_PORT}
+      host: ${SPRING_DATA_MONGODB_HOST}
+  main:
+    banner-mode: off
+
+testnorges.ida.credential.tpsf:
+  username: ${TESTNORGE_IDA_CREDENTIAL_TPSF_USERNAME}
+  password: ${TESTNORGE_IDA_CREDENTIAL_TPSF_PASSWORD}
+
+cache.avspillergrupper: ${CACHE_AVSPILLERGRUPPER}

@@ -31,17 +31,13 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-fss
         - application: dolly-backend
-          cluster: dev-fss
-        - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-backend-dev
           cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp

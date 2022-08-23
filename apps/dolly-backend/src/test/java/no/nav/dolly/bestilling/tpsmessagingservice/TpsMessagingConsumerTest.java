@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -130,17 +129,5 @@ class TpsMessagingConsumerTest {
 
         assertThat("tilfeldig kontonummer is True", dto.getTilfeldigKontonummer());
         assertThat("sendt forskjellige kontonummer", forskjelligeBankkontoer.size() == sendtBankkontoer.size());
-    }
-
-    @Test
-    void generateDifferentBankkonto() {
-        var kontoer = IntStream.range(1, 100).boxed()
-                .map((i) -> TpsMessagingConsumer.tilfeldigUtlandskBankkonto())
-                .sorted()
-                .collect(Collectors.toList());
-
-        var unikKontoer = kontoer.stream().distinct().count();
-
-        assertThat("forskjellige kontoer", unikKontoer == kontoer.size());
     }
 }
