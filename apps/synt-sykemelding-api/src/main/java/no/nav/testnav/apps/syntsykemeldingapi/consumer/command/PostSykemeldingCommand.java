@@ -6,32 +6,38 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostSykemeldingCommand implements Callable<ResponseEntity<String>> {
-    private final RestTemplate restTemplate;
-    private final String url;
+public class PostSykemeldingCommand implements Callable<Mono<String>> {
+
+    private final WebClient webClient;
     private final Sykemelding sykemelding;
 
     @SneakyThrows
     @Override
-    public ResponseEntity<String> call() {
-
+    public Mono<String> call() {
         log.info("Sender sykemelding til sykemelding-api: {}", Json.pretty(sykemelding));
-        ResponseEntity<String> response = restTemplate.exchange(
-                RequestEntity.post(new URI(url + "/api/v1/sykemeldinger")).body(sykemelding.toDTO()),
-                String.class
-        );
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new GenererSykemeldingerException("Klarer ikke å opprette sykemelding for " + sykemelding.getIdent());
-        }
-        return response;
+        return webClient.post()
+                .uri(builder ->
+                        builder.path("/api/v1/sykemeldinger").build()
+                )
+                .body(BodyInserters.fromValue(sykemelding.toDTO()))
+                .retrieve()
+                .bodyToMono(String.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> {
+                    log.error("Feil oppsto i oppretting av sykemelding", throwable);
+                    throw new GenererSykemeldingerException("Klarte ikke å opprette sykemelding for " + sykemelding.getIdent());
+                });
     }
 }

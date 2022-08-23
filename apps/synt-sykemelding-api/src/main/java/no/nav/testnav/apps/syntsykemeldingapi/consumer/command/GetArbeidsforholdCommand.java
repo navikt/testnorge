@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,7 +18,7 @@ import static no.nav.testnav.apps.syntsykemeldingapi.util.Headers.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
+public class GetArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdDTO>> {
     private final WebClient webClient;
     private final String accessToken;
     private final String ident;
@@ -28,8 +27,7 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
 
     @SneakyThrows
     @Override
-    public ArbeidsforholdDTO call() {
-
+    public Mono<ArbeidsforholdDTO> call() {
         return webClient
                 .get()
                 .uri(builder -> builder
@@ -43,7 +41,6 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
                         new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ikke arbeidsforhold")))
                 .bodyToMono(ArbeidsforholdDTO.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+                        .filter(WebClientFilter::is5xxException));
     }
 }

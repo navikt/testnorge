@@ -11,8 +11,8 @@ consumers:
     name: synthdata-elsam-gcp
     cluster: dev-gcp
     namespace: dolly
-  sykemelding:
-    url: https://testnorge-sykemelding-api.dev.adeo.no
+  testnorge-sykemelding:
+    url: https://testnorge-sykemelding-api.dev.intern.nav.no
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
     name: testnav-organisasjon-service

@@ -18,7 +18,7 @@ consumers:
     name: synthdata-elsam-gcp
     cluster: dummy
     namespace: dummy
-  sykemelding:
+  testnorge-sykemelding:
     url: http://localhost:${wiremock.server.port}/sykemelding
   testnav-organisasjon-service:
     url: http://localhost:${wiremock.server.port}/organisasjon

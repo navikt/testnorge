@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.OrganisasjonServiceProperties;
-import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,8 @@ public class OrganisasjonConsumer {
     }
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        var accessToken = tokenExchange.exchange(serviceProperties).block();
-        return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call();
+        return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+                        new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call())
+                .block();
     }
 }

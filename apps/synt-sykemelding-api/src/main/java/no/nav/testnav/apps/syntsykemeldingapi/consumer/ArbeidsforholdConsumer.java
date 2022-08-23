@@ -34,17 +34,16 @@ public class ArbeidsforholdConsumer {
     @SneakyThrows
     public ArbeidsforholdDTO getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
         log.info("Henter arbeidsforhold for {} i org {} med id {}", ident, orgnummer, arbeidsforholdId);
-        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
+        var response = tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new GetArbeidsforholdCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        ident,
+                        orgnummer,
+                        arbeidsforholdId
+                ).call()).block();
 
-        ArbeidsforholdDTO arbeidsforholdDTO = new GetArbeidsforholdCommand(
-                webClient,
-                token,
-                ident,
-                orgnummer,
-                arbeidsforholdId
-        ).call();
-
-        log.info("Arbeidsforhold for ident {} hentet.", arbeidsforholdDTO.getIdent());
-        return arbeidsforholdDTO;
+        log.info("Arbeidsforhold for ident {} hentet.", response.getIdent());
+        return response;
     }
 }
