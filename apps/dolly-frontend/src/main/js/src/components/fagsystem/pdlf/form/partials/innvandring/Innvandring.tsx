@@ -64,6 +64,7 @@ export const Innvandring = () => {
 				header="Innvandring"
 				newEntry={initialInnvandring}
 				canBeEmpty={false}
+				maxEntries={1}
 			>
 				{(path: string, _idx: number) => <InnvandringForm path={path} minDate={datoBegresning} />}
 			</FormikDollyFieldArray>

@@ -65,6 +65,7 @@ export const Utvandring = () => {
 				header="Utvandring"
 				newEntry={initialUtvandring}
 				canBeEmpty={false}
+				maxEntries={1}
 			>
 				{(path: string, _idx: number) => <UtvandringForm path={path} minDate={datoBegresning} />}
 			</FormikDollyFieldArray>
