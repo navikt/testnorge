@@ -10,7 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.testnav.apps.syntsykemeldingapi.domain.*;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.Arbeidsforhold;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.Helsepersonell;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.Person;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -100,7 +102,7 @@ class SyntSykemeldingControllerIntegrationTest {
                 new Person(pdlResponse),
                 syntResponse.get(ident),
                 dto,
-                new HelsepersonellListe(helsepersonellResponse).getRandomLege(),
+                new Helsepersonell(helsepersonellResponse.getHelsepersonell().get(0)),
                 arbeidsforhold).toDTO();
     }
 
@@ -148,6 +150,7 @@ class SyntSykemeldingControllerIntegrationTest {
                 .builder(objectMapper)
                 .withUrlPathMatching(sykemeldingUrl)
 //                .withRequestBody(sykemeldingRequest)
+                .withResponseBody(ResponseEntity.ok().build())
                 .stubPost();
 
         mvc.perform(post("/api/v1/synt-sykemelding")
@@ -190,6 +193,7 @@ class SyntSykemeldingControllerIntegrationTest {
                 .builder(objectMapper)
                 .withUrlPathMatching(sykemeldingUrl)
 //                .withRequestBody(sykemeldingRequest)
+                .withResponseBody(ResponseEntity.ok().build())
                 .verifyPost();
 
     }

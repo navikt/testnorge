@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntsykemeldingapi.util;
 
-
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
