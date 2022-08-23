@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -45,8 +45,6 @@ public class TpsMessagingConsumer {
     private static final String EGENANSATT_URL = BASE_URL + "/egenansatt";
     private static final String TELEFONNUMMER_URL = BASE_URL + "/telefonnumre";
     private static final String ADRESSE_UTLAND_URL = BASE_URL + "/adresse-utland";
-
-    private static final Random random = new SecureRandom();
 
     private static final List<String> TELEFONTYPER_LISTE = Arrays.asList("ARBT", "HJET", "MOBI");
 
@@ -66,33 +64,6 @@ public class TpsMessagingConsumer {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .filter(metricsWebClientFilterFunction)
                 .build();
-    }
-
-    public static String tilfeldigUtlandskBankkonto(String landkode) {
-        if (landkode != null && landkode.length() == 3) {
-            landkode = KontoregisterLandkode.getIso2FromIso(landkode);
-        }
-        if (landkode != null && landkode.length() > 2) {
-            landkode = landkode.substring(0, 2);
-        }
-
-        var kontonummerLengde = 15;
-
-        try {
-            var kontoregisterLandkode = KontoregisterLandkode.valueOf(landkode);
-            if (kontoregisterLandkode.getIbanLengde() != null && kontoregisterLandkode.getIbanLengde() > 2) {
-                kontonummerLengde = kontoregisterLandkode.getIbanLengde() - 2; // -2 fordi først 2 er landkode
-            }
-        } catch (Exception e) {
-            log.warn("bruker ukjent 'landkode' {} for generere kontonummer", landkode);
-        }
-
-        var kontonummer = random.ints(kontonummerLengde, 0, 10)
-                    .boxed()
-                    .map(Integer::toUnsignedString)
-                    .collect(Collectors.joining());
-
-        return landkode + kontonummer;
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
