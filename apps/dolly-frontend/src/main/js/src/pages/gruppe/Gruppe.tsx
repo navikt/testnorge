@@ -45,13 +45,15 @@ export default ({ visning, setVisning }: GruppeProps) => {
 		return <Loading label="Laster personer" panel />
 	}
 
+	console.log('gruppe: ', gruppe) //TODO - SLETT MEG
+
 	const byttVisning = (value: VisningType) => {
 		dispatch(resetNavigering())
 		dispatch(resetPaginering())
 		setVisning(value)
 	}
 
-	const startBestilling = (values: {}) =>
+	const startBestilling = (values: Record<string, unknown>) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast

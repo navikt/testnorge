@@ -18,7 +18,9 @@ type Props = {
 	createOrUpdateFetching: boolean
 	updateGruppe: (arg0: number, arg1: any) => any
 	onCancel: () => void
-	error: string
+	error: {
+		message: string
+	}
 }
 const redigerGruppe = ({
 	gruppe,
@@ -40,7 +42,9 @@ const redigerGruppe = ({
 			? await updateGruppe(gruppe.id, groupValues)
 			: await createGruppe(groupValues).then((response: { value: { data: { id: any } } }) => {
 					const gruppeId = response.value?.data?.id
-					if (gruppeId) window.location.href = `/gruppe/${gruppeId}`
+					if (gruppeId) {
+						navigate(`/gruppe/${gruppeId}`)
+					}
 			  })
 		return !error && onCancel()
 	}

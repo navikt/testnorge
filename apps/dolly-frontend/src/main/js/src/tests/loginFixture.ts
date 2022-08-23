@@ -20,7 +20,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(dollyLogg)
 	.respond(null, 200)
 	.onRequestTo(azureAuth)
-	.respond("<script>window.location.href='http://localhost:3000/';</script>", 200)
+	.respond("<script>window.location.href='http://localhost:3000';</script>", 200)
 	.onRequestTo(current)
 	.respond(currentBruker, 200)
 
@@ -34,7 +34,7 @@ test('Trykk logg inn med Nav og bli redirected til Dolly hovedside', async (test
 	const getLocation = ClientFunction(() => document.location.href)
 
 	await testController
-		.click(ReactSelector('NavButton').withText('NAV epost'))
+		.click(ReactSelector('NavButton').withText('Logg inn med NAV epost'))
 		.expect(getLocation())
 		.notContains('login')
 })

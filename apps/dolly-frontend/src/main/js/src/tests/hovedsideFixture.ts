@@ -7,8 +7,8 @@ const azureAuth = new RegExp(/\/oauth2\/authorization\/aad/)
 const current = new RegExp(/\/current/)
 const profil = new RegExp(/\/profil/)
 const bilde = new RegExp(/\/bilde/)
-const hentGrupper = new RegExp(/\/gruppe\?/)
-const spesifikkGruppe = new RegExp(/\/gruppe/)
+const hentGrupper = new RegExp(/pageSize/)
+const spesifikkGruppe = new RegExp(/\/gruppe$/)
 const bestillingGruppe = new RegExp(/\/bestilling\/gruppe/)
 const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
 const varslinger = new RegExp(/\/varslinger/)
@@ -29,7 +29,23 @@ const gjeldendeBruker = {
 	epost: 'testcafe@nav.no',
 }
 
-const gruppeHentet = {
+const nyGruppe = {
+	id: 2,
+	navn: 'Testcafe testing',
+	hensikt: 'Saftig testing med testcafe..',
+	opprettetAv: gjeldendeBruker,
+	sistEndretAv: gjeldendeBruker,
+	datoEndret: '1990-01-12',
+	antallIdenter: 0,
+	antallIBruk: 0,
+	erEierAvGruppe: true,
+	favorittIGruppen: false,
+	erLaast: false,
+	identer: [],
+	tags: [],
+}
+
+const gjeldendeGruppe = {
 	id: 1,
 	navn: 'Testytest',
 	hensikt: 'Testing av testytest',
@@ -42,25 +58,28 @@ const gruppeHentet = {
 	favorittIGruppen: false,
 	erLaast: false,
 	identer: [],
+	tags: [],
 }
 
 const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
 	.respond('["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]', 200)
 	.onRequestTo(hentGrupper)
-	.respond([gruppeHentet], 200)
+	.respond([gjeldendeGruppe], 200)
 	.onRequestTo(spesifikkGruppe)
-	.respond(null, 200, { 'content-disposition': 'undefined', 'content-type': 'text/html' })
+	.respond(nyGruppe, 201, {
+		'content-type': 'application/json;charset=UTF-8',
+	})
 	.onRequestTo(varslinger)
-	.respond('[{"varslingId":"VELKOMMEN_TIL_DOLLY","fom":null,"tom":null}]', 200)
+	.respond([{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null }], 200)
 	.onRequestTo(ids)
-	.respond('["VELKOMMEN_TIL_DOLLY"]', 200)
+	.respond(['VELKOMMEN_TIL_DOLLY'], 200)
 	.onRequestTo(azureAuth)
 	.respond(null, 200)
 	.onRequestTo(dollyLogg)
 	.respond(null, 200)
 	.onRequestTo(bestillingGruppe)
-	.respond({}, 201)
+	.respond([], 200)
 	.onRequestTo(current)
 	.respond(gjeldendeBruker, 200)
 	.onRequestTo(profil)
@@ -68,7 +87,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(bilde)
 	.respond(null, 404)
 	.onRequestTo(bestillingMaler)
-	.respond('[]', 200)
+	.respond([], 200)
 
 fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
@@ -91,7 +110,7 @@ test('Godta varslinger, teste avbryt og opprett en gruppe', async (testControlle
 		)
 		.pressKey('enter')
 		.expect(getLocation())
-		.contains('gruppe/1')
+		.contains('gruppe/2')
 })
 
 test('Gå inn på gruppe og opprett en ny testperson', async (testController) => {
