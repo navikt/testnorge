@@ -188,7 +188,7 @@ consumers:
   tps-forvalteren-proxy:
     name: tps-forvalteren-proxy
     namespace: dolly
-    url: https://tps-forvalteren-facade-proxy.dev-fss-pub.nais.io
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
