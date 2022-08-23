@@ -20,6 +20,7 @@ import {
 	InnflyttingTilNorge,
 	UtflyttingFraNorge,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -56,12 +57,12 @@ const getDisabledNasjonalitetField = (opts: any) => {
 		} else if (antallInnflyttet === 0 && antallUtflyttet > 0) {
 			return utField
 		} else {
-			const sisteInnflytting = Math.max(
+			const sisteInnflytting = getSisteDato(
 				innflytting?.map(
 					(val: InnflyttingTilNorge) => new Date(val.folkeregistermetadata?.gyldighetstidspunkt)
 				)
 			)
-			const sisteUtflytting = Math.max(
+			const sisteUtflytting = getSisteDato(
 				utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
 			)
 
@@ -121,6 +122,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		)
 	}
 
+	const disabledInnUtflyttingField = getDisabledNasjonalitetField(opts)
+
 	return (
 		// @ts-ignore
 		<Panel
@@ -140,11 +143,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					disabled={getDisabledNasjonalitetField(opts) === 'innflytting'}
+					disabled={disabledInnUtflyttingField === 'innflytting'}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!harFnr || getDisabledNasjonalitetField(opts) === 'utflytting'}
+					disabled={!harFnr || disabledInnUtflyttingField === 'utflytting'}
 					title={
 						!harFnr
 							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'

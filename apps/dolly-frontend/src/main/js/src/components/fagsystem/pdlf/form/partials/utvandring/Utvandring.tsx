@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 // @ts-ignore
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -8,12 +8,16 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { InnflyttingTilNorge } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 type UtvandringTypes = {
 	path: string
+	minDate?: Date
 }
 
-export const UtvandringForm = ({ path }: UtvandringTypes) => {
+export const UtvandringForm = ({ path, minDate }: UtvandringTypes) => {
 	return (
 		<>
 			<FormikSelect
@@ -25,7 +29,11 @@ export const UtvandringForm = ({ path }: UtvandringTypes) => {
 			/>
 			<FormikTextInput name={`${path}.tilflyttingsstedIUtlandet`} label="Tilflyttingssted" />
 			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.utflyttingsdato`} label="Utflyttingsdato" />
+				<FormikDatepicker
+					name={`${path}.utflyttingsdato`}
+					label="Utflyttingsdato"
+					minDate={minDate}
+				/>
 			</DatepickerWrapper>
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>
@@ -33,6 +41,23 @@ export const UtvandringForm = ({ path }: UtvandringTypes) => {
 }
 
 export const Utvandring = () => {
+	const opts = useContext(BestillingsveilederContext)
+
+	const sisteDatoInnflytting = () => {
+		if (opts.is.leggTil) {
+			const innflytting = opts?.personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
+			let siste = getSisteDato(
+				innflytting?.map(
+					(val: InnflyttingTilNorge) => new Date(val.folkeregistermetadata?.gyldighetstidspunkt)
+				)
+			)
+			siste.setDate(siste.getDate() + 1)
+			return siste
+		}
+		return null
+	}
+
+	const datoBegresning = sisteDatoInnflytting()
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -41,7 +66,7 @@ export const Utvandring = () => {
 				newEntry={initialUtvandring}
 				canBeEmpty={false}
 			>
-				{(path: string, _idx: number) => <UtvandringForm path={path} />}
+				{(path: string, _idx: number) => <UtvandringForm path={path} minDate={datoBegresning} />}
 			</FormikDollyFieldArray>
 		</div>
 	)
