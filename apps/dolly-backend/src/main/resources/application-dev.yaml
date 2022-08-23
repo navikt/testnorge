@@ -14,7 +14,7 @@ consumers:
     url: https://testnorge-profil-api-dev.dev.intern.nav.no
   tps-forvalteren-proxy:
     name: tps-forvalteren-dev-proxy
-    url: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
+    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
