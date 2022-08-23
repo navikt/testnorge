@@ -31,7 +31,6 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import wiremock.com.google.common.collect.Maps;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -140,11 +139,11 @@ public class AaregClient implements ClientRegister {
             });
 
             if (arbeidsforhold.isEmpty()) {
-                appendResult(Maps.immutableEntry(env, "OK"), "0", result);
+                appendResult(Map.entry(env, "OK"), "0", result);
             }
         } catch (RuntimeException e) {
             log.error("Innsending til Aareg feilet: ", e);
-            appendResult(Maps.immutableEntry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
+            appendResult(Map.entry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
         }
     }
 
@@ -185,7 +184,7 @@ public class AaregClient implements ClientRegister {
                     saveTransaksjonId(value, key, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
                 }
                 appendResult(
-                        Maps.immutableEntry(key,
+                        Map.entry(key,
                                 value.getStatusCode().is2xxSuccessful()
                                         ? "OK"
                                         : value.getStatusCode().getReasonPhrase()),
@@ -194,7 +193,7 @@ public class AaregClient implements ClientRegister {
             });
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
-            appendResult(Maps.immutableEntry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
+            appendResult(Map.entry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
         }
     }
 
