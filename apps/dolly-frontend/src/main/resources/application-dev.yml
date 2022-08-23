@@ -16,7 +16,6 @@ consumers:
   dolly-backend:
     name: dolly-backend-dev
     url: https://dolly-backend-dev.dev.intern.nav.no
-    cluster: dev-gcp
   testnorge-profil-api:
     name: testnorge-profil-api-dev
     url: http://testnorge-profil-api-dev.dolly.svc.cluster.local

@@ -49,7 +49,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static wiremock.org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -440,20 +440,20 @@ public class PersonExcelService {
         return identer.isEmpty() ?
                 Collections.emptyList() :
 
-        Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
-                        kodeverkConsumer.getKodeverkByName(KOMMUNENR),
-                        kodeverkConsumer.getKodeverkByName(POSTNUMMER))
-                .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                        .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE,
-                                Math.min((index + 1) * BLOCK_SIZE, identer.size()))))
-                        .filter(personbolk -> nonNull(personbolk.getData()))
-                        .map(PdlPersonBolk::getData)
-                        .map(PdlPersonBolk.Data::getHentPersonBolk)
-                        .flatMap(Flux::fromIterable)
-                        .filter(personBolk -> nonNull(personBolk.getPerson()))
-                        .map(person -> prepDataRow(person, kodeverk)))
-                .collectList()
-                .block();
+                Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
+                                kodeverkConsumer.getKodeverkByName(KOMMUNENR),
+                                kodeverkConsumer.getKodeverkByName(POSTNUMMER))
+                        .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
+                                .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE,
+                                        Math.min((index + 1) * BLOCK_SIZE, identer.size()))))
+                                .filter(personbolk -> nonNull(personbolk.getData()))
+                                .map(PdlPersonBolk::getData)
+                                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                .flatMap(Flux::fromIterable)
+                                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                                .map(person -> prepDataRow(person, kodeverk)))
+                        .collectList()
+                        .block();
     }
 
     private Object[] prepDataRow(PdlPersonBolk.PersonBolk person, Tuple3 kodeverk) {

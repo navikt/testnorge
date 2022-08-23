@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -130,30 +129,5 @@ class TpsMessagingConsumerTest {
 
         assertThat("tilfeldig kontonummer is True", dto.getTilfeldigKontonummer());
         assertThat("sendt forskjellige kontonummer", forskjelligeBankkontoer.size() == sendtBankkontoer.size());
-    }
-
-    @Test
-    void generateDifferentBankkonto() {
-        var kontoer = IntStream.range(1, 100).boxed()
-                .map((i) -> TpsMessagingConsumer.tilfeldigUtlandskBankkonto(KontoregisterLandkode.SE.name()))
-                .sorted()
-                .collect(Collectors.toList());
-
-        var unikKontoer = kontoer.stream().distinct().count();
-
-        assertThat("forskjellige kontoer", unikKontoer == kontoer.size());
-    }
-
-    @Test
-    void generateBankkontoWithUknownLandkode() {
-        var konto = TpsMessagingConsumer.tilfeldigUtlandskBankkonto("AABB");
-        assertThat("konto har data", !konto.isEmpty());
-        assertThat("konto begynner med AA", konto.substring(0, 2).equals("AA"));
-    }
-
-    @Test
-    void generateBankkontoWithIsoLandkode() {
-        var konto = TpsMessagingConsumer.tilfeldigUtlandskBankkonto("SWE");
-        assertThat("konto begynner med SE", konto.substring(0, 2).equals("SE"));
     }
 }

@@ -2,25 +2,29 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.kontoregisterservice.command.SendHentKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendOppdaterKontoregisterCommand;
-import no.nav.dolly.bestilling.kontoregisterservice.dto.OppdaterKontoRequestDto;
-import no.nav.dolly.bestilling.kontoregisterservice.dto.UtenlandskKontoDto;
+import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoResponseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -29,21 +33,25 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Service
 public class KontoregisterConsumer {
 
-    private static final Random random = new SecureRandom();
+    private static final int IBAN_COUNTRY_LENGTH = 2;
+    private static final int DEFAULT_ACCOUNT_LENGTH = 15;
 
-    private static final int KONTONUMMER_LENGDE = 15;
+    private static final Random random = new SecureRandom();
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
+    private final MapperFacade mapperFacade;
 
     public KontoregisterConsumer(TokenExchange tokenService,
                                  KontoregisterConsumerProperties serverProperties,
                                  ObjectMapper objectMapper,
-                                 ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                 ExchangeFilterFunction metricsWebClientFilterFunction,
+                                 MapperFacade mapperFacade) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
+        this.mapperFacade = mapperFacade;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -51,44 +59,60 @@ public class KontoregisterConsumer {
                 .build();
     }
 
-    private static String tilfeldigUtlandskBankkonto() {
-        return Stream.concat(
-            random.ints(2, 'A', 'Z')
-                    .boxed()
-                    .map(i -> Character.toString(i.intValue()))
-            ,
-            random.ints(KONTONUMMER_LENGDE, 0, 10)
-                    .boxed()
-                    .map(Integer::toUnsignedString)
-        ).collect(Collectors.joining());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO body) {
-
-        if ( nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
-            body = body.withKontonummer(tilfeldigUtlandskBankkonto());
+    public static String tilfeldigUtlandskBankkonto(String landkode) {
+        if (nonNull(landkode) && landkode.length() == 3) {
+            landkode = KontoregisterLandkode.getIso2FromIso(landkode);
+        }
+        if (nonNull(landkode) && landkode.length() > 2) {
+            landkode = landkode.substring(0, 2);
         }
 
-        var utenlandskKontoDto = new UtenlandskKontoDto(
-                body.getBanknavn(),
-                "", // bankkode
-                body.getLandkode(),
-                body.getValuta(),
-                body.getSwift(),
-                body.getBankAdresse1(),
-                body.getBankAdresse2(),
-                body.getBankAdresse3()
-        );
-        var requestDto = new OppdaterKontoRequestDto(ident, body.getKontonummer(), "Dolly", utenlandskKontoDto);
+        var kontonummerLengde = DEFAULT_ACCOUNT_LENGTH;
 
-        return new SendOppdaterKontoregisterCommand(webClient, requestDto, serviceProperties.getAccessToken(tokenService)).call();
+        try {
+            var kontoregisterLandkode = KontoregisterLandkode.valueOf(landkode);
+            if (nonNull(kontoregisterLandkode.getIbanLengde()) && kontoregisterLandkode.getIbanLengde() > 2) {
+                kontonummerLengde = kontoregisterLandkode.getIbanLengde() - IBAN_COUNTRY_LENGTH;
+            }
+        } catch (Exception e) {
+            log.warn("bruker ukjent 'landkode' {} for generere kontonummer", landkode);
+        }
+
+        var kontonummer = random.ints(kontonummerLengde, 0, 10)
+                .boxed()
+                .map(Integer::toUnsignedString)
+                .collect(Collectors.joining());
+
+        return landkode + kontonummer;
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
-        var requestDto = new OppdaterKontoRequestDto(ident, body.getKontonummer(), "Dolly", null);
+    @Timed(name = "providers", tags = {"operation", "kontoregister_createUtenlandskBankkonto"})
+    public Mono<OppdaterKontoResponseDTO> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
+        var requestDto = mapperFacade.map(bankkonto, OppdaterKontoRequestDTO.class);
 
-        return new SendOppdaterKontoregisterCommand(webClient, requestDto, serviceProperties.getAccessToken(tokenService)).call();
+        var kontonummer = BooleanUtils.isTrue(bankkonto.getTilfeldigKontonummer()) ?
+                tilfeldigUtlandskBankkonto(bankkonto.getLandkode()) : bankkonto.getKontonummer();
+        requestDto.setKontonummer(kontonummer);
+
+        requestDto.setKontohaver(ident);
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new SendOppdaterKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "kontoregister_createNorskBankkonto"})
+    public Mono<OppdaterKontoResponseDTO> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
+        var requestDto = new OppdaterKontoRequestDTO(ident, body.getKontonummer(), "Dolly", null);
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new SendOppdaterKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "kontoregister_hentKonto"})
+    public Mono<HentKontoResponseDTO> sendHentKontoRequest(String ident) {
+        var requestDto = new HentKontoRequestDTO(ident, false);
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new SendHentKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
     }
 }

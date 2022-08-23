@@ -34,9 +34,7 @@ spec:
     max: 1
   port: 8080
   ingresses:
-    - https://dolly-backend.dev.adeo.no
     - https://dolly-backend.dev.intern.nav.no
-    - https://dolly-backend.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -57,8 +55,10 @@ spec:
     limits:
       cpu: 10000m
       memory: 8192Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/dolly-backend/dolly
-        mountPath: /var/run/secrets/nais.io/vault
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-dolly-backend
+        databases:
+          - name: testnav-dolly-backend
+        autoBackupTime: "01:00"
