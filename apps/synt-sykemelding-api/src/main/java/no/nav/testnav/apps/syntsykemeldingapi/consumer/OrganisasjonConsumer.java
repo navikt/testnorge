@@ -14,6 +14,8 @@ public class OrganisasjonConsumer {
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
 
+    private static final String MILJOE = "q1";
+
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serviceProperties,
             TokenExchange tokenExchange,
@@ -30,7 +32,7 @@ public class OrganisasjonConsumer {
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
         return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
-                        new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call())
+                        new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call())
                 .block();
     }
 }

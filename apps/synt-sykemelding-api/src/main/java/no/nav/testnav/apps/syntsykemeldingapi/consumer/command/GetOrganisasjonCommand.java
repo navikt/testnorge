@@ -39,7 +39,7 @@ public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
                             .filter(WebClientFilter::is5xxException));
         } catch (WebClientResponseException.NotFound e) {
             log.trace("Organisasjon med orgnummer {} ikke funnet i {}", orgnummer, miljo);
-            return Mono.empty();
+            throw e;
         }
     }
 }

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.PdlProxyProperties;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
+import no.nav.testnav.apps.syntsykemeldingapi.exception.PdlPersonException;
 import no.nav.testnav.apps.syntsykemeldingapi.util.FilLaster;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -58,13 +59,14 @@ public class PdlProxyConsumer {
                     .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
                     .block();
             if (nonNull(response) && !response.getErrors().isEmpty()) {
-                log.error("Klarte ikke hente pdlperson: " + response.getErrors().get(0).getMessage());
-                return null;
+                var melding = response.getErrors().get(0).getMessage();
+                log.error("Klarte ikke hente pdlperson: " + melding);
+                throw new PdlPersonException("Feil i henting av person fra pdl" + melding);
             }
             return response;
         } catch (Exception e) {
             log.error("Klarte ikke hente pdlperson.", e);
-            return null;
+            throw new PdlPersonException("Feil i henting av person fra pdl");
         }
 
     }
@@ -78,6 +80,5 @@ public class PdlProxyConsumer {
             return null;
         }
     }
-
 
 }
