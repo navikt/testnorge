@@ -26,10 +26,10 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnav-inntektsmelding-service
         - application: testnav-tps-messaging-service
-        - appliaction: generer-navn-service
-        - appliaction: testnorge-profil-api-dev
-        - appliaction: testnav-person-service
-        - appliaction: testnav-inst-service
+        - application: generer-navn-service
+        - application: testnorge-profil-api-dev
+        - application: testnav-person-service
+        - application: testnav-inst-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-arbeidsforhold-service
         - application: testnav-amelding-service
