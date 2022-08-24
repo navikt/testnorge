@@ -3,6 +3,6 @@
 ------------------------------
 
 alter table bestilling_progress
-    add kontoregister_status varchar(4000);
+    add column kontoregister_status varchar(4000);
 
 commit;
