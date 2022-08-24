@@ -6,7 +6,6 @@ import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistor
 import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;

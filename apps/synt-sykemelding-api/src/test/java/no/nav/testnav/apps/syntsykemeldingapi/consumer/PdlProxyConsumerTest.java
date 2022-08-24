@@ -66,7 +66,7 @@ public class PdlProxyConsumerTest {
         var response = pdlProxyConsumer.getPdlPerson(ident);
 
         assertThat(response).isNotNull();
-        assertThat(response.getErrors()).hasSize(0);
+        assertThat(response.getErrors()).isEmpty();
         assertThat(response.getData()).isNotNull();
         assertThat(response.getData().getHentPerson().getFoedsel()).isEmpty();
         assertThat(response.getData().getHentPerson().getNavn()).hasSize(1);

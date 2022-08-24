@@ -56,7 +56,7 @@ public class Sykemelding {
                         .diagnosekode(value.getDiagnosekode())
                         .build()
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         var hovedDiagnose = DiagnoseDTO
                 .builder()
@@ -100,7 +100,7 @@ public class Sykemelding {
                                 .reisetilskudd(value.getReisetilskudd())
                                 .build()
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
 
         var sender = OrganisasjonDTO
