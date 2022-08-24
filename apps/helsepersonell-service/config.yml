@@ -28,6 +28,8 @@ spec:
           cluster: dev-gcp
         - application: testnorge-synt-sykemelding-api
           cluster: dev-fss
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
