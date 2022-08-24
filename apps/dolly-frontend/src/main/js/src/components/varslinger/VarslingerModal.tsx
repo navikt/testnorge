@@ -5,13 +5,11 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { updateVarslingerBruker } from '~/ducks/varslinger'
 import { VarslingerApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
 import { Stepper } from '@navikt/ds-react'
-
-interface Varslinger {
-	updateVarslingerBruker: Function
-}
+import { useDispatch } from 'react-redux'
 
 type Varsling = {
 	fom: string
@@ -19,11 +17,12 @@ type Varsling = {
 	varslingId: string
 }
 
-export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
+export const VarslingerModal = () => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 	const [varslinger, setVarslinger] = useState(null)
 	const [varslingerBruker, setVarslingerbruker] = useState(null)
+	const dispatch = useDispatch()
 
 	const [isLoadingVarslinger, setIsLoadingVarslinger] = useBoolean(true)
 	const [isLoadingVarslingerBruker, setIsLoadingVarslingerBruker] = useBoolean(true)
@@ -73,7 +72,7 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)
-		updateVarslingerBruker(gyldigeVarslinger[steg].varslingId)
+		dispatch(updateVarslingerBruker(gyldigeVarslinger[steg].varslingId))
 	}
 
 	return (

@@ -14,19 +14,17 @@ import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 import { useDollyMaler } from '~/utils/hooks/useMaler'
 
-type Props = {
-	updateVarslingerBruker?: Function
-}
-
-export const App = ({ updateVarslingerBruker }: Props) => {
+export const App = () => {
 	const [criticalError, setCriticalError] = useState(null)
 
 	const { loading, error: userError } = useCurrentBruker()
 
 	// Lazyloader miljøer, maler og profilData så det ligger cachet når det trengs
-	useDollyEnvironments()
-	useDollyMaler()
-	useBrukerProfil()
+	const { loading: loadingEnv } = useDollyEnvironments()
+	const { loading: loadingMal } = useDollyMaler()
+	const { loading: loadingProfil } = useBrukerProfil()
+
+	const dollyLoading = loading || loadingEnv || loadingMal || loadingProfil
 
 	useEffect(() => {
 		if (userError) {
@@ -55,14 +53,14 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 		}
 	}, [criticalError])
 
-	if (loading) {
+	if (dollyLoading) {
 		return <Loading label="Laster Dolly" fullpage />
 	}
 
 	return (
 		<React.Fragment>
 			<Utlogging />
-			<VarslingerModal updateVarslingerBruker={updateVarslingerBruker} />
+			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
 			<main>

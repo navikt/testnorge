@@ -2,7 +2,7 @@ import React from 'react'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { FormikField } from '~/components/ui/form/FormikField'
 import { SyntEvent } from '~/components/ui/form/formUtils'
-import { Checkbox as NavCheckbox } from '@navikt/ds-react'
+import { Checkbox as NavCheckbox, Switch } from '@navikt/ds-react'
 
 import './Checkbox.less'
 import styled from 'styled-components'
@@ -29,13 +29,13 @@ export const Checkbox = ({ id, attributtCheckbox = false, ...restProps }) =>
 		<StyledCheckbox id={id || restProps.name} {...restProps} />
 	)
 
-export const Switch = ({ id, ...restProps }) => {
-	return <input id={id || restProps.name} {...restProps} className="dolly-switch" type="checkbox" />
-}
-
-export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin, ...props }) => (
+export const DollyCheckbox = ({ isSwitch = false, size = 'small', checkboxMargin, ...props }) => (
 	<InputWrapper size={size} checkboxMargin={checkboxMargin}>
-		{isSwitch ? <Switch {...props} /> : <Checkbox {...props}>{props.name}</Checkbox>}
+		{isSwitch ? (
+			<Switch {...props}>{props.label}</Switch>
+		) : (
+			<Checkbox {...props}>{props.label}</Checkbox>
+		)}
 	</InputWrapper>
 )
 

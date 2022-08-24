@@ -12,12 +12,12 @@ import Formatters from '~/utils/DataFormatter'
 import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/GjenopprettGruppe'
-import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
+import { Gruppe } from '~/utils/hooks/useGruppe'
 
 type GruppeHeaderProps = {
-	gruppeId: number
+	gruppe: Gruppe
 	laasGruppe: Function
 	isLockingGruppe: boolean
 	deleteGruppe: Function
@@ -29,7 +29,7 @@ type GruppeHeaderProps = {
 }
 
 const GruppeHeader = ({
-	gruppeId,
+	gruppe,
 	deleteGruppe,
 	isDeletingGruppe,
 	getGruppeExcelFil,
@@ -41,7 +41,6 @@ const GruppeHeader = ({
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
-	const { gruppe } = useGruppeById(gruppeId)
 
 	const erLaast = gruppe.erLaast
 

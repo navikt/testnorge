@@ -1,8 +1,9 @@
 import useSWR from 'swr'
 import { fetcher } from '~/api'
+import useSWRImmutable from 'swr/immutable'
 
 const getGruppeUrl = `/dolly-backend/api/v1/gruppe`
-const getPaginertGruppeUrl = (gruppeId: number, pageNo: number, pageSize: number) =>
+const getPaginertGruppeUrl = (gruppeId: string, pageNo: number, pageSize: number) =>
 	`${getGruppeUrl}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}`
 
 export type Gruppe = {
@@ -18,14 +19,14 @@ export type Gruppe = {
 	tags: string[]
 }
 
-export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10, autoRefresh = false) => {
+export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoRefresh = false) => {
 	if (!gruppeId) {
 		return {
 			loading: false,
 			error: 'GruppeId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Gruppe, Error>(
+	const { data, error } = useSWRImmutable<Gruppe, Error>(
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
 		fetcher,
 		{ refreshInterval: autoRefresh ? 1000 : null }

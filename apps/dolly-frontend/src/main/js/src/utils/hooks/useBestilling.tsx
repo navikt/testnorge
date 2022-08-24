@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { fetcher } from '~/api'
 
-const getBestillingerGruppeUrl = (gruppeId: number) =>
+const getBestillingerGruppeUrl = (gruppeId: string) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
 
 type Bestillingsstatus = {
@@ -14,7 +14,7 @@ type Bestillingsstatus = {
 	gruppeId: number
 }
 
-export const useBestillingerGruppe = (gruppeId: number, autoRefresh = false) => {
+export const useBestillingerGruppe = (gruppeId: string, autoRefresh = false) => {
 	if (!gruppeId) {
 		return {
 			loading: false,
@@ -24,7 +24,7 @@ export const useBestillingerGruppe = (gruppeId: number, autoRefresh = false) => 
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getBestillingerGruppeUrl(gruppeId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 1000 : 5000 }
+		{ refreshInterval: autoRefresh ? 1000 : 10000 }
 	)
 
 	const bestillingerSorted = data

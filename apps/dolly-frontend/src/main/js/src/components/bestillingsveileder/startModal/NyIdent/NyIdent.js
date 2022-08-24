@@ -89,11 +89,11 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 						</div>
 						<div className="ny-ident-form_maler">
 							<div>
-								<StyledH3>Opprett fra mal</StyledH3>
 								<DollyCheckbox
 									name="aktiver-maler"
 									onChange={() => handleMalChange(formikBag)}
-									label="Vis"
+									label="Opprett fra mal"
+									size={'small'}
 									isSwitch
 								/>
 							</div>

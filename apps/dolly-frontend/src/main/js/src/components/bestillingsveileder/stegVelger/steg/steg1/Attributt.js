@@ -27,8 +27,7 @@ export const AttributtKategori = ({ title, children }) => {
 	)
 	return (
 		attributterSomSkalVises && (
-			<CheckboxGroup legend={title}>
-				{title && <h3>{title}</h3>}
+			<CheckboxGroup name={title} legend={title}>
 				<div className="attributt-velger_panelsubcontent">{children}</div>
 			</CheckboxGroup>
 		)

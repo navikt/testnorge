@@ -21,6 +21,8 @@ import { ToggleGroup } from '@navikt/ds-react'
 export type GruppeProps = {
 	visning: string
 	setVisning: Function
+	sidetall: number
+	sideStoerrelse: number
 }
 
 export enum VisningType {
@@ -28,13 +30,19 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ visning, setVisning }: GruppeProps) => {
+export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
-	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(Number(gruppeId))
-	const { gruppe, loading: loadingGruppe } = useGruppeById(Number(gruppeId))
+
+	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(gruppeId)
+
+	const {
+		gruppe,
+		identer,
+		loading: loadingGruppe,
+	} = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 
@@ -58,7 +66,7 @@ export default ({ visning, setVisning }: GruppeProps) => {
 
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppeId={gruppe.id} />
+			<GruppeHeaderConnector gruppe={gruppe} />
 
 			{bestillingerById && (
 				// @ts-ignore
@@ -69,7 +77,7 @@ export default ({ visning, setVisning }: GruppeProps) => {
 				<div className="gruppe--full gruppe--flex-row-center">
 					{brukertype === 'AZURE' && (
 						<NavButton
-							type="hoved"
+							variant={'primary'}
 							onClick={visStartBestilling}
 							disabled={erLaast}
 							title={
@@ -138,13 +146,18 @@ export default ({ visning, setVisning }: GruppeProps) => {
 			)}
 
 			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} gruppeId={gruppeId} />
+				<PersonListeConnector
+					iLaastGruppe={erLaast}
+					brukertype={brukertype}
+					gruppeInfo={gruppe}
+					identer={identer}
+				/>
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (
 				<BestillingListeConnector
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
-					gruppeId={gruppeId}
+					bestillingerById={bestillingerById}
 				/>
 			)}
 		</div>
