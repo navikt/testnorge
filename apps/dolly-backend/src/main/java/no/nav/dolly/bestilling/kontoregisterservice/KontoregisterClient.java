@@ -22,7 +22,6 @@ public class KontoregisterClient implements ClientRegister {
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
-
         if (nonNull(bestilling.getBankkonto())) {
             if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
                 updateProgress(progress, kontoregisterConsumer.sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto()));
