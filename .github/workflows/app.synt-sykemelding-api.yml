@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/sykemelding-internal-server-error' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-synt-sykemelding-api') }}
     with:
       resource: 'apps/synt-sykemelding-api/config.yml'
       app-name: 'testnav-synt-sykemelding-api'
