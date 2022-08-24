@@ -8,28 +8,28 @@ spring:
       maximum-pool-size: 3
       minimum-idle: 1
 
-#consumers:
-#  testnav-helsepersonell-service:
-#    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
-#  testnav-organisasjon-forvalter:
-#    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
-#  testnav-inntektsmelding-service:
-#    url: http://testnav-inntektsmelding-service.dolly.svc.cluster.local
-#  testnav-tps-messaging-service:
-#    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
-#  testnav-generer-navn-service:
-#    url: http://generer-navn-service.dolly.svc.cluster.local
-#  testnav-profil-api:
-#    url: http://testnorge-profil-api.dolly.svc.cluster.local
-#  testnav-person-service:
-#    url: http://testnav-person-service.dolly.svc.cluster.local
-#  testnav-inst-service:
-#    url: http://testnav-inst-service.dolly.svc.cluster.local
-#  testnav-pdl-forvalter:
-#    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
-#  testnav-arbeidsforhold-service:
-#    url: http://testnav-arbeidsforhold-service.dolly.svc.cluster.local
-#  testnav-amelding-service:
-#    url: http://testnav-amelding-service.dolly.svc.cluster.local
-#  testnav-organisasjon-service:
-#    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
+consumers:
+  testnav-helsepersonell-service:
+    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
+  testnav-organisasjon-forvalter:
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+  testnav-inntektsmelding-service:
+    url: http://testnav-inntektsmelding-service.dolly.svc.cluster.local
+  testnav-tps-messaging-service:
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+  testnav-generer-navn-service:
+    url: http://generer-navn-service.dolly.svc.cluster.local
+  testnav-profil-api:
+    url: http://testnorge-profil-api.dolly.svc.cluster.local
+  testnav-person-service:
+    url: http://testnav-person-service.dolly.svc.cluster.local
+  testnav-inst-service:
+    url: http://testnav-inst-service.dolly.svc.cluster.local
+  testnav-pdl-forvalter:
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+  testnav-arbeidsforhold-service:
+    url: http://testnav-arbeidsforhold-service.dolly.svc.cluster.local
+  testnav-amelding-service:
+    url: http://testnav-amelding-service.dolly.svc.cluster.local
+  testnav-organisasjon-service:
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local

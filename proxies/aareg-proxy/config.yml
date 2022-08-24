@@ -24,10 +24,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-arbeidsforhold-service
           cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
