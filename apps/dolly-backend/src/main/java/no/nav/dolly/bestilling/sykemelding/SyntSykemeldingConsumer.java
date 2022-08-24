@@ -2,43 +2,36 @@ package no.nav.dolly.bestilling.sykemelding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.config.credentials.SykemeldingApiProxyProperties;
+import no.nav.dolly.bestilling.sykemelding.command.PostSyntSykemeldingCommand;
+import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
+import no.nav.dolly.config.credentials.SyntSykemeldingApiProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class SykemeldingConsumer {
-
-    public static final String DETALJERT_SYKEMELDING_URL = "/sykemelding/api/v1/sykemeldinger";
+public class SyntSykemeldingConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
-    public SykemeldingConsumer(
+    public SyntSykemeldingConsumer(
             TokenExchange accessTokenService,
-            SykemeldingApiProxyProperties serverProperties,
+            SyntSykemeldingApiProperties serverProperties,
             ObjectMapper objectMapper,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
@@ -55,22 +48,15 @@ public class SykemeldingConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
-    public ResponseEntity<String> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
+    @Timed(name = "providers", tags = {"operation", "syntsykemelding_opprett"})
+    public ResponseEntity<String> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
 
         String callId = getNavCallId();
-        log.info("Detaljert Sykemelding sendt, callId: {}, consumerId: {}", callId, CONSUMER);
+        log.info("Synt Sykemelding sendt, callId: {}, consumerId: {}", callId, CONSUMER);
 
-        return webClient.post().uri(uriBuilder -> uriBuilder
-                        .path(DETALJERT_SYKEMELDING_URL)
-                        .build())
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .bodyValue(detaljertSykemeldingRequest)
-                .retrieve()
-                .toEntity(String.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        return tokenService.exchange(serviceProperties)
+                .flatMap(accessToken -> new
+                        PostSyntSykemeldingCommand(webClient, accessToken.getTokenValue(), sykemeldingRequest).call())
                 .block();
     }
 
@@ -78,3 +64,4 @@ public class SykemeldingConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 }
+
