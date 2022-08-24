@@ -44,10 +44,10 @@ public class KontoregisterClient implements ClientRegister {
         try {
             request.block();
             log.info("bestilling {} med kontoregister gikk Ok", progress.getBestilling().getId());
-        } catch(WebClientResponseException e) {
-            log.info("bestilling {} med kontoregister fikk feil {}", progress.getBestilling().getId(), e.getMessage());
+            progress.setKontoregisterStatus("OK");
         } catch(Exception e) {
-            log.info("bestilling {} med kontoregister fikk feil {}", progress.getBestilling().getId(), e.getMessage());
+            log.error("bestilling {} med kontoregister fikk feil {}", progress.getBestilling().getId(), e.getMessage());
+            progress.setKontoregisterStatus("Feil= " + e.getMessage());
         }
     }
 
