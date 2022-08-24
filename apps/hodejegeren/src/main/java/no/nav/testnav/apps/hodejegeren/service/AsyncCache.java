@@ -64,9 +64,9 @@ public class AsyncCache {
     }
 
     /**
-     * Oppdaterer cachene én gang i timen. De avspillergruppene som ikke er registrert som faste cacher blir nullstilt ved dette tidspunkt
+     * Oppdaterer cachene hver sjette time. De avspillergruppene som ikke er registrert som faste cacher blir nullstilt ved dette tidspunkt
      */
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 */6 * * *")
     public void oppdaterAlleCacherRutine() {
         oppdaterAlleCacher();
     }

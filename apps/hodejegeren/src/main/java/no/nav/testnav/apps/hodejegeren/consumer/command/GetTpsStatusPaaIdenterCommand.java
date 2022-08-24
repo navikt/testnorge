@@ -1,11 +1,8 @@
 package no.nav.testnav.apps.hodejegeren.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.hodejegeren.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -31,8 +28,6 @@ public class GetTpsStatusPaaIdenterCommand implements Callable<String> {
                 )
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
                 .block();
 
     }
