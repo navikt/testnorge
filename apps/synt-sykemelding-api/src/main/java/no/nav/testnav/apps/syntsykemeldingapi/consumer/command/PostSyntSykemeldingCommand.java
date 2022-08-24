@@ -33,7 +33,7 @@ public class PostSyntSykemeldingCommand implements Callable<Mono<HashMap<String,
                         builder.path("/api/v1/generate_sykmeldings_history_json").build()
                 )
                 .header("Authorization", "Bearer " + token)
-                .body(BodyInserters.fromValue(request))
+                .bodyValue(request)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
