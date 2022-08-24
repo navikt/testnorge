@@ -83,6 +83,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const harFnr = opts.identtype === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
+	const disabledInnUtflyttingField = getDisabledNasjonalitetField(opts)
+
 	const getIgnoreKeys = () => {
 		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
 		if (sm.attrs.utenlandskBankkonto.checked) {
@@ -93,6 +95,12 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		if (!testnorgeIdent && !harFnr) {
 			ignoreKeys.push('utvandretTilLand')
 		}
+		if (!testnorgeIdent && disabledInnUtflyttingField !== '') {
+			ignoreKeys.push(
+				disabledInnUtflyttingField === 'innflytting' ? 'innvandretFraLand' : 'utvandretTilLand'
+			)
+		}
+
 		return ignoreKeys
 	}
 
@@ -121,8 +129,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			</Panel>
 		)
 	}
-
-	const disabledInnUtflyttingField = getDisabledNasjonalitetField(opts)
 
 	return (
 		// @ts-ignore
