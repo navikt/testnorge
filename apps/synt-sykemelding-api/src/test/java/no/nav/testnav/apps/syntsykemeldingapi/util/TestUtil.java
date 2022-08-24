@@ -31,7 +31,7 @@ public class TestUtil {
         var hentPersoner = PdlPerson.HentPerson.builder()
                 .navn(Collections.singletonList(PdlPerson.Navn.builder()
                         .fornavn("Hans")
-                        .mellomnavn("Ole")
+                        .mellomnavn("Hans")
                         .etternavn("Hansen")
                         .metadata(metadata)
                         .build()))

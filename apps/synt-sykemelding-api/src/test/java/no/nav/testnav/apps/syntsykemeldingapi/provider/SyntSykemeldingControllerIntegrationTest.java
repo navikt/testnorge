@@ -62,7 +62,7 @@ class SyntSykemeldingControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static final String ident = "01019049945";
+    private static final String ident = "12345678910";
     private static final String orgnr = "123456789";
     private static final String arbeidsforholdId = "1";
 
@@ -156,7 +156,7 @@ class SyntSykemeldingControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(sykemeldingUrl)
-//                .withRequestBody(sykemeldingRequest)
+                .withRequestBody(sykemeldingRequest)
                 .withResponseBody(ResponseEntity.ok().build())
                 .stubPost();
 
@@ -199,7 +199,7 @@ class SyntSykemeldingControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(sykemeldingUrl)
-//                .withRequestBody(sykemeldingRequest)
+                .withRequestBody(sykemeldingRequest)
                 .withResponseBody(ResponseEntity.ok().build())
                 .verifyPost();
 

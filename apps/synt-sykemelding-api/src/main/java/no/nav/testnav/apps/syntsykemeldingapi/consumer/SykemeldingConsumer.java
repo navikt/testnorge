@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.TestnorgeSykemeldingProperties;
+import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.SykemeldingProperties;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSykemeldingCommand;
-import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class SykemeldingConsumer {
     private final WebClient webClient;
 
     public SykemeldingConsumer(
-            TestnorgeSykemeldingProperties serviceProperties,
+            SykemeldingProperties serviceProperties,
             TokenExchange tokenExchange,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
@@ -31,7 +31,7 @@ public class SykemeldingConsumer {
                 .build();
     }
 
-    public void opprettSykemelding(Sykemelding sykemelding) {
+    public void opprettSykemelding(SykemeldingDTO sykemelding) {
         tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
                         new PostSykemeldingCommand(webClient, accessToken.getTokenValue(), sykemelding).call())
                 .block();

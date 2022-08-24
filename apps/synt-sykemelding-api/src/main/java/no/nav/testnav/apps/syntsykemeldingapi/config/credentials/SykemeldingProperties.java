@@ -7,5 +7,5 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.sykemelding-api")
-public class TestnorgeSykemeldingProperties extends ServerProperties {
+public class SykemeldingProperties extends ServerProperties {
 }

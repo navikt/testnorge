@@ -39,7 +39,7 @@ public class SykemeldingService {
         var helsepersonellListe = helsepersonellConsumer.hentHelsepersonell();
 
         sykemeldingConsumer.opprettSykemelding(
-                new Sykemelding(pasient, historikk, dto, helsepersonellListe.getRandomLege(), arbeidsforhold)
+                new Sykemelding(pasient, historikk, dto, helsepersonellListe.getRandomLege(), arbeidsforhold).toDTO()
         );
     }
 }

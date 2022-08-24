@@ -24,4 +24,8 @@ public class HelsepersonellListe {
         log.info("Valgt tilfeldig helsepersonell {}", helsepersonell.getIdent());
         return helsepersonell;
     }
+
+    public List<Helsepersonell> getList() {
+        return this.list;
+    }
 }
