@@ -56,7 +56,7 @@ public class Sykemelding {
                         .diagnosekode(value.getDiagnosekode())
                         .build()
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         var hovedDiagnose = DiagnoseDTO
                 .builder()
@@ -82,10 +82,10 @@ public class Sykemelding {
         var pasient = PasientDTO
                 .builder()
                 .ident(this.pasient.getIdent())
-                .fornavn(this.pasient.getFornvan())
+                .fornavn(this.pasient.getFornavn())
                 .mellomnavn(this.pasient.getMellomnavn())
                 .etternavn(this.pasient.getEtternavn())
-//                .foedselsdato(this.pasient.getFoedselsdato())
+                .foedselsdato(this.pasient.getFoedselsdato())
                 .navKontor("ST.HANSHAUGEN")
                 .build();
         var perioder = sykemeldinger
@@ -100,7 +100,7 @@ public class Sykemelding {
                                 .reisetilskudd(value.getReisetilskudd())
                                 .build()
                 ))
-                .collect(Collectors.toList());
+                .toList();
 
 
         var sender = OrganisasjonDTO
