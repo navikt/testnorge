@@ -60,7 +60,6 @@ public class DokarkivProxyApplicationStarter {
                 .route(createRoute("t3", addAuthenticationHeaderFilter))
                 .route(createRoute("t4", addAuthenticationHeaderFilter))
                 .route(createRoute("t5", addAuthenticationHeaderFilter))
-                .route(createRoute("t6", addAuthenticationHeaderFilter))
                 .route(createRoute("t13", addAuthenticationHeaderFilter))
                 .build();
     }
