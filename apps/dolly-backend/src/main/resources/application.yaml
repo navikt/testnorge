@@ -195,3 +195,8 @@ consumers:
     namespace: dolly
     url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
     cluster: dev-fss
+  testnav-kontoregister-person-proxy:
+    name: testnav-kontoregister-person-proxy
+    namespace: dolly
+    url: https://testnav-kontoregister-person-proxy.dev.intern.nav.no
+    cluster: dev-fss

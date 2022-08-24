@@ -11,7 +11,6 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoResponseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -87,11 +86,20 @@ public class KontoregisterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_createUtenlandskBankkonto"})
-    public Mono<OppdaterKontoResponseDTO> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
+    public Mono<Void> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
         var requestDto = mapperFacade.map(bankkonto, OppdaterKontoRequestDTO.class);
 
+        var landkode = bankkonto.getLandkode();
+        if (nonNull(landkode) && landkode.length() == 3) {
+            landkode = KontoregisterLandkode.getIso2FromIso(landkode);
+
+            if (nonNull(requestDto.getUtenlandskKonto())) {
+                requestDto.getUtenlandskKonto().setBankLandkode(landkode);
+            }
+        }
+
         var kontonummer = BooleanUtils.isTrue(bankkonto.getTilfeldigKontonummer()) ?
-                tilfeldigUtlandskBankkonto(bankkonto.getLandkode()) : bankkonto.getKontonummer();
+                tilfeldigUtlandskBankkonto(landkode) : bankkonto.getKontonummer();
         requestDto.setKontonummer(kontonummer);
 
         requestDto.setKontohaver(ident);
@@ -101,7 +109,7 @@ public class KontoregisterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_createNorskBankkonto"})
-    public Mono<OppdaterKontoResponseDTO> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
+    public Mono<Void> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
         var requestDto = new OppdaterKontoRequestDTO(ident, body.getKontonummer(), "Dolly", null);
 
         return tokenService.exchange(serviceProperties)
