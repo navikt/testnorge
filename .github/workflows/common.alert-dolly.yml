@@ -2,8 +2,8 @@ name: Deploy dolly alerts to NAIS
 on:
   push:
     paths:
-      - '.nais/common.alert-dolly.yml'
-      - '.github/workflows/common.alert-dolly.yaml'
+      - '.nais/alerting-dolly.yml'
+      - '.github/workflows/common.alert-dolly.yml'
 jobs:
   apply-alerts:
     name: Apply alerts to cluster
