@@ -4,15 +4,21 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { InnvandringValues } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import {
+	InnflyttingTilNorge,
+	InnvandringValues,
+	UtvandringValues,
+} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import _cloneDeep from 'lodash/cloneDeep'
 import { initialInnvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
 import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 type InnvandringTypes = {
 	data: Array<InnvandringValues>
+	utflyttingData?: Array<UtvandringValues>
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	erPdlVisning?: boolean
@@ -21,10 +27,25 @@ type InnvandringTypes = {
 type InnvandringVisningTypes = {
 	innvandringData: InnvandringValues
 	idx: number
+	sisteDato?: Date
+}
+
+export const getSisteDatoInnUtvandring = (
+	innflyttingData: Array<InnvandringValues>,
+	utflyttingData: Array<UtvandringValues>
+) => {
+	let sisteInnflytting = getSisteDato(
+		innflyttingData?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))
+	)
+	let sisteUtflytting = getSisteDato(
+		utflyttingData?.map((val: UtvandringValues) => new Date(val.utflyttingsdato))
+	)
+	return sisteInnflytting > sisteUtflytting ? sisteInnflytting : sisteUtflytting
 }
 
 export const Innvandring = ({
 	data,
+	utflyttingData,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -53,7 +74,7 @@ export const Innvandring = ({
 		)
 	}
 
-	const InnvandringVisning = ({ innvandringData, idx }: InnvandringVisningTypes) => {
+	const InnvandringVisning = ({ innvandringData, idx, sisteDato }: InnvandringVisningTypes) => {
 		const initInnvandring = Object.assign(_cloneDeep(initialInnvandring), data[idx])
 		const initialValues = { innflytting: initInnvandring }
 
@@ -80,16 +101,23 @@ export const Innvandring = ({
 				redigertAttributt={redigertInnvandringValues}
 				path="innflytting"
 				ident={ident}
+				slettDisabled={new Date(innvandringData.innflyttingsdato) < sisteDato}
 			/>
 		)
 	}
+
+	const sisteDatoForVandring = getSisteDatoInnUtvandring(data, utflyttingData)
 
 	return (
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Innvandret" nested>
 					{(innvandring: InnvandringValues, idx: number) => (
-						<InnvandringVisning innvandringData={innvandring} idx={idx} />
+						<InnvandringVisning
+							innvandringData={innvandring}
+							idx={idx}
+							sisteDato={sisteDatoForVandring}
+						/>
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>
