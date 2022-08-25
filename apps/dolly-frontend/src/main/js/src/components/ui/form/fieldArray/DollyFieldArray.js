@@ -217,35 +217,42 @@ export const FormikDollyFieldArray = ({
 							const handleRemove = () => {
 								handleRemoveEntry ? handleRemoveEntry(idx) : arrayHelpers.remove(idx)
 							}
-							return nested ? (
-								<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
-									{children(path, idx, curr)}
-								</DollyFaBlokkNested>
-							) : isOrganisasjon ? (
-								<DollyFaBlokkOrg
-									key={idx}
-									idx={idx}
-									number={number}
-									header={header}
-									hjelpetekst={hjelpetekst}
-									handleRemove={handleRemove}
-									showDeleteButton={showDeleteButton}
-								>
-									{children(path, idx, curr, number)}
-								</DollyFaBlokkOrg>
-							) : (
-								<DollyFaBlokk
-									key={idx}
-									idx={idx}
-									number={number}
-									header={header}
-									hjelpetekst={hjelpetekst}
-									handleRemove={handleRemove}
-									showDeleteButton={showDeleteButton}
-								>
-									{children(path, idx, curr, number)}
-								</DollyFaBlokk>
-							)
+
+							if (nested) {
+								return (
+									<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
+										{children(path, idx, curr)}
+									</DollyFaBlokkNested>
+								)
+							} else if (isOrganisasjon) {
+								return (
+									<DollyFaBlokkOrg
+										key={idx}
+										idx={idx}
+										number={number}
+										header={header}
+										hjelpetekst={hjelpetekst}
+										handleRemove={handleRemove}
+										showDeleteButton={showDeleteButton}
+									>
+										{children(path, idx, curr, number)}
+									</DollyFaBlokkOrg>
+								)
+							} else {
+								return (
+									<DollyFaBlokk
+										key={idx}
+										idx={idx}
+										number={number}
+										header={header}
+										hjelpetekst={hjelpetekst}
+										handleRemove={handleRemove}
+										showDeleteButton={showDeleteButton}
+									>
+										{children(path, idx, curr, number)}
+									</DollyFaBlokk>
+								)
+							}
 						})}
 						<FieldArrayAddButton
 							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
