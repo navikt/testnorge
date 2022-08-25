@@ -16,4 +16,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
-          RESOURCE: .nais/common.alert-dolly.yml
+          RESOURCE: .nais/alerting-dolly.yml
