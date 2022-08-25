@@ -39,9 +39,10 @@ const ignoreKeysTestnorge = [
 	'tilrettelagtKommunikasjon',
 ]
 
+const innvandret = 'innvandretFraLand'
+const utvandret = 'utvandretTilLand'
+
 const getDisabledNasjonalitetField = (opts: any) => {
-	const innField = 'innflytting'
-	const utField = 'utflytting'
 	if (opts.is.leggTil) {
 		const personFoerLeggTil = opts.personFoerLeggTil
 		const innflytting = personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
@@ -51,11 +52,11 @@ const getDisabledNasjonalitetField = (opts: any) => {
 		const antallUtflyttet = utflytting ? utflytting.length : 0
 
 		if (antallInnflyttet === 0 && antallUtflyttet === 0) {
-			return innField
+			return innvandret
 		} else if (antallInnflyttet > 0 && antallUtflyttet === 0) {
-			return innField
+			return innvandret
 		} else if (antallInnflyttet === 0 && antallUtflyttet > 0) {
-			return utField
+			return utvandret
 		} else {
 			const sisteInnflytting = getSisteDato(
 				innflytting?.map(
@@ -66,7 +67,7 @@ const getDisabledNasjonalitetField = (opts: any) => {
 				utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
 			)
 
-			return sisteInnflytting > sisteUtflytting ? innField : utField
+			return sisteInnflytting > sisteUtflytting ? innvandret : utvandret
 		}
 	}
 
@@ -93,12 +94,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			ignoreKeys.push('utenlandskBankkonto')
 		}
 		if (!testnorgeIdent && !harFnr) {
-			ignoreKeys.push('utvandretTilLand')
+			ignoreKeys.push(utvandret)
 		}
 		if (!testnorgeIdent && disabledInnUtflyttingField !== '') {
-			ignoreKeys.push(
-				disabledInnUtflyttingField === 'innflytting' ? 'innvandretFraLand' : 'utvandretTilLand'
-			)
+			ignoreKeys.push(disabledInnUtflyttingField)
 		}
 
 		return ignoreKeys
@@ -149,11 +148,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					disabled={disabledInnUtflyttingField === 'innflytting'}
+					disabled={disabledInnUtflyttingField === innvandret}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!harFnr || disabledInnUtflyttingField === 'utflytting'}
+					disabled={!harFnr || disabledInnUtflyttingField === utvandret}
 					title={
 						!harFnr
 							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
