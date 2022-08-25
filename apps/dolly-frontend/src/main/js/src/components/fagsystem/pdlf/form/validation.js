@@ -4,7 +4,6 @@ import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isBefore, isEqual, isSameDay } from 'date-fns'
 import { landkoder, landkodeIsoMapping } from '~/service/services/kontoregister/landkoder'
 import { isNil } from 'lodash'
-import _isNil from 'lodash/isNil'
 
 const testTelefonnummer = () =>
 	Yup.string()

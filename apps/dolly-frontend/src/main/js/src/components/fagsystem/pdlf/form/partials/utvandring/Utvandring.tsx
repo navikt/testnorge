@@ -1,11 +1,9 @@
 import React, { useContext } from 'react'
 // @ts-ignore
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'

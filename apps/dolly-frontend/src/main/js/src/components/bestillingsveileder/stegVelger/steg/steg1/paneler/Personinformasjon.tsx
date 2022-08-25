@@ -43,35 +43,29 @@ const innvandret = 'innvandretFraLand'
 const utvandret = 'utvandretTilLand'
 
 const getDisabledNasjonalitetField = (opts: any) => {
-	if (opts.is.leggTil) {
-		const personFoerLeggTil = opts.personFoerLeggTil
-		const innflytting = personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
-		const utflytting = personFoerLeggTil?.pdl?.hentPerson?.utflyttingFraNorge
+	const personFoerLeggTil = opts.personFoerLeggTil
+	const innflytting = personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
+	const utflytting = personFoerLeggTil?.pdl?.hentPerson?.utflyttingFraNorge
 
-		const antallInnflyttet = innflytting ? innflytting.length : 0
-		const antallUtflyttet = utflytting ? utflytting.length : 0
+	const antallInnflyttet = innflytting ? innflytting.length : 0
+	const antallUtflyttet = utflytting ? utflytting.length : 0
 
-		if (antallInnflyttet === 0 && antallUtflyttet === 0) {
-			return innvandret
-		} else if (antallInnflyttet > 0 && antallUtflyttet === 0) {
-			return innvandret
-		} else if (antallInnflyttet === 0 && antallUtflyttet > 0) {
-			return utvandret
-		} else {
-			const sisteInnflytting = getSisteDato(
-				innflytting?.map(
-					(val: InnflyttingTilNorge) => new Date(val.folkeregistermetadata?.gyldighetstidspunkt)
-				)
+	if (antallInnflyttet === 0) {
+		return antallUtflyttet > 0 ? utvandret : innvandret
+	} else if (antallUtflyttet === 0) {
+		return innvandret
+	} else {
+		const sisteInnflytting = getSisteDato(
+			innflytting?.map(
+				(val: InnflyttingTilNorge) => new Date(val.folkeregistermetadata?.gyldighetstidspunkt)
 			)
-			const sisteUtflytting = getSisteDato(
-				utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
-			)
+		)
+		const sisteUtflytting = getSisteDato(
+			utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
+		)
 
-			return sisteInnflytting > sisteUtflytting ? innvandret : utvandret
-		}
+		return sisteInnflytting > sisteUtflytting ? innvandret : utvandret
 	}
-
-	return ''
 }
 
 // @ts-ignore
@@ -84,7 +78,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const harFnr = opts.identtype === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
-	const disabledInnUtflyttingField = getDisabledNasjonalitetField(opts)
+	const disabledInnUtflyttingField = leggTil ? getDisabledNasjonalitetField(opts) : ''
 
 	const getIgnoreKeys = () => {
 		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
