@@ -59,16 +59,8 @@ export const Utvandring = () => {
 
 	const datoBegresning = sisteDatoInnflytting()
 	return (
-		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
-				name={'pdldata.person.utflytting'}
-				header="Utvandring"
-				newEntry={initialUtvandring}
-				canBeEmpty={false}
-				maxEntries={1}
-			>
-				{(path: string, _idx: number) => <UtvandringForm path={path} minDate={datoBegresning} />}
-			</FormikDollyFieldArray>
+		<div className="person-visning_content">
+			<UtvandringForm path={'pdldata.person.utflytting[0]'} minDate={datoBegresning} />
 		</div>
 	)
 }

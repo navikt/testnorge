@@ -1,11 +1,9 @@
 import React, { useContext } from 'react'
 // @ts-ignore
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { initialInnvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
@@ -58,16 +56,8 @@ export const Innvandring = () => {
 	const datoBegresning = sisteDatoUtvandring()
 
 	return (
-		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
-				name={'pdldata.person.innflytting'}
-				header="Innvandring"
-				newEntry={initialInnvandring}
-				canBeEmpty={false}
-				maxEntries={1}
-			>
-				{(path: string, _idx: number) => <InnvandringForm path={path} minDate={datoBegresning} />}
-			</FormikDollyFieldArray>
+		<div className="person-visning_content">
+			<InnvandringForm path={'pdldata.person.innflytting[0]'} minDate={datoBegresning} />
 		</div>
 	)
 }
