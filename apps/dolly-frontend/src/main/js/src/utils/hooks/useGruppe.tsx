@@ -29,7 +29,9 @@ export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoR
 	const { data, error } = useSWRImmutable<Gruppe, Error>(
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 1000 : null }
+		{
+			refreshInterval: autoRefresh ? 1000 : null,
+		}
 	)
 
 	return {
