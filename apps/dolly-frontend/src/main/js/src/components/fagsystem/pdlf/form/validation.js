@@ -2,10 +2,9 @@ import * as Yup from 'yup'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isBefore, isEqual, isSameDay } from 'date-fns'
-import {
-	landkoder,
-	landkodeIsoMapping,
-} from './../../../../service/services/kontoregister/landkoder'
+import { landkoder, landkodeIsoMapping } from '~/service/services/kontoregister/landkoder'
+import { isNil } from 'lodash'
+import _isNil from 'lodash/isNil'
 
 const testTelefonnummer = () =>
 	Yup.string()
@@ -484,10 +483,26 @@ export const telefonnummer = Yup.object({
 	prioritet: testPrioritet(Yup.mixed().required()).nullable(),
 }).nullable()
 
+const validInnflyttingsdato = (val) => {
+	return val.test('gyldig-innflyttingsdato', function isWithinTest(value) {
+		if (!value) return true
+		const innflyttingsdato = value
+		const values = this.options.context
+		const utflyttingsdato = _get(values, 'pdldata.person.utflytting[0].utflyttingsdato')
+		if (
+			!isNil(utflyttingsdato) &&
+			new Date(innflyttingsdato).getDate() === new Date(utflyttingsdato).getDate()
+		) {
+			return this.createError({ message: 'Innflyttingsdato kan ikke være lik utflyttingsdato' })
+		}
+		return true
+	})
+}
+
 export const innflytting = Yup.object({
 	fraflyttingsland: requiredString,
 	fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-	innflyttingsdato: requiredDate.nullable(),
+	innflyttingsdato: validInnflyttingsdato(requiredDate),
 })
 
 export const utflytting = Yup.object({
