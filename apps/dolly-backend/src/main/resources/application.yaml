@@ -198,5 +198,5 @@ consumers:
   testnav-kontoregister-person-proxy:
     name: testnav-kontoregister-person-proxy
     namespace: dolly
-    url: https://testnav-kontoregister-person-proxy.dev.intern.nav.no
+    url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
