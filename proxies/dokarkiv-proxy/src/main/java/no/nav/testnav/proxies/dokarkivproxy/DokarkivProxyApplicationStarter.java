@@ -6,7 +6,6 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.proxies.dokarkivproxy.config.LocalVaultConfig;
 import no.nav.testnav.proxies.dokarkivproxy.config.credentials.DokarkivProperties;
 import no.nav.testnav.proxies.dokarkivproxy.config.credentials.DokarkivQ1Properties;
 import org.springframework.boot.SpringApplication;

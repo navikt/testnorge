@@ -8,8 +8,6 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
-import java.util.Objects;
-
 import static java.util.Objects.isNull;
 
 @Configuration
