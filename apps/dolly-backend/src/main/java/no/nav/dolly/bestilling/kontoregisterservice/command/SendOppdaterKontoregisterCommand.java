@@ -35,9 +35,7 @@ public class SendOppdaterKontoregisterCommand implements Callable<Mono<Void>> {
                 .bodyValue(body)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnError(e -> {
-                    log.error(e.getMessage());
-                })
+                .doOnError(e -> log.error(e.getMessage()))
                 //.onErrorReturn(new OppdaterKontoResponseDTO())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
