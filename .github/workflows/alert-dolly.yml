@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - '.nais/alerting-dolly.yml'
-      - '.github/workflows/common.alert-dolly.yml'
+      - '.github/workflows/alert-dolly.yml'
 jobs:
   apply-alerts:
     name: Apply alerts to cluster
@@ -15,5 +15,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: .nais/alerting-dolly.yml
