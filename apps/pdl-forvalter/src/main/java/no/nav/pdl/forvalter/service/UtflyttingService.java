@@ -30,6 +30,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class UtflyttingService implements Validation<UtflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
+    private static final String LANDKODE_UKJENT = "XUK";
 
     private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
     private final KontaktAdresseService kontaktAdresseService;
@@ -65,6 +66,10 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
             utflytting.setUtflyttingsdato(LocalDateTime.now());
         }
 
+        if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().get(0).isAdresseNorge()) {
+            person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
+        }
+
         if (!person.getBostedsadresse().stream()
                 .findFirst()
                 .orElse(new BostedadresseDTO())
@@ -72,11 +77,8 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                 !person.getKontaktadresse().stream()
                         .findFirst()
                         .orElse(new KontaktadresseDTO())
-                        .isAdresseUtland()) {
-
-            if (!person.getBostedsadresse().isEmpty()) {
-                person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
-            }
+                        .isAdresseUtland() &&
+                !LANDKODE_UKJENT.equals(utflytting.getTilflyttingsland())) {
 
             person.getKontaktadresse().add(0, KontaktadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()
