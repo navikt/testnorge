@@ -88,20 +88,6 @@ public class KontoregisterConsumer {
     @Timed(name = "providers", tags = {"operation", "kontoregister_createUtenlandskBankkonto"})
     public Mono<Void> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
         var requestDto = mapperFacade.map(bankkonto, OppdaterKontoRequestDTO.class);
-
-        var landkode = bankkonto.getLandkode();
-        if (nonNull(landkode) && landkode.length() == 3) {
-            landkode = KontoregisterLandkode.getIso2FromIso(landkode);
-
-            if (nonNull(requestDto.getUtenlandskKonto())) {
-                requestDto.getUtenlandskKonto().setBankLandkode(landkode);
-            }
-        }
-
-        var kontonummer = BooleanUtils.isTrue(bankkonto.getTilfeldigKontonummer()) ?
-                tilfeldigUtlandskBankkonto(landkode) : bankkonto.getKontonummer();
-        requestDto.setKontonummer(kontonummer);
-
         requestDto.setKontohaver(ident);
 
         return tokenService.exchange(serviceProperties)
