@@ -27,7 +27,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.substring;
 
 @Slf4j
 @Service
@@ -79,12 +79,12 @@ public class DokarkivClient implements ClientRegister {
                                 .append(environment)
                                 .append(":FEIL=Teknisk feil se logg! ")
                                 .append(nonNull(response) ?
-                                        errorStatusDecoder.encodeStatus(response.getFeilmelding()) :
+                                        ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
                                         "UKJENT");
                     }
                 }
             });
-            progress.setDokarkivStatus(isNotBlank(status) ? status.substring(1) : null);
+            progress.setDokarkivStatus(substring(status.toString(), 1));
         }
     }
 
