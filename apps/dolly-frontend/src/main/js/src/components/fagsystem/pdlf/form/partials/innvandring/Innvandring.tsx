@@ -47,7 +47,9 @@ export const Innvandring = () => {
 			let siste = getSisteDato(
 				utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
 			)
-			siste.setDate(siste.getDate() + 1)
+			if (siste !== null) {
+				siste.setDate(siste.getDate() + 1)
+			}
 			return siste
 		}
 		return null

@@ -56,12 +56,13 @@ const getDisabledNasjonalitetField = (opts: any) => {
 		return innvandret
 	} else {
 		const sisteInnflytting = getSisteDato(
-			innflytting?.map(
-				(val: InnflyttingTilNorge) => new Date(val.folkeregistermetadata?.gyldighetstidspunkt)
-			)
+			innflytting
+				.map((val: InnflyttingTilNorge) => val?.folkeregistermetadata?.gyldighetstidspunkt)
+				.filter((val: string) => val)
+				.map((val: string) => new Date(val))
 		)
 		const sisteUtflytting = getSisteDato(
-			utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
+			utflytting.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
 		)
 
 		return sisteInnflytting > sisteUtflytting ? innvandret : utvandret

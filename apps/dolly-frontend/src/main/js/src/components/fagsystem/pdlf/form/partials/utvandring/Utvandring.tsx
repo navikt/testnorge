@@ -45,11 +45,14 @@ export const Utvandring = () => {
 		if (opts.is.leggTil) {
 			const innflytting = opts?.personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
 			let siste = getSisteDato(
-				innflytting?.map(
-					(val: InnflyttingTilNorge) => new Date(val.folkeregistermetadata?.gyldighetstidspunkt)
-				)
+				innflytting
+					?.map((val: InnflyttingTilNorge) => val?.folkeregistermetadata?.gyldighetstidspunkt)
+					.filter((val: string) => val)
+					.map((val: string) => new Date(val))
 			)
-			siste.setDate(siste.getDate() + 1)
+			if (siste !== null) {
+				siste.setDate(siste.getDate() + 1)
+			}
 			return siste
 		}
 		return null

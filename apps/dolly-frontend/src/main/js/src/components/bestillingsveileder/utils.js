@@ -83,5 +83,8 @@ export const getLeggTilIdent = (personFoerLeggTil, identMaster) => {
 }
 
 export const getSisteDato = (dates) => {
-	return new Date(Math.max.apply(null, dates))
+	if (dates.length > 0) {
+		return new Date(Math.max.apply(null, dates))
+	}
+	return null
 }
