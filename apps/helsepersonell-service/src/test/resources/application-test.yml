@@ -1,0 +1,27 @@
+consumers:
+  testnav-hodejegeren-proxy:
+    url: hodejegeren.api.url=http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren
+    cluster: dummy
+    namespace: dummy
+    name: testnorge-hodejegeren
+  testnav-samhandlerregisteret-proxy:
+    url: http://localhost:${wiremock.server.port:0}/samhandler
+    cluster: dummy
+    namespace: dummy
+    name: testnav-samhandlerregisteret-proxy
+  dolly-backend:
+    url: http://localhost:${wiremock.server.port:0}/dolly
+    cluster: dummy
+    namespace: dummy
+    name: dolly-backend
+
+
+avspillingsgruppe.helsepersonell.id: 111111
+helsepersonell.controller.cache.hours: 24
+
+spring.cloud.vault.enabled: false
+
+CLIENT_ID: ignored
+
+azure.app.client.id: dummy
+azure.app.client.secret: dummy

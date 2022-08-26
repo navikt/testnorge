@@ -37,6 +37,11 @@ consumers:
     threads: 5
     name: testnav-samhandlerregisteret-proxy
     url: https://testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
+  dolly-backend:
+    cluster: dev-gcp
+    namespace: dolly
+    name: dolly-backend
+    url: https://dolly-backend.dev.intern.nav.no
 
 management:
   endpoints:
