@@ -363,7 +363,6 @@ public class BestillingService {
         if (!gamleMalBestillinger.isEmpty()) {
             gamleMalBestillinger.forEach(malBestilling -> {
                 malBestilling.setMalBestillingNavn(null);
-                saveBestillingToDB(malBestilling);
             });
         }
     }
