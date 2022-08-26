@@ -101,7 +101,7 @@ export const Innvandring = ({
 				redigertAttributt={redigertInnvandringValues}
 				path="innflytting"
 				ident={ident}
-				slettDisabled={new Date(innvandringData.innflyttingsdato) < sisteDato}
+				disableSlett={new Date(innvandringData.innflyttingsdato) < sisteDato}
 			/>
 		)
 	}

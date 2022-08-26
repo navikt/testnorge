@@ -88,7 +88,7 @@ export const Utvandring = ({
 				redigertAttributt={redigertUtvandringValues}
 				path="utflytting"
 				ident={ident}
-				slettDisabled={new Date(utvandringData.utflyttingsdato) < sisteDato}
+				disableSlett={new Date(utvandringData.utflyttingsdato) < sisteDato}
 			/>
 		)
 	}

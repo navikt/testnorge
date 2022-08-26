@@ -39,7 +39,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	identtype?: string
-	slettDisabled?: boolean
+	disableSlett?: boolean
 }
 
 enum Modus {
@@ -96,7 +96,7 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
-	slettDisabled = false,
+	disableSlett = false,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -234,7 +234,7 @@ export const VisningRedigerbar = ({
 							kind="trashcan"
 							onClick={() => openModal()}
 							title="Slett"
-							disabled={slettDisabled}
+							disabled={disableSlett}
 						/>
 						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 							<div className="slettModal">
