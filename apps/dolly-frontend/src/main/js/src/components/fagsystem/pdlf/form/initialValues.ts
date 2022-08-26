@@ -198,7 +198,7 @@ export const initialFalskIdentitetValues = {
 export const initialInnvandring = {
 	fraflyttingsland: '',
 	fraflyttingsstedIUtlandet: '',
-	innflyttingsdato: '',
+	innflyttingsdato: null as string,
 	master: 'FREG',
 	kilde: 'Dolly',
 }
@@ -206,7 +206,7 @@ export const initialInnvandring = {
 export const initialUtvandring = {
 	tilflyttingsland: '',
 	tilflyttingsstedIUtlandet: '',
-	utflyttingsdato: '',
+	utflyttingsdato: null as string,
 	master: 'FREG',
 	kilde: 'Dolly',
 }

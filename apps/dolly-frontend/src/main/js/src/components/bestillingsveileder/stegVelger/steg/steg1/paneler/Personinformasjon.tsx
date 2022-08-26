@@ -265,7 +265,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							{
 								fraflyttingsland: '',
 								fraflyttingsstedIUtlandet: '',
-								innflyttingsdato: '',
+								innflyttingsdato: null as string,
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
@@ -285,7 +285,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							{
 								tilflyttingsland: '',
 								tilflyttingsstedIUtlandet: '',
-								utflyttingsdato: '',
+								utflyttingsdato: null as string,
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
