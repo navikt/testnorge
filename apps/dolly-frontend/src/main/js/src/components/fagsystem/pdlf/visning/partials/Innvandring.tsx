@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '~/config/kodeverk'
@@ -31,13 +31,20 @@ type InnvandringVisningTypes = {
 
 export const getSisteDatoInnUtvandring = (
 	innflyttingData: Array<InnvandringValues>,
-	utflyttingData: Array<UtvandringValues>
+	utflyttingData: Array<UtvandringValues>,
+	tmpPersoner?: Array<PersonData>,
+	ident?: string
 ) => {
+	const tmpPerson = tmpPersoner?.hasOwnProperty(ident)
+
+	const innflytting = tmpPerson ? _get(tmpPersoner, `${ident}.person.innflytting`) : innflyttingData
+	const utflytting = tmpPerson ? _get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
+
 	let sisteInnflytting = getSisteDato(
-		innflyttingData?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))
+		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))
 	)
 	let sisteUtflytting = getSisteDato(
-		utflyttingData?.map((val: UtvandringValues) => new Date(val.utflyttingsdato))
+		utflytting?.map((val: UtvandringValues) => new Date(val.utflyttingsdato))
 	)
 	return sisteInnflytting > sisteUtflytting ? sisteInnflytting : sisteUtflytting
 }
@@ -49,6 +56,16 @@ export const Innvandring = ({
 	ident,
 	erPdlVisning = false,
 }: InnvandringTypes) => {
+	const [sisteDato, setSisteDato] = useState(
+		getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident)
+	)
+
+	useEffect(() => {
+		if (data?.length > 0) {
+			setSisteDato(getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident))
+		}
+	}, [tmpPersoner])
+
 	if (data.length < 1) {
 		return null
 	}
@@ -105,18 +122,12 @@ export const Innvandring = ({
 		)
 	}
 
-	const sisteDatoForVandring = getSisteDatoInnUtvandring(data, utflyttingData)
-
 	return (
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Innvandret" nested>
 					{(innvandring: InnvandringValues, idx: number) => (
-						<InnvandringVisning
-							innvandringData={innvandring}
-							idx={idx}
-							sisteDato={sisteDatoForVandring}
-						/>
+						<InnvandringVisning innvandringData={innvandring} idx={idx} sisteDato={sisteDato} />
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>

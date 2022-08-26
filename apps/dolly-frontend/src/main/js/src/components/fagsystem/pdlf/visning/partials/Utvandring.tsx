@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '~/config/kodeverk'
@@ -36,6 +36,16 @@ export const Utvandring = ({
 	ident,
 	erPdlVisning,
 }: UtvandringTypes) => {
+	const [sisteDato, setSisteDato] = useState(
+		getSisteDatoInnUtvandring(innflyttingData, data, tmpPersoner, ident)
+	)
+
+	useEffect(() => {
+		if (data?.length > 0) {
+			setSisteDato(getSisteDatoInnUtvandring(innflyttingData, data, tmpPersoner, ident))
+		}
+	}, [tmpPersoner])
+
 	if (data.length < 1) {
 		return null
 	}
@@ -92,18 +102,12 @@ export const Utvandring = ({
 		)
 	}
 
-	const sisteDatoForVandring = getSisteDatoInnUtvandring(innflyttingData, data)
-
 	return (
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header={'Utvandret'} nested>
 					{(utvandring: UtvandringValues, idx: number) => (
-						<UtvandringVisning
-							utvandringData={utvandring}
-							idx={idx}
-							sisteDato={sisteDatoForVandring}
-						/>
+						<UtvandringVisning utvandringData={utvandring} idx={idx} sisteDato={sisteDato} />
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>
