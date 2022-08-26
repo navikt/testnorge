@@ -14,7 +14,6 @@ import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValue
 import _get from 'lodash/get'
 import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 import { getSisteDatoInnUtvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
-import { utflytting } from '~/components/fagsystem/pdlf/form/validation'
 
 type UtvandringTypes = {
 	data: Array<UtvandringValues>

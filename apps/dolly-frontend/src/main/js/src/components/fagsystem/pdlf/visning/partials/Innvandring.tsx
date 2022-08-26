@@ -5,7 +5,6 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import {
-	InnflyttingTilNorge,
 	InnvandringValues,
 	UtvandringValues,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
