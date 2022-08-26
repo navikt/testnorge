@@ -21,7 +21,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 @Slf4j
 @Getter
 @Component
-@EnableScheduling
+//@EnableScheduling
 @RequiredArgsConstructor
 public class BatchController {
 
@@ -47,7 +47,7 @@ public class BatchController {
     /**
      * Denne metoden oppretter vedtakshistorikk på brukere i Arena. Metoden kjøres hver time.
      */
-//    @Scheduled(cron = "0 0 0-23 * * *")
+    @Scheduled(cron = "0 0 0-23 * * *")
     public void genererVedtakshistorikkBatch() {
         vedtakshistorikkService.genererVedtakshistorikk(miljoe, antallHistorikker);
     }
@@ -55,7 +55,7 @@ public class BatchController {
     /**
      * Denne metoden registrerer brukere med oppfølging (uten vedtak) i Arena. Metoden kjører hver natt kl 00:30.
      */
-//    @Scheduled(cron = "0 30 0 * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedOppfoelgingBatch() {
         var personer = identService.getUtvalgteIdenterIAldersgruppe(
                         antallBrukere,
