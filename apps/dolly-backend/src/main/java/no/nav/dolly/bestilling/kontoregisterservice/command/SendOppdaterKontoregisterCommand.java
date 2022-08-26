@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SendOppdaterKontoregisterCommand implements Callable<Mono<Void>> {
+public class SendOppdaterKontoregisterCommand implements Callable<Mono<String>> {
     private static final String KONTOREGISTER_API_URL = "/kontoregister/api/kontoregister/v1/oppdater-konto";
 
     private final WebClient webClient;
@@ -23,7 +23,7 @@ public class SendOppdaterKontoregisterCommand implements Callable<Mono<Void>> {
     private final String token;
 
     @Override
-    public Mono<Void> call() {
+    public Mono<String> call() {
         log.info("Sender request til Bankkontoregister service: {}", body.getKontonummer());
 
         return webClient.post()
@@ -34,8 +34,10 @@ public class SendOppdaterKontoregisterCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(Void.class)
+                .toBodilessEntity()
+                .flatMap(value ->  Mono.just("OK"))
                 .doOnError(e -> log.error(e.getMessage()))
+                .onErrorResume(e -> Mono.just("Feil= " + e.getMessage()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

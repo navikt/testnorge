@@ -86,7 +86,7 @@ public class KontoregisterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_createUtenlandskBankkonto"})
-    public Mono<Void> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
+    public Mono<String> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
         var requestDto = mapperFacade.map(bankkonto, OppdaterKontoRequestDTO.class);
         requestDto.setKontohaver(ident);
 
@@ -95,7 +95,7 @@ public class KontoregisterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_createNorskBankkonto"})
-    public Mono<Void> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
+    public Mono<String> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
         var requestDto = new OppdaterKontoRequestDTO(ident, body.getKontonummer(), "Dolly", null);
 
         return tokenService.exchange(serviceProperties)

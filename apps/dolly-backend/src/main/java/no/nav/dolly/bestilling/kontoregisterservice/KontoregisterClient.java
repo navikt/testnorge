@@ -24,29 +24,34 @@ public class KontoregisterClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
         if (nonNull(bestilling.getBankkonto())) {
             if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
-                updateProgress(progress, kontoregisterConsumer.sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto()));
+                progress.setKontoregisterStatus(
+                        kontoregisterConsumer
+                                .sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto())
+                                .block()
+                );
             }
             if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
-                updateProgress(progress, kontoregisterConsumer.sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getUtenlandskBankkonto()));
+                progress.setKontoregisterStatus(
+                        kontoregisterConsumer
+                                .sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getUtenlandskBankkonto())
+                                .block()
+                );
             }
         } else if (nonNull(bestilling.getTpsMessaging())) {
             if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
-                updateProgress(progress, kontoregisterConsumer.sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getTpsMessaging().getNorskBankkonto()));
+                progress.setKontoregisterStatus(
+                        kontoregisterConsumer
+                                .sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getTpsMessaging().getNorskBankkonto())
+                                .block()
+                );
             }
             if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
-                updateProgress(progress, kontoregisterConsumer.sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getTpsMessaging().getUtenlandskBankkonto()));
+                progress.setKontoregisterStatus(
+                        kontoregisterConsumer
+                                .sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getTpsMessaging().getUtenlandskBankkonto())
+                                .block()
+                );
             }
-        }
-    }
-
-    private void updateProgress(BestillingProgress progress, Mono<Void> request) {
-        try {
-            request.block();
-            log.info("bestilling {} med kontoregister gikk Ok", progress.getBestilling().getId());
-            progress.setKontoregisterStatus("OK");
-        } catch(Exception e) {
-            log.error("bestilling {} med kontoregister fikk feil {}", progress.getBestilling().getId(), e.getMessage());
-            progress.setKontoregisterStatus("Feil= " + e.getMessage());
         }
     }
 
