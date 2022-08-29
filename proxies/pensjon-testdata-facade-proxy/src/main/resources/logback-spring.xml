@@ -42,4 +42,16 @@
     <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
+    <logger name="org.springframework.web.client">
+        <level value="TRACE"/>
+    </logger>
+    <logger name="org.springframework.web.reactive">
+        <level value="TRACE"/>
+    </logger>
+    <logger name="reactor.netty.http.client">
+        <level value="DEBUG"/>
+    </logger>
+    <logger name="org.springframework.cloud.gateway">
+        <level value="DEBUG"/>
+    </logger>
 </configuration>
