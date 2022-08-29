@@ -30,7 +30,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class UtflyttingService implements Validation<UtflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
-    private static final String LANDKODE_UKJENT = "XUK";
 
     private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
     private final KontaktAdresseService kontaktAdresseService;
@@ -78,7 +77,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                         .findFirst()
                         .orElse(new KontaktadresseDTO())
                         .isAdresseUtland() &&
-                !LANDKODE_UKJENT.equals(utflytting.getTilflyttingsland())) {
+                utflytting.isVelkjentLand()) {
 
             person.getKontaktadresse().add(0, KontaktadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()
