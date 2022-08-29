@@ -125,7 +125,7 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && (
+					{!iLaastGruppe && pdlPartner().length > 0 && (
 						<PartnerImportButton
 							gruppeId={gruppeId}
 							partnerIdent={pdlPartner()}
@@ -144,6 +144,7 @@ export const PersonVisning = ({
 							slettPerson={slettPerson}
 							slettPersonOgPartner={slettPersonOgPartner}
 							loading={loading.slettPerson || loading.slettPersonOgPartner}
+							//TODO fix denne
 							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
 						/>
 					)}

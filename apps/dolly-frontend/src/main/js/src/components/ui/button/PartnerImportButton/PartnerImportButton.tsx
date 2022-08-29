@@ -27,8 +27,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 		return null
 	}
 
-	//TODO: Fix denne
-	const disabled = gruppeIdenter.includes(partnerIdent)
+	const disabled = partnerIdent.every((ident) => gruppeIdenter.includes(ident.id))
 
 	const handleImport = async (identer = null as string[]) => {
 		setLoading(true)
@@ -101,16 +100,27 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 												}
 												return (
 													<div className="miljo-velger_checkboxes">
-														{partnerIdent.map((ident) => (
-															<DollyCheckbox
-																key={ident.id}
-																id={ident.id}
-																label={`${ident.type} (${ident.id})`}
-																checked={values?.includes(ident.id)}
-																onChange={onClick}
-																size={'xxsmall'}
-															/>
-														))}
+														{partnerIdent.map((ident) => {
+															const disabledCheckbox = gruppeIdenter?.includes(ident.id)
+															return (
+																<div
+																	key={ident.id}
+																	title={
+																		disabledCheckbox ? 'Relatert person er allerede i gruppen' : ''
+																	}
+																>
+																	<DollyCheckbox
+																		key={ident.id}
+																		id={ident.id}
+																		label={`${ident.type} (${ident.id})`}
+																		checked={values?.includes(ident.id)}
+																		onChange={onClick}
+																		size={'medium'}
+																		disabled={disabledCheckbox}
+																	/>
+																</div>
+															)
+														})}
 													</div>
 												)
 											}}
