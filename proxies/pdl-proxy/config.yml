@@ -40,6 +40,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-synt-sykemelding-api
           cluster: dev-gcp
+        - application: testnav-helsepersonell-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
