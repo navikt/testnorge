@@ -45,4 +45,7 @@
     <logger name="org.springframework.web.client">
         <level value="TRACE"/>
     </logger>
+    <logger name="org.springframework.web.reactive">
+        <level value="TRACE"/>
+    </logger>
 </configuration>
