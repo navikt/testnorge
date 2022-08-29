@@ -76,11 +76,31 @@ export const PersonVisning = ({
 	}, [])
 
 	const pdlPartner = () => {
-		return data.pdl?.hentPerson?.sivilstand?.filter(
-			(siv) =>
-				!siv?.metadata?.historisk &&
-				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
-		)?.[0]?.relatertVedSivilstand
+		const relatertePersoner = []
+
+		data.pdl?.hentPerson?.sivilstand
+			?.filter(
+				(siv) =>
+					!siv?.metadata?.historisk &&
+					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
+			)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'PARTNER',
+					id: person.relatertVedSivilstand,
+				})
+			})
+
+		data.pdl?.hentPerson?.forelderBarnRelasjon
+			?.filter((barn) => !barn?.metadata?.historisk && barn?.relatertPersonsRolle === 'BARN')
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: person.relatertPersonsRolle,
+					id: person.relatertPersonsIdent,
+				})
+			})
+
+		return relatertePersoner
 	}
 
 	return (
