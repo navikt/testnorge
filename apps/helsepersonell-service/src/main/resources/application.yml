@@ -21,16 +21,11 @@ samhandlerregisteret.api.threads: 5
 hodejegeren.api.threads: 2
 
 avspillingsgruppe.helsepersonell.id: 100001163
+dolly.helsepersonell.gruppeId: 0
 
 helsepersonell.controller.cache.hours: 24
 
 consumers:
-  testnav-hodejegeren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    threads: 2
-    name: testnav-hodejegeren-proxy
-    url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   testnav-samhandlerregisteret-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -42,6 +37,11 @@ consumers:
     namespace: dolly
     name: dolly-backend
     url: https://dolly-backend.dev.intern.nav.no
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 management:
   endpoints:

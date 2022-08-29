@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.helsepersonellservice.exception.IdentNotFoundException;
 import no.nav.registre.testnorge.helsepersonellservice.util.WebClientFilter;
 import no.nav.testnav.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
+
+import static no.nav.registre.testnorge.helsepersonellservice.util.Headers.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class GetSamhandlerCommand implements Callable<SamhandlerDTO[]> {
                             .path("/rest/sar/samh")
                             .queryParam("ident", ident)
                             .build())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .bodyToMono(SamhandlerDTO[].class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
