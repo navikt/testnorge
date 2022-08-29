@@ -21,7 +21,7 @@ samhandlerregisteret.api.threads: 5
 hodejegeren.api.threads: 2
 
 avspillingsgruppe.helsepersonell.id: 100001163
-dolly.helsepersonell.gruppeId: 0
+dolly.helsepersonell.gruppeId: 5614
 
 helsepersonell.controller.cache.hours: 24
 
