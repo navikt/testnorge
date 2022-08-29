@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.helsepersonellservice.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.helsepersonellservice.consumer.DollyBackendConsumer;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.PdlProxyConsumer;
@@ -54,8 +53,7 @@ public class HelsepersonellService {
                 .map(samhandler -> new Helsepersonell(
                         samhandler,
                         getPersondata(pdlInfo, samhandler.getIdent())))
-                .distinct()
-                .collect(Collectors.toList())
+                .distinct().toList()
         );
     }
 
