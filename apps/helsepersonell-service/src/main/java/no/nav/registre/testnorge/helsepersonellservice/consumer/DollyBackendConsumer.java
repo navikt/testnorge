@@ -51,7 +51,7 @@ public class DollyBackendConsumer {
         if (nonNull(response) && !response.getIdenter().isEmpty()) {
             return response.getIdenter().stream()
                     .map(RsTestgruppeMedBestillingId.IdentBestilling::getIdent)
-                    .collect(Collectors.toList());
+                    .toList();
         }
         return Collections.emptyList();
     }
