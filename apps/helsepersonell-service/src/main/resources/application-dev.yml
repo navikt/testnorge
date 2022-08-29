@@ -1,2 +1,11 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
+
+dolly.helsepersonell.gruppeId: 255
+
+consumers:
+  dolly-backend:
+    cluster: dev-gcp
+    namespace: dolly
+    name: dolly-backend-dev
+    url: https://dolly-backend-dev.dev.intern.nav.no
