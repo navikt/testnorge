@@ -3,14 +3,17 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoResponseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +55,9 @@ class KontoregisterConsumerTest {
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
+    @Autowired
+    private MapperFacade mapperFacade;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -64,6 +70,27 @@ class KontoregisterConsumerTest {
     public void cleanUp() {
         WireMock.getAllServeEvents()
                 .stream().forEach(e -> WireMock.removeServeEvent(e.getId()));
+    }
+
+    @Test
+    void testBankkontoMapping() {
+        var bankkonto1 = new BankkontonrUtlandDTO();
+
+        bankkonto1.setTilfeldigKontonummer(true);
+        bankkonto1.setLandkode("SE");
+
+        var mapped1 = mapperFacade.map(bankkonto1, OppdaterKontoRequestDTO.class);
+        assertThat("genererer kontonummer", StringUtils.isNoneBlank(mapped1.getKontonummer()));
+        assertThat("generert kontonummer starter med SE", mapped1.getKontonummer().startsWith("SE"));
+
+        var bankkonto2 = new BankkontonrUtlandDTO();
+
+        bankkonto2.setKontonummer("123");
+        bankkonto2.setLandkode("SWE");
+
+        var mapped2 = mapperFacade.map(bankkonto2, OppdaterKontoRequestDTO.class);
+        assertThat("kontonummer er 123", "123".equals(mapped2.getKontonummer()));
+        assertThat("landkode er SE", "SE".equals(mapped2.getUtenlandskKonto().getBankLandkode()));
     }
 
     @Test
