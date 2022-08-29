@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UtflyttingDTO extends DbVersjonDTO {
 
+    private static final String LANDKODE_UKJENT = "XUK";
+
     private String tilflyttingsland;
     private String tilflyttingsstedIUtlandet;
     private LocalDateTime utflyttingsdato;
@@ -23,6 +25,6 @@ public class UtflyttingDTO extends DbVersjonDTO {
     @JsonIgnore
     public boolean isVelkjentLand(){
 
-        return !"XUK".equals(getTilflyttingsland());
+        return !LANDKODE_UKJENT.equals(getTilflyttingsland());
     }
 }
