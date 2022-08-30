@@ -1,13 +1,34 @@
-import Request from "~/service/services/Request";
+import Request from '~/service/services/Request'
 
-const kontoregisterUrl = '/testnav-kontoregister-person-proxy/kontoregister/api/kontoregister/v1/hent-konto'
+const kontoregisterUrl =
+	'/testnav-kontoregister-person-proxy/kontoregister/api/kontoregister/v1/hent-konto'
+
+export type KontoregisterData = {
+	aktivKonto: {
+		kontonummer: string
+		utenlandskKontoInfo?: {
+			swiftBicKode?: string
+			bankLandkode?: string
+			banknavn?: string
+			valutakode?: string
+			bankadresse1?: string
+			bankadresse2?: string
+			bankadresse3?: string
+		}
+	}
+}
+
+export type PromiseKontoregisterData = {
+	data: KontoregisterData
+}
 
 export default {
-    hentKonto(ident: string) {
-        return Request.post(kontoregisterUrl, {"kontohaver": ident}).then((response) => {
-            if (response != null) {
-                return response
-            }
-        })
-    }
+	hentKonto(ident: string): Promise<PromiseKontoregisterData> {
+		return Request.post(kontoregisterUrl, { kontohaver: ident }).then((response: any) => {
+			if (response != null) {
+				console.log('hentKonto response', response)
+				return response
+			}
+		})
+	},
 }

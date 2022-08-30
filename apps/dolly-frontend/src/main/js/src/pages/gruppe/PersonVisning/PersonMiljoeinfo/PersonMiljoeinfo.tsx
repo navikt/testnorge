@@ -4,6 +4,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { TpsDataVisning } from './TpsDataVisning'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TpsMessagingApi, BankkontoApi } from '~/service/Api'
+import { KontoregisterData } from '~/service/services/kontoregister/KontoregisterService'
 
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean
@@ -19,26 +20,40 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps)
 		}
 	}, [])
 
-	const kontoregisterState = useAsync( async () => {
+	const kontoregisterState = useAsync(async () => {
 		if (ident) {
 			return BankkontoApi.hentKonto(ident)
 		}
-	})
+	}, [])
 
 	if (!ident) {
 		return null
 	}
 
-	console.log('kontoregisterState', kontoregisterState, state.value)
+	if (state.value && kontoregisterState.value?.data?.aktivKonto) {
+		const kontoRegisterData: KontoregisterData = kontoregisterState.value.data
 
-	//@ts-ignore
-	if (state.value?.data) {
 		//@ts-ignore
-		state.value.data.map(m => {
+		state.value.data.map((m) => {
 			if (m.person) {
-				//m.person.bankkontonrUtland = {kontonummer: '234'}
+				if (kontoRegisterData.aktivKonto.utenlandskKontoInfo) {
+					m.person.bankkontonrUtland = {
+						kontonummer: kontoRegisterData.aktivKonto.kontonummer,
+						swift: kontoRegisterData.aktivKonto.utenlandskKontoInfo.swiftBicKode,
+						landkode: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankLandkode,
+						banknavn: kontoRegisterData.aktivKonto.utenlandskKontoInfo.banknavn,
+						iban: kontoRegisterData.aktivKonto.kontonummer,
+						valuta: kontoRegisterData.aktivKonto.utenlandskKontoInfo.valutakode,
+						bankAdresse1: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankadresse1,
+						bankAdresse2: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankadresse2,
+						bankAdresse3: kontoRegisterData.aktivKonto.utenlandskKontoInfo.bankadresse3,
+					}
+				} else {
+					m.person.bankkontonrNorsk = {
+						kontonummer: kontoRegisterData.aktivKonto.kontonummer,
+					}
+				}
 			}
-
 		})
 	}
 

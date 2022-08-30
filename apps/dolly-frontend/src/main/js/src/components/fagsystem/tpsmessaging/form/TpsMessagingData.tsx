@@ -43,7 +43,7 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 					}
 				} else {
 					resp.bankkontonrNorsk = {
-						kontonummer: kontoregisterResp.data.aktiveKonto.kontonummer
+						kontonummer: kontoregisterResp.data.aktiveKonto.kontonummer,
 					}
 				}
 			}
