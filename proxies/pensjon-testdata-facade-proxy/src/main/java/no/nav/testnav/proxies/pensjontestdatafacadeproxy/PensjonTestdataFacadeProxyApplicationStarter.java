@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 })
 @SpringBootApplication
 public class PensjonTestdataFacadeProxyApplicationStarter {
-    final Logger logger = LoggerFactory.getLogger(LoggingGlobalPreFilter.class);
+    final Logger logger = LoggerFactory.getLogger(PensjonTestdataFacadeProxyApplicationStarter.class);
 
     public static void main(String[] args) {
         SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
