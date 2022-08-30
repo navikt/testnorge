@@ -95,6 +95,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         }
     }
 
+    @SuppressWarnings("java:S1143")
     public void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
                               List<GruppeBestillingIdent> coBestillinger, Testident testident) {
 
