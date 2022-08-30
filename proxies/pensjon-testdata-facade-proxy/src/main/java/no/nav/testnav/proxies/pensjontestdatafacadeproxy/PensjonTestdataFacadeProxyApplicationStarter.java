@@ -37,7 +37,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                 .route(spec -> spec
                         .path("/api/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
-                                .removeRequestHeader(HttpHeaders.AUTHORIZATION)
+                                //.removeRequestHeader(HttpHeaders.AUTHORIZATION)
                                 //.addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                                 .addRequestHeader("Nav-Call-Id", "dolly")
                                 .addRequestHeader("Nav-Consumer-Id", "dolly")
@@ -46,29 +46,29 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                 .build();
     }
 
-    @Component
-    public class LoggingGlobalPreFilter implements GlobalFilter {
-
-        final Logger logger = LoggerFactory.getLogger(LoggingGlobalPreFilter.class);
-
-        @Override
-        public Mono<Void> filter(
-                ServerWebExchange exchange,
-                GatewayFilterChain chain) {
-            logger.info("Global Pre Filter executed");
-            logger.info("####### headers: " + exchange.getRequest().getHeaders());
-            logger.info("####### headers: " + exchange.getRequest().getRemoteAddress() + " " + exchange.getRequest().getPath());
-            return chain.filter(exchange);
-        }
-    }
-
-    @Bean
-    public GlobalFilter postGlobalFilter() {
-        return (exchange, chain) -> {
-            return chain.filter(exchange)
-                    .then(Mono.fromRunnable(() -> {
-                        logger.info("####### response headers: " + exchange.getResponse().getHeaders());
-                    }));
-        };
-    }
+//    @Component
+//    public class LoggingGlobalPreFilter implements GlobalFilter {
+//
+//        final Logger logger = LoggerFactory.getLogger(LoggingGlobalPreFilter.class);
+//
+//        @Override
+//        public Mono<Void> filter(
+//                ServerWebExchange exchange,
+//                GatewayFilterChain chain) {
+//            logger.info("Global Pre Filter executed");
+//            logger.info("####### headers: " + exchange.getRequest().getHeaders());
+//            logger.info("####### headers: " + exchange.getRequest().getRemoteAddress() + " " + exchange.getRequest().getPath());
+//            return chain.filter(exchange);
+//        }
+//    }
+//
+//    @Bean
+//    public GlobalFilter postGlobalFilter() {
+//        return (exchange, chain) -> {
+//            return chain.filter(exchange)
+//                    .then(Mono.fromRunnable(() -> {
+//                        logger.info("####### response headers: " + exchange.getResponse().getHeaders());
+//                    }));
+//        };
+//    }
 }
