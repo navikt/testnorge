@@ -58,7 +58,7 @@ export default () => {
 	}
 
 	if (sessionUpdated) {
-		return <Navigate to={'/'} />
+		return <Navigate to={''} />
 	}
 
 	return (
