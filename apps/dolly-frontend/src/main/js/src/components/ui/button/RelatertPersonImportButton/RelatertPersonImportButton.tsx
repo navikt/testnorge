@@ -6,32 +6,42 @@ import Button from '~/components/ui/button/Button'
 import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyApi } from '~/service/Api'
-import './PartnerImportButton.less'
+import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { Formik, FieldArray } from 'formik'
 import Formatters from '~/utils/DataFormatter'
 import _lowerCase from 'lodash/lowerCase'
 
+type RelatertPersonProps = {
+	type: string
+	id: string
+}
+
 type Props = {
-	partnerIdent: string[]
+	relatertPersonIdenter: Array<RelatertPersonProps>
 	gruppeId: string
 	gruppeIdenter: string[]
 	master: string
 }
 
-export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, master }: Props) => {
+export const RelatertPersonImportButton = ({
+	gruppeId,
+	relatertPersonIdenter,
+	gruppeIdenter,
+	master,
+}: Props) => {
 	const [loading, setLoading] = useState(false)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState(null)
 	const [fullfoert, setFullfoert] = useState(false)
 
-	if (!partnerIdent) {
+	if (!relatertPersonIdenter) {
 		return null
 	}
 
-	const disabled = partnerIdent.every((ident) => gruppeIdenter.includes(ident.id))
+	const disabled = relatertPersonIdenter.every((ident) => gruppeIdenter.includes(ident.id))
 
-	const foersteRelatertPersonType = _lowerCase(partnerIdent[0]?.type)
+	const foersteRelatertPersonType = _lowerCase(relatertPersonIdenter[0]?.type)
 
 	const handleImport = async (identer = null as string[]) => {
 		setLoading(true)
@@ -39,7 +49,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 
 		await Promise.allSettled(
 			identer.map((ident) => {
-				DollyApi.importerPartner(gruppeId, ident, master)
+				DollyApi.importerRelatertPerson(gruppeId, ident, master)
 					.then((_response) => {
 						setLoading(false)
 						setFullfoert(true)
@@ -75,9 +85,9 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 				kind="relasjoner"
 				className="svg-icon-blue"
 			>
-				{partnerIdent.length > 1
+				{relatertPersonIdenter.length > 1
 					? 'IMPORTER RELATERTE PERSONER'
-					: `IMPORTER ${partnerIdent[0]?.type}`}
+					: `IMPORTER ${relatertPersonIdenter[0]?.type}`}
 			</Button>
 			{feilmelding && (
 				<div className="error-message" style={{ margin: '5px 0 0 30px' }}>
@@ -85,16 +95,16 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 				</div>
 			)}
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-				<div className="partnerImportModal">
+				<div className="relatertPersonImportModal">
 					<Icon size={50} kind="personinformasjon" />
-					{partnerIdent.length > 1 ? (
+					{relatertPersonIdenter.length > 1 ? (
 						<>
 							<h1>Importer relaterte personer</h1>
 							<h4>Velg hvilke relaterte personer du ønsker å importere</h4>
 							<Formik initialValues={{ identer: [] }} onSubmit={null}>
 								{(formikBag) => (
 									<>
-										<div className="partnerImportModal-content">
+										<div className="relatertPersonImportModal-content">
 											<FieldArray name="identer">
 												{({ push, remove, form }) => {
 													const values = form.values?.identer
@@ -106,7 +116,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 													}
 													return (
 														<div className="miljo-velger_checkboxes">
-															{partnerIdent.map((ident) => {
+															{relatertPersonIdenter.map((ident) => {
 																const disabledCheckbox = gruppeIdenter?.includes(ident.id)
 																return (
 																	<div
@@ -133,7 +143,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 												}}
 											</FieldArray>
 										</div>
-										<div className="partnerImportModal-actions">
+										<div className="relatertPersonImportModal-actions">
 											<NavButton onClick={closeModal}>Avbryt</NavButton>
 											<NavButton
 												onClick={() => {
@@ -151,7 +161,7 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 						</>
 					) : (
 						<>
-							<div className="partnerImportModal-content-center">
+							<div className="relatertPersonImportModal-content-center">
 								<h1>{`Importer ${foersteRelatertPersonType}`}</h1>
 								<h4>
 									{`Er du sikker på at du vil importere og legge til valgt persons ${
@@ -159,12 +169,12 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 									} i gruppen?`}
 								</h4>
 							</div>
-							<div className="partnerImportModal-actions">
+							<div className="relatertPersonImportModal-actions">
 								<NavButton onClick={closeModal}>Nei</NavButton>
 								<NavButton
 									onClick={() => {
 										closeModal()
-										handleImport([partnerIdent[0]?.id])
+										handleImport([relatertPersonIdenter[0]?.id])
 									}}
 									type="hoved"
 								>

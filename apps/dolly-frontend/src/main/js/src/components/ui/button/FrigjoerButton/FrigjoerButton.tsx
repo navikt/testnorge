@@ -16,17 +16,17 @@ type RelatertPersonProps = {
 
 type Props = {
 	slettPerson: Function
-	slettPersonOgPartner: Function
+	slettPersonOgRelatertePersoner: Function
 	loading: boolean
-	importertPartner: Array<RelatertPersonProps>
+	importerteRelatertePersoner: Array<RelatertPersonProps>
 	disabled?: boolean
 }
 
 export const FrigjoerButton = ({
 	slettPerson,
-	slettPersonOgPartner,
+	slettPersonOgRelatertePersoner,
 	loading,
-	importertPartner,
+	importerteRelatertePersoner,
 	disabled = false,
 }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
@@ -37,7 +37,7 @@ export const FrigjoerButton = ({
 	}
 
 	const infoTekst = () => {
-		if (importertPartner) {
+		if (importerteRelatertePersoner) {
 			return (
 				'Er du sikker på at du vil frigjøre denne personen og dens partner? All ekstra informasjon ' +
 				'lagt til på personen og partneren via Dolly vil bli slettet og personen og partneren vil bli ' +
@@ -73,8 +73,8 @@ export const FrigjoerButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								if (importertPartner) {
-									slettPersonOgPartner(importertPartner)
+								if (importerteRelatertePersoner) {
+									slettPersonOgRelatertePersoner(importerteRelatertePersoner)
 								} else {
 									slettPerson()
 								}

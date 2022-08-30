@@ -29,7 +29,7 @@ import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerBu
 import { useNavigate } from 'react-router-dom'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { getBestillingsListe } from '~/ducks/bestillingStatus'
-import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
+import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -51,7 +51,7 @@ export const PersonVisning = ({
 	gruppeIdenter,
 	loading,
 	slettPerson,
-	slettPersonOgPartner,
+	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
 }) => {
@@ -131,9 +131,9 @@ export const PersonVisning = ({
 					)}
 
 					{!iLaastGruppe && harPdlRelatertPerson && (
-						<PartnerImportButton
+						<RelatertPersonImportButton
 							gruppeId={gruppeId}
-							partnerIdent={pdlRelatertPerson()}
+							relatertPersonIdenter={pdlRelatertPerson()}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>
@@ -147,9 +147,9 @@ export const PersonVisning = ({
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton
 							slettPerson={slettPerson}
-							slettPersonOgPartner={slettPersonOgPartner}
-							loading={loading.slettPerson || loading.slettPersonOgPartner}
-							importertPartner={
+							slettPersonOgRelatertePersoner={slettPersonOgRelatertePersoner}
+							loading={loading.slettPerson || loading.slettPersonOgRelatertePersoner}
+							importerteRelatertePersoner={
 								importerteRelatertePersoner.length > 0 ? importerteRelatertePersoner : null
 							}
 						/>
