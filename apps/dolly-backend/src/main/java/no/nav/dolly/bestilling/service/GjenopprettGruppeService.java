@@ -26,13 +26,16 @@ import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.persistence.EntityManager;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
@@ -44,6 +47,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private final ExecutorService dollyForkJoinPool;
     private final List<ClientRegister> clientRegisters;
     private final IdentService identService;
+    private final TransactionTemplate transactionTemplate;
+    private final EntityManager entityManager;
 
     public GjenopprettGruppeService(TpsfService tpsfService,
                                     DollyPersonCache dollyPersonCache, IdentService identService,
@@ -52,7 +57,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     CacheManager cacheManager, ObjectMapper objectMapper,
                                     List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                     ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                    PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+                                    PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
+                                    PlatformTransactionManager transactionManager, EntityManager entityManager) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -62,10 +68,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.clientRegisters = clientRegisters;
         this.identService = identService;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.entityManager = entityManager;
     }
 
     @Async
-    @Transactional
     public void executeAsync(Bestilling bestilling) {
 
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
@@ -88,6 +95,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         }
     }
 
+    @SuppressWarnings("java:S1143")
     public void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
                               List<GruppeBestillingIdent> coBestillinger, Testident testident) {
 
@@ -125,7 +133,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
 
         } finally {
-            oppdaterProgress(progress);
+            transactionTemplate.execute(status -> {
+                var best = entityManager.find(Bestilling.class, bestilling.getId());
+                entityManager.persist(progress);
+                best.setSistOppdatert(now());
+                entityManager.merge(best);
+                clearCache();
+                return null;
+            });
         }
     }
 }

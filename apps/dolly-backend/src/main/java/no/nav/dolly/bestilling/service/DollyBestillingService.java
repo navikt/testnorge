@@ -30,7 +30,6 @@ import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
@@ -136,7 +135,7 @@ public class DollyBestillingService {
         }
     }
 
-    private void clearCache() {
+    protected void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
@@ -186,14 +185,6 @@ public class DollyBestillingService {
         bestillingProgressService.save(progress);
         bestilling.setSistOppdatert(now());
         bestillingService.saveBestillingToDB(bestilling);
-        clearCache();
-    }
-
-    @Transactional
-    protected void oppdaterProgress(BestillingProgress progress) {
-
-        bestillingProgressService.save(progress);
-        progress.getBestilling().setSistOppdatert(now());
         clearCache();
     }
 
