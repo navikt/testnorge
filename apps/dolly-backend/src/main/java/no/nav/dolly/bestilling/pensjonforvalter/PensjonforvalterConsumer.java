@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -60,15 +59,10 @@ public class PensjonforvalterConsumer {
 
     @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Set<String> getMiljoer() {
-        try {
+
             return tokenService.exchange(serviceProperties)
                     .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
                     .block();
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å lese tilgjengelige miljøer fra pensjon. {}", e.getMessage(), e);
-            return emptySet();
-        }
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})

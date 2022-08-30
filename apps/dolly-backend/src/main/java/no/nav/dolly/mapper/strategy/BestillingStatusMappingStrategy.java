@@ -28,6 +28,7 @@ import static no.nav.dolly.mapper.BestillingImportFraTpsStatusMapper.buildImport
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
+import static no.nav.dolly.mapper.BestillingKontoregisterStatusMapper.buildKontoregisterStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
@@ -76,6 +77,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .pdldata(bestillingRequest.getPdldata())

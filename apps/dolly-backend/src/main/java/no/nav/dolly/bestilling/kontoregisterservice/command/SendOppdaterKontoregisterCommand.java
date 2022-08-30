@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoResponseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,7 +15,7 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SendOppdaterKontoregisterCommand implements Callable<Mono<OppdaterKontoResponseDTO>> {
+public class SendOppdaterKontoregisterCommand implements Callable<Mono<String>> {
     private static final String KONTOREGISTER_API_URL = "/kontoregister/api/kontoregister/v1/oppdater-konto";
 
     private final WebClient webClient;
@@ -24,7 +23,7 @@ public class SendOppdaterKontoregisterCommand implements Callable<Mono<OppdaterK
     private final String token;
 
     @Override
-    public Mono<OppdaterKontoResponseDTO> call() {
+    public Mono<String> call() {
         log.info("Sender request til Bankkontoregister service: {}", body.getKontonummer());
 
         return webClient.post()
@@ -35,7 +34,10 @@ public class SendOppdaterKontoregisterCommand implements Callable<Mono<OppdaterK
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(OppdaterKontoResponseDTO.class)
+                .toBodilessEntity()
+                .flatMap(value ->  Mono.just("OK"))
+                .doOnError(e -> log.error(e.getMessage()))
+                .onErrorResume(e -> Mono.just("Feil= " + e.getMessage()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

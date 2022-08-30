@@ -128,7 +128,8 @@ public class PensjonforvalterClient implements ClientRegister {
             });
         } catch (RuntimeException e) {
 
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append("ALLE:")
+                    .append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 
