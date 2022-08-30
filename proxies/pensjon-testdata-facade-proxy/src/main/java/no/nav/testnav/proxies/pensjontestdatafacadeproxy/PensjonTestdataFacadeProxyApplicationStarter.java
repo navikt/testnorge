@@ -42,7 +42,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .addRequestHeader("Nav-Call-Id", "dolly")
                                 .addRequestHeader("Nav-Consumer-Id", "dolly")
                         ) //Auth header er required men sjekkes ikke utover det
-                        .uri("http://pensjon-testdata-facade.default.svc.nais.local/"))
+                        .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
                 .build();
     }
 
