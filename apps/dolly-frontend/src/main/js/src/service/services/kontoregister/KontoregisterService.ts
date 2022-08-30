@@ -26,7 +26,6 @@ export default {
 	hentKonto(ident: string): Promise<PromiseKontoregisterData> {
 		return Request.post(kontoregisterUrl, { kontohaver: ident }).then((response: any) => {
 			if (response != null) {
-				console.log('hentKonto response', response)
 				return response
 			}
 		})
