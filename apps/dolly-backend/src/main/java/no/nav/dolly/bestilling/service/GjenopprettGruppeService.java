@@ -65,6 +65,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     }
 
     @Async
+    @Transactional
     public void executeAsync(Bestilling bestilling) {
 
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
@@ -87,10 +88,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         }
     }
 
-    @Transactional
     public void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
                               List<GruppeBestillingIdent> coBestillinger, Testident testident) {
-
 
         BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                 testident.getMaster());
