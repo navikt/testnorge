@@ -35,7 +35,7 @@ spec:
     path: /internal/metrics
   replicas:
     min: 2
-    max: 2
+    max: 10
   resources:
     requests:
       cpu: 3000m
