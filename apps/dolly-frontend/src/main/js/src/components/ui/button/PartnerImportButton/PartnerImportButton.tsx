@@ -9,6 +9,8 @@ import { DollyApi } from '~/service/Api'
 import './PartnerImportButton.less'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { Formik, FieldArray } from 'formik'
+import Formatters from '~/utils/DataFormatter'
+import _lowerCase from 'lodash/lowerCase'
 
 type Props = {
 	partnerIdent: string[]
@@ -28,6 +30,8 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 	}
 
 	const disabled = partnerIdent.every((ident) => gruppeIdenter.includes(ident.id))
+
+	const foersteRelatertPersonType = _lowerCase(partnerIdent[0]?.type)
 
 	const handleImport = async (identer = null as string[]) => {
 		setLoading(true)
@@ -67,11 +71,13 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 			<Button
 				onClick={openModal}
 				disabled={disabled}
-				title={disabled ? 'Partner er allerede i gruppen' : ''}
+				title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
 				kind="relasjoner"
 				className="svg-icon-blue"
 			>
-				{partnerIdent.length > 1 ? 'IMPORTER RELATERTE PERSONER' : 'IMPORTER RELATERT PERSON'}
+				{partnerIdent.length > 1
+					? 'IMPORTER RELATERTE PERSONER'
+					: `IMPORTER ${partnerIdent[0]?.type}`}
 			</Button>
 			{feilmelding && (
 				<div className="error-message" style={{ margin: '5px 0 0 30px' }}>
@@ -79,52 +85,54 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 				</div>
 			)}
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-				<div className="partnerImportModal partnerImportModal-content">
+				<div className="partnerImportModal">
 					<Icon size={50} kind="personinformasjon" />
 					{partnerIdent.length > 1 ? (
 						<>
 							<h1>Importer relaterte personer</h1>
-							<h4>Velg hvilke relaterte personer du ønsker å importere.</h4>
-							{/*TODO: Fix onSubmit*/}
+							<h4>Velg hvilke relaterte personer du ønsker å importere</h4>
 							<Formik initialValues={{ identer: [] }} onSubmit={null}>
 								{(formikBag) => (
 									<>
-										<FieldArray name="identer">
-											{({ push, remove, form }) => {
-												const values = form.values?.identer
-												const isChecked = (id) => values?.includes(id)
+										<div className="partnerImportModal-content">
+											<FieldArray name="identer">
+												{({ push, remove, form }) => {
+													const values = form.values?.identer
+													const isChecked = (id) => values?.includes(id)
 
-												const onClick = (e) => {
-													const { id } = e.target
-													isChecked(id) ? remove(values?.indexOf(id)) : push(id)
-												}
-												return (
-													<div className="miljo-velger_checkboxes">
-														{partnerIdent.map((ident) => {
-															const disabledCheckbox = gruppeIdenter?.includes(ident.id)
-															return (
-																<div
-																	key={ident.id}
-																	title={
-																		disabledCheckbox ? 'Relatert person er allerede i gruppen' : ''
-																	}
-																>
-																	<DollyCheckbox
+													const onClick = (e) => {
+														const { id } = e.target
+														isChecked(id) ? remove(values?.indexOf(id)) : push(id)
+													}
+													return (
+														<div className="miljo-velger_checkboxes">
+															{partnerIdent.map((ident) => {
+																const disabledCheckbox = gruppeIdenter?.includes(ident.id)
+																return (
+																	<div
 																		key={ident.id}
-																		id={ident.id}
-																		label={`${ident.type} (${ident.id})`}
-																		checked={values?.includes(ident.id)}
-																		onChange={onClick}
-																		size={'medium'}
-																		disabled={disabledCheckbox}
-																	/>
-																</div>
-															)
-														})}
-													</div>
-												)
-											}}
-										</FieldArray>
+																		title={disabledCheckbox ? 'Person er allerede i gruppen' : ''}
+																	>
+																		<DollyCheckbox
+																			key={ident.id}
+																			id={ident.id}
+																			label={`${Formatters.allCapsToCapitalized(ident.type)} (${
+																				ident.id
+																			})`}
+																			checked={values?.includes(ident.id)}
+																			onChange={onClick}
+																			size={'grow'}
+																			disabled={disabledCheckbox}
+																			attributtCheckbox
+																		/>
+																	</div>
+																)
+															})}
+														</div>
+													)
+												}}
+											</FieldArray>
+										</div>
 										<div className="partnerImportModal-actions">
 											<NavButton onClick={closeModal}>Avbryt</NavButton>
 											<NavButton
@@ -143,10 +151,14 @@ export const PartnerImportButton = ({ gruppeId, partnerIdent, gruppeIdenter, mas
 						</>
 					) : (
 						<>
-							<h1>Importer relatert person</h1>
-							<h4>
-								Er du sikker på at du vil importere og legge til valgt persons partner i gruppen?
-							</h4>
+							<div className="partnerImportModal-content-center">
+								<h1>{`Importer ${foersteRelatertPersonType}`}</h1>
+								<h4>
+									{`Er du sikker på at du vil importere og legge til valgt persons ${
+										foersteRelatertPersonType || 'relaterte person'
+									} i gruppen?`}
+								</h4>
+							</div>
 							<div className="partnerImportModal-actions">
 								<NavButton onClick={closeModal}>Nei</NavButton>
 								<NavButton

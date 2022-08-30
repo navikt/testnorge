@@ -9,11 +9,16 @@ import Loading from '~/components/ui/loading/Loading'
 import './FrigjoerModal.less'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
+type RelatertPersonProps = {
+	type: string
+	id: string
+}
+
 type Props = {
 	slettPerson: Function
 	slettPersonOgPartner: Function
 	loading: boolean
-	importertPartner: boolean
+	importertPartner: Array<RelatertPersonProps>
 	disabled?: boolean
 }
 
@@ -28,7 +33,7 @@ export const FrigjoerButton = ({
 	const mutate = useMatchMutate()
 
 	if (loading) {
-		return <Loading label="frigjører..." />
+		return <Loading label="frigjør..." />
 	}
 
 	const infoTekst = () => {

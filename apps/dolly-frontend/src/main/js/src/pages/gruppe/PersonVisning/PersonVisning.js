@@ -75,7 +75,7 @@ export const PersonVisning = ({
 		}
 	}, [])
 
-	const pdlPartner = () => {
+	const pdlRelatertPerson = () => {
 		const relatertePersoner = []
 
 		data.pdl?.hentPerson?.sivilstand
@@ -103,6 +103,11 @@ export const PersonVisning = ({
 		return relatertePersoner
 	}
 
+	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
+	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
+		gruppeIdenter.includes(ident.id)
+	)
+
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -125,10 +130,10 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && pdlPartner().length > 0 && (
+					{!iLaastGruppe && harPdlRelatertPerson && (
 						<PartnerImportButton
 							gruppeId={gruppeId}
-							partnerIdent={pdlPartner()}
+							partnerIdent={pdlRelatertPerson()}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>
@@ -144,8 +149,9 @@ export const PersonVisning = ({
 							slettPerson={slettPerson}
 							slettPersonOgPartner={slettPersonOgPartner}
 							loading={loading.slettPerson || loading.slettPersonOgPartner}
-							//TODO fix denne
-							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
+							importertPartner={
+								importerteRelatertePersoner.length > 0 ? importerteRelatertePersoner : null
+							}
 						/>
 					)}
 				</div>

@@ -115,7 +115,15 @@ export default {
 	},
 
 	slettPersonOgPartner(ident, _partnerident) {
-		return Request.delete(Endpoints.slettPerson(ident))
+		return Request.delete(Endpoints.slettPerson(ident)).then(() => {
+			return Promise.all(
+				_partnerident.map((person) => {
+					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
+						console.error(error)
+					})
+				})
+			)
+		})
 	},
 
 	importerPersoner: (gruppeId, request) => {

@@ -4,15 +4,22 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  text-align: center;
-  &-content {
-    border-bottom: 1px solid @color-bg-divider;
-    margin-bottom: 20px;
 
-    h1 {
-      border: none;
-      margin: 10px 0 0;
+  h1 {
+    border: none;
+    margin: 15px 0 0;
+    border-bottom: 1px solid @color-bg-divider;
+  }
+
+  &-content {
+    .dolly-form-input {
+      margin-right: 0;
     }
+
+    &-center {
+      text-align: center;
+    }
+
   }
   &-actions {
     padding: 20px 0 0;
