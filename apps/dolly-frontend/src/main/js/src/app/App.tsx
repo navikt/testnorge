@@ -55,7 +55,7 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 		}
 	}, [criticalError])
 
-	if (loading) {
+	if (loading || criticalError) {
 		return <Loading label="Laster Dolly" fullpage />
 	}
 
