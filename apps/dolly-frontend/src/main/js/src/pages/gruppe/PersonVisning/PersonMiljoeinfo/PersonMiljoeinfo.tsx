@@ -74,3 +74,4 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps)
 		</div>
 	)
 }
+
