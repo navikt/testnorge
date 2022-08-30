@@ -20,6 +20,7 @@ import { successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
 import { isNil } from 'lodash'
+import { getKodeverk } from '~/ducks/kodeverk'
 
 export const actions = createActions(
 	{
@@ -294,6 +295,21 @@ export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
 		dispatch(actions.getPDLPersoner(pdlIdenter))
 	}
 }
+
+/*** THUNKS */
+export const fetchDataOgLeggTilPaaPerson =
+	(bestillinger, master, type, personId, gruppeId, navigate) => (dispatch, getState) => {
+		const state = getState()
+		const data = selectDataForIdent(state, personId)
+		navigate(`/gruppe/${gruppeId}/bestilling/${personId}`, {
+			state: {
+				personFoerLeggTil: data,
+				tidligereBestillinger: bestillinger,
+				identMaster: master,
+				identtype: type,
+			},
+		})
+	}
 
 /**
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.

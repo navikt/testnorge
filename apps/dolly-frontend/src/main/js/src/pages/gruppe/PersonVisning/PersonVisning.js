@@ -48,13 +48,14 @@ export const PersonVisning = ({
 	data,
 	bestillingIdListe,
 	ident,
-	isAlive,
 	brukertype,
 	loading,
 	slettPerson,
 	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	tmpPersoner,
+	fetchDataOgLeggTilPaPerson,
 }) => {
 	const { gruppeId } = ident
 
@@ -125,16 +126,26 @@ export const PersonVisning = ({
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
-							onClick={() =>
-								leggTilPaaPerson(
-									data,
-									bestillingListe,
-									ident.master,
-									getIdenttype(ident.ident),
-									gruppeId,
-									navigate
-								)
-							}
+							onClick={() => {
+								if (tmpPersoner?.hasOwnProperty(ident.ident)) {
+									fetchDataOgLeggTilPaPerson(
+										bestillingListe,
+										ident.master,
+										getIdenttype(ident.ident),
+										gruppeId,
+										navigate
+									)
+								} else {
+									leggTilPaaPerson(
+										data,
+										bestillingListe,
+										ident.master,
+										getIdenttype(ident.ident),
+										gruppeId,
+										navigate
+									)
+								}
+							}}
 							kind="add-circle"
 						>
 							LEGG TIL/ENDRE

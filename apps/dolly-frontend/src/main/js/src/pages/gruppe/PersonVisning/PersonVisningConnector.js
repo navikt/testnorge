@@ -1,6 +1,11 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
+import {
+	actions,
+	fetchDataFraFagsystemer,
+	fetchDataOgLeggTilPaaPerson,
+	selectDataForIdent,
+} from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { PersonVisning } from './PersonVisning'
 
@@ -57,6 +62,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 				actions.slettPersonOgRelatertePersoner(ownProps.personId, relatertPersonIdenter)
 			)
 		},
+		fetchDataOgLeggTilPaaPerson: (bestillinger, master, type, gruppeId, navigate) =>
+			dispatch(
+				fetchDataOgLeggTilPaaPerson(
+					bestillinger,
+					master,
+					type,
+					ownProps.personId,
+					gruppeId,
+					navigate
+				)
+			),
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
 			navigate(`/gruppe/${gruppeId}/bestilling/${ownProps.personId}`, {
 				state: {
