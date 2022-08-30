@@ -38,7 +38,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                         .path("/api/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
                                 //.removeRequestHeader(HttpHeaders.AUTHORIZATION)
-                                //.addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
+                                .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                                 .addRequestHeader("Nav-Call-Id", "dolly")
                                 .addRequestHeader("Nav-Consumer-Id", "dolly")
                         ) //Auth header er required men sjekkes ikke utover det
