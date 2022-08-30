@@ -19,3 +19,17 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
+      gateway:
+        httpclient:
+          wiretap: true
+        httpserver:
+          wiretap: true
+
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
