@@ -39,11 +39,11 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
 
-    private BestillingService bestillingService;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private ExecutorService dollyForkJoinPool;
-    private List<ClientRegister> clientRegisters;
-    private IdentService identService;
+    private final BestillingService bestillingService;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final ExecutorService dollyForkJoinPool;
+    private final List<ClientRegister> clientRegisters;
+    private final IdentService identService;
 
     public GjenopprettGruppeService(TpsfService tpsfService,
                                     DollyPersonCache dollyPersonCache, IdentService identService,
@@ -124,7 +124,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
 
         } finally {
-            oppdaterProgress(bestilling, progress);
+            oppdaterProgress(progress);
             MDC.remove(MDC_KEY_BESTILLING);
         }
     }
