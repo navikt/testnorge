@@ -40,7 +40,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .removeRequestHeader(HttpHeaders.AUTHORIZATION)
                                 //.addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                         ) //Auth header er required men sjekkes ikke utover det
-                        .uri("https://pensjon-testdata-facade.dev.intern.nav.no/"))
+                        .uri("http://pensjon-testdata-facade.default.svc.nais.local/"))
                 .build();
     }
 
