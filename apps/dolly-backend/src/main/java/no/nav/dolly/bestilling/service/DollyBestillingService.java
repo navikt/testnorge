@@ -30,6 +30,7 @@ import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -189,6 +189,13 @@ public class DollyBestillingService {
         clearCache();
     }
 
+    @Transactional
+    protected void oppdaterProgress(BestillingProgress progress) {
+
+        bestillingProgressService.save(progress);
+        progress.getBestilling().setSistOppdatert(now());
+        clearCache();
+    }
 
     protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
 

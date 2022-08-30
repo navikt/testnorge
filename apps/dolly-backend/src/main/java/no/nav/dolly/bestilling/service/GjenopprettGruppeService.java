@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -25,6 +26,7 @@ import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -37,11 +39,11 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
 
-    private BestillingService bestillingService;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private ExecutorService dollyForkJoinPool;
-    private List<ClientRegister> clientRegisters;
-    private IdentService identService;
+    private final BestillingService bestillingService;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final ExecutorService dollyForkJoinPool;
+    private final List<ClientRegister> clientRegisters;
+    private final IdentService identService;
 
     public GjenopprettGruppeService(TpsfService tpsfService,
                                     DollyPersonCache dollyPersonCache, IdentService identService,
@@ -63,62 +65,67 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     }
 
     @Async
+    @Transactional
     public void executeAsync(Bestilling bestilling) {
 
+        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
-
             dollyForkJoinPool.submit(() -> {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .forEach(testident -> {
-                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
-
-                            BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
-                                    testident.getMaster());
-                            try {
-                                Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
-
-                                if (dollyPerson.isPresent()) {
-                                    gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
-
-                                    coBestillinger.stream()
-                                            .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
-                                            .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                            .forEach(bestilling1 -> clientRegisters.stream()
-                                                    .filter(register ->
-                                                            !(register instanceof PdlForvalterClient ||
-                                                                    register instanceof AktoerIdSyncClient ||
-                                                                    register instanceof PensjonforvalterClient))
-                                                    .forEach(register ->
-                                                        register.gjenopprett(getDollyBestillingRequest(
-                                                                Bestilling.builder()
-                                                                        .bestKriterier(bestilling1.getBestkriterier())
-                                                                        .miljoer(bestilling.getMiljoer())
-                                                                        .build()), dollyPerson.get(), progress, false)));
-
-                                } else {
-                                    progress.setFeil("NA:Feil= Finner ikke personen i database");
-                                }
-
-                            } catch (JsonProcessingException e) {
-                                progress.setFeil(errorStatusDecoder.decodeException(e));
-
-                            } catch (RuntimeException e) {
-                                progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
-
-                            } finally {
-                                oppdaterProgress(bestilling, progress);
-                                MDC.remove(MDC_KEY_BESTILLING);
-                            }
-                        });
+                        .forEach(testident ->
+                                doGjenopprett(bestilling, bestKriterier, coBestillinger, testident));
 
                 oppdaterBestillingFerdig(bestilling);
             });
+
+            MDC.remove(MDC_KEY_BESTILLING);
+        }
+    }
+
+    public void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
+                              List<GruppeBestillingIdent> coBestillinger, Testident testident) {
+
+        BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
+                testident.getMaster());
+        try {
+            Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
+
+            if (dollyPerson.isPresent()) {
+                gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+
+                coBestillinger.stream()
+                        .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
+                        .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                        .forEach(bestilling1 -> clientRegisters.stream()
+                                .filter(register ->
+                                        !(register instanceof PdlForvalterClient ||
+                                                register instanceof AktoerIdSyncClient ||
+                                                register instanceof PensjonforvalterClient))
+                                .forEach(register ->
+                                        register.gjenopprett(getDollyBestillingRequest(
+                                                Bestilling.builder()
+                                                        .bestKriterier(bestilling1.getBestkriterier())
+                                                        .miljoer(bestilling.getMiljoer())
+                                                        .build()), dollyPerson.get(), progress, false)));
+
+            } else {
+                progress.setFeil("NA:Feil= Finner ikke personen i database");
+            }
+
+        } catch (JsonProcessingException e) {
+            progress.setFeil(errorStatusDecoder.decodeException(e));
+
+        } catch (RuntimeException e) {
+            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+
+        } finally {
+            oppdaterProgress(progress);
         }
     }
 }

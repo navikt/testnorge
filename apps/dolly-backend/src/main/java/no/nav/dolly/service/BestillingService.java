@@ -70,6 +70,28 @@ public class BestillingService {
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
 
+    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold -> {
+            if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+            }
+        });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
+    }
+
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
@@ -356,16 +378,13 @@ public class BestillingService {
     }
 
     private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
+
         if (isBlank(bestilling.getMalBestillingNavn())) {
             return;
         }
-        List<Bestilling> gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
-        if (!gamleMalBestillinger.isEmpty()) {
-            gamleMalBestillinger.forEach(malBestilling -> {
-                malBestilling.setMalBestillingNavn(null);
-                saveBestillingToDB(malBestilling);
-            });
-        }
+        var gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
+        gamleMalBestillinger.forEach(malBestilling ->
+                malBestilling.setMalBestillingNavn(null));
     }
 
     private Bruker fetchOrCreateBruker() {
@@ -403,27 +422,5 @@ public class BestillingService {
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());
-    }
-
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
     }
 }
