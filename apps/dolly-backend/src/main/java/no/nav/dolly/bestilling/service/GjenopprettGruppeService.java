@@ -67,28 +67,30 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
+        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
-
             dollyForkJoinPool.submit(() -> {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .forEach(testident -> {
-                            doGjenopprett(bestilling, bestKriterier, coBestillinger, testident);
-                        });
+                        .forEach(testident ->
+                                doGjenopprett(bestilling, bestKriterier, coBestillinger, testident));
 
                 oppdaterBestillingFerdig(bestilling);
             });
+
+            MDC.remove(MDC_KEY_BESTILLING);
         }
     }
 
     @Transactional
-    protected void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, List<GruppeBestillingIdent> coBestillinger, Testident testident) {
-        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+    public void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
+                              List<GruppeBestillingIdent> coBestillinger, Testident testident) {
+
 
         BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                 testident.getMaster());
@@ -107,11 +109,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                 register instanceof AktoerIdSyncClient ||
                                                 register instanceof PensjonforvalterClient))
                                 .forEach(register ->
-                                    register.gjenopprett(getDollyBestillingRequest(
-                                            Bestilling.builder()
-                                                    .bestKriterier(bestilling1.getBestkriterier())
-                                                    .miljoer(bestilling.getMiljoer())
-                                                    .build()), dollyPerson.get(), progress, false)));
+                                        register.gjenopprett(getDollyBestillingRequest(
+                                                Bestilling.builder()
+                                                        .bestKriterier(bestilling1.getBestkriterier())
+                                                        .miljoer(bestilling.getMiljoer())
+                                                        .build()), dollyPerson.get(), progress, false)));
 
             } else {
                 progress.setFeil("NA:Feil= Finner ikke personen i database");
@@ -125,7 +127,6 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         } finally {
             oppdaterProgress(progress);
-            MDC.remove(MDC_KEY_BESTILLING);
         }
     }
 }
