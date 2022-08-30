@@ -3,7 +3,7 @@ import { useAsync } from 'react-use'
 import Loading from '~/components/ui/loading/Loading'
 import { TpsDataVisning } from './TpsDataVisning'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TpsMessagingApi } from '~/service/Api'
+import { TpsMessagingApi, BankkontoApi } from '~/service/Api'
 
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean
@@ -19,8 +19,27 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps)
 		}
 	}, [])
 
+	const kontoregisterState = useAsync( async () => {
+		if (ident) {
+			return BankkontoApi.hentKonto(ident)
+		}
+	})
+
 	if (!ident) {
 		return null
+	}
+
+	console.log('kontoregisterState', kontoregisterState, state.value)
+
+	//@ts-ignore
+	if (state.value?.data) {
+		//@ts-ignore
+		state.value.data.map(m => {
+			if (m.person) {
+				//m.person.bankkontonrUtland = {kontonummer: '234'}
+			}
+
+		})
 	}
 
 	return (
