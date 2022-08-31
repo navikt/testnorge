@@ -30,6 +30,8 @@ import { useNavigate } from 'react-router-dom'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
+import { useAsync } from 'react-use'
+import { DollyApi } from '~/service/Api'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -48,7 +50,6 @@ export const PersonVisning = ({
 	ident,
 	isAlive,
 	brukertype,
-	gruppeIdenter,
 	loading,
 	slettPerson,
 	slettPersonOgRelatertePersoner,
@@ -62,6 +63,12 @@ export const PersonVisning = ({
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillingerById)
 	}, [])
+
+	const getGruppeIdenter = () => {
+		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	}
+
+	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
 	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
 	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
@@ -105,7 +112,7 @@ export const PersonVisning = ({
 
 	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
 	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
-		gruppeIdenter.includes(ident.id)
+		gruppeIdenter?.includes(ident.id)
 	)
 
 	return (

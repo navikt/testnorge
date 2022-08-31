@@ -39,9 +39,9 @@ export const FrigjoerButton = ({
 	const infoTekst = () => {
 		if (importerteRelatertePersoner) {
 			return (
-				'Er du sikker på at du vil frigjøre denne personen og dens partner? All ekstra informasjon ' +
-				'lagt til på personen og partneren via Dolly vil bli slettet og personen og partneren vil bli ' +
-				'frigjort fra gruppen.'
+				'Er du sikker på at du vil frigjøre denne personen og dens relaterte personer? All ekstra ' +
+				'informasjon lagt til på personen og relaterte personer via Dolly vil bli slettet og personen og ' +
+				'relaterte personer vil bli frigjort fra gruppen.'
 			)
 		} else {
 			return (

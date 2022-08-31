@@ -39,7 +39,8 @@ export const RelatertPersonImportButton = ({
 		return null
 	}
 
-	const disabled = relatertPersonIdenter.every((ident) => gruppeIdenter.includes(ident.id))
+	const disabled =
+		!gruppeIdenter || relatertPersonIdenter?.every((ident) => gruppeIdenter?.includes(ident.id))
 
 	const foersteRelatertPersonType = _lowerCase(relatertPersonIdenter[0]?.type)
 
@@ -108,9 +109,9 @@ export const RelatertPersonImportButton = ({
 											<FieldArray name="identer">
 												{({ push, remove, form }) => {
 													const values = form.values?.identer
-													const isChecked = (id) => values?.includes(id)
+													const isChecked = (id: string) => values?.includes(id)
 
-													const onClick = (e) => {
+													const onClick = (e: { target: RelatertPersonProps }) => {
 														const { id } = e.target
 														isChecked(id) ? remove(values?.indexOf(id)) : push(id)
 													}
