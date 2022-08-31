@@ -77,8 +77,9 @@ export default function PersonListe({
 	if (isEmpty(identer)) {
 		const infoTekst =
 			brukertype === 'BANKID'
-				? 'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
-				: 'Trykk på opprett personer-knappen for å starte en bestilling.'
+				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
+				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+				  'søke opp og importere identer til gruppen.'
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
