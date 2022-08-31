@@ -24,12 +24,8 @@ const initialValues = {
 	mal: null,
 }
 
-const StyledH3 = styled.h3`
-	margin-bottom: 10px;
-`
-
 const InputDiv = styled.div`
-	margin-top: 20px;
+	margin-top: 10px;
 `
 
 const validationSchema = yup.object({

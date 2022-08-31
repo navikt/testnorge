@@ -156,6 +156,7 @@ export default function PersonListe({
 		{
 			text: 'Brukt',
 			width: '10',
+			style: { 'padding-left': '3px' },
 			dataField: 'ibruk',
 			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},

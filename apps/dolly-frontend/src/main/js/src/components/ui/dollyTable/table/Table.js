@@ -56,7 +56,12 @@ export default function Table({
 			{header && (
 				<div className={headerClass}>
 					{columns.map((cell, idx) => (
-						<Column key={idx} width={cell.width} value={getColumnHeader(cell, data)} />
+						<Column
+							key={idx}
+							width={cell.width}
+							value={getColumnHeader(cell, data)}
+							style={cell.style}
+						/>
 					))}
 					{onExpand && <Column />}
 				</div>

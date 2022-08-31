@@ -8,8 +8,8 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null }) 
 			<div title={title}>
 				<DollyCheckbox
 					label={attr.label}
-					size="grow"
 					attributtCheckbox={true}
+					size={'small'}
 					onChange={attr.checked ? attr.remove : attr.add}
 					checked={attr.checked}
 					value={attr}

@@ -14,6 +14,12 @@ const StyledAttributeCheckbox = styled(NavCheckbox)`
 		}
 	}
 `
+
+const StyledSwitch = styled(Switch)`
+	&&& {
+		margin-left: 3px;
+	}
+`
 const StyledCheckbox = styled(NavCheckbox)`
 	&&& {
 		.skjemaelement__label {
@@ -29,17 +35,27 @@ export const Checkbox = ({ id, attributtCheckbox = false, ...restProps }) =>
 		<StyledCheckbox id={id || restProps.name} {...restProps} />
 	)
 
-export const DollyCheckbox = ({ isSwitch = false, size = 'small', checkboxMargin, ...props }) => (
-	<InputWrapper size={size} checkboxMargin={checkboxMargin}>
+export const DollyCheckbox = ({
+	isSwitch = false,
+	wrapperSize = 'grow',
+	checkboxMargin,
+	...props
+}) => (
+	<InputWrapper size={wrapperSize} checkboxMargin={checkboxMargin}>
 		{isSwitch ? (
-			<Switch {...props}>{props.label}</Switch>
+			<StyledSwitch {...props}>{props.label}</StyledSwitch>
 		) : (
 			<Checkbox {...props}>{props.label}</Checkbox>
 		)}
 	</InputWrapper>
 )
 
-export const FormikCheckbox = ({ afterChange = null, fastfield = false, ...props }) => (
+export const FormikCheckbox = ({
+	afterChange = null,
+	size = 'small',
+	fastfield = false,
+	...props
+}) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, _form, _meta }) => {
 			const handleChange = (event) => {
@@ -47,7 +63,7 @@ export const FormikCheckbox = ({ afterChange = null, fastfield = false, ...props
 				if (afterChange) afterChange(event.target.checked)
 			}
 
-			return <DollyCheckbox checked={field.value} onChange={handleChange} {...props} />
+			return <DollyCheckbox size={size} checked={field.value} onChange={handleChange} {...props} />
 		}}
 	</FormikField>
 )
