@@ -99,7 +99,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<div style={{ flexGrow: '2' }}></div>
 
-					<FinnPersonBestillingConnector />
+					{brukertype !== 'BANKID' && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGruppe onChange={byttVisning} name="toggler">

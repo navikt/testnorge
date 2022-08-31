@@ -70,7 +70,7 @@ export default function GruppeOversikt({
 						</ToggleKnapp>
 					</ToggleGruppe>
 				</div>
-				<FinnPersonBestillingConnector />
+				{brukertype !== 'BANKID' && <FinnPersonBestillingConnector />}
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
