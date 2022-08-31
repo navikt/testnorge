@@ -20,28 +20,37 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.ThreadLocalContextLifter;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
+import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Operators;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Service
 public class LeggTilPaaGruppeService extends DollyBestillingService {
 
-    private MapperFacade mapperFacade;
-    private BestillingService bestillingService;
-    private TpsfService tpsfService;
-    private DollyPersonCache dollyPersonCache;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private ExecutorService dollyForkJoinPool;
-    private ObjectMapper objectMapper;
-    private PdlPersonConsumer pdlPersonConsumer;
+    private final MapperFacade mapperFacade;
+    private final BestillingService bestillingService;
+    private final TpsfService tpsfService;
+    private final DollyPersonCache dollyPersonCache;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final ExecutorService dollyForkJoinPool;
+    private final ObjectMapper objectMapper;
+    private final PdlPersonConsumer pdlPersonConsumer;
+    private final TransactionTemplate transactionTemplate;
+    private final EntityManager entityManager;
 
     public LeggTilPaaGruppeService(TpsfService tpsfService,
                                    DollyPersonCache dollyPersonCache, IdentService identService,
@@ -50,7 +59,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                    CacheManager cacheManager, ObjectMapper objectMapper,
                                    List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                    ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                   PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+                                   PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
+                                   PlatformTransactionManager transactionManager, EntityManager entityManager) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -63,10 +73,16 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.objectMapper = objectMapper;
         this.pdlPersonConsumer = pdlPersonConsumer;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.entityManager = entityManager;
     }
 
     @Async
+    @SuppressWarnings("java:S1143")
     public void executeAsync(Bestilling bestilling) {
+
+        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
@@ -80,7 +96,6 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
-                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
                             BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(), testident.getMaster());
                             try {
                                 DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
@@ -91,11 +106,11 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                             } catch (RuntimeException e) {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
-                                oppdaterProgress(bestilling, progress);
-                                MDC.remove(MDC_KEY_BESTILLING);
+                                persist(progress);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
+                MDC.remove(MDC_KEY_BESTILLING);
             });
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
@@ -122,5 +137,17 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
         }
         return dollyPerson;
+    }
+
+    private void persist(BestillingProgress progress) {
+
+        transactionTemplate.execute(status -> {
+            var best = entityManager.find(Bestilling.class, progress.getBestilling().getId());
+            entityManager.persist(progress);
+            best.setSistOppdatert(now());
+            entityManager.merge(best);
+            clearCache();
+            return null;
+        });
     }
 }

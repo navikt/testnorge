@@ -23,13 +23,17 @@ import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import javax.persistence.EntityManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
@@ -39,13 +43,15 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
-    private BestillingService bestillingService;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private MapperFacade mapperFacade;
-    private IdentService identService;
-    private TpsfService tpsfService;
-    private ExecutorService dollyForkJoinPool;
-    private PdlDataConsumer pdlDataConsumer;
+    private final BestillingService bestillingService;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
+    private final IdentService identService;
+    private final TpsfService tpsfService;
+    private final ExecutorService dollyForkJoinPool;
+    private final PdlDataConsumer pdlDataConsumer;
+    private final TransactionTemplate transactionTemplate;
+    private final EntityManager entityManager;
 
     public OpprettPersonerByKriterierService(TpsfService tpsfService,
                                              DollyPersonCache dollyPersonCache, IdentService identService,
@@ -54,7 +60,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              CacheManager cacheManager, ObjectMapper objectMapper,
                                              List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                              ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                             PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+                                             PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
+                                             PlatformTransactionManager transactionManager, EntityManager entityManager) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -66,6 +73,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.entityManager = entityManager;
     }
 
     private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
@@ -80,7 +89,10 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     }
 
     @Async
+    @SuppressWarnings("java:S1143")
     public void executeAsync(Bestilling bestilling) {
+
+        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
@@ -93,7 +105,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(ident -> {
-                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = null;
                             try {
@@ -117,11 +128,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                         errorStatusDecoder.decodeRuntimeException(e));
 
                             } finally {
-                                oppdaterProgress(bestilling, progress);
-                                MDC.remove(MDC_KEY_BESTILLING);
+                                persist(progress);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
+                MDC.remove(MDC_KEY_BESTILLING);
             });
 
         } else {
@@ -143,5 +154,17 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         } else {
             throw new DollyFunctionalException("Bestilling er ikke støttet.");
         }
+    }
+
+    private void persist(BestillingProgress progress) {
+
+        transactionTemplate.execute(status -> {
+            var best = entityManager.find(Bestilling.class, progress.getBestilling().getId());
+            entityManager.persist(progress);
+            best.setSistOppdatert(now());
+            entityManager.merge(best);
+            clearCache();
+            return null;
+        });
     }
 }
