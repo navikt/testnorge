@@ -55,7 +55,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast
-
+	const bankIdBruker = brukertype === 'BANKID'
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppeId={gruppe.id} />
@@ -67,7 +67,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
-					{brukertype === 'AZURE' && (
+					{!bankIdBruker && (
 						<NavButton
 							type="hoved"
 							onClick={visStartBestilling}
@@ -82,7 +82,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 					)}
 
 					<NavButton
-						type={brukertype === 'BANKID' ? 'hoved' : 'standard'}
+						type={bankIdBruker ? 'hoved' : 'standard'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
@@ -99,7 +99,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<div style={{ flexGrow: '2' }}></div>
 
-					{brukertype !== 'BANKID' && <FinnPersonBestillingConnector />}
+					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGruppe onChange={byttVisning} name="toggler">
