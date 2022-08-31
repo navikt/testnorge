@@ -41,7 +41,7 @@ export const BestillingProgresjon = ({
 		}
 	}
 
-	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, true)
+	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, erOrganisasjon, true)
 
 	useEffect(() => {
 		if (erOrganisasjon) {
