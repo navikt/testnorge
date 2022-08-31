@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Hovedknapp } from 'nav-frontend-knapper';
-import { ErrorAlertstripe, SuccessAlertstripe } from '@navikt/dolly-komponenter';
+import { ErrorAlertstripe, Knapp, SuccessAlertstripe } from '@navikt/dolly-komponenter';
 
 const StyledForm = styled.form`
   display: flex;
@@ -10,7 +9,7 @@ const StyledForm = styled.form`
   min-width: 300px;
 `;
 
-const StyledHovedknapp = styled(Hovedknapp)`
+const StyledHovedknapp = styled(Knapp)`
   margin: 20px 0;
 `;
 
@@ -44,8 +43,8 @@ const SubmitForm = <T extends unknown>({ children, onSubmit }: Props<T>) => {
       {children}
       <StyledHovedknapp
         disabled={loading}
-        spinner={loading}
-        onClick={(event) => {
+        loading={loading}
+        onClick={(event: { preventDefault: () => void }) => {
           event.preventDefault();
           _onSubmit();
         }}

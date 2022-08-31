@@ -10,7 +10,7 @@ consumers:
     namespace: dolly
     name: synthdata-inst-gcp
   testnorge-hodejegeren:
-    url: https://testnorge-hodejegeren.dev.adeo.no/api
+    url: https://testnorge-hodejegeren.dev.intern.nav.no/api
   inst2-web:
     url: https://inst2-{miljoe}.dev.adeo.no/web/api
   inst2-new:

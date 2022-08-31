@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter'
 import { ProfilService } from '@/services'
 import LogoutButton from '@/components/LogoutButton'
+import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter/lib'
 
 type Props = {
 	children?: React.ReactNode
@@ -39,7 +39,7 @@ const Page = ({ children, loggedIn = true }: Props) => (
 						Magic Token
 					</HeaderLink>
 					<HeaderLink
-						href="/access-token/dev-fss.dolly.dolly-backend"
+						href="/access-token/dev-gcp.dolly.dolly-backend"
 						isActive={() => window.location.pathname.includes('/access-token')}
 					>
 						Access Token

@@ -1,11 +1,8 @@
-import React, { FocusEventHandler, useState } from 'react'
+import { InputFormItem, Knapp } from '@navikt/dolly-komponenter/lib'
+import React, { FocusEventHandler } from 'react'
 import styled from 'styled-components'
-import { Hovedknapp } from 'nav-frontend-knapper'
-import { Input } from 'nav-frontend-skjema'
-import { NotFoundError } from '@navikt/dolly-lib'
-import { ErrorAlert, WarningAlert } from '@navikt/dolly-komponenter'
 
-const StyledHovedknapp = styled(Hovedknapp)`
+const StyledHovedknapp = styled(Knapp)`
 	margin-top: 32px;
 	margin-left: 5px;
 	margin-bottom: 5px;
@@ -15,7 +12,7 @@ const StyledSearch = styled.div`
 	display: flex;
 `
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(InputFormItem)`
 	width: 100%;
 `
 
@@ -34,7 +31,7 @@ const Search = ({ onBlur, onSubmit, loading = false, texts }: Props) => {
 		<>
 			<StyledSearch>
 				<StyledInput label={texts.label} type="text" onBlur={onBlur} />
-				<StyledHovedknapp spinner={loading} disabled={loading} onClick={onSubmit}>
+				<StyledHovedknapp loading={loading} disabled={loading} onClick={onSubmit}>
 					{texts.button}
 				</StyledHovedknapp>
 			</StyledSearch>

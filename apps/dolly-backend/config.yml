@@ -20,6 +20,40 @@ spec:
         - application: etterlatte-testdata
           cluster: dev-gcp
           namespace: etterlatte
+        - application: testnav-helsepersonell-service
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-helsepersonell-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-inntektsmelding-service
+        - application: testnav-tps-messaging-service
+        - application: generer-navn-service
+        - application: testnorge-profil-api
+        - application: testnav-person-service
+        - application: testnav-inst-service
+        - application: testnav-pdl-forvalter
+        - application: testnav-arbeidsforhold-service
+        - application: testnav-amelding-service
+        - application: testnav-organisasjon-service
+        - application: testnav-synt-sykemelding-api
+      external:
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
+        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-inst-service.dev.intern.nav.no
+        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
+        - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+        - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-udistub-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:
@@ -29,14 +63,14 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+  envFrom:
+    - secret: user-encryption-prod
   replicas:
     min: 1
     max: 1
   port: 8080
   ingresses:
-    - https://dolly-backend.dev.adeo.no
     - https://dolly-backend.dev.intern.nav.no
-    - https://dolly-backend.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -57,8 +91,11 @@ spec:
     limits:
       cpu: 10000m
       memory: 8192Mi
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/dolly-backend/dolly
-        mountPath: /var/run/secrets/nais.io/vault
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-dolly-backend
+        databases:
+          - name: testnav-dolly-backend
+        tier: db-custom-4-3840
+        autoBackupTime: "01:00"

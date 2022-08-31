@@ -34,8 +34,8 @@ spec:
     enabled: true
     path: /internal/metrics
   replicas:
-    min: 1
-    max: 1
+    min: 2
+    max: 10
   resources:
     requests:
       cpu: 3000m
@@ -49,7 +49,7 @@ spec:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-import-fra-tpsf-service
@@ -73,3 +73,4 @@ spec:
       - type: POSTGRES_12
         databases:
           - name: testnav-pdl-forvalter-db
+        tier: db-custom-1-3840

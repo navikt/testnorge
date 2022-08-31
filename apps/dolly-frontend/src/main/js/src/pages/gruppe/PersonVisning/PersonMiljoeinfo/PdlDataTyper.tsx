@@ -206,6 +206,7 @@ export type TelefonData = {
 	telefonnummer?: string
 	prioritet?: number
 	telefontype?: string
+	id?: number
 }
 
 export type TilrettelagtKommunikasjonData = {

@@ -198,7 +198,7 @@ export const initialFalskIdentitetValues = {
 export const initialInnvandring = {
 	fraflyttingsland: '',
 	fraflyttingsstedIUtlandet: '',
-	innflyttingsdato: new Date(),
+	innflyttingsdato: null as string,
 	master: 'FREG',
 	kilde: 'Dolly',
 }
@@ -206,7 +206,7 @@ export const initialInnvandring = {
 export const initialUtvandring = {
 	tilflyttingsland: '',
 	tilflyttingsstedIUtlandet: '',
-	utflyttingsdato: new Date(),
+	utflyttingsdato: null as string,
 	master: 'FREG',
 	kilde: 'Dolly',
 }
@@ -314,6 +314,20 @@ export const initialOpphold = {
 	type: 'OPPLYSNING_MANGLER',
 	kilde: 'Dolly',
 	master: 'FREG',
+}
+
+export const initialTelefonnummer = {
+	landskode: '',
+	nummer: '',
+	prioritet: 2,
+	kilde: 'Dolly',
+	master: 'PDL',
+}
+
+export const initialTpsTelefonnummer = {
+	landkode: '',
+	telefonnummer: '',
+	telefontype: 'HJET',
 }
 
 export const initialPersonstatus = {

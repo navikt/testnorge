@@ -19,7 +19,7 @@ spec:
     inbound:
       rules:
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-oversikt-frontend

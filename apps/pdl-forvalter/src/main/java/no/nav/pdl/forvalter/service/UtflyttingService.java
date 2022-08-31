@@ -65,6 +65,10 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
             utflytting.setUtflyttingsdato(LocalDateTime.now());
         }
 
+        if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().get(0).isAdresseNorge()) {
+            person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
+        }
+
         if (!person.getBostedsadresse().stream()
                 .findFirst()
                 .orElse(new BostedadresseDTO())
@@ -72,11 +76,8 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                 !person.getKontaktadresse().stream()
                         .findFirst()
                         .orElse(new KontaktadresseDTO())
-                        .isAdresseUtland()) {
-
-            if (!person.getBostedsadresse().isEmpty()) {
-                person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
-            }
+                        .isAdresseUtland() &&
+                utflytting.isVelkjentLand()) {
 
             person.getKontaktadresse().add(0, KontaktadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()

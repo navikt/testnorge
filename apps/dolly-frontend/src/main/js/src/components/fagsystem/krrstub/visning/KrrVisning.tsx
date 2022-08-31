@@ -3,10 +3,10 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
-import { Historikk } from '~/components/ui/historikk/Historikk'
 import { KrrApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
 
 type KrrVisningProps = {
 	data: Array<Data>
@@ -48,6 +48,7 @@ export const Visning = ({ data }: VisningProps) => {
 				render={(response) =>
 					data && (
 						<>
+							<TitleValue title="Gyldig fra" value={Formatters.formatDate(data.gyldigFra)} />
 							<TitleValue
 								title="Registrert i KRR"
 								value={Formatters.oversettBoolean(data.registrert)}
@@ -65,7 +66,6 @@ export const Visning = ({ data }: VisningProps) => {
 									Formatters.showLabel('spraaktype', data.spraak.toLowerCase().replace(' ', ''))
 								}
 							/>
-							<TitleValue title="Gyldig fra" value={Formatters.formatDate(data.gyldigFra)} />
 							<TitleValue title="SDP Adresse" value={data.sdpAdresse} />
 							<TitleValue
 								title="SDP Leverandør"
@@ -84,18 +84,32 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster KRR data" />
 	}
-	if (!data) {
+	if (!data || data.length === 0) {
 		return false
 	}
 
 	const sortedData = Array.isArray(data) ? data.slice().reverse() : data
+
+	const antallKrr = sortedData.length
+	const antallFremtidige = sortedData.filter(
+		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date()
+	).length
+
+	const gyldigeData =
+		antallKrr > antallFremtidige ? sortedData.slice(0, antallFremtidige + 1) : sortedData
+	const historiskeData = antallKrr > gyldigeData.length ? sortedData.slice(gyldigeData.length) : []
 
 	return (
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
 				<div className="person-visning_content">
-					<Historikk component={Visning} data={sortedData} />
+					<ArrayHistorikk
+						component={Visning}
+						data={gyldigeData}
+						historiskData={historiskeData}
+						header={''}
+					/>
 				</div>
 			</div>
 		</ErrorBoundary>

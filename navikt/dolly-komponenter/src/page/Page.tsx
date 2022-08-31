@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 const Page = styled.div`
   margin-top: 50px;
-  margin-right: 15%;
-  margin-left: 15%;
+  margin-right: 25%;
+  margin-left: 25%;
 `;
 
 type Props = {

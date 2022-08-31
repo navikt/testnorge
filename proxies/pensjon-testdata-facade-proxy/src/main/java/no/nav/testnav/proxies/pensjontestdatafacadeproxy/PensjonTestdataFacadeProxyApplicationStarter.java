@@ -26,10 +26,11 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route(spec -> spec
-                        .path("/**")
+                        .path("/api/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
-                                .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")) //Auth header er required men sjekkes ikke utover det
-                        .uri("https://pensjon-testdata-facade.dev.adeo.no/"))
+                                .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
+                        ) //Auth header er required men sjekkes ikke utover det
+                        .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
                 .build();
     }
 }

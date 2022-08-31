@@ -1,11 +1,10 @@
 import { Box } from '@/components/Box'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Fareknapp } from 'nav-frontend-knapper'
 import BrukerService from '@/services/BrukerService'
-import { Input } from 'nav-frontend-skjema'
+import { Knapp, InputFormItem } from '@navikt/dolly-komponenter/lib'
 
-const StyledFareknapp = styled(Fareknapp)`
+const StyledFareknapp = styled(Knapp)`
 	margin: 5px 0;
 `
 
@@ -19,9 +18,9 @@ const DeleteUserBox = () => {
 			header="Slett bruker"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<Input label="Id" type="text" onBlur={(event) => setId(event.target.value)} />
-					<Input label="Jwt" type="text" onBlur={(event) => setJwt(event.target.value)} />
-					<StyledFareknapp spinner={loading} onClick={onSubmit}>
+					<InputFormItem label="Id" type="text" onBlur={(event) => setId(event.target.value)} />
+					<InputFormItem label="Jwt" type="text" onBlur={(event) => setJwt(event.target.value)} />
+					<StyledFareknapp variant={'danger'} loading={loading} onClick={onSubmit}>
 						Slett
 					</StyledFareknapp>
 				</>

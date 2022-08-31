@@ -43,7 +43,6 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -136,7 +135,7 @@ public class DollyBestillingService {
         }
     }
 
-    private void clearCache() {
+    protected void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
@@ -188,7 +187,6 @@ public class DollyBestillingService {
         bestillingService.saveBestillingToDB(bestilling);
         clearCache();
     }
-
 
     protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
 

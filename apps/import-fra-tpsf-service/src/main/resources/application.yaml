@@ -18,8 +18,8 @@ spring:
 
 consumers:
   dolly-backend:
-    url: https://dolly-backend.dev-fss-pub.nais.io
-    cluster: dev-fss
+    url: https://dolly-backend.dev.intern.nav.no
+    cluster: dev-gcp
     namespace: dolly
     name: dolly-backend
   tps-forvalteren:

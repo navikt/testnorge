@@ -28,10 +28,12 @@ spec:
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api
           cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet

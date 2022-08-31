@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.OrganisasjonServiceProperties;
-import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -13,6 +13,8 @@ public class OrganisasjonConsumer {
     private final OrganisasjonServiceProperties serviceProperties;
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
+
+    private static final String MILJOE = "q1";
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serviceProperties,
@@ -29,7 +31,8 @@ public class OrganisasjonConsumer {
     }
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        var accessToken = tokenExchange.exchange(serviceProperties).block();
-        return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call();
+        return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+                        new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, MILJOE).call())
+                .block();
     }
 }

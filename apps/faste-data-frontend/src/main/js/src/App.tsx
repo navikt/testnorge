@@ -23,7 +23,6 @@ function App() {
           <HeaderLink href="/" isActive={() => window.location.pathname == '/'}>
             Hjem
           </HeaderLink>
-
           <HeaderLink href="/person" isActive={() => window.location.pathname == '/person'}>
             Person
           </HeaderLink>

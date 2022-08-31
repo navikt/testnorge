@@ -76,7 +76,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<Doedsfall data={doedsfall} erPdlVisning />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
-				<Telefonnummer data={telefonnummer} />
+				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />

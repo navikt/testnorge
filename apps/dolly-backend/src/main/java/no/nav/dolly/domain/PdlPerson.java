@@ -104,13 +104,12 @@ public class PdlPerson {
         private List<PdlPerson.Sivilstand> sivilstand;
         private List<PdlPerson.Doedsfall> doedsfall;
         private List<PdlPerson.UtflyttingFraNorge> utflyttingFraNorge;
+        private List<InnflyttingDTO> innflyttingTilNorge;
         private List<PdlPerson.PdlKjoenn> kjoenn;
         private List<PdlPerson.Folkeregisteridentifikator> folkeregisteridentifikator;
         private List<BostedadresseDTO> bostedsadresse;
         private List<Kontaktadresse> kontaktadresse;
         private List<OppholdsadresseDTO> oppholdsadresse;
-        private List<InnflyttingDTO> innflytting;
-        private List<UtflyttingDTO> utflytting;
         private List<DeltBostedDTO> deltBosted;
         private List<ForeldreansvarDTO> foreldreansvar;
         private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
@@ -202,20 +201,6 @@ public class PdlPerson {
                 oppholdsadresse = new ArrayList<>();
             }
             return oppholdsadresse;
-        }
-
-        public List<InnflyttingDTO> getInnflytting() {
-            if (isNull(innflytting)) {
-                innflytting = new ArrayList<>();
-            }
-            return innflytting;
-        }
-
-        public List<UtflyttingDTO> getUtflytting() {
-            if (isNull(utflytting)) {
-                utflytting = new ArrayList<>();
-            }
-            return utflytting;
         }
 
         public List<DeltBostedDTO> getDeltBosted() {
@@ -314,6 +299,13 @@ public class PdlPerson {
                 doedfoedtBarn = new ArrayList<>();
             }
             return doedfoedtBarn;
+        }
+
+        public List<InnflyttingDTO> getInnflyttingTilNorge() {
+            if (isNull(innflyttingTilNorge)) {
+                innflyttingTilNorge = new ArrayList<>();
+            }
+            return innflyttingTilNorge;
         }
     }
 

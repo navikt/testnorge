@@ -31,12 +31,16 @@ spec:
         - application: testnav-person-service
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
         - application: testnav-person-search-service
+          cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
+        - application: testnav-helsepersonell-service
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive

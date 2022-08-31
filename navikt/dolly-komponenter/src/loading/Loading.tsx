@@ -1,4 +1,4 @@
 import React from 'react';
-import NavFrontendSpinner from 'nav-frontend-spinner';
+import { Loader } from '@navikt/ds-react';
 
-export default () => <NavFrontendSpinner />;
+export default () => <Loader />;

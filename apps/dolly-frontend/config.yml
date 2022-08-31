@@ -42,6 +42,7 @@ spec:
         - application: testnav-bruker-service
         - application: testnav-person-search-service
         - application: testnav-inst-service
+        - application: dolly-backend
       external:
         - host: udi-stub.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
@@ -51,7 +52,6 @@ spec:
         - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: dolly-backend.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -79,37 +79,5 @@ spec:
   envFrom:
     - secret: idporten-dolly-dev-gcp
   env:
-    - name: DOLLY_BACKEND_NAME
-      value: dolly-backend
-    - name: DOLLY_BACKEND_URL
-      value: https://dolly-backend.dev-fss-pub.nais.io
-    - name: TPS_FORVALTERN_PROXY_NAME
-      value: tps-forvalteren-proxy
-    - name: TPS_FORVALTERN_PROXY_URL
-      value: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-    - name: POST_LOGOUT_REDIRECT_URI
-      value: https://dolly.ekstern.dev.nav.no/login
-    - name: REDIS_HOST
-      value: dolly-redis-session.dolly.svc.cluster.local
-    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME
-      value: testnav-person-organisasjon-tilgang-service
-    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL
-      value: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
-    - name: PDL_FORVALTER_URL
-      value: https://testnav-pdl-forvalter.dev.intern.nav.no
-    - name: PDL_FORVALTER_NAME
-      value: testnav-pdl-forvalter
-    - name: TESTNAV_BRUKER_SERVICE_NAME
-      value: testnav-bruker-service
-    - name: TESTNAV_BRUKER_SERVICE_URL
-      value: https://testnav-bruker-service.dev.intern.nav.no
-    - name: VARSLINGER_NAME
-      value: testnav-varslinger-service
-    - name: VARSLINGER_URL
-      value: https://testnav-varslinger-service.dev.intern.nav.no
-    - name: TESTNORGE_PROFIL_API_NAME
-      value: testnorge-profil-api
-    - name: TESTNORGE_PROFIL_API_URL
-      value: https://testnorge-profil-api.dev.intern.nav.no
-    - name: IDPORTEN_ISSUER_URI
-      value: https://oidc.difi.no/idporten-oidc-provider/
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod

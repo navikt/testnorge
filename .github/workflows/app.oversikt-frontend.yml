@@ -22,12 +22,12 @@ jobs:
       working-directory: 'apps/oversikt-frontend/'
       app-name: 'oversikt-frontend'
     secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-oversikt-frontend') }}
     with:
       resource: 'apps/oversikt-frontend/config.yml'
       app-name: 'oversikt-frontend'

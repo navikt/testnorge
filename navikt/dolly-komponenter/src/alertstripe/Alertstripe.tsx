@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import React from 'react';
-import Alertstripe from 'nav-frontend-alertstriper';
+import { Alert as NavAlert } from '@navikt/ds-react';
 
 type Props = {
     label: string;
-    type: 'suksess' | 'feil' | 'advarsel';
+    variant: 'error' | 'warning' | 'info' | 'success';
 };
 
-const Alert = styled(Alertstripe)`
-  margin-top: 20px;
+const Alert = styled(NavAlert)`
+    margin-top: 20px;
 `;
 
-export default ({label, type, ...props}: Props) => <Alert {...props} type={type}>{label}</Alert>;
+export default ({ label, variant, ...props }: Props) => <Alert {...props} variant={variant}>{label}</Alert>;

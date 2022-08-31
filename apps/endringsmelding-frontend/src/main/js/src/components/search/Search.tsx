@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
 import styled from 'styled-components';
-import { Input as NavInput } from 'nav-frontend-skjema';
-import { Knapp as NavKnapp } from 'nav-frontend-knapper';
-import { ErrorAlert, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
+import { TextField as NavInput } from '@navikt/ds-react';
+import { Button as NavKnapp } from '@navikt/ds-react';
+import { ErrorAlert, Knapp, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
 const Search = styled.div`
@@ -33,13 +33,6 @@ const Alert = styled.div`
   align-items: flex-end;
   padding-bottom: 5px;
   padding-left: 7px;
-`;
-
-const Knapp = styled(NavKnapp)`
-  width: 25%;
-  height: 30px;
-  align-self: flex-end;
-  margin-left: 20px;
 `;
 
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
@@ -78,7 +71,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           setValue(e.target.value);
         }}
       />
-      <Knapp onClick={() => _onSearch(value)} disabled={loading} spinner={loading}>
+      <Knapp onClick={() => _onSearch(value)} disabled={loading} loading={loading}>
         {labels.button}
       </Knapp>
       <Alert>

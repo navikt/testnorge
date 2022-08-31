@@ -59,7 +59,8 @@ public class DokarkivConsumer {
         log.info("Sender dokarkiv melding: callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
         return webClient.post()
-                .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(environment))
+                .uri(builder ->
+                        builder.path("/api/{miljo}/v1/journalpost").build(environment))
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
@@ -69,18 +70,23 @@ public class DokarkivConsumer {
                 .bodyToMono(DokarkivResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> {
+                .onErrorResume(error -> {
                     if (error instanceof WebClientResponseException webClientResponseException) {
                         log.error(
-                                "Feil ved opprettelse av journalpost av med body: {}.",
+                                "Feil ved opprettelse av journalpost i miljø {} med body: {}.",
+                                environment,
                                 webClientResponseException.getResponseBodyAsString(),
-                                error
-                        );
+                                error);
+                        return Mono.just(DokarkivResponse.builder()
+                                .feilmelding(webClientResponseException.getResponseBodyAsString())
+                                .build());
                     } else {
                         log.error("Feil ved opprettelse av journalpost.", error);
                     }
+                    return Mono.just(DokarkivResponse.builder()
+                            .feilmelding(error.getMessage())
+                            .build());
                 });
-
     }
 
     public Map<String, String> checkAlive() {
