@@ -20,11 +20,9 @@ export const App = () => {
 	const { loading, error: userError } = useCurrentBruker()
 
 	// Lazyloader miljøer, maler og profilData så det ligger cachet når det trengs
-	const { loading: loadingEnv } = useDollyEnvironments()
-	const { loading: loadingMal } = useDollyMaler()
-	const { loading: loadingProfil } = useBrukerProfil()
-
-	const dollyLoading = loading || loadingEnv || loadingMal || loadingProfil
+	useDollyEnvironments()
+	useDollyMaler()
+	useBrukerProfil()
 
 	useEffect(() => {
 		if (userError) {
@@ -53,7 +51,7 @@ export const App = () => {
 		}
 	}, [criticalError])
 
-	if (dollyLoading) {
+	if (loading || criticalError) {
 		return <Loading label="Laster Dolly" fullpage />
 	}
 

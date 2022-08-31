@@ -179,6 +179,11 @@ consumers:
     namespace: dolly
     url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-synt-sykemelding-api:
+    name: testnav-synt-sykemelding-api
+    namespace: dolly
+    url: https://testnav-synt-sykemelding-api.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-organisasjon-service:
     name: testnav-organisasjon-service
     namespace: dolly
@@ -194,4 +199,9 @@ consumers:
     name: testnav-udistub-proxy
     namespace: dolly
     url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
+    cluster: dev-fss
+  testnav-kontoregister-person-proxy:
+    name: testnav-kontoregister-person-proxy
+    namespace: dolly
+    url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss

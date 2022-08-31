@@ -45,10 +45,10 @@ export default () => {
 					logoutBruker(UNKNOWN_ERROR)
 				}
 			})
-			.catch(() => {
+			.catch((_e: NotFoundError) => {
 				setLoading(false)
 			})
-			.catch(() => {
+			.catch((_e: Error) => {
 				logoutBruker(UNKNOWN_ERROR)
 			})
 	}

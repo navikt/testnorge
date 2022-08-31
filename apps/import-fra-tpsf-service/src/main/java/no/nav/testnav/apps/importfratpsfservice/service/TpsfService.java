@@ -35,7 +35,7 @@ public class TpsfService {
                 .flatMapMany(gruppe -> Flux.range(nonNull(fraSideNr) ? fraSideNr : 0,
                         nonNull(tilSideNr) ? Math.min(tilSideNr, gruppe.getAntallSider().intValue()) :
                                 gruppe.getAntallSider().intValue()))
-                .delayElements(Duration.ofMillis(10000))
+                .delayElements(Duration.ofMillis(20000))
                 .flatMap(page -> tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
                 .map(melding ->
                         mapperFacade.map(melding, PersonDTO.class))

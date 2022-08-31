@@ -1,12 +1,13 @@
 package no.nav.testnav.proxies.dokarkivproxy;
 
-
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.proxies.dokarkivproxy.config.credentials.DokarkivProperties;
+import no.nav.testnav.proxies.dokarkivproxy.config.credentials.DokarkivQ1Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -22,8 +23,8 @@ import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
-        SecurityConfig.class
+        SecurityConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
 })
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
@@ -32,44 +33,33 @@ public class DokarkivProxyApplicationStarter {
     }
 
     @Bean
-    public StsOidcTokenService stsPreprodOidcTokenService(
-            @Value("${sts.preprod.token.provider.url}") String url,
-            @Value("${sts.preprod.token.provider.username}") String username,
-            @Value("${sts.preprod.token.provider.password}") String password
-    ) {
-        return new StsOidcTokenService(url, username, password);
-    }
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
+                                           TrygdeetatenAzureAdTokenService tokenService,
+                                           DokarkivProperties dokarkivProperties,
+                                           DokarkivQ1Properties dokarkivQ1Properties) {
 
-    @Bean
-    public StsOidcTokenService stsTestOidcTokenService(
-            @Value("${sts.test.token.provider.url}") String url,
-            @Value("${sts.test.token.provider.username}") String username,
-            @Value("${sts.test.token.provider.password}") String password
-    ) {
-        return new StsOidcTokenService(url, username, password);
-    }
+        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivProperties)
+                        .map(AccessToken::getTokenValue));
 
-    @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-        var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
-        var testFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
+        var addAuthenticationHeaderQ1Filter = AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivQ1Properties)
+                        .map(AccessToken::getTokenValue));
+
         return builder
                 .routes()
-                .route(createRoute("q1", preprodFilter))
-                .route(createRoute("q2", preprodFilter))
-                .route(createRoute("q4", preprodFilter))
-                .route(createRoute("q5", preprodFilter))
-                .route(createRoute("qx", preprodFilter))
-                .route(createRoute("t0", testFilter))
-                .route(createRoute("t1", testFilter))
-                .route(createRoute("t2", testFilter))
-                .route(createRoute("t3", testFilter))
-                .route(createRoute("t4", testFilter))
-                .route(createRoute("t5", testFilter))
-                .route(createRoute("t6", testFilter))
-                .route(createRoute("t13", testFilter))
+                .route(createRoute("q1", addAuthenticationHeaderQ1Filter))
+                .route(createRoute("q2", addAuthenticationHeaderFilter))
+                .route(createRoute("q4", addAuthenticationHeaderFilter))
+                .route(createRoute("q5", addAuthenticationHeaderFilter))
+                .route(createRoute("qx", addAuthenticationHeaderFilter))
+                .route(createRoute("t0", addAuthenticationHeaderFilter))
+                .route(createRoute("t1", addAuthenticationHeaderFilter))
+                .route(createRoute("t2", addAuthenticationHeaderFilter))
+                .route(createRoute("t3", addAuthenticationHeaderFilter))
+                .route(createRoute("t4", addAuthenticationHeaderFilter))
+                .route(createRoute("t5", addAuthenticationHeaderFilter))
+                .route(createRoute("t13", addAuthenticationHeaderFilter))
                 .build();
     }
 

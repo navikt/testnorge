@@ -17,7 +17,9 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP_FORHOLD;
-import static no.nav.dolly.domain.resultset.SystemTyper.*;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
+import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPensjonforvalterStatusMapper {
@@ -35,7 +37,7 @@ public final class BestillingPensjonforvalterStatusMapper {
                     List.of(meldingMiljoStatus.split("\\#")[1].split(",")).forEach(miljostatus -> {
                         String[] miljoStatuser = miljostatus.split(":");
                         String miljoe = miljoStatuser.length > 1 ? miljoStatuser[0] : null;
-                        if (nonNull(miljoe) && miljoe.length() == 2) {
+                        if (nonNull(miljoe)) {
                             String status = miljoStatuser.length > 1 ? miljoStatuser[1] : miljoStatuser[0];
                             insertArtifact(meldStatusMiljoeIdents, melding, status, miljoe, progress.getIdent());
                         }

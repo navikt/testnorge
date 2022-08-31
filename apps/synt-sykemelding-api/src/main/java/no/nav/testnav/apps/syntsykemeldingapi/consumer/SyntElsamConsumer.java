@@ -7,7 +7,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSyntSykemeldi
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.GenererSykemeldingerException;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -16,15 +16,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.LocalDate;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @Component
-public class SyntSykemeldingHistorikkConsumer {
+public class SyntElsamConsumer {
 
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
-    public SyntSykemeldingHistorikkConsumer(
+    public SyntElsamConsumer(
             SyntSykemeldingProperties syntProperties,
             TokenExchange tokenExchange,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
@@ -47,11 +49,12 @@ public class SyntSykemeldingHistorikkConsumer {
         log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
         var request = Map.of(ident, startDato.toString());
-        var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
 
-        var response = new PostSyntSykemeldingCommand(request, accessToken, webClient).call();
+        var response = tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+                        new PostSyntSykemeldingCommand(request, accessToken.getTokenValue(), webClient).call())
+                .block();
 
-        if (response == null) {
+        if (isNull(response)) {
             throw new GenererSykemeldingerException("Klarte ikke å generere sykemeldinger.");
         }
         log.info("Sykemelding generert.");

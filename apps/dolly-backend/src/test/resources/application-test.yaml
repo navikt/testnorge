@@ -77,7 +77,7 @@ consumers:
     name: testnav-pensjon-testdata-facade-proxy
     namespace: dolly
     cluster: dev-fss
-  testnav-kontoregister-person-service:
+  testnav-kontoregister-person-proxy:
     name: kontoregister-person-mock
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/kontoregister

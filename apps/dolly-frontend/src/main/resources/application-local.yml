@@ -33,7 +33,7 @@ consumers:
     url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
   testnav-bruker-service:
     name: testnav-bruker-service-dev
-    url: https://testnav-varslinger-service-dev.dev.intern.nav.no
+    url: https://testnav-bruker-service-dev.dev.intern.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no

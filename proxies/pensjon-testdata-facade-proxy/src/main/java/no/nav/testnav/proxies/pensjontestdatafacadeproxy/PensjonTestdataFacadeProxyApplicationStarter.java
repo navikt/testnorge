@@ -29,7 +29,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                         .path("/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
                                 .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")) //Auth header er required men sjekkes ikke utover det
-                        .uri("https://pensjon-testdata-facade.dev.adeo.no/"))
+                        .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
                 .build();
     }
 }
