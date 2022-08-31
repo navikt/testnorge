@@ -55,7 +55,7 @@ export const PersonVisning = ({
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
-	fetchDataOgLeggTilPaPerson,
+	fetchDataOgLeggTilPaaPerson,
 }) => {
 	const { gruppeId } = ident
 
@@ -127,8 +127,8 @@ export const PersonVisning = ({
 					{!iLaastGruppe && (
 						<Button
 							onClick={() => {
-								if (tmpPersoner?.hasOwnProperty(ident.ident)) {
-									fetchDataOgLeggTilPaPerson(
+								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
+									fetchDataOgLeggTilPaaPerson(
 										bestillingListe,
 										ident.master,
 										getIdenttype(ident.ident),
