@@ -194,6 +194,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-kontoregister-person-proxy/kontoregister/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 			},
 		},
 		plugins: [
