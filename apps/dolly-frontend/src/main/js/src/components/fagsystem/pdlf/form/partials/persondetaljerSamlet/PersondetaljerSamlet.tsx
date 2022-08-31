@@ -5,20 +5,25 @@ import { PersonstatusForm } from '~/components/fagsystem/pdlf/form/partials/pers
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikProps } from 'formik'
+import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type PersondetaljerSamletTypes = {
 	formikBag: FormikProps<{}>
 	tpsMessaging?: {
 		tpsMessagingData: {
 			sprakKode: string
-			egenAnsattDatoFom: string
 		}
 	}
+	skjermingData?: Skjerming
 }
 
-export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: PersondetaljerSamletTypes) => {
+export const PersondetaljerSamlet = ({
+	formikBag,
+	tpsMessaging,
+	skjermingData,
+}: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
-	const skjerming = tpsMessaging?.tpsMessagingData?.egenAnsattDatoFom
+	const skjerming = skjermingData?.skjermetFra
 
 	const sprakTekst = ' og språk'
 	const skjermingTekst = ' og skjerming'

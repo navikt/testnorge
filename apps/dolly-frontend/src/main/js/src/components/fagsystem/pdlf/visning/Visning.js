@@ -36,7 +36,15 @@ import {
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
-export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments, master }) => {
+export const PdlfVisning = ({
+	data,
+	tpsfData,
+	skjermingData,
+	loading,
+	tmpPersoner,
+	environments,
+	master,
+}) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data && !tpsfData) return null
 
@@ -53,6 +61,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							tmpPersoner={tmpPersoner}
 							ident={ident}
 							tpsMessaging={tpsMessaging}
+							skjermingData={skjermingData}
 						/>
 						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPersoner} ident={ident} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
