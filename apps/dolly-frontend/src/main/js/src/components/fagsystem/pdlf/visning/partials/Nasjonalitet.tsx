@@ -45,6 +45,7 @@ export const Nasjonalitet = ({
 			{innflytting?.length > 0 && (
 				<Innvandring
 					data={innflytting}
+					utflyttingData={utflytting}
 					tmpPersoner={tmpPersoner}
 					ident={ident}
 					erPdlVisning={erPdlVisning}
@@ -53,6 +54,7 @@ export const Nasjonalitet = ({
 			{utflytting?.length > 0 && (
 				<Utvandring
 					data={utflytting}
+					innflyttingData={innflytting}
 					tmpPersoner={tmpPersoner}
 					ident={ident}
 					erPdlVisning={erPdlVisning}
