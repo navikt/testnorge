@@ -52,7 +52,6 @@ const FinnPersonBestilling = ({
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
-	console.log('error: ', error) //TODO - SLETT MEG
 
 	const [tpsfIdenter, setTpsfIdenter] = useState([])
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
