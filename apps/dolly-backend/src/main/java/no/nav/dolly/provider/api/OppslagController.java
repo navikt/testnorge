@@ -92,7 +92,7 @@ public class OppslagController {
     @GetMapping("/pdlperson/ident/{ident}")
     @Operation(description = "Hent person tilhørende ident fra pdlperson")
     public JsonNode pdlPerson(@PathVariable("ident") String ident,
-                              @RequestParam(value = "pdlMiljoe", required = false) PDL_MILJOER pdlMiljoe) {
+                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PDL_MILJOER pdlMiljoe) {
         return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
     }
 
