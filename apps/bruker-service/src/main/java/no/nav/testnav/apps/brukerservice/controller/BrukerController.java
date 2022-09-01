@@ -71,7 +71,7 @@ public class BrukerController {
     }
 
     @GetMapping("/organisasjon")
-    public Mono<ResponseEntity<Boolean>> checkBrukerInOrganisasjon(
+    public Mono<ResponseEntity<Boolean>> getBrukernavnStatusOrganisasjon(
             @RequestParam String organisasjonsnummer,
             @RequestParam String username
     ) {
