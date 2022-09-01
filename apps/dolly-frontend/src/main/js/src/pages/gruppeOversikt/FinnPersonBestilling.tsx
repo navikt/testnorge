@@ -230,9 +230,11 @@ const FinnPersonBestilling = ({
 		)
 	}
 
-	if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
-		navigate(`/gruppe/${gruppe}`, { replace: true })
-	}
+	useEffect(() => {
+		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
+			navigate(`/gruppe/${gruppe}`, { replace: true })
+		}
+	})
 
 	return (
 		<ErrorBoundary>
