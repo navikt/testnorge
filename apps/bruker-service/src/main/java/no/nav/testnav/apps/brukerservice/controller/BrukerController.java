@@ -70,12 +70,13 @@ public class BrukerController {
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
-    @GetMapping("/{organisasjonsnummer}")
+    @GetMapping("/organisasjon")
     public Mono<ResponseEntity<Boolean>> checkBrukerInOrganisasjon(
-            @PathVariable String organisasjonsnummer,
+            @RequestParam String organisasjonsnummer,
             @RequestParam String username
     ) {
-        return userService.getUserByBrukernavn(username)
+        return validateService.validateOrganiasjonsnummerAccess(organisasjonsnummer)
+                .then(userService.getUserByBrukernavn(username))
                 .map(User::getOrganisasjonsnummer)
                 .flatMap(orgnr -> Mono.just(orgnr.equals(organisasjonsnummer)))
                 .map(ResponseEntity::ok)
