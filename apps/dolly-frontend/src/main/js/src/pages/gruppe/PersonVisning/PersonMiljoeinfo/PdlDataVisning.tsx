@@ -22,6 +22,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 		if ((!pdlData && !fraMiljoeQ1) || (!pdlDataQ1 && fraMiljoeQ1)) {
 			DollyApi.getPersonFraPdl(ident.ident || ident, fraMiljoeQ1)
 				.then((response: PdlDataWrapper) => {
+					console.log('response: ', response) //TODO - SLETT MEG
 					if (!fraMiljoeQ1) setPdlData(response.data?.data)
 					if (fraMiljoeQ1) setPdlDataQ1(response?.data?.data)
 					setPdlLoading(false)
@@ -32,6 +33,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 				})
 				.catch(() => {
 					setPdlLoading(false)
+					setPdlError('Henting av data feilet')
 				})
 		}
 		if (pdlError) {
