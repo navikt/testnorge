@@ -55,31 +55,26 @@ public class PdlPersonConsumer {
 
     public JsonNode getPdlPerson(String ident) {
 
-        return getPdlPerson(ident, false);
+        return getPdlPerson(ident, PDL_MILJOER.Q2);
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
-    public JsonNode getPdlPerson(String ident, Boolean fraMiljoeQ1) {
+    public JsonNode getPdlPerson(String ident, PDL_MILJOER pdlMiljoe) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap((AccessToken token) -> new PdlPersonGetCommand(webClient, ident, token.getTokenValue(), fraMiljoeQ1)
+                .flatMap((AccessToken token) -> new PdlPersonGetCommand(webClient, ident, token.getTokenValue(), pdlMiljoe)
                         .call()).block();
     }
 
-    public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer) {
-
-        return getPdlPersoner(identer, false);
-    }
-
     @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
-    public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, Boolean fraMiljoeQ1) {
+    public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
                         .flatMap(index -> new PdlBolkPersonGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                token.getTokenValue(),
-                                fraMiljoeQ1).call()));
+                                token.getTokenValue()
+                        ).call()));
     }
 
     public Map<String, String> checkAlive() {
@@ -100,5 +95,9 @@ public class PdlPersonConsumer {
             log.error("Lesing av query ressurs {} feilet", pathResource, e);
             return null;
         }
+    }
+
+    public enum PDL_MILJOER {
+        Q1, Q2
     }
 }

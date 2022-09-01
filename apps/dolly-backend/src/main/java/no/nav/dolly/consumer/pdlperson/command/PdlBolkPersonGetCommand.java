@@ -17,7 +17,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
@@ -26,13 +25,11 @@ public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
     private static final String TEMA = "Tema";
     private static final String GRAPHQL_URL = "/graphql";
     private static final String PDL_API_URL = "/pdl-api";
-    private static final String PDL_API_Q1_URL = "/pdl-api-q1";
     private static final String MULTI_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
 
     private final WebClient webClient;
     private final List<String> identer;
     private final String token;
-    private final Boolean fraMiljoeQ1;
 
     @Override
     public Flux<PdlPersonBolk> call() {
@@ -40,7 +37,7 @@ public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(isTrue(fraMiljoeQ1) ? PDL_API_Q1_URL : PDL_API_URL)
+                        .path(PDL_API_URL)
                         .path(GRAPHQL_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)

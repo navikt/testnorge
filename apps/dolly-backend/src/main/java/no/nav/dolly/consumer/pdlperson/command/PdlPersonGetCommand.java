@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,7 +21,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -30,13 +30,12 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
     private static final String TEMA = "Tema";
     private static final String GRAPHQL_URL = "/graphql";
     private static final String PDL_API_URL = "/pdl-api";
-    private static final String PDL_API_Q1_URL = "/pdl-api-q1";
     private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
 
     private final WebClient webClient;
     private final String ident;
     private final String token;
-    private final Boolean fraMiljoeQ1;
+    private final PDL_MILJOER pdlMiljoe;
 
     @Override
     public Mono<JsonNode> call() {
@@ -44,7 +43,8 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(isTrue(fraMiljoeQ1) ? PDL_API_Q1_URL : PDL_API_URL)
+                        .path(PDL_API_URL)
+                        .path(pdlMiljoe.equals(PDL_MILJOER.Q2) ? "" : "-" + pdlMiljoe.name())
                         .path(GRAPHQL_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)

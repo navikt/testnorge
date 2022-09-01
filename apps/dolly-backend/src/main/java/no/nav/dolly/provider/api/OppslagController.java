@@ -23,6 +23,7 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -48,7 +49,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
@@ -92,15 +92,14 @@ public class OppslagController {
     @GetMapping("/pdlperson/ident/{ident}")
     @Operation(description = "Hent person tilhørende ident fra pdlperson")
     public JsonNode pdlPerson(@PathVariable("ident") String ident,
-                              @RequestParam(value = "fraMiljoeQ1", required = false) Boolean fraMiljoeQ1) {
-        return pdlPersonConsumer.getPdlPerson(ident, fraMiljoeQ1);
+                              @RequestParam(value = "pdlMiljoe", required = false) PDL_MILJOER pdlMiljoe) {
+        return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
     }
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL, maks BLOCK_SIZE = 50 identer")
-    public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer,
-                                   @RequestParam(value = "fraMiljoeQ1", required = false) Boolean fraMiljoeQ1) {
-        var personer = pdlPersonConsumer.getPdlPersoner(identer, fraMiljoeQ1)
+    public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer) {
+        var personer = pdlPersonConsumer.getPdlPersoner(identer)
                 .collectList()
                 .block();
 
@@ -124,7 +123,7 @@ public class OppslagController {
     public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
         return Arrays.stream(SystemTyper.values())
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GetMapping("/skjerming/{ident}")
