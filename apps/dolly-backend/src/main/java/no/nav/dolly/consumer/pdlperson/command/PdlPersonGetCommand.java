@@ -44,7 +44,7 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PDL_API_URL)
-                        .path(pdlMiljoe.equals(PDL_MILJOER.Q2) ? "" : "-" + pdlMiljoe.name())
+                        .path(pdlMiljoe.equals(PDL_MILJOER.Q2) ? "" : "-" + pdlMiljoe.name().toLowerCase())
                         .path(GRAPHQL_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
