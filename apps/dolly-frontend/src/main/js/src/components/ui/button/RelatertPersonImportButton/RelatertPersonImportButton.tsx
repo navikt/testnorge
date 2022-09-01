@@ -77,6 +77,66 @@ export const RelatertPersonImportButton = ({
 		)
 	}
 
+	const identCheckbox = (values: Array<string>, onClick: Function) => {
+		return (
+			<div className="miljo-velger_checkboxes">
+				{relatertPersonIdenter.map((ident) => {
+					const disabledCheckbox = gruppeIdenter?.includes(ident.id)
+					return (
+						<div key={ident.id} title={disabledCheckbox ? 'Person er allerede i gruppen' : ''}>
+							<DollyCheckbox
+								key={ident.id}
+								id={ident.id}
+								label={`${Formatters.allCapsToCapitalized(ident.type)} (${ident.id})`}
+								checked={values?.includes(ident.id)}
+								onChange={onClick}
+								size={'grow'}
+								disabled={disabledCheckbox}
+								attributtCheckbox
+							/>
+						</div>
+					)
+				})}
+			</div>
+		)
+	}
+
+	const identForm = () => {
+		return (
+			<Formik initialValues={{ identer: [] }} onSubmit={null}>
+				{(formikBag) => (
+					<>
+						<div className="relatertPersonImportModal-content">
+							<FieldArray name="identer">
+								{({ push, remove, form }) => {
+									const values = form.values?.identer
+									const isChecked = (id: string) => values?.includes(id)
+									const onClick = (e: { target: RelatertPersonProps }) => {
+										const { id } = e.target
+										isChecked(id) ? remove(values?.indexOf(id)) : push(id)
+									}
+									return identCheckbox(values, onClick)
+								}}
+							</FieldArray>
+						</div>
+						<div className="relatertPersonImportModal-actions">
+							<NavButton onClick={closeModal}>Avbryt</NavButton>
+							<NavButton
+								onClick={() => {
+									closeModal()
+									handleImport(formikBag.values?.identer)
+								}}
+								type="hoved"
+							>
+								Importer
+							</NavButton>
+						</div>
+					</>
+				)}
+			</Formik>
+		)
+	}
+
 	return (
 		<div>
 			<Button
@@ -102,63 +162,7 @@ export const RelatertPersonImportButton = ({
 						<>
 							<h1>Importer relaterte personer</h1>
 							<h4>Velg hvilke relaterte personer du ønsker å importere</h4>
-							<Formik initialValues={{ identer: [] }} onSubmit={null}>
-								{(formikBag) => (
-									<>
-										<div className="relatertPersonImportModal-content">
-											<FieldArray name="identer">
-												{({ push, remove, form }) => {
-													const values = form.values?.identer
-													const isChecked = (id: string) => values?.includes(id)
-
-													const onClick = (e: { target: RelatertPersonProps }) => {
-														const { id } = e.target
-														isChecked(id) ? remove(values?.indexOf(id)) : push(id)
-													}
-													return (
-														<div className="miljo-velger_checkboxes">
-															{relatertPersonIdenter.map((ident) => {
-																const disabledCheckbox = gruppeIdenter?.includes(ident.id)
-																return (
-																	<div
-																		key={ident.id}
-																		title={disabledCheckbox ? 'Person er allerede i gruppen' : ''}
-																	>
-																		<DollyCheckbox
-																			key={ident.id}
-																			id={ident.id}
-																			label={`${Formatters.allCapsToCapitalized(ident.type)} (${
-																				ident.id
-																			})`}
-																			checked={values?.includes(ident.id)}
-																			onChange={onClick}
-																			size={'grow'}
-																			disabled={disabledCheckbox}
-																			attributtCheckbox
-																		/>
-																	</div>
-																)
-															})}
-														</div>
-													)
-												}}
-											</FieldArray>
-										</div>
-										<div className="relatertPersonImportModal-actions">
-											<NavButton onClick={closeModal}>Avbryt</NavButton>
-											<NavButton
-												onClick={() => {
-													closeModal()
-													handleImport(formikBag.values?.identer)
-												}}
-												type="hoved"
-											>
-												Importer
-											</NavButton>
-										</div>
-									</>
-								)}
-							</Formik>
+							{identForm()}
 						</>
 					) : (
 						<>
