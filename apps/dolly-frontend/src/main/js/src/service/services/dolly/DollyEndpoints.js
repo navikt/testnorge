@@ -119,8 +119,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}?organisasjonBestilling=${erOrganisasjon}`
 	}
 
-	static personoppslag(ident, fraMiljoeQ1 = false) {
-		return `${personoppslagBase}/ident/${ident}${fraMiljoeQ1 ? '?fraMiljoeQ1=true' : ''}`
+	static personoppslag(ident, pdlMiljoe = null) {
+		return `${personoppslagBase}/ident/${ident}${pdlMiljoe ? '?pdlMiljoe=' + pdlMiljoe : ''}`
 	}
 
 	static personoppslagMange(identer) {

@@ -18,13 +18,12 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
 	const [pdlError, setPdlError] = useState(null)
 
-	const getPersonInfo = (fraMiljoeQ1 = false) => {
-		if ((!pdlData && !fraMiljoeQ1) || (!pdlDataQ1 && fraMiljoeQ1)) {
-			DollyApi.getPersonFraPdl(ident.ident || ident, fraMiljoeQ1)
+	const getPersonInfo = (pdlMiljoe = null as string) => {
+		if ((!pdlData && !pdlMiljoe) || (!pdlDataQ1 && pdlMiljoe)) {
+			DollyApi.getPersonFraPdl(ident.ident || ident, pdlMiljoe)
 				.then((response: PdlDataWrapper) => {
-					console.log('response: ', response) //TODO - SLETT MEG
-					if (!fraMiljoeQ1) setPdlData(response.data?.data)
-					if (fraMiljoeQ1) setPdlDataQ1(response?.data?.data)
+					if (!pdlMiljoe) setPdlData(response.data?.data)
+					if (pdlMiljoe) setPdlDataQ1(response?.data?.data)
 					setPdlLoading(false)
 					const feil = response.data?.errors?.find((e) => e.path?.some((i) => i === 'hentPerson'))
 					if (feil) {
@@ -48,7 +47,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 				</div>
 			)
 		}
-		return <PdlVisning pdlData={fraMiljoeQ1 ? pdlDataQ1 : pdlData} loading={pdlLoading} />
+		return <PdlVisning pdlData={pdlMiljoe ? pdlDataQ1 : pdlData} loading={pdlLoading} />
 	}
 
 	if (!ident) {
@@ -72,7 +71,7 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 				<div className="miljoe-knapp">PDL</div>
 			</Tooltip>
 			<Tooltip
-				overlay={() => getPersonInfo(true)}
+				overlay={() => getPersonInfo('Q1')}
 				placement="top"
 				align={{
 					offset: [0, -10],
