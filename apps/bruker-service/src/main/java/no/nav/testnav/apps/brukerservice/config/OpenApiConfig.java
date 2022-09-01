@@ -7,7 +7,6 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,17 +28,10 @@ public class OpenApiConfig {
                                 .bearerFormat("JWT")
                                 .in(SecurityScheme.In.HEADER)
                                 .name("Authorization"))
-                        .addSecuritySchemes("user-jwt", new SecurityScheme()
-                                .type(SecurityScheme.Type.APIKEY)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                                .in(SecurityScheme.In.HEADER)
-                                .name(UserConstant.USER_HEADER_JWT))
                 )
                 .addSecurityItem(
                         new SecurityRequirement()
                                 .addList("bearer-jwt", Arrays.asList("read", "write"))
-                                .addList("user-jwt", Arrays.asList("read", "write"))
                 )
                 .info(new Info()
                         .title(applicationProperties.getName())
