@@ -30,7 +30,7 @@ const initialState = {
 	visPerson: null,
 	visBestilling: null,
 	navigerTilGruppe: null,
-	feilmelding: null,
+	feilmelding: undefined,
 	sidetall: 0,
 	sideStoerrelse: 10,
 }
@@ -79,7 +79,7 @@ export default handleActions(
 			}
 		},
 		[resetFeilmelding](state) {
-			state.feilmelding = null
+			state.feilmelding = undefined
 		},
 		[setVisning](state, action) {
 			state.visning = action.payload
