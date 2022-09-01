@@ -126,8 +126,8 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
-	getPersonFraPdl(ident) {
-		return Request.get(Endpoints.personoppslag(ident))
+	getPersonFraPdl(ident, fraMiljoeQ1) {
+		return Request.get(Endpoints.personoppslag(ident, fraMiljoeQ1))
 	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
