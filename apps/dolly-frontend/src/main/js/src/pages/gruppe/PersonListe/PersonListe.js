@@ -206,9 +206,9 @@ export default function PersonListe({
 				}}
 				pagination
 				iconItem={(bruker) => {
-					if (bruker.kjonn === 'MANN') {
+					if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
 						return <ManIconItem />
-					} else if (bruker.kjonn === 'KVINNE') {
+					} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
 						return <WomanIconItem />
 					} else {
 						return <UnknownIconItem />
@@ -224,7 +224,6 @@ export default function PersonListe({
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
 						isAlive={!bruker.alder.includes('død')}
-						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
 				)}
 			/>

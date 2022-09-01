@@ -114,8 +114,16 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
-	slettPersonOgPartner(ident, _partnerident) {
-		return Request.delete(Endpoints.slettPerson(ident))
+	slettPersonOgRelatertePersoner(ident, relatertPersonIdenter) {
+		return Request.delete(Endpoints.slettPerson(ident)).then(() => {
+			return Promise.all(
+				relatertPersonIdenter.map((person) => {
+					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
+						console.error(error)
+					})
+				})
+			)
+		})
 	},
 
 	importerPersoner: (gruppeId, request) => {
@@ -173,7 +181,7 @@ export default {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 
-	importerPartner(groupId, ident, master) {
+	importerRelatertPerson(groupId, ident, master) {
 		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
 }
