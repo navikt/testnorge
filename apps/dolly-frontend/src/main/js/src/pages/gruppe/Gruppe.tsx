@@ -17,6 +17,7 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
+import ManglerTilgang from '~/pages/gruppe/ManglerTilgang/ManglerTilgang'
 
 export type GruppeProps = {
 	visning: string
@@ -41,8 +42,14 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
+	const bankIdBruker = brukertype === 'BANKID'
+
 	if (loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
+	}
+
+	if (bankIdBruker && !gruppe?.erEierAvGruppe) {
+		return <ManglerTilgang />
 	}
 
 	const byttVisning = (event: BaseSyntheticEvent) => {
@@ -55,7 +62,6 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast
-
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppeId={gruppe.id} />
@@ -67,7 +73,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
-					{brukertype === 'AZURE' && (
+					{!bankIdBruker && (
 						<NavButton
 							type="hoved"
 							onClick={visStartBestilling}
@@ -82,7 +88,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 					)}
 
 					<NavButton
-						type={brukertype === 'BANKID' ? 'hoved' : 'standard'}
+						type={bankIdBruker ? 'hoved' : 'standard'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
@@ -99,7 +105,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<div style={{ flexGrow: '2' }}></div>
 
-					<FinnPersonBestillingConnector />
+					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGruppe onChange={byttVisning} name="toggler">

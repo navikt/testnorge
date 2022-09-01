@@ -22,12 +22,15 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.ThreadLocalContextLifter;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Operators;
 
 import javax.persistence.EntityManager;
 import java.util.Comparator;
@@ -76,6 +79,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     public void executeAsync(Bestilling bestilling) {
 
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
+
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {

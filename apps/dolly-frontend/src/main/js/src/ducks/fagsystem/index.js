@@ -114,11 +114,11 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		slettPersonOgPartner: [
-			DollyApi.slettPersonOgPartner,
-			(ident, partnerident) => ({
+		slettPersonOgRelatertePersoner: [
+			DollyApi.slettPersonOgRelatertePersoner,
+			(ident, relatertPersonIdenter) => ({
 				ident,
-				partnerident,
+				relatertPersonIdenter,
 			}),
 		],
 	},
@@ -249,7 +249,7 @@ export default handleActions(
 		[onSuccess(actions.slettPerson)](state, action) {
 			deleteIdentState(state, action.meta.ident)
 		},
-		[onSuccess(actions.slettPersonOgPartner)](state, action) {
+		[onSuccess(actions.slettPersonOgRelatertePersoner)](state, action) {
 			deleteIdentState(state, action.meta.ident)
 			deleteIdentState(state, action.meta.partnerident)
 		},

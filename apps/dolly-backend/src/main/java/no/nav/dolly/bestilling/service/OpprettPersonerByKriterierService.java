@@ -19,6 +19,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
+import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -39,13 +40,14 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
-    private BestillingService bestillingService;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private MapperFacade mapperFacade;
-    private IdentService identService;
-    private TpsfService tpsfService;
-    private ExecutorService dollyForkJoinPool;
-    private PdlDataConsumer pdlDataConsumer;
+    private final BestillingService bestillingService;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
+    private final IdentService identService;
+    private final TpsfService tpsfService;
+    private final ExecutorService dollyForkJoinPool;
+    private final PdlDataConsumer pdlDataConsumer;
+    private final TransactionHelperService transactionHelperService;
 
     public OpprettPersonerByKriterierService(TpsfService tpsfService,
                                              DollyPersonCache dollyPersonCache, IdentService identService,
@@ -54,7 +56,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              CacheManager cacheManager, ObjectMapper objectMapper,
                                              List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                              ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                             PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+                                             PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -66,6 +68,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
+        this.transactionHelperService = transactionHelperService;
     }
 
     private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
@@ -81,6 +84,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
     @Async
     public void executeAsync(Bestilling bestilling) {
+
+        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
@@ -93,7 +98,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(ident -> {
-                            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
                             BestillingProgress progress = null;
                             try {
@@ -117,11 +121,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                         errorStatusDecoder.decodeRuntimeException(e));
 
                             } finally {
-                                oppdaterProgress(bestilling, progress);
-                                MDC.remove(MDC_KEY_BESTILLING);
+                                transactionHelperService.persist(progress);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
+                MDC.remove(MDC_KEY_BESTILLING);
             });
 
         } else {

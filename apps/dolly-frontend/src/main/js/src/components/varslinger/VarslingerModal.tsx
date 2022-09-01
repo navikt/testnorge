@@ -9,17 +9,13 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { VarslingerApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
 
-interface Varslinger {
-	updateVarslingerBruker: Function
-}
-
 type Varsling = {
 	fom: string
 	tom: string
 	varslingId: string
 }
 
-export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
+export const VarslingerModal = () => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 	const [varslinger, setVarslinger] = useState(null)
@@ -73,15 +69,13 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)
-		updateVarslingerBruker(gyldigeVarslinger[steg].varslingId)
+		VarslingerApi.updateVarslingerBruker(gyldigeVarslinger[steg].varslingId)
 	}
 
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
 				<div className="varslinger-modal">
-					{/* 
-                //@ts-ignore */}
 					{antallVarslinger > 1 && (
 						<Stegindikator aktivtSteg={steg} steg={varslingerSteg} kompakt />
 					)}

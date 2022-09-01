@@ -33,7 +33,7 @@ export const Switch = ({ id, ...restProps }) => {
 	return <input id={id || restProps.name} {...restProps} className="dolly-switch" type="checkbox" />
 }
 
-export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin, ...props }) => (
+export const DollyCheckbox = ({ isSwitch = false, size, checkboxMargin = false, ...props }) => (
 	<InputWrapper size={size} checkboxMargin={checkboxMargin}>
 		{isSwitch ? <Switch {...props} /> : <Checkbox {...props} />}
 	</InputWrapper>
