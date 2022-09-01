@@ -21,20 +21,17 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
+import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
@@ -49,8 +46,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private final ExecutorService dollyForkJoinPool;
     private final ObjectMapper objectMapper;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final TransactionTemplate transactionTemplate;
-    private final EntityManager entityManager;
+    private final TransactionHelperService transactionHelperService;
 
     public LeggTilPaaGruppeService(TpsfService tpsfService,
                                    DollyPersonCache dollyPersonCache, IdentService identService,
@@ -60,7 +56,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                    List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                    ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                    PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                   PlatformTransactionManager transactionManager, EntityManager entityManager) {
+                                   TransactionHelperService transactionHelperService) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -73,12 +69,10 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.objectMapper = objectMapper;
         this.pdlPersonConsumer = pdlPersonConsumer;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.entityManager = entityManager;
+        this.transactionHelperService = transactionHelperService;
     }
 
     @Async
-    @SuppressWarnings("java:S1143")
     public void executeAsync(Bestilling bestilling) {
 
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
@@ -106,7 +100,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                             } catch (RuntimeException e) {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                             } finally {
-                                persist(progress);
+                                transactionHelperService.persist(progress);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
@@ -137,17 +131,5 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
         }
         return dollyPerson;
-    }
-
-    private void persist(BestillingProgress progress) {
-
-        transactionTemplate.execute(status -> {
-            var best = entityManager.find(Bestilling.class, progress.getBestilling().getId());
-            entityManager.persist(progress);
-            best.setSistOppdatert(now());
-            entityManager.merge(best);
-            clearCache();
-            return null;
-        });
     }
 }

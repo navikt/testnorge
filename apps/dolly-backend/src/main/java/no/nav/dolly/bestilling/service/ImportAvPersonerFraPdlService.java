@@ -19,20 +19,17 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
+import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
@@ -47,8 +44,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
     private final PdlPersonConsumer pdlPersonConsumer;
     private final ObjectMapper objectMapper;
     private final IdentService identService;
-    private final TransactionTemplate transactionTemplate;
-    private final EntityManager entityManager;
+    private final TransactionHelperService transactionHelperService;
 
     public ImportAvPersonerFraPdlService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
                                          IdentService identService, BestillingProgressService bestillingProgressService,
@@ -56,8 +52,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                          CacheManager cacheManager, ObjectMapper objectMapper,
                                          List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                          ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                         PlatformTransactionManager transactionManager, EntityManager entityManager) {
+                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
                 pdlDataConsumer, errorStatusDecoder);
@@ -68,12 +63,10 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
         this.objectMapper = objectMapper;
         this.pdlPersonConsumer = pdlPersonConsumer;
         this.identService = identService;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.entityManager = entityManager;
+        this.transactionHelperService = transactionHelperService;
     }
 
     @Async
-    @SuppressWarnings("java:S1143")
     public void executeAsync(Bestilling bestilling) {
 
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
@@ -104,7 +97,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                 progress.setPdlImportStatus(errorStatusDecoder.decodeRuntimeException(e));
 
                             } finally {
-                                persist(progress);
+                                transactionHelperService.persist(progress);
                             }
                         });
                 oppdaterBestillingFerdig(bestilling);
@@ -115,17 +108,5 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             oppdaterBestillingFerdig(bestilling);
         }
-    }
-
-    private void persist(BestillingProgress progress) {
-
-        transactionTemplate.execute(status -> {
-            var best = entityManager.find(Bestilling.class, progress.getBestilling().getId());
-            entityManager.persist(progress);
-            best.setSistOppdatert(now());
-            entityManager.merge(best);
-            clearCache();
-            return null;
-        });
     }
 }
