@@ -28,6 +28,7 @@ export const {
 const initialState = {
 	visning: 'personer',
 	visPerson: null,
+	hovedperson: null,
 	visBestilling: null,
 	navigerTilGruppe: null,
 	feilmelding: undefined,
@@ -48,7 +49,8 @@ export default handleActions(
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			state.feilmelding = action.payload?.data?.message
-			state.visPerson = action.payload.data.identHovedperson
+			state.hovedperson = action.payload.data.identHovedperson
+			state.visPerson = action.payload.data.identNavigerTil
 			state.sidetall = action.payload.data.sidetall
 			state.navigerTilGruppe = action.payload.data.gruppe?.id
 			state.visning = VisningType.VISNING_PERSONER

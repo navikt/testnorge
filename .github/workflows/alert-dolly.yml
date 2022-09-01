@@ -1,0 +1,19 @@
+name: Deploy dolly alerts to NAIS
+on:
+  push:
+    paths:
+      - '.nais/alerting-dolly.yml'
+      - '.github/workflows/alert-dolly.yml'
+jobs:
+  apply-alerts:
+    name: Apply alerts to cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: deploy to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/alerting-dolly.yml

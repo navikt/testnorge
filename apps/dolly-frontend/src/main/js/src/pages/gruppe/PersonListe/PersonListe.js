@@ -35,6 +35,7 @@ export default function PersonListe({
 	sideStoerrelse,
 	brukertype,
 	visPerson,
+	hovedperson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
@@ -216,6 +217,7 @@ export default function PersonListe({
 				}}
 				visSide={sidetall}
 				visPerson={visPerson}
+				hovedperson={hovedperson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						ident={bruker.ident}

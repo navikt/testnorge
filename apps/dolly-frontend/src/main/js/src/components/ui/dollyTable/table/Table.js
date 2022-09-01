@@ -44,6 +44,7 @@ export default function Table({
 	onRowClick,
 	header = true,
 	visPerson,
+	hovedperson,
 	visBestilling,
 	onExpand,
 }) {
@@ -70,7 +71,8 @@ export default function Table({
 				const expandPerson =
 					expandComponent &&
 					visPerson &&
-					_get(expandComponent, 'props.personId') === visPerson.toString()
+					(_get(expandComponent, 'props.personId') === visPerson.toString() ||
+						_get(expandComponent, 'props.personId') === hovedperson.toString())
 				const expandBestilling =
 					expandComponent &&
 					visBestilling &&
