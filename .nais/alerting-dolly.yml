@@ -1,0 +1,32 @@
+apiVersion: "nais.io/v1"
+kind: "Alert"
+metadata:
+  name: dolly-alert
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  receivers:
+    slack:
+      channel: "#dolly-alerts"
+      prependText: "<!here> | "
+  alerts:
+    - alert: applikasjon nede
+      expr: kube_deployment_status_replicas_available{deployment=~"dolly-backend|dolly-frontend"} == 0
+      for: 2m
+      description: "App {{ $labels.app }} er nede i namespace {{ $labels.kubernetes_namespace }}"
+      action: "`kubectl describe pod -l app={{ $labels.app }} -n {{ $labels.namespace }}` for events, og `kubectl logs -l app={{ $labels.app }} -n {{ $labels.namespace }}` for logger"
+    - alert: høy feilrate i logger
+      expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"dolly-backend|dolly-frontend",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"dolly-backend|dolly-frontend"}[3m]))) > 10
+      for: 3m
+      action: "Sjekk loggene https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30m,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:lucene,query:'application:%20{{ $labels.app }}20AND%20level:Error'),sort:!(!('@timestamp',desc))) for å se hvorfor {{ $labels.app }} returnerer HTTP feilresponser"
+    - alert: Høy andel HTTP serverfeil (5xx responser)
+      severity: danger
+      expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^5\\d\\d", namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])) / sum by (backend) (rate(response_total{namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])))) > 1
+      for: 3m
+      action: "Sjekk loggene https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30m,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:lucene,query:'application:%20{{ $labels.app }}20AND%20level:Error'),sort:!(!('@timestamp',desc))) for å se hvorfor {{ $labels.app }} returnerer HTTP feilresponser"
+    - alert: Høy andel HTTP klientfeil (4xx responser)
+      severity: warning
+      expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^4\\d\\d", namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])) / sum by (backend) (rate(response_total{namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])))) > 10
+      for: 3m
+      action: "Sjekk loggene https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30m,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:lucene,query:'application:%20{{ $labels.app }}20AND%20level:Error'),sort:!(!('@timestamp',desc))) for å se hvorfor {{ $labels.app }} returnerer HTTP feilresponser"
