@@ -15,6 +15,7 @@ import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
 import { PopoverOrientering } from 'nav-frontend-popover'
 import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { useGruppeById } from '~/utils/hooks/useGruppe'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 type GruppeHeaderProps = {
 	gruppeId: number
@@ -42,6 +43,9 @@ const GruppeHeader = ({
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 	const { gruppe } = useGruppeById(gruppeId)
+	const {
+		currentBruker: { brukertype },
+	} = useCurrentBruker()
 
 	const erLaast = gruppe.erLaast
 
@@ -121,12 +125,14 @@ const GruppeHeader = ({
 						action={getGruppeExcelFil}
 						loading={isFetchingExcel}
 					/>
-					<TagsButton
-						loading={isSendingTags}
-						action={sendTags}
-						gruppeId={gruppe.id}
-						eksisterendeTags={gruppe.tags}
-					/>
+					{brukertype !== 'BANKID' && (
+						<TagsButton
+							loading={isSendingTags}
+							action={sendTags}
+							gruppeId={gruppe.id}
+							eksisterendeTags={gruppe.tags}
+						/>
+					)}
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>

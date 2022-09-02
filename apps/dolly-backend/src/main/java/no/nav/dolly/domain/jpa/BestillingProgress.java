@@ -104,6 +104,9 @@ public class BestillingProgress {
     @Column(name = "PDL_DATA_STATUS")
     private String pdlDataStatus;
 
+    @Column(name = "KONTOREGISTER_STATUS")
+    private String kontoregisterStatus;
+
     @Column(name = "master")
     @Enumerated(EnumType.STRING)
     private Master master;

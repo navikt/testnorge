@@ -3,6 +3,7 @@ package no.nav.dolly.web;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.credentials.DollyBackendProperties;
+import no.nav.dolly.web.credentials.KontoregisterProxyProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
@@ -89,11 +90,13 @@ public class DollyFrontendApplicationStarter {
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
     private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
+    private final KontoregisterProxyProperties kontoregisterProxyProperties;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
+                .route(createRoute(kontoregisterProxyProperties))
                 .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
                 .route(createRoute(testnavAdresseServiceProperties))
                 .route(createRoute(testnavOrganisasjonForvalterProperties))

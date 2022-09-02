@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
@@ -65,6 +66,19 @@ public class BrukerController {
                 .then(userService.getUserFromOrganisasjonsnummer(organisasjonsnummer))
                 .map(User::toDTO)
                 .map(Collections::singletonList)
+                .map(ResponseEntity::ok)
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    }
+
+    @GetMapping("/organisasjon")
+    public Mono<ResponseEntity<Boolean>> getBrukernavnStatusOrganisasjon(
+            @RequestParam String organisasjonsnummer,
+            @RequestParam String username
+    ) {
+        return validateService.validateOrganiasjonsnummerAccess(organisasjonsnummer)
+                .then(userService.getUserByBrukernavn(username))
+                .map(User::getOrganisasjonsnummer)
+                .flatMap(orgnr -> Mono.just(orgnr.equals(organisasjonsnummer)))
                 .map(ResponseEntity::ok)
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }

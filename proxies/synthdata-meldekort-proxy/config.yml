@@ -5,7 +5,9 @@ metadata:
   name: testnav-synthdata-meldekort-proxy-nav
   namespace: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
   labels:
     team: dolly
 spec:
@@ -19,7 +21,9 @@ metadata:
   name: testnav-synthdata-meldekort-proxy
   namespace: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
   labels:
     team: dolly
 spec:

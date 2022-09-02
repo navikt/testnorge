@@ -52,6 +52,7 @@ spec:
         - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
+        - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:
@@ -61,6 +62,8 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
+  envFrom:
+    - secret: user-encryption-dev
   replicas:
     min: 1
     max: 1

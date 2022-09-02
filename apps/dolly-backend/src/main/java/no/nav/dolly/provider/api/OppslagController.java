@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.ArbeidsforholdServiceConsumer;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
@@ -22,6 +23,7 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -43,12 +45,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -89,8 +91,9 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/ident/{ident}")
     @Operation(description = "Hent person tilhørende ident fra pdlperson")
-    public JsonNode pdlPerson(@PathVariable("ident") String ident) {
-        return pdlPersonConsumer.getPdlPerson(ident);
+    public JsonNode pdlPerson(@PathVariable("ident") String ident,
+                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PDL_MILJOER pdlMiljoe) {
+        return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
     }
 
     @GetMapping("/pdlperson/identer")
@@ -100,27 +103,27 @@ public class OppslagController {
                 .collectList()
                 .block();
 
-        return !personer.isEmpty() ? personer.get(0) : null;
+        return nonNull(personer) && !personer.isEmpty() ? personer.get(0) : null;
     }
 
     @GetMapping("/inntektstub/{ident}")
     @Operation(description = "Hent inntekter tilhørende ident fra Inntektstub")
-    public ResponseEntity inntektstub(@PathVariable String ident) {
+    public ResponseEntity<List<Inntektsinformasjon>> inntektstub(@PathVariable String ident) {
         return inntektstubConsumer.getInntekter(ident);
     }
 
     @PostMapping("/inntektstub")
     @Operation(description = "Valider inntekt mot Inntektstub")
-    public ResponseEntity inntektstub(@RequestBody ValiderInntekt validerInntekt) {
+    public ResponseEntity<Object> inntektstub(@RequestBody ValiderInntekt validerInntekt) {
         return inntektstubConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")
     @Operation(description = "Hent liste med systemer og deres beskrivelser")
     public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
-        return asList(SystemTyper.values()).stream()
+        return Arrays.stream(SystemTyper.values())
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GetMapping("/skjerming/{ident}")
@@ -143,13 +146,13 @@ public class OppslagController {
 
     @GetMapping("/fastedatasett/{datasettype}")
     @Operation(description = "Hent faste datasett med beskrivelser")
-    public ResponseEntity getFasteDatasett(@PathVariable DatasettType datasettype) {
+    public ResponseEntity<JsonNode> getFasteDatasett(@PathVariable DatasettType datasettype) {
         return fasteDatasettConsumer.hentDatasett(datasettype);
     }
 
     @GetMapping("/fastedatasett/tps/{gruppe}")
     @Operation(description = "Hent faste datasett gruppe med beskrivelser")
-    public ResponseEntity getFasteDatasettGruppe(@PathVariable String gruppe) {
+    public ResponseEntity<JsonNode> getFasteDatasettGruppe(@PathVariable String gruppe) {
         return fasteDatasettConsumer.hentDatasettGruppe(gruppe);
     }
 
@@ -161,7 +164,7 @@ public class OppslagController {
 
     @GetMapping("/orgnummer")
     @Operation(description = "Hent faste orgnummer")
-    public ResponseEntity getOrgnummer() {
+    public ResponseEntity<JsonNode> getOrgnummer() {
         return fasteDatasettConsumer.hentOrgnummer();
     }
 

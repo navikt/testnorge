@@ -29,7 +29,9 @@ import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerBu
 import { useNavigate } from 'react-router-dom'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { getBestillingsListe } from '~/ducks/bestillingStatus'
-import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
+import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
+import { useAsync } from 'react-use'
+import { DollyApi } from '~/service/Api'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -48,10 +50,9 @@ export const PersonVisning = ({
 	ident,
 	isAlive,
 	brukertype,
-	gruppeIdenter,
 	loading,
 	slettPerson,
-	slettPersonOgPartner,
+	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
 }) => {
@@ -62,6 +63,12 @@ export const PersonVisning = ({
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillingerById)
 	}, [])
+
+	const getGruppeIdenter = () => {
+		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	}
+
+	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
 	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
 	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
@@ -75,13 +82,38 @@ export const PersonVisning = ({
 		}
 	}, [])
 
-	const pdlPartner = () => {
-		return data.pdl?.hentPerson?.sivilstand?.filter(
-			(siv) =>
-				!siv?.metadata?.historisk &&
-				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
-		)?.[0]?.relatertVedSivilstand
+	const pdlRelatertPerson = () => {
+		const relatertePersoner = []
+
+		data.pdl?.hentPerson?.sivilstand
+			?.filter(
+				(siv) =>
+					!siv?.metadata?.historisk &&
+					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
+			)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'PARTNER',
+					id: person.relatertVedSivilstand,
+				})
+			})
+
+		data.pdl?.hentPerson?.forelderBarnRelasjon
+			?.filter((barn) => !barn?.metadata?.historisk && barn?.relatertPersonsRolle === 'BARN')
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: person.relatertPersonsRolle,
+					id: person.relatertPersonsIdent,
+				})
+			})
+
+		return relatertePersoner
 	}
+
+	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
+	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
+		gruppeIdenter?.includes(ident.id)
+	)
 
 	return (
 		<ErrorBoundary>
@@ -105,10 +137,10 @@ export const PersonVisning = ({
 						</Button>
 					)}
 
-					{!iLaastGruppe && (
-						<PartnerImportButton
+					{!iLaastGruppe && harPdlRelatertPerson && (
+						<RelatertPersonImportButton
 							gruppeId={gruppeId}
-							partnerIdent={pdlPartner()}
+							relatertPersonIdenter={pdlRelatertPerson()}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>
@@ -122,9 +154,11 @@ export const PersonVisning = ({
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton
 							slettPerson={slettPerson}
-							slettPersonOgPartner={slettPersonOgPartner}
-							loading={loading.slettPerson || loading.slettPersonOgPartner}
-							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
+							slettPersonOgRelatertePersoner={slettPersonOgRelatertePersoner}
+							loading={loading.slettPerson || loading.slettPersonOgRelatertePersoner}
+							importerteRelatertePersoner={
+								importerteRelatertePersoner.length > 0 ? importerteRelatertePersoner : null
+							}
 						/>
 					)}
 				</div>

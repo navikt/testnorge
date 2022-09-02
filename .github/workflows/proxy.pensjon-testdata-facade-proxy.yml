@@ -29,7 +29,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-pensjon-testdata-facade-proxy-dev')}}
     with:
       resource: 'proxies/pensjon-testdata-facade-proxy/config.yml'
       app-name: 'pensjon-testdata-facade-proxy'

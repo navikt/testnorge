@@ -16,6 +16,7 @@ const mapStateToProps = (state) => ({
 	isFetching: loadingSelector(state),
 	sidetall: state.finnPerson.sidetall,
 	visPerson: state.finnPerson.visPerson,
+	hovedperson: state.finnPerson.hovedperson,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
 	tmpPersoner: state.redigertePersoner,
 })

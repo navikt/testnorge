@@ -35,6 +35,7 @@ export default function PersonListe({
 	sideStoerrelse,
 	brukertype,
 	visPerson,
+	hovedperson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
@@ -77,8 +78,9 @@ export default function PersonListe({
 	if (isEmpty(identer)) {
 		const infoTekst =
 			brukertype === 'BANKID'
-				? 'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
-				: 'Trykk på opprett personer-knappen for å starte en bestilling.'
+				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
+				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+				  'søke opp og importere identer til gruppen.'
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
@@ -205,9 +207,9 @@ export default function PersonListe({
 				}}
 				pagination
 				iconItem={(bruker) => {
-					if (bruker.kjonn === 'MANN') {
+					if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
 						return <ManIconItem />
-					} else if (bruker.kjonn === 'KVINNE') {
+					} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
 						return <WomanIconItem />
 					} else {
 						return <UnknownIconItem />
@@ -215,6 +217,7 @@ export default function PersonListe({
 				}}
 				visSide={sidetall}
 				visPerson={visPerson}
+				hovedperson={hovedperson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						ident={bruker.ident}
@@ -223,7 +226,6 @@ export default function PersonListe({
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
 						isAlive={!bruker.alder.includes('død')}
-						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
 				)}
 			/>
