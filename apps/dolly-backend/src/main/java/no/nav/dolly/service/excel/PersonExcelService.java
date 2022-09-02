@@ -49,6 +49,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -69,7 +70,6 @@ public class PersonExcelService {
     private static final String UKJENT = "UKJENT";
     private static final String CO_ADRESSE = "CoAdressenavn: %s";
     private static final String COMMA_DELIM = ", ";
-    private static final String ARK_FANE = "Personer";
     private static final int PARTNER = 15;
     private static final int BARN = 16;
     private static final int FORELDRE = 17;
@@ -213,7 +213,7 @@ public class PersonExcelService {
     private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
 
         var hyperLink = helper.createHyperlink(HyperlinkType.DOCUMENT);
-        hyperLink.setAddress(String.format("'%s'!A%d", ARK_FANE, row + 2));
+        hyperLink.setAddress(String.format("'%s'!A%d", PERSON_FANE, row + 2));
         return hyperLink;
     }
 
@@ -357,7 +357,7 @@ public class PersonExcelService {
     public Mono<Void> preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
                                          XSSFCellStyle hyperlinkStyle, List<String> identer) {
 
-        var sheet = workbook.createSheet(ARK_FANE);
+        var sheet = workbook.createSheet(PERSON_FANE);
         var rows = getPersondataRowContents(identer);
         sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, header.length),
                 IgnoredErrorType.NUMBER_STORED_AS_TEXT);

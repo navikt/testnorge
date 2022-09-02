@@ -27,16 +27,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_COL_WIDTHS;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_HEADER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
 public class BankkontoExcelService {
-
-    private static final Object[] header = {"Ident", "Kontonummer (Norge)", "Kontonummer (Utland)", "Banknavn", "Bankkode",
-            "Banklandkode", "Valutakode", "Swift/Bickode", "Bankadresse1", "Bankadresse2", "Bankadresse3"};
-    private static final Integer[] COL_WIDTHS = {14, 20, 20, 20, 20, 20, 20, 20, 30, 30, 30};
-    private static final String ARK_FANE = "Bankkontoer";
 
     private final IdentRepository identRepository;
     private final TpsMessagingConsumer tpsMessagingConsumer;
@@ -106,17 +104,17 @@ public class BankkontoExcelService {
         var rows = getBankkontoDetaljer(testidenter);
 
         if (!rows.isEmpty()) {
-            var sheet = workbook.createSheet(ARK_FANE);
+            var sheet = workbook.createSheet(BANKKONTO_FANE);
 
-            sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, header.length),
+            sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, BANKKONTO_HEADER.length),
                     IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
             var columnNo = new AtomicInteger(0);
-            Arrays.stream(COL_WIDTHS)
+            Arrays.stream(BANKKONTO_COL_WIDTHS)
                     .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
             ExcelService.appendRows(sheet, wrapStyle,
-                    Stream.of(Collections.singletonList(header), rows)
+                    Stream.of(Collections.singletonList(BANKKONTO_HEADER), rows)
                             .flatMap(Collection::stream)
                             .toList());
         }

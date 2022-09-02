@@ -79,6 +79,8 @@ public class ExcelService {
                         bankkontoExcelService.prepareBankkontoSheet(workbook, wrapStyle, testidenter))
                 .block();
 
+        BankkontoToPersonHelper.appendData(workbook);
+
         log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
         try {
             var excelFile = File.createTempFile("Excel-", ".xlsx");
