@@ -22,6 +22,7 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -354,8 +355,8 @@ public class PersonExcelService {
         }
     }
 
-    public Mono<Void> preparePersonSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle,
-                                         XSSFCellStyle hyperlinkStyle, List<String> identer) {
+    public Mono<Void> preparePersonSheet(XSSFWorkbook workbook,
+                                         List<String> identer) {
 
         var sheet = workbook.createSheet(PERSON_FANE);
         var rows = getPersondataRowContents(identer);
@@ -366,16 +367,29 @@ public class PersonExcelService {
         Arrays.stream(COL_WIDTHS)
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        ExcelService.appendRows(sheet, wrapStyle,
+        ExcelService.appendRows(workbook, PERSON_FANE,
                 Stream.of(Collections.singletonList(header), rows)
                         .flatMap(Collection::stream)
                         .toList());
 
         var linkReferences = createLinkReferanser(rows);
 
+        var hyperlinkStyle = createHyperlinkCellStyle(workbook);
         appendHyperlinks(sheet, rows, linkReferences, hyperlinkStyle, workbook.getCreationHelper());
 
         return Mono.empty();
+    }
+
+    private XSSFCellStyle createHyperlinkCellStyle(XSSFWorkbook workbook) {
+
+        var hyperlinkStyle = workbook.createCellStyle();
+        var hLinkFont = workbook.createFont();
+        hLinkFont.setFontName("Ariel");
+        hLinkFont.setUnderline(org.apache.poi.ss.usermodel.Font.U_SINGLE);
+        hLinkFont.setColor(IndexedColors.BLUE.getIndex());
+        hyperlinkStyle.setFont(hLinkFont);
+        hyperlinkStyle.setWrapText(true);
+        return hyperlinkStyle;
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {

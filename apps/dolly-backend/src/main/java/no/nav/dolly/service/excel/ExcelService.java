@@ -6,9 +6,6 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -30,7 +27,11 @@ public class ExcelService {
     private final PersonExcelService personExcelService;
     private final BankkontoExcelService bankkontoExcelService;
 
-    protected static void appendRows(XSSFSheet sheet, CellStyle wrapStyle, List<Object[]> rows) {
+    protected static void appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
+
+        var wrapStyle = workbook.createCellStyle();
+        wrapStyle.setWrapText(true);
+        var sheet = workbook.getSheet(fane);
 
         var rowCount = new AtomicInteger(0);
         rows.stream()
@@ -63,20 +64,9 @@ public class ExcelService {
 
         var workbook = new XSSFWorkbook();
 
-        var wrapStyle = workbook.createCellStyle();
-        wrapStyle.setWrapText(true);
-
-        var hyperlinkStyle = workbook.createCellStyle();
-        var hLinkFont = workbook.createFont();
-        hLinkFont.setFontName("Ariel");
-        hLinkFont.setUnderline(org.apache.poi.ss.usermodel.Font.U_SINGLE);
-        hLinkFont.setColor(IndexedColors.BLUE.getIndex());
-        hyperlinkStyle.setFont(hLinkFont);
-        hyperlinkStyle.setWrapText(true);
-
         Mono.zip(
-                        personExcelService.preparePersonSheet(workbook, wrapStyle, hyperlinkStyle, testidenter),
-                        bankkontoExcelService.prepareBankkontoSheet(workbook, wrapStyle, testidenter))
+                        personExcelService.preparePersonSheet(workbook, testidenter),
+                        bankkontoExcelService.prepareBankkontoSheet(workbook, testidenter))
                 .block();
 
         BankkontoToPersonHelper.appendData(workbook);

@@ -13,7 +13,6 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -99,7 +98,7 @@ public class BankkontoExcelService {
                 bankkontonrUtland.getValuta() : "";
     }
 
-    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, XSSFCellStyle wrapStyle, List<String> testidenter) {
+    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, List<String> testidenter) {
 
         var rows = getBankkontoDetaljer(testidenter);
 
@@ -113,7 +112,7 @@ public class BankkontoExcelService {
             Arrays.stream(BANKKONTO_COL_WIDTHS)
                     .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-            ExcelService.appendRows(sheet, wrapStyle,
+            ExcelService.appendRows(workbook, BANKKONTO_FANE,
                     Stream.of(Collections.singletonList(BANKKONTO_HEADER), rows)
                             .flatMap(Collection::stream)
                             .toList());
