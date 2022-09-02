@@ -16,7 +16,6 @@ consumers:
     cluster: dummy
 
 
-avspillingsgruppe.helsepersonell.id: 111111
 helsepersonell.controller.cache.hours: 24
 dolly.helsepersonell.gruppeId: 0
 
