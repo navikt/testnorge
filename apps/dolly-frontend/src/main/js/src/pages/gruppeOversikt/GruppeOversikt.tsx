@@ -44,6 +44,8 @@ export default function GruppeOversikt({
 		dispatch(setSidetall(0))
 	}
 
+	const bankIdBruker = brukertype === 'BANKID'
+
 	return (
 		<div className="oversikt-container">
 			<div className="toolbar">
@@ -58,19 +60,21 @@ export default function GruppeOversikt({
 				<NavButton variant="primary" onClick={visNyGruppe}>
 					Ny gruppe
 				</NavButton>
-				<div>
-					<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
-						<ToggleGroup.Item value="mine">
-							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
-							Mine
-						</ToggleGroup.Item>
-						<ToggleGroup.Item value="alle">
-							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
-							Alle
-						</ToggleGroup.Item>
-					</ToggleGroup>
-				</div>
-				<FinnPersonBestillingConnector />
+				{!bankIdBruker && (
+					<div>
+						<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
+							<ToggleGroup.Item value="mine">
+								<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
+								Mine
+							</ToggleGroup.Item>
+							<ToggleGroup.Item value="alle">
+								<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
+								Alle
+							</ToggleGroup.Item>
+						</ToggleGroup>
+					</div>
+				)}
+				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}

@@ -16,6 +16,7 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
+import ManglerTilgang from '~/pages/gruppe/ManglerTilgang/ManglerTilgang'
 import { ToggleGroup } from '@navikt/ds-react'
 
 export type GruppeProps = {
@@ -49,8 +50,14 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
+	const bankIdBruker = brukertype === 'BANKID'
+
 	if (loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
+	}
+
+	if (bankIdBruker && !gruppe?.erEierAvGruppe) {
+		return <ManglerTilgang />
 	}
 
 	const byttVisning = (value: VisningType) => {
@@ -63,7 +70,6 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast
-
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppe={gruppe} />
@@ -75,7 +81,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
-					{brukertype === 'AZURE' && (
+					{!bankIdBruker && (
 						<NavButton
 							variant={'primary'}
 							onClick={visStartBestilling}
@@ -90,7 +96,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 					)}
 
 					<NavButton
-						variant={brukertype === 'BANKID' ? 'primary' : 'secondary'}
+						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
@@ -107,7 +113,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 
 					<div style={{ flexGrow: '2' }}></div>
 
-					<FinnPersonBestillingConnector />
+					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGroup size={'small'} value={visning} onChange={byttVisning}>

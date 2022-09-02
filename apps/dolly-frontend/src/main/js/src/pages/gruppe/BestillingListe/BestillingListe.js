@@ -30,11 +30,13 @@ export default function BestillingListe({
 	const bestillingListe = Object.values(bestillingerById)
 
 	if (bestillingListe.length === 0) {
-		let infoTekst = 'Trykk på opprett personer-knappen for å starte en bestilling.'
+		let infoTekst =
+			'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+			'søke opp og importere identer til gruppen.'
 		if (searchActive) infoTekst = 'Søket gav ingen resultater.'
 		else if (brukertype === 'BANKID')
 			infoTekst =
-				'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
+				'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
 
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}

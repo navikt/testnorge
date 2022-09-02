@@ -97,5 +97,5 @@ spec:
         name: testnav-dolly-backend
         databases:
           - name: testnav-dolly-backend
-        tier: db-custom-3-3840
+        tier: db-custom-4-3840
         autoBackupTime: "01:00"

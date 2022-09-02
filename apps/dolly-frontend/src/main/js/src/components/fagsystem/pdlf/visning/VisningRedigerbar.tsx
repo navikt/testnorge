@@ -39,6 +39,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	identtype?: string
+	disableSlett?: boolean
 }
 
 enum Modus {
@@ -96,6 +97,7 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
+	disableSlett = false,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -229,7 +231,12 @@ export const VisningRedigerbar = ({
 					{dataVisning}
 					<EditDeleteKnapper>
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+						<Button
+							kind="trashcan"
+							onClick={() => openModal()}
+							title="Slett"
+							disabled={disableSlett}
+						/>
 						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 							<div className="slettModal">
 								<div className="slettModal slettModal-content">

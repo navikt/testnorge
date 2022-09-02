@@ -15,6 +15,7 @@ import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/Gjenoppre
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { Gruppe } from '~/utils/hooks/useGruppe'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 type GruppeHeaderProps = {
 	gruppe: Gruppe
@@ -41,6 +42,9 @@ const GruppeHeader = ({
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
+	const {
+		currentBruker: { brukertype },
+	} = useCurrentBruker()
 
 	const erLaast = gruppe.erLaast
 
@@ -120,12 +124,14 @@ const GruppeHeader = ({
 						action={getGruppeExcelFil}
 						loading={isFetchingExcel}
 					/>
-					<TagsButton
-						loading={isSendingTags}
-						action={sendTags}
-						gruppeId={gruppe.id}
-						eksisterendeTags={gruppe.tags}
-					/>
+					{brukertype !== 'BANKID' && (
+						<TagsButton
+							loading={isSendingTags}
+							action={sendTags}
+							gruppeId={gruppe.id}
+							eksisterendeTags={gruppe.tags}
+						/>
+					)}
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>
