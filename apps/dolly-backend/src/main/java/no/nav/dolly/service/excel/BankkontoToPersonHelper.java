@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_COL_WIDTHS;
 import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
 import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_HEADER;
@@ -20,7 +21,7 @@ public class BankkontoToPersonHelper {
     public static void appendData(XSSFWorkbook workbook) {
 
         var bankData = workbook.getSheet(BANKKONTO_FANE);
-        if (bankData.getPhysicalNumberOfRows() == 0) {
+        if (nonNull(bankData) && bankData.getPhysicalNumberOfRows() == 0) {
 
             return;
         }
