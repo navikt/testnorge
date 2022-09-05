@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import static java.util.Map.Entry;
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
+import static java.util.Objects.isNull;
 
 @UtilityClass
 public class TranslittereringUtil {
@@ -46,8 +47,9 @@ public class TranslittereringUtil {
      * Spesialregler for å håndtere tegn utover overstående regelsett blir laget for hvert enkelt tilfelle, se {@code convertKnownCharactersNotHandledByNormalization()}.
      * Resten ignoreres/bevares. Se read-me for detaljer. <br>
      */
-    public static String translitterer(String str) {
-        if (str == null) {
+    public String translitterer(String str) {
+
+        if (isNull(str)) {
             return null;
         }
 
@@ -58,11 +60,12 @@ public class TranslittereringUtil {
         return cyrillicToLatinTrans.transliterate(text);
     }
 
-    private static String preprocess(String str) {
+    private String preprocess(String str) {
         // replace wanted characters with non-printable characters to save them from normalization
         for (Entry<Character, Character> entry : PRINTABLE_BY_NON_PRINTABLE.entrySet()) {
-            Character original = entry.getKey();
-            Character nonPrintable = entry.getValue();
+
+            var original = entry.getKey();
+            var nonPrintable = entry.getValue();
             str = str.replace(nonPrintable.toString(), "");
             str = str.replace(original, nonPrintable);
         }
@@ -72,8 +75,8 @@ public class TranslittereringUtil {
     private String postprocess(String str) {
         // replace non-printable characters with original characters after normalization
         for (Entry<Character, Character> entry : PRINTABLE_BY_NON_PRINTABLE.entrySet()) {
-            Character original = entry.getKey();
-            Character nonPrintable = entry.getValue();
+            var original = entry.getKey();
+            var nonPrintable = entry.getValue();
             str = str.replace(nonPrintable, original);
         }
         return str;
