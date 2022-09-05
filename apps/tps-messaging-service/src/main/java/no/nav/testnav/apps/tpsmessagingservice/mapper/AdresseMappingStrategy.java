@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tpsmessagingservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.testnav.apps.tpsmessagingservice.utils.TranslittereringUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.GateadresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdresseDTO;
@@ -46,9 +47,9 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PostAdresseType source, PostadresseDTO target, MappingContext context) {
 
-                        target.setPostLinje1(source.getAdresse1());
-                        target.setPostLinje2(source.getAdresse2());
-                        target.setPostLinje3(source.getAdresse3());
+                        target.setPostLinje1(TranslittereringUtil.translitterer(source.getAdresse1()));
+                        target.setPostLinje2(TranslittereringUtil.translitterer(source.getAdresse2()));
+                        target.setPostLinje3(TranslittereringUtil.translitterer(source.getAdresse3()));
 
                         if (POST_NORGE.equals(source.getAdresseType())) {
 
@@ -67,7 +68,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BoAdresseType source, GateadresseDTO target, MappingContext context) {
 
-                        target.setAdresse(source.getOffAdresse().getGateNavn());
+                        target.setAdresse(TranslittereringUtil.translitterer(source.getOffAdresse().getGateNavn()));
                         target.setHusnummer(skipLeadZeros(source.getOffAdresse().getHusnr()));
                         target.setGatekode(source.getOffAdresse().getGatekode());
                         target.setFlyttedato(getDate(source.getDatoFom()));
@@ -82,7 +83,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BoAdresseType source, MatrikkeladresseDTO target, MappingContext context) {
 
-                        target.setMellomnavn(source.getMatrAdresse().getMellomAdresse());
+                        target.setMellomnavn(TranslittereringUtil.translitterer(source.getMatrAdresse().getMellomAdresse()));
                         target.setGardsnr(skipLeadZeros(source.getMatrAdresse().getGardsnr()));
                         target.setBruksnr(skipLeadZeros(source.getMatrAdresse().getBruksnr()));
                         target.setFestenr(skipLeadZeros(source.getMatrAdresse().getFestenr()));
@@ -99,9 +100,9 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(UtlandsAdresseType source, MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO target, MappingContext context) {
 
-                        target.setPostLinje1(source.getAdresse1());
-                        target.setPostLinje2(source.getAdresse2());
-                        target.setPostLinje3(source.getAdresse3());
+                        target.setPostLinje1(TranslittereringUtil.translitterer(source.getAdresse1()));
+                        target.setPostLinje2(TranslittereringUtil.translitterer(source.getAdresse2()));
+                        target.setPostLinje3(TranslittereringUtil.translitterer(source.getAdresse3()));
                         target.setPostLand(source.getLand());
                     }
                 })
