@@ -68,7 +68,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BoAdresseType source, GateadresseDTO target, MappingContext context) {
 
-                        target.setAdresse(TranslittereringUtil.translitterer(source.getOffAdresse().getGateNavn()));
+                        target.setAdresse(source.getOffAdresse().getGateNavn());
                         target.setHusnummer(skipLeadZeros(source.getOffAdresse().getHusnr()));
                         target.setGatekode(source.getOffAdresse().getGatekode());
                         target.setFlyttedato(getDate(source.getDatoFom()));
@@ -83,7 +83,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BoAdresseType source, MatrikkeladresseDTO target, MappingContext context) {
 
-                        target.setMellomnavn(TranslittereringUtil.translitterer(source.getMatrAdresse().getMellomAdresse()));
+                        target.setMellomnavn(source.getMatrAdresse().getMellomAdresse());
                         target.setGardsnr(skipLeadZeros(source.getMatrAdresse().getGardsnr()));
                         target.setBruksnr(skipLeadZeros(source.getMatrAdresse().getBruksnr()));
                         target.setFestenr(skipLeadZeros(source.getMatrAdresse().getFestenr()));
