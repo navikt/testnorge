@@ -231,6 +231,8 @@ public class ArtifactDeleteService {
         dbPerson.getPerson().setFalskIdentitet(dbPerson.getPerson().getFalskIdentitet().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
+
+        folkeregisterPersonstatusService.update(dbPerson.getPerson());
     }
 
     public void deleteAdressebeskyttelse(String ident, Integer id) {

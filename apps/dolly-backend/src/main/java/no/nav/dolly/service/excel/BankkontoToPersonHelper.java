@@ -30,7 +30,7 @@ public class BankkontoToPersonHelper {
         var startColumn = personData.getRow(0).getPhysicalNumberOfCells() + 4;
         var relativeEndColumn = bankData.getRow(0).getPhysicalNumberOfCells();
 
-        appendHeader(personData, startColumn, bankData, relativeEndColumn);
+        appendHeader(personData, startColumn, relativeEndColumn);
 
         var wrapStyle = workbook.createCellStyle();
         wrapStyle.setWrapText(true);
@@ -41,7 +41,7 @@ public class BankkontoToPersonHelper {
                 IgnoredErrorType.NUMBER_STORED_AS_TEXT);
     }
 
-    private static void appendHeader(XSSFSheet personData, int startColumn, XSSFSheet bankData, int relativeEndColumn) {
+    private static void appendHeader(XSSFSheet personData, int startColumn, int relativeEndColumn) {
 
         var headerRow = personData.getRow(0);
         for (int i = 1; i < relativeEndColumn; i++) {
