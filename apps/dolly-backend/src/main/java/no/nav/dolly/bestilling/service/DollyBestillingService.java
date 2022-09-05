@@ -92,12 +92,14 @@ public class DollyBestillingService {
 
             } else if (originator.isPdlf()) {
                 try {
-                    var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
-                            PersonUpdateRequestDTO.builder()
-                                    .person(originator.getPdlBestilling().getPerson())
-                                    .build());
+                    if (nonNull(originator.getPdlBestilling())) {
+                        pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                                PersonUpdateRequestDTO.builder()
+                                        .person(originator.getPdlBestilling().getPerson())
+                                        .build());
+                    }
 
-                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
+                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
                     dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
                 } catch (WebClientResponseException e) {

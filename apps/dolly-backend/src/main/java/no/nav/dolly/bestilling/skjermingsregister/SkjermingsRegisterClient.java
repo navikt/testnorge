@@ -45,7 +45,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
 
         if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
-                ((nonNull(bestilling.getSkjerming())) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom()))) {
+                ((nonNull(bestilling.getSkjerming())))) {
 
             dollyPersonCache.fetchIfEmpty(dollyPerson);
 
@@ -113,7 +113,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
         try {
             skjerminger.forEach(skjerming -> {
                 if (isAlleredeSkjermet(skjerming.getPersonident()) && nonNull(skjermetTil)) {
-                    skjermingsRegisterConsumer.putSkjerming(skjerming.getPersonident());
+                    skjermingsRegisterConsumer.putSkjerming(skjerming.getPersonident(), skjermetTil);
                 } else if (!isAlleredeSkjermet(skjerming.getPersonident()) && isNull(skjermetTil)) {
                     skjermingsRegisterConsumer.postSkjerming(List.of(skjerming));
                 }
