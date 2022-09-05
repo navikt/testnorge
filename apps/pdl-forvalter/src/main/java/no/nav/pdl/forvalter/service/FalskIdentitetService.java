@@ -9,6 +9,8 @@ import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -16,6 +18,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -112,6 +115,25 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     }
 
     private void handle(FalskIdentitetDTO identitet, PersonDTO person) {
+
+        setFalskIdentitet(identitet, person);
+
+        if (person.getFolkeregisterPersonstatus().stream()
+                .findFirst()
+                .orElse(new FolkeregisterPersonstatusDTO())
+                .getStatus() != FolkeregisterPersonstatus.OPPHOERT) {
+
+            person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
+                    .isNew(true)
+                    .id(person.getFolkeregisterPersonstatus().stream()
+                            .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
+                            .orElse(FolkeregisterPersonstatusDTO.builder().id(0).build())
+                            .getId() + 1)
+                    .build());
+        }
+    }
+
+    private void setFalskIdentitet(FalskIdentitetDTO identitet, PersonDTO person) {
 
         if (isTrue(identitet.getRettIdentitetErUkjent())) {
             return;
