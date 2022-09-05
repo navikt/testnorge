@@ -100,7 +100,7 @@ export const useOrganisasjonBestillingStatus = (
 	erOrganisasjon: boolean,
 	autoRefresh = false
 ) => {
-	if (erOrganisasjon) {
+	if (!erOrganisasjon) {
 		return {
 			loading: false,
 			error: 'Bestilling er ikke org!',

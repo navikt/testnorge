@@ -7,6 +7,13 @@ const fetch = require('fetch-retry')(originalFetch)
 export const fetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) => {
 		if (!res.ok) {
+			if (res.status === 401 || res.status === 403) {
+				console.error('Auth feilet, logger ut bruker')
+				logoutBruker()
+			}
+			if (res.status === 404) {
+				throw new NotFoundError()
+			}
 			throw new Error('An error occurred while fetching the data.')
 		}
 		return res.json()

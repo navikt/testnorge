@@ -342,6 +342,8 @@ public class ArtifactUpdateService {
 
         falskIdentitetService.validate(oppdatertIdentitet);
         falskIdentitetService.convert(person.getPerson());
+
+        folkeregisterPersonstatusService.update(person.getPerson());
     }
 
     public void updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
