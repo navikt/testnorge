@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import { useAsyncFn } from 'react-use'
 import _get from 'lodash/get'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -8,19 +8,28 @@ import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Icon from '~/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
-import { Form } from 'formik'
-import { Alert } from '@navikt/ds-react'
+import { Alert, TextField } from '@navikt/ds-react'
 
-export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
+export const EksisterendeIdent = ({
+	onAvbryt,
+	onSubmit,
+}: {
+	onSubmit: (arg0: { opprettFraIdenter: any }) => any
+	onAvbryt: () => void
+}) => {
 	const [text, setText] = useState('')
 	const [state, fetch] = useAsyncFn(async () => {
-		const identListe = text.trim().split(/[\W\s]+/)
+		const identListe = text?.trim().split(/[\W\s]+/)
 		const { data } = await PdlforvalterApi.getEksistens(identListe)
 		return data
 	}, [text])
 
 	const _onSubmit = () =>
-		onSubmit({ opprettFraIdenter: state.value.filter((v) => v.available).map((v) => v.ident) })
+		onSubmit({
+			opprettFraIdenter: state.value
+				.filter((v: { available: any }) => v.available)
+				.map((v: { ident: any }) => v.ident),
+		})
 
 	const statuser = _get(state, 'value', [])
 	const finnesUgyldige = statuser.some((v) => !v.available)
@@ -32,11 +41,12 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 
 			{!state.value && !state.loading && (
 				<React.Fragment>
-					<Form
+					<TextField
+						size={'small'}
 						label="Identer"
 						placeholder="fnr/dnr/npid"
 						value={text}
-						onChange={(e) => setText(e.target.value)}
+						onChange={(e: BaseSyntheticEvent) => setText(e.target?.value)}
 					/>
 
 					<Alert variant="info">

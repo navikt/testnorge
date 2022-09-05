@@ -48,7 +48,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			formatter: (_cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
-						AVBRYT
+						Avbryt
 					</Button>
 				) : (
 					<Button kind="edit" onClick={() => setUnderRedigering(underRedigering.concat([row.id]))}>

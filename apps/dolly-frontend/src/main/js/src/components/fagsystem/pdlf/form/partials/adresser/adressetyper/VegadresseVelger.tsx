@@ -34,6 +34,7 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 		>
 			<RadioGroup
 				name={`vegadresse_${path}`}
+				size={'small'}
 				key={`vegadresse_${path}`}
 				onChange={(valg) => handleRadioChange(valg)}
 				legend="Hva slags vegadresse vil du opprette?"

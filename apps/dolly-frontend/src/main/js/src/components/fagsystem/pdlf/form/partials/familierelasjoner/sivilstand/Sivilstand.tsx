@@ -80,7 +80,6 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 						<FormikCheckbox
 							name={`${path}.borIkkeSammen`}
 							label="Bor ikke sammen"
-							checkboxMargin
 							disabled={!kanHaRelatertPerson}
 						/>
 						{kanHaRelatertPerson && (

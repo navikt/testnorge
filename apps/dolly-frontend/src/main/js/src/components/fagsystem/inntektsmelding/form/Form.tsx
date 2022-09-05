@@ -165,11 +165,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 												name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
 												label="Arbeidsgiver (fnr/dnr/npid)"
 											/>
-											<FormikCheckbox
-												name={`${path}.naerRelasjon`}
-												label="Nær relasjon"
-												checkboxMargin
-											/>
+											<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
 										</>
 									)}
 
