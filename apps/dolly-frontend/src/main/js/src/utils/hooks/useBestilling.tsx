@@ -24,7 +24,7 @@ export const useBestillingerGruppe = (gruppeId: string, autoRefresh = false) => 
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getBestillingerGruppeUrl(gruppeId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 1000 : 10000 }
+		{ refreshInterval: autoRefresh ? 2000 : null }
 	)
 
 	const bestillingerSorted = data

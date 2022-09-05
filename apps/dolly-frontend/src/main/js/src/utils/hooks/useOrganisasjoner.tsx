@@ -80,7 +80,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 3000 : 0 }
+		{ refreshInterval: autoRefresh ? 4000 : 0 }
 	)
 
 	const bestillingerSorted = data

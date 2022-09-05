@@ -29,7 +29,7 @@ export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoR
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
 		fetcher,
 		{
-			refreshInterval: autoRefresh ? 1000 : null,
+			refreshInterval: autoRefresh ? 2000 : null,
 		}
 	)
 
