@@ -6,7 +6,7 @@ import {
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
-	Vergemaal,
+	VergemaalValues,
 } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
@@ -42,7 +42,7 @@ export type HentPerson = {
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
-	vergemaalEllerFremtidsfullmakt: Array<Vergemaal>
+	vergemaalEllerFremtidsfullmakt: Array<VergemaalValues>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	sivilstand: Array<Sivilstand>

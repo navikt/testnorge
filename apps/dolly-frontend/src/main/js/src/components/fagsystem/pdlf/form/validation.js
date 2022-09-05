@@ -561,17 +561,15 @@ export const navn = Yup.object({
 	hasMellomnavn: Yup.boolean().nullable(),
 })
 
-const vergemaal = Yup.array().of(
-	Yup.object({
-		vergemaalEmbete: requiredString.nullable(),
-		sakType: requiredString.nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		nyVergeIdent: nyPerson,
-		vergeIdent: Yup.string().nullable(),
-		mandatType: Yup.string().nullable(),
-	})
-)
+export const vergemaal = Yup.object({
+	vergemaalEmbete: requiredString.nullable(),
+	sakType: requiredString.nullable(),
+	gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
+	nyVergeIdent: nyPerson,
+	vergeIdent: Yup.string().nullable(),
+	mandatType: Yup.string().nullable(),
+})
 
 const foreldreansvar = Yup.array().of(
 	Yup.object({
@@ -775,7 +773,7 @@ export const validation = {
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),
 			navn: ifPresent('$pdldata.person.navn', Yup.array().of(navn)),
-			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
+			vergemaal: ifPresent('$pdldata.person.vergemaal', Yup.array().of(vergemaal)),
 			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
 		}).nullable(),
 	}),

@@ -28,8 +28,10 @@ import {
 	bostedsadresse,
 	kontaktadresse,
 	oppholdsadresse,
+	vergemaal,
 } from '~/components/fagsystem/pdlf/form/validation'
 import { ifPresent } from '~/utils/YupValidations'
+import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -54,6 +56,7 @@ enum Attributt {
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
+	Vergemaal = 'vergemaal',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -185,6 +188,8 @@ export const VisningRedigerbar = ({
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:
 				return <UtvandringForm path={path} />
+			case Attributt.Vergemaal:
+				return <VergemaalForm formikBag={formikBag} path={path} />
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
@@ -202,6 +207,7 @@ export const VisningRedigerbar = ({
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 			innflytting: ifPresent('innflytting', innflytting),
 			utflytting: ifPresent('utflytting', utflytting),
+			vergemaal: ifPresent('vergemaal', vergemaal),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
@@ -212,6 +218,7 @@ export const VisningRedigerbar = ({
 			['statsborgerskap', 'statsborgerskap'],
 			['innflytting', 'innflytting'],
 			['utflytting', 'utflytting'],
+			['vergemaal', 'vergemaal'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],

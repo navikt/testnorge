@@ -15,7 +15,7 @@ import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/
 import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
 import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
-import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { Vergemaal } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 import { DeltBosted } from '~/components/fagsystem/pdlf/visning/partials/DeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
@@ -62,7 +62,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							tmpPersoner={tmpPersoner}
 							ident={ident}
 						/>
-						<VergemaalVisning data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
+						<Vergemaal data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
 						<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
 						<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 						<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />

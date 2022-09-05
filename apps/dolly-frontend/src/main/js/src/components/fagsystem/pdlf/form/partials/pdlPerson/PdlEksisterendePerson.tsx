@@ -10,6 +10,7 @@ import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
 import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { useParams } from 'react-router-dom'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
@@ -31,7 +32,14 @@ export const PdlEksisterendePerson = ({
 	nyIdentValg = null,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { gruppeId, antall } = opts
+	// const { gruppeId, antall } = opts
+	const antall = 0
+	// console.log('opts: ', opts) //TODO - SLETT MEG
+
+	const { gruppeId } = useParams()
+	console.log('gruppeId: ', gruppeId) //TODO - SLETT MEG
+	//TODO Fortsett her!!
+
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
@@ -110,7 +118,7 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const getFilteredOptionList = () => {
-		const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
+		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
 		// @ts-ignore
 		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
 			setIdentOptions(

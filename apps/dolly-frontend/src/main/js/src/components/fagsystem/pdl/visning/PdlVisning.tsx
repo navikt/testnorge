@@ -20,7 +20,7 @@ import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/Fal
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
-import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { Vergemaal } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
@@ -77,7 +77,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
-				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
+				<Vergemaal data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

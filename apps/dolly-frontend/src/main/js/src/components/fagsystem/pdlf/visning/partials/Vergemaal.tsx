@@ -5,60 +5,114 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
-import { Relasjon, Vergemaal } from '~/components/fagsystem/pdlf/PdlTypes'
+import { Relasjon, VergemaalValues } from '~/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '~/config/kodeverk'
+import _cloneDeep from 'lodash/cloneDeep'
+import { initialVergemaal } from '~/components/fagsystem/pdlf/form/initialValues'
+import _get from 'lodash/get'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 
-type VergemaalData = {
-	data: Array<Vergemaal>
+type VergemaalTypes = {
+	data: Array<VergemaalValues>
 	relasjoner: Array<Relasjon>
 }
 
-type VisningData = {
-	data: Vergemaal
+type VergemaalVisningTypes = {
+	data: VergemaalValues
 	relasjoner: Array<Relasjon>
 }
 
-export const Visning = ({ data, relasjoner }: VisningData) => {
+export const Vergemaal = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning,
+	relasjoner,
+}: VergemaalTypes) => {
+	if (!data || data.length < 1) {
+		return null
+	}
+
+	// console.log('data: ', data) //TODO - SLETT MEG
+
 	const retatertPersonIdent = data.vergeIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
 
-	return (
-		<>
+	const VergemaalLes = ({ vergemaalData, idx }) => {
+		if (!vergemaalData) {
+			return null
+		}
+
+		return (
 			<ErrorBoundary>
-				<div className="person-visning_content">
+				<div className="person-visning_redigerbar" key={idx}>
 					<TitleValue
 						title="Fylkesmannsembete"
 						kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
-						value={data.vergemaalEmbete || data.embete}
+						value={vergemaalData.vergemaalEmbete || vergemaalData.embete}
 					/>
 					<TitleValue
 						title="Sakstype"
 						kodeverk={VergemaalKodeverk.Sakstype}
-						value={data.sakType || data.type}
+						value={vergemaalData.sakType || vergemaalData.type}
 					/>
 					<TitleValue
 						title="Mandattype"
 						kodeverk={VergemaalKodeverk.Mandattype}
-						value={data.mandatType || data.vergeEllerFullmektig?.omfang}
+						value={vergemaalData.mandatType || vergemaalData.vergeEllerFullmektig?.omfang}
 					/>
-					<TitleValue title="Gyldig f.o.m." value={Formatters.formatDate(data.gyldigFraOgMed)} />
-					<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(data.gyldigTilOgMed)} />
+					<TitleValue
+						title="Gyldig f.o.m."
+						value={Formatters.formatDate(vergemaalData.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Gyldig t.o.m."
+						value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
+					/>
 					{!relasjoner && (
 						<TitleValue
 							title="Verge"
-							value={data.vergeIdent || data.vergeEllerFullmektig?.motpartsPersonident}
+							value={
+								vergemaalData.vergeIdent || vergemaalData.vergeEllerFullmektig?.motpartsPersonident
+							}
 						/>
 					)}
 				</div>
 				{relasjon && <RelatertPerson data={relasjon.relatertPerson} tittel="Verge" />}
 			</ErrorBoundary>
-		</>
-	)
-}
+		)
+	}
 
-export const VergemaalVisning = ({ data, relasjoner }: VergemaalData) => {
-	if (!data || data.length < 1) {
-		return null
+	const VergemaalVisning = ({ vergemaalData, idx }) => {
+		// console.log('vergemaalData: ', vergemaalData) //TODO - SLETT MEG
+		const initVergemaal = Object.assign(_cloneDeep(initialVergemaal), data[idx])
+		const initialValues = { vergemaal: initVergemaal }
+
+		const redigertVergemaalPdlf = _get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
+			(a: VergemaalValues) => a.id === vergemaalData.id
+		)
+		const slettetVergemaalPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertVergemaalPdlf
+		if (slettetVergemaalPdlf) {
+			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		}
+
+		const vergemaalValues = redigertVergemaalPdlf ? redigertVergemaalPdlf : vergemaalData
+		const redigertVergemaalValues = redigertVergemaalPdlf
+			? {
+					vergemaal: Object.assign(_cloneDeep(initialVergemaal), redigertVergemaalPdlf),
+			  }
+			: null
+		return erPdlVisning ? (
+			<VergemaalLes vergemaalData={vergemaalData} idx={idx} />
+		) : (
+			<VisningRedigerbarConnector
+				dataVisning={<VergemaalLes vergemaalData={vergemaalValues} idx={idx} />}
+				initialValues={initialValues}
+				redigertAttributt={redigertVergemaalValues}
+				path="vergemaal"
+				ident={ident}
+			/>
+		)
 	}
 
 	return (
@@ -66,8 +120,8 @@ export const VergemaalVisning = ({ data, relasjoner }: VergemaalData) => {
 			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
 
 			<DollyFieldArray data={data} nested>
-				{(vergemaal: Vergemaal) => (
-					<Visning key={vergemaal.id} data={vergemaal} relasjoner={relasjoner} />
+				{(vergemaal: VergemaalValues, idx: number) => (
+					<VergemaalVisning vergemaalData={vergemaal} idx={idx} />
 				)}
 			</DollyFieldArray>
 		</div>
