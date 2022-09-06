@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class SkjermingsRegisterConsumer {
 
     private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjermingdata";
     private static final String SKJERMINGOPPHOER_URL = SKJERMINGSREGISTER_URL + "/opphor";
+    private static final String SKJERMING_TOM = "skjermetTil";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -98,7 +100,7 @@ public class SkjermingsRegisterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-opphoer" })
-    public ResponseEntity<String> putSkjerming(String ident) {
+    public ResponseEntity<String> putSkjerming(String ident, LocalDateTime skjermingTom) {
 
         String callid = getNavCallId();
         logInfoSkjermingsMelding(callid);
@@ -106,6 +108,7 @@ public class SkjermingsRegisterConsumer {
         return webClient.put().uri(uriBuilder -> uriBuilder
                         .path(SKJERMINGOPPHOER_URL)
                         .pathSegment(ident)
+                        .queryParam(SKJERMING_TOM, skjermingTom.toLocalDate())
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(HEADER_NAV_CALL_ID, callid)
