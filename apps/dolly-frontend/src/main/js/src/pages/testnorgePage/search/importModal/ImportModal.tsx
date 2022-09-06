@@ -150,7 +150,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 					</div>
 					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
 					<div className="importModal-actions">
-						<NavButton onClick={() => importer(valgtePersoner, malData)} type="hoved">
+						<NavButton onClick={() => importer(valgtePersoner, malData)} variant={'primary'}>
 							Importer
 						</NavButton>
 					</div>

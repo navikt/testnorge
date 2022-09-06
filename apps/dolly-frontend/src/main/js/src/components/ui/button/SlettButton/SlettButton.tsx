@@ -65,7 +65,7 @@ export const SlettButton = ({
 								mutate(REGEX_BACKEND_GRUPPER)
 								navigateHome && navigate('/')
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>

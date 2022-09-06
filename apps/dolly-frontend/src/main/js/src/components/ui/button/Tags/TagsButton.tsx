@@ -66,7 +66,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 									return mutate(REGEX_BACKEND_GRUPPER)
 								})
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Tilknytt tags
 						</NavButton>

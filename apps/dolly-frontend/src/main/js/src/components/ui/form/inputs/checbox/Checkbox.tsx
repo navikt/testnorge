@@ -35,7 +35,13 @@ export const Checkbox = ({ id, attributtCheckbox = false, ...restProps }) =>
 		<StyledCheckbox id={id || restProps.name} {...restProps} />
 	)
 
-export const DollyCheckbox = ({ isSwitch = false, wrapperSize = 'grow', label = '', ...props }) => (
+export const DollyCheckbox = ({
+	isSwitch = false,
+	wrapperSize = 'grow',
+	label = '',
+	checked = false,
+	...props
+}) => (
 	<InputWrapper size={wrapperSize}>
 		{isSwitch ? (
 			<StyledSwitch {...props}>{label}</StyledSwitch>

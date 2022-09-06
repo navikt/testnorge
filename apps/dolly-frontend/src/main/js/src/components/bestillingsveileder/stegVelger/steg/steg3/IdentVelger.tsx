@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { FormikProps } from 'formik'
-import { RadioPanelGroup } from '@navikt/hoykontrast'
 import { bottom } from '@popperjs/core'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Radio, RadioGroup } from '@navikt/ds-react'
 
 type Form = {
 	formikBag: FormikProps<{}>
@@ -31,7 +31,7 @@ const Tittel = styled.div`
 	}
 `
 
-const TestpersonValg = styled(RadioPanelGroup)`
+const TestpersonValg = styled(RadioGroup)`
   legend {
     .offscreen;
   }
@@ -96,17 +96,14 @@ export const IdentVelger = ({ formikBag }: Form) => {
 			</Tittel>
 
 			<TestpersonValg
+				value={type}
+				legend={''}
 				name="pdldata.opprettNyPerson.syntetisk"
-				legend=""
-				radios={[
-					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
-					{ label: 'Standard', value: IdentType.STANDARD },
-				]}
-				checked={type}
-				onChange={(e) =>
-					handleIdentTypeChange((e.target as HTMLTextAreaElement).value as IdentType)
-				}
-			/>
+				onChange={(value: IdentType) => handleIdentTypeChange(value)}
+			>
+				<Radio value={IdentType.SYNTETISK}>NAV syntetisk </Radio>
+				<Radio value={IdentType.STANDARD}>Standard</Radio>
+			</TestpersonValg>
 		</IdentVelgerField>
 	)
 }

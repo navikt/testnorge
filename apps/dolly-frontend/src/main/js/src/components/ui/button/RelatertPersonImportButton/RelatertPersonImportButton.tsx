@@ -126,7 +126,7 @@ export const RelatertPersonImportButton = ({
 									closeModal()
 									handleImport(formikBag.values?.identer)
 								}}
-								type="hoved"
+								variant={'primary'}
 							>
 								Importer
 							</NavButton>
@@ -181,7 +181,7 @@ export const RelatertPersonImportButton = ({
 										closeModal()
 										handleImport([relatertPersonIdenter[0]?.id])
 									}}
-									type="hoved"
+									variant={'primary'}
 								>
 									Ja
 								</NavButton>

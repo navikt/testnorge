@@ -93,7 +93,7 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 				)}
 
 				<div className="toolbar">
-					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
+					<NavButton variant={'primary'} onClick={() => startBestilling(BestillingType.NY)}>
 						Opprett organisasjon
 					</NavButton>
 

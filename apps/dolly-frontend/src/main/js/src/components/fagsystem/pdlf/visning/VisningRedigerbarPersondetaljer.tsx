@@ -266,7 +266,7 @@ export const VisningRedigerbarPersondetaljer = ({
 								closeModal()
 								return handleDelete(slettAttr)
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Slett
 						</NavButton>
@@ -312,8 +312,7 @@ export const VisningRedigerbarPersondetaljer = ({
 									</div>
 									<Knappegruppe>
 										<NavButton
-											type="standard"
-											htmlType="reset"
+											variant={'primary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
@@ -321,8 +320,7 @@ export const VisningRedigerbarPersondetaljer = ({
 											Avbryt
 										</NavButton>
 										<NavButton
-											type="hoved"
-											htmlType="submit"
+											variant={'primary'}
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

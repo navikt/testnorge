@@ -4,14 +4,28 @@ import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
 import Loading from '~/components/ui/loading/Loading'
-import { ToggleGroup } from '@navikt/ds-react'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { Switch, ToggleGroup } from '@navikt/ds-react'
+import styled from 'styled-components'
 
 type Props = {
 	brukerId: string
 	formikBag: { setFieldValue: (arg0: string, arg1: string) => void }
 	opprettetFraMal: string
 }
+
+const StyledToggleGroup = styled(ToggleGroup)`
+	margin-bottom: 10px;
+`
+
+const Tittel = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 10px;
+
+	h2 {
+		font-size: 1.4rem;
+	}
+`
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const MalForm = ({ brukerId, formikBag: { setFieldValue }, opprettetFraMal }: Props) => {
@@ -65,12 +79,15 @@ export const MalForm = ({ brukerId, formikBag: { setFieldValue }, opprettetFraMa
 
 	return (
 		<div className="input-oppsummering">
-			<DollyCheckbox value={opprettMal} onChange={handleCheckboxChange} label={'Lagre som mal'} />
+			<Tittel>
+				<h2>Legg til mal</h2>
+				<Switch onChange={handleCheckboxChange} children={null} />
+			</Tittel>
 			{opprettMal && (
 				<span>
 					<div className="flexbox--align-center">
 						<div className="toggle--wrapper">
-							<ToggleGroup
+							<StyledToggleGroup
 								size={'small'}
 								onChange={(value: MalTyper) => handleToggleChange(value)}
 								defaultValue={MalTyper.OPPRETT}
@@ -80,7 +97,7 @@ export const MalForm = ({ brukerId, formikBag: { setFieldValue }, opprettetFraMa
 										{type.label}
 									</ToggleGroup.Item>
 								))}
-							</ToggleGroup>
+							</StyledToggleGroup>
 						</div>
 					</div>
 					{typeMal === MalTyper.ENDRE ? (
