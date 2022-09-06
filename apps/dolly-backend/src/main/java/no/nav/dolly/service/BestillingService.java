@@ -70,28 +70,6 @@ public class BestillingService {
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
 
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
-    }
-
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(format("Fant ikke bestillingId %d", bestillingId)));
@@ -353,7 +331,7 @@ public class BestillingService {
 
     public void slettBestillingByTestIdent(String ident) {
 
-        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
+        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident).orElse(emptyList());
         bestillingProgressRepository.deleteByIdent(ident);
 
         Set<Long> bestillingIds = bestillingProgresses.stream()
@@ -367,6 +345,14 @@ public class BestillingService {
             bestillingRepository.deleteBestillingWithNoChildren(id);
         });
     }
+
+    public List<Bestilling> fetchBestillingProgressByTestident(String ident) {
+
+        var bestillingProgressList = bestillingProgressRepository.findByIdent(ident).orElse(emptyList());
+        return bestillingProgressList.stream().map(BestillingProgress::getBestilling).distinct().toList();
+
+    }
+
 
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
@@ -422,5 +408,27 @@ public class BestillingService {
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());
+    }
+
+    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold -> {
+            if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+            }
+        });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
     }
 }
