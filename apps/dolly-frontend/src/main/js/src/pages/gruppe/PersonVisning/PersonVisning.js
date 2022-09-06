@@ -99,7 +99,11 @@ export const PersonVisning = ({
 			})
 
 		data.pdl?.hentPerson?.forelderBarnRelasjon
-			?.filter((barn) => !barn?.metadata?.historisk && barn?.relatertPersonsRolle === 'BARN')
+			?.filter(
+				(forelderBarn) =>
+					!forelderBarn?.metadata?.historisk &&
+					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle)
+			)
 			?.forEach((person) => {
 				relatertePersoner.push({
 					type: person.relatertPersonsRolle,
