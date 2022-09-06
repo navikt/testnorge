@@ -93,15 +93,12 @@ public class TestpersonController {
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional
     @PostMapping("/{ident}/gjenopprett")
-    public void gjenopprettTestident(@PathVariable String ident, @RequestParam List<String> miljoer) {
+    public List<Bestilling> gjenopprettTestident(@PathVariable String ident, @RequestParam List<String> miljoer) {
 
         if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
-        var testIdent = identService.getTestIdent(ident);
-        var bestillinger = bestillingProgressService.
-
-//        bestillingService.fetchBestillingerByGruppeId(ident);
+        return bestillingService.fetchBestillingerByTestident(ident);
     }
 
     @Operation(description = "Slett test ident")

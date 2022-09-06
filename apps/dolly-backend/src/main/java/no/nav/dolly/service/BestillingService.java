@@ -346,11 +346,10 @@ public class BestillingService {
         });
     }
 
-    public List<Bestilling> fetchBestillingProgressByTestident(String ident) {
+    public List<Bestilling> fetchBestillingerByTestident(String ident) {
 
         var bestillingProgressList = bestillingProgressRepository.findByIdent(ident).orElse(emptyList());
         return bestillingProgressList.stream().map(BestillingProgress::getBestilling).distinct().toList();
-
     }
 
 
