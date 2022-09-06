@@ -83,6 +83,22 @@ public class BrukerController {
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
+    @GetMapping("/organisasjon/compare")
+    public Mono<ResponseEntity<Boolean>> getBrukernavnOrgComparison(
+            @RequestParam String brukernavn1,
+            @RequestParam String brukernavn2
+    ) {
+        return userService.getUserByBrukernavn(brukernavn1)
+                .map(User::getOrganisasjonsnummer)
+                .flatMap(org1 -> validateService.validateOrganiasjonsnummerAccess(org1).then(Mono.just(org1)))
+                .flatMap(org1 -> userService.getUserByBrukernavn(brukernavn2)
+                        .map(User::getOrganisasjonsnummer)
+                        .flatMap(org2 -> Mono.just(org1.equals(org2))))
+                .map(ResponseEntity::ok)
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    }
+
+
     @GetMapping("/{id}")
     public Mono<ResponseEntity<BrukerDTO>> getBruker(
             @PathVariable String id,
