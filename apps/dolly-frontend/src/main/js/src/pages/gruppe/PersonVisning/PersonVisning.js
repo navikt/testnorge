@@ -166,6 +166,7 @@ export const PersonVisning = ({
 					<PdlfVisningConnector
 						data={data.pdlforvalter}
 						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						skjermingData={data.skjermingsregister}
 						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
 						master={ident.master}

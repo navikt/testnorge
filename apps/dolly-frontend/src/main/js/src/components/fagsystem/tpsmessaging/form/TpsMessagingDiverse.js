@@ -29,7 +29,7 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 	const harSkjerming = HarAktivSkjerming()
 
 	return (
-		<React.Fragment>
+		<div className="flexbox--flex-wrap">
 			<FormikSelect
 				name="tpsMessaging.spraakKode"
 				label="Språk"
@@ -55,10 +55,9 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 					onChange={(date) => {
 						settFormikDate(date, 'egenAnsattDatoTom')
 					}}
-					maxDate={new Date()}
 					visHvisAvhuket
 				/>
 			)}
-		</React.Fragment>
+		</div>
 	)
 }
