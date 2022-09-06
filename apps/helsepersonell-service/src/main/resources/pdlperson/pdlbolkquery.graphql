@@ -1,0 +1,65 @@
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    aarsak
+    ajourholdstidspunkt
+    gyldighetstidspunkt
+    kilde
+    opphoerstidspunkt
+    sekvens
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    historisk
+    master
+    opplysningsId
+}
+
+query($identer: [ID!]!) {
+    hentIdenterBolk(identer: $identer, historikk: true) {
+        ident,
+        identer {
+            ident,
+            gruppe,
+            historisk
+        },
+    }
+    hentGeografiskTilknytningBolk(identer: $identer) {
+        ident,
+        geografiskTilknytning {
+            gtType,
+            gtLand,
+            gtKommune,
+            gtBydel,
+            regel
+        }
+    },
+    hentPersonBolk(identer: $identer) {
+        ident,
+        person {
+            navn(historikk: true) {
+                fornavn,
+                mellomnavn,
+                etternavn,
+                forkortetNavn,
+                originaltNavn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                gyldigFraOgMed,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            }
+        }
+    }
+}

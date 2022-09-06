@@ -29,8 +29,11 @@ spec:
         - application: testnav-synt-sykemelding-api
           cluster: dev-gcp
     outbound:
+      rules:
+        - application: dolly-backend
+          cluster: dev-gcp
       external:
-        - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive

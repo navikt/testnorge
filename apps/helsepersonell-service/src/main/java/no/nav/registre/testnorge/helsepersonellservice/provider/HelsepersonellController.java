@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.helsepersonellservice.provider;
 
-import no.nav.registre.testnorge.helsepersonellservice.adapter.HelsepersonellAdapter;
+import no.nav.registre.testnorge.helsepersonellservice.service.HelsepersonellService;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
@@ -16,15 +16,15 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api/v1/helsepersonell")
 public class HelsepersonellController {
 
-    private final HelsepersonellAdapter adapter;
+    private final HelsepersonellService helsepersonellService;
     private final Integer helsepersonellCacheHours;
 
 
     public HelsepersonellController(
-            HelsepersonellAdapter adapter,
+            HelsepersonellService helsepersonellService,
             @Value("${helsepersonell.controller.cache.hours}") Integer helsepersonellCacheHours
     ) {
-        this.adapter = adapter;
+        this.helsepersonellService = helsepersonellService;
         this.helsepersonellCacheHours = helsepersonellCacheHours;
     }
 
@@ -34,7 +34,7 @@ public class HelsepersonellController {
                 = CacheControl.maxAge(helsepersonellCacheHours, TimeUnit.HOURS)
                 .noTransform()
                 .mustRevalidate();
-        var helsepersonell = adapter.getHelsepersonell();
+        var helsepersonell = helsepersonellService.getHelsepersonell();
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
