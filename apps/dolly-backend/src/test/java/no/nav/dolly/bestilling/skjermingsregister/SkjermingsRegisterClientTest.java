@@ -106,7 +106,7 @@ public class SkjermingsRegisterClientTest {
     public void should_return_ok_for_put_tidligere_skjermet() {
 
         bestilling.getTpsf().setEgenAnsattDatoTom(yesterday);
-        when(skjermingsRegisterConsumer.putSkjerming(any())).thenReturn(new ResponseEntity<>("", HttpStatus.OK));
+        when(skjermingsRegisterConsumer.putSkjerming(any(), any())).thenReturn(new ResponseEntity<>("", HttpStatus.OK));
         when(skjermingsRegisterConsumer.getSkjerming(any())).thenReturn(response);
 
         skjermingsRegisterClient.gjenopprett(bestilling, person, progress, false);

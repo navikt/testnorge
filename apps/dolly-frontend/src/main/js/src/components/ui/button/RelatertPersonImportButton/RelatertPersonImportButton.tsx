@@ -11,6 +11,7 @@ import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { Formik, FieldArray } from 'formik'
 import Formatters from '~/utils/DataFormatter'
 import _lowerCase from 'lodash/lowerCase'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 type RelatertPersonProps = {
 	type: string
@@ -34,6 +35,7 @@ export const RelatertPersonImportButton = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [feilmelding, setFeilmelding] = useState(null)
 	const [fullfoert, setFullfoert] = useState(false)
+	const mutate = useMatchMutate()
 
 	if (!relatertPersonIdenter) {
 		return null
@@ -54,6 +56,7 @@ export const RelatertPersonImportButton = ({
 					.then((_response) => {
 						setLoading(false)
 						setFullfoert(true)
+						mutate(REGEX_BACKEND_GRUPPER)
 					})
 					.catch((_error) => {
 						setFeilmelding('Noe gikk galt')
