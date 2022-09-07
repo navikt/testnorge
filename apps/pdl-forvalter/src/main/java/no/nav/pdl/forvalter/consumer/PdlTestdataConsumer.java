@@ -9,7 +9,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
-import no.nav.pdl.forvalter.dto.HistoriskIdent;
+import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
@@ -119,7 +119,7 @@ public class PdlTestdataConsumer {
                                 new PdlOpprettPersonCommandPdl(webClient,
                                         getBestillingUrl().get(value.getArtifact()),
                                         value.getIdent(),
-                                        (HistoriskIdent) value.getBody(),
+                                        (OpprettIdent) value.getBody(),
                                         accessToken.getTokenValue()
                                 ).call());
 
