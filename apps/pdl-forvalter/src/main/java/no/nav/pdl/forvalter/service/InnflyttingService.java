@@ -65,9 +65,11 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
         }
 
         if (person.getBostedsadresse().stream()
+                .filter(BostedadresseDTO::isAdresseNorge)
+                .filter(adresse -> isNull(adresse.getGyldigTilOgMed()) ||
+                        adresse.getGyldigTilOgMed().isAfter(innflytting.getInnflyttingsdato()))
                 .findFirst()
-                .orElse(new BostedadresseDTO())
-                .isAdresseUtland()) {
+                .isEmpty()) {
 
             person.getBostedsadresse().add(0, BostedadresseDTO.builder()
                     .vegadresse(new VegadresseDTO())
