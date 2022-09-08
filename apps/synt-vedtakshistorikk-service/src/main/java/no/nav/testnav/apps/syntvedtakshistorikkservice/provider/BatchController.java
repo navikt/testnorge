@@ -70,10 +70,10 @@ public class BatchController {
     }
 
     /**
-     * PÅ VENT: kan ikke kjøre batch-kjøring før bedre dagpenger vedtak kvalitet.
+     * PÅ VENT: bytt fra forenklet versjon til soknadsversjon når synt-dagpenger har fått trent på bedre uttrekk
      * Denne metoden oppretter dagpengesoknad og vedtak i Arena. Metoden kjører hver natt kl 00:30.
      */
-//    @Scheduled(cron = "0 30 0 * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedDagpengerBatch() {
         arenaDagpengerService.registrerArenaBrukereMedDagpenger(antallDagpenger, miljoe, true);
     }
