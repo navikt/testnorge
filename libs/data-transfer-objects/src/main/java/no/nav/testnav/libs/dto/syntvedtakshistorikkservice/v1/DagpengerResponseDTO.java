@@ -18,10 +18,10 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DagpengerResponseDTO {
 
-    @JsonAlias({"nyeMottaDagpengesoknadResponse", "nyeMottaDagpengevedtakResponse"})
+    @JsonAlias({"nyeMottaDagpengesoknadResponse", "nyeMottaDagpengevedtakResponse", "nyeDagpResponse"})
     private List<NyeDagpenger> nyeDagpenger;
 
-    @JsonAlias({"nyeMottaDagpengesoknadFeilList", "nyeMottaDagpengevedtakFeilList"})
+    @JsonAlias({"nyeMottaDagpengesoknadFeilList", "nyeMottaDagpengevedtakFeilList", "nyeDagpFeilList"})
     private List<NyeDagpengerFeil> feiledeDagpenger;
 
 
