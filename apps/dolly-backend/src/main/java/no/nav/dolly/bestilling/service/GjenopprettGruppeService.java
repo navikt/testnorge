@@ -109,7 +109,6 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         }
     }
 
-
     public BestillingFuture doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
                                           List<GruppeBestillingIdent> coBestillinger, Testident testident) {
 
