@@ -70,8 +70,10 @@ public class BatchController {
     }
 
     /**
-     * PÅ VENT: bytt fra forenklet versjon til soknadsversjon når synt-dagpenger har fått trent på bedre uttrekk
-     * Denne metoden oppretter dagpengesoknad og vedtak i Arena. Metoden kjører hver natt kl 00:30.
+     * PÅ VENT: bytt fra forenklet versjon til versjon som oppretter dagpengesoknad og vedtak
+     * når synt-dagpenger har fått trent på bedre uttrekk
+     *
+     * Denne metoden oppretter dagpengevedtak i Arena. Metoden kjører hver natt kl 00:30.
      */
     @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedDagpengerBatch() {
