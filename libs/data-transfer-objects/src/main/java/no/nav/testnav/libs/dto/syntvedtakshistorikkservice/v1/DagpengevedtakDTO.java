@@ -35,6 +35,8 @@ public class DagpengevedtakDTO {
     private Dagpengerettighet rettighetKode;
 
     private String vedtaktypeKode;
+    private String vedtaktype;
+    private String utfall;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate datoMottatt;

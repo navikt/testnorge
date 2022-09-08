@@ -58,7 +58,7 @@ public class BrukerController {
     public Map<String, List<DagpengerResponseDTO>> registrerBrukereIArenaMedDagpenger(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return arenaDagpengerService.registrerArenaBrukereMedDagpenger(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getMiljoe());
+        return arenaDagpengerService.registrerArenaBrukereMedDagpenger(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getMiljoe(), true);
     }
 
 }

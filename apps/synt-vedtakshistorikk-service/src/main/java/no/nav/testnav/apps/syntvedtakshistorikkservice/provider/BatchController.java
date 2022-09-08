@@ -21,7 +21,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 @Slf4j
 @Getter
 @Component
-@EnableScheduling
+//@EnableScheduling
 @RequiredArgsConstructor
 public class BatchController {
 
@@ -75,6 +75,6 @@ public class BatchController {
      */
 //    @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedDagpengerBatch() {
-        arenaDagpengerService.registrerArenaBrukereMedDagpenger(antallDagpenger, miljoe);
+        arenaDagpengerService.registrerArenaBrukereMedDagpenger(antallDagpenger, miljoe, true);
     }
 }

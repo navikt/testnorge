@@ -65,7 +65,7 @@ public class ArenaDagpengerService {
                     new Vilkaar("MOTTATTDOK", "J")
             );
 
-    public Map<String, List<DagpengerResponseDTO>> registrerArenaBrukereMedDagpenger(int antall, String miljoe) {
+    public Map<String, List<DagpengerResponseDTO>> registrerArenaBrukereMedDagpenger(int antall, String miljoe, boolean forenklet) {
         var utvalgteIdenter = identService.getUtvalgteIdenterIAldersgruppe(antall, 18, 66, true);
 
         Map<String, List<DagpengerResponseDTO>> responses = new HashMap<>();
@@ -84,7 +84,12 @@ public class ArenaDagpengerService {
                     continue;
                 }
 
-                var response = sendDagpenger(ident.getIdent(), miljoe, rand.nextDouble() > 0.2 ? dato : null);
+                List<DagpengerResponseDTO> response;
+                if (forenklet) {
+                    response = sendForenkletDagpenger(ident.getIdent(), miljoe, dato);
+                } else {
+                    response = sendDagpenger(ident.getIdent(), miljoe, rand.nextDouble() > 0.2 ? dato : null);
+                }
                 responses.put(ident.getIdent(), response);
             }
         }
@@ -96,19 +101,23 @@ public class ArenaDagpengerService {
         return responses;
     }
 
+    public List<DagpengerResponseDTO> sendForenkletDagpenger(String ident, String miljoe, LocalDate vedtakdato) {
+        var vedtakRequest = getDefaultDagpengevedtakRequest(ident, miljoe, vedtakdato, Dagpengerettighet.DAGO);
+        return Collections.singletonList(arenaForvalterService.opprettDagpengevedtak(vedtakRequest));
+    }
+
     private List<DagpengerResponseDTO> sendDagpenger(String ident, String miljoe, LocalDate vedtakdato) {
-//        var rettighetKode = rand.nextDouble() > 0.13 ? Dagpengerettighet.DAGO : Dagpengerettighet.PERM;
-        var rettighetKode = Dagpengerettighet.DAGO;
+        var rettighetKode = rand.nextDouble() > 0.13 ? Dagpengerettighet.DAGO : Dagpengerettighet.PERM;
 
         var soknadRequest = getDagpengesoknadRequest(ident, miljoe, rettighetKode);
-        var soknadResponse = arenaForvalterService.opprettDagpengesoknad(soknadRequest);
+        var soknadResponse = arenaForvalterService.opprettMottaDagpengesoknad(soknadRequest);
 
         if (soknadResponse.getFeiledeDagpenger().isEmpty() && !soknadResponse.getNyeDagpenger().isEmpty() && nonNull(vedtakdato)) {
-            var vedtakRequest = getDefaultDagpengevedtakRequest(ident, miljoe, vedtakdato, rettighetKode, soknadResponse.getNyeDagpenger().get(0));
+            var vedtakRequest = getDagpengevedtakRequest(ident, miljoe, vedtakdato, rettighetKode, soknadResponse.getNyeDagpenger().get(0));
             if (isNull(vedtakRequest)) {
                 return Collections.singletonList(soknadResponse);
             }
-            var vedtakResponse = arenaForvalterService.opprettDagpengevedtak(vedtakRequest);
+            var vedtakResponse = arenaForvalterService.opprettMottaDagpengevedtak(vedtakRequest);
             return Arrays.asList(soknadResponse, vedtakResponse);
         } else {
             return Collections.singletonList(soknadResponse);
@@ -126,8 +135,6 @@ public class ArenaDagpengerService {
                 .build();
     }
 
-
-    // TODO bytt til denne når synt-dagpenger har fått trent ny modell basert på bedre uttrekk
     private DagpengerRequestDTO getDagpengevedtakRequest(String personident, String miljoe, LocalDate startdato, Dagpengerettighet rettighetKode, NyeDagpenger soknadResponse) {
         var vedtak = syntDagpengerConsumer.syntetiserDagpengevedtak(rettighetKode, startdato);
         if (nonNull(vedtak)) {
@@ -144,15 +151,14 @@ public class ArenaDagpengerService {
         }
     }
 
-    private DagpengerRequestDTO getDefaultDagpengevedtakRequest(String personident, String miljoe, LocalDate startdato, Dagpengerettighet rettighetKode, NyeDagpenger soknadResponse) {
+    private DagpengerRequestDTO getDefaultDagpengevedtakRequest(String personident, String miljoe, LocalDate startdato, Dagpengerettighet rettighetKode) {
         var vedtak = DagpengevedtakDTO.builder()
-                .sakId(soknadResponse.getArenaSakId())
-                .oppgaveId(soknadResponse.getOppgaveId())
                 .vedtaksperiode(Vedtaksperiode.builder()
                         .fom(startdato)
                         .build())
                 .datoMottatt(startdato)
                 .rettighetKode(rettighetKode)
+                .utfall("JA")
                 .dagpengeperiode(Dagpengeperiode.builder()
                         .nullstillPeriodeteller("J")
                         .nullstillPermitteringsteller("N")
@@ -167,14 +173,14 @@ public class ArenaDagpengerService {
                         .fastsattArbeidstid(30.0)
                         .naavaerendeArbeidstid(0.0)
                         .build())
-                .vedtaktypeKode("O")
+                .vedtaktype("O")
                 .vilkaar(DAGPENGER_VILKAAR)
                 .build();
 
         return DagpengerRequestDTO.builder()
                 .personident(personident)
                 .miljoe(miljoe)
-                .nyeMottaDagpengevedtak(Collections.singletonList(vedtak))
+                .nyeDagp(Collections.singletonList(vedtak))
                 .build();
     }
 
