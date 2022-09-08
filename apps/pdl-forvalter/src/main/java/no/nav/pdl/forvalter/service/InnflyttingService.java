@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
@@ -19,7 +18,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -85,13 +84,12 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
         }
 
         if (person.getFolkeregisterPersonstatus().stream()
+                .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getStatus()) ||
+                        BOSATT == folkeregisterPersonstatus.getStatus())
+                .filter(folkeregisterPersonstatus -> isNull(folkeregisterPersonstatus.getGyldigFraOgMed()) ||
+                        folkeregisterPersonstatus.getGyldigFraOgMed().equals(innflytting.getInnflyttingsdato()))
                 .findFirst()
-                .orElse(new FolkeregisterPersonstatusDTO())
-                .getStatus() != FolkeregisterPersonstatus.BOSATT ||
-                isNotTrue(person.getFolkeregisterPersonstatus().stream()
-                        .findFirst()
-                        .orElse(new FolkeregisterPersonstatusDTO())
-                        .getIsNew())) {
+                .isEmpty()) {
 
             person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
                     .isNew(true)
