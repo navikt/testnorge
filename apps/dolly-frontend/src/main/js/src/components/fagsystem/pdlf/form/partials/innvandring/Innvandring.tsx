@@ -7,7 +7,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { UtflyttingFraNorge } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Utflytting } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 type InnvandringTypes = {
@@ -43,10 +43,8 @@ export const Innvandring = () => {
 
 	const sisteDatoUtvandring = () => {
 		if (opts.is.leggTil) {
-			const utflytting = opts?.personFoerLeggTil?.pdl?.hentPerson?.utflyttingFraNorge
-			let siste = getSisteDato(
-				utflytting?.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
-			)
+			const utflytting = opts?.personFoerLeggTil?.pdlforvalter?.person?.utflytting
+			let siste = getSisteDato(utflytting?.map((val: Utflytting) => new Date(val.utflyttingsdato)))
 			if (siste !== null) {
 				siste.setDate(siste.getDate() + 1)
 			}
