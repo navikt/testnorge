@@ -100,13 +100,14 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                 transactionHelperService.persist(progress);
                             }
                         });
-                oppdaterBestillingFerdig(bestilling);
+
+                transactionHelperService.oppdaterBestillingFerdig(bestilling);
                 MDC.remove(MDC_KEY_BESTILLING);
             });
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            oppdaterBestillingFerdig(bestilling);
+            transactionHelperService.oppdaterBestillingFerdig(bestilling);
         }
     }
 }
