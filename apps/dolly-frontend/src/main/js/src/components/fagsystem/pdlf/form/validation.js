@@ -662,7 +662,8 @@ const validateIban = (kontonummer, form) => {
 const validateSwift = (val) => {
 	return val.test('swift-validering', function isSwiftValid(value) {
 		if (!value) {
-			return this.createError({ message: messages.required })
+			return true
+			// return this.createError({ message: messages.required })
 		}
 
 		if (value.length !== 11 && value.length !== 8) {
