@@ -10,6 +10,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -27,11 +28,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.nonNull;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -85,6 +90,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
+        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
@@ -94,44 +100,64 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
-            dollyForkJoinPool.submit(() -> {
-                Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
-                        .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .forEach(ident -> {
+            var computeableFuture = IntStream.range(0, bestilling.getAntallIdenter()).boxed()
+                    .map(index -> doBestilling(bestilling, bestKriterier, originator))
+                    .map(completable -> supplyAsync(completable, dollyForkJoinPool))
+                    .toList();
 
-                            BestillingProgress progress = null;
-                            try {
-                                var opprettedeIdenter = getOpprettedeIdenter(originator);
+            computeableFuture
+                    .forEach(future -> {
+                        try {
+                            future.get(60, TimeUnit.MINUTES);
+                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            log.error(e.getMessage(), e);
+                        }
+                    });
 
-                                var dollyPerson = DollyPerson.builder()
-                                        .hovedperson(opprettedeIdenter.get(0))
-                                        .master(originator.getMaster())
-                                        .tags(bestilling.getGruppe().getTags())
-                                        .build();
-
-                                progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
-
-                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                        originator.getMaster(), bestKriterier.getBeskrivelse());
-
-                                gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
-
-                            } catch (RuntimeException e) {
-                                progress = buildProgress(bestilling, originator.getMaster(),
-                                        errorStatusDecoder.decodeRuntimeException(e));
-
-                            } finally {
-                                transactionHelperService.persist(progress);
-                            }
-                        });
-                oppdaterBestillingFerdig(bestilling);
-                MDC.remove(MDC_KEY_BESTILLING);
-            });
+            transactionHelperService.oppdaterBestillingFerdig(bestilling);
+            MDC.remove(MDC_KEY_BESTILLING);
+            log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            oppdaterBestillingFerdig(bestilling);
+            transactionHelperService.oppdaterBestillingFerdig(bestilling);
         }
+    }
+
+    private BestillingFuture doBestilling(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, OriginatorCommand.Originator originator) {
+
+        return () -> {
+
+            if (!bestillingService.isStoppet(bestilling.getId())) {
+
+                BestillingProgress progress = null;
+                try {
+                    var opprettedeIdenter = getOpprettedeIdenter(originator);
+
+                    var dollyPerson = DollyPerson.builder()
+                            .hovedperson(opprettedeIdenter.get(0))
+                            .master(originator.getMaster())
+                            .tags(bestilling.getGruppe().getTags())
+                            .build();
+
+                    progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
+
+                    identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
+                            originator.getMaster(), bestKriterier.getBeskrivelse());
+
+                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+
+                } catch (RuntimeException e) {
+                    progress = buildProgress(bestilling, originator.getMaster(),
+                            errorStatusDecoder.decodeRuntimeException(e));
+
+                } finally {
+                    transactionHelperService.persist(progress);
+                    return progress;
+                }
+            }
+            return null;
+        };
     }
 
     private List<String> getOpprettedeIdenter(OriginatorCommand.Originator originator) {
