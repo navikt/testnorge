@@ -55,7 +55,6 @@ export const PersonVisning = ({
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
-	fetchDataOgLeggTilPaaPerson,
 }) => {
 	const { gruppeId } = ident
 
@@ -127,24 +126,18 @@ export const PersonVisning = ({
 					{!iLaastGruppe && (
 						<Button
 							onClick={() => {
+								let personData = data
 								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
-									fetchDataOgLeggTilPaaPerson(
-										bestillingListe,
-										ident.master,
-										getIdenttype(ident.ident),
-										gruppeId,
-										navigate
-									)
-								} else {
-									leggTilPaaPerson(
-										data,
-										bestillingListe,
-										ident.master,
-										getIdenttype(ident.ident),
-										gruppeId,
-										navigate
-									)
+									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
 								}
+								leggTilPaaPerson(
+									personData,
+									bestillingListe,
+									ident.master,
+									getIdenttype(ident.ident),
+									gruppeId,
+									navigate
+								)
 							}}
 							kind="add-circle"
 						>
