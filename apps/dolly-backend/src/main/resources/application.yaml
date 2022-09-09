@@ -29,6 +29,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   jpa:
+    open-in-view: false
     properties:
       hibernate:
         default-schema: public
