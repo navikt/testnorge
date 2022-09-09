@@ -18,7 +18,7 @@ spring:
         enabled: true
         role: dolly-test-admin
   datasource:
-    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/dolly-test
+    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/dolly-test
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
