@@ -20,7 +20,6 @@ import { successMiljoSelector } from '~/ducks/bestillingStatus'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 import Formatters from '~/utils/DataFormatter'
 import { isNil } from 'lodash'
-import { getKodeverk } from '~/ducks/kodeverk'
 
 export const actions = createActions(
 	{

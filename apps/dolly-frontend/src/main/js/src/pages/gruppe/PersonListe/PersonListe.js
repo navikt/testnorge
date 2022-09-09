@@ -225,7 +225,6 @@ export default function PersonListe({
 						bestillingIdListe={bruker.ident.bestillingId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
-						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
 				)}
 			/>
