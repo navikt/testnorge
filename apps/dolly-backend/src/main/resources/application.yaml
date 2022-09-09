@@ -29,7 +29,6 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   jpa:
-    open-in-view: false
     properties:
       hibernate:
         default-schema: public
@@ -45,11 +44,6 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 management:
   endpoints:

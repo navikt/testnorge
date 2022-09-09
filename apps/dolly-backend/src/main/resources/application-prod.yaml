@@ -7,8 +7,6 @@ spring:
     hikari:
       maximum-pool-size: 5
       minimum-idle: 1
-  jpa:
-    open-in-view: false
 
 springdoc:
   swagger-ui:
