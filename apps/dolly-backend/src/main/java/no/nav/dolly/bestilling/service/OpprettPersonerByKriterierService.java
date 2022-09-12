@@ -114,14 +114,19 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                         }
                     });
 
-            transactionHelperService.oppdaterBestillingFerdig(bestilling);
-            MDC.remove(MDC_KEY_BESTILLING);
-            log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
+            doFerdig(bestilling);
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            transactionHelperService.oppdaterBestillingFerdig(bestilling);
+            doFerdig(bestilling);
         }
+    }
+
+    private void doFerdig(Bestilling bestilling) {
+
+        transactionHelperService.oppdaterBestillingFerdig(bestilling);
+        MDC.remove(MDC_KEY_BESTILLING);
+        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
     private BestillingFuture doBestilling(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, OriginatorCommand.Originator originator) {
