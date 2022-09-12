@@ -210,7 +210,7 @@ export default handleActions(
 			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
 		[onSuccess(actions.getBrreg)](state, action) {
-			state.brregstub[action.meta.ident] = action.payload.data
+			state.brregstub[action.meta.ident] = action.payload?.data
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
 			const identerBolk = action.payload.data?.data?.hentIdenterBolk?.reduce(
