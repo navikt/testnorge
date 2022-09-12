@@ -142,8 +142,8 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
                 } finally {
                     transactionHelperService.persist(progress);
-                    return progress;
                 }
+                return progress;
             }
             return null;
         };

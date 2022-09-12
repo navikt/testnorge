@@ -105,7 +105,7 @@ public class TpsMessagingClient implements ClientRegister {
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (15 s) ved sending til TPS");
+                            log.warn("Tidsavbrudd (15 s) ved sending til TPS");
                             Thread.interrupted();
                         }
                     });

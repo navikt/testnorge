@@ -154,8 +154,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                     progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
                 } finally {
                     transactionHelperService.persist(progress);
-                    return progress;
                 }
+                return progress;
             }
             return null;
         };
