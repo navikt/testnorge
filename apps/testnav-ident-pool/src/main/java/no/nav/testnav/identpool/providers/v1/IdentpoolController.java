@@ -105,7 +105,6 @@ public class IdentpoolController {
     public List<TpsStatusDTO> erIProd(
             @RequestHeader Set<String> identer) {
 
-        validateMultiple(identer.stream().toList());
         return identpoolService.finnesIProd(identer);
     }
 
