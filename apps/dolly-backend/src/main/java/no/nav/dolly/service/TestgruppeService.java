@@ -130,9 +130,9 @@ public class TestgruppeService {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
         var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
-        transaksjonMappingRepository.deleteByGruppe(testgruppe);
+        transaksjonMappingRepository.deleteByGruppeId(gruppeId);
 
-        bestillingService.slettBestillingerByGruppeId(testgruppe);
+        bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
 
         personService.recyclePersoner(testIdenter);

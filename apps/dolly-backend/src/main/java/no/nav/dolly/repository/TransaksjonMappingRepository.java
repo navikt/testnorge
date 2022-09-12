@@ -1,6 +1,5 @@
 package no.nav.dolly.repository;
 
-import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -29,6 +28,6 @@ public interface TransaksjonMappingRepository extends Repository<TransaksjonMapp
 
     @Modifying
     @Query(value = "delete from TransaksjonMapping tm where tm.bestillingId in " +
-                    "(select b.id from Bestilling b where b.gruppe = gruppe)")
-    int deleteByGruppe(@Param("gruppe") Testgruppe gruppe);
+                    "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
+    int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 }

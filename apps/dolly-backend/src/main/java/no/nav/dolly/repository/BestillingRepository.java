@@ -2,7 +2,6 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -59,18 +58,20 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     Optional<List<Bestilling>> findMalBestilling();
 
     @Modifying
-    @Query(value = "delete from Bestilling b where b.gruppe = :gruppe and b.malBestillingNavn is null")
-    int deleteByGruppeIdExcludeMaler(@Param("gruppe") Testgruppe gruppe);
+    @Query(value = "delete from Bestilling b where b.gruppe.id = :gruppeId and b.malBestillingNavn is null")
+    int deleteByGruppeIdExcludeMaler(@Param("gruppeId") Long gruppeId);
 
     @Modifying
     @Query(value = "update Bestilling b " +
             "set b.gruppe = null, b.opprettetFraGruppeId = null " +
-            "where b.gruppe = :gruppe")
-    int updateBestillingNullifyGruppe(@Param("gruppe") Testgruppe gruppe);
+            "where b.gruppe.id = :gruppeId")
+    int updateBestillingNullifyGruppe(@Param("gruppeId") Long gruppeId);
 
     @Modifying
-    @Query(value = "delete from Bestilling b where b.id = :bestillingId and not exists " +
-            "(select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
+    @Query(value = "delete from Bestilling b " +
+            "where b.id = :bestillingId " +
+            "and b.malBestillingNavn is null " +
+            "and not exists (select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
     int deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 
     @Modifying
