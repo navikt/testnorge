@@ -6,17 +6,16 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 export const EndreMalnavn = ({ malInfo, avbrytRedigering }) => {
+	const { malNavn, id } = malInfo
+	const [nyttMalnavn, setMalnavn] = useState(malNavn)
+	const mutate = useMatchMutate()
+
 	const lagreEndring = (nyttMalnavn, id) => {
 		malerApi
 			.endreMalNavn(id, nyttMalnavn)
 			.then(() => mutate(REGEX_BACKEND_BESTILLINGER))
 			.then(() => avbrytRedigering(id))
 	}
-
-	const { malNavn, id } = malInfo
-	const [nyttMalnavn, setMalnavn] = useState(malNavn)
-
-	const mutate = useMatchMutate()
 
 	return (
 		<ErrorBoundary>
