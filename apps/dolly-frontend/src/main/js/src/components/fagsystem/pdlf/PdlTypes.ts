@@ -67,14 +67,14 @@ export type StatsborgerskapData = {
 	id?: number
 }
 
-type Innflytting = {
+export type Innflytting = {
 	fraflyttingsland: string
 	fraflyttingsstedIUtlandet: string
 	innflyttingsdato: string
 	id?: number
 }
 
-type Utflytting = {
+export type Utflytting = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string

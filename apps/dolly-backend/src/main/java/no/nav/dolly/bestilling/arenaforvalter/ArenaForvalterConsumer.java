@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -96,9 +97,9 @@ public class ArenaForvalterConsumer {
                         .map(miljoe -> Flux.range(0, identer.size())
                                 .delayElements(Duration.ofMillis(100))
                                 .map(index -> new ArenaForvalterDeleteCommand(webClient, identer.get(index), miljoe, token.getTokenValue()).call())))
-                        .flatMap(Flux::from)
-                        .flatMap(Flux::from)
-                        .collectList();
+                .flatMap(Flux::from)
+                .flatMap(Flux::from)
+                .collectList();
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_postBruker" })
@@ -134,8 +135,10 @@ public class ArenaForvalterConsumer {
                 .bodyValue(arenaDagpenger)
                 .retrieve()
                 .toEntity(ArenaNyeDagpengerResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+                .doOnError(error -> error instanceof WebClientResponseException.InternalServerError,
+                        error -> log.error(((WebClientResponseException) error).getResponseBodyAsString()))
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.InternalServerError,
+                        throwable -> Mono.empty())
                 .block();
     }
 

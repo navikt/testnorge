@@ -48,13 +48,13 @@ export const PersonVisning = ({
 	data,
 	bestillingIdListe,
 	ident,
-	isAlive,
 	brukertype,
 	loading,
 	slettPerson,
 	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
 
@@ -99,7 +99,11 @@ export const PersonVisning = ({
 			})
 
 		data.pdl?.hentPerson?.forelderBarnRelasjon
-			?.filter((barn) => !barn?.metadata?.historisk && barn?.relatertPersonsRolle === 'BARN')
+			?.filter(
+				(forelderBarn) =>
+					!forelderBarn?.metadata?.historisk &&
+					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle)
+			)
 			?.forEach((person) => {
 				relatertePersoner.push({
 					type: person.relatertPersonsRolle,
@@ -121,16 +125,20 @@ export const PersonVisning = ({
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
-							onClick={() =>
+							onClick={() => {
+								let personData = data
+								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
+									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
+								}
 								leggTilPaaPerson(
-									data,
+									personData,
 									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
 									navigate
 								)
-							}
+							}}
 							kind="add-circle"
 						>
 							LEGG TIL/ENDRE
@@ -166,6 +174,7 @@ export const PersonVisning = ({
 					<PdlfVisningConnector
 						data={data.pdlforvalter}
 						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						skjermingData={data.skjermingsregister}
 						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
 						master={ident.master}
