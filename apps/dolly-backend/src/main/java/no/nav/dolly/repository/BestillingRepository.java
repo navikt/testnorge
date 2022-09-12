@@ -48,6 +48,9 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
             nativeQuery = true)
     Optional<Integer> getPaginertBestillingIndex(@Param("bestillingId") Long bestillingId, @Param("gruppeId") Long gruppe);
 
+    @Query(value = "from Bestilling b join BestillingProgress bp on b.id = bp.bestilling.id where bp.ident = :ident order by b.id asc")
+    List<Bestilling> findBestillingerByIdent(@Param("ident") String ident);
+
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
 

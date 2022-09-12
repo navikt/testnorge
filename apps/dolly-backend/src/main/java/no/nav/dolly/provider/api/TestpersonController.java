@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -13,7 +14,6 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.testperson.IdentAttributesResponse;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.NavigasjonService;
@@ -47,7 +47,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 public class TestpersonController {
 
     private final BestillingService bestillingService;
-    private final BestillingProgressService bestillingProgressService;
+    private final GjenopprettBestillingService gjenopprettBestillingService;
     private final TransaksjonMappingService transaksjonMappingService;
     private final DollyBestillingService dollyBestillingService;
     private final MapperFacade mapperFacade;
@@ -92,17 +92,21 @@ public class TestpersonController {
     @Operation(description = "Gjenopprett test ident")
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional
-    @PostMapping("/{ident}/gjenopprett")
-    public List<Bestilling> gjenopprettTestident(@PathVariable String ident, @RequestParam List<String> miljoer) {
+    @PostMapping("/gjenopprett/{ident}")
+    public void gjenopprettTestident(@PathVariable String ident, @RequestParam List<String> miljoer) {
 
         if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
-        List<Bestilling> bestillinger = bestillingService.fetchBestillingerByTestident(ident);
+        List<Long> bestillinger = bestillingService.fetchBestillingerByTestident(ident);
         if (bestillinger.isEmpty()) {
             throw new NotFoundException(format("Fant ingen bestillinger på ident %s", ident));
         }
-        return bestillinger;
+
+        bestillinger.forEach(bestillingId -> {
+            Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer);
+            gjenopprettBestillingService.executeAsync(bestilling);
+        });
     }
 
     @Operation(description = "Slett test ident")

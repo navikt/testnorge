@@ -331,7 +331,7 @@ public class BestillingService {
 
     public void slettBestillingByTestIdent(String ident) {
 
-        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident).orElse(emptyList());
+        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
         bestillingProgressRepository.deleteByIdent(ident);
 
         Set<Long> bestillingIds = bestillingProgresses.stream()
@@ -346,10 +346,10 @@ public class BestillingService {
         });
     }
 
-    public List<Bestilling> fetchBestillingerByTestident(String ident) {
+    public List<Long> fetchBestillingerByTestident(String ident) {
 
-        var bestillingProgressList = bestillingProgressRepository.findByIdent(ident).orElse(emptyList());
-        return bestillingProgressList.stream().map(BestillingProgress::getBestilling).distinct().toList();
+        var bestillingList = bestillingRepository.findBestillingerByIdent(ident);
+        return bestillingList.stream().map(Bestilling::getId).toList();
     }
 
 

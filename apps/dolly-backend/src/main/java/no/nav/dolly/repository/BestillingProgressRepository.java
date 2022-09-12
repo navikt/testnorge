@@ -22,7 +22,7 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
     @Modifying
     int deleteByIdent(String ident);
 
-    Optional<List<BestillingProgress>> findByIdent(String ident);
+    List<BestillingProgress> findByIdent(String ident);
 
     @Modifying
     @Query(value = "update BestillingProgress bp set bp.ident = :newIdent where bp.ident = :oldIdent")
