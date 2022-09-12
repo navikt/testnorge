@@ -1,5 +1,6 @@
 import { NotFoundError } from '~/error'
 import { Argument } from 'classnames'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 const originalFetch = require('isomorphic-fetch')
 const fetch = require('fetch-retry')(originalFetch)
