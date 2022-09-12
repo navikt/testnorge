@@ -98,7 +98,11 @@ public class TestpersonController {
         if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
-        return bestillingService.fetchBestillingerByTestident(ident);
+        List<Bestilling> bestillinger = bestillingService.fetchBestillingerByTestident(ident);
+        if (bestillinger.isEmpty()) {
+            throw new NotFoundException(format("Fant ingen bestillinger på ident %s", ident));
+        }
+        return bestillinger;
     }
 
     @Operation(description = "Slett test ident")
