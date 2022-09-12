@@ -69,6 +69,8 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 		},
 	]
 
+	const antallEgneMaler = egneMaler.length
+
 	return (
 		<div className="maloversikt">
 			<hr />
@@ -76,8 +78,8 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 				<h2>Mine maler</h2>
 				<SearchField placeholder={'Søk etter mal'} setText={setSearchText} />
 			</div>
-			{egneMaler.length > 0 ? (
-				malerFiltrert(egneMaler, searchText).length > 0 ? (
+			{antallEgneMaler > 0 &&
+				(malerFiltrert(egneMaler, searchText).length > 0 ? (
 					<ErrorBoundary>
 						<DollyTable
 							data={malerFiltrert(egneMaler, searchText)}
@@ -88,8 +90,8 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 					</ErrorBoundary>
 				) : (
 					<AlertStripeInfo>Ingen maler samsvarte med søket ditt</AlertStripeInfo>
-				)
-			) : (
+				))}
+			{antallEgneMaler === 0 && (
 				<AlertStripeInfo>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
