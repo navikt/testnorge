@@ -48,13 +48,13 @@ export const PersonVisning = ({
 	data,
 	bestillingIdListe,
 	ident,
-	isAlive,
 	brukertype,
 	loading,
 	slettPerson,
 	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
 
@@ -125,16 +125,20 @@ export const PersonVisning = ({
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
-							onClick={() =>
+							onClick={() => {
+								let personData = data
+								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
+									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
+								}
 								leggTilPaaPerson(
-									data,
+									personData,
 									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
 									navigate
 								)
-							}
+							}}
 							kind="add-circle"
 						>
 							LEGG TIL/ENDRE
