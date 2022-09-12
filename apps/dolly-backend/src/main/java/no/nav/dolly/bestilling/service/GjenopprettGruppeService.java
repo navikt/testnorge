@@ -80,6 +80,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
+        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
@@ -98,14 +99,22 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             completableFuture
                     .forEach(future -> {
                         try {
-                            future.get(60, TimeUnit.MINUTES);
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            future.get(60, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
+                        } catch (ExecutionException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
+                        } catch (TimeoutException e) {
+                            log.error("Tidsavbrudd (60 s) ved gjenopprett gruppe");
+                            Thread.interrupted();
                         }
                     });
 
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
+            log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
         }
     }
 

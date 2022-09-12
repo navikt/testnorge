@@ -100,17 +100,24 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
-            var computeableFuture = IntStream.range(0, bestilling.getAntallIdenter()).boxed()
+            var computableFuture = IntStream.range(0, bestilling.getAntallIdenter()).boxed()
                     .map(index -> doBestilling(bestilling, bestKriterier, originator))
                     .map(completable -> supplyAsync(completable, dollyForkJoinPool))
                     .toList();
 
-            computeableFuture
+            computableFuture
                     .forEach(future -> {
                         try {
-                            future.get(60, TimeUnit.MINUTES);
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            future.get(60, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
+                        } catch (ExecutionException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
+                        } catch (TimeoutException e) {
+                            log.error("Tidsavbrudd (60 s) ved opprett personer kriterier");
+                            Thread.interrupted();
                         }
                     });
 

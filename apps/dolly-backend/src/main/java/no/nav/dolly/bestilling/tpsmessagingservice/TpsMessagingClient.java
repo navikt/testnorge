@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -75,7 +77,7 @@ public class TpsMessagingClient implements ClientRegister {
         try {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-            Stream.of(
+            var completableFuture = Stream.of(
                             sendSpraakkode(bestilling),
                             sendBankkontonummer(bestilling),
                             sendEgenansatt(bestilling),
@@ -89,21 +91,22 @@ public class TpsMessagingClient implements ClientRegister {
                     )
                     .filter(Objects::nonNull)
                     .map(completable -> supplyAsync(() -> completable.apply(bestilling, dollyPerson), dollyForkJoinPool))
+                    .toList();
+
+            completableFuture
                     .forEach(future -> {
                         try {
-                            future.get()
+                            future.get(15, TimeUnit.SECONDS)
                                     .forEach((key, value) -> status.append(getResponse(key, value)));
-
                         } catch (InterruptedException e) {
-
                             log.error(e.getMessage(), e);
                             Thread.currentThread().interrupt();
-
                         } catch (ExecutionException e) {
-
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
-
+                        } catch (TimeoutException e) {
+                            log.error("Tidsavbrudd (15 s) ved sending til TPS");
+                            Thread.interrupted();
                         }
                     });
 

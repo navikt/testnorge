@@ -83,17 +83,25 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            var computeableFuture = Stream.of(bestilling.getPdlImport().split(","))
+            var completableFuture =
+                    Stream.of(bestilling.getPdlImport().split(","))
                     .map(ident -> doBestilling(bestilling, bestKriterier, ident))
                     .map(computeable -> supplyAsync(computeable, dollyForkJoinPool))
                     .toList();
 
-            computeableFuture
+            completableFuture
                     .forEach(future -> {
                         try {
-                            future.get(60, TimeUnit.MINUTES);
-                        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                            future.get(60, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
+                        } catch (ExecutionException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
+                        } catch (TimeoutException e) {
+                            log.error("Tidsavbrudd (60 s) ved import av testnorge personer");
+                            Thread.interrupted();
                         }
                     });
 
