@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -57,7 +58,15 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();
 
-    int deleteByGruppeId(Long gruppeId);
+    @Modifying
+    @Query(value = "delete from Bestilling b where b.gruppe = :gruppe and b.malBestillingNavn is null")
+    int deleteByGruppeIdExcludeMaler(@Param("gruppe") Testgruppe gruppe);
+
+    @Modifying
+    @Query(value = "update Bestilling b " +
+            "set b.gruppe = null, b.opprettetFraGruppeId = null " +
+            "where b.gruppe = :gruppe")
+    int updateBestillingNullifyGruppe(@Param("gruppe") Testgruppe gruppe);
 
     @Modifying
     @Query(value = "delete from Bestilling b where b.id = :bestillingId and not exists " +

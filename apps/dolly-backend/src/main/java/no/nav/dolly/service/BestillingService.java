@@ -344,11 +344,12 @@ public class BestillingService {
         bestilling.setMalBestillingNavn(malbestillingNavn);
     }
 
-    public void slettBestillingerByGruppeId(Long gruppeId) {
+    public void slettBestillingerByGruppeId(Testgruppe gruppe) {
 
-        bestillingKontrollRepository.deleteByGruppeId(gruppeId);
-        bestillingProgressRepository.deleteByGruppeId(gruppeId);
-        bestillingRepository.deleteByGruppeId(gruppeId);
+        bestillingKontrollRepository.deleteByGruppeId(gruppe.getId());
+        bestillingProgressRepository.deleteByGruppeId(gruppe.getId());
+        bestillingRepository.deleteByGruppeIdExcludeMaler(gruppe);
+        bestillingRepository.updateBestillingNullifyGruppe(gruppe);
     }
 
     public void slettBestillingByTestIdent(String ident) {
