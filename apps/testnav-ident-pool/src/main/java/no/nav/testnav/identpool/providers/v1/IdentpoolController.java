@@ -101,7 +101,7 @@ public class IdentpoolController {
     }
 
     @GetMapping("/prodSjekk")
-    @Operation(description = "returnerer true eller false avhengig av om ident finnes i prod.")
+    @Operation(description = "returnerer om en liste av identer finnes i prod.")
     public List<TpsStatusDTO> erIProd(
             @RequestParam Set<String> identer) {
 
