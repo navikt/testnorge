@@ -103,7 +103,7 @@ public class IdentpoolController {
     @GetMapping("/prodSjekk")
     @Operation(description = "returnerer true eller false avhengig av om ident finnes i prod.")
     public List<TpsStatusDTO> erIProd(
-            @RequestHeader Set<String> identer) {
+            @RequestBody Set<String> identer) {
 
         return identpoolService.finnesIProd(identer);
     }
