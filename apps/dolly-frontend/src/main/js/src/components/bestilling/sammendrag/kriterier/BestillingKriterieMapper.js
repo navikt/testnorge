@@ -994,19 +994,28 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 
 const mapTpsMessaging = (bestillingData, data) => {
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
+	const skjerming = _get(bestillingData, 'skjerming')
 	const bankkonto = _get(bestillingData, 'bankkonto')
 
 	if (
 		tpsMessaging?.spraakKode ||
+		skjerming?.egenAnsattDatoFom ||
 		tpsMessaging?.egenAnsattDatoFom ||
+		skjerming?.egenAnsattDatoTom ||
 		tpsMessaging?.egenAnsattDatoTom
 	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
 				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
-				obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
-				obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
+				obj(
+					'Skjerming fra',
+					Formatters.formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom)
+				),
+				obj(
+					'Skjerming til',
+					Formatters.formatDate(skjerming?.egenAnsattDatoTom || tpsMessaging?.egenAnsattDatoTom)
+				),
 			],
 		}
 		data.push(tpsMessagingData)

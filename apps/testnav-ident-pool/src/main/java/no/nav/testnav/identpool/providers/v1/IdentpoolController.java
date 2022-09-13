@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.identpool.domain.Ident;
+import no.nav.testnav.identpool.dto.TpsStatusDTO;
 import no.nav.testnav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.testnav.identpool.providers.v1.support.MarkerBruktRequest;
 import no.nav.testnav.identpool.service.IdentpoolService;
 import no.nav.testnav.identpool.service.PoolService;
-import org.apache.commons.lang3.SystemUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.identpool.util.PersonidentUtil.validate;
@@ -99,6 +100,14 @@ public class IdentpoolController {
         return identpoolService.erLedig(personidentifikator);
     }
 
+    @GetMapping("/prodSjekk")
+    @Operation(description = "returnerer om en liste av identer finnes i prod.")
+    public List<TpsStatusDTO> erIProd(
+            @RequestParam Set<String> identer) {
+
+        return identpoolService.finnesIProd(identer);
+    }
+
     @GetMapping("/ledige")
     @Operation(description = "returnerer identer (FNR) som er ledige og født mellom to år inklusive start og slutt år")
     public List<String> erLedige(
@@ -111,7 +120,7 @@ public class IdentpoolController {
     @PostMapping("/frigjoer")
     @Operation(description = "Frigjør rekvirerte identer i en gitt liste. Returnerer de identene i den gitte listen som nå er ledige.")
     public List<String> frigjoerIdenter(
-            @RequestParam (required = false) String rekvirertAv,
+            @RequestParam(required = false) String rekvirertAv,
             @RequestBody List<String> identer) {
 
         return identpoolService.frigjoerIdenter(identer);

@@ -348,7 +348,8 @@ public class BestillingService {
 
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
         bestillingProgressRepository.deleteByGruppeId(gruppeId);
-        bestillingRepository.deleteByGruppeId(gruppeId);
+        bestillingRepository.deleteByGruppeIdExcludeMaler(gruppeId);
+        bestillingRepository.updateBestillingNullifyGruppe(gruppeId);
     }
 
     public void slettBestillingByTestIdent(String ident) {

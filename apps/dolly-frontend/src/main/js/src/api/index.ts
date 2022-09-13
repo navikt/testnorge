@@ -1,5 +1,6 @@
 import { NotFoundError } from '~/error'
 import { Argument } from 'classnames'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 import originalFetch from 'isomorphic-fetch'
 import fetch_retry from 'fetch-retry'

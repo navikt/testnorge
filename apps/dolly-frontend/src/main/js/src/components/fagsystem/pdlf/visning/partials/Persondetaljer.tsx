@@ -12,6 +12,8 @@ import {
 import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarPersondetaljerConnector'
 import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { SkjermingVisning } from '~/components/fagsystem/skjermingsregister/visning/Visning'
+import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type PersondetaljerTypes = {
 	data: any
@@ -19,6 +21,7 @@ type PersondetaljerTypes = {
 	ident: string
 	erPdlVisning: boolean
 	tpsMessaging: any
+	skjermingData: Skjerming
 }
 
 type PersonTypes = {
@@ -44,6 +47,7 @@ export const Persondetaljer = ({
 	ident,
 	erPdlVisning = false,
 	tpsMessaging,
+	skjermingData,
 }: PersondetaljerTypes) => {
 	if (!data) {
 		return null
@@ -66,6 +70,7 @@ export const Persondetaljer = ({
 					title="Personstatus"
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
+				<SkjermingVisning data={skjermingData} />
 				<TpsMPersonInfo
 					data={tpsMessaging.tpsMessagingData}
 					loading={tpsMessaging.tpsMessagingLoading}
@@ -106,6 +111,7 @@ export const Persondetaljer = ({
 				path="person"
 				ident={ident}
 				tpsMessagingData={tpsMessaging}
+				skjermingData={skjermingData}
 			/>
 		)
 	}

@@ -39,6 +39,9 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.pdldata) {
 		initialValuesMal.pdldata = getUpdatedPdldata(initialValuesMal.pdldata)
 	}
+	if (initialValuesMal.skjerming) {
+		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
@@ -148,7 +151,6 @@ const getUpdatedPdldata = (pdldata: any) => {
 			return updateAdressetyper(adresse, false)
 		})
 	}
-
 	if (person?.forelderBarnRelasjon) {
 		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon.map(
 			(relasjon: ForeldreBarnRelasjon) => {

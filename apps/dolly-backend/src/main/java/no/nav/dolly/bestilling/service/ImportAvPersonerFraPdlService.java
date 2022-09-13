@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -28,13 +29,18 @@ import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
+@Slf4j
 @Service
 public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
@@ -69,6 +75,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
+        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
@@ -76,37 +83,69 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            dollyForkJoinPool.submit(() -> {
-                asList(bestilling.getPdlImport().split(",")).parallelStream()
-                        .filter(ident -> !bestilling.isStoppet())
-                        .forEach(ident -> {
-                            BestillingProgress progress = new BestillingProgress(bestilling, ident, PDL);
-                            try {
+            var completableFuture =
+                    Stream.of(bestilling.getPdlImport().split(","))
+                    .map(ident -> doBestilling(bestilling, bestKriterier, ident))
+                    .map(computeable -> supplyAsync(computeable, dollyForkJoinPool))
+                    .toList();
 
-                                PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(ident).toString(), PdlPerson.class);
-                                DollyPerson dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
-                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                        PDL, bestilling.getBeskrivelse());
-                                gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
-                                progress.setPdlImportStatus(SUCCESS);
+            completableFuture
+                    .forEach(future -> {
+                        try {
+                            future.get(60, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
+                        } catch (ExecutionException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
+                        } catch (TimeoutException e) {
+                            log.error("Tidsavbrudd (60 s) ved import av testnorge personer");
+                            Thread.interrupted();
+                        }
+                    });
 
-                            } catch (JsonProcessingException e) {
-                                progress.setPdlImportStatus(errorStatusDecoder.decodeException(e));
-
-                            } catch (RuntimeException e) {
-                                progress.setPdlImportStatus(errorStatusDecoder.decodeRuntimeException(e));
-
-                            } finally {
-                                transactionHelperService.persist(progress);
-                            }
-                        });
-                oppdaterBestillingFerdig(bestilling);
-                MDC.remove(MDC_KEY_BESTILLING);
-            });
+            doFerdig(bestilling);
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            oppdaterBestillingFerdig(bestilling);
+            doFerdig(bestilling);
         }
+    }
+
+    private void doFerdig(Bestilling bestilling) {
+
+        transactionHelperService.oppdaterBestillingFerdig(bestilling);
+        MDC.remove(MDC_KEY_BESTILLING);
+        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
+    }
+
+    private BestillingFuture doBestilling(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, String ident) {
+
+        return () -> {
+            if (!bestilling.isStoppet()) {
+                BestillingProgress progress = new BestillingProgress(bestilling, ident, PDL);
+                try {
+
+                    PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(ident).toString(), PdlPerson.class);
+                    DollyPerson dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
+                    identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
+                            PDL, bestilling.getBeskrivelse());
+                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+                    progress.setPdlImportStatus(SUCCESS);
+
+                } catch (JsonProcessingException e) {
+                    progress.setPdlImportStatus(errorStatusDecoder.decodeException(e));
+
+                } catch (RuntimeException e) {
+                    progress.setPdlImportStatus(errorStatusDecoder.decodeRuntimeException(e));
+
+                } finally {
+                    transactionHelperService.persist(progress);
+                }
+                return progress;
+            }
+            return null;
+        };
     }
 }

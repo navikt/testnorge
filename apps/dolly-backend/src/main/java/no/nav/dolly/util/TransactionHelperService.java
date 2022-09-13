@@ -44,7 +44,20 @@ public class TransactionHelperService {
         });
     }
 
-    protected void clearCache() {
+    @SuppressWarnings("java:S1143")
+    public void oppdaterBestillingFerdig(Bestilling bestilling) {
+
+        transactionTemplate.execute(status -> {
+            var best = entityManager.find(Bestilling.class, bestilling.getId());
+            best.setSistOppdatert(now());
+            best.setFerdig(true);
+            entityManager.merge(best);
+            clearCache();
+            return null;
+        });
+    }
+
+    private void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
