@@ -57,11 +57,21 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();
 
-    int deleteByGruppeId(Long gruppeId);
+    @Modifying
+    @Query(value = "delete from Bestilling b where b.gruppe.id = :gruppeId and b.malBestillingNavn is null")
+    int deleteByGruppeIdExcludeMaler(@Param("gruppeId") Long gruppeId);
 
     @Modifying
-    @Query(value = "delete from Bestilling b where b.id = :bestillingId and not exists " +
-            "(select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
+    @Query(value = "update Bestilling b " +
+            "set b.gruppe = null, b.opprettetFraGruppeId = null " +
+            "where b.gruppe.id = :gruppeId")
+    int updateBestillingNullifyGruppe(@Param("gruppeId") Long gruppeId);
+
+    @Modifying
+    @Query(value = "delete from Bestilling b " +
+            "where b.id = :bestillingId " +
+            "and b.malBestillingNavn is null " +
+            "and not exists (select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
     int deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 
     @Modifying
