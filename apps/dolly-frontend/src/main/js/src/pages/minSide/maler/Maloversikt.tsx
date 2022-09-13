@@ -6,12 +6,10 @@ import Button from '~/components/ui/button/Button'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { MalIconItem } from '~/components/ui/icon/IconItem'
 import { EndreMalnavn } from './EndreMalnavn'
-// import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
 import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
-// import { malerApi } from '~/pages/minSide/maler/MalerApi'
 import { DollyApi } from '~/service/Api'
 
 export default ({ brukernavn }: { brukernavn: string }) => {

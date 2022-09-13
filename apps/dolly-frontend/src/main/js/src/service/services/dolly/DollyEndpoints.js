@@ -193,11 +193,7 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}
 
-	static slettMal(malId) {
-		return `${bestillingBase}/malbestilling/${malId}`
-	}
-
-	static endreMal(malId) {
+	static malBestilling(malId) {
 		return `${bestillingBase}/malbestilling/${malId}`
 	}
 }

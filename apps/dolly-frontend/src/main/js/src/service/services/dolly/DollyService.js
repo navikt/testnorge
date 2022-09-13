@@ -186,51 +186,21 @@ export default {
 	},
 
 	slettMal(malId) {
-		return fetch(Endpoints.slettMal(malId), {
-			method: 'DELETE',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		})
+		return Request.delete(Endpoints.malBestilling(malId))
 			.then((response) => {
-				console.log('response: ', response) //TODO - SLETT MEG
 				if (!response.ok) {
 					throw new Error(response.statusText)
 				}
 				return response
 			})
 			.catch((error) => {
-				console.log('error: ', error) //TODO - SLETT MEG
 				console.error(error)
 				throw error
 			})
-		// return (
-		// 	Request.deleteWithResponse(Endpoints.slettMal(malId), { credentials: 'include' })
-		// 		// ), {
-		// 		// 	credentials: 'include',
-		// 		// 	headers: {
-		// 		// 		'Content-Type': 'application/json',
-		// 		// 	},
-		// 		// })
-		// 		.then((data) => {
-		// 			let response = data.response
-		// 			console.log('response: ', response) //TODO - SLETT MEG
-		// 			if (!response.ok) {
-		// 				throw new Error(response.statusText)
-		// 			}
-		// 			return response
-		// 		})
-		// 		.catch((error) => {
-		// 			console.log('error: ', error) //TODO - SLETT MEG
-		// 			console.error(error)
-		// 			throw error
-		// 		})
-		// )
 	},
 
 	endreMalNavn(malID, malNavn) {
-		return Request.putWithoutResponse(Endpoints.endreMal(malID), malNavn)
+		return Request.putWithoutResponse(Endpoints.malBestilling(malID), malNavn)
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
