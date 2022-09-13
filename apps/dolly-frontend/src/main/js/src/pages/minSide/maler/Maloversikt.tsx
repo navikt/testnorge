@@ -6,14 +6,18 @@ import Button from '~/components/ui/button/Button'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { MalIconItem } from '~/components/ui/icon/IconItem'
 import { EndreMalnavn } from './EndreMalnavn'
-import { slettMal } from './SlettMal'
+// import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
+import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
+// import { malerApi } from '~/pages/minSide/maler/MalerApi'
+import { DollyApi } from '~/service/Api'
 
 export default ({ brukernavn }: { brukernavn: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
+	const mutate = useMatchMutate()
 
 	const { maler, loading } = useDollyMaler()
 
@@ -28,6 +32,9 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 
 	const avbrytRedigering = (id: string) => {
 		setUnderRedigering((erUnderRedigering) => erUnderRedigering.filter((number) => number !== id))
+	}
+	const slettMal = (malId: string) => {
+		DollyApi.slettMal(malId).then(() => mutate(REGEX_BACKEND_BESTILLINGER))
 	}
 
 	const columns = [
@@ -62,7 +69,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			width: '10',
 			dataField: 'status',
 			formatter: (_cell: any, row: { id: any }) => (
-				<SlettButton action={() => slettMal(row.id, null)} loading={loading}>
+				<SlettButton action={() => slettMal(row.id)} loading={loading}>
 					Er du sikker på at du vil slette denne malen?
 				</SlettButton>
 			),

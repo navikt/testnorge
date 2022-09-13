@@ -192,4 +192,12 @@ export default class DollyEndpoints {
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}
+
+	static slettMal(malId) {
+		return `${bestillingBase}/malbestilling/${malId}`
+	}
+
+	static endreMal(malId) {
+		return `${bestillingBase}/malbestilling/${malId}`
+	}
 }

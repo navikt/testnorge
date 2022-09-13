@@ -2,13 +2,13 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import React, { useState } from 'react'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { malerApi } from '~/pages/minSide/maler/MalerApi'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import { Label } from '~/components/ui/form/inputs/label/Label'
+import { DollyApi } from '~/service/Api'
 
 export const MalModal = ({ id, closeModal }) => {
 	const lagreEndring = () => {
-		malerApi.endreMalNavn(id, nyttMalnavn).then(closeModal())
+		DollyApi.endreMalNavn(id, nyttMalnavn).then(closeModal())
 	}
 
 	const [nyttMalnavn, setMalnavn] = useState('')
