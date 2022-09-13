@@ -5,7 +5,7 @@ const getMalerUrl = '/dolly-backend/api/v1/bestilling/malbestilling'
 
 export type Mal = {
 	malNavn: string
-	malId: number
+	id: number
 }
 
 type MalResponse = {

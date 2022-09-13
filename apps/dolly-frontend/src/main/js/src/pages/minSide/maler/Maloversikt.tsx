@@ -9,15 +9,14 @@ import { EndreMalnavn } from './EndreMalnavn'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
-import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
 import { DollyApi } from '~/service/Api'
+import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 export default ({ brukernavn }: { brukernavn: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
-	const mutate = useMatchMutate()
-
 	const { maler, loading } = useDollyMaler()
+	const mutate = useMatchMutate()
 
 	if (loading) {
 		return <Loading label="Loading" />
@@ -31,7 +30,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 	const avbrytRedigering = (id: string) => {
 		setUnderRedigering((erUnderRedigering) => erUnderRedigering.filter((number) => number !== id))
 	}
-	const slettMal = (malId: string) => {
+	const slettMal = (malId: number) => {
 		DollyApi.slettMal(malId).then(() => mutate(REGEX_BACKEND_BESTILLINGER))
 	}
 
