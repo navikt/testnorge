@@ -31,7 +31,7 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   jpa:
-    open-in-view: false
+    open-in-view: true #TODO Endre til false og refaktorere til å håndtere LazyInitializationException
 
 springdoc:
   swagger-ui:
