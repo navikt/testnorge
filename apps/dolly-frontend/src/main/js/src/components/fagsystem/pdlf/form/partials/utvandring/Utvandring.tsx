@@ -7,7 +7,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { InnflyttingTilNorge } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Innflytting } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 type UtvandringTypes = {
@@ -43,17 +43,16 @@ export const Utvandring = () => {
 
 	const sisteDatoInnflytting = () => {
 		if (opts.is.leggTil) {
-			const innflytting = opts?.personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
-			let siste = getSisteDato(
-				innflytting
-					?.map((val: InnflyttingTilNorge) => val?.folkeregistermetadata?.gyldighetstidspunkt)
-					.filter((val: string) => val)
-					.map((val: string) => new Date(val))
-			)
-			if (siste !== null) {
-				siste.setDate(siste.getDate() + 1)
+			const innflytting = opts?.personFoerLeggTil?.pdlforvalter?.person?.innflytting
+			if (innflytting) {
+				let siste = getSisteDato(
+					innflytting.map((val: Innflytting) => new Date(val.innflyttingsdato))
+				)
+				if (siste !== null) {
+					siste.setDate(siste.getDate() + 1)
+				}
+				return siste
 			}
-			return siste
 		}
 		return null
 	}

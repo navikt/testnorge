@@ -18,6 +18,11 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 			foedselsdato = values.pdldata.person.foedsel[0].foedselsdato
 		} else if (personFoerLeggTil?.tpsf?.foedselsdato) {
 			foedselsdato = personFoerLeggTil.tpsf.foedselsdato
+		} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
+			const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
+				.map((foedsel) => foedsel.foedselsdato)
+				.sort((a, b) => new Date(b) - new Date(a))
+			foedselsdato = foedselsdatoer?.[0]
 		} else if (personFoerLeggTil?.pdl) {
 			const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
 			foedselsdato = pdlPerson?.foedsel?.[0]?.foedselsdato
@@ -97,6 +102,11 @@ const invalidDoedsdato = (inntektTom, values) => {
 	if (_isNil(doedsdato)) {
 		if (personFoerLeggTil?.tpsf?.doedsdato) {
 			doedsdato = personFoerLeggTil.tpsf.doedsdato
+		} else if (personFoerLeggTil?.pdlforvalter?.person?.doedsfall) {
+			const doedsdatoer = personFoerLeggTil.pdlforvalter.person.doedsfall
+				.map((doedsfall) => doedsfall.doedsdato)
+				.sort((a, b) => new Date(a) - new Date(b))
+			doedsdato = doedsdatoer?.[0]
 		} else if (personFoerLeggTil?.pdl) {
 			const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
 			const pdlDoedsdato = pdlPerson?.doedsfall?.[0]?.doedsdato

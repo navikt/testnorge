@@ -47,7 +47,7 @@ public class IdentService {
                 .page(1)
                 .pageSize(10)
                 .excludeTags(List.of("ARENASYNT"))
-                .tag("DOLLY")
+                .tags(List.of("DOLLY", "TESTNORGE"))
                 .ident(ident)
                 .navn(navn)
                 .build();

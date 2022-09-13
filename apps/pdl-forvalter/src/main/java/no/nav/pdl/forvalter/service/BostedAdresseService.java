@@ -87,8 +87,11 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     private void handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
-        if (!person.getUtflytting().isEmpty() && !person.getUtflytting().stream()
-                .findFirst().orElse(new UtflyttingDTO()).isVelkjentLand()) {
+        if (!person.getUtflytting().isEmpty() && !person.getUtflytting().get(0).isVelkjentLand() &&
+                person.getInnflytting().stream()
+                        .noneMatch(innflytting -> person.getUtflytting().stream()
+                                .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
+                                        .isAfter(utflytting.getUtflyttingsdato())))) {
 
             person.setBostedsadresse(person.getBostedsadresse().stream()
                     .filter(adresse -> isNotTrue(adresse.getIsNew()))
