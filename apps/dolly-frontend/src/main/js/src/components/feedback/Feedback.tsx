@@ -65,7 +65,6 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 					<div className="feedback-form__submit">
 						<Button
 							as={null}
-							htmlType="submit"
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={(event) => {

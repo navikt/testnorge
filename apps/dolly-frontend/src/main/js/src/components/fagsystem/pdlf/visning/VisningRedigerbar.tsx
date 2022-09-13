@@ -288,7 +288,6 @@ export const VisningRedigerbar = ({
 										</NavButton>
 										<NavButton
 											variant={'primary'}
-											type="submit"
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

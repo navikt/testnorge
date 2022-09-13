@@ -40,7 +40,7 @@ export default class RedigerGruppe extends PureComponent {
 				<NavButton type={'reset'} variant={'danger'} onClick={() => this.onCancel()}>
 					Avbryt
 				</NavButton>
-				<NavButton variant={'primary'} type="submit">
+				<NavButton variant={'primary'}>
 					{this.erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 				</NavButton>
 			</Fragment>
