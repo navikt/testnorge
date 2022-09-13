@@ -98,13 +98,13 @@ public class TestpersonController {
         if (!identService.exists(ident)) {
             throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
         }
-        List<Long> bestillinger = bestillingService.fetchBestillingerByTestident(ident);
+        var bestillinger = bestillingService.fetchBestillingerByTestident(ident);
         if (bestillinger.isEmpty()) {
             throw new NotFoundException(format("Fant ingen bestillinger på ident %s", ident));
         }
 
         bestillinger.forEach(bestillingId -> {
-            Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer);
+            var bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer);
             gjenopprettBestillingService.executeAsync(bestilling);
         });
     }
