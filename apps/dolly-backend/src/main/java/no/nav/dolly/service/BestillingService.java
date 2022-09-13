@@ -227,7 +227,7 @@ public class BestillingService {
                         .antallIdenter(bestilling.getAntallIdenter())
                         .opprettFraIdenter(bestilling.getOpprettFraIdenter())
                         .sistOppdatert(now())
-                        .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
+                        .miljoer(nonNull(miljoer) && miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
