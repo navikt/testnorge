@@ -8,7 +8,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export const BestillingsveilederContext = createContext()
+export const BestillingsveilederContext = createContext(undefined)
 
 export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const {
@@ -24,7 +24,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 			console.warn('Noe gikk galt med bestilling, returnerer til gruppeoversikt!')
 			navigate('/')
 		}
-	})
+	}, [navigateRoot])
 
 	if (!location.state && !gruppeId) {
 		setNavigateRoot(true)

@@ -97,6 +97,7 @@ export const IdentVelger = ({ formikBag }: Form) => {
 
 			<TestpersonValg
 				value={type}
+				size={'small'}
 				legend={''}
 				name="pdldata.opprettNyPerson.syntetisk"
 				onChange={(value: IdentType) => handleIdentTypeChange(value)}

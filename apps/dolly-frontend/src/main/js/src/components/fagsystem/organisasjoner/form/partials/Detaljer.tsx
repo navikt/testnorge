@@ -15,6 +15,7 @@ import { EnhetBestilling } from '../../types'
 import { Kontaktdata } from './Kontaktdata'
 import { Adresser } from './Adresser'
 import { ToggleGroup } from '@navikt/ds-react'
+import styled from 'styled-components'
 
 type DetaljerProps = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
@@ -29,6 +30,10 @@ enum TypeUnderenhet {
 	VIRKSOMHET = 'VIRKSOMHET',
 }
 
+const StyledToggleGroup = styled(ToggleGroup)`
+	margin-bottom: 7px;
+`
+
 export const Detaljer = ({
 	formikBag,
 	path,
@@ -42,10 +47,10 @@ export const Detaljer = ({
 	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
 	useEffect(() => {
-		if (level === 0 && !_get(formikBag, `values.${path}.underenheter`)) {
+		if (level === 0 && !_get(formikBag, `${path}.underenheter`)) {
 			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
 		}
-	})
+	}, [])
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
 		level === 0 ||
@@ -72,11 +77,7 @@ export const Detaljer = ({
 			<Kategori title={!number ? 'Organisasjon' : null} vis={organisasjonPaths} flexRow={true}>
 				<div className="toggle--wrapper">
 					{level > 0 && (
-						<ToggleGroup
-							size={'small'}
-							onChange={handleToggleChange}
-							defaultValue={TypeUnderenhet.JURIDISKENHET}
-						>
+						<StyledToggleGroup size={'small'} onChange={handleToggleChange} value={typeUnderenhet}>
 							<ToggleGroup.Item
 								key={TypeUnderenhet.JURIDISKENHET}
 								value={TypeUnderenhet.JURIDISKENHET}
@@ -86,7 +87,7 @@ export const Detaljer = ({
 							<ToggleGroup.Item key={TypeUnderenhet.VIRKSOMHET} value={TypeUnderenhet.VIRKSOMHET}>
 								Virksomhet
 							</ToggleGroup.Item>
-						</ToggleGroup>
+						</StyledToggleGroup>
 					)}
 					<FormikSelect
 						name={`${path}.enhetstype`}

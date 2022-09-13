@@ -19,9 +19,10 @@ interface ThumbsRatingProps {
 const ThumbsButton = styled(NavButton)`
 	&& {
 		border: 0;
-		padding: 6px 10px;
+		padding: 7px 10px;
 		border-radius: 50%;
 		margin-left: 7px;
+		box-shadow: inset 0 0 0 1.5px var(--navds-button-color-secondary-border);
 	}
 
 	&& :hover {

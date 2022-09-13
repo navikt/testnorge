@@ -38,6 +38,7 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 			<DollyCheckbox
 				label="Har delt bosted"
 				checked={deltBosted}
+				checkboxMargin
 				onChange={() => setDeltBosted(!deltBosted)}
 				size="small"
 			/>

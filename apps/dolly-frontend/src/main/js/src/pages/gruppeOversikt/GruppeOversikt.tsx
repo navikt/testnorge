@@ -12,6 +12,7 @@ import { setSidetall } from '~/ducks/finnPerson'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
+import styled from 'styled-components'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -26,11 +27,13 @@ enum VisningType {
 	ALLE = 'alle',
 }
 
-export default function GruppeOversikt({
-	searchActive,
-	sideStoerrelse,
-	sidetall,
-}: GruppeOversiktProps) {
+const StyledToggleItem = styled(ToggleGroup.Item)`
+	&& {
+		padding-right: 13px;
+	}
+`
+
+const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversiktProps) => {
 	const {
 		currentBruker: { brukerId, brukertype },
 	} = useCurrentBruker()
@@ -63,14 +66,14 @@ export default function GruppeOversikt({
 				{!bankIdBruker && (
 					<div>
 						<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
-							<ToggleGroup.Item value="mine">
+							<StyledToggleItem value="mine">
 								<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
 								Mine
-							</ToggleGroup.Item>
-							<ToggleGroup.Item value="alle">
+							</StyledToggleItem>
+							<StyledToggleItem value="alle">
 								<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
 								Alle
-							</ToggleGroup.Item>
+							</StyledToggleItem>
 						</ToggleGroup>
 					</div>
 				)}
@@ -90,3 +93,4 @@ export default function GruppeOversikt({
 		</div>
 	)
 }
+export default GruppeOversikt
