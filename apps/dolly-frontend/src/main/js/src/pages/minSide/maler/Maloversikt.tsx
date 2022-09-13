@@ -10,13 +10,11 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
 import { DollyApi } from '~/service/Api'
-import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
 
 export default ({ brukernavn }: { brukernavn: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
-	const { maler, loading } = useDollyMaler()
-	const mutate = useMatchMutate()
+	const { maler, loading, mutate } = useDollyMaler()
 
 	if (loading) {
 		return <Loading label="Loading" />
@@ -31,7 +29,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 		setUnderRedigering((erUnderRedigering) => erUnderRedigering.filter((number) => number !== id))
 	}
 	const slettMal = (malId: number) => {
-		DollyApi.slettMal(malId).then(() => mutate(REGEX_BACKEND_BESTILLINGER))
+		DollyApi.slettMal(malId).then(() => mutate())
 	}
 
 	const columns = [
@@ -41,7 +39,13 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			dataField: 'malNavn',
 			formatter: (_cell: any, row: { id: string; malNavn: string }) =>
 				erUnderRedigering(row.id) ? (
-					<EndreMalnavn malInfo={row} avbrytRedigering={avbrytRedigering} />
+					<EndreMalnavn
+						malInfo={row}
+						avbrytRedigering={(id: string) => {
+							avbrytRedigering(id)
+							mutate()
+						}}
+					/>
 				) : (
 					row.malNavn
 				),

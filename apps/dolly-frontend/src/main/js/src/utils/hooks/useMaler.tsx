@@ -13,7 +13,7 @@ type MalResponse = {
 }
 
 export const useDollyMaler = () => {
-	const { data, error } = useSWR<MalResponse, Error>(getMalerUrl, fetcher, {
+	const { data, error, mutate } = useSWR<MalResponse, Error>(getMalerUrl, fetcher, {
 		fallbackData: { malbestillinger: ['TEMP', []] },
 	})
 
@@ -21,6 +21,7 @@ export const useDollyMaler = () => {
 		maler: data?.malbestillinger,
 		loading: !error && !data,
 		error: error,
+		mutate: mutate,
 	}
 }
 
