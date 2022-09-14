@@ -50,10 +50,10 @@ public class SplittGruppeService {
                 .forEach(testident -> bestillingRepository.findBestillingerByIdent(testident.getIdent()).stream()
                         .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()))
                         .filter(bestilling -> isNull(bestilling.getOpprettetFraId()))
-                        .forEach(bestilling -> saveCopy(bestilling, testgruppe)));
+                        .forEach(bestilling -> kopierOgLagre(bestilling, testgruppe)));
     }
 
-    private Bestilling saveCopy(Bestilling bestilling, Testgruppe testgruppe) {
+    private Bestilling kopierOgLagre(Bestilling bestilling, Testgruppe testgruppe) {
 
         var progresser = bestilling.getProgresser().stream()
                 .map(SerializationUtils::clone)
