@@ -42,16 +42,6 @@ public class SplittGruppeService {
 
         testidenter
                 .forEach(testident -> testident.setTestgruppe(testgruppe));
-
-        slettTommeBestillingerEtterFlytting(testidenter);
-    }
-
-    private void slettTommeBestillingerEtterFlytting(List<Testident> testidenter) {
-
-        testidenter
-                .forEach(testident -> bestillingRepository.findBestillingerByIdent(testident.getIdent()).stream()
-                        .filter(bestilling -> bestilling.getProgresser().isEmpty())
-                        .forEach(bestilling -> bestillingRepository.deleteById(bestilling.getId())));
     }
 
     private void kopierBestillinger(Testgruppe testgruppe, List<Testident> testidenter) {
