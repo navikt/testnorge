@@ -5,13 +5,13 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BestillingRepository extends Repository<Bestilling, Long> {
+public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
     @Query("from Bestilling b where b.id = :id")
     Optional<Bestilling> findById(@Param("id") Long id);

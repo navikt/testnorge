@@ -23,6 +23,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.service.BestillingService;
+import no.nav.dolly.service.SplittGruppeService;
 import no.nav.dolly.service.TestgruppeService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -59,6 +60,7 @@ public class TestgruppeController {
     private final OpprettPersonerByKriterierService opprettPersonerByKriterierService;
     private final OpprettPersonerFraIdenterMedKriterierService opprettPersonerFraIdenterMedKriterierService;
     private final GjenopprettGruppeService gjenopprettGruppeService;
+    private final SplittGruppeService splittGruppeService;
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
     @Transactional
@@ -205,5 +207,15 @@ public class TestgruppeController {
         Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraGruppe(gruppeId, miljoer);
         gjenopprettGruppeService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
+    }
+
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @Transactional
+    @PutMapping(value = "/{gruppeId}/identer/{identer}")
+    @Operation(description = "Flytt angitte identer til denne gruppe")
+    public void splittGruppe(@PathVariable("gruppeId") Long gruppeId,
+                             @PathVariable("identer") List<String> identer) {
+
+        splittGruppeService.flyttIdenterTilDenneGruppe(gruppeId, identer);
     }
 }
