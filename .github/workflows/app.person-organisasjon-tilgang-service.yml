@@ -41,7 +41,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/person-organisasjon-tilgang-service/config.dev.yml'
-      app-name: 'person-organisasjon-tilgang-service'
+      app-name: 'person-organisasjon-tilgang-service-dev'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

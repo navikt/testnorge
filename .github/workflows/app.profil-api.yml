@@ -41,7 +41,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/profil-api/config.dev.yml'
-      app-name: 'profil-api'
+      app-name: 'profil-api-dev'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

@@ -43,7 +43,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'proxies/tps-forvalteren-proxy/config.dev.yml'
-      app-name: 'tps-forvalteren-proxy'
+      app-name: 'tps-forvalteren-proxy-dev'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
