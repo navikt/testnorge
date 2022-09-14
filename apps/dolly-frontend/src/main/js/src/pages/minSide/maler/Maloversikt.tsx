@@ -5,17 +5,16 @@ import Button from '~/components/ui/button/Button'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
 import { MalIconItem } from '~/components/ui/icon/IconItem'
 import { EndreMalnavn } from './EndreMalnavn'
-import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
 import { Alert } from '@navikt/ds-react'
+import { DollyApi } from '~/service/Api'
 
 export default ({ brukernavn }: { brukernavn: string }) => {
 	const [searchText, setSearchText] = useState('')
 	const [underRedigering, setUnderRedigering] = useState([])
-
-	const { maler, loading } = useDollyMaler()
+	const { maler, loading, mutate } = useDollyMaler()
 
 	if (loading) {
 		return <Loading label="Loading" />
@@ -26,8 +25,11 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 
 	const erUnderRedigering = (id: string) => underRedigering.includes(id)
 
-	const avbrytRedigering = (id: string) => {
+	const avsluttRedigering = (id: string) => {
 		setUnderRedigering((erUnderRedigering) => erUnderRedigering.filter((number) => number !== id))
+	}
+	const slettMal = (malId: number) => {
+		DollyApi.slettMal(malId).then(() => mutate())
 	}
 
 	const columns = [
@@ -37,7 +39,13 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			dataField: 'malNavn',
 			formatter: (_cell: any, row: { id: string; malNavn: string }) =>
 				erUnderRedigering(row.id) ? (
-					<EndreMalnavn malInfo={row} avbrytRedigering={avbrytRedigering} />
+					<EndreMalnavn
+						malInfo={row}
+						avsluttRedigering={(id: string) => {
+							avsluttRedigering(id)
+							mutate()
+						}}
+					/>
 				) : (
 					row.malNavn
 				),
@@ -47,7 +55,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			width: '13',
 			formatter: (_cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
-					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
+					<Button className="avbryt" onClick={() => avsluttRedigering(row.id)}>
 						Avbryt
 					</Button>
 				) : (
@@ -62,12 +70,14 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			width: '10',
 			dataField: 'status',
 			formatter: (_cell: any, row: { id: any }) => (
-				<SlettButton action={() => slettMal(row.id, null)} loading={loading}>
+				<SlettButton action={() => slettMal(row.id)} loading={loading}>
 					Er du sikker på at du vil slette denne malen?
 				</SlettButton>
 			),
 		},
 	]
+
+	const antallEgneMaler = egneMaler.length
 
 	return (
 		<div className="maloversikt">
@@ -76,8 +86,8 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 				<h2>Mine maler</h2>
 				<SearchField placeholder={'Søk etter mal'} setText={setSearchText} />
 			</div>
-			{egneMaler.length > 0 ? (
-				malerFiltrert(egneMaler, searchText).length > 0 ? (
+			{antallEgneMaler > 0 &&
+				(malerFiltrert(egneMaler, searchText).length > 0 ? (
 					<ErrorBoundary>
 						<DollyTable
 							data={malerFiltrert(egneMaler, searchText)}
@@ -88,8 +98,8 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 					</ErrorBoundary>
 				) : (
 					<Alert variant={'info'}>Ingen maler samsvarte med søket ditt</Alert>
-				)
-			) : (
+				))}
+			{antallEgneMaler === 0 && (
 				<Alert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
