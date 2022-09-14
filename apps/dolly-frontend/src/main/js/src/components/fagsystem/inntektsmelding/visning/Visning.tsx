@@ -17,6 +17,7 @@ import JoarkDokumentService, {
 } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 import Panel from '~/components/ui/panel/Panel'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -28,7 +29,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 	if (!liste || liste.length < 1) {
 		return null
 	}
-
+	console.log('liste: ', liste) //TODO - SLETT MEG
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		return JoarkDokumentService.hentJournalpost(
 			bestilling.transaksjonId.journalpostId,
@@ -77,25 +78,22 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 					const gyldigeBestillinger = liste.filter((bestilling) =>
 						data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 					)
-					if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
-						return (
-							<>
-								<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-								{data.length > 5 ? (
-									// @ts-ignore
-									<Panel heading={`Inntektsmeldinger`}>
-										<DollyFieldArray
-											ignoreOnSingleElement={true}
-											header="Inntektsmelding"
-											data={gyldigeBestillinger}
-											expandable
-										>
-											{(inntekter: BestillingData) => (
-												<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
-											)}
-										</DollyFieldArray>
-									</Panel>
-								) : (
+					const manglerFagsystemdata = !gyldigeBestillinger || gyldigeBestillinger?.length < 1
+
+					return (
+						<>
+							<SubOverskrift
+								label="Inntektsmelding (fra Altinn)"
+								iconKind="inntektsmelding"
+								isWarning={manglerFagsystemdata}
+							/>
+							{manglerFagsystemdata ? (
+								<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+									Kunne ikke hente inntektsmelding-data på person
+								</AlertStripeAdvarsel>
+							) : data.length > 5 ? (
+								// @ts-ignore
+								<Panel heading={`Inntektsmeldinger`}>
 									<DollyFieldArray
 										ignoreOnSingleElement={true}
 										header="Inntektsmelding"
@@ -106,10 +104,21 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 											<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
 										)}
 									</DollyFieldArray>
-								)}
-							</>
-						)
-					}
+								</Panel>
+							) : (
+								<DollyFieldArray
+									ignoreOnSingleElement={true}
+									header="Inntektsmelding"
+									data={gyldigeBestillinger}
+									expandable
+								>
+									{(inntekter: BestillingData) => (
+										<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+									)}
+								</DollyFieldArray>
+							)}
+						</>
+					)
 				}
 			}}
 			label="Laster inntektsmelding data"
@@ -118,15 +127,18 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 }
 
 InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
+	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
+	console.log('ident: ', ident) //TODO - SLETT MEG
+
 	if (!bestillinger) {
 		return false
 	}
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.inntektsmelding &&
-			!tomBestilling(bestilling.data.inntektsmelding.inntekter) &&
-			erGyldig(bestilling.id, 'INNTKMELD', ident)
+			bestilling.data.inntektsmelding && !tomBestilling(bestilling.data.inntektsmelding.inntekter)
+		// &&
+		// erGyldig(bestilling.id, 'INNTKMELD', ident)
 	)
 }
 

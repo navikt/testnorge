@@ -7,6 +7,7 @@ import { KrrApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 type KrrVisningProps = {
 	data: Array<Data>
@@ -84,33 +85,46 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster KRR data" />
 	}
-	if (!data || data.length === 0) {
-		return false
+	if (!data) {
+		return null
 	}
 
-	const sortedData = Array.isArray(data) ? data.slice().reverse() : data
+	const sortedData = Array.isArray(data) ? data?.slice().reverse() : data
 
-	const antallKrr = sortedData.length
-	const antallFremtidige = sortedData.filter(
+	const antallKrr = sortedData?.length
+	const antallFremtidige = sortedData?.filter(
 		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date()
 	).length
 
 	const gyldigeData =
-		antallKrr > antallFremtidige ? sortedData.slice(0, antallFremtidige + 1) : sortedData
-	const historiskeData = antallKrr > gyldigeData.length ? sortedData.slice(gyldigeData.length) : []
+		antallKrr > antallFremtidige ? sortedData?.slice(0, antallFremtidige + 1) : sortedData
+	const historiskeData =
+		antallKrr > gyldigeData?.length ? sortedData?.slice(gyldigeData?.length) : []
+
+	const manglerFagsystemdata = sortedData?.length < 1
 
 	return (
 		<ErrorBoundary>
 			<div>
-				<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
-				<div className="person-visning_content">
-					<ArrayHistorikk
-						component={Visning}
-						data={gyldigeData}
-						historiskData={historiskeData}
-						header={''}
-					/>
-				</div>
+				<SubOverskrift
+					label="Kontaktinformasjon og reservasjon"
+					iconKind="krr"
+					isWarning={manglerFagsystemdata}
+				/>
+				{manglerFagsystemdata ? (
+					<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+						Kunne ikke hente KRR-data på person
+					</AlertStripeAdvarsel>
+				) : (
+					<div className="person-visning_content">
+						<ArrayHistorikk
+							component={Visning}
+							data={gyldigeData}
+							historiskData={historiskeData}
+							header={''}
+						/>
+					</div>
+				)}
 			</div>
 		</ErrorBoundary>
 	)

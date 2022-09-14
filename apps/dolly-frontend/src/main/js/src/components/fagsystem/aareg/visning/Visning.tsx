@@ -12,6 +12,7 @@ import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 type AaregVisningProps = {
 	liste?: Array<Arbeidsforhold>
@@ -65,59 +66,69 @@ export const AaregVisning = ({ liste, loading }: AaregVisningProps) => {
 		.slice()
 		.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
 
+	const manglerFagsystemdata = sortedData?.length < 1
+
 	return (
 		<div>
-			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" />
-			<ErrorBoundary>
-				<DollyFieldArray
-					header="Arbeidsforhold"
-					getHeader={getHeader}
-					data={sortedData}
-					expandable={sortedData.length > 1}
-				>
-					{(arbeidsforhold: Arbeidsforhold) => (
-						<React.Fragment>
-							<div className="person-visning_content">
-								{arbeidsforhold.ansettelsesperiode && (
-									<TitleValue
-										title="Arbeidsforhold type"
-										value={arbeidsforhold.type}
-										kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-									/>
-								)}
+			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
+			{manglerFagsystemdata ? (
+				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+					Kunne ikke hente arbeidsforhold-data på person
+				</AlertStripeAdvarsel>
+			) : (
+				<ErrorBoundary>
+					<DollyFieldArray
+						header="Arbeidsforhold"
+						getHeader={getHeader}
+						data={sortedData}
+						expandable={sortedData.length > 1}
+					>
+						{(arbeidsforhold: Arbeidsforhold) => (
+							<React.Fragment>
+								<div className="person-visning_content">
+									{arbeidsforhold.ansettelsesperiode && (
+										<TitleValue
+											title="Arbeidsforhold type"
+											value={arbeidsforhold.type}
+											kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+										/>
+									)}
 
-								<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
+									<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
 
-								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
-									<TitleValue
-										title="Ansatt fra"
-										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
-									/>
-								)}
-								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
-									<TitleValue
-										title="Ansatt til"
-										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
-									/>
-								)}
-								{/* //TODO: Sluttårsak mangler fra Aareg */}
-							</div>
+									{arbeidsforhold.ansettelsesperiode &&
+										arbeidsforhold.ansettelsesperiode.periode && (
+											<TitleValue
+												title="Ansatt fra"
+												value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
+											/>
+										)}
+									{arbeidsforhold.ansettelsesperiode &&
+										arbeidsforhold.ansettelsesperiode.periode && (
+											<TitleValue
+												title="Ansatt til"
+												value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
+											/>
+										)}
+									{/* //TODO: Sluttårsak mangler fra Aareg */}
+								</div>
 
-							<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
+								<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
 
-							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
+								<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 
-							<Fartoy data={arbeidsforhold.fartoy} />
+								<Fartoy data={arbeidsforhold.fartoy} />
 
-							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
+								<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
 
-							<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
+								<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
 
-							<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
-			</ErrorBoundary>
+								<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
+							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			)}
 		</div>
 	)
 }

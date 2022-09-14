@@ -10,6 +10,7 @@ import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import Panel from '~/components/ui/panel/Panel'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
@@ -87,19 +88,31 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 	const sisteAar = sortedData[0]?.aarMaaned?.substring(0, 4)
 	const inntektsperiode = foersteAar === sisteAar ? foersteAar : `${foersteAar} - ${sisteAar}`
 
+	const manglerFagsystemdata = sortedData?.length < 1
+
 	return (
 		<div>
-			<SubOverskrift label="A-ordningen (Inntektstub)" iconKind="inntektstub" />
-			<ErrorBoundary>
-				{numInntekter > 5 ? (
-					// @ts-ignore
-					<Panel heading={`Inntektsinsinformasjon (${inntektsperiode})`}>
+			<SubOverskrift
+				label="A-ordningen (Inntektstub)"
+				iconKind="inntektstub"
+				isWarning={manglerFagsystemdata}
+			/>
+			{manglerFagsystemdata ? (
+				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+					Kunne ikke hente inntekt-data på person
+				</AlertStripeAdvarsel>
+			) : (
+				<ErrorBoundary>
+					{numInntekter > 5 ? (
+						// @ts-ignore
+						<Panel heading={`Inntektsinsinformasjon (${inntektsperiode})`}>
+							<InntektsinformasjonVisning sortedData={sortedData} numInntekter={numInntekter} />
+						</Panel>
+					) : (
 						<InntektsinformasjonVisning sortedData={sortedData} numInntekter={numInntekter} />
-					</Panel>
-				) : (
-					<InntektsinformasjonVisning sortedData={sortedData} numInntekter={numInntekter} />
-				)}
-			</ErrorBoundary>
+					)}
+				</ErrorBoundary>
+			)}
 		</div>
 	)
 }

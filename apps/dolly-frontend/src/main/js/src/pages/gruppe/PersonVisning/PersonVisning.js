@@ -32,6 +32,8 @@ import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import DollyService from '~/service/services/dolly/DollyService'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -56,9 +58,39 @@ export const PersonVisning = ({
 	leggTilPaaPerson,
 	iLaastGruppe,
 }) => {
-	const { gruppeId } = ident
+	if (!data) {
+		return null
+	}
+	// console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('ident: ', ident) //TODO - SLETT MEG
 
+	const { gruppeId } = ident
 	const { bestillingerById } = useBestillingerGruppe(gruppeId)
+
+	const {
+		aareg,
+		sigrunstub,
+		pensjonforvalter,
+		inntektstub,
+		brregstub,
+		krrstub,
+		instdata,
+		arenaforvalteren,
+	} = data
+
+	// udistub
+	// dokarkiv
+
+	const manglerFagsystemdata = [
+		aareg,
+		sigrunstub,
+		pensjonforvalter,
+		inntektstub,
+		brregstub,
+		krrstub,
+		instdata,
+		arenaforvalteren,
+	].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillingerById)
@@ -136,7 +168,9 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-
+					<Button onClick={() => DollyService.gjenopprettPerson(ident?.ident)} kind="synchronize">
+						GJENOPPRETT PERSON
+					</Button>
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
@@ -162,6 +196,13 @@ export const PersonVisning = ({
 						/>
 					)}
 				</div>
+				{manglerFagsystemdata && (
+					<AlertStripeInfo style={{ marginBottom: '20px' }}>
+						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
+						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med team Dolly
+						dersom problemet vedvarer.
+					</AlertStripeInfo>
+				)}
 				{ident.master !== 'PDL' && (
 					<PdlfVisningConnector
 						data={data.pdlforvalter}
@@ -174,20 +215,20 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning liste={data.aareg} loading={loading.aareg} />
-				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
-				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
-				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
+				<AaregVisning liste={aareg} loading={loading.aareg} />
+				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
+				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
 				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
-				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
-				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-				<InstVisning data={data.instdata} loading={loading.instdata} />
+				<BrregVisning data={brregstub} loading={loading.brregstub} />
+				<KrrVisning data={krrstub} loading={loading.krrstub} />
+				<InstVisning data={instdata} loading={loading.instdata} />
 				<ArenaVisning
-					data={data.arenaforvalteren}
+					data={arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 					ident={ident}

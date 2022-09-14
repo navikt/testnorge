@@ -5,6 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 const getSortedData = (data) => {
 	return Array.isArray(data)
@@ -19,33 +20,44 @@ const getSortedData = (data) => {
 
 export const InstVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster inst data" />
-	if (!data) return false
+	if (!data) return null
 
 	const sortedData = getSortedData(data)
+	const manglerFagsystemdata = sortedData?.length < 1
 
 	return (
 		<div>
-			<SubOverskrift label="Institusjonsopphold" iconKind="institusjon" />
-			<ErrorBoundary>
-				<DollyFieldArray data={sortedData} nested>
-					{(opphold, idx) => (
-						<div className="person-visning_content" key={idx}>
-							<TitleValue
-								title="Institusjonstype"
-								value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
-							/>
-							<TitleValue
-								title="Startdato"
-								value={Formatters.formatStringDates(opphold.startdato)}
-							/>
-							<TitleValue
-								title="Sluttdato"
-								value={Formatters.formatStringDates(opphold.sluttdato)}
-							/>
-						</div>
-					)}
-				</DollyFieldArray>
-			</ErrorBoundary>
+			<SubOverskrift
+				label="Institusjonsopphold"
+				iconKind="institusjon"
+				isWarning={manglerFagsystemdata}
+			/>
+			{manglerFagsystemdata ? (
+				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+					Kunne ikke hente institusjonsopphold-data på person
+				</AlertStripeAdvarsel>
+			) : (
+				<ErrorBoundary>
+					<DollyFieldArray data={sortedData} nested>
+						{(opphold, idx) => (
+							<div className="person-visning_content" key={idx}>
+								<TitleValue
+									title="Institusjonstype"
+									value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
+								/>
+								<TitleValue
+									title="Startdato"
+									value={Formatters.formatStringDates(opphold.startdato)}
+								/>
+								<TitleValue
+									title="Sluttdato"
+									value={Formatters.formatStringDates(opphold.sluttdato)}
+								/>
+							</div>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			)}
 		</div>
 	)
 }

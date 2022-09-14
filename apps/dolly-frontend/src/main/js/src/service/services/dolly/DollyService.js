@@ -126,6 +126,10 @@ export default {
 		})
 	},
 
+	gjenopprettPerson(ident) {
+		return Request.post(Endpoints.gjenopprettPerson(ident))
+	},
+
 	importerPersoner: (gruppeId, request) => {
 		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
 	},

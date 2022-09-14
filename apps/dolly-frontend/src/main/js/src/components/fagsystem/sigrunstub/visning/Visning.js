@@ -5,6 +5,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 const Visning = ({ data, header, expandable }) => {
 	if (!data || data.length === 0) {
@@ -34,41 +35,56 @@ const SvalbardVisning = ({ data }) => {
 const getInntektsperiode = (fastlandsData, svalbardsData) => {
 	const fastland = fastlandsData?.map((f) => f.inntektsaar)
 	const svalbard = svalbardsData?.map((s) => s.inntektsaar)
-	const foersteAar = Math.min(...fastland.concat(...svalbard))
-	const sisteAar = Math.max(...fastland.concat(...svalbard))
+	const foersteAar = Math.min(...fastland?.concat(...svalbard))
+	const sisteAar = Math.max(...fastland?.concat(...svalbard))
 	return foersteAar === sisteAar ? `${foersteAar}` : `${foersteAar} - ${sisteAar}`
 }
 
 export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 	if (loading) return <Loading label="Laster sigrunstub-data" />
-	if (!data || data.length === 0) {
-		return false
+	if (!data) {
+		return null
 	}
-	const grunnlag = data[0].grunnlag
-	const svalbardGrunnlag = data[0].svalbardGrunnlag
+	const manglerFagsystemdata = data?.length < 1
+
+	const grunnlag = data[0]?.grunnlag
+	const svalbardGrunnlag = data[0]?.svalbardGrunnlag
 
 	const sortedData = (initialData) =>
 		Array.isArray(initialData) ? initialData.slice().reverse() : initialData
 
-	const inntektsperiode = getInntektsperiode(grunnlag, svalbardGrunnlag)
+	const inntektsperiode = !manglerFagsystemdata && getInntektsperiode(grunnlag, svalbardGrunnlag)
+
 	return (
-		<div>
-			{visTittel && <SubOverskrift label="Skatteoppgjør (Sigrun)" iconKind="sigrun" />}
-			<ErrorBoundary>
-				{grunnlag?.length + svalbardGrunnlag?.length > 5 ? (
-					<Panel heading={`Skatteoppgjør (${inntektsperiode})`}>
+		<>
+			{visTittel && (
+				<SubOverskrift
+					label="Skatteoppgjør (Sigrun)"
+					iconKind="sigrun"
+					isWarning={manglerFagsystemdata}
+				/>
+			)}
+			{manglerFagsystemdata ? (
+				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+					Kunne ikke hente skatteoppgjør-data på person
+				</AlertStripeAdvarsel>
+			) : (
+				<ErrorBoundary>
+					{grunnlag?.length + svalbardGrunnlag?.length > 5 ? (
+						<Panel heading={`Skatteoppgjør (${inntektsperiode})`}>
+							<div className="person-visning_content">
+								<FastlandVisning data={sortedData(grunnlag)} />
+								<SvalbardVisning data={sortedData(svalbardGrunnlag)} />
+							</div>
+						</Panel>
+					) : (
 						<div className="person-visning_content">
 							<FastlandVisning data={sortedData(grunnlag)} />
 							<SvalbardVisning data={sortedData(svalbardGrunnlag)} />
 						</div>
-					</Panel>
-				) : (
-					<div className="person-visning_content">
-						<FastlandVisning data={sortedData(grunnlag)} />
-						<SvalbardVisning data={sortedData(svalbardGrunnlag)} />
-					</div>
-				)}
-			</ErrorBoundary>
-		</div>
+					)}
+				</ErrorBoundary>
+			)}
+		</>
 	)
 }
