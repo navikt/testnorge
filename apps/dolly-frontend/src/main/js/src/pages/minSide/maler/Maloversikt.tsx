@@ -25,7 +25,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 
 	const erUnderRedigering = (id: string) => underRedigering.includes(id)
 
-	const avbrytRedigering = (id: string) => {
+	const avsluttRedigering = (id: string) => {
 		setUnderRedigering((erUnderRedigering) => erUnderRedigering.filter((number) => number !== id))
 	}
 	const slettMal = (malId: number) => {
@@ -41,8 +41,8 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 				erUnderRedigering(row.id) ? (
 					<EndreMalnavn
 						malInfo={row}
-						avbrytRedigering={(id: string) => {
-							avbrytRedigering(id)
+						avsluttRedigering={(id: string) => {
+							avsluttRedigering(id)
 							mutate()
 						}}
 					/>
@@ -55,7 +55,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			width: '13',
 			formatter: (_cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
-					<Button className="avbryt" onClick={() => avbrytRedigering(row.id)}>
+					<Button className="avbryt" onClick={() => avsluttRedigering(row.id)}>
 						AVBRYT
 					</Button>
 				) : (
