@@ -162,6 +162,12 @@ const getUpdatedPdldata = (pdldata: any) => {
 			}
 		)
 	}
+
+	if (person?.kontaktinformasjonForDoedsbo) {
+		newPdldata.person.kontaktinformasjonForDoedsbo = person.kontaktinformasjonForDoedsbo.map(
+			(kontaktinfo: any) => updateKontaktType(kontaktinfo)
+		)
+	}
 	return newPdldata
 }
 
@@ -223,4 +229,20 @@ const updateData = (data: any, initalValues: any) => {
 		}
 	}
 	return newData
+}
+
+const updateKontaktType = (kontaktinfo: any) => {
+	if (kontaktinfo?.advokatSomKontakt) {
+		kontaktinfo.kontaktType = 'ADVOKAT'
+	} else if (kontaktinfo?.organisasjonSomKontakt) {
+		kontaktinfo.kontaktType = 'ORGANISASJON'
+	} else if (kontaktinfo?.personSomKontakt) {
+		const person = kontaktinfo.personSomKontakt
+		if (person.nyKontaktperson) {
+			kontaktinfo.kontaktType = 'NY_PERSON'
+		} else if (person.identifikasjonsnummer || person.foedselsdato) {
+			kontaktinfo.kontaktType = 'PERSON_FDATO'
+		}
+	}
+	return kontaktinfo
 }
