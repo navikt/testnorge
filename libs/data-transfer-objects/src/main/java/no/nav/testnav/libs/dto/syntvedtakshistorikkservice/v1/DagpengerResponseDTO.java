@@ -21,6 +21,8 @@ public class DagpengerResponseDTO {
     @JsonAlias({"nyeMottaDagpengesoknadResponse", "nyeMottaDagpengevedtakResponse", "nyeDagpResponse"})
     private List<NyeDagpenger> nyeDagpenger;
 
+    private List<DagpengevedtakDTO> nyeDagp;
+
     @JsonAlias({"nyeMottaDagpengesoknadFeilList", "nyeMottaDagpengevedtakFeilList", "nyeDagpFeilList"})
     private List<NyeDagpengerFeil> feiledeDagpenger;
 
@@ -30,6 +32,13 @@ public class DagpengerResponseDTO {
             nyeDagpenger = new ArrayList<>();
         }
         return nyeDagpenger;
+    }
+
+    public List<DagpengevedtakDTO> getNyeDagp(){
+        if(isNull(nyeDagp)){
+            nyeDagp = new ArrayList<>();
+        }
+        return nyeDagp;
     }
 
     public List<NyeDagpengerFeil> getFeiledeDagpenger(){

@@ -113,6 +113,7 @@ public class BestillingController {
         return malBestillingService.getMalbestillingByNavnAndUser(brukerId, malNavn);
     }
 
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @DeleteMapping("/malbestilling/{id}")
     @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {

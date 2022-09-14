@@ -49,6 +49,7 @@ import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
@@ -227,7 +228,7 @@ public class BestillingService {
                         .antallIdenter(bestilling.getAntallIdenter())
                         .opprettFraIdenter(bestilling.getOpprettFraIdenter())
                         .sistOppdatert(now())
-                        .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
+                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
