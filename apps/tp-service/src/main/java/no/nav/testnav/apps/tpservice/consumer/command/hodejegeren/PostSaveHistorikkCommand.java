@@ -23,7 +23,6 @@ public class PostSaveHistorikkCommand implements Callable<List<String>> {
 
     @Override
     public List<String> call() {
-
         return webClient.post()
                 .uri(builder ->
                         builder.path("/api/v1/historikk")
@@ -32,8 +31,6 @@ public class PostSaveHistorikkCommand implements Callable<List<String>> {
                 .body(BodyInserters.fromPublisher(Mono.just(request), TpSaveInHodejegerenRequest.class))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

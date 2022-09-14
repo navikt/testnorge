@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -34,7 +35,11 @@ public class HodejegerenConsumer {
     public List<String> saveHistory(
             TpSaveInHodejegerenRequest request
     ) {
-        return new PostSaveHistorikkCommand(request, webClient).call();
+        try {
+            return new PostSaveHistorikkCommand(request, webClient).call();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     public List<String> getLevende(
