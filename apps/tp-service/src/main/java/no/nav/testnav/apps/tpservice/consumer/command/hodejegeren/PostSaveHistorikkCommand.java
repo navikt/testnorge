@@ -2,14 +2,11 @@ package no.nav.testnav.apps.tpservice.consumer.command.hodejegeren;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpservice.domain.TpSaveInHodejegerenRequest;
-import no.nav.testnav.apps.tpservice.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
