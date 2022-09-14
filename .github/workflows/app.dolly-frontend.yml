@@ -41,7 +41,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-dev') }}
     with:
       resource: 'apps/dolly-frontend/config.dev.yml'
-      app-name: 'testnav-dolly-frontend'
+      app-name: 'testnav-dolly-frontend-dev'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
