@@ -1,22 +1,16 @@
 import React, { useState } from 'react'
-import { malerApi } from './MalerApi'
 import Button from '~/components/ui/button/Button'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { DollyApi } from '~/service/Api'
 
-export const EndreMalnavn = ({ malInfo, avbrytRedigering }) => {
-	const lagreEndring = (nyttMalnavn, id) => {
-		malerApi
-			.endreMalNavn(id, nyttMalnavn)
-			.then(() => mutate(REGEX_BACKEND_BESTILLINGER))
-			.then(() => avbrytRedigering(id))
-	}
-
+export const EndreMalnavn = ({ malInfo, avsluttRedigering }) => {
 	const { malNavn, id } = malInfo
 	const [nyttMalnavn, setMalnavn] = useState(malNavn)
 
-	const mutate = useMatchMutate()
+	const lagreEndring = (nyttMalnavn, id) => {
+		DollyApi.endreMalNavn(id, nyttMalnavn).then(() => avsluttRedigering(id))
+	}
 
 	return (
 		<ErrorBoundary>
