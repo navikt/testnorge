@@ -13,9 +13,6 @@ import java.util.Optional;
 
 public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
-    @Query("from Bestilling b where b.id = :id")
-    Optional<Bestilling> findById(@Param("id") Long id);
-
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +
             "join Gruppe g " +

@@ -11,10 +11,6 @@ import java.util.Optional;
 
 public interface TransaksjonMappingRepository extends CrudRepository<TransaksjonMapping, Long> {
 
-    TransaksjonMapping save(TransaksjonMapping transaksjonMapping);
-
-    Optional<List<TransaksjonMapping>> findAllByIdent(String ident);
-
     Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 
     @Query(value = "from TransaksjonMapping t where (:bestillingId is null or " +
@@ -28,6 +24,6 @@ public interface TransaksjonMappingRepository extends CrudRepository<Transaksjon
 
     @Modifying
     @Query(value = "delete from TransaksjonMapping tm where tm.bestillingId in " +
-                    "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
+            "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
     int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 }

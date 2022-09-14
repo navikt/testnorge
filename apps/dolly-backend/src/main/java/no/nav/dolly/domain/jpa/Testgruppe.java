@@ -23,7 +23,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +40,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "GRUPPE")
-public class Testgruppe implements Serializable {
+public class Testgruppe {
 
     @Id
     @GeneratedValue(generator = "gruppeIdGenerator")
