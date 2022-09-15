@@ -71,19 +71,21 @@ public class AmeldingService {
                 dtoMaanedMap.put(amelding.getMaaned(), mapperFacade.map(amelding, AMeldingDTO.class, context));
             });
 
-            var response = sendAmeldinger(dtoMaanedMap.values().stream().toList(), env);
-            response.forEach((key, value) -> {
-                if (value.getStatusCode().is2xxSuccessful()) {
-                    saveTransaksjonId(value, key, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
-                }
-                appendResult(
-                    Map.entry(key,
-                        value.getStatusCode().is2xxSuccessful()
-                            ? "OK"
-                            : value.getStatusCode().getReasonPhrase()),
-                    "1",
-                    result);
-            });
+            Optional
+                .ofNullable(sendAmeldinger(dtoMaanedMap.values().stream().toList(), env))
+                .orElse(Map.of())
+                .forEach((key, value) -> {
+                    if (value.getStatusCode().is2xxSuccessful()) {
+                        saveTransaksjonId(value, key, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
+                    }
+                    appendResult(
+                        Map.entry(key,
+                            value.getStatusCode().is2xxSuccessful()
+                                ? "OK"
+                                : value.getStatusCode().getReasonPhrase()),
+                        "1",
+                        result);
+                });
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
             appendResult(Map.entry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
