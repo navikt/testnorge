@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -214,7 +215,7 @@ public class TestgruppeController {
     @PutMapping(value = "/{gruppeId}/identer/{identer}")
     @Operation(description = "Flytt angitte identer til denne gruppe")
     public void splittGruppe(@PathVariable("gruppeId") Long gruppeId,
-                             @PathVariable("identer") List<String> identer) {
+                             @PathVariable("identer") Set<String> identer) {
 
         splittGruppeService.flyttIdenterTilDenneGruppe(gruppeId, identer);
     }

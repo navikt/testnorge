@@ -2,8 +2,8 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -15,6 +15,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -32,35 +33,29 @@ public class SplittGruppeService {
     private final IdentRepository identRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
 
-    public void flyttIdenterTilDenneGruppe(Long gruppeId, List<String> identer) {
+    public void flyttIdenterTilDenneGruppe(Long gruppeId, Set<String> identer) {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format(GRUPPE_IKKE_FUNNET, gruppeId)));
 
-        var testidenter = identRepository.findByIdentIn(identer);
+        bestillingRepository.findBestillingerByIdentIn(identer).stream()
+                .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()))
+                .filter(bestilling -> isNull(bestilling.getOpprettetFraId()))
+                .filter(bestilling -> isNull(bestilling.getFeil()))
+                .forEach(bestilling -> moveBestillinger(bestilling, identer, testgruppe));
 
-        kopierBestillinger(testgruppe, testidenter);
-
-        testidenter
+        identRepository.findByIdentIn(identer)
                 .forEach(testident -> testident.setTestgruppe(testgruppe));
     }
 
-    private void kopierBestillinger(Testgruppe testgruppe, List<Testident> testidenter) {
-
-        testidenter
-                .forEach(testident -> bestillingRepository.findBestillingerByIdent(testident.getIdent()).stream()
-                        .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()))
-                        .filter(bestilling -> isNull(bestilling.getOpprettetFraId()))
-                        .filter(bestilling -> isNull(bestilling.getFeil()))
-                        .forEach(bestilling -> kopierOgLagre(bestilling, testident.getIdent(), testgruppe)));
-    }
-
-    private Bestilling kopierOgLagre(Bestilling bestilling, String ident, Testgruppe testgruppe) {
+    private Bestilling moveBestillinger(Bestilling bestilling, Set<String> identer, Testgruppe testgruppe) {
 
         var progresser = bestilling.getProgresser().stream()
+                .filter(progress -> identer.contains(progress.getIdent()))
                 .map(SerializationUtils::clone)
                 .toList();
         var transaksjonMappinger = bestilling.getTransaksjonmapping().stream()
+                .filter(mapping -> identer.contains(mapping.getIdent()))
                 .map(SerializationUtils::clone)
                 .toList();
 
@@ -70,14 +65,13 @@ public class SplittGruppeService {
         nyBestilling.setProgresser(null);
         nyBestilling.setTransaksjonmapping(null);
         nyBestilling.setKontroller(null);
-        nyBestilling.setAntallIdenter(1);
+        nyBestilling.setAntallIdenter(progresser.size());
         nyBestilling.setFerdig(true);
         nyBestilling.setStoppet(false);
 
         var oppdatertBestilling = bestillingRepository.save(nyBestilling);
 
         progresser.stream()
-                .filter(progress -> ident.equals(progress.getIdent()))
                 .forEach(progress -> {
                     bestillingProgressRepository.deleteById(progress.getId());
                     progress.setId(null);
@@ -86,7 +80,6 @@ public class SplittGruppeService {
                 });
 
         transaksjonMappinger.stream()
-                .filter(transaksjonMapping -> ident.equals(transaksjonMapping.getIdent()))
                 .forEach(transaksjonMapping -> {
                     transaksjonMappingRepository.deleteById(transaksjonMapping.getId());
                     transaksjonMapping.setId(null);
@@ -94,6 +87,20 @@ public class SplittGruppeService {
                     transaksjonMappingRepository.save(transaksjonMapping);
                 });
 
+        deleteKildeBestilling(bestilling, progresser);
+
         return oppdatertBestilling;
+    }
+
+    private void deleteKildeBestilling(Bestilling bestilling, List<BestillingProgress> progresser) {
+
+        if (bestilling.getProgresser().size() == progresser.size()) {
+            bestilling.getKontroller()
+                    .forEach(bestillingKontroll -> bestillingKontrollRepository.deleteById(bestilling.getId()));
+            bestillingRepository.deleteById(bestilling.getId());
+
+        } else {
+            bestilling.setAntallIdenter(bestilling.getProgresser().size() - progresser.size());
+        }
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,11 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
     @Query(value = "from Bestilling b join BestillingProgress bp on b.id = bp.bestilling.id where bp.ident = :ident order by b.id asc")
     List<Bestilling> findBestillingerByIdent(@Param("ident") String ident);
+
+    @Query(value = "from Bestilling b " +
+            "join BestillingProgress bp on b.id = bp.bestilling.id " +
+            "and bp.ident in (:identer) order by b.id asc")
+    List<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
