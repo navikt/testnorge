@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 @Slf4j
-public class AaregMergeUtil {
+public class AaregUtil {
 
     public List<Arbeidsforhold> merge(List<Arbeidsforhold> nyeArbeidsforhold,
                                       List<ArbeidsforholdResponse> eksisterendeArbeidsforhold, String ident, boolean isLeggTil) {
@@ -119,4 +120,15 @@ public class AaregMergeUtil {
 
         return nyeArbeidsforhold;
     }
+
+    public static StringBuilder appendResult(Map.Entry<String, String> entry, String
+        arbeidsforholdId, StringBuilder builder) {
+        return builder.append(',')
+            .append(entry.getKey())
+            .append(": arbforhold=")
+            .append(arbeidsforholdId)
+            .append('$')
+            .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
+    }
+
 }
