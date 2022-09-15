@@ -210,7 +210,7 @@ public class TestgruppeController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @Transactional
     @PutMapping(value = "/{gruppeId}/identer/{identer}")
     @Operation(description = "Flytt angitte identer til denne gruppe")

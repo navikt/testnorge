@@ -85,17 +85,19 @@ public class SplittGruppeService {
 
         var oppdatertBestilling = bestillingRepository.save(nyBestilling);
 
-        nyeProgresser.stream()
+        nyeProgresser
                 .forEach(progress -> {
-                    bestillingProgressRepository.deleteById(progress.getId());
+                    bestillingProgressRepository.findById(progress.getId())
+                            .ifPresent(bestillingProgressRepository::delete);
                     progress.setId(null);
                     progress.setBestilling(oppdatertBestilling);
                     bestillingProgressRepository.save(progress);
                 });
 
-        nyeTransaksjonMappinger.stream()
+        nyeTransaksjonMappinger
                 .forEach(transaksjonMapping -> {
-                    transaksjonMappingRepository.deleteById(transaksjonMapping.getId());
+                    transaksjonMappingRepository.findById(transaksjonMapping.getId())
+                            .ifPresent(transaksjonMappingRepository::delete);
                     transaksjonMapping.setId(null);
                     transaksjonMapping.setBestillingId(oppdatertBestilling.getId());
                     transaksjonMappingRepository.save(transaksjonMapping);
