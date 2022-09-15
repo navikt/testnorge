@@ -14,6 +14,8 @@ import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import Formatters from '~/utils/DataFormatter'
 import styled from 'styled-components'
 import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
+import DollyService from '~/service/services/dolly/DollyService'
+import { useNavigate } from 'react-router-dom'
 
 const PersonvelgerCheckboxes = styled.div`
 	overflow: scroll;
@@ -29,6 +31,8 @@ const ValgtePersonerList = styled.div`
 export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [valgtGruppe, setValgtGruppe] = useState(null)
+
+	const navigate = useNavigate()
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -47,7 +51,8 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 		<>
 			<Button
 				onClick={openModal}
-				kind="edit"
+				className="svg-icon-blue-line"
+				kind="flytt"
 				disabled={disabled}
 				title={disabled ? 'Kan ikke flytte personer fra en tom gruppe' : null}
 			>
@@ -117,8 +122,13 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 									<NavButton
 										onClick={() => {
 											closeModal()
+											DollyService.flyttPersonerTilGruppe(
+												_get(formikBag.values, 'gruppeId'),
+												_get(formikBag.values, 'identer')
+											)
+											navigate(`../gruppe/${_get(formikBag.values, 'gruppeId')}`)
 											// handleImport(formikBag.values?.identer)
-											//	TODO: Handle flytting
+											// TODO: SJEKK: Plutselig Syndebukk i Fagsysteminfo
 										}}
 										type="hoved"
 									>

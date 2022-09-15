@@ -70,8 +70,13 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
+	// console.log('bestillingerById: ', bestillingerById) //TODO - SLETT MEG
+	// console.log('bestillingIdListe: ', bestillingIdListe) //TODO - SLETT MEG
+
 	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
 	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
+
+	console.log('bestillingListe: ', bestillingListe) //TODO - SLETT MEG
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()

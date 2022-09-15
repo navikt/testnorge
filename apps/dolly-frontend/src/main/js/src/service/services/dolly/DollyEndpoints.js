@@ -192,4 +192,13 @@ export default class DollyEndpoints {
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}
+
+	static flyttPersonerTilGruppe(gruppeId, identer) {
+		return `${groupBase}/${gruppeId}/identer/${Formatters.arrayToString(identer).replaceAll(
+			' ',
+			''
+		)}`
+	}
+
+	// https://dolly-backend-dev.dev.intern.nav.no/api/v1/gruppe/246/identer/21059216012,02027307259
 }

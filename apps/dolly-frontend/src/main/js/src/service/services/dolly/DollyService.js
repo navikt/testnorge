@@ -184,4 +184,8 @@ export default {
 	importerRelatertPerson(groupId, ident, master) {
 		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
+
+	flyttPersonerTilGruppe(gruppeId, ident) {
+		return Request.putWithoutResponse(Endpoints.flyttPersonerTilGruppe(gruppeId, ident))
+	},
 }
