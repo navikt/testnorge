@@ -17,8 +17,7 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
 
     Optional<Testident> findByIdent(String ident);
 
-    @Query(value = "from Testident where ident in (:identer) order by id asc" )
-    List<Testident> findByIdentIn(@Param("identer") Collection<String> identer);
+    List<Testident> findByIdentIn(Collection<String> identer);
 
     Testident save(Testident testident);
 
