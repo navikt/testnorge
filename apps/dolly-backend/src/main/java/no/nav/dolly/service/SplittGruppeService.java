@@ -50,11 +50,11 @@ public class SplittGruppeService {
 
     private Bestilling moveBestillinger(Bestilling bestilling, Set<String> identer, Testgruppe testgruppe) {
 
-        var progresser = bestilling.getProgresser().stream()
+        var nyeProgresser = bestilling.getProgresser().stream()
                 .filter(progress -> identer.contains(progress.getIdent()))
                 .map(SerializationUtils::clone)
                 .toList();
-        var transaksjonMappinger = bestilling.getTransaksjonmapping().stream()
+        var nyeTransaksjonMappinger = bestilling.getTransaksjonmapping().stream()
                 .filter(mapping -> identer.contains(mapping.getIdent()))
                 .map(SerializationUtils::clone)
                 .toList();
@@ -65,13 +65,13 @@ public class SplittGruppeService {
         nyBestilling.setProgresser(null);
         nyBestilling.setTransaksjonmapping(null);
         nyBestilling.setKontroller(null);
-        nyBestilling.setAntallIdenter(progresser.size());
+        nyBestilling.setAntallIdenter(nyeProgresser.size());
         nyBestilling.setFerdig(true);
         nyBestilling.setStoppet(false);
 
         var oppdatertBestilling = bestillingRepository.save(nyBestilling);
 
-        progresser.stream()
+        nyeProgresser.stream()
                 .forEach(progress -> {
                     bestillingProgressRepository.deleteById(progress.getId());
                     progress.setId(null);
@@ -79,7 +79,7 @@ public class SplittGruppeService {
                     bestillingProgressRepository.save(progress);
                 });
 
-        transaksjonMappinger.stream()
+        nyeTransaksjonMappinger.stream()
                 .forEach(transaksjonMapping -> {
                     transaksjonMappingRepository.deleteById(transaksjonMapping.getId());
                     transaksjonMapping.setId(null);
@@ -87,7 +87,7 @@ public class SplittGruppeService {
                     transaksjonMappingRepository.save(transaksjonMapping);
                 });
 
-        deleteKildeBestilling(bestilling, progresser);
+        deleteKildeBestilling(bestilling, nyeProgresser);
 
         return oppdatertBestilling;
     }
