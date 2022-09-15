@@ -31,6 +31,7 @@ const ValgtePersonerList = styled.div`
 export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [valgtGruppe, setValgtGruppe] = useState(null)
+	const [error, setError] = useState(null)
 
 	const navigate = useNavigate()
 
@@ -47,6 +48,27 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	// console.log('gruppeIdenter: ', gruppeIdenter) //TODO - SLETT MEG
 	// console.log('valgtGruppe: ', valgtGruppe) //TODO - SLETT MEG
 
+	const handleSubmit = async (formikBag) => {
+		const { gruppeId, identer } = formikBag.values
+		await DollyApi.flyttPersonerTilGruppe(gruppeId, identer)
+			.then((response) => {
+				console.log('response: ', response) //TODO - SLETT MEG
+				closeModal()
+				navigate(`../gruppe/${gruppeId}`)
+			})
+			.catch((e: Error) => {
+				setError(e.message)
+			})
+		// handleImport(formikBag.values?.identer)
+		// TODO: SJEKK: Plutselig Syndebukk i Fagsysteminfo
+	}
+	console.log('error: ', error) //TODO - SLETT MEG
+
+	const handleClose = () => {
+		closeModal()
+		setError(null)
+	}
+
 	return (
 		<>
 			<Button
@@ -58,7 +80,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 			>
 				FLYTT PERSONER
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} width="40%" overflow="auto">
 				<div className="slettModal">
 					{/*<div className="slettModal slettModal-content">*/}
 					{/*<Icon size={50} kind="report-problem-circle" />*/}
@@ -117,18 +139,15 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 										</ul>
 									</ValgtePersonerList>
 								</div>
+								{/*{error && <p>feil</p>}*/}
+								<div className="flexbox--full-width">
+									{error && <div className="error-message">{`Feil: ${error}`}</div>}
+								</div>
 								<div className="relatertPersonImportModal-actions">
-									<NavButton onClick={closeModal}>Avbryt</NavButton>
+									<NavButton onClick={handleClose}>Avbryt</NavButton>
 									<NavButton
 										onClick={() => {
-											closeModal()
-											DollyService.flyttPersonerTilGruppe(
-												_get(formikBag.values, 'gruppeId'),
-												_get(formikBag.values, 'identer')
-											)
-											navigate(`../gruppe/${_get(formikBag.values, 'gruppeId')}`)
-											// handleImport(formikBag.values?.identer)
-											// TODO: SJEKK: Plutselig Syndebukk i Fagsysteminfo
+											handleSubmit(formikBag)
 										}}
 										type="hoved"
 									>
