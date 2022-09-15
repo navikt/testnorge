@@ -45,6 +45,6 @@ public class DeleteKontaktadataCommand implements Callable<Flux<Void>> {
                 .bodyToFlux(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(throwable -> log.error(WebClientFilter.getMessage(throwable)));
+                .doOnError(WebClientFilter::logErrorMessage);
     }
 }
