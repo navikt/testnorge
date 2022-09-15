@@ -45,7 +45,12 @@ public class SplittGruppeService {
                 .forEach(bestilling -> moveBestillinger(bestilling, identer, testgruppe));
 
         identRepository.findByIdentIn(identer)
-                .forEach(testident -> testident.setTestgruppe(testgruppe));
+                .forEach(testident -> {
+                    var nyTestident = SerializationUtils.clone(testident);
+                    identRepository.deleteById(testident.getId());
+                    nyTestident.setTestgruppe(testgruppe);
+                    identRepository.save(nyTestident);
+                });
     }
 
     private Bestilling moveBestillinger(Bestilling bestilling, Set<String> identer, Testgruppe testgruppe) {
