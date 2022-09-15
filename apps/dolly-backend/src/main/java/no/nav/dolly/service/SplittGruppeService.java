@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -14,6 +15,7 @@ import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +51,8 @@ public class SplittGruppeService {
 
     private void moveIdenter(Set<String> identer, Testgruppe testgruppe) {
 
-        identRepository.findByIdentIn(identer)
+        identRepository.findByIdentIn(identer).stream()
+                .sorted(Comparator.comparing(Testident::getId))
                 .forEach(testident -> {
                     var nyTestident = SerializationUtils.clone(testident);
                     identRepository.deleteById(testident.getId());
