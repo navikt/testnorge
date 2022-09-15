@@ -44,11 +44,17 @@ public class SplittGruppeService {
                 .filter(bestilling -> isNull(bestilling.getFeil()))
                 .forEach(bestilling -> moveBestillinger(bestilling, identer, testgruppe));
 
+        moveIdenter(identer, testgruppe);
+    }
+
+    private void moveIdenter(Set<String> identer, Testgruppe testgruppe) {
+
         identRepository.findByIdentIn(identer)
                 .forEach(testident -> {
                     var nyTestident = SerializationUtils.clone(testident);
                     identRepository.deleteById(testident.getId());
                     nyTestident.setTestgruppe(testgruppe);
+                    nyTestident.setId(null);
                     identRepository.save(nyTestident);
                 });
     }
