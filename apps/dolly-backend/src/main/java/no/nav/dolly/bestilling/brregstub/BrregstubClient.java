@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -51,13 +50,8 @@ public class BrregstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
-            brregstubConsumer.deleteRolleoversikt(identer)
-                            .subscribe(resp -> log.info("Sletting utført i Brregstub"));
-
-        } catch (RuntimeException e) {
-            log.error("Brregstub: Feilet å slette rolledata for identer {}", identer.stream().collect(Collectors.joining(", ")), e);
-        }
+        brregstubConsumer.deleteRolleoversikt(identer)
+                .subscribe(resp -> log.info("Sletting utført i Brregstub"));
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
