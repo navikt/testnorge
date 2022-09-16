@@ -149,10 +149,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
             if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
                 leggTilNyAddressat(kontaktinfo.getPersonSomKontakt());
-                kontaktinfo.setAdresse(mapperFacade.map(
-                        personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
-                                .getPerson().getBostedsadresse().stream().findFirst().get(),
-                        KontaktinformasjonForDoedsboAdresse.class));
+                leggTilPersonadresse(kontaktinfo);
                 kontaktinfo.getPersonSomKontakt().setNavn(null);
             }
             relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
@@ -180,6 +177,16 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getAdresselinje1())) {
 
             setAdresse(kontaktinfo);
+        }
+    }
+
+    private void leggTilPersonadresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+
+        if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
+            kontaktinfo.setAdresse(mapperFacade.map(
+                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
+                            .getPerson().getBostedsadresse().stream().findFirst().get(),
+                    KontaktinformasjonForDoedsboAdresse.class));
         }
     }
 
@@ -211,10 +218,12 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 .findFirst().get();
 
         organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
-        kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
-                mapperFacade.map(((List<Map>) organisasjon.get("adresser")).get(0), KontaktinformasjonForDoedsboAdresse.class) :
-                null);
 
+        if (nonNull(kontaktinfo.getAdresse()) && isNotBlank(kontaktinfo.getAdresse().getPostnummer())) {
+            kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
+                    mapperFacade.map(((List<Map>) organisasjon.get("adresser")).get(0), KontaktinformasjonForDoedsboAdresse.class) :
+                    null);
+        }
         return Flux.empty();
     }
 
