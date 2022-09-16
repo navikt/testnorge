@@ -76,7 +76,7 @@ public class GeografiskeKodeverkConsumer {
     public String getPoststedNavn(String postnummer) {
         return tokenExchange
                 .exchange(properties)
-                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, postnummer, token.getTokenValue()).call())
+                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, "postnummer=" + postnummer, token.getTokenValue()).call())
                 .next()
                 .blockOptional()
                 .map(GeografiskeKodeverkDTO::navn)
@@ -86,7 +86,7 @@ public class GeografiskeKodeverkConsumer {
     public String getEmbeteNavn(String embete) {
         return tokenExchange
                 .exchange(properties)
-                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, embete, token.getTokenValue()).call())
+                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, "embetekode=" + embete, token.getTokenValue()).call())
                 .next()
                 .blockOptional()
                 .map(GeografiskeKodeverkDTO::navn)

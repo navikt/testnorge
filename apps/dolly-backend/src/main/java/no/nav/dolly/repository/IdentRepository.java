@@ -26,6 +26,11 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
     @Modifying
     int deleteTestidentByIdent(String testident);
 
+    @Override // nødvendig da eksplisitt query sikrer at sletting skjer før oppretting!
+    @Modifying
+    @Query(value = "delete from Testident ti where ti.id = :id")
+    void deleteById(@Param("id") Long id);
+
     @Modifying
     int deleteTestidentByTestgruppeId(Long gruppeId);
 

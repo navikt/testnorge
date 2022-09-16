@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -30,7 +31,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @AllArgsConstructor
 @Table(name = "BESTILLING_PROGRESS")
 @Builder
-public class BestillingProgress {
+public class BestillingProgress implements Serializable {
 
     @Id
     @GeneratedValue(generator = "bestillingProgressIdGenerator")

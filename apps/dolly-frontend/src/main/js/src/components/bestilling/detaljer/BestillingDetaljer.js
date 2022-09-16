@@ -25,6 +25,8 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const forelderBarnRelasjon = _get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
+	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
+
 	return (
 		<div className="bestilling-detaljer">
 			<BestillingSammendrag bestilling={bestilling} />
@@ -39,7 +41,8 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 					{!alleredeMal &&
 						!harRelatertPersonVedSivilstand &&
 						!harEksisterendeNyIdent &&
-						!harRelatertPersonBarn && (
+						!harRelatertPersonBarn &&
+						!gjenopprettingsId && (
 							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
 								OPPRETT NY MAL
 							</Button>
