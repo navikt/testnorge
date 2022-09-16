@@ -33,7 +33,7 @@ public class IdentService {
     private final MapperFacade mapperFacade;
 
     @Transactional(readOnly = true)
-    public boolean exists(String ident){
+    public boolean exists(String ident) {
         return identRepository.existsByIdent(ident);
     }
 
@@ -107,6 +107,11 @@ public class IdentService {
     public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {
 
         return identRepository.getBestillingerFromGruppe(gruppe);
+    }
+
+    public List<GruppeBestillingIdent> getBestillingerFromIdent(String ident) {
+
+        return identRepository.getBestillingerByIdent(ident);
     }
 
     public Page<Testident> getBestillingerFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
