@@ -17,7 +17,6 @@ type VisningData = {
 }
 
 export const Visning = ({ data }: VisningData) => {
-	const harFullmektig = data.type.includes('fullmakt')
 	return (
 		<>
 			<ErrorBoundary>
@@ -41,7 +40,7 @@ export const Visning = ({ data }: VisningData) => {
 						title="Gyldig t.o.m."
 						value={Formatters.formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
 					/>
-					<Verge data={data.vergeEllerFullmektig} harFullmektig={harFullmektig} />
+					<Verge data={data.vergeEllerFullmektig} type={data.type} />
 				</div>
 			</ErrorBoundary>
 		</>

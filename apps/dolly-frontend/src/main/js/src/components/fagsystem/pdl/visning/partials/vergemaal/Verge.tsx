@@ -4,13 +4,14 @@ import { VergeEllerFullmektig } from '~/pages/gruppe/PersonVisning/PersonMiljoei
 
 type VergeProps = {
 	data: VergeEllerFullmektig
-	harFullmektig: boolean
+	type: string
 }
 
-export const Verge = ({ data, harFullmektig }: VergeProps) => {
+export const Verge = ({ data, type }: VergeProps) => {
 	if (!data) {
 		return null
 	}
+	const harFullmektig = type.includes('fullmakt')
 
 	return (
 		<>
