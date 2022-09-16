@@ -45,6 +45,7 @@ public class GetKontaktdataCommand implements Callable<Flux<DigitalKontaktdata>>
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(DigitalKontaktdata.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(WebClientFilter::logErrorMessage);
