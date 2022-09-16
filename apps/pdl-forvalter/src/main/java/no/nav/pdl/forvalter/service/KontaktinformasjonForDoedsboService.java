@@ -182,7 +182,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private void leggTilPersonadresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
-        if (isNull(kontaktinfo.getAdresse()) || isNotBlank(kontaktinfo.getAdresse().getPostnummer())) {
+        if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
             kontaktinfo.setAdresse(mapperFacade.map(
                     personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
                             .getPerson().getBostedsadresse().stream().findFirst().get(),
@@ -219,7 +219,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
 
-        if (nonNull(kontaktinfo.getAdresse()) && isNotBlank(kontaktinfo.getAdresse().getPostnummer())) {
+        if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
             kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
                     mapperFacade.map(((List<Map>) organisasjon.get("adresser")).get(0), KontaktinformasjonForDoedsboAdresse.class) :
                     null);
