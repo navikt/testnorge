@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { initialAdressebeskyttelse } from '~/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -9,6 +9,7 @@ import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { FormikProps } from 'formik'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 interface AdressebeskyttelseValues {
 	formikBag: FormikProps<{}>
@@ -32,8 +33,15 @@ export const AdressebeskyttelseForm = ({
 	idx,
 	identtype,
 }: AdressebeskyttelseFormValues) => {
-	const harFnr =
-		identtype === 'FNR' || _get(formikBag.values, 'pdldata.opprettNyPerson.identtype') === 'FNR'
+	let harFnr
+	const nyIdenttype = _get(formikBag.values, 'pdldata.person.nyident[0].identtype')
+	if (nyIdenttype) {
+		harFnr = nyIdenttype === 'FNR'
+	} else {
+		harFnr =
+			identtype === 'FNR' || _get(formikBag.values, 'pdldata.opprettNyPerson.identtype') === 'FNR'
+	}
+
 	const adressebeskyttelseOptions = harFnr
 		? Options('gradering')
 		: Options('gradering').filter(
@@ -68,6 +76,7 @@ export const AdressebeskyttelseForm = ({
 }
 
 export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
+	const opts = useContext(BestillingsveilederContext)
 	return (
 		<Kategori title="Adressebeskyttelse">
 			<FormikDollyFieldArray
@@ -77,7 +86,12 @@ export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<AdressebeskyttelseForm formikBag={formikBag} path={path} idx={idx} />
+					<AdressebeskyttelseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>
