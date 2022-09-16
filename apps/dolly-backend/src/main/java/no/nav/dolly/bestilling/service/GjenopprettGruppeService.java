@@ -94,7 +94,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .toList();
 
             completableFuture
-                    .forEach(GjenopprettUtil::getCompleteableFuture);
+                    .forEach(GjenopprettUtil::executeCompleteableFuture);
 
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);

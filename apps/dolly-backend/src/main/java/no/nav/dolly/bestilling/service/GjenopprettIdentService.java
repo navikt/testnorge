@@ -42,7 +42,7 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static no.nav.dolly.bestilling.service.GjenopprettUtil.getCompleteableFuture;
+import static no.nav.dolly.bestilling.service.GjenopprettUtil.executeCompleteableFuture;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -100,7 +100,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
             var completeable = doGjenopprett(bestilling, bestKriterier, coBestillinger, testident);
             var completeableFuture = supplyAsync(completeable, dollyForkJoinPool);
 
-            getCompleteableFuture(completeableFuture);
+            executeCompleteableFuture(completeableFuture);
 
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);

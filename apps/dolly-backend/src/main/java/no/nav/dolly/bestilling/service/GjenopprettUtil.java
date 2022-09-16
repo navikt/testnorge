@@ -13,18 +13,19 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public final class GjenopprettUtil {
 
-    public static void getCompleteableFuture(CompletableFuture<BestillingProgress> completeableFuture) {
+    public static void executeCompleteableFuture(CompletableFuture<BestillingProgress> completeableFuture) {
+        executeCompleteableFuture(completeableFuture, 60);
+    }
+
+    public static void executeCompleteableFuture(CompletableFuture<BestillingProgress> completeableFuture, int secondsTimeout) {
         try {
-            completeableFuture.get(60, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+            completeableFuture.get(secondsTimeout, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException e) {
             log.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            log.error(e.getMessage(), e);
-            Thread.interrupted();
         } catch (TimeoutException e) {
             log.error("Tidsavbrudd (60 s) ved gjenopprett gruppe");
-            Thread.interrupted();
+            Thread.currentThread().interrupt();
         }
     }
 
