@@ -249,6 +249,7 @@ public class BestillingService {
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe)
+                        .ident(ident)
                         .antallIdenter(1)
                         .tpsfKriterier("{}")
                         .bestKriterier("{}")
