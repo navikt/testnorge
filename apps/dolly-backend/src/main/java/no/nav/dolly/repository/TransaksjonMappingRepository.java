@@ -3,17 +3,13 @@ package no.nav.dolly.repository;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TransaksjonMappingRepository extends Repository<TransaksjonMapping, Long> {
-
-    TransaksjonMapping save(TransaksjonMapping transaksjonMapping);
-
-    Optional<List<TransaksjonMapping>> findAllByIdent(String ident);
+public interface TransaksjonMappingRepository extends CrudRepository<TransaksjonMapping, Long> {
 
     Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 
@@ -28,6 +24,6 @@ public interface TransaksjonMappingRepository extends Repository<TransaksjonMapp
 
     @Modifying
     @Query(value = "delete from TransaksjonMapping tm where tm.bestillingId in " +
-                    "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
+            "(select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
     int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 }

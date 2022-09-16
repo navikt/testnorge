@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BESTILLING")
-public class Bestilling {
+public class Bestilling implements Serializable {
 
     @Id
     @GeneratedValue(generator = "bestillingIdGenerator")
