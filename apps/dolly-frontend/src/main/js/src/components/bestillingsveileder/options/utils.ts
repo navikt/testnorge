@@ -18,8 +18,7 @@ export const initialValues = {
 	barnDoedfoedt: initialDoedfoedtBarn,
 	boadresse: {
 		bolignr: '',
-		// @ts-ignore
-		flyttedato: null,
+		flyttedato: null as string,
 	},
 	kontaktinformasjonForDoedsbo: {
 		adressat: { adressatType: '' },
@@ -32,68 +31,51 @@ export const initialValues = {
 		utstedtDato: '',
 	},
 	arbeidsadgang: {
-		// @ts-ignore
-		arbeidsOmfang: null,
+		arbeidsOmfang: null as string,
 		harArbeidsAdgang: 'JA',
 		periode: {
-			// @ts-ignore
-			fra: null,
-			// @ts-ignore
-			til: null,
+			fra: null as Date,
+			til: null as Date,
 		},
-		// @ts-ignore
-		typeArbeidsadgang: null,
-		// @ts-ignore
+		typeArbeidsadgang: null as string,
 		hjemmel: '',
-		// @ts-ignore
-		forklaring: null,
+		forklaring: null as string,
 	},
 	udistub: [
 		{
 			eosEllerEFTABeslutningOmOppholdsrettPeriode: {
-				// @ts-ignore
-				fra: null,
-				// @ts-ignore
-				til: null,
+				fra: null as Date,
+				til: null as Date,
 			},
-			// @ts-ignore
-			eosEllerEFTABeslutningOmOppholdsrettEffektuering: null,
+			eosEllerEFTABeslutningOmOppholdsrettEffektuering: null as Date,
 			eosEllerEFTABeslutningOmOppholdsrett: '',
 		},
 		{
 			eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {
-				// @ts-ignore
-				fra: null,
-				// @ts-ignore
-				til: null,
+				fra: null as Date,
+				til: null as Date,
 			},
-			// @ts-ignore
-			eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering: null,
+			eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering: null as Date,
 			eosEllerEFTAVedtakOmVarigOppholdsrett: '',
 		},
 		{
 			eosEllerEFTAOppholdstillatelsePeriode: {
-				// @ts-ignore
-				fra: null,
-				// @ts-ignore
-				til: null,
+				fra: null as Date,
+				til: null as Date,
 			},
-			// @ts-ignore
-			eosEllerEFTAOppholdstillatelseEffektuering: null,
+			eosEllerEFTAOppholdstillatelseEffektuering: null as Date,
 			eosEllerEFTAOppholdstillatelse: '',
 		},
 		{
 			oppholdSammeVilkaar: {
 				oppholdSammeVilkaarPeriode: {
-					// @ts-ignore
-					fra: null,
-					// @ts-ignore
-					til: null,
+					eosEllerEFTAOppholdstillatelsePeriode: {
+						fra: null as Date,
+						til: null as Date,
+					},
 				},
-				// @ts-ignore
-				oppholdSammeVilkaarEffektuering: null, //date
-				// @ts-ignore
-				oppholdstillatelseVedtaksDato: null, //date
+				oppholdSammeVilkaarEffektuering: null as Date, //date
+				oppholdstillatelseVedtaksDato: null as Date,
 				oppholdstillatelseType: '',
 			},
 		},
@@ -102,8 +84,7 @@ export const initialValues = {
 		identtype: 'FNR',
 		kjonn: '',
 		barnType: '',
-		// @ts-ignore
-		partnerNr: null,
+		partnerNr: null as string,
 		borHos: '',
 		erAdoptert: false,
 		spesreg: '',
@@ -117,7 +98,6 @@ export const initialValues = {
 		kjonn: '',
 		harFellesAdresse: false,
 		foreldreType: '',
-		// @ts-ignore
 		spesreg: '',
 		utenFastBopel: false,
 		statsborgerskap: '',
@@ -126,19 +106,15 @@ export const initialValues = {
 	},
 	statborgerskap: {
 		statborgerskap: '',
-		// @ts-ignore
-		statsborgerskapRegdato: null,
-		// @ts-ignore
-		statsborgerskapTildato: null,
+		statsborgerskapRegdato: null as Date,
+		statsborgerskapTildato: null as Date,
 	},
 	utvandretTil: {
 		utvandretTilLand: '',
-		// @ts-ignore
-		utvandretTilLandFlyttedato: null,
+		utvandretTilLandFlyttedato: null as Date,
 	},
 	innvandretFra: {
 		innvandretFraLand: '',
-		// @ts-ignore
-		innvandretFraLandFlyttedato: null,
+		innvandretFraLandFlyttedato: null as Date,
 	},
 }

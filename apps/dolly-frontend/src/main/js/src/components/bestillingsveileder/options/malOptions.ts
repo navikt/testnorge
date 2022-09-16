@@ -234,15 +234,26 @@ const updateData = (data: any, initalValues: any) => {
 const updateKontaktType = (kontaktinfo: any) => {
 	if (kontaktinfo?.advokatSomKontakt) {
 		kontaktinfo.kontaktType = 'ADVOKAT'
+		delete kontaktinfo.organisasjonSomKontakt
+		delete kontaktinfo.personSomKontakt
 	} else if (kontaktinfo?.organisasjonSomKontakt) {
 		kontaktinfo.kontaktType = 'ORGANISASJON'
+		delete kontaktinfo.personSomKontakt
+		delete kontaktinfo.advokatSomKontakt
 	} else if (kontaktinfo?.personSomKontakt) {
 		const person = kontaktinfo.personSomKontakt
 		if (person.nyKontaktperson) {
 			kontaktinfo.kontaktType = 'NY_PERSON'
-		} else if (person.identifikasjonsnummer || person.foedselsdato) {
+		} else if (person.identifikasjonsnummer) {
+			kontaktinfo.kontaktType = 'PERSON_FDATO'
+			kontaktinfo.personSomKontakt.identifikasjonsnummer = null
+		} else if (person.foedseldato) {
 			kontaktinfo.kontaktType = 'PERSON_FDATO'
 		}
+		delete kontaktinfo.personSomKontakt.navn
+		delete kontaktinfo.personSomKontakt.eksisterendePerson
+		delete kontaktinfo.organisasjonSomKontakt
+		delete kontaktinfo.advokatSomKontakt
 	}
 	return kontaktinfo
 }
