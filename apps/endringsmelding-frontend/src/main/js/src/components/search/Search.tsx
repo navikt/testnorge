@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { TextField as NavInput } from '@navikt/ds-react';
-import { ErrorAlert, Knapp, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
+import {
+  ErrorAlert,
+  Knapp,
+  SuccessAlert,
+  WarningAlert,
+  WarningAlertstripe,
+} from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
 const Search = styled.div`
@@ -12,6 +18,10 @@ const Search = styled.div`
 
 const Input = styled(NavInput)`
   width: 50%;
+`;
+
+const StyledKnapp = styled(Knapp)`
+  min-width: 150px;
 `;
 
 type Props<T> = {
@@ -38,6 +48,10 @@ const Alert = styled.div`
 const isSyntheticFNR = (value: string) => {
   return value.match('[0-9]{2}[4-9]{1}[0-9]{8}');
 };
+
+const StyledWarning = styled(WarningAlertstripe)`
+  margin: 15px 0 0 10px;
+`;
 
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
   const [loading, setLoading] = useState(false);
@@ -75,14 +89,14 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           setValue(e.target.value);
         }}
       />
-      <Knapp
+      <StyledKnapp
         onClick={() => _onSearch(value)}
         disabled={loading || isSyntheticFNR(value)}
         loading={loading}
       >
         {labels.button}
-      </Knapp>
-      {isSyntheticFNR(value) && <WarningAlert label={labels.syntIdent} />}
+      </StyledKnapp>
+      {isSyntheticFNR(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
         {success == undefined ? null : !success ? (
           error ? (

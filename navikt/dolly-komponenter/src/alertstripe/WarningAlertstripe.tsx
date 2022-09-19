@@ -2,7 +2,7 @@ import React from 'react';
 import Alertstripe from './Alertstripe';
 
 export type WarningAlertstripeProps = {
-    label: string;
+  label: string;
 };
 
 const WarningAlertstripe = ({ label, ...props }: WarningAlertstripeProps) => (
