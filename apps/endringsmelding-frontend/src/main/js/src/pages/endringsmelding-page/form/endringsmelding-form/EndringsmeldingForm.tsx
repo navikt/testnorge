@@ -95,7 +95,7 @@ export default <T extends {}>({
           onFound: 'Person funnet',
           onNotFound: 'Person ikke funnet',
           onError: 'Noe gikk galt',
-          syntIdent: 'Endringsmelding støtter ikke syntetiske NAV identer (+40) eller identer fra Testnorge (+80).',
+          syntIdent: 'Endringsmelding støtter ikke NAV-syntetiske identer eller Testnorge identer (Respektive +40 og +80 på måned).',
         }}
       />
       {state.show && (
