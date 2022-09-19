@@ -24,3 +24,10 @@ sts:
   token:
     provider:
       url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
+
+consumers:
+  pdl-testdata:
+    url: http://pdl-testdata.pdl.svc.nais.local
+    cluster: dev-fss
+    name: pdl-testdata
+    namespace: pdl
