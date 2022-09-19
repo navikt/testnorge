@@ -1027,7 +1027,7 @@ const mapTpsMessaging = (bestillingData, data) => {
 				header: 'Norsk bankkonto',
 				items: [
 					obj('Kontonummer', bankkonto.norskBankkonto.kontonummer),
-					obj('Tilfeldig kontonummer', bankkonto.norskBankkonto.tilfeldigKontonummer ? 'Ja' : ''),
+					obj('Tilfeldig kontonummer', bankkonto.norskBankkonto.tilfeldigKontonummer && 'Ja'),
 				],
 			}
 			data.push(norskBankkontoData)
@@ -1038,10 +1038,7 @@ const mapTpsMessaging = (bestillingData, data) => {
 				header: 'Utenlandsk bankkonto',
 				items: [
 					obj('Kontonummer', bankkonto.utenlandskBankkonto.kontonummer),
-					obj(
-						'Tilfeldig kontonummer',
-						bankkonto.utenlandskBankkonto.tilfeldigKontonummer ? 'Ja' : ''
-					),
+					obj('Tilfeldig kontonummer', bankkonto.utenlandskBankkonto.tilfeldigKontonummer && 'Ja'),
 					obj('Swift kode', bankkonto.utenlandskBankkonto.swift),
 					obj('Land', bankkonto.utenlandskBankkonto.landkode),
 					obj('Banknavn', bankkonto.utenlandskBankkonto.banknavn),
