@@ -12,7 +12,7 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AaregMergeUtilTest {
+class AaregUtilTest {
 
     private final static String ORGNUMMER = "12345678";
     private final static String IDENT = "12345678901";
@@ -45,7 +45,7 @@ class AaregMergeUtilTest {
     @Test
     public void mergeEksisterendeArbeidsforhold_IgnorerEksisterende() {
 
-        List<Arbeidsforhold> mergedeArbeidsforhold = AaregMergeUtil.merge(nyttArbeidsforhold, eksisterendeArbeidsforhold, IDENT, false);
+        List<Arbeidsforhold> mergedeArbeidsforhold = AaregUtil.merge(nyttArbeidsforhold, eksisterendeArbeidsforhold, IDENT, false);
 
         assertThat(mergedeArbeidsforhold).isEmpty();
     }
@@ -53,7 +53,7 @@ class AaregMergeUtilTest {
     @Test
     public void mergeIngenEksisterendeArbeidsforhold_OK() {
 
-        List<Arbeidsforhold> mergedeArbeidsforhold = AaregMergeUtil.merge(nyttArbeidsforhold, emptyList(), IDENT, false);
+        List<Arbeidsforhold> mergedeArbeidsforhold = AaregUtil.merge(nyttArbeidsforhold, emptyList(), IDENT, false);
 
         assertThat(mergedeArbeidsforhold).hasSize(1);
     }
@@ -61,7 +61,7 @@ class AaregMergeUtilTest {
     @Test
     public void mergeIngenNyeArbeidsforhold_OK() {
 
-        List<Arbeidsforhold> mergedeArbeidsforhold = AaregMergeUtil.merge(emptyList(), eksisterendeArbeidsforhold, IDENT, false);
+        List<Arbeidsforhold> mergedeArbeidsforhold = AaregUtil.merge(emptyList(), eksisterendeArbeidsforhold, IDENT, false);
 
         assertThat(mergedeArbeidsforhold).isEmpty();
     }

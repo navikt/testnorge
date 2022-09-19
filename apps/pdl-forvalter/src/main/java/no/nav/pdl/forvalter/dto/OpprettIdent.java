@@ -17,14 +17,15 @@ import static java.util.Objects.isNull;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoriskIdent extends DbVersjonDTO {
+public class OpprettIdent extends DbVersjonDTO {
 
-    private List<String> identer;
+    private List<String> historiskeIdenter;
+    private boolean opphoert;
 
-    public List<String> getIdenter() {
-        if (isNull(identer)) {
-            identer = new ArrayList<>();
+    public List<String> getHistoriskeIdenter() {
+        if (isNull(historiskeIdenter)) {
+            historiskeIdenter = new ArrayList<>();
         }
-        return identer;
+        return historiskeIdenter;
     }
 }

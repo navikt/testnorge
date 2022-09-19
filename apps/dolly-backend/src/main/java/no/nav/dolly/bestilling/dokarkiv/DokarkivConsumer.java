@@ -14,7 +14,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -70,23 +69,10 @@ public class DokarkivConsumer {
                 .bodyToMono(DokarkivResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .onErrorResume(error -> {
-                    if (error instanceof WebClientResponseException webClientResponseException) {
-                        log.error(
-                                "Feil ved opprettelse av journalpost i miljø {} med body: {}.",
-                                environment,
-                                webClientResponseException.getResponseBodyAsString(),
-                                error);
-                        return Mono.just(DokarkivResponse.builder()
-                                .feilmelding(webClientResponseException.getResponseBodyAsString())
-                                .build());
-                    } else {
-                        log.error("Feil ved opprettelse av journalpost.", error);
-                    }
-                    return Mono.just(DokarkivResponse.builder()
-                            .feilmelding(error.getMessage())
-                            .build());
-                });
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(error -> Mono.just(DokarkivResponse.builder()
+                        .feilmelding(WebClientFilter.getMessage(error))
+                        .build()));
     }
 
     public Map<String, String> checkAlive() {

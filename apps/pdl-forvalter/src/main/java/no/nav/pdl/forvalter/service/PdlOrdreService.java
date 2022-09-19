@@ -8,7 +8,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
-import no.nav.pdl.forvalter.dto.HistoriskIdent;
+import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
@@ -161,7 +162,11 @@ public class PdlOrdreService {
         return deployService.sendOrders(
                 Stream.of(
                                 conditionalDelete(person.getIdent(), skalSlettes),
-                                deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().identer(person.getAlias().stream().map(DbAlias::getTidligereIdent).toList()).build())),
+                                deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(OpprettIdent.builder()
+                                        .historiskeIdenter(person.getAlias().stream().map(DbAlias::getTidligereIdent).toList())
+                                                .opphoert(!person.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
+                                                        person.getPerson().getFolkeregisterPersonstatus().get(0).getStatus().equals(OPPHOERT))
+                                        .build())),
                                 deployService.createOrder(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()),
                                 deployService.createOrder(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()),
                                 deployService.createOrder(PDL_FOEDSEL, person.getIdent(), person.getPerson().getFoedsel()),
