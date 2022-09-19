@@ -22,6 +22,7 @@ type Props<T> = {
     onFound: string;
     onNotFound: string;
     onError: string;
+    syntIdent: string;
   };
   onChange?: (value: string) => void;
 };
@@ -35,7 +36,7 @@ const Alert = styled.div`
 `;
 
 const isSyntheticFNR = (value: string) => {
-  return !value.match('[0-9]{2}[0-1]{1}[0-9]{8}');
+  return value.match('[0-9]{2}[4-9]{1}[0-9]{8}');
 };
 
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
@@ -81,6 +82,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
       >
         {labels.button}
       </Knapp>
+      {isSyntheticFNR(value) && <WarningAlert label={labels.syntIdent} />}
       <Alert>
         {success == undefined ? null : !success ? (
           error ? (
