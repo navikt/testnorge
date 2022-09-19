@@ -71,8 +71,9 @@ export default function PersonListe({
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson, bestillingStatuser])
 
-	if (isFetching || (personListe?.length === 0 && !isEmpty(identer)))
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
 		return <Loading label="Laster personer" panel />
+	}
 
 	if (isEmpty(identer)) {
 		const infoTekst =

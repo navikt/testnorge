@@ -105,7 +105,7 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 			<ToggleGroup
 				size={'small'}
 				onChange={handleToggleChange}
-				defaultValue={SykemeldingTyper.detaljert}
+				defaultValue={SykemeldingTyper.synt}
 			>
 				{toggleValues.map((val) => (
 					<ToggleGroup.Item key={val.value} value={val.value}>

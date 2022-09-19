@@ -5,7 +5,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { Textarea } from '@navikt/ds-react'
+import { TextField } from '@navikt/ds-react'
 
 export const Arbeidsadgang = ({ formikBag }) => {
 	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
@@ -69,7 +69,7 @@ export const Arbeidsadgang = ({ formikBag }) => {
 			<Kategori title="Innhent vedtakshjemmel" vis="udistub.arbeidsadgang.hjemmel">
 				<FormikTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
 				<div className="flexbox--full-width">
-					<Textarea
+					<FormikTextInput
 						value={forklaring ? forklaring : ''}
 						name="udistub.arbeidsadgang.forklaring"
 						label="Forklaring"

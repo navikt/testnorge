@@ -75,13 +75,15 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				<FormikDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
 				<FormikCheckbox
 					name="sykemelding.detaljertSykemelding.umiddelbarBistand"
+					checkboxMargin
 					label="Trenger umiddelbar bistand"
-					size="medium"
+					size="small"
 				/>
 				<FormikCheckbox
 					name="sykemelding.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen"
 					label="Manglende tilrettelegging på arbeidsplassen"
-					size="large"
+					checkboxMargin
+					size="small"
 				/>
 			</div>
 			<Kategori title="Diagnose" vis="sykemelding">

@@ -55,6 +55,7 @@ export const FormikCheckbox = ({
 	afterChange = null,
 	size = 'small',
 	fastfield = false,
+	checkboxMargin = false,
 	...props
 }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
@@ -64,7 +65,15 @@ export const FormikCheckbox = ({
 				if (afterChange) afterChange(event.target.checked)
 			}
 
-			return <DollyCheckbox size={size} checked={field.value} onChange={handleChange} {...props} />
+			return (
+				<DollyCheckbox
+					size={size}
+					checked={field.value}
+					onChange={handleChange}
+					checkboxMargin={checkboxMargin}
+					{...props}
+				/>
+			)
 		}}
 	</FormikField>
 )
