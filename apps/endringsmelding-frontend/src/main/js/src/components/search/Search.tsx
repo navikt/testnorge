@@ -50,8 +50,9 @@ const isSyntheticFNR = (value: string) => {
 };
 
 const StyledWarning = styled(WarningAlertstripe)`
-  padding-top: 27px;
-  margin-left: 15px;
+  margin: 30px 0 0 15px;
+  height: 50px;
+  width: -webkit-fill-available;
 `;
 
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
