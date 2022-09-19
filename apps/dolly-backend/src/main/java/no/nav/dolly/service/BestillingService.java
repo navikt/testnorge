@@ -236,6 +236,30 @@ public class BestillingService {
                         .build());
     }
 
+
+    @Transactional
+    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+    public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
+
+        var bestillingerByIdent = identRepository.getBestillingerByIdent(ident);
+        if (bestillingerByIdent.isEmpty()) {
+            throw new DollyFunctionalException(format("Identen: %s har ingen gyldige bestillinger", ident));
+        }
+
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(testgruppe)
+                        .ident(ident)
+                        .antallIdenter(1)
+                        .tpsfKriterier("{}")
+                        .bestKriterier("{}")
+                        .sistOppdatert(now())
+                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? "" : join(",", miljoer))
+                        .gjenopprettetFraIdent(ident)
+                        .bruker(fetchOrCreateBruker())
+                        .build());
+    }
+
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprettFraGruppe(Long gruppeId, String miljoer) {

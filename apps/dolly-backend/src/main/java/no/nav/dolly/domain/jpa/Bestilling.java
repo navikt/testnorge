@@ -89,6 +89,9 @@ public class Bestilling implements Serializable {
     @Column(name = "OPPRETT_FRA_GRUPPE")
     private Long opprettetFraGruppeId;
 
+    @Column(name = "GJENOPPRETTET_FRA_IDENT")
+    private String gjenopprettetFraIdent;
+
     @ManyToOne
     @JoinColumn(name = "BRUKER_ID")
     private Bruker bruker;
