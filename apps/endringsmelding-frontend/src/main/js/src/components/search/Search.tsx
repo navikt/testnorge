@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { TextField as NavInput } from '@navikt/ds-react';
-import { Button as NavKnapp } from '@navikt/ds-react';
 import { ErrorAlert, Knapp, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
@@ -35,6 +34,10 @@ const Alert = styled.div`
   padding-left: 7px;
 `;
 
+const isSyntheticFNR = (value: string) => {
+  return !value.match('[0-9]{2}[0-1]{1}[0-9]{8}');
+};
+
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('');
@@ -42,7 +45,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
   const [error, setError] = useState(false);
 
   const _onSearch = (value: string) => {
-    setLoading(true);
+    if (value) setLoading(true);
     setSuccess(undefined);
     setError(false);
     return onSearch(value)
@@ -71,7 +74,11 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           setValue(e.target.value);
         }}
       />
-      <Knapp onClick={() => _onSearch(value)} disabled={loading} loading={loading}>
+      <Knapp
+        onClick={() => _onSearch(value)}
+        disabled={loading || isSyntheticFNR(value)}
+        loading={loading}
+      >
         {labels.button}
       </Knapp>
       <Alert>
