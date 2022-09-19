@@ -45,7 +45,7 @@ const Alert = styled.div`
   padding-left: 7px;
 `;
 
-const isSyntheticFNR = (value: string) => {
+const isSyntheticIdent = (value: string) => {
   return value.match('[0-9]{2}[4-9]{1}[0-9]{8}');
 };
 
@@ -93,12 +93,12 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
       />
       <StyledKnapp
         onClick={() => _onSearch(value)}
-        disabled={loading || isSyntheticFNR(value)}
+        disabled={loading || isSyntheticIdent(value)}
         loading={loading}
       >
         {labels.button}
       </StyledKnapp>
-      {isSyntheticFNR(value) && <StyledWarning label={labels.syntIdent} />}
+      {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
         {success == undefined ? null : !success ? (
           error ? (
