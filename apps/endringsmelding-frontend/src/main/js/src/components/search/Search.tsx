@@ -62,7 +62,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
   const [error, setError] = useState(false);
 
   const _onSearch = (value: string) => {
-    if (value) setLoading(true);
+    setLoading(true);
     setSuccess(undefined);
     setError(false);
     return onSearch(value)
