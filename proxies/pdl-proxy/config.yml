@@ -55,6 +55,11 @@ spec:
           cluster: dev-gcp
         - application: testnav-helsepersonell-service
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: pdl-testdata
+          cluster: dev-fss
+          namespace: pdl
   liveness:
     path: /internal/isAlive
     initialDelay: 4
