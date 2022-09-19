@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '~/utils/GenererGyldigNorskBankkonto'
