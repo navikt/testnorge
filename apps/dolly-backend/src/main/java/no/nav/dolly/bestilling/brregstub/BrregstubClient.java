@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class BrregstubClient implements ClientRegister {
 
     private static final String OK_STATUS = "OK";
-    private static final String NOK_STATUS = "Feil= ";
+    private static final String FEIL_STATUS = "Feil= ";
 
     private final BrregstubConsumer brregstubConsumer;
     private final RolleUtskriftMapper rolleUtskriftMapper;
@@ -56,6 +56,6 @@ public class BrregstubClient implements ClientRegister {
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
 
             var status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
-            return isBlank(status.getError()) ? OK_STATUS : NOK_STATUS + encodeStatus(status.getError());
+            return isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError());
     }
 }
