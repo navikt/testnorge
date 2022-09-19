@@ -24,7 +24,7 @@ public final class GjenopprettUtil {
             log.error(e.getMessage(), e);
             Thread.currentThread().interrupt();
         } catch (TimeoutException e) {
-            log.error("Tidsavbrudd (60 s) ved gjenopprett gruppe");
+            log.error(String.format("Tidsavbrudd (%s s) ved gjenopprett", secondsTimeout));
             Thread.currentThread().interrupt();
         }
     }
