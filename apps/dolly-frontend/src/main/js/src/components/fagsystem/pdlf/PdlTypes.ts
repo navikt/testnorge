@@ -147,17 +147,11 @@ export type ForeldreansvarUtenId = {
 
 export type Vergemaal = {
 	vergemaalEmbete?: string
-	embete?: string
 	mandatType?: string
 	sakType?: string
-	type?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
 	vergeIdent?: string
-	vergeEllerFullmektig?: {
-		motpartsPersonident: string
-		omfang?: string
-	}
 	id: number
 }
 
