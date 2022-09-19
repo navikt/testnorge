@@ -1025,7 +1025,10 @@ const mapTpsMessaging = (bestillingData, data) => {
 		if (bankkonto.norskBankkonto) {
 			const norskBankkontoData = {
 				header: 'Norsk bankkonto',
-				items: [obj('Kontonummer', bankkonto.norskBankkonto.kontonummer)],
+				items: [
+					obj('Kontonummer', bankkonto.norskBankkonto.kontonummer),
+					obj('Tilfeldig kontonummer', bankkonto.norskBankkonto.tilfeldigKontonummer ? 'Ja' : ''),
+				],
 			}
 			data.push(norskBankkontoData)
 		}
