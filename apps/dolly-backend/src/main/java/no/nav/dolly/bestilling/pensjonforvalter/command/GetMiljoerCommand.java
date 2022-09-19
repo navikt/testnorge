@@ -43,8 +43,7 @@ public class GetMiljoerCommand implements Callable<Mono<Set<String>>> {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
                 })
-                .doOnError(error ->
-                        log.error(WebClientFilter.getMessage(error), error))
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> Mono.just(emptySet()));

@@ -38,7 +38,7 @@ public class PdlDataSlettUtenomCommand implements Callable<Flux<Void>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(Void.class)
-                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,

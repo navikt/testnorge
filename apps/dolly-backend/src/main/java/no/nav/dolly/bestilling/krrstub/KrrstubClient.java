@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -90,13 +89,7 @@ public class KrrstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
             krrstubConsumer.deleteKontaktdata(identer)
                     .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
-
-        } catch (RuntimeException e) {
-
-            log.error("Feilet å slette identer fra krrstub: ", identer.stream().collect(Collectors.joining(", ")), e);
-        }
     }
 }
