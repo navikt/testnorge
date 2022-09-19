@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '~/utils/GenererGyldigNorskBankkonto'
@@ -9,12 +9,12 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
-	const path = 'bankkonto.norskBankkonto'
 
 	useEffect(() => {
 		setValidKontoOptions(generateValidKontoOptions())
 	}, [])
 
+	const path = 'bankkonto.norskBankkonto'
 	const harTilfeldig = _get(formikBag.values, `${path}.tilfeldigKontonummer`)
 	const kontonummer = _get(formikBag.values, `${path}.kontonummer`)
 
