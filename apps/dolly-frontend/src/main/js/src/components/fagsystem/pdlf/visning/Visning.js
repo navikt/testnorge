@@ -93,6 +93,7 @@ export const PdlfVisning = ({
 							? tpsMessaging?.tpsMessagingData?.bankkontonrUtland
 							: tpsfData?.bankkontonrUtland
 					}
+					extraButtons={true}
 				/>
 				<NorskBankkonto
 					data={
