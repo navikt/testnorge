@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -63,14 +62,8 @@ public class InntektstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
-            inntektstubConsumer.deleteInntekter(identer)
-                    .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
-
-        } catch (RuntimeException e) {
-
-            log.error("Feilet å slette identer fra Inntektstub: ", identer.stream().collect(Collectors.joining(", ")), e);
-        }
+        inntektstubConsumer.deleteInntekter(identer)
+                .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
     }
 
     private boolean existInntekter(List<Inntektsinformasjon> inntekterRequest) {
