@@ -117,7 +117,8 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private void handle(FalskIdentitetDTO identitet, PersonDTO person) {
 
         if (isTrue(identitet.getRettIdentitetErUkjent())) {
-            return;
+
+            // do nothing
 
         } else if (nonNull(identitet.getRettIdentitetVedOpplysninger())) {
 
@@ -184,6 +185,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     }
 
     private void opprettNyIdentitet(FalskIdentitetDTO identitet, PersonDTO person) {
+
         if (isNull(identitet.getNyFalskIdentitetPerson())) {
             identitet.setNyFalskIdentitetPerson(new PersonRequestDTO());
         }
