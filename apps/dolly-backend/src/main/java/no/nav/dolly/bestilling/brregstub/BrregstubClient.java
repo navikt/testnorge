@@ -9,14 +9,16 @@ import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -24,10 +26,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class BrregstubClient implements ClientRegister {
 
     private static final String OK_STATUS = "OK";
-    private static final String FEIL_STATUS = "Feil= ";
 
     private final BrregstubConsumer brregstubConsumer;
     private final RolleUtskriftMapper rolleUtskriftMapper;
+    private final ErrorStatusDecoder errorStatusDecoder;
     private final DollyPersonCache dollyPersonCache;
 
     @Override
@@ -49,13 +51,27 @@ public class BrregstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        brregstubConsumer.deleteRolleoversikt(identer)
-                .subscribe(resp -> log.info("Sletting utført i Brregstub"));
+        try {
+            brregstubConsumer.deleteRolleoversikt(identer)
+                            .subscribe(resp -> log.info("Sletting utført i Brregstub"));
+
+        } catch (RuntimeException e) {
+            log.error("Brregstub: Feilet å slette rolledata for identer {}", identer.stream().collect(Collectors.joining(", ")), e);
+        }
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
 
-            var status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
-            return isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError());
+        try {
+            ResponseEntity<RolleoversiktTo> status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
+            if (HttpStatus.CREATED == status.getStatusCode()) {
+                return OK_STATUS;
+            }
+        } catch (RuntimeException e) {
+
+            return errorStatusDecoder.decodeRuntimeException(e);
+        }
+
+        return "Uspesifisert feil";
     }
 }

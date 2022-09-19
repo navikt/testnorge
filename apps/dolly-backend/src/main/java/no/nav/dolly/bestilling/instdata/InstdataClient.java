@@ -83,14 +83,20 @@ public class InstdataClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        instdataConsumer.deleteInstdata(identer)
-                .subscribe(response -> log.info("Slettet antall {} identer fra Instdata",
-                        response.stream().collect(Collectors.groupingBy(DeleteResponseDTO::getEnvironment))
-                                .entrySet()
-                                .stream()
-                                .findFirst()
-                                .orElse(Map.entry("miljoe", Collections.emptyList()))
-                                .getValue().size()));
+        try {
+            instdataConsumer.deleteInstdata(identer)
+                    .subscribe(response -> log.info("Slettet antall {} identer fra Instdata",
+                            response.stream().collect(Collectors.groupingBy(DeleteResponseDTO::getEnvironment))
+                                    .entrySet()
+                                    .stream()
+                                    .findFirst()
+                                    .orElse(Map.entry("miljoe", Collections.emptyList()))
+                                    .getValue().size()));
+
+        } catch (RuntimeException e) {
+
+            log.error("Feilet å slette identer fra Instdata: ", identer.stream().collect(Collectors.joining(", ")), e);
+        }
     }
 
     private List<Instdata> filterInstdata(List<Instdata> instdataRequest, String miljoe) {

@@ -49,7 +49,7 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(Exception.class, error -> log.error(error.getMessage(), error))
                 .onErrorResume(Exception.class, error -> Mono.empty());
     }
 }

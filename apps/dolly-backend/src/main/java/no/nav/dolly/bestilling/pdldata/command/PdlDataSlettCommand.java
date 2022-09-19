@@ -36,7 +36,8 @@ public class PdlDataSlettCommand implements Callable<Flux<Void>> {
                 .bodyToFlux(Void.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(error -> error instanceof WebClientResponseException.NotFound,
+                        error -> log.warn(((WebClientResponseException) error).getResponseBodyAsString()))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Flux.empty());
     }

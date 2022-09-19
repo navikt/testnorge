@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.pdlforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -37,7 +37,7 @@ public class PdlAktoerNpidCommand implements Callable<Mono<Void>> {
                 .body(BodyInserters.fromValue(npid))
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
                 .onErrorResume(WebClientResponseException.class, error -> Mono.empty());
     }
 }

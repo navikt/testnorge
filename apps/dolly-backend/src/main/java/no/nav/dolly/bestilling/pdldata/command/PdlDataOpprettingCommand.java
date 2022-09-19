@@ -38,7 +38,7 @@ public class PdlDataOpprettingCommand implements Callable<Mono<String>> {
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
                 .bodyToMono(String.class)
-                .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

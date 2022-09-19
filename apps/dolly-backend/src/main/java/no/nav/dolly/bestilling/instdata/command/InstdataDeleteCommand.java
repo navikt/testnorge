@@ -45,7 +45,6 @@ public class InstdataDeleteCommand implements Callable<Flux<InstdataResponse>> {
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
                 .retrieve()
                 .bodyToFlux(InstdataResponse.class)
-                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

@@ -58,7 +58,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
         // Midlertidig ? publisering fra identhendelseslager
         getPdlIdenter(List.of(dollyPerson.getHovedperson()))
                 .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-                .contextWrite(c -> {
+                .contextWrite( c -> {
                     var mdcContext = MDC.getCopyOfContextMap();
                     if (null != mdcContext) {
                         return c.put("mdc", mdcContext);
@@ -71,9 +71,14 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        getPdlIdenter(identer)
-                .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
-                .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
+        try {
+            getPdlIdenter(identer)
+                    .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
+                    .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
+
+        } catch (RuntimeException e) {
+            log.error("Feilet å slette tags for identer: {}", String.join(", ", identer));
+        }
     }
 
     private Flux<List<String>> getPdlIdenter(List<String> identer) {

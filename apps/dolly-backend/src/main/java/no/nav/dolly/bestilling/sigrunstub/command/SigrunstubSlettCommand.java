@@ -41,7 +41,6 @@ public class SigrunstubSlettCommand implements Callable<Flux<String>> {
                 .header("personidentifikator", ident)
                 .retrieve()
                 .bodyToFlux(String.class)
-                .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Flux.empty())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

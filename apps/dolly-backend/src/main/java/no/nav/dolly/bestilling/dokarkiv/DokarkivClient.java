@@ -35,6 +35,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 public class DokarkivClient implements ClientRegister {
 
     private final DokarkivConsumer dokarkivConsumer;
+    private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
@@ -62,27 +63,27 @@ public class DokarkivClient implements ClientRegister {
                     .filter(StringUtils::isNotBlank)
                     .forEach(environment -> {
 
-                        if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
+                if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
 
-                            var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
-                            if (nonNull(response) && isBlank(response.getFeilmelding())) {
-                                status.append(',')
-                                        .append(environment)
-                                        .append(":OK");
+                    var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
+                    if (nonNull(response) && isBlank(response.getFeilmelding())) {
+                        status.append(',')
+                                .append(environment)
+                                .append(":OK");
 
-                                saveTransaksjonId(response, dollyPerson.getHovedperson(),
-                                        progress.getBestilling().getId(), environment);
-                            } else {
+                        saveTransaksjonId(response, dollyPerson.getHovedperson(),
+                                progress.getBestilling().getId(), environment);
+                    } else {
 
-                                status.append(',')
-                                        .append(environment)
-                                        .append(":FEIL=Teknisk feil se logg! ")
-                                        .append(nonNull(response) ?
-                                                ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
-                                                "UKJENT");
-                            }
-                        }
-                    });
+                        status.append(',')
+                                .append(environment)
+                                .append(":FEIL=Teknisk feil se logg! ")
+                                .append(nonNull(response) ?
+                                        ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
+                                        "UKJENT");
+                    }
+                }
+            });
             progress.setDokarkivStatus(substring(status.toString(), 1));
         }
     }
