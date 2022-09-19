@@ -26,6 +26,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -116,17 +117,16 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
     private void handle(FalskIdentitetDTO identitet, PersonDTO person) {
 
-        if (isTrue(identitet.getRettIdentitetErUkjent())) {
+        if (isNotTrue(identitet.getRettIdentitetErUkjent())) {
 
-            // do nothing
+            if (nonNull(identitet.getRettIdentitetVedOpplysninger())) {
 
-        } else if (nonNull(identitet.getRettIdentitetVedOpplysninger())) {
+                opprettNyeOpplysningstyper(identitet, person);
 
-            opprettNyeOpplysningstyper(identitet, person);
+            } else if (isBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
 
-        } else if (isBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
-
-            opprettNyIdentitet(identitet, person);
+                opprettNyIdentitet(identitet, person);
+            }
         }
 
         if (person.getFolkeregisterPersonstatus().stream()
