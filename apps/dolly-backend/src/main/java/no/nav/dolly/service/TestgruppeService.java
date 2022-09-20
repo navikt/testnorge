@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -178,4 +179,6 @@ public class TestgruppeService {
         pdlDataConsumer.putStandalone(ident, true)
                 .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
+
+    public List<Testgruppe>
 }

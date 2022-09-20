@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -13,7 +14,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +32,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BrukerService {
@@ -33,6 +40,7 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
     private final GetUserInfo getUserInfo;
+    private final TestgruppeService testgruppeService;
 
     public Bruker fetchBruker(String brukerId) {
 
@@ -163,6 +171,19 @@ public class BrukerService {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getMessage(), e);
+        }
+    }
+
+    public void sletteBrukere(MultipartFile file) {
+
+        try {
+            var input = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+            input.lines()
+                    .map(bruker -> )
+                    .forEach(bruker -> testgruppeService.);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
