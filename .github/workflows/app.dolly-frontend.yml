@@ -43,6 +43,10 @@ jobs:
         working-directory: 'apps/dolly-frontend/src/main/js'
         run: npm ci
 
+      - name: Npm build
+        working-directory: 'apps/dolly-frontend/src/main/js'
+        run: npm run build
+
       - name: Run Testcafe
         working-directory: 'apps/dolly-frontend/src/main/js'
         run: npm run test:testcafe
