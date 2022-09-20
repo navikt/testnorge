@@ -44,10 +44,8 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        uses: DevExpress/testcafe-action@latest
-        with:
-          skip-install: true
-          args: chrome:headless apps/dolly-frontend/src/main/js/tests/ --app-init-delay 60000 --app "npm run start-testcafe --prefix apps/dolly-frontend/src/main/js" --cache
+        working-directory: 'apps/dolly-frontend/src/main/js'
+        run: testcafe chrome:headless tests/ --app-init-delay 60000 --app "npm run start-testcafe" --cache
   
   deploy:
     name: Deploy
