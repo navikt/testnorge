@@ -27,7 +27,7 @@ jobs:
   
   testcafe:
     name: Run Testcafe tests
-    runs-on: linux
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: 'Setup Node'
@@ -47,7 +47,7 @@ jobs:
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
-          args: chrome:headless apps/dolly-frontend/src/main/js/tests/ --app-init-delay 60000 --app "npm run start --prefix apps/dolly-frontend/src/main/js" --cache
+          args: chrome:headless apps/dolly-frontend/src/main/js/tests/ --app-init-delay 60000 --app "npm run start-testcafe --prefix apps/dolly-frontend/src/main/js" --cache
   
   deploy:
     name: Deploy
