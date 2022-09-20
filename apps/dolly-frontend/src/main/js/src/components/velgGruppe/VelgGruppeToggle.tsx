@@ -6,6 +6,7 @@ import EksisterendeGruppe from '~/components/velgGruppe/EksisterendeGruppe'
 interface VelgGruppeToggleProps {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
 	valgtGruppe: string
+	fraGruppe?: number
 }
 
 const togglenavn = 'Gruppevalgtoggle'
@@ -15,7 +16,11 @@ enum Gruppevalg {
 	NY = 'Ny',
 }
 
-export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeToggleProps) => {
+export const VelgGruppeToggle = ({
+	setValgtGruppe,
+	valgtGruppe,
+	fraGruppe = null,
+}: VelgGruppeToggleProps) => {
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.EKSISTERENDE)
 
 	const handleToggleChange = (e: React.ChangeEvent<any>) => {
@@ -42,7 +47,11 @@ export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeTogg
 			</ToggleGruppe>
 
 			{gruppevalg === Gruppevalg.EKSISTERENDE ? (
-				<EksisterendeGruppe setValgtGruppe={setValgtGruppe} valgtGruppe={valgtGruppe} />
+				<EksisterendeGruppe
+					setValgtGruppe={setValgtGruppe}
+					valgtGruppe={valgtGruppe}
+					fraGruppe={fraGruppe}
+				/>
 			) : (
 				<NyGruppe setValgtGruppe={setValgtGruppe} />
 			)}

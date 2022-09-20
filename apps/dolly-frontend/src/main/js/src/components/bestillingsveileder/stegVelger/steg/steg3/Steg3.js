@@ -66,7 +66,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
-			{importTestnorge && !opts.gruppe && <VelgGruppe formikBag={formikBag} />}
+			{importTestnorge && !opts.gruppe && (
+				<VelgGruppe formikBag={formikBag} title={'Hvilken gruppe vil du importere til?'} />
+			)}
 			{importTestnorge && opts.gruppe && (
 				<div className="oppsummering">
 					<div className="bestilling-detaljer">

@@ -8,6 +8,7 @@ import _orderBy from 'lodash/orderBy'
 interface EksisterendeGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
 	valgtGruppe: string
+	fraGruppe?: number
 }
 
 type Options = {
@@ -15,15 +16,16 @@ type Options = {
 	label: string
 }
 
-export default ({ setValgtGruppe, valgtGruppe }: EksisterendeGruppe) => {
+export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: EksisterendeGruppe) => {
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
 	const { grupperById, loading } = useGrupper(brukerId)
 
 	const sortedGruppeliste = grupperById && _orderBy(Object.values(grupperById), ['id'], ['desc'])
+	const filteredGruppeliste = sortedGruppeliste?.filter((gruppe) => gruppe.id !== fraGruppe)
 
-	const gruppeOptions = sortedGruppeliste?.map((gruppe: Gruppe) => {
+	const gruppeOptions = filteredGruppeliste?.map((gruppe: Gruppe) => {
 		return {
 			value: gruppe.id,
 			label: `${gruppe.id} - ${gruppe.navn}`,
