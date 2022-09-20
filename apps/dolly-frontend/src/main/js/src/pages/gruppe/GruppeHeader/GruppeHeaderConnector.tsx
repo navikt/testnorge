@@ -14,6 +14,7 @@ const mapStateToProps = (state: RootStateOrAny) => ({
 	isSendingTags: loadingSelectorSendTags(state),
 	isLockingGruppe: loadingSelectorLaasGruppe(state),
 	isFetchingExcel: loadingSelectorGetExcel(state),
+	fagsystem: state.fagsystem,
 })
 
 const mapDispatchToProps = (dispatch: (arg0: Action<any>) => any) => ({

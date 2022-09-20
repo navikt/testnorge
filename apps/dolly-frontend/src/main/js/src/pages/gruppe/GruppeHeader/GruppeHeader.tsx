@@ -28,6 +28,7 @@ type GruppeHeaderProps = {
 	isFetchingExcel: boolean
 	isSendingTags: boolean
 	sendTags: Function
+	fagsystem: any
 }
 
 const GruppeHeader = ({
@@ -40,6 +41,7 @@ const GruppeHeader = ({
 	isLockingGruppe,
 	sendTags,
 	isSendingTags,
+	fagsystem,
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
@@ -54,8 +56,6 @@ const GruppeHeader = ({
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
 	const iconType = erLaast ? 'lockedGroup' : 'group'
 	const antallPersoner = gruppe.antallIdenter
-
-	console.log('gruppe: ', gruppe) //TODO - SLETT MEG
 
 	return (
 		<Fragment>
@@ -96,7 +96,13 @@ const GruppeHeader = ({
 							REDIGER
 						</Button>
 					)}
-					{!erLaast && <FlyttPersonButton gruppeId={gruppeId} disabled={antallPersoner < 1} />}
+					{!erLaast && (
+						<FlyttPersonButton
+							gruppeId={gruppeId}
+							fagsystem={fagsystem}
+							disabled={antallPersoner < 1}
+						/>
+					)}
 					<Button
 						onClick={visGjenopprettModal}
 						kind="synchronize"

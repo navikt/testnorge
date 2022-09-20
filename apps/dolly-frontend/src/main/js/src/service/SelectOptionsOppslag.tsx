@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
@@ -16,7 +16,7 @@ export type Option = {
 	vergemaal?: boolean
 	doedsfall?: boolean
 	foreldre?: Array<string>
-	foreldreansvar: Array<string>
+	foreldreansvar?: Array<string>
 }
 
 type Data = {
@@ -75,6 +75,98 @@ export const SelectOptionsOppslag = {
 			return personListe
 		})
 		return options ? options : Promise.resolve()
+	},
+
+	hentIdentNavnOptions: async (gruppeId: string) => {
+		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
+			return response.data?.identer?.map((person: PersonData) => {
+				return { ident: person.ident, master: person.master }
+			})
+		})
+
+		if (gruppe?.length < 1) {
+			return null
+		}
+
+		const pdlOptions = await PdlforvalterApi.getPersoner(gruppe.map((p) => p.ident)).then(
+			(response: any) => {
+				const personListe: Array<Option> = []
+				response.data.forEach((id: Person) => {
+					personListe.push({
+						value: id.person.ident,
+						label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
+					})
+				})
+				return personListe
+			}
+		)
+
+		// TODO: Må gjøre det på denne måten, men får den ikke til å funke...
+		// const testnorgeOptions = async () => {
+		// 	const personListe: Array<Option> = []
+		// 	const maxAntall = 50
+		//
+		// 	for (let i = 0; i < gruppe.length; i += maxAntall) {
+		// 		const listeDel = gruppe.slice(i, i + maxAntall)
+		// 		const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
+		// 			(response: any) => {
+		// 				const optionsListe = []
+		// 				response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
+		// 					optionsListe.push({
+		// 						value: id.ident,
+		// 						label: `${id.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
+		// 					})
+		// 				})
+		// 				return optionsListe
+		// 			}
+		// 		)
+		// 		personListe.push(...options)
+		// 	}
+		// 	return personListe
+		// }
+
+		const testnorgeOptions = await DollyApi.getPersonerFraPdl(gruppe.map((p) => p.ident)).then(
+			(response: any) => {
+				const personListe: Array<Option> = []
+				response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
+					personListe.push({
+						value: id.ident,
+						label: `${id.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
+					})
+				})
+				return personListe
+			}
+		)
+
+		const tpsOptions = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then(
+			(response: any) => {
+				const personListe: Array<Option> = []
+				response.data.forEach((id: Person) => {
+					personListe.push({
+						value: id.ident,
+						label: `${id.ident} - ${id.fornavn} ${id.etternavn}`, //TODO: Mellomnavn??
+					})
+				})
+				return personListe
+			}
+		)
+
+		const getOptionsSamlet = () => {
+			const options = []
+			gruppe.forEach((person) => {
+				if (person.master === 'PDLF') {
+					options.push(pdlOptions.find((p) => p.value === person.ident))
+				} else if (person.master === 'PDL') {
+					options.push(testnorgeOptions.find((p) => p.value === person.ident))
+				} else if (person.master === 'TPSF') {
+					options.push(tpsOptions.find((p) => p.value === person.ident))
+				}
+			})
+			return options
+		}
+
+		const optionsSamlet = getOptionsSamlet()
+		return optionsSamlet ? optionsSamlet : Promise.resolve()
 	},
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
