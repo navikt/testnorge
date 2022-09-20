@@ -42,6 +42,13 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.skjerming) {
 		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
 	}
+	if (initialValuesMal.bankkonto) {
+		if (initialValuesMal.bankkonto.norskBankkonto) {
+			delete initialValuesMal.bankkonto.utenlandskBankkonto
+		} else {
+			delete initialValuesMal.bankkonto.norskBankkonto
+		}
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
