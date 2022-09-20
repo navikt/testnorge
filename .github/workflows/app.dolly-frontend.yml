@@ -7,9 +7,6 @@ on:
       - .github/workflows/app.dolly-frontend.yml
 
 jobs:
-  defaults:
-    run:
-      working-directory: 'apps/dolly-frontend/src/main/js'
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
@@ -46,11 +43,9 @@ jobs:
         working-directory: 'apps/dolly-frontend/src/main/js'
         run: npm ci
 
-      - name: Run tests
-        uses: DevExpress/testcafe-action@latest
-        with:
-          skip-install: true
-          args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
+      - name: Run Testcafe
+        working-directory: 'apps/dolly-frontend/src/main/js'
+        run: testcafe chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
   
   deploy:
     name: Deploy
