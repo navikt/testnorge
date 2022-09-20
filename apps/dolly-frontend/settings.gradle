@@ -11,6 +11,7 @@ includeBuild '../../libs/reactive-frontend'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/security-core'
+includeBuild '../../.github/workflows'
 
 gradleEnterprise {
     buildScan {

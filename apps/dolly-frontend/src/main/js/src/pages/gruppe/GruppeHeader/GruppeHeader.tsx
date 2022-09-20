@@ -69,7 +69,7 @@ const GruppeHeader = ({
 				<div className="flexbox">
 					<Header.TitleValue
 						title="Eier"
-						value={gruppe.opprettetAv.brukernavn || gruppe.opprettetAv.navIdent}
+						value={gruppe.opprettetAv?.brukernavn || gruppe.opprettetAv?.navIdent}
 					/>
 					<Header.TitleValue title="Antall personer" value={antallPersoner} />
 					<Header.TitleValue

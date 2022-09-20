@@ -4,11 +4,13 @@ import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
 const miljoer = new RegExp(/\/miljoer/)
 const dollyLogg = new RegExp(/\/dolly-logg/)
 const azureAuth = new RegExp(/\/oauth2\/authorization\/aad/)
-const current = new RegExp(/\/current/)
+const current = new RegExp(/current/)
 const profil = new RegExp(/\/profil/)
 const bilde = new RegExp(/\/bilde/)
-const hentGrupper = new RegExp(/pageSize/)
+const hentGrupper = new RegExp(/gruppe\?brukerId/)
+const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const spesifikkGruppe = new RegExp(/\/gruppe$/)
+const tags = new RegExp(/\/tags$/)
 const bestillingGruppe = new RegExp(/\/bestilling\/gruppe/)
 const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
 const varslinger = new RegExp(/\/varslinger/)
@@ -66,6 +68,10 @@ const cookieMock = RequestMock()
 	.respond('["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]', 200)
 	.onRequestTo(hentGrupper)
 	.respond([gjeldendeGruppe], 200)
+	.onRequestTo(hentGruppe)
+	.respond(gjeldendeGruppe, 200, {
+		'content-type': 'application/json;charset=UTF-8',
+	})
 	.onRequestTo(spesifikkGruppe)
 	.respond(nyGruppe, 201, {
 		'content-type': 'application/json;charset=UTF-8',
@@ -87,7 +93,9 @@ const cookieMock = RequestMock()
 	.onRequestTo(bilde)
 	.respond(null, 404)
 	.onRequestTo(bestillingMaler)
-	.respond([], 200)
+	.respond({ malbestillinger: ['Cafe, Test', []] }, 200)
+	.onRequestTo(tags)
+	.respond({}, 200)
 
 fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
@@ -117,11 +125,9 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 	await testController
 		.click(ReactSelector('NavButton').withText('Lukk'))
 
-		.click(ReactSelector('TableColumn').withKey('0'))
-		.typeText(ReactSelector('FormikTextInput').withProps({ label: 'NAVN' }), 'Testcafe testing')
-		.typeText(
-			ReactSelector('FormikTextInput').withProps({ label: 'HENSIKT' }),
-			'Saftig testing med testcafe..'
-		)
-		.click(ReactSelector('NavButton').withText('Opprett og gå til gruppe'))
+		.click(ReactSelector('TableRow').withKey('1'))
+		.click(ReactSelector('NavButton').withText('Opprett personer'))
+		.click(ReactSelector('ToggleGroupItem').withText('Eksisterende person'))
+		.click(ReactSelector('ToggleGroupItem').withText('Ny person'))
+		.click(ReactSelector('NavButton').withText('Start bestilling'))
 })

@@ -5,6 +5,7 @@ const miljoer = new RegExp(/\/miljoer/)
 const dollyLogg = new RegExp(/\/dolly-logg/)
 const azureAuth = new RegExp(/\/oauth2\/authorization\/aad/)
 const current = new RegExp(/\/current/)
+const varslinger = new RegExp(/\/varslinger/)
 
 const currentBruker = {
 	brukerId: '1234-5678-12',
@@ -23,6 +24,8 @@ const cookieMock = RequestMock()
 	.respond("<script>window.location.href='http://localhost:3000';</script>", 200)
 	.onRequestTo(current)
 	.respond(currentBruker, 200)
+	.onRequestTo(varslinger)
+	.respond([], 200)
 
 fixture`Loginside`.page`http://localhost:3000/login`
 	.requestHooks(cookieMock)
