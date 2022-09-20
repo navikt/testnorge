@@ -34,7 +34,11 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 				options={Options('foreldreTypePDL')}
 				isClearable={false}
 			/>
-			<FormikCheckbox name={`${path}.partnerErIkkeForelder`} label="Partner ikke forelder" />
+			<FormikCheckbox
+				name={`${path}.partnerErIkkeForelder`}
+				label="Partner ikke forelder"
+				checkboxMargin
+			/>
 			<DollyCheckbox
 				label="Har delt bosted"
 				checked={deltBosted}

@@ -49,6 +49,7 @@ export default ({ path }: OmsorgspengerForm) => {
 				name={`${path}.harUtbetaltPliktigeDager`}
 				label="Har utbetalt pliktige dager"
 				size="medium"
+				checkboxMargin
 			/>
 		</div>
 	)

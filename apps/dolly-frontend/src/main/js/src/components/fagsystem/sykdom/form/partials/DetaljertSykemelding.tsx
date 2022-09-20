@@ -164,7 +164,11 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 							type="number"
 						/>
 						<FormikTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
-						<FormikCheckbox name={`${path}.aktivitet.reisetilskudd`} label="Har reisetilskudd" />
+						<FormikCheckbox
+							name={`${path}.aktivitet.reisetilskudd`}
+							label="Har reisetilskudd"
+							checkboxMargin
+						/>
 					</>
 				)}
 			</FormikDollyFieldArray>
@@ -188,6 +192,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 					name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
 					label="Arbeidsfør etter endt periode"
 					size="medium"
+					checkboxMargin
 				/>
 			</Kategori>
 		</div>
