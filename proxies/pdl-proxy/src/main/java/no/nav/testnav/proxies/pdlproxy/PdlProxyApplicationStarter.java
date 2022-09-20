@@ -36,6 +36,18 @@ public class PdlProxyApplicationStarter {
         SpringApplication.run(PdlProxyApplicationStarter.class, args);
     }
 
+    @Value("${hendelse.lager.api.key}")
+    private String hendelselagerApiKey;
+
+    @Value("${person.aktor.admin.api}")
+    private String aktoerAdminApiKey;
+
+    @Value("${elastic.username}")
+    private String elasticUsername;
+
+    @Value("${elastic.password}")
+    private String elasticPassword;
+
     @Bean
     public StsOidcTokenService stsOidcTokenService(
             @Value("${sts.token.provider.url}") String url,
@@ -47,10 +59,6 @@ public class PdlProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService,
-                                           @Value("${hendelse.lager.api.key}") String hendelselagerApiKey,
-                                           @Value("${person.aktor.admin.api}") String aktoerAdminApiKey,
-                                           @Value("${elastic.username}") String elasticUsername,
-                                           @Value("${elastic.password}") String elasticPassword,
                                            TrygdeetatenAzureAdTokenService tokenService,
                                            PdlTestdataProperties pdlTestdataProperties) {
 
