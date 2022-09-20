@@ -3,5 +3,5 @@
   "hostname": "localhost",
   "developmentMode": true,
   "retryTestPages": true,
-  "quarantineMode": true
+  "appInitDelay": 40000
 }
