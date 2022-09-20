@@ -43,7 +43,7 @@ public class IdentService {
     public void send(String environment, String gruppe) {
         TpsIdentListe liste = tpsIdenterAdapter.fetchBy(gruppe);
         var exisistingFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
-        TpsIdentListe identer = new TpsIdentListe(liste
+        var identer = new TpsIdentListe(liste
                 .stream()
                 .filter(item -> !exisistingFnrs.contains(item.getFnr()))
                 .toList()
