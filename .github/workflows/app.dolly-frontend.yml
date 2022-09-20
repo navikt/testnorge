@@ -47,7 +47,7 @@ jobs:
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
-          args: chrome:headless *Fixture.ts --app-init-delay 60000 --app "npm run start" --cache
+          args: chrome:headless apps/dolly-frontend/src/main/js/tests/ --app-init-delay 60000 --app "npm run start" --cache
   
   deploy:
     name: Deploy
