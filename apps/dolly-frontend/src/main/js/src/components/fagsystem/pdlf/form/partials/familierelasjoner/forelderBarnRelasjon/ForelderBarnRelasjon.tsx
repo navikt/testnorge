@@ -109,7 +109,11 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 										options={Options('foreldreTypePDL')}
 										isClearable={false}
 									/>
-									<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" />
+									<FormikCheckbox
+										name={`${path}.borIkkeSammen`}
+										label="Bor ikke sammen"
+										checkboxMargin
+									/>
 								</>
 							)}
 							<FormikSelect
