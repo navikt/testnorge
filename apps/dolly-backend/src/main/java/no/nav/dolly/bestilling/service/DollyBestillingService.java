@@ -43,7 +43,6 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -67,11 +66,6 @@ public class DollyBestillingService {
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
-
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
@@ -93,12 +87,14 @@ public class DollyBestillingService {
 
             } else if (originator.isPdlf()) {
                 try {
-                    var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
-                            PersonUpdateRequestDTO.builder()
-                                    .person(originator.getPdlBestilling().getPerson())
-                                    .build());
+                    if (nonNull(originator.getPdlBestilling())) {
+                        pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                                PersonUpdateRequestDTO.builder()
+                                        .person(originator.getPdlBestilling().getPerson())
+                                        .build());
+                    }
 
-                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
+                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
                     dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
 
                 } catch (WebClientResponseException e) {
@@ -136,7 +132,12 @@ public class DollyBestillingService {
         }
     }
 
-    private void clearCache() {
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
+    }
+
+    protected void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
@@ -188,7 +189,6 @@ public class DollyBestillingService {
         bestillingService.saveBestillingToDB(bestilling);
         clearCache();
     }
-
 
     protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
 

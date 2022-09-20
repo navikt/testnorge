@@ -55,6 +55,7 @@ public class RsBestillingStatus {
 
     private Long opprettetFraId;
     private Long opprettetFraGruppeId;
+    private Long gjenopprettetFraIdent;
     private RsBestilling bestilling;
     private String opprettFraIdenter;
 

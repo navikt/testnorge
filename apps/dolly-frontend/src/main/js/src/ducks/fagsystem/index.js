@@ -114,11 +114,11 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		slettPersonOgPartner: [
-			DollyApi.slettPersonOgPartner,
-			(ident, partnerident) => ({
+		slettPersonOgRelatertePersoner: [
+			DollyApi.slettPersonOgRelatertePersoner,
+			(ident, relatertPersonIdenter) => ({
 				ident,
-				partnerident,
+				relatertPersonIdenter,
 			}),
 		],
 	},
@@ -210,7 +210,7 @@ export default handleActions(
 			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
 		[onSuccess(actions.getBrreg)](state, action) {
-			state.brregstub[action.meta.ident] = action.payload.data
+			state.brregstub[action.meta.ident] = action.payload?.data
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
 			const identerBolk = action.payload.data?.data?.hentIdenterBolk?.reduce(
@@ -249,7 +249,7 @@ export default handleActions(
 		[onSuccess(actions.slettPerson)](state, action) {
 			deleteIdentState(state, action.meta.ident)
 		},
-		[onSuccess(actions.slettPersonOgPartner)](state, action) {
+		[onSuccess(actions.slettPersonOgRelatertePersoner)](state, action) {
 			deleteIdentState(state, action.meta.ident)
 			deleteIdentState(state, action.meta.partnerident)
 		},
@@ -286,16 +286,9 @@ export const fetchTpsfPersoner = (identer) => (dispatch) => {
 }
 
 export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
-	const pdlIdenter = identer
-		.filter(
-			(person) =>
-				!fagsystem.pdl[person.ident] &&
-				!fagsystem.pdlforvalter[person.ident] &&
-				!fagsystem.tpsf[person.ident]
-		)
-		.map((person) => {
-			return person.ident
-		})
+	const pdlIdenter = identer.map((person) => {
+		return person.ident
+	})
 	if (pdlIdenter && pdlIdenter.length >= 1) {
 		dispatch(actions.getPdlForvalter(pdlIdenter))
 		dispatch(actions.getPDLPersoner(pdlIdenter))

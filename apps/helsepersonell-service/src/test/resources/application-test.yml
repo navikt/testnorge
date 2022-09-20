@@ -1,0 +1,27 @@
+consumers:
+  testnav-samhandlerregisteret-proxy:
+    url: http://localhost:${wiremock.server.port:0}/samhandler
+    cluster: dummy
+    namespace: dummy
+    name: testnav-samhandlerregisteret-proxy
+  dolly-backend:
+    url: http://localhost:${wiremock.server.port:0}/dolly
+    cluster: dummy
+    namespace: dummy
+    name: dolly-backend
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dummy
+    url: http://localhost:${wiremock.server.port:0}/pdl
+    cluster: dummy
+
+
+helsepersonell.controller.cache.hours: 24
+dolly.helsepersonell.gruppeId: 0
+
+spring.cloud.vault.enabled: false
+
+CLIENT_ID: ignored
+
+azure.app.client.id: dummy
+azure.app.client.secret: dummy

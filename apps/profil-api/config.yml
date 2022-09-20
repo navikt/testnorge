@@ -31,8 +31,6 @@ spec:
         - application: endringsmelding-frontend
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
-        - application: dolly-backend
           cluster: dev-gcp
         - application: testnorge-tilbakemelding-api
           cluster: dev-gcp

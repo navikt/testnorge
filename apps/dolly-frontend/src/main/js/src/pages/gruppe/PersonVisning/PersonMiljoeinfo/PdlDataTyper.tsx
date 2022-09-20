@@ -6,7 +6,6 @@ import {
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
-	Vergemaal,
 } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
@@ -42,7 +41,7 @@ export type HentPerson = {
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
-	vergemaalEllerFremtidsfullmakt: Array<Vergemaal>
+	vergemaalEllerFremtidsfullmakt: Array<VergemaalData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	sivilstand: Array<Sivilstand>
@@ -330,4 +329,26 @@ type Navn = {
 	etternavn: string
 	forkortetNavn?: string
 	metadata: Metadata
+}
+
+export type VergemaalData = {
+	type: string
+	embete: string
+	vergeEllerFullmektig: VergeEllerFullmektig
+	folkeregistermetadata: {
+		gyldighetstidspunkt: string
+		opphoerstidspunkt?: string
+	}
+	metadata: Metadata
+}
+
+export type VergeEllerFullmektig = {
+	navn: {
+		fornavn: string
+		mellomnavn?: string
+		etternavn: string
+	}
+	motpartsPersonident: string
+	omfang: string
+	omfangetErInnenPersonligOmraade: string
 }

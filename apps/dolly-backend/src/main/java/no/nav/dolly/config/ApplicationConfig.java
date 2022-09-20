@@ -20,7 +20,7 @@ import java.util.concurrent.ForkJoinPool;
         InsecureJwtServerToServerConfiguration.class})
 public class ApplicationConfig {
 
-    private static final int THREADS_COUNT = 10;
+    private static final int THREADS_COUNT = 20;
 
     @PostConstruct
     public void enableAuthCtxOnSpawnedThreads() {

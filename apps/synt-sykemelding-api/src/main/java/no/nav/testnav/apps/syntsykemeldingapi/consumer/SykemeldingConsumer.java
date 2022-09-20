@@ -1,29 +1,39 @@
 package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.SykemeldingProperties;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSykemeldingCommand;
-import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
 public class SykemeldingConsumer {
-    private final RestTemplate restTemplate;
-    private final String url;
+
+    private final TokenExchange tokenExchange;
+    private final ServerProperties serviceProperties;
+    private final WebClient webClient;
 
     public SykemeldingConsumer(
-            RestTemplateBuilder restTemplateBuilder,
-            @Value("${consumers.sykemelding.url}") String url
-    ) {
-        this.restTemplate = restTemplateBuilder.build();
-        this.url = url;
+            SykemeldingProperties serviceProperties,
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction) {
+
+        this.serviceProperties = serviceProperties;
+        this.tokenExchange = tokenExchange;
+        this.webClient = WebClient.builder()
+                .baseUrl(serviceProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
-    public ResponseEntity<String> opprettSykemelding(Sykemelding sykemelding) {
-        return new PostSykemeldingCommand(restTemplate, url, sykemelding).call();
+    public void opprettSykemelding(SykemeldingDTO sykemelding) {
+        tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+                        new PostSykemeldingCommand(webClient, accessToken.getTokenValue(), sykemelding).call())
+                .block();
     }
 }

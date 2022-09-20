@@ -81,3 +81,10 @@ export const getLeggTilIdent = (personFoerLeggTil, identMaster) => {
 	if (identMaster === 'PDLF') return personFoerLeggTil.pdlforvalter?.person?.ident
 	return undefined
 }
+
+export const getSisteDato = (dates) => {
+	if (dates?.length > 0) {
+		return new Date(Math.max.apply(null, dates))
+	}
+	return null
+}

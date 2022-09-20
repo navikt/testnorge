@@ -2,26 +2,33 @@ package no.nav.registre.testnorge.helsepersonellservice.domain;
 
 import lombok.RequiredArgsConstructor;
 
-import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class Persondata {
-    private final PersondataDTO dto;
+    private final PdlPersonBolk.PersonBolk pdlPerson;
 
-    public String getFnr(){
-        return dto.getFnr();
+    public String getIdent() {
+        return pdlPerson.getIdent();
     }
 
-    public String getFornvan() {
-        return dto.getFornavn();
+    private Optional<PdlPersonBolk.Navn> getNavn() {
+        return pdlPerson.getPerson().getNavn()
+                .stream()
+                .filter(value -> !value.getMetadata().getHistorisk())
+                .findFirst();
+    }
+
+    public String getFornavn() {
+        return getNavn().map(PdlPersonBolk.Navn::getFornavn).orElse(null);
     }
 
     public String getMellomnavn() {
-        return dto.getMellomnavn();
+        return getNavn().map(PdlPersonBolk.Navn::getMellomnavn).orElse(null);
     }
 
     public String getEtternavn() {
-        return dto.getEtternavn();
+        return getNavn().map(PdlPersonBolk.Navn::getEtternavn).orElse(null);
     }
 
 }

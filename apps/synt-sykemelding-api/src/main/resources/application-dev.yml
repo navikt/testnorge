@@ -1,2 +1,8 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+azure:
+  app:
+    client:
+      id: ${client_id}
+      secret: ${client_secret}
+
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-synt-sykemelding-api
+

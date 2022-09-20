@@ -19,6 +19,7 @@ import { ifPresent } from '~/utils/YupValidations'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
+import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -28,6 +29,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	tpsMessagingData?: any
+	skjermingData?: Skjerming
 }
 
 enum Modus {
@@ -81,6 +83,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	redigertAttributt = null,
 	ident,
 	tpsMessagingData,
+	skjermingData,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -308,7 +311,11 @@ export const VisningRedigerbarPersondetaljer = ({
 							<>
 								<FieldArrayEdit>
 									<div className="flexbox--flex-wrap">
-										<PersondetaljerSamlet formikBag={formikBag} tpsMessaging={tpsMessagingData} />
+										<PersondetaljerSamlet
+											formikBag={formikBag}
+											tpsMessaging={tpsMessagingData}
+											skjermingData={skjermingData}
+										/>
 									</div>
 									<Knappegruppe>
 										<NavButton

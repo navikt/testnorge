@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.dagpenger.Barn;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,6 +35,8 @@ public class DagpengevedtakDTO {
     private Dagpengerettighet rettighetKode;
 
     private String vedtaktypeKode;
+    private String vedtaktype;
+    private String utfall;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate datoMottatt;

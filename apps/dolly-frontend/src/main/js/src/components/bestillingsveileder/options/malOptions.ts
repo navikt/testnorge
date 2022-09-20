@@ -39,6 +39,9 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.pdldata) {
 		initialValuesMal.pdldata = getUpdatedPdldata(initialValuesMal.pdldata)
 	}
+	if (initialValuesMal.skjerming) {
+		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
@@ -148,7 +151,6 @@ const getUpdatedPdldata = (pdldata: any) => {
 			return updateAdressetyper(adresse, false)
 		})
 	}
-
 	if (person?.forelderBarnRelasjon) {
 		newPdldata.person.forelderBarnRelasjon = person.forelderBarnRelasjon.map(
 			(relasjon: ForeldreBarnRelasjon) => {
@@ -158,6 +160,12 @@ const getUpdatedPdldata = (pdldata: any) => {
 				}
 				return relasjon
 			}
+		)
+	}
+
+	if (person?.kontaktinformasjonForDoedsbo) {
+		newPdldata.person.kontaktinformasjonForDoedsbo = person.kontaktinformasjonForDoedsbo.map(
+			(kontaktinfo: any) => updateKontaktType(kontaktinfo)
 		)
 	}
 	return newPdldata
@@ -221,4 +229,20 @@ const updateData = (data: any, initalValues: any) => {
 		}
 	}
 	return newData
+}
+
+const updateKontaktType = (kontaktinfo: any) => {
+	if (kontaktinfo?.advokatSomKontakt) {
+		kontaktinfo.kontaktType = 'ADVOKAT'
+	} else if (kontaktinfo?.organisasjonSomKontakt) {
+		kontaktinfo.kontaktType = 'ORGANISASJON'
+	} else if (kontaktinfo?.personSomKontakt) {
+		const person = kontaktinfo.personSomKontakt
+		if (person.nyKontaktperson) {
+			kontaktinfo.kontaktType = 'NY_PERSON'
+		} else if (person.identifikasjonsnummer || person.foedselsdato) {
+			kontaktinfo.kontaktType = 'PERSON_FDATO'
+		}
+	}
+	return kontaktinfo
 }

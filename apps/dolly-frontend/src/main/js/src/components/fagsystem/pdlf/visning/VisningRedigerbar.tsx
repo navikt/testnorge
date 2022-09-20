@@ -18,7 +18,10 @@ import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvand
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
-import { AdressebeskyttelseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import {
+	AdressebeskyttelseForm,
+	getIdenttype,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import {
 	adressebeskyttelse,
 	bostedsadresse,
@@ -39,6 +42,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	identtype?: string
+	disableSlett?: boolean
 }
 
 enum Modus {
@@ -96,6 +100,7 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
+	disableSlett = false,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -193,7 +198,13 @@ export const VisningRedigerbar = ({
 			case Attributt.Kontaktadresse:
 				return <KontaktadresseForm formikBag={formikBag} path={path} />
 			case Attributt.Adressebeskyttelse:
-				return <AdressebeskyttelseForm formikBag={formikBag} path={path} identtype={identtype} />
+				return (
+					<AdressebeskyttelseForm
+						formikBag={formikBag}
+						path={path}
+						identtype={getIdenttype(formikBag, identtype)}
+					/>
+				)
 		}
 	}
 
@@ -229,7 +240,12 @@ export const VisningRedigerbar = ({
 					{dataVisning}
 					<EditDeleteKnapper>
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+						<Button
+							kind="trashcan"
+							onClick={() => openModal()}
+							title="Slett"
+							disabled={disableSlett}
+						/>
 						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 							<div className="slettModal">
 								<div className="slettModal slettModal-content">

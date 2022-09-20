@@ -95,11 +95,21 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	}
 }
 
-export const useOrganisasjonBestillingStatus = (bestillingId: number, autoRefresh = false) => {
+export const useOrganisasjonBestillingStatus = (
+	bestillingId: number,
+	erOrganisasjon: boolean,
+	autoRefresh = false
+) => {
+	if (!erOrganisasjon) {
+		return {
+			loading: false,
+			error: 'Bestilling er ikke org!',
+		}
+	}
 	if (!bestillingId) {
 		return {
 			loading: false,
-			error: 'bestillingId mangler!',
+			error: 'BestillingId mangler!',
 		}
 	}
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(

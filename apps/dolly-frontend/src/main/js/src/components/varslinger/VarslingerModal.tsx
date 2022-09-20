@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
 import DollyModal from '~/components/ui/modal/DollyModal'
+import Stegindikator from 'nav-frontend-stegindikator'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { VarslingerApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
-import { Stepper } from '@navikt/ds-react'
-
-interface Varslinger {
-	updateVarslingerBruker: Function
-}
 
 type Varsling = {
 	fom: string
@@ -19,7 +15,7 @@ type Varsling = {
 	varslingId: string
 }
 
-export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
+export const VarslingerModal = () => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 	const [varslinger, setVarslinger] = useState(null)
@@ -73,26 +69,32 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)
-		updateVarslingerBruker(gyldigeVarslinger[steg].varslingId)
+		VarslingerApi.updateVarslingerBruker(gyldigeVarslinger[steg].varslingId)
 	}
 
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
 				<div className="varslinger-modal">
-					{antallVarslinger > 1 && <Stepper activeStep={steg}>{varslingerSteg}</Stepper>}
+					{antallVarslinger > 1 && (
+						<Stegindikator aktivtSteg={steg} steg={varslingerSteg} kompakt />
+					)}
 
 					<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
 
 					<div className="varslinger-buttons">
 						{steg > 0 && (
-							<NavButton onClick={() => setSteg(steg - 1)} style={{ float: 'left' }}>
+							<NavButton
+								type="standard"
+								onClick={() => setSteg(steg - 1)}
+								style={{ float: 'left' }}
+							>
 								Forrige side
 							</NavButton>
 						)}
 						{steg < antallVarslinger - 1 ? (
 							<NavButton
-								variant={'primary'}
+								type="hoved"
 								onClick={() => submitSettVarsling(false)}
 								style={{ float: 'right' }}
 							>
@@ -100,7 +102,7 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 							</NavButton>
 						) : (
 							<NavButton
-								variant={'primary'}
+								type="hoved"
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}
 							>

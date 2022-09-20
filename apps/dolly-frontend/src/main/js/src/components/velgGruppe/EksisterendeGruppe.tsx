@@ -21,9 +21,9 @@ export default ({ setValgtGruppe, valgtGruppe }: EksisterendeGruppe) => {
 	} = useCurrentBruker()
 	const { grupperById, loading } = useGrupper(brukerId)
 
-	const sortedGruppeliste = _orderBy(Object.values(grupperById), ['id'], ['desc'])
+	const sortedGruppeliste = grupperById && _orderBy(Object.values(grupperById), ['id'], ['desc'])
 
-	const gruppeOptions = sortedGruppeliste.map((gruppe: Gruppe) => {
+	const gruppeOptions = sortedGruppeliste?.map((gruppe: Gruppe) => {
 		return {
 			value: gruppe.id,
 			label: `${gruppe.id} - ${gruppe.navn}`,

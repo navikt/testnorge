@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.substring;
 
 @Slf4j
 @Service
@@ -34,7 +35,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DokarkivClient implements ClientRegister {
 
     private final DokarkivConsumer dokarkivConsumer;
-    private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
@@ -58,33 +58,32 @@ public class DokarkivClient implements ClientRegister {
                 dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
             }
 
-            bestilling.getEnvironments().forEach(environment -> {
+            bestilling.getEnvironments().stream()
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(environment -> {
 
-                if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
-                    try {
-                        DokarkivResponse response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
-                        if (nonNull(response)) {
-                            status.append(isNotBlank(status) ? ',' : "")
-                                    .append(environment)
-                                    .append(":OK");
+                        if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
 
-                            saveTransaksjonId(response, dollyPerson.getHovedperson(),
-                                    progress.getBestilling().getId(), environment);
+                            var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
+                            if (nonNull(response) && isBlank(response.getFeilmelding())) {
+                                status.append(',')
+                                        .append(environment)
+                                        .append(":OK");
+
+                                saveTransaksjonId(response, dollyPerson.getHovedperson(),
+                                        progress.getBestilling().getId(), environment);
+                            } else {
+
+                                status.append(',')
+                                        .append(environment)
+                                        .append(":FEIL=Teknisk feil se logg! ")
+                                        .append(nonNull(response) ?
+                                                ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
+                                                "UKJENT");
+                            }
                         }
-
-                    } catch (RuntimeException e) {
-
-                        status.append(isNotBlank(status) ? ',' : "")
-                                .append(environment)
-                                .append(':')
-                                .append(errorStatusDecoder.decodeRuntimeException(e));
-
-                        log.error("Feilet å legge inn person: {} til Dokarkiv miljø: {}",
-                                dokarkivRequest.getBruker().getId(), environment, e);
-                    }
-                }
-            });
-            progress.setDokarkivStatus(status.toString());
+                    });
+            progress.setDokarkivStatus(substring(status.toString(), 1));
         }
     }
 

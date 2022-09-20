@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { BaseSyntheticEvent } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
+import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -16,7 +17,7 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
-import { ToggleGroup } from '@navikt/ds-react'
+import ManglerTilgang from '~/pages/gruppe/ManglerTilgang/ManglerTilgang'
 
 export type GruppeProps = {
 	visning: string
@@ -28,7 +29,7 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ visning, setVisning }: GruppeProps) => {
+export default function Gruppe({ visning, setVisning }: GruppeProps) {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -41,23 +42,26 @@ export default ({ visning, setVisning }: GruppeProps) => {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
+	const bankIdBruker = brukertype === 'BANKID'
+
 	if (loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
 
-	console.log('gruppe: ', gruppe) //TODO - SLETT MEG
-
-	const byttVisning = (value: VisningType) => {
-		dispatch(resetNavigering())
-		dispatch(resetPaginering())
-		setVisning(value)
+	if (bankIdBruker && !gruppe?.erEierAvGruppe) {
+		return <ManglerTilgang />
 	}
 
-	const startBestilling = (values: Record<string, unknown>) =>
+	const byttVisning = (event: BaseSyntheticEvent) => {
+		dispatch(resetNavigering())
+		dispatch(resetPaginering())
+		setVisning(typeof event === 'string' ? event : event.target.value)
+	}
+
+	const startBestilling = (values: {}) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast
-
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppeId={gruppe.id} />
@@ -69,7 +73,7 @@ export default ({ visning, setVisning }: GruppeProps) => {
 
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
-					{brukertype === 'AZURE' && (
+					{!bankIdBruker && (
 						<NavButton
 							type="hoved"
 							onClick={visStartBestilling}
@@ -84,7 +88,7 @@ export default ({ visning, setVisning }: GruppeProps) => {
 					)}
 
 					<NavButton
-						variant={brukertype === 'BANKID' ? 'primary' : 'secondary'}
+						type={bankIdBruker ? 'hoved' : 'standard'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
@@ -101,33 +105,35 @@ export default ({ visning, setVisning }: GruppeProps) => {
 
 					<div style={{ flexGrow: '2' }}></div>
 
-					<FinnPersonBestillingConnector />
+					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
-					<ToggleGroup size={'small'} value={visning} onChange={byttVisning}>
-						<ToggleGroup.Item
-							key={VisningType.VISNING_PERSONER}
+					<ToggleGruppe onChange={byttVisning} name="toggler">
+						<ToggleKnapp
+							key={visning}
 							value={VisningType.VISNING_PERSONER}
+							checked={visning === VisningType.VISNING_PERSONER}
 						>
 							<Icon
-								key={VisningType.VISNING_PERSONER}
+								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter})`}
-						</ToggleGroup.Item>
-						<ToggleGroup.Item
-							key={VisningType.VISNING_BESTILLING}
+						</ToggleKnapp>
+						<ToggleKnapp
+							key={visning}
 							value={VisningType.VISNING_BESTILLING}
+							checked={visning === VisningType.VISNING_BESTILLING}
 						>
 							<Icon
-								key={VisningType.VISNING_BESTILLING}
+								key={visning}
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
 							{`Bestillinger (${Object.keys(bestillingerById).length})`}
-						</ToggleGroup.Item>
-					</ToggleGroup>
+						</ToggleKnapp>
+					</ToggleGruppe>
 				</div>
 			</div>
 

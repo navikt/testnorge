@@ -64,6 +64,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         person.getFolkeregisterPersonstatus().clear();
         person.getFolkeregisterPersonstatus()
                 .add(FolkeregisterPersonstatusDTO.builder()
+                        .id(1)
                         .isNew(true)
                         .build());
 
@@ -91,10 +92,10 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                     .findFirst().orElse(new FalskIdentitetDTO())
                     .getGyldigFraOgMed());
 
-        } else if (!person.getUtflytting().isEmpty() && person.getInnflytting().isEmpty() ||
-                !person.getUtflytting().isEmpty() && !person.getInnflytting().isEmpty() &&
-                        person.getUtflytting().stream().findFirst().get().getUtflyttingsdato().isAfter(
-                                person.getInnflytting().stream().findFirst().get().getInnflyttingsdato())) {
+        } else if (!person.getUtflytting().isEmpty() && person.getUtflytting().stream()
+                    .noneMatch(utflytting -> person.getInnflytting().stream()
+                            .anyMatch(innflytting ->
+                                    innflytting.getInnflyttingsdato().isAfter(utflytting.getUtflyttingsdato())))) {
 
             personstatus.setStatus(UTFLYTTET);
             personstatus.setGyldigFraOgMed(person.getUtflytting().stream()

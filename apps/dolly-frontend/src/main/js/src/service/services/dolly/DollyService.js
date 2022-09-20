@@ -114,8 +114,16 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
-	slettPersonOgPartner(ident, _partnerident) {
-		return Request.delete(Endpoints.slettPerson(ident))
+	slettPersonOgRelatertePersoner(ident, relatertPersonIdenter) {
+		return Request.delete(Endpoints.slettPerson(ident)).then(() => {
+			return Promise.all(
+				relatertPersonIdenter.map((person) => {
+					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
+						console.error(error)
+					})
+				})
+			)
+		})
 	},
 
 	importerPersoner: (gruppeId, request) => {
@@ -126,8 +134,8 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
-	getPersonFraPdl(ident) {
-		return Request.get(Endpoints.personoppslag(ident))
+	getPersonFraPdl(ident, pdlMiljoe) {
+		return Request.get(Endpoints.personoppslag(ident, pdlMiljoe))
 	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
@@ -173,7 +181,35 @@ export default {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 
-	importerPartner(groupId, ident, master) {
+	importerRelatertPerson(groupId, ident, master) {
 		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
+	},
+
+	slettMal(malId) {
+		return Request.delete(Endpoints.malBestilling(malId))
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	endreMalNavn(malID, malNavn) {
+		return Request.putWithoutResponse(Endpoints.malBestilling(malID), malNavn)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
 	},
 }

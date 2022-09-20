@@ -20,12 +20,12 @@ import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/Fal
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
-import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
+import { PdlVergemaal } from '~/components/fagsystem/pdl/visning/partials/vergemaal/PdlVergemaal'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -77,7 +77,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
-				<VergemaalVisning data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
+				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

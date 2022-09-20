@@ -54,8 +54,8 @@ class AaregProxyApplicationStarterTest {
     @ParameterizedTest
     @ValueSource(strings =
         {
-            "q1", "q2", "q4", "q5", "qx",
-            "t0", "t1", "t2", "t3", "t4", "t5", "t13"
+            "q1", "q2", "q4", "q5",
+            "t0", "t1", "t2", "t3", "t4", "t5"
         }
 
     )
@@ -84,8 +84,8 @@ class AaregProxyApplicationStarterTest {
     @ParameterizedTest
     @ValueSource(strings =
         {
-            "q1", "q2", "q4", "q5", "qx",
-            "t0", "t1", "t2", "t3", "t4", "t5", "t13"
+            "q1", "q2", "q4", "q5",
+            "t0", "t1", "t2", "t3", "t4", "t5"
         }
 
     )

@@ -244,8 +244,12 @@ public class ArenaForvalterService {
         }
     }
 
-    public DagpengerResponseDTO opprettDagpengesoknad(DagpengerRequestDTO request) {
-        return arenaForvalterConsumer.opprettDagpengerSoknad(request);
+    public DagpengerResponseDTO opprettMottaDagpengesoknad(DagpengerRequestDTO request) {
+        return arenaForvalterConsumer.opprettMottaDagpengerSoknad(request);
+    }
+
+    public DagpengerResponseDTO opprettMottaDagpengevedtak(DagpengerRequestDTO request) {
+        return arenaForvalterConsumer.opprettMottaDagpengerVedtak(request);
     }
 
     public DagpengerResponseDTO opprettDagpengevedtak(DagpengerRequestDTO request) {

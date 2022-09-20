@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
+import Hjelpetekst from '~/components/hjelpetekst'
 import RedigerGruppeConnector from '~/components/redigerGruppe/RedigerGruppeConnector'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { EksporterExcel } from '~/pages/gruppe/EksporterExcel/EksporterExcel'
@@ -11,10 +12,10 @@ import Formatters from '~/utils/DataFormatter'
 
 import './GruppeHeader.less'
 import { TagsButton } from '~/components/ui/button/Tags/TagsButton'
+import { PopoverOrientering } from 'nav-frontend-popover'
 import { GjenopprettGruppe } from '~/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { useGruppeById } from '~/utils/hooks/useGruppe'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
-import { bottom } from '@popperjs/core'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 type GruppeHeaderProps = {
 	gruppeId: number
@@ -42,6 +43,9 @@ const GruppeHeader = ({
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
 	const { gruppe } = useGruppeById(gruppeId)
+	const {
+		currentBruker: { brukertype },
+	} = useCurrentBruker()
 
 	const erLaast = gruppe.erLaast
 
@@ -55,7 +59,7 @@ const GruppeHeader = ({
 			<div className="page-header flexbox--align-center">
 				<h1>{gruppeNavn}</h1>
 				{erLaast && (
-					<Hjelpetekst placement={bottom}>
+					<Hjelpetekst hjelpetekstFor="Låst gruppe" type={PopoverOrientering.Under}>
 						Denne gruppen er låst. Låste grupper er velegnet for å dele med eksterne samhandlere
 						fordi de ikke kan endres, og blir heller ikke påvirket av prodlast i samhandlermiljøet
 						(Q1). Kontakt Team Dolly dersom du ønsker å låse opp gruppen.
@@ -121,12 +125,14 @@ const GruppeHeader = ({
 						action={getGruppeExcelFil}
 						loading={isFetchingExcel}
 					/>
-					<TagsButton
-						loading={isSendingTags}
-						action={sendTags}
-						gruppeId={gruppe.id}
-						eksisterendeTags={gruppe.tags}
-					/>
+					{brukertype !== 'BANKID' && (
+						<TagsButton
+							loading={isSendingTags}
+							action={sendTags}
+							gruppeId={gruppe.id}
+							eksisterendeTags={gruppe.tags}
+						/>
+					)}
 					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
 				</div>
 			</Header>

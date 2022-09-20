@@ -20,17 +20,13 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: dolly-backend
-          cluster: dev-fss
-        - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: dolly-backend
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnorge-synt-sykemelding-api
-          cluster: dev-fss
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io

@@ -119,8 +119,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}?organisasjonBestilling=${erOrganisasjon}`
 	}
 
-	static personoppslag(ident) {
-		return `${personoppslagBase}/ident/${ident}`
+	static personoppslag(ident, pdlMiljoe = null) {
+		return `${personoppslagBase}/ident/${ident}${pdlMiljoe ? '?pdlMiljoe=' + pdlMiljoe : ''}`
 	}
 
 	static personoppslagMange(identer) {
@@ -191,5 +191,9 @@ export default class DollyEndpoints {
 
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
+	}
+
+	static malBestilling(malId) {
+		return `${bestillingBase}/malbestilling/${malId}`
 	}
 }

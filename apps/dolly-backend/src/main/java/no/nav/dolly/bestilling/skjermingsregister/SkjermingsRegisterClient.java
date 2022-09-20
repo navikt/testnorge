@@ -45,7 +45,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
 
         if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
-                ((nonNull(bestilling.getSkjerming())) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom()))) {
+                ((nonNull(bestilling.getSkjerming())))) {
 
             dollyPersonCache.fetchIfEmpty(dollyPerson);
 
@@ -70,13 +70,8 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
             skjermingsRegisterConsumer.deleteSkjerming(identer)
                     .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å slette identer fra Skjermingsregistert: ", String.join(", ", identer));
-        }
     }
 
     private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime skjermetTil, StringBuilder status) {
@@ -113,7 +108,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
         try {
             skjerminger.forEach(skjerming -> {
                 if (isAlleredeSkjermet(skjerming.getPersonident()) && nonNull(skjermetTil)) {
-                    skjermingsRegisterConsumer.putSkjerming(skjerming.getPersonident());
+                    skjermingsRegisterConsumer.putSkjerming(skjerming.getPersonident(), skjermetTil);
                 } else if (!isAlleredeSkjermet(skjerming.getPersonident()) && isNull(skjermetTil)) {
                     skjermingsRegisterConsumer.postSkjerming(List.of(skjerming));
                 }

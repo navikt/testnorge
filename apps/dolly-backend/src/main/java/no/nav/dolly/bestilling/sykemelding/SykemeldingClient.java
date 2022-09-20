@@ -39,6 +39,7 @@ public class SykemeldingClient implements ClientRegister {
     private static final String STANDARD_ARBEIDSFORHOLD_ID = "1";
 
     private final SykemeldingConsumer sykemeldingConsumer;
+    private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransaksjonMappingService transaksjonMappingService;
     private final DollyPersonCache dollyPersonCache;
@@ -105,7 +106,7 @@ public class SykemeldingClient implements ClientRegister {
                 syntSykemeldingRequest.setArbeidsforholdId(STANDARD_ARBEIDSFORHOLD_ID);
             }
 
-            ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
+            ResponseEntity<String> response = syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
             return HttpStatus.OK.equals(response.getStatusCode());
         }
         return false;

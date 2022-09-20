@@ -4,9 +4,9 @@ import { Route, Routes } from 'react-router-dom'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import BrukerPage from '~/pages/brukerPage'
 import LoginPage from '~/pages/loginPage'
-import AppConnector from '~/app/AppConnector'
 import { history, store } from '~/Store'
 import { HistoryRouter as Router } from 'redux-first-history/rr6'
+import { App } from '~/app/App'
 
 export const RootComponent = () => (
 	<Provider store={store}>
@@ -15,7 +15,7 @@ export const RootComponent = () => (
 				<Routes>
 					<Route path="/bruker" element={<BrukerPage />} />
 					<Route path="/login" element={<LoginPage />} />
-					<Route path="*" element={<AppConnector />} />
+					<Route path="*" element={<App />} />
 				</Routes>
 			</ErrorBoundary>
 		</Router>

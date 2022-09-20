@@ -1,5 +1,8 @@
 # Helsepersonell-service
-API for helsepersonell. Finner helsepersonell via Hodejegeren og Samhandlerregisteret.
+API for helsepersonell. Finner helsepersonell via Dolly og Samhandlerregisteret. 
+
+Originalt så lå all helsepersonell i en gruppe i TPS-forvalteren (avspillergruppeId 100001163), men har nå blitt 
+importert til Dolly gruppe i stedet.
 
 ## Swagger
 Swagger finnes under [/swagger](https://testnav-helsepersonell-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.

@@ -37,7 +37,7 @@ public class PdlDataStanaloneCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

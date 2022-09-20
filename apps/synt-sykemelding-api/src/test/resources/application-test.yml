@@ -2,26 +2,30 @@ wiremock.server.port: 0
 
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port}/token
 
+spring:
+  cloud:
+    vault:
+      enabled: false
+
 azure:
   app:
     client:
       id: dummy
+      secret: dummy
 
-spring:
-  cloud:
-    vault:
-      token: dummy
+TOKEN_X_CLIENT_ID: test
 
 consumers:
-  hodejegeren:
-    url: http://localhost:${wiremock.server.port}/hodejegeren
   synt-sykemelding:
     url: http://localhost:${wiremock.server.port}/synt
     name: synthdata-elsam-gcp
     cluster: dummy
     namespace: dummy
-  sykemelding:
+  sykemelding-api:
     url: http://localhost:${wiremock.server.port}/sykemelding
+    name: testnav-sykemelding-api-proxy
+    cluster: dummy
+    namespace: dummy
   testnav-organisasjon-service:
     url: http://localhost:${wiremock.server.port}/organisasjon
     name: testnav-organisasjon-service
@@ -37,3 +41,8 @@ consumers:
     cluster: dummy
     namespace: dummy
     name: testnav-helsepersonell-service
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dummy
+    url: http://localhost:${wiremock.server.port}/pdl
+    cluster: dummy

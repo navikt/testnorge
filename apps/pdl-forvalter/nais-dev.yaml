@@ -51,8 +51,6 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: dolly-backend-dev
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
