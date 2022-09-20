@@ -24,14 +24,27 @@ jobs:
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   testcafe:
-    - name: Check out the repository
-      uses: actions/checkout@v1
-    - run: npm ci
-    - name: Run Testcafe tests
-      uses: DevExpress/testcafe-action@latest
-      with:
-        skip-install: true
-        args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
+    name: Run Testcafe tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+
+      - name: Npm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        run: npm install
+
+      - name: Run tests
+        uses: DevExpress/testcafe-action@latest
+        with:
+          skip-install: true
+          args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
