@@ -14,7 +14,7 @@ import {
 	folkeregisterpersonstatus,
 	kjoenn,
 	navn,
-} from '~/components/fagsystem/pdlf/form/validation'
+} from '~/components/fagsystem/pdlf/form/validation/validation'
 import { ifPresent } from '~/utils/YupValidations'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'

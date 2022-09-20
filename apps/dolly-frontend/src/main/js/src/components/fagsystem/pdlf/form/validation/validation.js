@@ -5,67 +5,28 @@ import {
 	oppholdsadresse,
 	kontaktadresse,
 	adressebeskyttelse,
-} from '~/components/fagsystem/pdlf/form/partials/adresser/validation'
-import {
 	doedfoedtBarn,
 	forelderBarnRelasjon,
 	foreldreansvar,
 	sivilstand,
-	nyPerson,
-} from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/validation'
-import { bankkontoValidation } from '~/components/fagsystem/bankkonto/form'
-import { tpsMessagingValidation } from '~/components/fagsystem/tpsmessaging/form/validation'
-import { innflytting } from '~/components/fagsystem/pdlf/form/partials/innvandring/validation'
-import { kontaktDoedsbo } from '~/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/validation'
-import { sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/validation'
-import { telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/validation'
-import {
+	innflytting,
+	kontaktDoedsbo,
+	sikkerhetstiltak,
+	telefonnummer,
 	utenlandskId,
 	falskIdentitet,
-} from '~/components/fagsystem/pdlf/form/partials/identifikasjon/validation'
+	utflytting,
+	fullmakt,
+	statsborgerskap,
+	vergemaal,
+	tilrettelagtKommunikasjon,
+} from '~/components/fagsystem/pdlf/form/validation/partials'
+import { bankkontoValidation } from '~/components/fagsystem/bankkonto/form'
+import { tpsMessagingValidation } from '~/components/fagsystem/tpsmessaging/form/validation'
 import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
-
-const fullmakt = Yup.array().of(
-	Yup.object({
-		omraader: Yup.array().min(1, 'Velg minst ett område'),
-		gyldigFraOgMed: testDatoFom(requiredDate, 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(requiredDate, 'gyldigFraOgMed'),
-		motpartsPersonident: Yup.string().nullable(),
-		nyFullmektig: nyPerson,
-	})
-)
-
-const tilrettelagtKommunikasjon = Yup.array().of(
-	Yup.object().shape(
-		{
-			spraakForTaletolk: Yup.mixed().when('spraakForTegnspraakTolk', {
-				is: null,
-				then: requiredString.nullable(),
-			}),
-			spraakForTegnspraakTolk: Yup.mixed().when('spraakForTaletolk', {
-				is: null,
-				then: requiredString.nullable(),
-			}),
-		},
-		['spraakForTaletolk', 'spraakForTegnspraakTolk']
-	)
-)
 
 export const doedsfall = Yup.object({
 	doedsdato: requiredDate.nullable(),
-})
-
-export const statsborgerskap = Yup.object({
-	landkode: requiredString.nullable(),
-	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
-	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
-	bekreftelsesdato: Yup.date().optional().nullable(),
-})
-
-export const utflytting = Yup.object({
-	tilflyttingsland: requiredString,
-	tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-	utflyttingsdato: requiredDate.nullable(),
 })
 
 export const kjoenn = Yup.object({
@@ -78,18 +39,6 @@ export const navn = Yup.object({
 	etternavn: Yup.string().nullable(),
 	hasMellomnavn: Yup.boolean().nullable(),
 })
-
-const vergemaal = Yup.array().of(
-	Yup.object({
-		vergemaalEmbete: requiredString.nullable(),
-		sakType: requiredString.nullable(),
-		gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
-		nyVergeIdent: nyPerson,
-		vergeIdent: Yup.string().nullable(),
-		mandatType: Yup.string().nullable(),
-	})
-)
 
 export const folkeregisterpersonstatus = Yup.object({
 	status: requiredString.nullable(),

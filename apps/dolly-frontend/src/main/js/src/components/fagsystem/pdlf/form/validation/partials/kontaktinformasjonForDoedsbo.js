@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '~/utils/YupValidations'
-import { nyPerson } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/validation'
+import { nyPerson } from '~/components/fagsystem/pdlf/form/validation/partials'
 
 export const kontaktDoedsbo = Yup.array().of(
 	Yup.object().shape({
