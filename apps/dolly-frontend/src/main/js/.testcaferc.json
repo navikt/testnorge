@@ -1,5 +1,6 @@
 {
   "skipJsErrors": true,
-  "appInitDelay": 10000,
-  "developmentMode": true
+  "developmentMode": true,
+  "retryTestPages": true,
+  "quarantineMode": true
 }
