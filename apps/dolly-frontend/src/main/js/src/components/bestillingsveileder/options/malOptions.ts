@@ -43,16 +43,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
 	}
 	if (initialValuesMal.bankkonto) {
-		if (initialValuesMal.bankkonto.norskBankkonto) {
-			delete initialValuesMal.bankkonto.utenlandskBankkonto
-		} else {
-			delete initialValuesMal.bankkonto.norskBankkonto
-			for (let field of ['kontonummer', 'swift']) {
-				if (!initialValuesMal.bankkonto.utenlandskBankkonto[field]) {
-					initialValuesMal.bankkonto.utenlandskBankkonto[field] = ''
-				}
-			}
-		}
+		initialValuesMal.bankkonto = getUpdatedBankkonto(initialValuesMal.bankkonto)
 	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
@@ -226,6 +217,20 @@ const updateTypeForelderBarn = (relasjon: ForeldreBarnRelasjon) => {
 		return 'UTEN_ID'
 	}
 	return null
+}
+
+const getUpdatedBankkonto = (bankkonto: any) => {
+	if (bankkonto.norskBankkonto) {
+		delete bankkonto.utenlandskBankkonto
+	} else {
+		delete bankkonto.norskBankkonto
+		for (let field of ['kontonummer', 'swift']) {
+			if (!bankkonto.utenlandskBankkonto[field]) {
+				bankkonto.utenlandskBankkonto[field] = ''
+			}
+		}
+	}
+	return bankkonto
 }
 
 const updateData = (data: any, initalValues: any) => {
