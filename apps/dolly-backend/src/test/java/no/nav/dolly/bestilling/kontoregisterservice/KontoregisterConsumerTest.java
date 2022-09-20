@@ -218,7 +218,7 @@ class KontoregisterConsumerTest {
     @Test
     void oppdaterUtenlandskbankkonto() {
         stubFor(
-                post(urlPathMatching("(.*)/api/kontoregister/v1/oppdater-konto"))
+                post(urlPathMatching("(.*)/api/system/v1/oppdater-konto"))
                         .willReturn(ok()
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
@@ -272,7 +272,7 @@ class KontoregisterConsumerTest {
     @Test
     void testHentBankkonto() {
         stubFor(
-                post(urlPathMatching("(.*)/api/kontoregister/v1/hent-konto"))
+                post(urlPathMatching("(.*)/api/system/v1/hent-konto"))
                         .willReturn(ok()
                                 .withBody(hentKontoResponse())
                                 .withHeader("Content-Type", "application/json")));
