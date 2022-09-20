@@ -14,7 +14,7 @@ import { Bestillingsstatus, useOrganisasjonBestilling } from '~/utils/hooks/useO
 import { isEmpty } from 'lodash'
 
 type StatusProps = {
-	gruppeId: number
+	gruppeId: string
 	brukerId: string
 	bestillingListe: Bestillingsstatus[]
 	isCanceling: boolean
@@ -30,7 +30,7 @@ const StatusListe = ({
 	const mutate = useMatchMutate()
 	const [nyeBestillinger, setNyeBestillinger] = useState([])
 	const [autoRefresh, setAutoRefresh] = useState(true)
-	useBestillingerGruppe(gruppeId, autoRefresh)
+	useBestillingerGruppe(gruppeId)
 	useOrganisasjonBestilling(brukerId, autoRefresh)
 
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
@@ -67,7 +67,7 @@ const StatusListe = ({
 				<BestillingResultat bestilling={bestilling} setNyeBestillinger={setNyeBestillinger} />
 			) : (
 				<BestillingProgresjon
-					bestilling={bestilling}
+					bestillingID={bestilling.id}
 					cancelBestilling={cancelBestilling}
 					setNyeBestillinger={setNyeBestillinger}
 				/>

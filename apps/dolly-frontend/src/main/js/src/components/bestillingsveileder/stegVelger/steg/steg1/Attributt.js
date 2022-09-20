@@ -2,23 +2,21 @@ import React from 'react'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { CheckboxGroup } from '@navikt/ds-react'
 
-export const Attributt = ({ attr, vis = true, disabled = false, title = null }) => {
-	return (
-		vis && (
-			<div title={title}>
-				<DollyCheckbox
-					label={attr.label}
-					size="grow"
-					attributtCheckbox={true}
-					onChange={attr.checked ? attr.remove : attr.add}
-					checked={attr.checked}
-					value={attr}
-					disabled={disabled}
-				/>
-			</div>
-		)
+export const Attributt = ({ attr, vis = true, disabled = false, title = null, ...props }) =>
+	vis && (
+		<div title={title}>
+			<DollyCheckbox
+				label={attr.label}
+				attributtCheckbox={true}
+				size={'small'}
+				onChange={attr.checked ? attr.remove : attr.add}
+				checked={attr.checked}
+				value={attr}
+				disabled={disabled}
+				{...props}
+			/>
+		</div>
 	)
-}
 
 export const AttributtKategori = ({ title, children }) => {
 	const attributter = Array.isArray(children) ? children : [children]
@@ -27,8 +25,7 @@ export const AttributtKategori = ({ title, children }) => {
 	)
 	return (
 		attributterSomSkalVises && (
-			<CheckboxGroup legend={title}>
-				{title && <h3>{title}</h3>}
+			<CheckboxGroup name={title} legend={title}>
 				<div className="attributt-velger_panelsubcontent">{children}</div>
 			</CheckboxGroup>
 		)

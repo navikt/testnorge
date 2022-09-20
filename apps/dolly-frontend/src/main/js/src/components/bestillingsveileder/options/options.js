@@ -26,7 +26,7 @@ export const BVOptions = (
 	gruppeId
 ) => {
 	let initialValues = {
-		antall: antall,
+		antall: antall || 1,
 		beskrivelse: null,
 		pdldata: {
 			opprettNyPerson: {
@@ -38,7 +38,7 @@ export const BVOptions = (
 	}
 
 	let initialValuesLeggTil = {
-		antall,
+		antall: antall || 1,
 		environments: [],
 		beskrivelse: null,
 		pdldata: {

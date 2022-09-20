@@ -76,9 +76,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 			{bestillingsdata && (
 				<>
 					{disableAllEnvironments && (
-						<Alert variant={'info'}>
-							Denne bestillingen er uavhengig av miljøer.<p></p>
-						</Alert>
+						<Alert variant={'info'}>Denne bestillingen er uavhengig av miljøer.</Alert>
 					)}
 					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
 				</>
@@ -110,10 +108,10 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 											key={env.id}
 											id={env.id}
 											disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
-											label={env.id}
+											label={env?.id?.toUpperCase()}
 											checked={values.includes(env.id)}
 											onClick={onClick}
-											size={'xxsmall'}
+											size={'small'}
 										/>
 									))}
 								</div>

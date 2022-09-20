@@ -28,6 +28,7 @@ export const MatrikkeladresseVelger = ({ formikBag, path }) => {
 		>
 			<RadioGroup
 				name={`matrikkeladresse_${path}`}
+				size={'small'}
 				key={`matrikkeladresse_${path}`}
 				legend="Hva slags matrikkeladresse vil du opprette?"
 				onChange={(valg) => handleRadioChange(valg)}

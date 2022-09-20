@@ -8,7 +8,7 @@ import { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
 import { DollyApi } from '~/service/Api'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { MalValg } from '~/pages/testnorgePage/search/importModal/MalValg'
-import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import './ImportModal.less'
 import { Gruppe } from '~/utils/hooks/useGruppe'
 import { top } from '@popperjs/core'
@@ -106,32 +106,29 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 			<div className="flexbox--baseline--justify-end import-knapper">
 				{visPartnereImport && (
 					<span className="flexbox--baseline--justify-end">
-						<Checkbox
+						<FormikCheckbox
 							id="import-modal-import-med-partner"
 							checked={importMedPartner}
 							onChange={toggleImportMedPartner}
 							label="Import med partner"
-							size="medium"
 						/>
-
 						<Hjelpetekst placement={top}>
 							En eller flere av dine valgte Test-Norge personer har en partner. <br /> Vil du
 							inkludere partnerne i importen?
 						</Hjelpetekst>
 					</span>
 				)}
-				<span>
-					<Checkbox
+				<div>
+					<FormikCheckbox
 						id="import-modal-import-med-mal"
 						checked={importMedMal}
 						onChange={toggleImportMedMal}
 						label="Benytt mal"
-						size="medium"
 					/>
-				</span>
+				</div>
 
 				<NavButton
-					type="hoved"
+					variant={'primary'}
 					onClick={() => {
 						if (importMedMal) {
 							openMalModal()
@@ -153,7 +150,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 					</div>
 					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
 					<div className="importModal-actions">
-						<NavButton onClick={() => importer(valgtePersoner, malData)} type="hoved">
+						<NavButton onClick={() => importer(valgtePersoner, malData)} variant={'primary'}>
 							Importer
 						</NavButton>
 					</div>

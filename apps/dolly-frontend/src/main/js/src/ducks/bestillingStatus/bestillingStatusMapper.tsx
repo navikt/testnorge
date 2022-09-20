@@ -11,26 +11,9 @@
  */
 
 import Formatters from '~/utils/DataFormatter'
+import { Bestilling } from '~/utils/hooks/useBestilling'
 
-type Bestilling = {
-	id: number
-	antallIdenter: number
-	antallLevert: number
-	ferdig: boolean
-	sistOppdatert: Date
-	bruker: {
-		brukerId: string
-		brukernavn: string
-		brukertype: string
-		epost: string
-	}
-	gruppeId: number
-	stoppet: boolean
-	environments: [string]
-	status: [System]
-}
-
-type System = {
+export type System = {
 	id: string
 	navn: string
 	statuser: [

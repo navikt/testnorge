@@ -5,7 +5,6 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 import { VelgPerson } from '~/pages/testnorgePage/search/VelgPerson'
-import './SearchView.less'
 import Loading from '~/components/ui/loading/Loading'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { getAlder, getKjoenn } from '~/ducks/fagsystem'
@@ -126,7 +125,7 @@ export default ({
 		},
 		{
 			text: 'Velg alle',
-			width: '15',
+			width: '10',
 			dataField: 'velg',
 			headerFormatter: (text: string, data: Array<PdlData>) => {
 				return (

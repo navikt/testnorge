@@ -93,12 +93,12 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 				)}
 
 				<div className="toolbar">
-					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
+					<NavButton variant={'primary'} onClick={() => startBestilling(BestillingType.NY)}>
 						Opprett organisasjon
 					</NavButton>
 
 					<ToggleGroup size={'small'} onChange={byttVisning} defaultValue={VISNING_ORGANISASJONER}>
-						<ToggleGroup.Item value={VISNING_ORGANISASJONER} defaultChecked={true}>
+						<ToggleGroup.Item value={VISNING_ORGANISASJONER}>
 							<Icon
 								size={13}
 								kind={visning === VISNING_ORGANISASJONER ? 'organisasjonLight' : 'organisasjon'}
@@ -122,7 +122,6 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 						<Loading label="Laster organisasjoner" panel />
 					) : antallOrg !== 0 ? (
 						<OrganisasjonListe
-							// @ts-ignore
 							bestillinger={bestillinger}
 							search={search}
 							setAntallOrg={setAntallOrg}

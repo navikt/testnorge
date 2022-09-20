@@ -19,12 +19,12 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 	const getLastButtonText = () => {
 		if (importTestnorge) {
 			if (harAvhukedeAttributter(formikBag.values)) {
-				return 'IMPORTER OG OPPRETT'
+				return 'Importer og opprett'
 			} else {
-				return 'IMPORTER'
+				return 'Importer'
 			}
 		}
-		return 'OPPRETT'
+		return 'Opprett'
 	}
 
 	return (

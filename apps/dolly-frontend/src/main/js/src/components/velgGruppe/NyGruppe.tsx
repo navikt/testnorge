@@ -48,9 +48,7 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 						<div className="fields">
 							<FormikTextInput name="navn" label="NAVN" size="small" autoFocus />
 							<FormikTextInput name="hensikt" label="HENSIKT" size="medium" />
-							<NavButton variant={'primary'} type="submit">
-								Opprett
-							</NavButton>
+							<NavButton variant={'primary'}>Opprett</NavButton>
 						</div>
 					</Form>
 				)}

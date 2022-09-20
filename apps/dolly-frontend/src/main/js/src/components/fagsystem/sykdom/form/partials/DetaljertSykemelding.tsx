@@ -75,15 +75,15 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				<FormikDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
 				<FormikCheckbox
 					name="sykemelding.detaljertSykemelding.umiddelbarBistand"
-					label="Trenger umiddelbar bistand"
-					size="medium"
 					checkboxMargin
+					label="Trenger umiddelbar bistand"
+					size="small"
 				/>
 				<FormikCheckbox
 					name="sykemelding.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen"
 					label="Manglende tilrettelegging på arbeidsplassen"
-					size="large"
 					checkboxMargin
+					size="small"
 				/>
 			</div>
 			<Kategori title="Diagnose" vis="sykemelding">
@@ -164,11 +164,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 							type="number"
 						/>
 						<FormikTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
-						<FormikCheckbox
-							name={`${path}.aktivitet.reisetilskudd`}
-							label="Har reisetilskudd"
-							checkboxMargin
-						/>
+						<FormikCheckbox name={`${path}.aktivitet.reisetilskudd`} label="Har reisetilskudd" />
 					</>
 				)}
 			</FormikDollyFieldArray>
@@ -192,7 +188,6 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 					name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
 					label="Arbeidsfør etter endt periode"
 					size="medium"
-					checkboxMargin
 				/>
 			</Kategori>
 		</div>

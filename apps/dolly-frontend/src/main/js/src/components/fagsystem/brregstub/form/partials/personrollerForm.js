@@ -62,7 +62,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							}
 							styles={_get(formikBag.values, egenskap) ? colorStyles : null}
 						/>
-						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
+						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" />
 					</>
 				)
 			}}

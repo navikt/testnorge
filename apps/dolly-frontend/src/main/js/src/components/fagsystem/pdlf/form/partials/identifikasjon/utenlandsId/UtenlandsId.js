@@ -24,7 +24,7 @@ export const UtenlandsId = () => (
 					isClearable={false}
 					size="large"
 				/>
-				<FormikCheckbox name={`${path}.opphoert`} label="Er opphørt" checkboxMargin />
+				<FormikCheckbox name={`${path}.opphoert`} label="Er opphørt" />
 				<AvansertForm path={path} />
 			</React.Fragment>
 		)}

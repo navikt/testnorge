@@ -79,7 +79,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) =>
 
 				return (
 					<Fragment>
-						<Stepper orientation="horizontal" activeStep={step}>
+						<Stepper orientation="horizontal" activeStep={step + 1}>
 							{labels.map((label, index) => (
 								<Stepper.Step key={index}>{label.label}</Stepper.Step>
 							))}

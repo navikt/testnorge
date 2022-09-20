@@ -90,6 +90,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 				<ToggleGroup
 					defaultValue={FormType.STANDARD}
 					onChange={(value: FormType) => changeFormType(value)}
+					size={'small'}
 				>
 					<ToggleGroup.Item value={FormType.STANDARD}>Standard</ToggleGroup.Item>
 					<ToggleGroup.Item value={FormType.FORENKLET}>Forenklet</ToggleGroup.Item>

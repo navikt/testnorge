@@ -22,7 +22,7 @@ jobs:
       working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
     secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
   testcafe:
     name: Run Testcafe tests
     uses: DevExpress/testcafe-action@latest

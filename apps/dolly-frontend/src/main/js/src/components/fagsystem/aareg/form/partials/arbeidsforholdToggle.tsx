@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, ReactElement, useState } from 'react'
+import React, { ReactElement, useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
@@ -89,8 +89,9 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 	return (
 		<div className="toggle--wrapper">
 			<ToggleArbeidsgiver
-				onChange={(event: BaseSyntheticEvent) => handleToggleChange(event.target.value)}
-				name={'arbeidsforhold'}
+				onChange={(value: ArbeidsgiverTyper) => handleToggleChange(value)}
+				value={typeArbeidsgiver}
+				size={'small'}
 			>
 				{toggleValues.map((type) => (
 					<ToggleGroup.Item key={type.value} value={type.value}>

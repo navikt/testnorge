@@ -2,9 +2,16 @@ import React, { useState } from 'react'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import { NyIdent } from './NyIdent/NyIdent'
 import { EksisterendeIdent } from './EksisterendeIdent/EksisterendeIdent'
+import styled from 'styled-components'
 
 import './startModal.less'
-import { Radio, RadioGroup } from '@navikt/ds-react'
+
+import { ToggleGroup } from '@navikt/ds-react'
+
+const StyledToggleGroup = styled(ToggleGroup)`
+	margin-top: 25px;
+	margin-bottom: 20px;
+`
 
 export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }) => {
 	const [type, setType] = useState('ny')
@@ -12,14 +19,14 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }) => 
 		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
 			<div className="start-bestilling-modal">
 				<h1>Opprett personer</h1>
-				<RadioGroup legend="Type bestilling" value={type} onChange={(value) => setType(value)}>
-					<Radio value={'ny'} key={'ny'}>
+				<StyledToggleGroup size={'small'} value={type} onChange={(value) => setType(value)}>
+					<ToggleGroup.Item value={'ny'} key={'ny'}>
 						Ny person
-					</Radio>
-					<Radio value={'eksisterende'} key={'eksisterende'}>
+					</ToggleGroup.Item>
+					<ToggleGroup.Item value={'eksisterende'} key={'eksisterende'}>
 						Eksisterende person
-					</Radio>
-				</RadioGroup>
+					</ToggleGroup.Item>
+				</StyledToggleGroup>
 				{type === 'ny' && <NyIdent onAvbryt={onAvbryt} onSubmit={onSubmit} zBruker={brukernavn} />}
 				{type === 'eksisterende' && <EksisterendeIdent onAvbryt={onAvbryt} onSubmit={onSubmit} />}
 			</div>

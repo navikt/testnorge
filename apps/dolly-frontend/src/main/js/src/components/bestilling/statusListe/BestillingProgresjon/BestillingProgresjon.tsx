@@ -6,49 +6,30 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
 import { Bestillingsstatus, useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
+import { useBestillingById } from '~/utils/hooks/useBestilling'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	useMatchMutate,
+} from '~/utils/hooks/useMutate'
 
 type ProgresjonProps = {
-	bestilling: {
-		sistOppdatert: Date
-		hasOwnProperty: Function
-		id: number
-		antallIdenter: number
-		bestilling: { sykemelding: { syntSykemelding: {} } }
-		antallLevert: number
-	}
+	bestillingID: string
 	cancelBestilling: Function
 	setNyeBestillinger: Function
 }
 
 export const BestillingProgresjon = ({
-	bestilling,
+	bestillingID,
 	cancelBestilling,
 	setNyeBestillinger,
 }: ProgresjonProps) => {
-	const SECONDS_BEFORE_WARNING_MESSAGE = 120
-	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
-
-	const [timedOut, setTimedOut] = useState(false)
-	const [orgStatus, setOrgStatus] = useState(null)
-
-	const sistOppdatert = bestilling.sistOppdatert
-	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
-
 	const setDetaljertOrgStatus = (status: any) => {
 		const detaljertStatus = status?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
 		if (orgStatus !== detaljertStatus) {
 			setOrgStatus(detaljertStatus)
 		}
 	}
-
-	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling.id, erOrganisasjon, true)
-
-	useEffect(() => {
-		if (erOrganisasjon) {
-			setDetaljertOrgStatus(bestillingStatus)
-		}
-		harBestillingFeilet(sistOppdatert)
-	}, [bestilling])
 
 	const harBestillingFeilet = (sistOppdatertState: Date) => {
 		const liveTimeStamp = new Date().getTime()
@@ -76,6 +57,14 @@ export const BestillingProgresjon = ({
 		}
 	}
 
+	const ferdigstillBestilling = () => {
+		setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
+			nyeBestillinger.filter((best) => best.id !== bestilling.id)
+		)
+		mutate(REGEX_BACKEND_GRUPPER)
+		mutate(REGEX_BACKEND_BESTILLINGER)
+	}
+
 	const calculateStatus = () => {
 		const total = erOrganisasjon ? 1 : bestilling.antallIdenter
 		const sykemelding =
@@ -93,6 +82,7 @@ export const BestillingProgresjon = ({
 
 		if (antallLevert === total) {
 			text = `Ferdigstiller bestilling`
+			ferdigstillBestilling()
 		}
 		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
 		const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
@@ -106,9 +96,31 @@ export const BestillingProgresjon = ({
 
 	const handleCancelBtn = () => {
 		cancelBestilling(bestilling.id, erOrganisasjon)
-		setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
-			nyeBestillinger.filter((best) => best.id !== bestilling.id)
-		)
+		ferdigstillBestilling()
+	}
+
+	const SECONDS_BEFORE_WARNING_MESSAGE = 120
+	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
+
+	const { bestilling, loading } = useBestillingById(bestillingID, true)
+	const [timedOut, setTimedOut] = useState(false)
+	const [orgStatus, setOrgStatus] = useState(null)
+	const mutate = useMatchMutate()
+
+	const erOrganisasjon = bestilling?.hasOwnProperty('organisasjonNummer')
+	const sistOppdatert = bestilling?.sistOppdatert || new Date()
+
+	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling?.id, erOrganisasjon, true)
+
+	useEffect(() => {
+		if (erOrganisasjon) {
+			setDetaljertOrgStatus(bestillingStatus)
+		}
+		harBestillingFeilet(sistOppdatert)
+	}, [bestilling])
+
+	if (loading) {
+		return null
 	}
 
 	const { percentFinished, tittel, description } = calculateStatus()
@@ -133,7 +145,7 @@ export const BestillingProgresjon = ({
 							mer tid før du eventuelt avbryter.
 						</h5>
 					</div>
-					<NavButton type="fare" onClick={handleCancelBtn}>
+					<NavButton variant={'danger'} onClick={handleCancelBtn}>
 						Avbryt bestilling
 					</NavButton>
 				</div>
