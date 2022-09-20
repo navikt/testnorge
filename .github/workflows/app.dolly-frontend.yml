@@ -45,7 +45,7 @@ jobs:
 
       - name: Run Testcafe
         working-directory: 'apps/dolly-frontend/src/main/js'
-        run: testcafe chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
+        run: npm run test:testcafe
   
   deploy:
     name: Deploy
