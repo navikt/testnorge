@@ -118,6 +118,7 @@ public class KontoregisterConsumer {
     @Timed(name = "providers", tags = {"operation", "kontoregister_createNorskBankkonto"})
     public Mono<String> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
         var requestDto = mapperFacade.map(body, OppdaterKontoRequestDTO.class);
+        requestDto.setKontohaver(ident);
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SendOppdaterKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
