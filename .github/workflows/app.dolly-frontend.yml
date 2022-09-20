@@ -41,7 +41,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: 'apps/dolly-frontend/src/main/js'
-        run: npm ci
+        run: |
+          pwd
+          npm ci
 
       - name: Run tests
         uses: DevExpress/testcafe-action@latest
