@@ -1,10 +1,5 @@
 {
   "skipJsErrors": true,
   "appInitDelay": 10000,
-  "developmentMode": true,
-  "compilerOptions": {
-    "typescript": {
-      "customCompilerModulePath": "../typescript"
-    }
-  }
+  "developmentMode": true
 }
