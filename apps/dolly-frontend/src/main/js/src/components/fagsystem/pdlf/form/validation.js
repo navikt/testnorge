@@ -19,13 +19,11 @@ import { innflytting } from '~/components/fagsystem/pdlf/form/partials/innvandri
 import { kontaktDoedsbo } from '~/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/validation'
 import { sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/validation'
 import { telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/validation'
+import {
+	utenlandskId,
+	falskIdentitet,
+} from '~/components/fagsystem/pdlf/form/partials/identifikasjon/validation'
 import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
-
-const personnavnSchema = Yup.object({
-	fornavn: Yup.string(),
-	mellomnavn: Yup.string(),
-	etternavn: Yup.string(),
-})
 
 const fullmakt = Yup.array().of(
 	Yup.object({
@@ -51,27 +49,6 @@ const tilrettelagtKommunikasjon = Yup.array().of(
 		},
 		['spraakForTaletolk', 'spraakForTegnspraakTolk']
 	)
-)
-
-const falskIdentitet = Yup.array().of(
-	Yup.object({
-		rettIdentErUkjent: Yup.boolean(),
-		rettIdentitetVedIdentifikasjonsnummer: Yup.string().nullable(),
-		rettIdentitetVedOpplysninger: Yup.object({
-			foedselsdato: Yup.string().nullable(),
-			kjoenn: Yup.string().nullable(),
-			personnavn: personnavnSchema.nullable(),
-			statsborgerskap: Yup.array().of(Yup.string()),
-		}),
-	})
-)
-
-const utenlandskId = Yup.array().of(
-	Yup.object({
-		identifikasjonsnummer: requiredString,
-		opphoert: requiredString,
-		utstederland: requiredString,
-	})
 )
 
 export const doedsfall = Yup.object({
