@@ -41,15 +41,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: 'apps/dolly-frontend/src/main/js'
-        run: |
-          pwd
-          npm ci
+        run: npm ci
 
       - name: Run tests
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
-          args: chrome:headless apps/dolly-frontend/src/main/js/tests/ --app-init-delay 60000 --app "npm run start" --cache
+          args: chrome:headless /apps/dolly-frontend/src/main/js/tests/ --app-init-delay 60000 --app "npm run start" --cache
   
   deploy:
     name: Deploy
