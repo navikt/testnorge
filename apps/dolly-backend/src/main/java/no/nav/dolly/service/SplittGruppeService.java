@@ -43,7 +43,7 @@ public class SplittGruppeService {
         bestillingRepository.findBestillingerByIdentIn(identer).stream()
                 .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()))
                 .filter(bestilling -> isNull(bestilling.getOpprettetFraId()))
-                .filter(bestilling -> isNull(bestilling.getFeil()))
+                .filter(bestilling -> isNull(bestilling.getGjenopprettetFraIdent()))
                 .forEach(bestilling -> moveBestillinger(bestilling, identer, testgruppe));
 
         moveIdenter(identer, testgruppe);
