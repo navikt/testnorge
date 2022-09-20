@@ -1,5 +1,6 @@
 {
   "skipJsErrors": true,
+  "hostname": "localhost",
   "developmentMode": true,
   "retryTestPages": true,
   "quarantineMode": true
