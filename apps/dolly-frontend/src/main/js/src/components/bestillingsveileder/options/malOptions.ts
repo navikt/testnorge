@@ -47,6 +47,11 @@ export const initialValuesBasedOnMal = (mal: any) => {
 			delete initialValuesMal.bankkonto.utenlandskBankkonto
 		} else {
 			delete initialValuesMal.bankkonto.norskBankkonto
+			for (let field of ['kontonummer', 'swift']) {
+				if (!initialValuesMal.bankkonto.utenlandskBankkonto[field]) {
+					initialValuesMal.bankkonto.utenlandskBankkonto[field] = ''
+				}
+			}
 		}
 	}
 
