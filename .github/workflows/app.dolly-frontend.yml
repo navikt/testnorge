@@ -24,11 +24,14 @@ jobs:
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   testcafe:
-    name: Run Testcafe tests
-    uses: DevExpress/testcafe-action@latest
-    with:
-      skip-install: true
-      args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
+    - name: Check out the repository
+      uses: actions/checkout@v1
+    - run: npm ci
+    - name: Run Testcafe tests
+      uses: DevExpress/testcafe-action@latest
+      with:
+        skip-install: true
+        args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
