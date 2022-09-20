@@ -40,13 +40,14 @@ jobs:
       - name: Npm install
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        run: npm install
-        working-directory: 'apps/dolly-frontend/'
+        run: npm ci
+        working-directory: 'apps/dolly-frontend/src/main/js'
 
       - name: Run tests
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
+          working-directory: 'apps/dolly-frontend/src/main/js'
           args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
   
   deploy:
@@ -60,7 +61,7 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-       
+  
   deploy-dev:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master

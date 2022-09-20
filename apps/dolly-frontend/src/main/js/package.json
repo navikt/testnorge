@@ -14,7 +14,7 @@
     "lint": "eslint */**/*.{js,ts,tsx} --fix",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:testcafe": "testcafe chrome:headless src/tests/",
-    "test:testcafe-dev": "testcafe chrome src/tests/ --debug-mode"
+    "test:testcafe-dev": "testcafe chrome src/tests/ --debug-mode --app 'npm run start' --cache"
   },
   "author": "",
   "license": "ISC",
