@@ -856,7 +856,13 @@ export const validation = {
 			norskBankkonto: ifPresent(
 				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
-					kontonummer: requiredString.nullable(),
+					kontonummer: validInputOrCheckboxTest(
+						Yup.string().nullable(),
+						'tilfeldigKontonummer',
+						messages.required,
+						null
+					),
+					tilfeldigKontonummer: Yup.object().nullable(),
 				})
 			),
 		})

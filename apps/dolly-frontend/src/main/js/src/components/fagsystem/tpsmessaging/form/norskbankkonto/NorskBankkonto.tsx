@@ -5,32 +5,38 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '~/utils/GenererGyldigNorskBankkonto'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
-	const [kontonummer, setKontonummer] = useState(
-		_get(formikBag.values, 'bankkonto.norskBankkonto.kontonummer')
-	)
-
-	const path = 'bankkonto.norskBankkonto'
 
 	useEffect(() => {
 		setValidKontoOptions(generateValidKontoOptions())
 	}, [])
+
+	const path = 'bankkonto.norskBankkonto'
+	const harTilfeldig = _get(formikBag.values, `${path}.tilfeldigKontonummer`)
+	const kontonummer = _get(formikBag.values, `${path}.kontonummer`)
+
 	return (
 		<Vis attributt={path} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
-					value={kontonummer}
 					placeholder={kontonummer ? kontonummer : 'Velg..'}
-					afterChange={(selected: { value: string; label: string }) =>
-						setKontonummer(selected.value)
-					}
 					options={validKontoOptions}
-					isClearable={false}
+					isClearable={true}
 					name={`${path}.kontonummer`}
 					label={'Kontonummer'}
+					disabled={harTilfeldig}
 				/>
+				<div style={{ marginTop: '31px' }}>
+					<FormikCheckbox
+						name={`${path}.tilfeldigKontonummer`}
+						label="Har tilfeldig kontonummer"
+						size="x-small"
+						disabled={kontonummer}
+					/>
+				</div>
 			</div>
 		</Vis>
 	)

@@ -12,7 +12,7 @@ const path = 'bankkonto.utenlandskBankkonto'
 export const UtenlandskBankkonto = () => {
 	const { values } = useFormikContext()
 	const disableKontonummer = _get(values, `${path}.tilfeldigKontonummer`)
-	const disableTilfedligKontonummer = _get(values, `${path}.kontonummer`)
+	const disableTilfeldigKontonummer = _get(values, `${path}.kontonummer`)
 
 	return (
 		<Vis attributt={path} formik>
@@ -26,9 +26,9 @@ export const UtenlandskBankkonto = () => {
 					<div style={{ marginTop: '31px' }}>
 						<FormikCheckbox
 							name={`${path}.tilfeldigKontonummer`}
-							label="Har Tilfeldig kontonummer"
+							label="Har tilfeldig kontonummer"
 							size="x-small"
-							disabled={disableTilfedligKontonummer}
+							disabled={disableTilfeldigKontonummer}
 						/>
 					</div>
 				</div>
