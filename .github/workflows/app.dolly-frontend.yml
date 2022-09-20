@@ -28,7 +28,6 @@ jobs:
   testcafe:
     name: Run Testcafe tests
     runs-on: ubuntu-latest
-    working-directory:
     steps:
       - uses: actions/checkout@v3
       - name: 'Setup Node'
