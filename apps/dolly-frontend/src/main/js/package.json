@@ -13,8 +13,8 @@
     "test:1": "node ./node_modules/jest-single-file-coverage",
     "lint": "eslint */**/*.{js,ts,tsx} --fix",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
-    "test:testcafe": "testcafe chrome:headless src/tests/ --app 'npm run start' --cache",
-    "test:testcafe-dev": "testcafe chrome src/tests/ --debug-mode --app 'npm run start' --cache"
+    "test:testcafe": "testcafe chrome:headless tests/ --app 'npm run start' --cache",
+    "test:testcafe-dev": "testcafe chrome tests/ --debug-mode --app 'npm run start' --cache"
   },
   "author": "",
   "license": "ISC",
