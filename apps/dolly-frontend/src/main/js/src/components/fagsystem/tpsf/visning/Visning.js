@@ -6,14 +6,13 @@ import {
 	TpsfIdenthistorikk,
 	MidlertidigAdresse,
 	TpsfNasjonalitet,
-	NorskBankkonto,
 	Postadresse,
 	Relasjoner,
 	TpsfPersoninfo,
-	UtenlandskBankkonto,
 	TpsfVergemaal,
 } from './partials'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/form'
 
 export const TpsfVisning = ({ data }) => {
 	if (!data) return null

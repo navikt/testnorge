@@ -22,16 +22,14 @@ import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import { doedsfall, statsborgerskap, utflytting } from '~/components/fagsystem/pdlf/form/validation'
+import { innflytting } from '~/components/fagsystem/pdlf/form/partials/innvandring/validation'
 import {
-	adressebeskyttelse,
 	bostedsadresse,
-	doedsfall,
-	innflytting,
-	kontaktadresse,
 	oppholdsadresse,
-	statsborgerskap,
-	utflytting,
-} from '~/components/fagsystem/pdlf/form/validation'
+	kontaktadresse,
+	adressebeskyttelse,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/validation'
 import { ifPresent } from '~/utils/YupValidations'
 
 type VisningTypes = {

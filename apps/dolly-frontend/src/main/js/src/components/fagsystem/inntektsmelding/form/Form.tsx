@@ -31,7 +31,7 @@ import NaturalytelseForm from './partials/naturalytelseForm'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>

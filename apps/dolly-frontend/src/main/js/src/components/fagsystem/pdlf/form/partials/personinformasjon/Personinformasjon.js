@@ -18,8 +18,7 @@ import { Kjoenn } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { Foedsel } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import { Vergemaal } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
-import { UtenlandskBankkonto } from '~/components/fagsystem/tpsmessaging/form/utenlandskbankkonto/UtenlandskBankkonto'
-import { NorskBankkonto } from '~/components/fagsystem/tpsmessaging/form/norskbankkonto/NorskBankkonto'
+import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/form'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
