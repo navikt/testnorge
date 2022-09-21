@@ -145,6 +145,11 @@ public class BrukerService {
         return brukerRepository.fetchEidAv(bruker);
     }
 
+    public int slettNavIdentBrukere(Set<String> brukere) {
+
+        return brukerRepository.deleteByNavIdentIn(brukere);
+    }
+
     private void oppdaterBrukernavn(Bruker bruker) {
 
         String hentetBrukernavn = getAuthUser(getUserInfo).getBrukernavn();
@@ -167,10 +172,5 @@ public class BrukerService {
         } catch (NonTransientDataAccessException e) {
             throw new DollyFunctionalException(e.getMessage(), e);
         }
-    }
-
-    public int slettNavIdentBrukere(Set<String> brukere) {
-
-        return brukerRepository.deleteByNavIdentIn(brukere);
     }
 }

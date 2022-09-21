@@ -189,7 +189,7 @@ public class TestgruppeService {
                         testgruppeRepository.getIkkemigrerteTestgrupperByNavId(bruker).stream()
                                 .map(Testgruppe::getId)
                                 .map(id -> {
-                                    testgruppeRepository.deleteById(id);
+                                    deleteGruppeById(id);
                                     log.info("Slettet gruppe {} for bruker {}", id, bruker);
                                     return id;
                                 })

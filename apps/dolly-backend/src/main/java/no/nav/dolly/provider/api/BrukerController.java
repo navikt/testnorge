@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
@@ -104,12 +105,12 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
     @DeleteMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(description = "Fjern bruker identifisert med Z-ident, og gjør nødvendig opprydding")
-    public Map<String, Set<Long>> sletteBrukereMedGrupper(@RequestParam("file") MultipartFile file) throws IOException {
+    public Map<String, Set<Long>> sletteBrukereMedGrupper(@RequestParam("navZIdenter") MultipartFile navZIdenter) throws IOException {
 
-        var brukere = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))
+        var brukere = new BufferedReader(new InputStreamReader(navZIdenter.getInputStream(), StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.toSet());
 
