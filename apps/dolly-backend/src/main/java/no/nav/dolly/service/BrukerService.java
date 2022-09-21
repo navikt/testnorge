@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -175,23 +174,16 @@ public class BrukerService {
         }
     }
 
-    public Map<String, Set<Long>> sletteBrukere(MultipartFile file) {
+    public void sletteBrukere(MultipartFile file) {
 
         try {
             var input = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-            var test = input.lines()
-                    .map(testgruppeService::getIkkemigrerteTestgrupperByNavId)
-                    .map(testgrupper -> {
-                        testgrupper.stream().
-                        testgruppeService.deleteGruppeById(testgruppe.getId());
-                        log.info("Slettet gruppe {} for bruker {}", testgruppe.getId(), testgruppe.getOpprettetAv());
-                        return testgruppe;
-                    })
-                    .collect(Collectors.toSet())
-
+            input.lines()
+                    .map(bruker -> )
+                    .forEach(bruker -> testgruppeService.);
 
         } catch (IOException e) {
-            log.error("Kunne ikke lese file input.");
+            e.printStackTrace();
         }
     }
 }

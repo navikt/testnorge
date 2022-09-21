@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestilling
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.properties.CredentialsProps;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -126,7 +127,7 @@ public class TestgruppeService {
         }
     }
 
-    public Long deleteGruppeById(Long gruppeId) {
+    public void deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
         var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
@@ -138,8 +139,6 @@ public class TestgruppeService {
         personService.recyclePersoner(testIdenter);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         testgruppeRepository.deleteTestgruppeById(gruppeId);
-
-        return gruppeId;
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
@@ -181,8 +180,5 @@ public class TestgruppeService {
                 .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 
-    public List<Testgruppe> getIkkemigrerteTestgrupperByNavId(String navId) {
-
-        return testgruppeRepository.getIkkemigrerteTestgrupperByNavId(navId);
-    }
+    public List<Testgruppe>
 }
