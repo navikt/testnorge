@@ -28,23 +28,28 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 			const resp = allResponses[0]
 			const kontoregisterResp = allResponses[1]
 
-			if (kontoregisterResp?.data?.aktiveKonto) {
-				if (kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo) {
-					resp.bankkontonrUtland = {
-						kontonummer: kontoregisterResp.data.aktiveKonto.kontonummer,
-						swift: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.swiftBicKode,
-						landkode: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.bankLandkode,
-						banknavn: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.banknavn,
-						iban: kontoregisterResp.data.aktiveKonto.kontonummer,
-						valuta: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.valutakode,
-						bankAdresse1: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.bankadresse1,
-						bankAdresse2: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.bankadresse2,
-						bankAdresse3: kontoregisterResp.data.aktiveKonto.utenlandskKontoInfo.bankadresse3,
+			if (kontoregisterResp?.data) {
+				if (kontoregisterResp.data.aktivKonto) {
+					if (kontoregisterResp.data.aktivKonto.utenlandskKontoInfo) {
+						resp.bankkontonrUtland = {
+							kontonummer: kontoregisterResp.data.aktivKonto.kontonummer,
+							swift: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.swiftBicKode,
+							landkode: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.bankLandkode,
+							banknavn: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.banknavn,
+							iban: kontoregisterResp.data.aktivKonto.kontonummer,
+							valuta: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.valutakode,
+							bankAdresse1: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.bankadresse1,
+							bankAdresse2: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.bankadresse2,
+							bankAdresse3: kontoregisterResp.data.aktivKonto.utenlandskKontoInfo.bankadresse3,
+						}
+					} else {
+						resp.bankkontonrNorsk = {
+							kontonummer: kontoregisterResp.data.aktivKonto.kontonummer,
+						}
 					}
 				} else {
-					resp.bankkontonrNorsk = {
-						kontonummer: kontoregisterResp.data.aktiveKonto.kontonummer,
-					}
+					resp.bankkontonrUtland = null
+					resp.bankkontonrNorsk = null
 				}
 			}
 

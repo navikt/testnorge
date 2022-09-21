@@ -54,9 +54,6 @@ export const UtenlandskBankkonto = () => {
 					<FormikTextInput name={`${path}.bankAdresse2`} label={'Adresselinje 2'} />
 					<FormikTextInput name={`${path}.bankAdresse3`} label={'Adresselinje 3'} />
 				</div>
-				<div>
-					<button>slett</button>
-				</div>
 			</div>
 		</Vis>
 	)

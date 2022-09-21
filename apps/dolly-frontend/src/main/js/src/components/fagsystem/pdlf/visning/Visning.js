@@ -94,6 +94,7 @@ export const PdlfVisning = ({
 							: tpsfData?.bankkontonrUtland
 					}
 					extraButtons={true}
+					ident={ident}
 				/>
 				<NorskBankkonto
 					data={
@@ -101,6 +102,8 @@ export const PdlfVisning = ({
 							? tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
 							: tpsfData?.bankkontonrNorsk
 					}
+					extraButtons={true}
+					ident={ident}
 				/>
 				<Boadresse
 					data={data?.person?.bostedsadresse}
