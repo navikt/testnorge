@@ -17,6 +17,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.service.BestillingProgressService;
@@ -37,13 +38,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static no.nav.dolly.bestilling.service.GjenopprettUtil.executeCompleteableFuture;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
-public class GjenopprettGruppeService extends DollyBestillingService {
+public class GjenopprettIdentService extends DollyBestillingService {
 
     private final BestillingService bestillingService;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -52,15 +56,15 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private final IdentService identService;
     private final TransactionHelperService transactionHelperService;
 
-    public GjenopprettGruppeService(TpsfService tpsfService,
-                                    DollyPersonCache dollyPersonCache, IdentService identService,
-                                    BestillingProgressService bestillingProgressService,
-                                    BestillingService bestillingService, MapperFacade mapperFacade,
-                                    CacheManager cacheManager, ObjectMapper objectMapper,
-                                    List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                    ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                    PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                    TransactionHelperService transactionHelperService) {
+    public GjenopprettIdentService(TpsfService tpsfService,
+                                   DollyPersonCache dollyPersonCache, IdentService identService,
+                                   BestillingProgressService bestillingProgressService,
+                                   BestillingService bestillingService, MapperFacade mapperFacade,
+                                   CacheManager cacheManager, ObjectMapper objectMapper,
+                                   List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
+                                   ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
+                                   PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
+                                   TransactionHelperService transactionHelperService) {
 
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
@@ -86,15 +90,17 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
-            List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
+            var coBestillinger = identService.getBestillingerFromIdent(bestilling.getIdent());
+            var testident = identService.getTestIdent(bestilling.getIdent());
 
-            var completableFuture = bestilling.getGruppe().getTestidenter().stream()
-                    .map(testident -> doGjenopprett(bestilling, bestKriterier, coBestillinger, testident))
-                    .map(completable -> supplyAsync(completable, dollyForkJoinPool))
-                    .toList();
+            if (isNull(testident)) {
+                throw new NotFoundException(format("Fant ikke testident: %s i gruppe med id: %d", bestilling.getIdent(), bestilling.getGruppe().getId()));
+            }
 
-            completableFuture
-                    .forEach(GjenopprettUtil::executeCompleteableFuture);
+            var completeable = doGjenopprett(bestilling, bestKriterier, coBestillinger, testident);
+            var completeableFuture = supplyAsync(completeable, dollyForkJoinPool);
+
+            executeCompleteableFuture(completeableFuture);
 
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
@@ -107,7 +113,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         return () -> {
             if (!bestillingService.isStoppet(bestilling.getId())) {
-                BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
+                BestillingProgress progress = new BestillingProgress(
+                        bestilling,
+                        testident.getIdent(),
                         testident.getMaster());
                 try {
                     Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
@@ -116,7 +124,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
 
                         coBestillinger.stream()
-                                .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
+                                .filter(gruppe -> gruppe.getIdent()
+                                        .equals(testident.getIdent()))
                                 .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                 .forEach(bestilling1 -> clientRegisters.stream()
                                         .filter(register ->

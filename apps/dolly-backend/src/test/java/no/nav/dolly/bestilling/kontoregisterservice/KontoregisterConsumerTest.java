@@ -301,4 +301,31 @@ class KontoregisterConsumerTest {
         assertThat("bankkode", "XXXX".equals(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getBankkode()));
         assertThat("swift", "SHEDSE22".equals(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getSwiftBicKode()));
     }
+
+    private boolean mod11Kontroll(String kontonummer) {
+        var lastDigit = kontonummer.substring(kontonummer.length() - 1);
+        var m11 = String.valueOf(
+                KontoregisterConsumer.NorskBankkontoGenerator.getCheckDigit(kontonummer.substring(0, kontonummer.length()-1))
+        ); // exclude kontroll tall
+        return lastDigit.equals(m11);
+    }
+
+    private boolean validerNorskKonto(String kontonummer) {
+        if (kontonummer.length() != 11 || kontonummer.equals("00000000000") || !mod11Kontroll(kontonummer)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Test
+    void testTilfeldigNorskkonto() {
+        var test = "3654737113";
+        var digit = KontoregisterConsumer.NorskBankkontoGenerator.getCheckDigit(test);
+
+        IntStream.range(0, 100).forEach(i -> {
+            var norskKonto = KontoregisterConsumer.tilfeldigNorskBankkonto();
+            var validatingResult = validerNorskKonto(norskKonto);
+            assertThat("tilfeldig norsk bankkonto", validatingResult);
+        });
+    }
 }

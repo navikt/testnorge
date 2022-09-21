@@ -49,12 +49,7 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
-            sigrunStubConsumer.deleteSkattegrunnlag(identer)
-                    .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å slette identer fra Sigrunstub: ", String.join(", ", identer));
-        }
+        sigrunStubConsumer.deleteSkattegrunnlag(identer)
+                .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
     }
 }

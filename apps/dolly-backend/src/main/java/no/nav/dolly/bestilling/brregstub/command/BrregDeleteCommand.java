@@ -34,8 +34,8 @@ public class BrregDeleteCommand implements Callable<Flux<Void>> {
                     .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .retrieve()
                     .bodyToFlux(Void.class)
+                    .doOnError(WebClientFilter::logErrorMessage)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
-                    .doOnError(throwable -> log.error(WebClientFilter.getMessage(throwable)));
+                            .filter(WebClientFilter::is5xxException));
     }
 }

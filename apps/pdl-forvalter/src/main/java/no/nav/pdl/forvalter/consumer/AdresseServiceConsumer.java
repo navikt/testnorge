@@ -11,7 +11,6 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.stream.Stream;
 
@@ -42,41 +41,25 @@ public class AdresseServiceConsumer {
 
         var startTime = currentTimeMillis();
 
-        try {
-            var adresser = tokenExchange.exchange(properties).flatMap(
-                            token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())
-                    .block();
+        var adresser = tokenExchange.exchange(properties).flatMap(
+                        token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())
+                .block();
 
-            log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
-            return Stream.of(adresser).findFirst()
-                    .orElse(VegadresseServiceCommand.defaultAdresse());
-
-        } catch (WebClientResponseException e) {
-
-            log.info("Oppslag til adresseservice feilet etter {} ms, {}, request: {}", currentTimeMillis() - startTime,
-                    e.getResponseBodyAsString(), vegadresse.toString());
-            return VegadresseServiceCommand.defaultAdresse();
-        }
+        log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
+        return Stream.of(adresser).findFirst()
+                .orElse(VegadresseServiceCommand.defaultAdresse());
     }
 
     public no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
 
-        try {
-            var adresser = tokenExchange.exchange(properties).flatMap(
-                            token -> new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
-                    .block();
+        var adresser = tokenExchange.exchange(properties).flatMap(
+                        token -> new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
+                .block();
 
-            log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
-            return Stream.of(adresser).findFirst()
-                    .orElse(MatrikkeladresseServiceCommand.defaultAdresse());
-
-        } catch (WebClientResponseException e) {
-
-            log.info("Oppslag til adresseservice feilet etter {} ms, {}, request: {}", currentTimeMillis() - startTime,
-                    e.getResponseBodyAsString(), adresse.toString());
-            return MatrikkeladresseServiceCommand.defaultAdresse();
-        }
+        log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
+        return Stream.of(adresser).findFirst()
+                .orElse(MatrikkeladresseServiceCommand.defaultAdresse());
     }
 }
