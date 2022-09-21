@@ -1,7 +1,6 @@
 package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -24,8 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -96,9 +98,9 @@ public class BrukerController {
     @Transactional
     @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(description = "Fjern bruker identifisert med Z-ident, og gjøre nødvendig opprydding")
-    public void sletteBrukereMedGrupper(@RequestParam("file") MultipartFile file) {
+    @Operation(description = "Fjern bruker identifisert med Z-ident, og gjør nødvendig opprydding")
+    public Map<String, Set<Long>> sletteBrukereMedGrupper(@RequestParam("file") MultipartFile file) throws IOException {
 
-        brukerService.sletteBrukere(file);
+        return brukerService.sletteBrukere(file);
     }
 }

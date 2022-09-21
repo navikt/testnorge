@@ -175,23 +175,19 @@ public class BrukerService {
         }
     }
 
-    public Map<String, Set<Long>> sletteBrukere(MultipartFile file) {
+    public Map<String, Set<Long>> sletteBrukere(MultipartFile file) throws IOException {
 
-        try {
-            var input = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-            var test = input.lines()
-                    .map(testgruppeService::getIkkemigrerteTestgrupperByNavId)
-                    .map(testgrupper -> {
-                        testgrupper.stream().
-                        testgruppeService.deleteGruppeById(testgruppe.getId());
-                        log.info("Slettet gruppe {} for bruker {}", testgruppe.getId(), testgruppe.getOpprettetAv());
-                        return testgruppe;
-                    })
-                    .collect(Collectors.toSet())
-
-
-        } catch (IOException e) {
-            log.error("Kunne ikke lese file input.");
-        }
+        var input = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+        return input.lines()
+                .collect(Collectors.toMap(bruker -> bruker, bruker ->
+                        testgruppeService.getIkkemigrerteTestgrupperByNavId(bruker).stream()
+                                .map(Testgruppe::getId)
+                                .map(id -> {
+                                    testgruppeService.deleteGruppeById(id);
+                                    log.info("Slettet gruppe {} for bruker {}", id, bruker);
+                                    return id;
+                                })
+                                .collect(Collectors.toSet())
+                ));
     }
 }
