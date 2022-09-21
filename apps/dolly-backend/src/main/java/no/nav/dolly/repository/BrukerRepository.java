@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface BrukerRepository extends Repository<Bruker, Long> {
 
@@ -45,4 +46,6 @@ public interface BrukerRepository extends Repository<Bruker, Long> {
     @Query(value = "from Bruker b where b.eidAv = :bruker")
     List<Bruker> fetchEidAv(@Param("bruker") Bruker bruker);
 
+    @Modifying
+    int deleteByNavIdentIn(Set<String> navIdenter);
 }

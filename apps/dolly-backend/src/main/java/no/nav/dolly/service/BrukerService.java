@@ -14,12 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +36,6 @@ public class BrukerService {
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
     private final GetUserInfo getUserInfo;
-    private final TestgruppeService testgruppeService;
 
     public Bruker fetchBruker(String brukerId) {
 
@@ -175,19 +169,8 @@ public class BrukerService {
         }
     }
 
-    public Map<String, Set<Long>> sletteBrukere(MultipartFile file) throws IOException {
+    public int slettNavIdentBrukere(Set<String> brukere) {
 
-        var input = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-        return input.lines()
-                .collect(Collectors.toMap(bruker -> bruker, bruker ->
-                        testgruppeService.getIkkemigrerteTestgrupperByNavId(bruker).stream()
-                                .map(Testgruppe::getId)
-                                .map(id -> {
-                                    testgruppeService.deleteGruppeById(id);
-                                    log.info("Slettet gruppe {} for bruker {}", id, bruker);
-                                    return id;
-                                })
-                                .collect(Collectors.toSet())
-                ));
+        return brukerRepository.deleteByNavIdentIn(brukere);
     }
 }

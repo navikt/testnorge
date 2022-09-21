@@ -2,12 +2,14 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
+import no.nav.dolly.service.TestgruppeService;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,17 +25,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/bruker", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,6 +49,7 @@ public class BrukerController {
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
+    private final TestgruppeService testgruppeService;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
@@ -101,6 +109,14 @@ public class BrukerController {
     @Operation(description = "Fjern bruker identifisert med Z-ident, og gjør nødvendig opprydding")
     public Map<String, Set<Long>> sletteBrukereMedGrupper(@RequestParam("file") MultipartFile file) throws IOException {
 
-        return brukerService.sletteBrukere(file);
+        var brukere = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))
+                .lines()
+                .collect(Collectors.toSet());
+
+        var slettedeGrupper = testgruppeService.sletteGrupperForIkkemigrerteNavIdenter(brukere);
+        var slettedeBrukere = brukerService.slettNavIdentBrukere(brukere);
+
+        log.info("Slettet antall Z-identer: {}", slettedeBrukere);
+        return slettedeGrupper;
     }
 }

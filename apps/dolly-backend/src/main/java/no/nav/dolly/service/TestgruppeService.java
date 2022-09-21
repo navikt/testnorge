@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -181,8 +182,18 @@ public class TestgruppeService {
                 .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 
-    public List<Testgruppe> getIkkemigrerteTestgrupperByNavId(String navId) {
+    public Map<String, Set<Long>> sletteGrupperForIkkemigrerteNavIdenter(Set<String> brukere) {
 
-        return testgruppeRepository.getIkkemigrerteTestgrupperByNavId(navId);
+        return brukere.stream()
+                .collect(Collectors.toMap(bruker -> bruker, bruker ->
+                        testgruppeRepository.getIkkemigrerteTestgrupperByNavId(bruker).stream()
+                                .map(Testgruppe::getId)
+                                .map(id -> {
+                                    testgruppeRepository.deleteById(id);
+                                    log.info("Slettet gruppe {} for bruker {}", id, bruker);
+                                    return id;
+                                })
+                                .collect(Collectors.toSet())
+                ));
     }
 }
