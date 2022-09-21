@@ -3,7 +3,7 @@ import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 
 import './TextEditor.less'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { Textarea } from '@navikt/ds-react'
 
 export const TextEditor = ({ text, handleSubmit, placeholder, maxLength = 1000 }) => {
 	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)
@@ -29,7 +29,7 @@ export const TextEditor = ({ text, handleSubmit, placeholder, maxLength = 1000 }
 			)}
 
 			{isEditing && (
-				<DollyTextInput
+				<Textarea
 					label=""
 					placeholder={placeholder}
 					autoFocus

@@ -68,8 +68,8 @@ const StatusListe = ({
 			) : (
 				<BestillingProgresjon
 					bestillingID={bestilling.id}
+					erOrganisasjon={bestilling.organisasjonNummer}
 					cancelBestilling={cancelBestilling}
-					setNyeBestillinger={setNyeBestillinger}
 				/>
 			)}
 		</div>

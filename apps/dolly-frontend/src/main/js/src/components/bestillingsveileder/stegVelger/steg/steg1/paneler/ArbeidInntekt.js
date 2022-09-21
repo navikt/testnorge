@@ -31,16 +31,16 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 				inntektsmeldingAttributt,
 			])}
 		>
-			<AttributtKategori title="Arbeidsforhold (Aareg)">
+			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
-			<AttributtKategori title="Skatteoppgjør (Sigrun)">
+			<AttributtKategori title="Skatteoppgjør (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstub} />
 			</AttributtKategori>
-			<AttributtKategori title="A-ordningen (Inntektstub)">
+			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
-			<AttributtKategori title="Inntektsmelding (fra Altinn)">
+			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektsmelding} />
 			</AttributtKategori>
 		</Panel>

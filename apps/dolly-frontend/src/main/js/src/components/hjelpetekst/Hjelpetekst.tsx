@@ -15,7 +15,12 @@ export const Hjelpetekst = ({
 	requestFeedback = true,
 }: HjelpetekstProps) => {
 	return (
-		<HelpText placement={placement}>
+		<HelpText
+			placement={placement}
+			onClick={(event) => {
+				event.stopPropagation()
+			}}
+		>
 			{children}
 			{requestFeedback && (
 				<ThumbsRating ratingFor={`Hjelpetekst`} label="Svarte teksten på spørsmålet ditt?" />

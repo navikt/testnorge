@@ -10,22 +10,26 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null, ..
 				attributtCheckbox={true}
 				size={'small'}
 				onChange={attr.checked ? attr.remove : attr.add}
-				checked={attr.checked}
-				value={attr}
+				value={attr.label}
 				disabled={disabled}
 				{...props}
 			/>
 		</div>
 	)
 
-export const AttributtKategori = ({ title, children }) => {
+export const AttributtKategori = ({ title, children, attr }) => {
+	const kapplah = attr && Object.values(attr)
+	const checked = kapplah
+		?.filter((attribute) => attribute.checked)
+		?.map((attribute) => attribute.label)
+
 	const attributter = Array.isArray(children) ? children : [children]
 	const attributterSomSkalVises = attributter.some(
 		(attr) => attr.props.vis || !attr.props.hasOwnProperty('vis')
 	)
 	return (
 		attributterSomSkalVises && (
-			<CheckboxGroup name={title} legend={title}>
+			<CheckboxGroup name={title} legend={title} value={checked}>
 				<div className="attributt-velger_panelsubcontent">{children}</div>
 			</CheckboxGroup>
 		)

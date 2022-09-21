@@ -103,7 +103,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
-				<AttributtKategori title="Diverse">
+				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -128,13 +128,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
-			<AttributtKategori title="Alder">
+			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
 				<Attributt attr={sm.attrs.foedsel} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Nasjonalitet">
+			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
@@ -150,7 +150,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					}
 				/>
 			</AttributtKategori>
-			<AttributtKategori title="Diverse">
+			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.navn} />
 				<Attributt attr={sm.attrs.sprakKode} />

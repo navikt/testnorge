@@ -89,14 +89,11 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 										value === RELASJON_BARN ? initialBarn : initialForelder
 									)
 								}}
+								size={'small'}
 								defaultValue={RELASJON_BARN}
 							>
-								<ToggleGroup.Item value={RELASJON_BARN}>
-									{RELASJON_BARN.toUpperCase()}
-								</ToggleGroup.Item>
-								<ToggleGroup.Item value={RELASJON_FORELDER}>
-									{RELASJON_FORELDER.toUpperCase()}
-								</ToggleGroup.Item>
+								<ToggleGroup.Item value={RELASJON_BARN}>{RELASJON_BARN}</ToggleGroup.Item>
+								<ToggleGroup.Item value={RELASJON_FORELDER}>{RELASJON_FORELDER}</ToggleGroup.Item>
 							</ToggleGroup>
 						</div>
 						<div className="flexbox--flex-wrap">
