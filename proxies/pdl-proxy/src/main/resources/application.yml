@@ -31,3 +31,13 @@ consumers:
     cluster: dev-fss
     name: pdl-testdata
     namespace: pdl
+  pdl-api:
+    url: http://pdl-api.pdl.svc.nais.local
+    cluster: dev-fss
+    name: pdl-api
+    namespace: pdl
+  pdl-api-q1:
+    url: http://pdl-api-q1.pdl.svc.nais.local
+    cluster: dev-fss
+    name: pdl-api-q1
+    namespace: pdl
