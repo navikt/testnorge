@@ -26,8 +26,8 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
 
     @Query(value = "from Testgruppe g " +
             "join Bruker b on b.id = g.opprettet_av " +
-            "and nav_ident = :navIdent " +
+            "and nav_ident = :navId " +
             "and eid_av_id is null " +
             "and migrert is null")
-    List<Testgruppe> getTestgrupperByNavIdent(@Param("navIdent") String navIdent);
+    List<Testgruppe> getIkkemigrerteTestgrupperByNavId(@Param("navId") String navId);
 }
