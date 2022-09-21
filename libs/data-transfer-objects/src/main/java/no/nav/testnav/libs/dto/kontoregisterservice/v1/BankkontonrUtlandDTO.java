@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
+package no.nav.testnav.libs.dto.kontoregisterservice.v1;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
