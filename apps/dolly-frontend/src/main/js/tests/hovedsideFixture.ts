@@ -1,5 +1,6 @@
 import { ClientFunction, RequestMock } from 'testcafe'
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
+import { clickAllSiblings } from './util/TestcafeUtils'
 
 const miljoer = new RegExp(/\/miljoer/)
 const dollyLogg = new RegExp(/\/dolly-logg/)
@@ -12,6 +13,8 @@ const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const spesifikkGruppe = new RegExp(/\/gruppe$/)
 const tags = new RegExp(/\/tags$/)
 const bestillingGruppe = new RegExp(/\/bestilling\/gruppe/)
+const organisasjoner = new RegExp(/-organisasjon-/)
+const pensjon = new RegExp(/pensjon-testdata-facade/)
 const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
 const varslinger = new RegExp(/\/varslinger/)
 const ids = new RegExp(/\/ids/)
@@ -96,6 +99,10 @@ const cookieMock = RequestMock()
 	.respond({ malbestillinger: ['Cafe, Test', []] }, 200)
 	.onRequestTo(tags)
 	.respond({}, 200)
+	.onRequestTo(organisasjoner)
+	.respond({}, 200)
+	.onRequestTo(pensjon)
+	.respond({}, 200)
 
 fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
@@ -127,11 +134,29 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 
 		.click(ReactSelector('TableRow').withKey('1'))
 		.click(ReactSelector('NavButton').withText('Opprett personer'))
+
 		.click(ReactSelector('ToggleGroupItem').withText('Eksisterende person'))
 		.click(ReactSelector('ToggleGroupItem').withText('Ny person'))
-		.click(ReactSelector('DollyCheckbox').withText('Opprett fra mal'))
-		.click(ReactSelector('Select').withProps({ label: 'Bruker' }))
-		.click(ReactSelector('Select').withProps({ label: 'Maler' }))
+
+	const malerCheckbox = ReactSelector('DollyCheckbox').withProps({ name: 'aktiver-maler' })
+	const brukerSelect = ReactSelector('Select').withProps({ label: 'Bruker' })
+	const malerSelect = ReactSelector('Select').withProps({ label: 'Maler' })
+
+	await testController
+		.click(malerCheckbox, { offsetX: -600 })
+		.expect(brukerSelect.getReact(({ props }) => props.disabled))
+		.eql(false)
+
+		.click(brukerSelect)
+		.click(malerSelect)
+
+		.click(malerCheckbox, { offsetX: -600 })
+		.expect(brukerSelect.getReact(({ props }) => props.disabled))
+		.eql(true)
+
 		.click(ReactSelector('NavButton').withText('Start bestilling'))
-		.click(ReactSelector('DollyCheckbox').withText('Opprett fra mal'))
+
+	await clickAllSiblings(testController, ReactSelector('LinkButton').withText('Velg alle'))
+
+	await testController.click(ReactSelector('NavButton').withText('Videre'))
 })
