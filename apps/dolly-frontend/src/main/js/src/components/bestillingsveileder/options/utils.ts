@@ -74,7 +74,7 @@ export const initialValues = {
 						til: null as Date,
 					},
 				},
-				oppholdSammeVilkaarEffektuering: null as Date, //date
+				oppholdSammeVilkaarEffektuering: null as Date,
 				oppholdstillatelseVedtaksDato: null as Date,
 				oppholdstillatelseType: '',
 			},
