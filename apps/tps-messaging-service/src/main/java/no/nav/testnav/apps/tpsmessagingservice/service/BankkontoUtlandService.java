@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getResponseStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.marshallToXML;
@@ -47,12 +48,24 @@ public class BankkontoUtlandService {
 
     public Map<String, TpsMeldingResponse> sendBankkontonrUtland(String ident, BankkontonrUtlandDTO bankkontonr, List<String> miljoer) {
 
+        return oppdaterBankkontonrUtland(ident, bankkontonr, miljoer);
+    }
+
+    public Map<String, TpsMeldingResponse> opphoerBankkontonrUtland(String ident, List<String> miljoer) {
+
+        return oppdaterBankkontonrUtland(ident, null, miljoer);
+    }
+
+    private Map<String, TpsMeldingResponse> oppdaterBankkontonrUtland(String ident, BankkontonrUtlandDTO bankkontonr, List<String> miljoer) {
+
         miljoer = isNull(miljoer) ? testmiljoerServiceConsumer.getMiljoer() : miljoer;
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", ident);
 
-        var request = mapperFacade.map(bankkontonr, BankkontoUtlandRequest.class, context);
+        var request = mapperFacade.map(nonNull(bankkontonr) ? bankkontonr : new BankkontonrUtlandDTO(),
+                BankkontoUtlandRequest.class, context);
+
         var requestXml = marshallToXML(requestContext, request);
         var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
