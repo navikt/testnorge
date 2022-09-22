@@ -9,8 +9,8 @@
 @import './shared/Toolbar';
 
 body {
-  line-height: unset;
-  font-size: unset;
+  line-height: unset !important;
+  font-size: unset !important;
   font-family: 'Source Sans Pro', sans-serif;
   background-color: @color-bg-grey;
   color: @color-textbase;
@@ -105,6 +105,10 @@ a {
 .navds-help-text {
   margin-left: 10px;
   margin-bottom: 4px;
+}
+
+.navds-help-text__button {
+  margin: 0 10px 0 0
 }
 
 .navds-button {

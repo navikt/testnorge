@@ -22,8 +22,8 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 
 	const vegadresseType = _get(formikBag.values, `${path}.vegadresseType`) || null
 
-	const handleRadioChange = (valg: any) => {
-		formikBag.setFieldValue(path, { ...initialVegadresse, vegadresseType: valg.target.value })
+	const handleRadioChange = (valg: string) => {
+		formikBag.setFieldValue(path, { ...initialVegadresse, vegadresseType: valg })
 	}
 
 	return (
@@ -40,16 +40,16 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 				legend="Hva slags vegadresse vil du opprette?"
 			>
 				<Radio id={`postnummer_${path}`} value={vegadresseValg.POSTNUMMER}>
-					'Tilfeldig vegadresse basert på postnummer ...'
+					Tilfeldig vegadresse basert på postnummer ...
 				</Radio>
 				<Radio id={`bydelsnummer_${path}`} value={vegadresseValg.BYDELSNUMMER}>
-					'Tilfeldig vegadresse basert på bydelsnummer ...'
+					Tilfeldig vegadresse basert på bydelsnummer ...
 				</Radio>
 				<Radio id={`kommunenummer_${path}`} value={vegadresseValg.KOMMUNENUMMER}>
-					'Tilfeldig vegadresse basert på kommunenummer ...'
+					Tilfeldig vegadresse basert på kommunenummer ...
 				</Radio>
 				<Radio id={`detaljert_${path}`} value={vegadresseValg.DETALJERT}>
-					'Detaljert vegadresse ...'
+					Detaljert vegadresse ...
 				</Radio>
 			</RadioGroup>
 

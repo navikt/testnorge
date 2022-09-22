@@ -24,6 +24,10 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 `
 
+const StyledAlert = styled(Alert)`
+	margin-top: 10px;
+`
+
 // Har hardkodet liste over felles Dolly-arbeidsgivere, fordi det tar for lang tid å hente ut fra API
 const fellesOrg = [
 	'972674818',
@@ -78,12 +82,12 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 	}
 
 	const warningMessage = (
-		<Alert variant={'warning'}>
+		<StyledAlert variant={'warning'}>
 			Du har ingen egne organisasjoner, og kan derfor ikke sende inn A-meldinger for person. For å
 			lage dine egne organisasjoner trykk {<a href="/organisasjoner">her</a>}. For å opprette person
 			med arbeidsforhold i felles organisasjoner eller andre arbeidsgivere, velg en annen kategori
 			ovenfor.
-		</Alert>
+		</StyledAlert>
 	)
 
 	return (
@@ -108,11 +112,11 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 				</>
 			) : (
 				<>
-					<Alert variant={'info'}>
+					<StyledAlert variant={'info'}>
 						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
 						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere med
 						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
-					</Alert>
+					</StyledAlert>
 					<FormikDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"

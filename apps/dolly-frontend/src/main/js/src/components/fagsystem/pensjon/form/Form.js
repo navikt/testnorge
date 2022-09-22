@@ -52,7 +52,6 @@ export const PensjonForm = ({ formikBag }) => (
 						name={`${pensjonPath}.redusertMedGrunnbelop`}
 						label="Nedjuster med grunnbeløp"
 						size="small"
-						checkboxMargin
 					/>
 				</React.Fragment>
 			</Kategori>

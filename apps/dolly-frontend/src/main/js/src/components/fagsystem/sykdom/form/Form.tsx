@@ -29,7 +29,7 @@ export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 			)}
 			{formikBag.values.sykemelding != null &&
 				formikBag.values.sykemelding.hasOwnProperty('syntSykemelding') && (
-					<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
+					<Alert variant={'info'} style={{ marginBottom: '20px' }}>
 						Syntetisk sykemelding behandler en stor mengde data for å opprette realistiske
 						sykemeldinger og kan derfor medføre litt lenger bestillingstid.
 					</Alert>

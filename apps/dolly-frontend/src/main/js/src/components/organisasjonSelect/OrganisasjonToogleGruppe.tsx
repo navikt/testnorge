@@ -10,7 +10,12 @@ export const inputValg = { fraEgenListe: 'egen', fraFellesListe: 'felles', skriv
 
 export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToogleGruppeProps) => {
 	return (
-		<ToggleGroup size={'small'} onChange={handleToggleChange} defaultValue={inputValg.fraEgenListe}>
+		<ToggleGroup
+			size={'small'}
+			onChange={handleToggleChange}
+			defaultValue={inputValg.fraEgenListe}
+			style={{ margin: '5px 0 5px' }}
+		>
 			<ToggleGroup.Item key={inputValg.fraFellesListe} value={inputValg.fraFellesListe}>
 				Felles organisasjoner
 			</ToggleGroup.Item>
