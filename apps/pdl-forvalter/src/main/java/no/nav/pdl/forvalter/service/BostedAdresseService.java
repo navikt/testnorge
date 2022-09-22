@@ -96,10 +96,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 return;
 
             } else if (!person.getUtflytting().isEmpty() &&
-                person.getInnflytting().stream()
-                        .noneMatch(innflytting -> person.getUtflytting().stream()
-                                .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
-                                        .isAfter(utflytting.getUtflyttingsdato())))) {
+                    person.getInnflytting().stream()
+                            .noneMatch(innflytting -> person.getUtflytting().stream()
+                                    .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
+                                            .isAfter(utflytting.getUtflyttingsdato())))) {
 
                 if (person.getUtflytting().get(0).isVelkjentLand()) {
                     bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
@@ -120,7 +120,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 person.getKontaktadresse().isEmpty()) {
 
             bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
-            
+
         } else {
 
             person.setBostedsadresse(person.getBostedsadresse().stream()
@@ -129,6 +129,11 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
             return;
         }
 
+        buildBoadresse(bostedadresse, person);
+    }
+
+    private void buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {
+        
         if (nonNull(bostedadresse.getVegadresse())) {
 
             var vegadresse =
