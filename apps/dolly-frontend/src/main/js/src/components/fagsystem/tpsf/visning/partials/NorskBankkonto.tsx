@@ -34,7 +34,7 @@ const EditDeleteKnapper = styled.div`
 
 export const Visning = ({ data, ident, extraButtons }: Data) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [show, setShow, setHide] = useBoolean(true)
+	const [show, , setHide] = useBoolean(true)
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {

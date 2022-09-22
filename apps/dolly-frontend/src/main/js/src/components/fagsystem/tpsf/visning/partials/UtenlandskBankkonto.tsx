@@ -45,7 +45,7 @@ type UtenlandskBankkontoData = {
 
 export const Visning = ({ data, extraButtons, ident }: Data) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [show, setShow, setHide] = useBoolean(true)
+	const [show, , setHide] = useBoolean(true)
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
