@@ -658,6 +658,7 @@ const validateIban = (kontonummer, form) => {
 
 const validateSwift = (val) => {
 	return val.test('swift-validering', function isSwiftValid(value) {
+		value = _get(values, `${path}.swift`) // henter siste verdi for swift å unngå gammel swift validering når land endres
 		if (!value) {
 			return true
 			// return this.createError({ message: messages.required })

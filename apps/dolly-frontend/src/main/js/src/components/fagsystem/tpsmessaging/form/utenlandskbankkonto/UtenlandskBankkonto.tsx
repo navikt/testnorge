@@ -6,13 +6,33 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { useFormikContext } from 'formik'
 import _get from 'lodash/get'
+import { landkodeIsoMapping } from '~/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
-export const UtenlandskBankkonto = () => {
+export const UtenlandskBankkonto = ({ formikBag }: any) => {
 	const { values } = useFormikContext()
 	const disableKontonummer = _get(values, `${path}.tilfeldigKontonummer`)
 	const disableTilfeldigKontonummer = _get(values, `${path}.kontonummer`)
+
+	const updateSwiftLandkode = (selected: any) => {
+		if (!selected) {
+			return
+		}
+		const landkode = selected.value
+		// @ts-ignore
+		const isoLandkode = landkodeIsoMapping[landkode]
+		if (isoLandkode) {
+			const mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
+			let swift = _get(values, `${path}.swift`)
+			if (swift) {
+				swift = swift.substring(0, 4) + mappedLandkode + swift.substring(6)
+			} else {
+				swift = 'BANK' + mappedLandkode + '11222'
+			}
+			formikBag.setFieldValue(`${path}.swift`, swift, false)
+		}
+	}
 
 	return (
 		<Vis attributt={path} formik>
@@ -33,12 +53,13 @@ export const UtenlandskBankkonto = () => {
 					</div>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={`${path}.swift`} label={'Swift kode'} size={'small'} />
+					<FormikTextInput name={`${path}.swift`} label={'Swift kode'} size={'small'} useControlled={true} />
 					<FormikSelect
 						name={`${path}.landkode`}
 						label={'Land'}
 						kodeverk={GtKodeverk.LAND}
 						size={'large'}
+						afterChange={ updateSwiftLandkode }
 					/>
 					<FormikTextInput name={`${path}.banknavn`} label={'Banknavn'} size={'small'} />
 					<FormikTextInput name={`${path}.iban`} label={'Bankkode'} />

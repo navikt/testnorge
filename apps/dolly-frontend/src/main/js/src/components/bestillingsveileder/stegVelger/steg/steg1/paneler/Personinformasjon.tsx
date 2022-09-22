@@ -418,7 +418,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				set(paths.utenlandskBankkonto, {
 					kontonummer: '',
 					tilfeldigKontonummer: false,
-					swift: '',
+					swift: 'BANKXX11222',
 					landkode: null,
 					banknavn: '',
 					iban: '',
