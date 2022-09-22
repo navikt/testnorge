@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.dto.DeleteZIdentResponse;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
@@ -31,8 +32,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
@@ -89,7 +88,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
@@ -97,7 +96,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
@@ -105,12 +104,14 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @DeleteMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(description = "Fjern bruker identifisert med Z-ident, og gjør nødvendig opprydding")
-    public Map<String, Set<Long>> sletteBrukereMedGrupper(@RequestParam("navZIdenter") MultipartFile navZIdenter) throws IOException {
+    @Operation(description = "Fjern bruker identifisert med Z-id (IDA-bruker), og gjør nødvendig opprydding.<br>" +
+            "Angi file som identifiserer Z-id brukere som skal slettes, en bruker per linje.")
+    public List<DeleteZIdentResponse> sletteBrukereMedGrupper(
+            @RequestParam("zBrukere") MultipartFile zBrukere) throws IOException {
 
-        var brukere = new BufferedReader(new InputStreamReader(navZIdenter.getInputStream(), StandardCharsets.UTF_8))
+        var brukere = new BufferedReader(new InputStreamReader(zBrukere.getInputStream(), StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.toSet());
 

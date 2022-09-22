@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.domain.dto.DeleteZIdentResponse;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -27,7 +28,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -182,18 +182,26 @@ public class TestgruppeService {
                 .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 
-    public Map<String, Set<Long>> sletteGrupperForIkkemigrerteNavIdenter(Set<String> brukere) {
+    public List<DeleteZIdentResponse> sletteGrupperForIkkemigrerteNavIdenter(Set<String> brukere) {
 
         return brukere.stream()
-                .collect(Collectors.toMap(bruker -> bruker, bruker ->
-                        testgruppeRepository.getIkkemigrerteTestgrupperByNavId(bruker).stream()
-                                .map(Testgruppe::getId)
-                                .map(id -> {
-                                    deleteGruppeById(id);
-                                    log.info("Slettet gruppe {} for bruker {}", id, bruker);
-                                    return id;
-                                })
-                                .collect(Collectors.toSet())
-                ));
+                .map(bruker -> DeleteZIdentResponse.builder()
+                        .bruker(bruker)
+                        .grupper(
+                                testgruppeRepository.getIkkemigrerteTestgrupperByNavId(bruker).stream()
+                                        .map(testgruppe -> {
+                                            var gruppe = DeleteZIdentResponse.Gruppe.builder()
+                                                    .id(testgruppe.getId())
+                                                    .identer(testgruppe.getTestidenter().stream()
+                                                            .map(Testident::getIdent)
+                                                            .toList())
+                                                    .build();
+                                            deleteGruppeById(testgruppe.getId());
+                                            log.info("Slettet gruppe {} for bruker {}", testgruppe.getId(), bruker);
+                                            return gruppe;
+                                        })
+                                        .toList())
+                        .build())
+                .toList();
     }
 }
