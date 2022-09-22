@@ -53,13 +53,18 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 					</div>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={`${path}.swift`} label={'Swift kode'} size={'small'} useControlled={true} />
+					<FormikTextInput
+						name={`${path}.swift`}
+						label={'Swift kode'}
+						size={'small'}
+						useControlled={true}
+					/>
 					<FormikSelect
 						name={`${path}.landkode`}
 						label={'Land'}
 						kodeverk={GtKodeverk.LAND}
 						size={'large'}
-						afterChange={ updateSwiftLandkode }
+						afterChange={updateSwiftLandkode}
 					/>
 					<FormikTextInput name={`${path}.banknavn`} label={'Banknavn'} size={'small'} />
 					<FormikTextInput name={`${path}.iban`} label={'Bankkode'} />
