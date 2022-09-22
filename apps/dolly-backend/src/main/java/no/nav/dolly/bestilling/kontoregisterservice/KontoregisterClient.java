@@ -7,8 +7,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -57,6 +55,8 @@ public class KontoregisterClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        // Kontoregister har ikke sletting
+        identer.stream().forEach(ident -> kontoregisterConsumer.sendSlettKontoRequest(ident)
+                .doOnSuccess(c -> log.info("slettet konto for " + ident))
+                .block());
     }
 }
