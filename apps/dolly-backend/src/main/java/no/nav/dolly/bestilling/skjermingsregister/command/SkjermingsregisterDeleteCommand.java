@@ -38,6 +38,7 @@ public class SkjermingsregisterDeleteCommand implements Callable<Flux<Void>> {
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .bodyToFlux(Void.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

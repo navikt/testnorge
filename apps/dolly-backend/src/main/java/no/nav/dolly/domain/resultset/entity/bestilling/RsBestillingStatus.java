@@ -23,7 +23,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.BankkontoData;
+import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
@@ -55,6 +55,7 @@ public class RsBestillingStatus {
 
     private Long opprettetFraId;
     private Long opprettetFraGruppeId;
+    private Long gjenopprettetFraIdent;
     private RsBestilling bestilling;
     private String opprettFraIdenter;
 

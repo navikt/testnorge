@@ -49,6 +49,7 @@ import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
@@ -69,28 +70,6 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
-
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
-    }
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -249,10 +228,34 @@ public class BestillingService {
                         .antallIdenter(bestilling.getAntallIdenter())
                         .opprettFraIdenter(bestilling.getOpprettFraIdenter())
                         .sistOppdatert(now())
-                        .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
+                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
+                        .bruker(fetchOrCreateBruker())
+                        .build());
+    }
+
+
+    @Transactional
+    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+    public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
+
+        var bestillingerByIdent = identRepository.getBestillingerByIdent(ident);
+        if (bestillingerByIdent.isEmpty()) {
+            throw new DollyFunctionalException(format("Identen: %s har ingen gyldige bestillinger", ident));
+        }
+
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(testgruppe)
+                        .ident(ident)
+                        .antallIdenter(1)
+                        .tpsfKriterier("{}")
+                        .bestKriterier("{}")
+                        .sistOppdatert(now())
+                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? "" : join(",", miljoer))
+                        .gjenopprettetFraIdent(ident)
                         .bruker(fetchOrCreateBruker())
                         .build());
     }
@@ -348,15 +351,16 @@ public class BestillingService {
 
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
         bestillingProgressRepository.deleteByGruppeId(gruppeId);
-        bestillingRepository.deleteByGruppeId(gruppeId);
+        bestillingRepository.deleteByGruppeIdExcludeMaler(gruppeId);
+        bestillingRepository.updateBestillingNullifyGruppe(gruppeId);
     }
 
     public void slettBestillingByTestIdent(String ident) {
 
-        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
+        var bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
         bestillingProgressRepository.deleteByIdent(ident);
 
-        Set<Long> bestillingIds = bestillingProgresses.stream()
+        var bestillingIds = bestillingProgresses.stream()
                 .map(BestillingProgress::getBestilling)
                 .map(Bestilling::getId)
                 .collect(toSet());
@@ -367,6 +371,13 @@ public class BestillingService {
             bestillingRepository.deleteBestillingWithNoChildren(id);
         });
     }
+
+    public List<Long> fetchBestillingerByTestident(String ident) {
+
+        var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
+        return bestillinger.stream().map(Bestilling::getId).toList();
+    }
+
 
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
@@ -422,5 +433,27 @@ public class BestillingService {
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());
+    }
+
+    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold -> {
+            if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+            }
+        });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
     }
 }

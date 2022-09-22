@@ -35,10 +35,7 @@ import reactor.core.publisher.Operators;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -97,20 +94,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .toList();
 
             completableFuture
-                    .forEach(future -> {
-                        try {
-                            future.get(60, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
-                            log.error(e.getMessage(), e);
-                            Thread.currentThread().interrupt();
-                        } catch (ExecutionException e) {
-                            log.error(e.getMessage(), e);
-                            Thread.interrupted();
-                        } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved gjenopprett gruppe");
-                            Thread.interrupted();
-                        }
-                    });
+                    .forEach(GjenopprettUtil::executeCompleteableFuture);
 
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);

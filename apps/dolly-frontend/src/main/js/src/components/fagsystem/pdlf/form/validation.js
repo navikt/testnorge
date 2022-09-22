@@ -513,10 +513,7 @@ export const utflytting = Yup.object({
 const sivilstand = Yup.array().of(
 	Yup.object({
 		type: requiredString.nullable(),
-		sivilstandsdato: Yup.mixed().when('bekreftelsesdato', {
-			is: null,
-			then: requiredString.nullable(),
-		}),
+		sivilstandsdato: Yup.string().nullable(),
 		relatertVedSivilstand: Yup.string().nullable(),
 		bekreftelsesdato: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
@@ -856,7 +853,13 @@ export const validation = {
 			norskBankkonto: ifPresent(
 				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
-					kontonummer: requiredString.nullable(),
+					kontonummer: validInputOrCheckboxTest(
+						Yup.string().nullable(),
+						'tilfeldigKontonummer',
+						messages.required,
+						null
+					),
+					tilfeldigKontonummer: Yup.object().nullable(),
 				})
 			),
 		})

@@ -35,8 +35,7 @@ public class RelasjonerUtils {
                     addDoedfoedtBarnQuery(queryBuilder, value);
                     addForeldreansvarQuery(queryBuilder, value);
                 });
-        addSivilstandQuery(queryBuilder, search);
-        addManglerSivilstandQuery(queryBuilder, search);
+        addSivilstandQueries(queryBuilder, search);
     }
 
     private static void addRelasjonQueries(BoolQueryBuilder queryBuilder, RelasjonSearch search) {
@@ -77,21 +76,16 @@ public class RelasjonerUtils {
                 });
     }
 
-    private static void addSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
+    private static void addSivilstandQueries(BoolQueryBuilder queryBuilder, PersonSearch search) {
         Optional.ofNullable(search.getSivilstand())
-                .flatMap(value -> Optional.ofNullable(value.getType()))
                 .ifPresent(value -> {
-                    if (!value.isEmpty()) {
-                        queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value, false));
+                    if (nonNull(value.getType()) && !value.getType().isEmpty()) {
+                        queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value.getType(), false));
                     }
-                });
-    }
-
-    private static void addManglerSivilstandQuery(BoolQueryBuilder queryBuilder, PersonSearch search) {
-        Optional.ofNullable(search.getSivilstand())
-                .flatMap(value -> Optional.ofNullable(value.getManglerSivilstand()))
-                .ifPresent(value -> {
-                    if (Boolean.TRUE.equals(value)) {
+                    if (nonNull(value.getTidligereType()) && !value.getTidligereType().isEmpty()) {
+                        queryBuilder.must(nestedMatchQuery(SIVILSTAND_PATH, ".type", value.getTidligereType(), true));
+                    }
+                    if (nonNull(value.getManglerSivilstand()) && Boolean.TRUE.equals(value.getManglerSivilstand())) {
                         queryBuilder.mustNot(nestedExistsQuery(SIVILSTAND_PATH, METADATA_FIELD, null));
                     }
                 });

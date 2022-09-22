@@ -21,7 +21,7 @@ type VisningData = {
 export const Visning = ({ data, relasjoner }: VisningData) => {
 	const retatertPersonIdent = data.vergeIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
-
+	const harFullmektig = data.sakType === 'FRE'
 	return (
 		<>
 			<ErrorBoundary>
@@ -29,28 +29,26 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 					<TitleValue
 						title="Fylkesmannsembete"
 						kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
-						value={data.vergemaalEmbete || data.embete}
+						value={data.vergemaalEmbete}
 					/>
-					<TitleValue
-						title="Sakstype"
-						kodeverk={VergemaalKodeverk.Sakstype}
-						value={data.sakType || data.type}
-					/>
+					<TitleValue title="Sakstype" kodeverk={VergemaalKodeverk.Sakstype} value={data.sakType} />
 					<TitleValue
 						title="Mandattype"
 						kodeverk={VergemaalKodeverk.Mandattype}
-						value={data.mandatType || data.vergeEllerFullmektig?.omfang}
+						value={data.mandatType}
 					/>
 					<TitleValue title="Gyldig f.o.m." value={Formatters.formatDate(data.gyldigFraOgMed)} />
 					<TitleValue title="Gyldig t.o.m." value={Formatters.formatDate(data.gyldigTilOgMed)} />
 					{!relasjoner && (
-						<TitleValue
-							title="Verge"
-							value={data.vergeIdent || data.vergeEllerFullmektig?.motpartsPersonident}
-						/>
+						<TitleValue title={harFullmektig ? 'Fullmektig' : 'Verge'} value={data.vergeIdent} />
 					)}
 				</div>
-				{relasjon && <RelatertPerson data={relasjon.relatertPerson} tittel="Verge" />}
+				{relasjon && (
+					<RelatertPerson
+						data={relasjon.relatertPerson}
+						tittel={harFullmektig ? 'Fullmektig' : 'Verge'}
+					/>
+				)}
 			</ErrorBoundary>
 		</>
 	)

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
+import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -46,6 +47,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 public class TestpersonController {
 
     private final BestillingService bestillingService;
+    private final GjenopprettIdentService gjenopprettIdentService;
     private final TransaksjonMappingService transaksjonMappingService;
     private final DollyBestillingService dollyBestillingService;
     private final MapperFacade mapperFacade;
@@ -56,7 +58,7 @@ public class TestpersonController {
 
     @Operation(description = "Legge til egenskaper på person/endre person i TPS og øvrige systemer")
     @PutMapping("/{ident}/leggtilpaaperson")
-    @CacheEvict(value = {CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
+    @CacheEvict(value = { CACHE_GRUPPE, CACHE_BESTILLING }, allEntries = true)
     @ResponseStatus(HttpStatus.OK)
     public RsBestillingStatus endrePerson(@PathVariable String ident, @RequestBody RsDollyUpdateRequest request) {
 
@@ -87,8 +89,30 @@ public class TestpersonController {
         return mapperFacade.map(identService.saveIdentIBruk(ident, iBruk), IdentAttributesResponse.class);
     }
 
+    @Operation(description = "Gjenopprett test ident")
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @Transactional
+    @PostMapping("/gjenopprett/{ident}")
+    public RsBestillingStatus gjenopprettTestident(@PathVariable String ident, @RequestParam(required = false) List<String> miljoer) {
+
+        if (!identService.exists(ident)) {
+            throw new NotFoundException(format("Testperson med ident %s ble ikke funnet.", ident));
+        }
+        var bestillinger = bestillingService.fetchBestillingerByTestident(ident);
+        if (bestillinger.isEmpty()) {
+            throw new NotFoundException(format("Fant ingen bestillinger på ident %s", ident));
+        }
+
+        var gruppe = identService.getTestIdent(ident).getTestgruppe();
+
+        var bestilling = bestillingService.createBestillingForGjenopprettFraIdent(ident, gruppe, miljoer);
+        gjenopprettIdentService.executeAsync(bestilling);
+        return mapperFacade.map(bestilling, RsBestillingStatus.class);
+
+    }
+
     @Operation(description = "Slett test ident")
-    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @Transactional
     @DeleteMapping("/{ident}")
     public void deleteTestident(@PathVariable String ident) {

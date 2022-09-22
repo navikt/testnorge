@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -16,11 +17,17 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 @Slf4j
 public class SendOppdaterKontoregisterCommand implements Callable<Mono<String>> {
-    private static final String KONTOREGISTER_API_URL = "/kontoregister/api/kontoregister/v1/oppdater-konto";
+    private static final String KONTOREGISTER_API_URL = "/api/system/v1/oppdater-konto";
 
     private final WebClient webClient;
     private final OppdaterKontoRequestDTO body;
     private final String token;
+
+    private String getErrorMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() : error.getMessage();
+    }
 
     @Override
     public Mono<String> call() {
@@ -35,9 +42,13 @@ public class SendOppdaterKontoregisterCommand implements Callable<Mono<String>> 
                 .bodyValue(body)
                 .retrieve()
                 .toBodilessEntity()
-                .flatMap(value ->  Mono.just("OK"))
-                .doOnError(e -> log.error(e.getMessage()))
-                .onErrorResume(e -> Mono.just("Feil= " + e.getMessage()))
+                .flatMap(value -> Mono.just("OK"))
+                .doOnError(error -> {
+                    if (!(error instanceof WebClientResponseException)) {
+                        log.error(error.getMessage(), error);
+                    }
+                })
+                .onErrorResume(e -> Mono.just("Feil= " + getErrorMessage(e)))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

@@ -11,11 +11,10 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -34,6 +33,7 @@ public class KontoregisterConsumer {
 
     private static final int IBAN_COUNTRY_LENGTH = 2;
     private static final int DEFAULT_ACCOUNT_LENGTH = 15;
+    private static final int NORSK_ACCOUNT_LENGTH = 11;
 
     private static final Random random = new SecureRandom();
 
@@ -85,6 +85,26 @@ public class KontoregisterConsumer {
         return landkode + kontonummer;
     }
 
+    public static String tilfeldigNorskBankkonto() {
+        var kontonummerLengde = NORSK_ACCOUNT_LENGTH - 1;
+
+        var kontonummer = random.ints(kontonummerLengde, 0, 9)
+                .boxed()
+                .map(Integer::toUnsignedString)
+                .collect(Collectors.joining());
+
+        var checkDigit = NorskBankkontoGenerator.getCheckDigit(kontonummer);
+
+        if (checkDigit == '-') {
+            kontonummer = random.ints(kontonummerLengde, 0, 9)
+                    .boxed()
+                    .map(Integer::toUnsignedString)
+                    .collect(Collectors.joining());
+        }
+
+        return kontonummer + NorskBankkontoGenerator.getCheckDigit(kontonummer);
+    }
+
     @Timed(name = "providers", tags = {"operation", "kontoregister_createUtenlandskBankkonto"})
     public Mono<String> sendUtenlandskBankkontoRequest(String ident, BankkontonrUtlandDTO bankkonto) {
         var requestDto = mapperFacade.map(bankkonto, OppdaterKontoRequestDTO.class);
@@ -96,7 +116,8 @@ public class KontoregisterConsumer {
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_createNorskBankkonto"})
     public Mono<String> sendNorskBankkontoRequest(String ident, BankkontonrNorskDTO body) {
-        var requestDto = new OppdaterKontoRequestDTO(ident, body.getKontonummer(), "Dolly", null);
+        var requestDto = mapperFacade.map(body, OppdaterKontoRequestDTO.class);
+        requestDto.setKontohaver(ident);
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SendOppdaterKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
@@ -108,5 +129,30 @@ public class KontoregisterConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SendHentKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
+    }
+
+    public static class NorskBankkontoGenerator {
+        private static int getWeightNumber(int i) {
+            return 7 - (i + 2) % 6;
+        }
+
+        public static char getCheckDigit(String kontonummer) {
+            int lastIndex = kontonummer.length() - 1;
+            int sum = 0;
+
+            for (int i = lastIndex; i >= 0; i--) {
+                sum += Character.getNumericValue(kontonummer.charAt(i)) * getWeightNumber(i);
+            }
+
+            int remainder = sum % 11;
+
+            if (remainder == 0) {
+                return '0';
+            }
+            if (remainder == 1) {
+                return '-';
+            }
+            return Character.forDigit(11 - remainder, 10);
+        }
     }
 }

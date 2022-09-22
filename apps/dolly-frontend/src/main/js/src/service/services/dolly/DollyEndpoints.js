@@ -201,4 +201,8 @@ export default class DollyEndpoints {
 	}
 
 	// https://dolly-backend-dev.dev.intern.nav.no/api/v1/gruppe/246/identer/21059216012,02027307259
+
+	static malBestilling(malId) {
+		return `${bestillingBase}/malbestilling/${malId}`
+	}
 }

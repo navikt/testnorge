@@ -435,6 +435,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				set(paths.norskBankkonto, {
 					kontonummer: '',
+					tilfeldigKontonummer: opts.antall && opts.antall > 1,
 				}),
 			remove: () => del(paths.norskBankkonto),
 		},

@@ -66,11 +66,6 @@ public class DollyBestillingService {
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
-
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
@@ -135,6 +130,11 @@ public class DollyBestillingService {
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
         }
+    }
+
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
     }
 
     protected void clearCache() {

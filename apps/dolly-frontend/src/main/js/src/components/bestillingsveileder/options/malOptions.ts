@@ -42,6 +42,9 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.skjerming) {
 		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
 	}
+	if (initialValuesMal.bankkonto) {
+		initialValuesMal.bankkonto = getUpdatedBankkonto(initialValuesMal.bankkonto)
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
@@ -162,6 +165,12 @@ const getUpdatedPdldata = (pdldata: any) => {
 			}
 		)
 	}
+
+	if (person?.kontaktinformasjonForDoedsbo) {
+		newPdldata.person.kontaktinformasjonForDoedsbo = person.kontaktinformasjonForDoedsbo.map(
+			(kontaktinfo: any) => updateKontaktType(kontaktinfo)
+		)
+	}
 	return newPdldata
 }
 
@@ -208,6 +217,49 @@ const updateTypeForelderBarn = (relasjon: ForeldreBarnRelasjon) => {
 		return 'UTEN_ID'
 	}
 	return null
+}
+
+const getUpdatedBankkonto = (bankkonto: any) => {
+	if (bankkonto.norskBankkonto) {
+		delete bankkonto.utenlandskBankkonto
+	} else {
+		delete bankkonto.norskBankkonto
+		for (let field of ['kontonummer', 'swift']) {
+			if (!bankkonto.utenlandskBankkonto[field]) {
+				bankkonto.utenlandskBankkonto[field] = ''
+			}
+		}
+	}
+	return bankkonto
+}
+
+const updateKontaktType = (kontaktinfo: any) => {
+	if (kontaktinfo?.advokatSomKontakt) {
+		kontaktinfo.kontaktType = 'ADVOKAT'
+	} else if (kontaktinfo?.organisasjonSomKontakt) {
+		kontaktinfo.kontaktType = 'ORGANISASJON'
+	} else if (kontaktinfo?.personSomKontakt) {
+		const person = kontaktinfo.personSomKontakt
+		if (person.nyKontaktperson) {
+			kontaktinfo.kontaktType = 'NY_PERSON'
+		} else if (person.identifikasjonsnummer) {
+			kontaktinfo.kontaktType = 'PERSON_FDATO'
+			kontaktinfo.personSomKontakt.identifikasjonsnummer = null
+		} else if (person.foedselsdato) {
+			kontaktinfo.kontaktType = 'PERSON_FDATO'
+		}
+		kontaktinfo.personSomKontakt.navn = null
+		delete kontaktinfo.personSomKontakt.eksisterendePerson
+		delete kontaktinfo.personSomKontakt.nyKontaktperson
+	}
+
+	for (let field of ['personSomKontakt', 'advokatSomKontakt', 'organisasjonSomKontakt']) {
+		if (!kontaktinfo[field]) {
+			delete kontaktinfo[field]
+		}
+	}
+
+	return kontaktinfo
 }
 
 const updateData = (data: any, initalValues: any) => {

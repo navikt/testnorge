@@ -188,4 +188,32 @@ export default {
 	flyttPersonerTilGruppe(gruppeId, ident) {
 		return Request.putWithoutResponse(Endpoints.flyttPersonerTilGruppe(gruppeId, ident))
 	},
+
+	slettMal(malId) {
+		return Request.delete(Endpoints.malBestilling(malId))
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	endreMalNavn(malID, malNavn) {
+		return Request.putWithoutResponse(Endpoints.malBestilling(malID), malNavn)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
 }
