@@ -87,32 +87,46 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     private void handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
-        if (!person.getUtflytting().isEmpty() && !person.getUtflytting().get(0).isVelkjentLand() &&
+        if (FNR == getIdenttype(person.getIdent())) {
+
+            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+
+                person.setBostedsadresse(null);
+                return;
+
+            } else if (!person.getUtflytting().isEmpty() &&
                 person.getInnflytting().stream()
                         .noneMatch(innflytting -> person.getUtflytting().stream()
                                 .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
                                         .isAfter(utflytting.getUtflyttingsdato())))) {
 
-            person.setBostedsadresse(person.getBostedsadresse().stream()
-                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
-                    .toList());
+                if (person.getUtflytting().get(0).isVelkjentLand()) {
+                    bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
 
-            return;
-        }
-
-        if (FNR == getIdenttype(person.getIdent()) && person.getUtflytting().isEmpty()) {
-
-            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-                return;
+                } else {
+                    person.setBostedsadresse(person.getBostedsadresse().stream()
+                            .filter(adresse -> isNotTrue(adresse.getIsNew()))
+                            .toList());
+                    return;
+                }
 
             } else if (bostedadresse.countAdresser() == 0) {
                 bostedadresse.setVegadresse(new VegadresseDTO());
             }
 
-        } else if (bostedadresse.countAdresser() == 0) {
+        } else if (bostedadresse.countAdresser() == 0 &&
+                person.getOppholdsadresse().isEmpty() &&
+                person.getKontaktadresse().isEmpty()) {
 
             bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+            
+        } else {
+
+            person.setBostedsadresse(person.getBostedsadresse().stream()
+                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
+                    .toList());
+            return;
         }
 
         if (nonNull(bostedadresse.getVegadresse())) {
