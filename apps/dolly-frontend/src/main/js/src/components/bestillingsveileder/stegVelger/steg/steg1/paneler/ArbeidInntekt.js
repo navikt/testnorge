@@ -65,7 +65,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 		},
 	},
 	sigrunstub: {
-		label: 'Har inntekt',
+		label: 'Har skattbar inntekt',
 		checked: has('sigrunstub'),
 		add: () =>
 			set('sigrunstub', [
