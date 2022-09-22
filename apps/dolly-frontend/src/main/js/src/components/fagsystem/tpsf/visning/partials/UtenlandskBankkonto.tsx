@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import Icon from '~/components/ui/icon/Icon'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import { BankkontoApi } from '~/service/Api'
+import { BankkontoApi, TpsMessagingApi } from '~/service/Api'
 
 const EditDeleteKnapper = styled.div`
 	position: absolute;
@@ -49,7 +49,9 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
-			await BankkontoApi.slettKonto(ident)
+			const kontoregister = BankkontoApi.slettKonto(ident)
+			const tpsMessaging = TpsMessagingApi.deleteBankkontoUtenlandsk(ident)
+			await Promise.all([kontoregister, tpsMessaging]).catch((e) => console.error(e))
 			setHide()
 		}
 		return slett()
