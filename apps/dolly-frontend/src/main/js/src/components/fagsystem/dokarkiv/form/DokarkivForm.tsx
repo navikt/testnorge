@@ -12,7 +12,7 @@ import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import ReactImageUploading from 'react-images-uploading'
+import FileUpload from '@navikt/filopplasting'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -36,7 +36,7 @@ export type Vedlegg = {
 	}
 }
 
-const FilOpplaster = styled(ReactImageUploading)`
+const FilOpplaster = styled(FileUpload)`
 	background-color: unset;
 	margin-bottom: 10px;
 	min-height: 60px;
@@ -49,6 +49,7 @@ const FilOpplaster = styled(ReactImageUploading)`
 	.animate {
 		content-visibility: hidden;
 	}
+
 	div {
 		div {
 			margin-top: 15px;
@@ -156,12 +157,9 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
-							multiple
 							theme={'flexbox--full-width'}
-							// options={}
-							// acceptedMimetypes={['application/pdf']}
-							value={files}
-							onChange={handleVedleggChange}
+							files={files}
+							onFilesChanged={handleVedleggChange}
 						/>
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />

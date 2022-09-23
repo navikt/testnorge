@@ -40,7 +40,7 @@ export const ArenaForm = ({ formikBag }) => {
 						{!formikBag.values.hasOwnProperty('inntektstub') && (
 							<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
 						)}
-						<Alert style={{ marginBottom: '20px' }}>
+						<Alert variant={'info'} style={{ marginBottom: '20px' }}>
 							For å kunne få gyldig dagpengevedtak må det være knyttet inntektsmelding for 12
 							måneder før vedtakets fra dato. Dette kan enkelt gjøres i innteksinformasjon ved å
 							benytte "Generer antall måneder" feltet.
@@ -59,7 +59,7 @@ export const ArenaForm = ({ formikBag }) => {
 					<FormikCheckbox
 						name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
 						label="Automatisk innsending av meldekort"
-						size="large"
+						size="small"
 					/>
 				)}
 			</Panel>

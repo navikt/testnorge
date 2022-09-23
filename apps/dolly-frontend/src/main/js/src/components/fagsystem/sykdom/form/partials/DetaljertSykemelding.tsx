@@ -191,8 +191,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				<FormikCheckbox
 					name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
 					label="Arbeidsfør etter endt periode"
-					size="medium"
-					checkboxMargin
+					size="small"
 				/>
 			</Kategori>
 		</div>

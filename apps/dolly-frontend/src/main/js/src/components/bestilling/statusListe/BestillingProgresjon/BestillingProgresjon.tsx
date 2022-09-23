@@ -5,24 +5,25 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Icon from '~/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
-import { Bestillingsstatus, useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
 import { useBestillingById } from '~/utils/hooks/useBestilling'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
+	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '~/utils/hooks/useMutate'
 
 type ProgresjonProps = {
 	bestillingID: string
+	erOrganisasjon: boolean
 	cancelBestilling: Function
-	setNyeBestillinger: Function
 }
 
 export const BestillingProgresjon = ({
 	bestillingID,
+	erOrganisasjon,
 	cancelBestilling,
-	setNyeBestillinger,
 }: ProgresjonProps) => {
 	const setDetaljertOrgStatus = (status: any) => {
 		const detaljertStatus = status?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
@@ -58,19 +59,18 @@ export const BestillingProgresjon = ({
 	}
 
 	const ferdigstillBestilling = () => {
-		setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
-			nyeBestillinger.filter((best) => best.id !== bestilling.id)
-		)
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_BESTILLINGER)
+		mutate(REGEX_BACKEND_ORGANISASJONER)
 	}
 
 	const calculateStatus = () => {
 		const total = erOrganisasjon ? 1 : bestilling.antallIdenter
 		const sykemelding =
+			!erOrganisasjon &&
 			bestilling.bestilling.sykemelding != null &&
 			bestilling.bestilling.sykemelding.syntSykemelding != null
-		const antallLevert = bestilling.antallLevert
+		const antallLevert = erOrganisasjon ? bestillingStatus?.antallLevert : bestilling?.antallLevert
 
 		let percent = (100 / total) * antallLevert
 		let text = `Opprettet ${antallLevert} av ${total}`
@@ -95,29 +95,28 @@ export const BestillingProgresjon = ({
 	}
 
 	const handleCancelBtn = () => {
-		cancelBestilling(bestilling.id, erOrganisasjon)
+		cancelBestilling(bestillingID, erOrganisasjon)
 		ferdigstillBestilling()
 	}
 
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
 	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
 
-	const { bestilling, loading } = useBestillingById(bestillingID, true)
+	const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
+	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestillingID, erOrganisasjon, true)
+
 	const [timedOut, setTimedOut] = useState(false)
 	const [orgStatus, setOrgStatus] = useState(null)
 	const mutate = useMatchMutate()
 
-	const erOrganisasjon = bestilling?.hasOwnProperty('organisasjonNummer')
-	const sistOppdatert = bestilling?.sistOppdatert || new Date()
-
-	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestilling?.id, erOrganisasjon, true)
+	const sistOppdatert = bestilling?.sistOppdatert || bestillingStatus?.sistOppdatert || new Date()
 
 	useEffect(() => {
 		if (erOrganisasjon) {
 			setDetaljertOrgStatus(bestillingStatus)
 		}
 		harBestillingFeilet(sistOppdatert)
-	}, [bestilling])
+	}, [bestilling, bestillingStatus])
 
 	if (loading) {
 		return null

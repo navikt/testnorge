@@ -27,7 +27,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 			iconType="identifikasjon"
 			startOpen={harValgtAttributt(formikBag.values, identifikasjonAttributter)}
 		>
-			<AttributtKategori>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
 				<Attributt

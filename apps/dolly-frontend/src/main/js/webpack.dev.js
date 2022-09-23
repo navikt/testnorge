@@ -25,6 +25,7 @@ module.exports = (env) =>
 					errors: true,
 					warnings: true,
 				},
+				progress: true,
 			},
 			headers: {
 				'Access-Control-Allow-Origin': '*',

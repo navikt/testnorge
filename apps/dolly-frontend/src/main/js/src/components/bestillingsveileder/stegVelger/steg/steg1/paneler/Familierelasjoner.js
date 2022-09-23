@@ -21,14 +21,14 @@ export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 			iconType={'relasjoner'}
 			startOpen={harValgtAttributt(formikBag.values, relasjonerAttributter)}
 		>
-			<AttributtKategori title="Sivilstand">
+			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sivilstand} />
 			</AttributtKategori>
-			<AttributtKategori title="Barn/foreldre">
+			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.barnForeldre} />
 				<Attributt attr={sm.attrs.foreldreansvar} />
 			</AttributtKategori>
-			<AttributtKategori title="Dødfødt barn">
+			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.doedfoedtBarn} />
 			</AttributtKategori>
 		</Panel>

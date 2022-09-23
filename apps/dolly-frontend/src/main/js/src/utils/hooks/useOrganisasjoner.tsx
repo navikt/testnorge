@@ -31,7 +31,7 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjonerForBruker = (brukerId: string) => {
+export const useOrganisasjonerForBruker = (brukerId: string | number) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -96,7 +96,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 }
 
 export const useOrganisasjonBestillingStatus = (
-	bestillingId: number,
+	bestillingId: number | string,
 	erOrganisasjon: boolean,
 	autoRefresh = false
 ) => {

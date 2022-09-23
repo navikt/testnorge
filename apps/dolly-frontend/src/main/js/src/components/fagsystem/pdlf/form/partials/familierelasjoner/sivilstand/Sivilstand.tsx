@@ -81,6 +81,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							name={`${path}.borIkkeSammen`}
 							label="Bor ikke sammen"
 							disabled={!kanHaRelatertPerson}
+							checkboxMargin
 						/>
 						{kanHaRelatertPerson && (
 							<PdlPersonExpander

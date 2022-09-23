@@ -48,11 +48,21 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 	}
 }
 
-export const useBestillingById = (bestillingId: string, autoRefresh = false) => {
+export const useBestillingById = (
+	bestillingId: string,
+	erOrganisasjon = false,
+	autoRefresh = false
+) => {
 	if (!bestillingId) {
 		return {
 			loading: false,
 			error: 'bestillingId mangler!',
+		}
+	}
+	if (erOrganisasjon) {
+		return {
+			loading: false,
+			error: 'Bestilling er org!',
 		}
 	}
 	const { data, error } = useSWR<Bestilling, Error>(getBestillingByIdUrl(bestillingId), fetcher, {

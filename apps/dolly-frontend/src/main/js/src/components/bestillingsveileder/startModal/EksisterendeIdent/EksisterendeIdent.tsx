@@ -8,7 +8,7 @@ import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Icon from '~/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
-import { Alert, TextField } from '@navikt/ds-react'
+import { Alert, Table, Textarea } from '@navikt/ds-react'
 
 export const EksisterendeIdent = ({
 	onAvbryt,
@@ -41,7 +41,7 @@ export const EksisterendeIdent = ({
 
 			{!state.value && !state.loading && (
 				<React.Fragment>
-					<TextField
+					<Textarea
 						size={'small'}
 						label="Identer"
 						placeholder="fnr/dnr/npid"
@@ -61,26 +61,28 @@ export const EksisterendeIdent = ({
 
 			{state.value && (
 				<React.Fragment>
-					<table className="tabell tabell--stripet" style={{ marginBottom: '20px' }}>
-						<thead>
-							<tr>
-								<th>Ident</th>
-								<th>Status</th>
-								<th>OK</th>
-							</tr>
-						</thead>
-						<tbody>
-							{state.value.map((v, idx) => (
-								<tr key={idx}>
-									<td>{v.ident}</td>
-									<td>{v.status}</td>
-									<td>
-										<Icon kind={v.available ? 'feedback-check-circle' : 'report-problem-circle'} />
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+					<Table size="medium" zebraStripes style={{ marginBottom: '20px' }}>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
+								<Table.HeaderCell scope="col">Status</Table.HeaderCell>
+								<Table.HeaderCell scope="col">OK</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{state.value.map(({ ident, status, available }, idx) => {
+								return (
+									<Table.Row key={idx}>
+										<Table.HeaderCell scope="row">{ident}</Table.HeaderCell>
+										<Table.HeaderCell>{status}</Table.HeaderCell>
+										<Table.HeaderCell>
+											<Icon kind={available ? 'feedback-check-circle' : 'report-problem-circle'} />
+										</Table.HeaderCell>
+									</Table.Row>
+								)
+							})}
+						</Table.Body>
+					</Table>
 
 					{finnesUgyldige && (
 						<Alert variant="warning">
