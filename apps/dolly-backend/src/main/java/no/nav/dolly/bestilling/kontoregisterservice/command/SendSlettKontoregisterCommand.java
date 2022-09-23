@@ -31,7 +31,7 @@ public class SendSlettKontoregisterCommand implements Callable<Flux<String>> {
                         .build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, "Bearer " + token)
-                .bodyValue(new SlettKontoRequestDTO(ident, "-"))
+                .bodyValue(new SlettKontoRequestDTO(ident, "Dolly"))
                 .retrieve()
                 .bodyToFlux(String.class)
                 .doOnError(WebClientFilter::logErrorMessage)

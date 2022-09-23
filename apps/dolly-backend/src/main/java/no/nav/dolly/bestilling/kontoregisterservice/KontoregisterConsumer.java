@@ -140,11 +140,10 @@ public class KontoregisterConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
-                        .delayElements(Duration.ofMillis(100))
-                        .map(index -> new SendSlettKontoregisterCommand(
+                        .delayElements(Duration.ofMillis(10))
+                        .flatMap(index -> new SendSlettKontoregisterCommand(
                                 webClient, identer.get(index), token.getTokenValue()
-                        ).call())
-                        .flatMap(Flux::from))
+                        ).call()))
                 .collectList();
     }
 
