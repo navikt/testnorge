@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoNorskRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.tps.ctg.s610.domain.BankkontoNorgeType;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class BankkontonrNorskMappingStrategy implements MappingStrategy {
@@ -28,7 +29,12 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
 
                         target.setSfeAjourforing(BankkontoNorskRequest.SfeAjourforing.builder()
                                 .systemInfo(TpsSystemInfo.getDefault())
-                                .endreGironrNorsk(mapperFacade.map(source, BankkontoNorskRequest.EndreGironrNorsk.class, context))
+                                .endreGironrNorsk(isNotBlank(source.getKontonummer()) ?
+                                        mapperFacade.map(source, BankkontoNorskRequest.EndreGironrNorsk.class, context) :
+                                        null)
+                                .opphorGironrNorsk(isBlank(source.getKontonummer()) ?
+                                        mapperFacade.map(source, BankkontoNorskRequest.BrukerIdentifikasjon.class, context) :
+                                        null)
                                 .build());
                     }
                 })
@@ -46,6 +52,16 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
                     }
                 })
                 .byDefault()
+                .register();
+
+        factory.classMap(BankkontonrNorskDTO.class, BankkontoNorskRequest.BrukerIdentifikasjon.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(BankkontonrNorskDTO source, BankkontoNorskRequest.BrukerIdentifikasjon target, MappingContext context) {
+
+                        target.setOffentligIdent((String) context.getProperty("ident"));
+                    }
+                })
                 .register();
 
         factory.classMap(BankkontoNorgeType.class, BankkontonrNorskDTO.class)

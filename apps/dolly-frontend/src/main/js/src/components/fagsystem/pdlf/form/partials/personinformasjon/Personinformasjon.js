@@ -130,7 +130,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Utenlandsk bankkonto" vis={utenlandskBankkontoPath}>
-					<UtenlandskBankkonto />
+					<UtenlandskBankkonto formikBag={formikBag} />
 				</Kategori>
 
 				<Kategori title="Telefonnummer" vis={telefonnummerPath}>

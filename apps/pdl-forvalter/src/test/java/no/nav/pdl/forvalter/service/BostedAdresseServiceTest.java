@@ -25,6 +25,7 @@ import java.util.List;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -219,9 +220,9 @@ class BostedAdresseServiceTest {
                         .build()))
                 .build();
 
-        var target = bostedAdresseService.convert(request, null).get(0);
+        var target = bostedAdresseService.convert(request, null);
 
-        assertThat(target.countAdresser(), is(0));
+        assertThat(target, is(empty()));
     }
 
     @Test

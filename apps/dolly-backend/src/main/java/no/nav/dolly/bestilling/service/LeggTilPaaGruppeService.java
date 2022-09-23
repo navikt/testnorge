@@ -159,7 +159,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(testident.getIdent(), tpsfBestilling);
             if (!oppdaterPersonResponse.getIdentTupler().isEmpty()) {
 
-                dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
+                dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent(), bestilling.getGruppe().getTags());
 
             } else {
                 progress.setFeil("NA:Feil= Ident finnes ikke i database");

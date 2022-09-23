@@ -37,7 +37,7 @@ export const Adresse = ({ formikBag, path }) => {
 						<FormikSelect
 							name={`${path}.postnummer`}
 							label="Postnummer og -sted"
-							kodeverk={AdresseKodeverk.Postnummer}
+							kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 							afterChange={handleAfterChange}
 							size="large"
 						/>

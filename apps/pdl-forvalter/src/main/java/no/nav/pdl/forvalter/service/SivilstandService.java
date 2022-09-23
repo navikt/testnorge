@@ -140,7 +140,6 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
             }
 
-            sivilstand.setSivilstandsdato(nonNull(sivilstand.getSivilstandsdato()) ? sivilstand.getSivilstandsdato() : now());
             relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
                     sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
             createRelatertSivilstand(sivilstand, hovedperson.getIdent());
@@ -185,8 +184,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             }
         });
 
-        return person.getSivilstand().stream()
+        return person.getSivilstand().stream().noneMatch(sivilstand -> isNull(sivilstand.getSivilstandsdato())) ?
+                person.getSivilstand().stream()
                 .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
-                .toList();
+                .toList() :
+                person.getSivilstand();
     }
 }

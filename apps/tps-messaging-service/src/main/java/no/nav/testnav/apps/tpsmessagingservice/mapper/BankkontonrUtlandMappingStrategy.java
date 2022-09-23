@@ -5,13 +5,14 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoUtlandRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.tps.ctg.s610.domain.KontoNrUtlandType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Component
@@ -27,7 +28,12 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
 
                         target.setSfeAjourforing(BankkontoUtlandRequest.SfeAjourforing.builder()
                                 .systemInfo(TpsSystemInfo.getDefault())
-                                .endreGironrUtl(mapperFacade.map(source, BankkontoUtlandRequest.EndreGironrUtl.class, context))
+                                .endreGironrUtl(isNotBlank(source.getKontonummer()) ?
+                                        mapperFacade.map(source, BankkontoUtlandRequest.EndreGironrUtl.class, context) :
+                                        null)
+                                .opphorGironrUtl(isBlank(source.getKontonummer()) ?
+                                        mapperFacade.map(source, BankkontoUtlandRequest.BrukerIdentifikasjon.class, context) :
+                                        null)
                                 .build());
                     }
                 })
@@ -49,6 +55,16 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                     }
                 })
                 .byDefault()
+                .register();
+
+        factory.classMap(BankkontonrUtlandDTO.class, BankkontoUtlandRequest.BrukerIdentifikasjon.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(BankkontonrUtlandDTO source, BankkontoUtlandRequest.BrukerIdentifikasjon target, MappingContext context) {
+
+                        target.setOffentligIdent((String) context.getProperty("ident"));
+                    }
+                })
                 .register();
 
         factory.classMap(KontoNrUtlandType.class, BankkontonrUtlandDTO.class)
