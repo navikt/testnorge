@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -105,9 +106,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                     bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
 
                 } else {
-                    person.setBostedsadresse(person.getBostedsadresse().stream()
+                    person.setBostedsadresse(new ArrayList<>(person.getBostedsadresse().stream()
                             .filter(adresse -> isNotTrue(adresse.getIsNew()))
-                            .toList());
+                            .toList()));
                     return;
                 }
 
@@ -123,9 +124,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         } else {
 
-            person.setBostedsadresse(person.getBostedsadresse().stream()
+            person.setBostedsadresse(new ArrayList(person.getBostedsadresse().stream()
                     .filter(adresse -> isNotTrue(adresse.getIsNew()))
-                    .toList());
+                    .toList()));
             return;
         }
 
