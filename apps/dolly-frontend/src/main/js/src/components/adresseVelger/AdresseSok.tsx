@@ -5,7 +5,7 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
-import { Search } from '@navikt/ds-react'
+import { Button } from '@navikt/ds-react'
 
 type Props = {
 	onSubmit: (search: { fritekst?: string; postnummer?: string; kommunenummer?: string }) => void
@@ -57,13 +57,13 @@ export default ({ onSubmit, loading = false }: Props) => {
 					onChange={(e: any) => setKommunenummer(e ? e.value : null)}
 				/>
 			</InputGroup>
-			<Search
+			<Button
 				onClick={() => onSubmit({ fritekst, postnummer, kommunenummer })}
 				disabled={loading}
 				loading={loading}
 			>
-				<span>Hent gyldige adresser</span>
-			</Search>
+				Hent gyldige adresser
+			</Button>
 		</div>
 	)
 }
