@@ -89,8 +89,22 @@ public class ExcelService {
 
     public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {
 
-        organisasjonExcelService.prepareOrganisasjonSheet(bruker);
-        return null;
+        long start = System.currentTimeMillis();
 
+        var workbook = new XSSFWorkbook();
+
+        organisasjonExcelService.prepareOrganisasjonSheet(workbook, bruker);
+        log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
+        try {
+            var excelFile = File.createTempFile("Excel-", ".xlsx");
+            try (var outputStream = new FileOutputStream(excelFile)) {
+                workbook.write(outputStream);
+                workbook.close();
+                return new FileSystemResource(excelFile);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new DollyFunctionalException("Generering av Excel-fil feilet", e);
+        }
     }
 }

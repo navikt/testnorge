@@ -58,7 +58,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class PersonExcelService {
 
-    private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
+    private static final Object[] HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak"};
     private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14};
@@ -360,7 +360,7 @@ public class PersonExcelService {
 
         var sheet = workbook.createSheet(PERSON_FANE);
         var rows = getPersondataRowContents(identer);
-        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, header.length),
+        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
                 IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
         var columnNo = new AtomicInteger(0);
@@ -368,7 +368,7 @@ public class PersonExcelService {
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
         ExcelService.appendRows(workbook, PERSON_FANE,
-                Stream.of(Collections.singletonList(header), rows)
+                Stream.of(Collections.singletonList(HEADER), rows)
                         .flatMap(Collection::stream)
                         .toList());
 

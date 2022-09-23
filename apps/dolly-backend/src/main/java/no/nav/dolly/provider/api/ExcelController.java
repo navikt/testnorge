@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class ExcelController {
     }
 
     @SneakyThrows
-    @GetMapping(value = "/organisasjoner/{brukerId}")
-    public ResponseEntity<Resource> getOrganisasjonExcelsheet(@PathVariable(required = false) String brukerId){
+    @GetMapping(value = "/organisasjoner")
+    public ResponseEntity<Resource> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId){
 
         var bruker = brukerService.fetchOrCreateBruker(StringUtils.isNotBlank(brukerId) ? brukerId : getUserId(getUserInfo));
         var resource = excelService.getExcelOrganisasjonerWorkbook(bruker);
