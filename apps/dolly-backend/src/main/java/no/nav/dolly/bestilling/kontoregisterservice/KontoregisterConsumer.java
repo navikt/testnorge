@@ -14,15 +14,17 @@ import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.SlettKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
+import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -134,11 +136,16 @@ public class KontoregisterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_slettKonto"})
-    public Mono<String> sendSlettKontoRequest(String ident) {
-        var requestDto = new SlettKontoRequestDTO(ident, "");
+    public Mono<List<String>> slettKontoer(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new SendSlettKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(100))
+                        .map(index -> new SendSlettKontoregisterCommand(
+                                webClient, identer.get(index), token.getTokenValue()
+                        ).call())
+                        .flatMap(Flux::from))
+                .collectList();
     }
 
     public static class NorskBankkontoGenerator {

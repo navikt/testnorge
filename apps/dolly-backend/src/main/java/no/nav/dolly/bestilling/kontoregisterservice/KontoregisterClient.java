@@ -55,8 +55,7 @@ public class KontoregisterClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-        identer.stream().forEach(ident -> kontoregisterConsumer.sendSlettKontoRequest(ident)
-                .doOnSuccess(c -> log.info("slettet konto for " + ident))
-                .block());
+        kontoregisterConsumer.slettKontoer(identer)
+                .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
     }
 }
