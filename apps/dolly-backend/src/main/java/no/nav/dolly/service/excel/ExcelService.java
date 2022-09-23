@@ -2,6 +2,7 @@ package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -26,6 +27,7 @@ public class ExcelService {
     private final TestgruppeRepository testgruppeRepository;
     private final PersonExcelService personExcelService;
     private final BankkontoExcelService bankkontoExcelService;
+    private final OrganisasjonExcelService organisasjonExcelService;
 
     protected static void appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
 
@@ -83,5 +85,12 @@ public class ExcelService {
             log.error(e.getMessage(), e);
             throw new DollyFunctionalException("Generering av Excel-fil feilet", e);
         }
+    }
+
+    public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {
+
+        organisasjonExcelService.prepareOrganisasjonSheet(bruker);
+        return null;
+
     }
 }

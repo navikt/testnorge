@@ -202,8 +202,7 @@ public class OrganisasjonBestillingService {
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
-        return bestillingRepository.findByBruker(bruker)
-                .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
+        return bestillingRepository.findByBruker(bruker);
     }
 
     private void updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {

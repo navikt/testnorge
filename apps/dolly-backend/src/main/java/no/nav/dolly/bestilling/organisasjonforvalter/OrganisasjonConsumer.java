@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.organisasjonforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.organisasjonforvalter.command.GetOrganisasjonCommand;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -60,25 +62,10 @@ public class OrganisasjonConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
-    public OrganisasjonDetaljer hentOrganisasjon(List<String> orgnumre) {
-        var navCallId = getNavCallId();
-        log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
+    public Flux<OrganisasjonDetaljer> hentOrganisasjon(List<String> orgnumre) {
 
-        return webClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder.path(ORGANISASJON_FORVALTER_URL)
-                                .queryParam("orgnumre", orgnumre)
-                                .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, navCallId)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve()
-                .bodyToMono(OrganisasjonDetaljer.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new GetOrganisasjonCommand(webClient, orgnumre, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
