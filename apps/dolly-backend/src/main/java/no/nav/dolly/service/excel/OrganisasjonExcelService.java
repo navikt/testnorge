@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.FADR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.PADR;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +72,7 @@ public class OrganisasjonExcelService {
 
     private static String nvl(String value) {
 
-        return nonNull(value) ? value : "";
+        return isNotBlank(value) ? value : "";
     }
 
     private static String nvl(LocalDate value) {
