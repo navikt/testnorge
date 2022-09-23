@@ -23,7 +23,7 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 		// @ts-ignore
 		const isoLandkode = landkodeIsoMapping[landkode]
 		if (isoLandkode) {
-			const mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
+			const mappedLandkode = isoLandkode || landkode.substring(0, 2)
 			let swift = _get(values, `${path}.swift`)
 			if (swift) {
 				swift = swift.substring(0, 4) + mappedLandkode + swift.substring(6)
