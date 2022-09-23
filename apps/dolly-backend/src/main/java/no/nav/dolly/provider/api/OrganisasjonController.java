@@ -5,12 +5,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
+import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper.RsOrganisasjonMalBestilling;
+import no.nav.dolly.service.MalBestillingService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.http.HttpStatus;
@@ -39,6 +43,7 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
+    private final MalBestillingService malBestillingService;
     private final OrganisasjonProgressService progressService;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -105,6 +110,34 @@ public class OrganisasjonController {
     public void slettgruppe(@PathVariable("orgnummer") String orgnummer) {
 
         bestillingService.slettBestillingByOrgnummer(orgnummer);
+    }
+
+    @GetMapping("/malbestilling")
+    @Operation(description = "Hent mal-bestilling")
+    public RsOrganisasjonMalBestillingWrapper getMalBestillinger() {
+
+        return malBestillingService.getOrganisasjonMalBestillinger();
+    }
+
+    @GetMapping("/malbestilling/bruker")
+    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
+    public List<RsOrganisasjonMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
+
+        return malBestillingService.getOrganisasjonMalbestillingByNavnAndUser(brukerId, malNavn);
+    }
+
+    @DeleteMapping("/malbestilling/{id}")
+    @Operation(description = "Slett mal-bestilling")
+    public void deleteMalBestilling(@PathVariable Long id) {
+
+        bestillingService.redigerMalBestillingNavn(id, null);
+    }
+
+    @PutMapping("/malbestilling/{id}")
+    @Operation(description = "Rediger mal-bestilling")
+    public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
+
+        bestillingService.redigerMalBestillingNavn(id, malbestillingNavn.getMalNavn());
     }
 
     private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
