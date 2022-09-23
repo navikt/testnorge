@@ -14,7 +14,7 @@ import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
-import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import { useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
 
 interface FeedbackProps {
 	label: string
@@ -25,6 +25,7 @@ const MAX_LENGTH = 2000
 
 export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 	const { brukerBilde } = useBrukerProfilBilde()
+	const { currentBruker } = useCurrentBruker()
 
 	const [rating, setRating] = useState<Rating>()
 	const [text, setText] = useState('')
@@ -78,6 +79,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 									message: text,
 									uuid: uuid,
 									isAnonym: isAnonym,
+									brukerType: currentBruker.brukertype,
 								})
 								setSubmit(true)
 							}}
