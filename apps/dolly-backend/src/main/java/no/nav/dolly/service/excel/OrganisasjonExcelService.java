@@ -2,38 +2,115 @@ package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.FADR;
+import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.PADR;
 
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonExcelService {
 
     public static final String ORGANISASJON_FANE = "Organisasjoner";
-    private static final Object[] HEADER = {"Organisasjonsnummer", "Organisasjonsnavn", "Enhetstype", "Naeringskode",
-            "Sektorkode", "Formål", "Målform", "Stiftelsesdato", "Nettside", "Telefon", "Epost", "Forretningsadresse",
+    private static final Object[] HEADER = {"Organisasjonsnummer", "Organisasjonsnavn", "Enhetstype", "Stiftelsesdato",
+            "Naeringskode", "Sektorkode", "Målform", "Formål", "Nettside", "Telefon", "Epost", "Forretningsadresse",
             "Postadresse"};
-    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14};
+    private static final Integer[] COL_WIDTHS = {20, 25, 15, 15, 15, 15, 15, 30, 20, 20, 20, 30, 30};
+    private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private static final int FETCH_BLOCK_SIZE = 10;
 
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final OrganisasjonConsumer organisasjonConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
+
+    private static Object[] unpackOrganisasjon(OrganisasjonDetaljer organisasjon,
+                                               Map<String, String> postnumre,
+                                               Map<String, String> landkoder) {
+
+        return new Object[]{
+                nvl(organisasjon.getOrganisasjonsnummer()),
+                nvl(organisasjon.getOrganisasjonsnavn()),
+                nvl(organisasjon.getEnhetstype()),
+                nvl(organisasjon.getStiftelsesdato()),
+                nvl(organisasjon.getNaeringskode()),
+                nvl(organisasjon.getSektorkode()),
+                nvl(organisasjon.getMaalform()),
+                nvl(organisasjon.getFormaal()),
+                nvl(organisasjon.getNettside()),
+                nvl(organisasjon.getTelefon()),
+                nvl(organisasjon.getEpost()),
+                getForretningsadresse(organisasjon.getAdresser(), postnumre, landkoder),
+                getPostadresse(organisasjon.getAdresser(), postnumre, landkoder)
+        };
+    }
+
+    private static String nvl(String value) {
+
+        return nonNull(value) ? value : "";
+    }
+
+    private static String nvl(LocalDate value) {
+
+        return nonNull(value) ? value.format(NORSK_DATO) : "";
+    }
+
+    private static Object getPostadresse(List<OrganisasjonAdresse> adresser,
+                                         Map<String, String> postnumre,
+                                         Map<String, String> landkoder) {
+
+        return getAdresse(adresser, PADR, postnumre, landkoder);
+    }
+
+    private static String getForretningsadresse(List<OrganisasjonAdresse> adresser,
+                                                Map<String, String> postnumre,
+                                                Map<String, String> landkoder) {
+
+        return getAdresse(adresser, FADR, postnumre, landkoder);
+    }
+
+    private static String getAdresse(List<OrganisasjonAdresse> adresser,
+                                     OrganisasjonAdresse.AdresseType type,
+                                     Map<String, String> postnumre,
+                                     Map<String, String> landkoder) {
+
+        return adresser.stream()
+                .filter(adresse -> type == adresse.getAdressetype())
+                .map(adresse -> new StringBuilder()
+                        .append(StringUtils.join(adresse.getAdresselinjer(), ", "))
+                        .append(", ")
+                        .append(adresse.getPostnr())
+                        .append(' ')
+                        .append("NO".equals(adresse.getLandkode()) ? postnumre.get(adresse.getPostnr()) : adresse.getPoststed())
+                        .append(", ")
+                        .append(landkoder.get(adresse.getLandkode()))
+                        .toString())
+                .findFirst().orElse("");
+    }
 
     public void prepareOrganisasjonSheet(XSSFWorkbook workbook, Bruker bruker) {
 
@@ -66,32 +143,16 @@ public class OrganisasjonExcelService {
                 .distinct()
                 .toList();
 
-        return Flux.range(0, organisasjoner.size() / FETCH_BLOCK_SIZE + 1)
-                .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
-                        organisasjoner.subList(index * FETCH_BLOCK_SIZE,
-                                Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))
-                ))
-                .map(organisasjon -> unpackOrganisasjon(organisasjon))
+        return Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
+                        kodeverkConsumer.getKodeverkByName("LandkoderISO2"))
+                .flatMapMany(kodeverk -> Flux.range(0, organisasjoner.size() / FETCH_BLOCK_SIZE + 1)
+                        .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
+                                organisasjoner.subList(index * FETCH_BLOCK_SIZE,
+                                        Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))
+                        ))
+                        .map(organisasjon -> unpackOrganisasjon(organisasjon, kodeverk.getT1(), kodeverk.getT2())))
                 .collectList()
                 .block();
-    }
 
-    private Object[] unpackOrganisasjon(OrganisasjonDetaljer organisasjon) {
-
-        return new Object[]{
-                organisasjon.getOrganisasjonsnummer(),
-                organisasjon.getOrganisasjonsnavn(),
-                organisasjon.getEnhetstype(),
-                organisasjon.getNaeringskode(),
-                organisasjon.getSektorkode(),
-                organisasjon.getFormaal(),
-                organisasjon.getMaalform(),
-                organisasjon.getStiftelsesdato(),
-                organisasjon.getNettside(),
-                organisasjon.getTelefon(),
-                organisasjon.getEpost(),
-                organisasjon.getAdresser(),
-                organisasjon.getAdresser()
-        };
     }
 }

@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,7 +58,7 @@ public class ExcelService {
 
     public Resource getExcelWorkbook(Long gruppeId) {
 
-        long start = System.currentTimeMillis();
+        long timestamp = System.currentTimeMillis();
         var testidenter = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId))
                 .getTestidenter().stream()
@@ -73,28 +74,23 @@ public class ExcelService {
 
         BankkontoToPersonHelper.appendData(workbook);
 
-        log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
-        try {
-            var excelFile = File.createTempFile("Excel-", ".xlsx");
-            try (var outputStream = new FileOutputStream(excelFile)) {
-                workbook.write(outputStream);
-                workbook.close();
-                return new FileSystemResource(excelFile);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new DollyFunctionalException("Generering av Excel-fil feilet", e);
-        }
+        return convertToResource(timestamp, workbook);
     }
 
     public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {
 
-        long start = System.currentTimeMillis();
+        long timestamp = System.currentTimeMillis();
 
         var workbook = new XSSFWorkbook();
 
         organisasjonExcelService.prepareOrganisasjonSheet(workbook, bruker);
-        log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - start) / 1000);
+
+        return convertToResource(timestamp, workbook);
+    }
+
+    private Resource convertToResource(long timestamp, XSSFWorkbook workbook) {
+
+        log.info("Excel: totalt medgått tid {} sekunder", (System.currentTimeMillis() - timestamp) / 1000);
         try {
             var excelFile = File.createTempFile("Excel-", ".xlsx");
             try (var outputStream = new FileOutputStream(excelFile)) {
@@ -102,7 +98,8 @@ public class ExcelService {
                 workbook.close();
                 return new FileSystemResource(excelFile);
             }
-        } catch (Exception e) {
+
+        } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new DollyFunctionalException("Generering av Excel-fil feilet", e);
         }
