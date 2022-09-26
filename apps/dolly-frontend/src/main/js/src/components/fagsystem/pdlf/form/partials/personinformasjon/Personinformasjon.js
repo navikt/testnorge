@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { Fullmakt } from '../fullmakt/Fullmakt'
 import { Sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
@@ -83,7 +83,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				heading="Personinformasjon"
 				hasErrors={panelError(formikBag, panelPaths)}
 				iconType={'personinformasjon'}
-				startOpen={erForste(formikBag.values, panelPaths)}
+				startOpen={erForsteEllerTest(formikBag.values, panelPaths)}
 			>
 				{!personFoerLeggTil && (
 					<Kategori title="Alder (grunnlag for fødselsnummer)" vis={alderPaths}>

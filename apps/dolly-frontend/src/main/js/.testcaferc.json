@@ -1,5 +1,6 @@
 {
   "skipJsErrors": true,
+  "skipUncaughtErrors": true,
   "hostname": "localhost",
   "developmentMode": true,
   "pageRequestTimeout": 30000,

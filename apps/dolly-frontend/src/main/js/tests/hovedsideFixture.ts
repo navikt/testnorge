@@ -1,3 +1,5 @@
+// noinspection TypeScriptValidateTypes
+
 import { ClientFunction, RequestMock } from 'testcafe'
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
 import { clickAllSiblings } from './util/TestcafeUtils'
@@ -160,6 +162,6 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 
 	await testController
 		.click(ReactSelector('NavButton').withText('Videre'))
-		.expect(ReactSelector('ErrorBoundary').getReact(({ state }) => state.error))
-		.eql(false)
+		.expect(ReactSelector('ErrorBoundary').getReact<any>(({ state }) => state.error))
+		.eql(undefined)
 })

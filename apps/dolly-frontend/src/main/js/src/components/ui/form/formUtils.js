@@ -87,9 +87,13 @@ const getValgteAttributter = (values) => {
 	return valgteAttributter
 }
 
-export const erForste = (values, attributter) => {
+export const erForsteEllerTest = (values, attributter) => {
 	const valgteAttributter = getValgteAttributter(values)
-	return attributter.includes(valgteAttributter[0])
+	return testEnabled() || attributter.includes(valgteAttributter[0])
+}
+
+export const testEnabled = () => {
+	return window.location.hostname.includes('localhost')
 }
 
 export const harValgtAttributt = (values, attributter) => {
