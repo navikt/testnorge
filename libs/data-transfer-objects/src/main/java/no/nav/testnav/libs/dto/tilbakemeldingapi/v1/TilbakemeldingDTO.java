@@ -19,4 +19,6 @@ public class TilbakemeldingDTO {
     Rating rating;
     @JsonProperty
     Boolean isAnonym;
+    @JsonProperty
+    String brukerType;
 }

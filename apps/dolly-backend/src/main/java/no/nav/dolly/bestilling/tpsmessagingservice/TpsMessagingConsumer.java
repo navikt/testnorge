@@ -12,8 +12,8 @@ import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -22,14 +22,13 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigNorskBankkonto;
 import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -78,6 +77,10 @@ public class TpsMessagingConsumer {
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
     public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
+
+        if (nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
+            body = body.withKontonummer(tilfeldigNorskBankkonto());
+        }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }

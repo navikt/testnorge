@@ -195,7 +195,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-kontoregister-person-proxy/kontoregister/api': {
+				'/testnav-kontoregister-person-proxy/api/system': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,

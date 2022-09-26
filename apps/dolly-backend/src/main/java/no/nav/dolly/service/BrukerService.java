@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -26,6 +28,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BrukerService {
@@ -140,6 +143,11 @@ public class BrukerService {
 
     public List<Bruker> fetchEidAv(Bruker bruker) {
         return brukerRepository.fetchEidAv(bruker);
+    }
+
+    public int slettNavIdentBrukere(Set<String> brukere) {
+
+        return brukerRepository.deleteByNavIdentIn(brukere);
     }
 
     private void oppdaterBrukernavn(Bruker bruker) {

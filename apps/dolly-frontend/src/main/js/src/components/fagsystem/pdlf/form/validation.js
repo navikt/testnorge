@@ -513,10 +513,7 @@ export const utflytting = Yup.object({
 const sivilstand = Yup.array().of(
 	Yup.object({
 		type: requiredString.nullable(),
-		sivilstandsdato: Yup.mixed().when('bekreftelsesdato', {
-			is: null,
-			then: requiredString.nullable(),
-		}),
+		sivilstandsdato: Yup.string().nullable(),
 		relatertVedSivilstand: Yup.string().nullable(),
 		bekreftelsesdato: Yup.string().nullable(),
 		borIkkeSammen: Yup.boolean(),
@@ -660,7 +657,8 @@ const validateIban = (kontonummer, form) => {
 }
 
 const validateSwift = (val) => {
-	return val.test('swift-validering', function isSwiftValid(value) {
+	return val.test('swift-validering', function isSwiftValid() {
+		const value = _get(values, `${path}.swift`) // henter siste verdi for swift å unngå gammel swift validering når land endres
 		if (!value) {
 			return true
 			// return this.createError({ message: messages.required })
@@ -856,7 +854,13 @@ export const validation = {
 			norskBankkonto: ifPresent(
 				'$bankkonto.norskBankkonto',
 				Yup.object().shape({
-					kontonummer: requiredString.nullable(),
+					kontonummer: validInputOrCheckboxTest(
+						Yup.string().nullable(),
+						'tilfeldigKontonummer',
+						messages.required,
+						null
+					),
+					tilfeldigKontonummer: Yup.object().nullable(),
 				})
 			),
 		})
