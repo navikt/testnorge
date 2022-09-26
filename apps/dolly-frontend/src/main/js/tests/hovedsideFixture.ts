@@ -143,14 +143,14 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 	const malerSelect = ReactSelector('Select').withProps({ label: 'Maler' })
 
 	await testController
-		.click(malerCheckbox, { offsetX: -600 })
+		.click(malerCheckbox)
 		.expect(brukerSelect.getReact(({ props }) => props.disabled))
 		.eql(false)
 
 		.click(brukerSelect)
 		.click(malerSelect)
 
-		.click(malerCheckbox, { offsetX: -600 })
+		.click(malerCheckbox)
 		.expect(brukerSelect.getReact(({ props }) => props.disabled))
 		.eql(true)
 
@@ -158,5 +158,8 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 
 	await clickAllSiblings(testController, ReactSelector('LinkButton').withText('Velg alle'))
 
-	await testController.click(ReactSelector('NavButton').withText('Videre'))
+	await testController
+		.click(ReactSelector('NavButton').withText('Videre'))
+		.expect(ReactSelector('ErrorBoundary').getReact(({ state }) => state.error))
+		.eql(false)
 })

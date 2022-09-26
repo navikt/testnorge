@@ -2,6 +2,7 @@
   "skipJsErrors": true,
   "hostname": "localhost",
   "developmentMode": true,
-  "retryTestPages": true,
-  "appInitDelay": 40000
+  "pageRequestTimeout": 30000,
+  "pageLoadTimeout": 6000,
+  "appInitDelay": 60000
 }
