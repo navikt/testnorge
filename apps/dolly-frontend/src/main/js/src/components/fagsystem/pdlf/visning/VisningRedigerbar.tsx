@@ -24,7 +24,6 @@ import {
 } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import { doedsfall } from '~/components/fagsystem/pdlf/form/validation/validation'
 import {
-    doedsfall
 	bostedsadresse,
 	oppholdsadresse,
 	kontaktadresse,
