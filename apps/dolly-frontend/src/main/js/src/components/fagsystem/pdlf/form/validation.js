@@ -658,18 +658,32 @@ const validateIban = (kontonummer, form) => {
 
 const validateSwift = (val) => {
 	return val.test('swift-validering', function isSwiftValid() {
+		const path = this.path.substring(0, this.path.lastIndexOf('.'))
+		const values = this.options.context
+		const landkode = _get(values, `${path}.landkode`)
+
+		let mappedLandkode = null
+
+		if (landkode) {
+			const isoLandkode = landkodeIsoMapping[landkode]
+			mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
+		}
+
 		const value = _get(values, `${path}.swift`) // henter siste verdi for swift å unngå gammel swift validering når land endres
 		if (!value) {
+			if (mappedLandkode) {
+				const kontoregisterLandkode = landkoder.find((k) => k.landkode === mappedLandkode)
+				if (kontoregisterLandkode.kreverIban) {
+					return this.createError({ message: messages.required })
+				}
+			}
+
 			return true
-			// return this.createError({ message: messages.required })
 		}
 
 		if (value.length !== 11 && value.length !== 8) {
 			return this.createError({ message: 'Må være enten 8 eller 11 tegn' })
 		}
-
-		const path = this.path.substring(0, this.path.lastIndexOf('.'))
-		const values = this.options.context
 
 		const swiftFormatExplain =
 			'BBBBLLCCDDD - hvor BBBB er bankkode (4 tegn fra A-Z), LL er landkode (2 tegn), CC er sted (2 tegn fra 0-9, A-Z), og DDD er bransjekode 3 tegn fra 0-9, A-Z.'
@@ -680,10 +694,7 @@ const validateSwift = (val) => {
 			})
 		}
 
-		const landkode = _get(values, `${path}.landkode`)
-		if (landkode) {
-			const isoLandkode = landkodeIsoMapping[landkode]
-			const mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
+		if (mappedLandkode) {
 			if (value.substring(4, 6) !== mappedLandkode) {
 				return this.createError({
 					message:
