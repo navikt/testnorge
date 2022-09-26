@@ -71,7 +71,9 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
-	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
+	useEffect(() => {
+		handleSkjemaChange(skjemaValues)
+	}, [files, skjemaValues])
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
