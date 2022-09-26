@@ -2,6 +2,7 @@ import React from 'react'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
 import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import styled from 'styled-components'
 
 interface VelgPersonProps {
 	ident: string
@@ -9,6 +10,10 @@ interface VelgPersonProps {
 	valgtePersoner: Array<ImportPerson>
 	setValgtePersoner: (personer: Array<ImportPerson>) => void
 }
+
+const CenteredDiv = styled.div`
+	text-align: -webkit-center;
+`
 
 export const VelgPerson = ({ ident, data, valgtePersoner, setValgtePersoner }: VelgPersonProps) => {
 	const avhuket = valgtePersoner.map((person) => person?.ident).includes(ident)
@@ -22,19 +27,12 @@ export const VelgPerson = ({ ident, data, valgtePersoner, setValgtePersoner }: V
 	}
 
 	return (
-		<div
-			className="velg-person"
+		<CenteredDiv
 			onClick={(event: React.MouseEvent<any>) => {
 				event.stopPropagation()
 			}}
 		>
-			<Checkbox
-				id={ident}
-				title={'Marker'}
-				label={''}
-				checked={avhuket}
-				onChange={handleOnChange}
-			/>
-		</div>
+			<Checkbox id={ident} title={'Marker'} checked={avhuket} onChange={handleOnChange} />
+		</CenteredDiv>
 	)
 }

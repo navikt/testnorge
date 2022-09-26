@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
-import { RadioPanelGruppe } from 'nav-frontend-skjema'
-import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikProps } from 'formik'
-import { PopoverOrientering } from 'nav-frontend-popover'
+import { bottom } from '@popperjs/core'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Radio, RadioGroup } from '@navikt/ds-react'
 
 type Form = {
 	formikBag: FormikProps<{}>
@@ -31,24 +31,24 @@ const Tittel = styled.div`
 	}
 `
 
-const TestpersonValg = styled(RadioPanelGruppe)`
-	legend {
-		.offscreen;
-	}
+const TestpersonValg = styled(RadioGroup)`
+  legend {
+    .offscreen;
+  }
 
-	.inputPanelGruppe__inner {
-		.inputPanel {
-			margin-top: 10px;
-		}
+  .inputPanelGruppe__inner {
+    .inputPanel {
+      margin-top: 10px;
+    }
 
-		display: flex;
-		justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 
-		label {
-			width: 49%;
-			margin-bottom: 0.5rem;
-		}
-	}
+    label {
+      width: 49%;
+      margin-bottom: 0.5rem;
+    }
+  }
 `
 
 const informasjonstekst =
@@ -92,23 +92,19 @@ export const IdentVelger = ({ formikBag }: Form) => {
 		<IdentVelgerField>
 			<Tittel>
 				<h2>Velg type person</h2>
-				<Hjelpetekst hjelpetekstFor={'Identvelger'} type={PopoverOrientering.Under}>
-					{informasjonstekst}
-				</Hjelpetekst>
+				<Hjelpetekst placement={bottom}>{informasjonstekst}</Hjelpetekst>
 			</Tittel>
 
 			<TestpersonValg
+				value={type}
+				size={'small'}
+				legend={''}
 				name="pdldata.opprettNyPerson.syntetisk"
-				legend=""
-				radios={[
-					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
-					{ label: 'Standard', value: IdentType.STANDARD },
-				]}
-				checked={type}
-				onChange={(e) =>
-					handleIdentTypeChange((e.target as HTMLTextAreaElement).value as IdentType)
-				}
-			/>
+				onChange={(value: IdentType) => handleIdentTypeChange(value)}
+			>
+				<Radio value={IdentType.SYNTETISK}>NAV syntetisk </Radio>
+				<Radio value={IdentType.STANDARD}>Standard</Radio>
+			</TestpersonValg>
 		</IdentVelgerField>
 	)
 }

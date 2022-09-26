@@ -10,7 +10,7 @@ import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
@@ -56,7 +56,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 						/>
 						{_get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
 							<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
-								<Hjelpetekst hjelpetekstFor="Type sivilstand">
+								<Hjelpetekst>
 									Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand
 									vil derfor vises som ugift i fagsystemene.
 								</Hjelpetekst>
@@ -80,8 +80,8 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 						<FormikCheckbox
 							name={`${path}.borIkkeSammen`}
 							label="Bor ikke sammen"
-							checkboxMargin
 							disabled={!kanHaRelatertPerson}
+							checkboxMargin
 						/>
 						{kanHaRelatertPerson && (
 							<PdlPersonExpander

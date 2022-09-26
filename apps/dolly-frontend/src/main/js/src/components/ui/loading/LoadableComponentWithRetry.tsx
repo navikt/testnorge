@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
-import { AlertStripeFeil } from 'nav-frontend-alertstriper'
-import { Hovedknapp as NavKnapp } from 'nav-frontend-knapper'
 import styled from 'styled-components'
+import { Alert, Button } from '@navikt/ds-react'
 
 interface LoadableComponent<T> {
 	onFetch: () => Promise<T>
@@ -10,12 +9,12 @@ interface LoadableComponent<T> {
 	label?: string
 }
 
-const Knapp = styled(NavKnapp)`
+const Knapp = styled(Button)`
 	margin-top: 15px;
 	display: block;
 `
 
-const Alert = styled(AlertStripeFeil)`
+const AlertError = styled(Alert)`
 	margin-bottom: 15px;
 	margin-right: 15px;
 `
@@ -50,7 +49,7 @@ function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableCompo
 	}
 	if (error) {
 		return (
-			<Alert>
+			<AlertError variant={'error'}>
 				Noe gikk galt! Trykk på "Prøv på nytt" eller kontakt Team Dolly.
 				<Knapp
 					form="kompakt"
@@ -61,7 +60,7 @@ function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableCompo
 				>
 					Prøv på nytt
 				</Knapp>
-			</Alert>
+			</AlertError>
 		)
 	}
 

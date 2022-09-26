@@ -1,12 +1,12 @@
 import React from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError, erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
+import { Alert } from '@navikt/ds-react'
 
 interface SykdomFormProps {
 	formikBag: FormikProps<{}>
@@ -29,10 +29,10 @@ export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 			)}
 			{formikBag.values.sykemelding != null &&
 				formikBag.values.sykemelding.hasOwnProperty('syntSykemelding') && (
-					<AlertStripeInfo style={{ marginBottom: '20px' }}>
+					<Alert variant={'info'} style={{ marginBottom: '20px' }}>
 						Syntetisk sykemelding behandler en stor mengde data for å opprette realistiske
 						sykemeldinger og kan derfor medføre litt lenger bestillingstid.
-					</AlertStripeInfo>
+					</Alert>
 				)}
 			<Sykemelding formikBag={formikBag} />
 		</Panel>

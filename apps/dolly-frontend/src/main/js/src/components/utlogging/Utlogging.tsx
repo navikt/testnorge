@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 
 import './Utlogging.less'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Api from '~/api'
-import ProgressBar from 'fremdriftslinje'
 import { WarningFilled } from '@navikt/ds-icons'
 import logoutBruker from './logoutBruker'
+import ProgressBar from '@navikt/fremdriftslinje'
+import { Button } from '@navikt/ds-react'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
@@ -78,12 +78,16 @@ const Utlogging = () => {
 					</p>
 				</ProgressBar>
 				<div className="utlogging__button-group">
-					<Knapp className="utlogging__button" onClick={() => logoutBruker()}>
+					<Button
+						variant={'secondary'}
+						className="utlogging__button"
+						onClick={() => logoutBruker()}
+					>
 						Logg ut nå
-					</Knapp>
-					<Hovedknapp className="utlogging__button" onClick={continueSession}>
+					</Button>
+					<Button className="utlogging__button" onClick={continueSession}>
 						Forbli innlogget
-					</Hovedknapp>
+					</Button>
 				</div>
 			</div>
 		</DollyModal>

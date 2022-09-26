@@ -15,7 +15,7 @@ export const SykdomPanel = ({ stateModifier, formikBag }: any) => {
 			iconType="sykdom"
 			startOpen={harValgtAttributt(formikBag.values, [sykdomAttributt])}
 		>
-			<AttributtKategori title={null}>
+			<AttributtKategori title={null} attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sykemelding} />
 			</AttributtKategori>
 		</Panel>

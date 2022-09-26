@@ -4,9 +4,6 @@ import { useToggle } from 'react-use'
 import { ThumbsRating } from '../rating'
 import { Rating } from '~/logger/types'
 import Logger from '../../logger'
-import { Textarea } from 'nav-frontend-skjema'
-import { Knapp } from 'nav-frontend-knapper'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
 // @ts-ignore
@@ -15,6 +12,7 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
 import { useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
+import { Button, Checkbox, Textarea } from '@navikt/ds-react'
 
 interface FeedbackProps {
 	label: string
@@ -62,13 +60,12 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 								}
 							/>
 							{/* @ts-ignore */}
-							<DollyCheckbox label="Jeg ønsker å være anonym" onChange={toggleAnonym} />
+							<Checkbox label="Jeg ønsker å være anonym" onChange={toggleAnonym} />
 						</div>
 					</div>
 					<div className="feedback-form__submit">
-						<Knapp
-							form="kompakt"
-							htmlType="submit"
+						<Button
+							as={null}
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={(event) => {
@@ -85,7 +82,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 							}}
 						>
 							Send
-						</Knapp>
+						</Button>
 					</div>
 				</form>
 			)}

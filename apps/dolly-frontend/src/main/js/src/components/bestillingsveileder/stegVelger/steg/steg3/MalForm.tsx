@@ -1,16 +1,35 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { ToggleGruppe } from 'nav-frontend-skjema'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
 import Loading from '~/components/ui/loading/Loading'
+import { Switch, ToggleGroup } from '@navikt/ds-react'
+import styled from 'styled-components'
 
-// @ts-ignore
-export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
+type Props = {
+	brukerId: string
+	formikBag: { setFieldValue: (arg0: string, arg1: string) => void }
+	opprettetFraMal: string
+}
+
+const StyledToggleGroup = styled(ToggleGroup)`
+	margin-bottom: 10px;
+`
+
+const Tittel = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 10px;
+
+	h2 {
+		font-size: 1.4rem;
+	}
+`
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const MalForm = ({ brukerId, formikBag: { setFieldValue }, opprettetFraMal }: Props) => {
 	enum MalTyper {
-		INGEN = 'EGEN',
 		OPPRETT = 'OPPRETT',
 		ENDRE = 'ENDRE',
 	}
@@ -25,7 +44,8 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		}))
 	}
 
-	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
+	const [typeMal, setTypeMal] = useState(MalTyper.OPPRETT)
+	const [opprettMal, setOpprettMal] = useState(false)
 	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
 
 	if (loading) {
@@ -34,57 +54,64 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 
 	const toggleValues = [
 		{
-			value: MalTyper.INGEN,
-			label: 'Ikke opprett',
-		},
-		{
 			value: MalTyper.OPPRETT,
-			label: 'Legg til ny mal',
+			label: 'Legg til ny',
 		},
 		{
 			value: MalTyper.ENDRE,
-			label: 'Overskriv eksisterende mal',
+			label: 'Overskriv eksisterende',
 		},
 	]
 
 	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
-		if (value === MalTyper.INGEN) {
-			formikBag.setFieldValue('malBestillingNavn', undefined)
-		} else if (value === MalTyper.OPPRETT) {
-			formikBag.setFieldValue('malBestillingNavn', '')
+		if (value === MalTyper.OPPRETT) {
+			setFieldValue('malBestillingNavn', '')
 		} else if (value === MalTyper.ENDRE) {
-			formikBag.setFieldValue('malBestillingNavn', opprettetFraMal || '')
+			setFieldValue('malBestillingNavn', opprettetFraMal || '')
 		}
+	}
+
+	const handleCheckboxChange = (value: BaseSyntheticEvent) => {
+		setFieldValue('malBestillingNavn', value.target?.checked ? '' : undefined)
+		setOpprettMal(value.target?.checked)
 	}
 
 	return (
 		<div className="input-oppsummering">
-			<h2>Lagre som mal</h2>
-			<div className="flexbox--align-center">
-				<div className="toggle--wrapper">
-					<ToggleGruppe
-						onChange={(e: BaseSyntheticEvent) => handleToggleChange(e.target.value)}
-						name={'arbeidsforhold'}
-					>
-						{toggleValues.map((type) => (
-							<ToggleKnapp key={type.value} value={type.value} checked={type.value === typeMal}>
-								{type.label}
-							</ToggleKnapp>
-						))}
-					</ToggleGruppe>
-				</div>
-			</div>
-			{typeMal === MalTyper.ENDRE ? (
-				<FormikSelect
-					name={'malBestillingNavn'}
-					size={'xlarge'}
-					label="Malnavn"
-					options={getMalOptions(maler)}
-					fastfield={false}
-				/>
-			) : (
-				<FormikTextInput name="malBestillingNavn" size={'xlarge'} label="Malnavn" />
+			<Tittel>
+				<h2>Legg til mal</h2>
+				<Switch onChange={handleCheckboxChange} children={null} />
+			</Tittel>
+			{opprettMal && (
+				<span>
+					<div className="flexbox--align-center">
+						<div className="toggle--wrapper">
+							<StyledToggleGroup
+								size={'small'}
+								onChange={(value: MalTyper) => handleToggleChange(value)}
+								defaultValue={MalTyper.OPPRETT}
+							>
+								{toggleValues.map((type) => (
+									<ToggleGroup.Item key={type.value} value={type.value}>
+										{type.label}
+									</ToggleGroup.Item>
+								))}
+							</StyledToggleGroup>
+						</div>
+					</div>
+					{typeMal === MalTyper.ENDRE ? (
+						<FormikSelect
+							name={'malBestillingNavn'}
+							size={'xlarge'}
+							label="Malnavn"
+							options={getMalOptions(maler)}
+							fastfield={false}
+						/>
+					) : (
+						<FormikTextInput name="malBestillingNavn" size={'xlarge'} label="Malnavn" />
+					)}
+				</span>
 			)}
 		</div>
 	)

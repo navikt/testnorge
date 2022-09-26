@@ -7,7 +7,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Panel from '~/components/ui/panel/Panel'
 import _orderBy from 'lodash/orderBy'
 import { DollyApi } from '~/service/Api'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 const Visning = ({ data }) => {
 	if (!data) return null
@@ -117,9 +117,9 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 	fyllVisningData(sisteArenaBestilling, visningData)
 
 	const TagAlert = () => (
-		<AlertStripeInfo style={{ marginBottom: '20px' }}>
+		<Alert variant={'info'} style={{ marginBottom: '20px' }}>
 			Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser.
-		</AlertStripeInfo>
+		</Alert>
 	)
 
 	return (

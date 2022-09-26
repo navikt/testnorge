@@ -1,9 +1,9 @@
 import React from 'react'
-import Hjelpetekst from '~/components/hjelpetekst'
 import cn from 'classnames'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 
 import './kategori.less'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 
 export const Kategori = ({
 	title = 'Kategori',
@@ -25,7 +25,7 @@ export const Kategori = ({
 		<div className="form-kategori">
 			{title && (
 				<h4>
-					{title} {hjelpetekst && <Hjelpetekst hjelpetekstFor={title}>{hjelpetekst}</Hjelpetekst>}
+					{title} {hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
 				</h4>
 			)}
 			<div className={css}>{children}</div>

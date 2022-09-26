@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '~/api'
+import logoutBruker from '~/components/utlogging/logoutBruker'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
@@ -35,6 +36,11 @@ export const useAlleBrukere = () => {
 
 export const useCurrentBruker = () => {
 	const { data, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
+
+	if (error) {
+		console.error('Klarte ikke å hente aktiv bruker, logger ut..')
+		logoutBruker()
+	}
 
 	return {
 		currentBruker: data,

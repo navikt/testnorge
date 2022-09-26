@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import Button from '~/components/ui/button/Button'
@@ -9,6 +8,7 @@ import { EndreMalnavn } from './EndreMalnavn'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { SearchField } from '~/components/searchField/SearchField'
 import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
+import { Alert } from '@navikt/ds-react'
 import { DollyApi } from '~/service/Api'
 
 export default ({ brukernavn }: { brukernavn: string }) => {
@@ -56,7 +56,7 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 			formatter: (_cell: any, row: { id: string }) => {
 				return erUnderRedigering(row.id) ? (
 					<Button className="avbryt" onClick={() => avsluttRedigering(row.id)}>
-						AVBRYT
+						Avbryt
 					</Button>
 				) : (
 					<Button kind="edit" onClick={() => setUnderRedigering(underRedigering.concat([row.id]))}>
@@ -97,13 +97,13 @@ export default ({ brukernavn }: { brukernavn: string }) => {
 						/>
 					</ErrorBoundary>
 				) : (
-					<AlertStripeInfo>Ingen maler samsvarte med søket ditt</AlertStripeInfo>
+					<Alert variant={'info'}>Ingen maler samsvarte med søket ditt</Alert>
 				))}
 			{antallEgneMaler === 0 && (
-				<AlertStripeInfo>
+				<Alert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
-				</AlertStripeInfo>
+				</Alert>
 			)}
 		</div>
 	)

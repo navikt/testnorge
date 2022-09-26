@@ -1,7 +1,8 @@
 import React from 'react'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
-import Alertstripe from 'nav-frontend-alertstriper'
-import NavHjelpeTekst from 'nav-frontend-hjelpetekst'
+import { Alert } from '@navikt/ds-react'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { top } from '@popperjs/core'
 
 const brukerveiledning = (
 	<a
@@ -55,29 +56,29 @@ export default () => {
 					valgte testmiljøer.
 				</h3>
 				{advarsel && (
-					<Alertstripe type="advarsel">
+					<Alert variant={'warning'}>
 						{advarsel}
 						<>Sjekk {brukerveiledning} hvis feilen vedvarer eller ta kontakt med Dolly.</>
-					</Alertstripe>
+					</Alert>
 				)}
 				<NavButton
 					className="login-modal_button-nav"
-					type="hoved"
+					variant={'primary'}
 					onClick={redirectOnClick('/oauth2/authorization/aad')}
 				>
 					Logg inn med NAV epost
 				</NavButton>
 				<NavButton
 					className="login-modal_button-bankid"
-					type="hoved"
+					variant={'primary'}
 					onClick={redirectOnClick('/oauth2/authorization/idporten')}
 				>
 					Logg inn med BankId
 				</NavButton>
-				<NavHjelpeTekst>
+				<Hjelpetekst placement={top} requestFeedback={false}>
 					For å ta i bruk BankId innlogging må du være tilknyttet en organisasjon som har tilgang
 					til Dolly. Ta kontakt med en administrator i din organisasjon hvis tilgang mangler.
-				</NavHjelpeTekst>
+				</Hjelpetekst>
 			</div>
 		</div>
 	)

@@ -89,7 +89,7 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 				/>
 				<NavButton
 					onClick={() => onSubmit()}
-					type="hoved"
+					variant={'primary'}
 					className="videre-button"
 					disabled={error}
 				>

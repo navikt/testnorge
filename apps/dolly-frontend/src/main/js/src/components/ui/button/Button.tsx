@@ -21,7 +21,6 @@ export default function Button({
 	className,
 	iconSize = 16,
 	loading = false,
-	type = 'button',
 	disabled,
 	...rest
 }: Button) {
@@ -40,13 +39,7 @@ export default function Button({
 	) : null
 
 	return (
-		<button
-			type={type}
-			className={cssClass}
-			onClick={handleClick}
-			disabled={disabled || loading}
-			{...rest}
-		>
+		<button className={cssClass} onClick={handleClick} disabled={disabled || loading} {...rest}>
 			{renderIcon}
 			{children && <span>{children}</span>}
 		</button>

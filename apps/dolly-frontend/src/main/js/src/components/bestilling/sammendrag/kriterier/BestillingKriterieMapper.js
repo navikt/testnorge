@@ -263,7 +263,7 @@ const mapKjoenn = (kjoenn, data) => {
 			header: 'Kjønn',
 			itemRows: kjoenn.map((item, idx) => {
 				return [
-					{ numberHeader: `Kjønn ${idx + 1}` },
+					{ numberHeader: kjoenn?.length > 1 && `Kjønn ${idx + 1}` },
 					obj('Kjønn', Formatters.showLabel('kjoenn', item.kjoenn)),
 				]
 			}),

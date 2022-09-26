@@ -28,6 +28,7 @@ module.exports = (env) =>
 					errors: true,
 					warnings: true,
 				},
+				progress: true,
 			},
 			headers: {
 				'Access-Control-Allow-Origin': '*',
@@ -210,11 +211,7 @@ module.exports = (env) =>
 			rules: [
 				{
 					test: /\.less$/,
-					use: [
-						'style-loader',
-						'css-loader',
-						'less-loader?{"lessOptions":{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}}',
-					],
+					use: ['style-loader', 'css-loader', 'less-loader'],
 				},
 				{
 					test: /\.css$/,
