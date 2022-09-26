@@ -88,7 +88,7 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 							<div className="slettModal slettModal-content">
 								<Icon size={50} kind="report-problem-circle" />
 								<h1>Slett</h1>
-								<h4>Er du sikker på at du vil slette denne bankkonto fra personen?</h4>
+								<h4>Er du sikker på at du vil slette denne bankkontoen fra personen?</h4>
 							</div>
 							<div className="slettModal-actions">
 								<NavButton onClick={closeModal}>Nei</NavButton>
