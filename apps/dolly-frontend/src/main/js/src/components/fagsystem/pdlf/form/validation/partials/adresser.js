@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
-import { requiredString } from '~/utils/YupValidations'
+import { messages, requiredString } from '~/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+import { isAfter, isBefore } from 'date-fns'
 
 const gyldigDatoFom = Yup.lazy((val) =>
 	val instanceof Date
@@ -13,6 +14,78 @@ const gyldigDatoTom = Yup.lazy((val) =>
 		? testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed')
 		: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed')
 )
+
+const datoOverlapper = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
+	if (!gjeldendeDatoFra || !gjeldendeDatoTil) return false
+
+	let tildato = new Date(gjeldendeDatoTil)
+	tildato.setDate(tildato.getDate() - 1)
+	return !(
+		isAfter(new Date(nyDatoFra), tildato) ||
+		isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoFra))
+	)
+}
+
+const overlapperMedAnnenAdresse = (originalFradato, orginialTildato, adresseListe) => {
+	for (let adresse of adresseListe) {
+		const fraDato = adresse.gyldigFraOgMed
+		const tilDato = adresse.gyldigTilOgMed
+
+		if (!fraDato) {
+			continue
+		}
+
+		if (
+			datoOverlapper(originalFradato, fraDato, tilDato) ||
+			datoOverlapper(fraDato, originalFradato, orginialTildato)
+		) {
+			return true
+		}
+		if (!tilDato && !isAfter(new Date(originalFradato), new Date(fraDato))) {
+			return true
+		}
+	}
+	return false
+}
+
+const validFradato = () => {
+	return Yup.string()
+		.test(
+			'gyldig-fra-dato',
+			'Fra dato kan ikke overlappe med en annen bostedadresse',
+			function validFraData(val) {
+				if (!val) {
+					return true
+				}
+				const values = this.options.context
+
+				const naavaerendeAdresser = [...values?.pdldata?.person?.bostedsadresse] || []
+
+				let tildato = null
+				let adresseIndex = null
+				for (let i = 0; i < naavaerendeAdresser.length; i++) {
+					if (naavaerendeAdresser[i].gyldigFraOgMed === val) {
+						tildato = naavaerendeAdresser[i].gyldigTilOgMed
+						adresseIndex = i
+						break
+					}
+				}
+				naavaerendeAdresser.splice(adresseIndex, 1)
+
+				const tidligereAdresser =
+					values?.personFoerLeggTil?.pdlForvalter?.person?.bostedsadresse || []
+
+				const alleAdresser = naavaerendeAdresser.concat(tidligereAdresser)
+				//todo: egen validering for tidligere adresser da det kan være gjeldende ikke har tildato
+				var test = !overlapperMedAnnenAdresse(val, tildato, alleAdresser)
+				console.log('val: ', val) //TODO - SLETT MEG
+				console.log('test: ', test) //TODO - SLETT MEG
+				return test
+			}
+		)
+		.nullable()
+		.required(messages.required)
+}
 
 export const vegadresse = Yup.object({
 	adressekode: Yup.string().nullable(),
@@ -75,7 +148,7 @@ export const bostedsadresse = Yup.object({
 	angittFlyttedato: Yup.lazy((val) =>
 		val instanceof Date ? Yup.date().nullable() : Yup.string().nullable()
 	),
-	gyldigFraOgMed: gyldigDatoFom,
+	gyldigFraOgMed: validFradato(),
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
