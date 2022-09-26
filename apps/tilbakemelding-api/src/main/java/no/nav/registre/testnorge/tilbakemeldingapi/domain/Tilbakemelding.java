@@ -18,12 +18,14 @@ public class Tilbakemelding {
     String message;
     Rating rating;
     Boolean isAnonym;
+    String brukerType;
 
     public Tilbakemelding(TilbakemeldingDTO dto) {
         rating = dto.getRating();
         title = dto.getTitle();
         message = dto.getMessage();
         isAnonym = dto.getIsAnonym();
+        brukerType = dto.getBrukerType();
     }
 
     public Message toSlackMessage(String channel, String visningsNavn) {
@@ -34,7 +36,7 @@ public class Tilbakemelding {
         );
 
         var senderBlock = Section.from(
-                "Avsender: " + visningsNavn
+                "Avsender: " + visningsNavn + (null != brukerType ? " (" + brukerType + ") " : "")
         );
 
         var blocks = new ArrayList<Block>();

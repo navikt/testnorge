@@ -89,6 +89,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 									name="aktiver-maler"
 									onChange={() => handleMalChange(formikBag)}
 									label="Opprett fra mal"
+									wrapperSize={'none'}
 									size={'small'}
 									isSwitch
 								/>
