@@ -68,8 +68,9 @@ const validFradato = () => {
 				}
 				const values = this.options.context
 
-				const nyeAdresser = [...values?.pdldata?.person?.bostedsadresse] || []
-
+				const nyeAdresser = values?.pdldata?.person?.bostedsadresse
+					? [...values.pdldata.person.bostedsadresse]
+					: []
 				let tildato = null
 				let adresseIndex = null
 				for (let i = 0; i < nyeAdresser.length; i++) {
