@@ -43,7 +43,7 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: EksisterendeG
 			options={gruppeOptions}
 			onChange={(gruppe: Options) => setValgtGruppe(gruppe.value)}
 			value={valgtGruppe}
-			size="large"
+			size={fraGruppe ? 'grow' : 'large'}
 			isClearable={false}
 		/>
 	)

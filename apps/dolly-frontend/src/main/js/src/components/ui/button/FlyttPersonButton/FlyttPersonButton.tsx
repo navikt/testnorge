@@ -1,10 +1,9 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import Button from '~/components/ui/button/Button'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import useBoolean from '~/utils/hooks/useBoolean'
-import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
 import _get from 'lodash/get'
 import { FieldArray, Formik } from 'formik'
@@ -15,16 +14,55 @@ import { useNavigate } from 'react-router-dom'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
+import Loading from '~/components/ui/loading/Loading'
+import Hjelpetekst from '~/components/hjelpetekst'
 
 const PersonvelgerCheckboxes = styled.div`
-	overflow: scroll;
+	overflow-y: scroll;
 	max-height: 22rem;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 10px;
 `
 
 const ValgtePersonerList = styled.div`
-	overflow: scroll;
+	overflow-y: scroll;
 	max-height: 22rem;
 	display: block;
+	margin-left: 20px;
+`
+
+const ModalContent = styled.div`
+	display: flex;
+	align-items: left;
+	flex-direction: column;
+	&&& {
+		h2 {
+			font-size: 1.2em;
+		}
+	}
+`
+
+const GruppeVelger = styled.div`
+	margin-bottom: 20px;
+`
+
+const PersonVelger = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	border-top: 1px solid #ccc;
+	padding-top: 10px;
+`
+
+const PersonKolonne = styled.div`
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	&&& {
+		div {
+			margin-right: 0;
+		}
+	}
 `
 
 export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
@@ -33,48 +71,62 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
+	const [gruppeIdenter, setGruppeidenter] = useState(null)
+
 	const navigate = useNavigate()
 
-	const getGruppeIdenter = () => {
-		return useAsync(
-			async () => SelectOptionsOppslag.hentIdentNavnOptions(gruppeId),
-			[SelectOptionsOppslag.hentIdentNavnOptions]
-		)
-	}
-
-	const gruppeIdenter = getGruppeIdenter()
-
-	const gruppeIdenterListe = gruppeIdenter?.values
-		? gruppeIdenter?.values?.map((person) => person.value)
-		: []
-
-	const identListe = getGruppeIdenter().value?.map((person) => {
-		return {
-			value: person?.value,
-			label: person?.label,
+	useEffect(() => {
+		const getGruppeIdenter = async () => {
+			const oppslag = await SelectOptionsOppslag.hentIdentNavnOptions(gruppeId)
+				.then((response) => {
+					if (!response || response.length === 0) {
+						return []
+					}
+					return response
+				})
+				.catch((error) => {
+					setError(error)
+					return []
+				})
+			setGruppeidenter(oppslag)
 		}
-	})
+		getGruppeIdenter()
+	}, [modalIsOpen])
+
+	const gruppeIdenterListe = Array.isArray(gruppeIdenter)
+		? gruppeIdenter?.map((person) => person.value)
+		: []
 
 	const mountedRef = useRef(true)
 
-	const handleSubmit = useCallback((formikBag) => {
-		const submit = async () => {
-			const { gruppeId, identer } = formikBag
-			setLoading(true)
-			await DollyApi.flyttPersonerTilGruppe(gruppeId, identer)
-				.then((response) => {
-					closeModal()
-					setLoading(false)
-					navigate(`../gruppe/${gruppeId}`)
+	const handleSubmit = useCallback(
+		(formikBag) => {
+			const submit = async () => {
+				setLoading(true)
+				const { gruppeId, identer } = formikBag
+				const relasjoner = [] as Array<string>
+				identer.forEach((ident) => {
+					relasjoner.push(
+						...gruppeIdenter?.find((gruppeIdent) => gruppeIdent.value === ident)?.relasjoner
+					)
 				})
-				.catch((e: Error) => {
-					setError(e.message)
-					setLoading(false)
-				})
-		}
-		mountedRef.current = false
-		return submit()
-	}, [])
+				const identerSamlet = Array.from(new Set([...identer, ...relasjoner]))
+				await DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
+					.then((response) => {
+						closeModal()
+						setLoading(false)
+						navigate(`../gruppe/${gruppeId}`)
+					})
+					.catch((e: Error) => {
+						setError(e.message)
+						setLoading(false)
+					})
+			}
+			mountedRef.current = false
+			return submit()
+		},
+		[gruppeIdenter]
+	)
 
 	const handleClose = () => {
 		closeModal()
@@ -98,19 +150,18 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 			>
 				FLYTT PERSONER
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} width="40%" overflow="auto">
-				<div className="slettModal">
+			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
+				<ModalContent>
 					<Formik
 						initialValues={{ identer: [], gruppeId: null }}
 						onSubmit={handleSubmit}
 						validationSchema={validation}
 					>
 						{(formikBag) => {
-							console.log('formikBag: ', formikBag) //TODO - SLETT MEG
 							return (
 								<>
 									<h1>Flytt personer til gruppe</h1>
-									<div>
+									<GruppeVelger>
 										<VelgGruppe
 											formikBag={formikBag}
 											title={'Velg hvilken gruppe du ønsker å flytte personer til'}
@@ -121,8 +172,8 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 											className="error-message"
 											component="div"
 										/>
-									</div>
-									<div className="flexbox--flex-wrap">
+									</GruppeVelger>
+									<PersonVelger>
 										<FieldArray name="identer">
 											{({ push, remove, form }) => {
 												const values = form.values?.identer
@@ -132,76 +183,96 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 													isChecked(id) ? remove(values?.indexOf(id)) : push(id)
 												}
 												return (
-													<div className={'flexbox--column'}>
-														<div className="flexbox--flex-wrap">
-															<DollyTextInput
-																name={'search'}
-																value={searchText}
-																onChange={(e) => setSearchText(e.target.value)}
-															/>
+													<PersonKolonne>
+														<div className="flexbox--align-center">
+															<h2>Velg personer</h2>
+															<Hjelpetekst hjelpetekstFor="Velg personer">
+																Personer vil bli flyttet til valgt gruppe. Dersom valgte personer
+																har relaterte personer vil disse også bli flyttet.
+															</Hjelpetekst>
 														</div>
-														<PersonvelgerCheckboxes>
-															{identListe?.map((person) => {
-																if (
-																	person.label?.toUpperCase().includes(searchText?.toUpperCase())
-																) {
-																	return (
-																		<div key={person.value}>
-																			<DollyCheckbox
-																				key={person.value}
-																				id={person.value}
-																				label={person.label}
-																				checked={values?.includes(person.value)}
-																				onChange={onClick}
-																				size={'grow'}
-																				attributtCheckbox
-																			/>
-																		</div>
-																	)
-																}
-															})}
-														</PersonvelgerCheckboxes>
-														<div className="flexbox--flex-wrap">
+														<DollyTextInput
+															name="search"
+															value={searchText}
+															onChange={(e) => setSearchText(e.target.value)}
+															size="grow"
+															placeholder="Søk etter person"
+															icon="search"
+														/>
+														{!gruppeIdenter ? (
+															<Loading label="Laster personer..." />
+														) : (
+															<PersonvelgerCheckboxes>
+																{gruppeIdenter?.map((person) => {
+																	if (
+																		person.label?.toUpperCase().includes(searchText?.toUpperCase())
+																	) {
+																		return (
+																			<div key={person.value}>
+																				<DollyCheckbox
+																					key={person.value}
+																					id={person.value}
+																					label={person.label}
+																					checked={values?.includes(person.value)}
+																					onChange={onClick}
+																					size={'grow'}
+																					attributtCheckbox
+																				/>
+																			</div>
+																		)
+																	}
+																})}
+															</PersonvelgerCheckboxes>
+														)}
+														<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
 															<Button
 																onClick={() =>
 																	formikBag.setFieldValue('identer', gruppeIdenterListe)
 																}
 															>
-																Velg alle
+																VELG ALLE
 															</Button>
 															<Button onClick={() => formikBag.setFieldValue('identer', [])}>
-																Nullstill
+																NULLSTILL
 															</Button>
 														</div>
-													</div>
+														<ErrorMessageWithFocus
+															name="identer"
+															className="error-message"
+															component="div"
+														/>
+													</PersonKolonne>
 												)
 											}}
 										</FieldArray>
-										<ErrorMessageWithFocus
-											name="identer"
-											className="error-message"
-											component="div"
-										/>
 
-										<ValgtePersonerList>
-											<h4>Valgte personer</h4>
-											<ul>
-												{_get(formikBag.values, 'identer')?.map((ident) => (
-													<li key={ident}>{ident}</li>
-												))}
-											</ul>
-										</ValgtePersonerList>
-									</div>
+										<PersonKolonne>
+											<ValgtePersonerList>
+												<h2>Valgte personer</h2>
+												{_get(formikBag.values, 'identer')?.length > 0 ? (
+													<ul>
+														{_get(formikBag.values, 'identer')?.map((ident) => (
+															<li key={ident}>{ident}</li>
+														))}
+													</ul>
+												) : (
+													<span className="utvalg--empty-result">Ingenting er valgt</span>
+												)}
+											</ValgtePersonerList>
+										</PersonKolonne>
+									</PersonVelger>
+
 									<div className="flexbox--full-width">
 										{error && <div className="error-message">{`Feil: ${error}`}</div>}
 									</div>
-									<div className="relatertPersonImportModal-actions">
+									<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
 										<NavButton onClick={handleClose}>Avbryt</NavButton>
 										<NavButton
 											onClick={() => formikBag.handleSubmit()}
 											type="hoved"
 											disabled={loading}
 											spinner={loading}
+											style={{ marginLeft: '10px' }}
 										>
 											Flytt personer
 										</NavButton>
@@ -210,7 +281,7 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 							)
 						}}
 					</Formik>
-				</div>
+				</ModalContent>
 			</DollyModal>
 		</>
 	)

@@ -17,6 +17,7 @@ export type Option = {
 	doedsfall?: boolean
 	foreldre?: Array<string>
 	foreldreansvar?: Array<string>
+	relasjoner?: Array<string>
 }
 
 type Data = {
@@ -95,6 +96,7 @@ export const SelectOptionsOppslag = {
 					personListe.push({
 						value: id.person.ident,
 						label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
+						relasjoner: id.relasjoner?.map((r) => r.relatertPerson?.ident),
 					})
 				})
 				return personListe

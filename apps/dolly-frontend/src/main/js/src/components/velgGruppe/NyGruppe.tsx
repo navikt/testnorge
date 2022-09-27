@@ -45,13 +45,13 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 			<Formik initialValues={initialValues} validationSchema={validation} onSubmit={onHandleSubmit}>
 				{() => (
 					<Form className="ny-gruppe" autoComplete="off">
-						<div className="fields">
+						<div className="flexbox--flex-wrap">
 							<FormikTextInput name="navn" label="NAVN" size="small" autoFocus />
 							<FormikTextInput name="hensikt" label="HENSIKT" size="medium" />
-							<NavButton type="hoved" htmlType="submit">
-								Opprett
-							</NavButton>
 						</div>
+						<NavButton type="hoved" htmlType="submit">
+							Opprett
+						</NavButton>
 					</Form>
 				)}
 			</Formik>

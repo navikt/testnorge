@@ -21,8 +21,6 @@ export const {
 
 // Henter alle bestillinger som er gjort på en ident
 export const getBestillingsListe = (bestillinger, IDer) => {
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
-	console.log('IDer: ', IDer) //TODO - SLETT MEG
 	const bestillingsListe = []
 	for (let id of IDer) {
 		const bestilling = {

@@ -23,16 +23,12 @@ export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppePro
 
 	return (
 		<div className="input-oppsummering">
-			<div className="flexbox--align-center">
-				<div>
-					<h2>{title}</h2>
-					<VelgGruppeToggle
-						valgtGruppe={valgtGruppe}
-						setValgtGruppe={setValgtGruppe}
-						fraGruppe={fraGruppe}
-					/>
-				</div>
-			</div>
+			<h2>{title}</h2>
+			<VelgGruppeToggle
+				valgtGruppe={valgtGruppe}
+				setValgtGruppe={setValgtGruppe}
+				fraGruppe={fraGruppe}
+			/>
 			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
 		</div>
 	)
