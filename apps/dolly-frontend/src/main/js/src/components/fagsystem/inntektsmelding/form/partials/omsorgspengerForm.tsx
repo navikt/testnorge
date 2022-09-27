@@ -48,8 +48,8 @@ export default ({ path }: OmsorgspengerForm) => {
 			<FormikCheckbox
 				name={`${path}.harUtbetaltPliktigeDager`}
 				label="Har utbetalt pliktige dager"
-				checkboxMargin
 				size="medium"
+				checkboxMargin
 			/>
 		</div>
 	)

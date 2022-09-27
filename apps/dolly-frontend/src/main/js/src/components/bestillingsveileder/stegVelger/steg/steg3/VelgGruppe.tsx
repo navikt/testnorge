@@ -15,7 +15,9 @@ type VelgGruppeProps = {
 export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppeProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState(_get(formikBag.values, `gruppeId`))
 
-	useEffect(() => setValgtGruppe(valgtGruppe || '')) // for å vise feilmeldingsvisning
+	useEffect(() => {
+		setValgtGruppe(valgtGruppe || '') // for å vise feilmeldingsvisning
+	})
 
 	useEffect(() => {
 		formikBag.setFieldValue('gruppeId', valgtGruppe)

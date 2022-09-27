@@ -51,8 +51,8 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				size="medium"
 			/>
 			<div className="options-title">Identitet</div>
-			<FormikCheckbox name={paths.falsk} label="Har falsk identitet" size="medium" />
-			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" size="medium" />
+			<FormikCheckbox name={paths.falsk} label="Har falsk identitet" />
+			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" />
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={paths.kjoenn}

@@ -1,7 +1,7 @@
 import Request from '~/service/services/Request'
 
-const kontoregisterUrl =
-	'/testnav-kontoregister-person-proxy/kontoregister/api/kontoregister/v1/hent-konto'
+const kontoregisterHentUrl = '/testnav-kontoregister-person-proxy/api/system/v1/hent-konto'
+const kontoregisterSlettUrl = '/testnav-kontoregister-person-proxy/api/system/v1/slett-konto'
 
 export type KontoregisterData = {
 	aktivKonto: {
@@ -24,10 +24,19 @@ export type PromiseKontoregisterData = {
 
 export default {
 	hentKonto(ident: string): Promise<PromiseKontoregisterData> {
-		return Request.post(kontoregisterUrl, { kontohaver: ident }).then((response: any) => {
+		return Request.post(kontoregisterHentUrl, { kontohaver: ident }).then((response: any) => {
 			if (response != null) {
 				return response
 			}
 		})
+	},
+	slettKonto(ident: string): Promise<PromiseKontoregisterData> {
+		return Request.post(kontoregisterSlettUrl, { kontohaver: ident, bestiller: '' }).then(
+			(response: any) => {
+				if (response != null) {
+					return response
+				}
+			}
+		)
 	},
 }

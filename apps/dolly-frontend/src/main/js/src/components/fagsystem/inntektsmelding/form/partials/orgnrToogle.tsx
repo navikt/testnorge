@@ -5,8 +5,8 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import {
-	OrganisasjonToogleGruppe,
 	inputValg,
+	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 
 interface OrgnrToggleProps {
@@ -44,8 +44,8 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 		fetchEgneOrg()
 	}, [])
 
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setInputType(event.target.value)
+	const handleToggleChange = (value: string) => {
+		setInputType(value)
 		formikBag.setFieldValue(path, '')
 	}
 
@@ -55,6 +55,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				path={path}
 				inputType={inputType}
 				handleToggleChange={handleToggleChange}
+				style={{ margin: '5px 0 5px' }}
 			/>
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonMedArbeidsforholdSelect

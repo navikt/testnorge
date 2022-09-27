@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
+import React, { BaseSyntheticEvent, useState } from 'react'
 import { useAsyncFn } from 'react-use'
-import { Textarea } from 'nav-frontend-skjema'
 import _get from 'lodash/get'
-import Alertstripe from 'nav-frontend-alertstriper'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { PdlforvalterApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
@@ -10,17 +8,28 @@ import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import Icon from '~/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
+import { Alert, Table, Textarea } from '@navikt/ds-react'
 
-export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
+export const EksisterendeIdent = ({
+	onAvbryt,
+	onSubmit,
+}: {
+	onSubmit: (arg0: { opprettFraIdenter: any }) => any
+	onAvbryt: () => void
+}) => {
 	const [text, setText] = useState('')
 	const [state, fetch] = useAsyncFn(async () => {
-		const identListe = text.trim().split(/[\W\s]+/)
+		const identListe = text?.trim().split(/[\W\s]+/)
 		const { data } = await PdlforvalterApi.getEksistens(identListe)
 		return data
 	}, [text])
 
 	const _onSubmit = () =>
-		onSubmit({ opprettFraIdenter: state.value.filter((v) => v.available).map((v) => v.ident) })
+		onSubmit({
+			opprettFraIdenter: state.value
+				.filter((v: { available: any }) => v.available)
+				.map((v: { ident: any }) => v.ident),
+		})
 
 	const statuser = _get(state, 'value', [])
 	const finnesUgyldige = statuser.some((v) => !v.available)
@@ -33,17 +42,18 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 			{!state.value && !state.loading && (
 				<React.Fragment>
 					<Textarea
+						size={'small'}
 						label="Identer"
 						placeholder="fnr/dnr/npid"
 						value={text}
-						onChange={(e) => setText(e.target.value)}
+						onChange={(e: BaseSyntheticEvent) => setText(e.target?.value)}
 					/>
 
-					<Alertstripe type="info">
+					<Alert variant="info">
 						Skriv inn fnr/dnr/npid. Disse personene kan ikke eksistere i prod, eller finnes i Dolly
 						fra før.
-					</Alertstripe>
-					<NavButton type="hoved" onClick={() => fetch()} disabled={!text.length}>
+					</Alert>
+					<NavButton variant={'primary'} onClick={() => fetch()} disabled={!text.length}>
 						Sjekk gyldige personer
 					</NavButton>
 				</React.Fragment>
@@ -51,31 +61,33 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 
 			{state.value && (
 				<React.Fragment>
-					<table className="tabell tabell--stripet" style={{ marginBottom: '20px' }}>
-						<thead>
-							<tr>
-								<th>Ident</th>
-								<th>Status</th>
-								<th>OK</th>
-							</tr>
-						</thead>
-						<tbody>
-							{state.value.map((v, idx) => (
-								<tr key={idx}>
-									<td>{v.ident}</td>
-									<td>{v.status}</td>
-									<td>
-										<Icon kind={v.available ? 'feedback-check-circle' : 'report-problem-circle'} />
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
+					<Table size="medium" zebraStripes style={{ marginBottom: '20px' }}>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell scope="col">Ident</Table.HeaderCell>
+								<Table.HeaderCell scope="col">Status</Table.HeaderCell>
+								<Table.HeaderCell scope="col">OK</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							{state.value.map(({ ident, status, available }, idx) => {
+								return (
+									<Table.Row key={idx}>
+										<Table.HeaderCell scope="row">{ident}</Table.HeaderCell>
+										<Table.HeaderCell>{status}</Table.HeaderCell>
+										<Table.HeaderCell>
+											<Icon kind={available ? 'feedback-check-circle' : 'report-problem-circle'} />
+										</Table.HeaderCell>
+									</Table.Row>
+								)
+							})}
+						</Table.Body>
+					</Table>
 
 					{finnesUgyldige && (
-						<Alertstripe type="advarsel">
+						<Alert variant="warning">
 							Det finnes personer markert som ikke gyldig. Kun gyldige personer blir tatt med.
-						</Alertstripe>
+						</Alert>
 					)}
 				</React.Fragment>
 			)}

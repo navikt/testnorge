@@ -23,79 +23,46 @@ import { useWeatherFyrstikkAlleen } from '~/utils/hooks/useWeather'
 import { round } from 'lodash'
 
 const DefaultBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Default)});
-	background-size: 100% auto;
+	background-image: url(data:image/svg+xml;base64,${() => {
+		const month = new Date().getMonth()
+		const day = new Date().getDay()
+		if (month >= 2 && month <= 4) {
+			return btoa(Spring)
+		} else if (month >= 5 && month <= 7) {
+			return btoa(Sommer)
+		} else if ((month === 9 && day > 14) || (month === 10 && day === 0)) {
+			return btoa(Halloween)
+		} else if (month >= 8 && month <= 10) {
+			return btoa(Fall)
+		} else if (month === 0 || month === 1) {
+			return btoa(Winter)
+		} else if (month === 11) {
+			return btoa(Christmas)
+		}
+		return btoa(Default)
+	}});
+	background-size: 100%;
 	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #cce4ee;
-`
-
-const ChristmasBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Christmas)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #005077;
-`
-
-const WinterBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Winter)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #005077;
-`
-
-const HalloweenBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Halloween)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #c0b2d2;
-`
-
-const FallBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Fall)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #cce4ee;
-`
-
-const SpringBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Spring)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #cce4ee;
+	background-position: center bottom;
+	background-color: rgb(204, 228, 238);
 `
 
 const PaaskeBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Paaske)});
-	background-size: 100% auto;
+	background-size: 100%;
 	background-repeat: no-repeat;
 	background-position: bottom;
 	background-color: #cce4ee;
 `
 
-const SommerBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Sommer)});
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #cce4ee;
-`
-
-export const Background = (props: any) => {
+const animateNedboer = (millimeterNedboer: number) => {
 	const month = new Date().getMonth()
-	const { millimeterNedboer = 0 } = useWeatherFyrstikkAlleen()
 	if (month >= 2 && month <= 4) {
 		return (
 			<>
 				{Array.from(Array(50).keys()).map((idx) => (
 					<div key={idx} className="flower" />
 				))}
-				<SpringBackground>{props.children}</SpringBackground>
 			</>
 		)
 	} else if (month >= 5 && month <= 7) {
@@ -104,20 +71,27 @@ export const Background = (props: any) => {
 				{Array.from(Array(3 * round(millimeterNedboer) * 10).keys()).map((idx) => (
 					<div key={idx} className="rain" />
 				))}
-				<SommerBackground>{props.children}</SommerBackground>
 			</>
 		)
-	} else if (month >= 8 && month <= 10) {
-		return <FallBackground>{props.children}</FallBackground>
 	} else if (month === 11 || month === 0 || month === 1) {
 		return (
 			<>
 				{Array.from(Array(70).keys()).map((idx) => (
 					<div key={idx} className="snowflake" />
 				))}
-				<WinterBackground>{props.children}</WinterBackground>
 			</>
 		)
 	}
-	return <DefaultBackground>{props.children}</DefaultBackground>
+	return null
+}
+
+export const Background = (props: any) => {
+	const { millimeterNedboer = 0 } = useWeatherFyrstikkAlleen()
+	const nedboer = animateNedboer(millimeterNedboer)
+	return (
+		<>
+			{nedboer}
+			<DefaultBackground>{props.children}</DefaultBackground>
+		</>
+	)
 }

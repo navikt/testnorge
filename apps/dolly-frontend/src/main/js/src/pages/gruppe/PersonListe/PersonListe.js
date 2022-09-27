@@ -16,7 +16,6 @@ import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
-import { useGruppeById } from '~/utils/hooks/useGruppe'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -28,11 +27,12 @@ const ikonTypeMap = {
 export default function PersonListe({
 	isFetching,
 	search,
-	gruppeId,
-	fagsystem,
-	bestillingStatuser,
+	gruppeInfo,
+	identer,
 	sidetall,
 	sideStoerrelse,
+	fagsystem,
+	bestillingStatuser,
 	brukertype,
 	visPerson,
 	hovedperson,
@@ -44,7 +44,6 @@ export default function PersonListe({
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
-	const { gruppe: gruppeInfo, identer, loading } = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -66,14 +65,15 @@ export default function PersonListe({
 
 	useEffect(() => {
 		if (isEmpty(identListe)) {
-			return null
+			return
 		}
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson, bestillingStatuser])
 
-	if (isFetching || loading || (personListe?.length === 0 && !isEmpty(identer)))
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
 		return <Loading label="Laster personer" panel />
+	}
 
 	if (isEmpty(identer)) {
 		const infoTekst =
@@ -159,6 +159,7 @@ export default function PersonListe({
 		{
 			text: 'Brukt',
 			width: '10',
+			style: { paddingLeft: '3px' },
 			dataField: 'ibruk',
 			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},

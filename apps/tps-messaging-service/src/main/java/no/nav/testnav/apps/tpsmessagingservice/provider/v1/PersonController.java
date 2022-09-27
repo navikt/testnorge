@@ -10,9 +10,9 @@ import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
@@ -101,12 +101,26 @@ public class PersonController {
         return convert(bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer));
     }
 
+    @DeleteMapping("/{ident}/bankkonto-norsk")
+    public List<TpsMeldingResponseDTO> opphoerNorskBankkonto(@PathVariable String ident,
+                                                             @RequestParam(required = false) List<String> miljoer) {
+
+        return convert(bankkontoNorskService.opphoerBankkontonrNorsk(ident, miljoer));
+    }
+
     @PostMapping("/{ident}/bankkonto-utenlandsk")
     public List<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
                                                                 @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
                                                                 @RequestParam(required = false) List<String> miljoer) {
 
         return convert(bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer));
+    }
+
+    @DeleteMapping("/{ident}/bankkonto-utenlandsk")
+    public List<TpsMeldingResponseDTO> opphoerBankkontonrUtland(@PathVariable String ident,
+                                                                @RequestParam(required = false) List<String> miljoer) {
+
+        return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
     }
 
     @PostMapping("/{ident}/telefonnumre")

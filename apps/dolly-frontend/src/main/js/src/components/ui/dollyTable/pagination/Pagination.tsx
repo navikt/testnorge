@@ -24,7 +24,9 @@ export const Pagination = ({
 	const [currentPage, setCurrentPage] = useState(visSide)
 	const [currentPageSize, setCurrentPageSize] = useState(pageSize || ITEM_PER_PAGE)
 
-	useEffect(() => setCurrentPage(visSide))
+	useEffect(() => {
+		setCurrentPage(visSide)
+	})
 
 	const dispatch = useDispatch()
 

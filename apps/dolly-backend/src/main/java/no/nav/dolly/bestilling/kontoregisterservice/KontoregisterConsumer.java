@@ -5,22 +5,26 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendHentKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendOppdaterKontoregisterCommand;
+import no.nav.dolly.bestilling.kontoregisterservice.command.SendSlettKontoregisterCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.dolly.metrics.Timed;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
+import java.time.Duration;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -129,6 +133,18 @@ public class KontoregisterConsumer {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SendHentKontoregisterCommand(webClient, requestDto, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "kontoregister_slettKonto"})
+    public Mono<List<String>> slettKontoer(List<String> identer) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.range(0, identer.size())
+                        .delayElements(Duration.ofMillis(10))
+                        .flatMap(index -> new SendSlettKontoregisterCommand(
+                                webClient, identer.get(index), token.getTokenValue()
+                        ).call()))
+                .collectList();
     }
 
     public static class NorskBankkontoGenerator {

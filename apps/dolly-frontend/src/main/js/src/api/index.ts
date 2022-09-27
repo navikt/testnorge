@@ -1,9 +1,10 @@
 import { NotFoundError } from '~/error'
 import { Argument } from 'classnames'
+import originalFetch from 'isomorphic-fetch'
+import fetch_retry from 'fetch-retry'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 
-const originalFetch = require('isomorphic-fetch')
-const fetch = require('fetch-retry')(originalFetch)
+const fetchRetry = fetch_retry(originalFetch)
 
 export const fetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) => {
@@ -34,7 +35,7 @@ type Config = {
 }
 
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
-	fetch(url, {
+	fetchRetry(url, {
 		retries: 5,
 		retryDelay: 800,
 		method: config.method,

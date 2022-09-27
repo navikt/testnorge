@@ -8,11 +8,11 @@ import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Se
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { Alert } from '@navikt/ds-react'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 
 import './nyIdent.less'
 import styled from 'styled-components'
-import Alertstripe from 'nav-frontend-alertstriper'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { tpsfAttributter } from '~/components/bestillingsveileder/utils'
@@ -24,12 +24,8 @@ const initialValues = {
 	mal: null,
 }
 
-const StyledH3 = styled.h3`
-	margin-bottom: 10px;
-`
-
 const InputDiv = styled.div`
-	margin-top: 20px;
+	margin-top: 10px;
 `
 
 const validationSchema = yup.object({
@@ -89,11 +85,12 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 						</div>
 						<div className="ny-ident-form_maler">
 							<div>
-								<StyledH3>Opprett fra mal</StyledH3>
 								<DollyCheckbox
 									name="aktiver-maler"
 									onChange={() => handleMalChange(formikBag)}
-									label="Vis"
+									label="Opprett fra mal"
+									wrapperSize={'none'}
+									size={'small'}
 									isSwitch
 								/>
 							</div>
@@ -121,11 +118,11 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								/>
 							</InputDiv>
 							{erTpsfMal && (
-								<Alertstripe type={'advarsel'} style={{ width: '97%' }}>
+								<Alert variant={'warning'} style={{ width: '97%' }}>
 									Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
 									master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
 									ny mal og sletter denne malen.
-								</Alertstripe>
+								</Alert>
 							)}
 							<div className="mal-admin">
 								<Button kind="maler">

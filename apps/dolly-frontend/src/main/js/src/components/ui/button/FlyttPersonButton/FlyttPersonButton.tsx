@@ -15,7 +15,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 import Loading from '~/components/ui/loading/Loading'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 
 const PersonvelgerCheckboxes = styled.div`
 	overflow-y: scroll;
@@ -186,7 +186,7 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 													<PersonKolonne>
 														<div className="flexbox--align-center">
 															<h2>Velg personer</h2>
-															<Hjelpetekst hjelpetekstFor="Velg personer">
+															<Hjelpetekst>
 																Personer vil bli flyttet til valgt gruppe. Dersom valgte personer
 																har relaterte personer vil disse også bli flyttet.
 															</Hjelpetekst>

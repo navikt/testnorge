@@ -64,7 +64,6 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 						name={name}
 						label={label}
 						options={data}
-						type="text"
 						size="xxxlarge"
 						afterChange={afterChange}
 						isClearable={false}

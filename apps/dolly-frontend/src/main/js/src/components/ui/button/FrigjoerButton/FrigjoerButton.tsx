@@ -80,7 +80,7 @@ export const FrigjoerButton = ({
 								}
 								return mutate(REGEX_BACKEND_GRUPPER)
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>
