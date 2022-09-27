@@ -153,7 +153,7 @@ export const BostedsadresseForm = ({
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
 					<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
 					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				</DatepickerWrapper>
 				<DollySelect
