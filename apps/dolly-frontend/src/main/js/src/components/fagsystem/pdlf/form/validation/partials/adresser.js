@@ -26,7 +26,7 @@ const datoOverlapper = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 	)
 }
 
-const overlapperMedAnnenAdresse = (originalFradato, orginialTildato, adresseListe) => {
+const overlapperMedAdresse = (originalFradato, originalTildato, adresseListe, nyAdresse) => {
 	for (let adresse of adresseListe) {
 		const fraDato = adresse.gyldigFraOgMed
 		const tilDato = adresse.gyldigTilOgMed
@@ -37,12 +37,21 @@ const overlapperMedAnnenAdresse = (originalFradato, orginialTildato, adresseList
 
 		if (
 			datoOverlapper(originalFradato, fraDato, tilDato) ||
-			datoOverlapper(fraDato, originalFradato, orginialTildato)
+			datoOverlapper(fraDato, originalFradato, originalTildato)
 		) {
 			return true
 		}
-		if (!tilDato && !isAfter(new Date(originalFradato), new Date(fraDato))) {
-			return true
+		if (!tilDato) {
+			if (nyAdresse && isAfter(new Date(originalFradato), new Date(fraDato))) {
+				return true
+			}
+			if (
+				!nyAdresse &&
+				!originalTildato &&
+				!isAfter(new Date(originalFradato), new Date(fraDato))
+			) {
+				return true
+			}
 		}
 	}
 	return false
@@ -52,35 +61,32 @@ const validFradato = () => {
 	return Yup.string()
 		.test(
 			'gyldig-fra-dato',
-			'Fra dato kan ikke overlappe med en annen bostedadresse',
+			'Periode kan ikke overlappe med en annen bostedadresse',
 			function validFraData(val) {
 				if (!val) {
 					return true
 				}
 				const values = this.options.context
 
-				const naavaerendeAdresser = [...values?.pdldata?.person?.bostedsadresse] || []
+				const nyeAdresser = [...values?.pdldata?.person?.bostedsadresse] || []
 
 				let tildato = null
 				let adresseIndex = null
-				for (let i = 0; i < naavaerendeAdresser.length; i++) {
-					if (naavaerendeAdresser[i].gyldigFraOgMed === val) {
-						tildato = naavaerendeAdresser[i].gyldigTilOgMed
+				for (let i = 0; i < nyeAdresser.length; i++) {
+					if (nyeAdresser[i]?.gyldigFraOgMed + '' === val) {
+						tildato = nyeAdresser[i].gyldigTilOgMed
 						adresseIndex = i
 						break
 					}
 				}
-				naavaerendeAdresser.splice(adresseIndex, 1)
-
+				nyeAdresser.splice(adresseIndex, 1)
 				const tidligereAdresser =
-					values?.personFoerLeggTil?.pdlForvalter?.person?.bostedsadresse || []
+					values.personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []
 
-				const alleAdresser = naavaerendeAdresser.concat(tidligereAdresser)
-				//todo: egen validering for tidligere adresser da det kan være gjeldende ikke har tildato
-				var test = !overlapperMedAnnenAdresse(val, tildato, alleAdresser)
-				console.log('val: ', val) //TODO - SLETT MEG
-				console.log('test: ', test) //TODO - SLETT MEG
-				return test
+				return !(
+					overlapperMedAdresse(val, tildato, nyeAdresser, true) ||
+					overlapperMedAdresse(val, tildato, tidligereAdresser, false)
+				)
 			}
 		)
 		.nullable()
