@@ -62,7 +62,9 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET
 	)
 
-	useEffect(() => formSimple && changeFormType(FormType.FORENKLET), [])
+	useEffect(() => {
+		formSimple && changeFormType(FormType.FORENKLET)
+	}, [])
 
 	const changeFormType = (type: FormType) => {
 		const eventValueSimple = type === FormType.FORENKLET

@@ -16,7 +16,9 @@ export default function TableRow({
 	const [isExpanded, setIsExpanded] = useState(false)
 	const dispatch = useDispatch()
 
-	useEffect(() => setIsExpanded(expandPerson || expandBestilling), [expandPerson, expandBestilling])
+	useEffect(() => {
+		setIsExpanded(expandPerson || expandBestilling)
+	}, [expandPerson, expandBestilling])
 
 	const onRowClick = () => {
 		if (isExpanded) dispatch(resetNavigering())
