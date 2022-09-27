@@ -13,6 +13,7 @@ import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 import { useDollyMaler } from '~/utils/hooks/useMaler'
+import { runningTestcafe } from '~/service/services/Request'
 
 export const App = () => {
 	const [criticalError, setCriticalError] = useState(null)
@@ -42,11 +43,13 @@ export const App = () => {
 
 	const logout = (stackTrace: string) => {
 		const feilmelding = extractFeilmelding(stackTrace)
-		logoutBruker(feilmelding)
+		if (!runningTestcafe()) {
+			logoutBruker(feilmelding)
+		}
 	}
 
 	useEffect(() => {
-		if (criticalError) {
+		if (criticalError && !runningTestcafe()) {
 			logout(criticalError.stack)
 		}
 	}, [criticalError])

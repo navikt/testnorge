@@ -7,6 +7,7 @@ import {
 	gjeldendeBrukerMock,
 	gjeldendeGruppeMock,
 	gjeldendeProfilMock,
+	kodeverkMock,
 	nyGruppeMock,
 } from './util/TestcafeMocks'
 
@@ -21,13 +22,12 @@ const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const spesifikkGruppe = new RegExp(/\/gruppe$/)
 const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/\/kodeverk\//)
-const bestillingGruppe = new RegExp(/\/bestilling\/gruppe/)
-const organisasjonerForvalter = new RegExp(/testnav-organisasjon-forvalter/)
-const organisasjonerFasteData = new RegExp(/testnav-organisasjon-faste-data-service/)
-const pensjon = new RegExp(/pensjon-testdata-facade/)
+const brregStub = new RegExp(/testnav-brregstub/)
 const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
 const varslinger = new RegExp(/\/varslinger/)
 const ids = new RegExp(/\/ids/)
+
+const allNonspecificCalls = new RegExp(/api/)
 
 const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
@@ -50,8 +50,6 @@ const cookieMock = RequestMock()
 	.respond(null, 200)
 	.onRequestTo(dollyLogg)
 	.respond(null, 200)
-	.onRequestTo(bestillingGruppe)
-	.respond([], 200)
 	.onRequestTo(current)
 	.respond(gjeldendeBrukerMock, 200)
 	.onRequestTo(profil)
@@ -62,14 +60,12 @@ const cookieMock = RequestMock()
 	.respond({ malbestillinger: ['Cafe, Test', []] }, 200)
 	.onRequestTo(tags)
 	.respond({}, 200)
-	.onRequestTo(organisasjonerForvalter)
-	.respond({}, 200)
-	.onRequestTo(organisasjonerFasteData)
-	.respond([], 200)
-	.onRequestTo(pensjon)
+	.onRequestTo(brregStub)
 	.respond({}, 200)
 	.onRequestTo(kodeverk)
-	.respond({}, 200)
+	.respond(kodeverkMock, 200)
+	.onRequestTo(allNonspecificCalls)
+	.respond([], 200)
 
 fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
@@ -88,7 +84,7 @@ test('Godta varslinger, teste avbryt og opprett en gruppe', async (testControlle
 		.typeText(ReactSelector('FormikTextInput').withProps({ label: 'NAVN' }), 'Testcafe testing')
 		.typeText(
 			ReactSelector('FormikTextInput').withProps({ label: 'HENSIKT' }),
-			'Saftig testing med testcafe..'
+			'Automatisert testing med testcafe..'
 		)
 		.pressKey('enter')
 		.expect(getLocation())
@@ -112,14 +108,14 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 	await testController
 		.click(malerCheckbox)
 		.expect(brukerSelect.getReact(({ props }) => props.disabled))
-		.eql(false, 'Maler checkbox på opprett person ble ikke enablet etter klikk')
+		.eql(false, 'Maler checkbox på opprett person ble ikke enablet etter klikk.')
 
 		.click(brukerSelect)
 		.click(malerSelect)
 
 		.click(malerCheckbox)
 		.expect(brukerSelect.getReact(({ props }) => props.disabled))
-		.eql(true, 'Maler checkbox på opprett person ble ikke disablet etter klikk')
+		.eql(true, 'Maler checkbox på opprett person ble ikke disablet etter klikk.')
 
 		.click(ReactSelector('NavButton').withText('Start bestilling'))
 
@@ -127,11 +123,10 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 
 	await testController
 		.click(ReactSelector('NavButton').withText('Videre'))
-		.wait(7000)
+		.wait(5000)
 		.expect(ReactSelector('AppError').exists)
 		.eql(
 			false,
-			'ErrorBoundary utløst, en komponent kaster Error under ident -> opprett person -> steg 2'
+			'ErrorBoundary utløst, en komponent kaster Error under ident -> opprett person -> steg 2.'
 		)
-		.wait(30000) // TODO: Midlertidig timeout, SLETT MEG!
 })

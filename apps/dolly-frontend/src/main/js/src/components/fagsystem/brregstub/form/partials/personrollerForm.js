@@ -11,8 +11,7 @@ const initialValues = {
 }
 
 export const PersonrollerForm = ({ formikBag, path }) => {
-	// const personroller = _get(formikBag.values, `${path}.personroller`)
-	const personroller = 'awdawd' //todo - SLETT MEG!
+	const personroller = _get(formikBag.values, `${path}.personroller`)
 
 	const getEgenskapOptions = () => {
 		const valgteOptions = []

@@ -50,7 +50,7 @@ jobs:
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
+    needs: [ build, testcafe ]
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/dolly-frontend/config.yml'

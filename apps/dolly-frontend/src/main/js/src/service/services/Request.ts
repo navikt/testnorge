@@ -4,9 +4,7 @@ import Logger from '~/logger'
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 
 export const runningTestcafe = () => {
-	const matchesTestcafePort = window.location.port.match('54321')
-	console.log('matchesTestcafePort: ', matchesTestcafePort) //TODO - SLETT MEG
-	return matchesTestcafePort
+	return window.location.port?.match('54321')
 }
 
 export default class Request {

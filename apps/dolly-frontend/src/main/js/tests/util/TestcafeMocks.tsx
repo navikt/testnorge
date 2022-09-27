@@ -13,6 +13,18 @@ export const gjeldendeBrukerMock = {
 	epost: 'testcafe@nav.no',
 }
 
+export const kodeverkMock = {
+	name: 'Tema',
+	koder: [
+		{
+			label: 'Testytest',
+			value: 'test',
+			gyldigFra: '2010-01-01',
+			gyldigTil: '9999-12-31',
+		},
+	],
+}
+
 export const nyGruppeMock = {
 	id: 2,
 	navn: 'Testcafe testing',
