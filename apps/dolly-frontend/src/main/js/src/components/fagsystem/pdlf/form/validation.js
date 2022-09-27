@@ -694,18 +694,16 @@ const validateSwift = (val) => {
 			})
 		}
 
-		if (mappedLandkode) {
-			if (value.substring(4, 6) !== mappedLandkode) {
-				return this.createError({
-					message:
-						`Feil landkode i SWIFT. Den bør være ${mappedLandkode} (${replaceSubstringAtPos(
-							value,
-							4,
-							5,
-							mappedLandkode
-						)}). \n\n` + `Swift format: ${swiftFormatExplain}`,
-				})
-			}
+		if (mappedLandkode && value.substring(4, 6) !== mappedLandkode) {
+			return this.createError({
+				message:
+					`Feil landkode i SWIFT. Den bør være ${mappedLandkode} (${replaceSubstringAtPos(
+						value,
+						4,
+						5,
+						mappedLandkode
+					)}). \n\n` + `Swift format: ${swiftFormatExplain}`,
+			})
 		}
 		return true
 	})
