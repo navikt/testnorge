@@ -2,6 +2,7 @@
   "skipJsErrors": true,
   "skipUncaughtErrors": true,
   "hostname": "localhost",
+  "port1": 54321,
   "developmentMode": true,
   "pageRequestTimeout": 30000,
   "pageLoadTimeout": 6000,
