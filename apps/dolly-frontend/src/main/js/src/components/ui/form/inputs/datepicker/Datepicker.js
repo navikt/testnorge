@@ -14,7 +14,7 @@ import './Datepicker.less'
 registerLocale('nb', locale_nb)
 
 function addHours(numOfHours, date) {
-	date.setTime(date.getTime() + numOfHours * 60 * 60 * 1000)
+	date.setHours(numOfHours, 0, 0)
 	return date
 }
 
