@@ -128,10 +128,10 @@ export const VisningRedigerbar = ({
 			const itemData = _get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlfError(error)
 				})
-				.then((putResponse) => {
+				.then((putResponse: any) => {
 					if (putResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -143,7 +143,7 @@ export const VisningRedigerbar = ({
 						})
 					}
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlError(error)
 				})
 		}
@@ -156,10 +156,10 @@ export const VisningRedigerbar = ({
 			const id = _get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlfError(error)
 				})
-				.then((deleteResponse) => {
+				.then((deleteResponse: any) => {
 					if (deleteResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -171,7 +171,7 @@ export const VisningRedigerbar = ({
 						})
 					}
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlError(error)
 				})
 		}
