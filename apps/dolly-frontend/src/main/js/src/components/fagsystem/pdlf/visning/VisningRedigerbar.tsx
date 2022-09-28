@@ -32,7 +32,7 @@ import {
 	utflytting,
 	statsborgerskap,
 } from '~/components/fagsystem/pdlf/form/validation/partials'
-import { ifPresent } from '~/utils/YupValidations'
+import { ifPresent, validate } from '~/utils/YupValidations'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -43,6 +43,7 @@ type VisningTypes = {
 	ident: string
 	identtype?: string
 	disableSlett?: boolean
+	personFoerLeggTil?: any
 }
 
 enum Modus {
@@ -101,6 +102,7 @@ export const VisningRedigerbar = ({
 	ident,
 	identtype,
 	disableSlett = false,
+	personFoerLeggTil = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -231,6 +233,15 @@ export const VisningRedigerbar = ({
 		]
 	)
 
+	const _validate = (values: any) =>
+		validate(
+			{
+				...values,
+				personFoerLeggTil: personFoerLeggTil,
+			},
+			validationSchema
+		)
+
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
@@ -279,7 +290,7 @@ export const VisningRedigerbar = ({
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
-					validationSchema={validationSchema}
+					validate={_validate}
 				>
 					{(formikBag) => {
 						return (
