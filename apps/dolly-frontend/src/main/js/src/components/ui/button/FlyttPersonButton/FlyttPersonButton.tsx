@@ -34,6 +34,7 @@ const ValgtePersonerList = styled.div`
 	&& {
 		ul {
 			margin-top: 10px;
+			line-height: 1.5;
 		}
 	}
 `
@@ -285,7 +286,9 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 												{_get(formikBag.values, 'identer')?.length > 0 ? (
 													<ul>
 														{_get(formikBag.values, 'identer')?.map((ident) => (
-															<li key={ident}>{ident}</li>
+															<li key={ident}>
+																{gruppeIdenter?.find((person) => person?.value === ident)?.label}
+															</li>
 														))}
 													</ul>
 												) : (
