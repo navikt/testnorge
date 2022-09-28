@@ -35,11 +35,7 @@ module.exports = merge(common, {
 		rules: [
 			{
 				test: /\.less$/,
-				use: [
-					MiniCssExtractPlugin.loader,
-					'css-loader',
-					'less-loader?{"lessOptions":{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}}',
-				],
+				use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
 			},
 			{
 				test: /\.css$/,

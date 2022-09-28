@@ -1,10 +1,10 @@
 import React from 'react'
-import Knapp, { KnappBaseProps } from 'nav-frontend-knapper'
+import { Button, ButtonProps } from '@navikt/ds-react'
 
-const NavButton = ({ type = 'standard', children, ...restProps }: KnappBaseProps) => (
-	<Knapp type={type} {...restProps}>
+const NavButton = ({ variant = 'primary', children, ...restProps }: ButtonProps) => (
+	<Button variant={variant} {...restProps}>
 		{children}
-	</Knapp>
+	</Button>
 )
 
 export default NavButton

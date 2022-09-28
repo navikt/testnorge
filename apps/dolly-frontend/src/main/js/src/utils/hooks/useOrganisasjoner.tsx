@@ -31,7 +31,7 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjonerForBruker = (brukerId: string) => {
+export const useOrganisasjonerForBruker = (brukerId: string | number) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -80,7 +80,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 3000 : 0 }
+		{ refreshInterval: autoRefresh ? 4000 : 0 }
 	)
 
 	const bestillingerSorted = data
@@ -96,7 +96,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 }
 
 export const useOrganisasjonBestillingStatus = (
-	bestillingId: number,
+	bestillingId: number | string,
 	erOrganisasjon: boolean,
 	autoRefresh = false
 ) => {

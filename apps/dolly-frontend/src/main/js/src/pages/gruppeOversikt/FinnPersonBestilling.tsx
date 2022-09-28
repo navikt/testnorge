@@ -39,6 +39,7 @@ type ResponsBestilling = {
 
 const StyledAsyncSelect = styled(AsyncSelect)`
 	width: 78%;
+	margin-top: 2px;
 `
 
 const FinnPersonBestilling = ({
@@ -108,7 +109,7 @@ const FinnPersonBestilling = ({
 	useEffect(() => {
 		resetFeilmelding()
 		if (!searchQuery) {
-			return null
+			return
 		}
 		soekType === SoekTypeValg.PERSON
 			? navigerTilPerson(searchQuery)

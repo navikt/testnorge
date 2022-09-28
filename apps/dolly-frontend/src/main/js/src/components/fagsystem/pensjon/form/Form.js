@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError, erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { validation } from '~/components/fagsystem/pensjon/form/validation'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -51,8 +51,7 @@ export const PensjonForm = ({ formikBag }) => (
 					<FormikCheckbox
 						name={`${pensjonPath}.redusertMedGrunnbelop`}
 						label="Nedjuster med grunnbeløp"
-						checkboxMargin
-						size="medium"
+						size="small"
 					/>
 				</React.Fragment>
 			</Kategori>

@@ -20,20 +20,20 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
 			iconType="udi"
 			startOpen={harValgtAttributt(formikBag.values, [udiAttributt])}
 		>
-			<AttributtKategori title="Gjeldende oppholdstatus">
+			<AttributtKategori title="Gjeldende oppholdstatus" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.oppholdStatus} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Arbeidsadgang">
+			<AttributtKategori title="Arbeidsadgang" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.arbeidsadgang} />
 				<Attributt attr={sm.attrs.hjemmel} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Alias">
+			<AttributtKategori title="Alias" attr={sm.attrs}>
 				<Attributt disabled={testnorgeIdent} attr={sm.attrs.aliaser} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Annet">
+			<AttributtKategori title="Annet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.flyktning} />
 				<Attributt attr={sm.attrs.asylsoker} />
 			</AttributtKategori>

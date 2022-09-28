@@ -28,4 +28,7 @@ public class LogEventDTO {
 
     @JsonProperty
     Boolean isAnonym;
+
+    @JsonProperty
+    String brukerType;
 }

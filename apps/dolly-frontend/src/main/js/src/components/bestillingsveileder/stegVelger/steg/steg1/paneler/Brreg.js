@@ -15,7 +15,7 @@ export const BrregPanel = ({ stateModifier, formikBag }) => {
 			iconType="brreg"
 			startOpen={harValgtAttributt(formikBag.values, [brregAttributt])}
 		>
-			<AttributtKategori>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.brregstub} />
 			</AttributtKategori>
 		</Panel>

@@ -14,7 +14,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 			uncheckAttributeArray={() => sm.batchRemove('enhetstype')}
 			iconType="personinformasjon"
 		>
-			<AttributtKategori title="Organisasjon">
+			<AttributtKategori title="Organisasjon" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.enhetstype}
 					disabled={true}
@@ -26,12 +26,12 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 				<Attributt attr={sm.attrs.stiftelsesdato} />
 				<Attributt attr={sm.attrs.maalform} />
 			</AttributtKategori>
-			<AttributtKategori title="Kontaktdata">
+			<AttributtKategori title="Kontaktdata" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.telefon} />
 				<Attributt attr={sm.attrs.epost} />
 				<Attributt attr={sm.attrs.nettside} />
 			</AttributtKategori>
-			<AttributtKategori title="Adresser">
+			<AttributtKategori title="Adresser" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.forretningsadresse} />
 				<Attributt attr={sm.attrs.postadresse} />
 			</AttributtKategori>

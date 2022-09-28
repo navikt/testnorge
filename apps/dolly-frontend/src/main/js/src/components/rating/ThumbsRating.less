@@ -1,29 +1,23 @@
 @import (reference) '~lessVars';
 
 .thumbs-rating {
-	margin: 2px 0;
+  margin: 2px 0;
 
-	&__button {
-		border: 0;
-		padding: 0 8px;
-		border-radius: 50%;
-		margin-left: 7px;
-	}
+  p {
+    margin-bottom: 0;
+  }
 
-	&__button:focus {
-		outline: none;
-		box-shadow: 0 0 2px @color-nav-black;
-	}
+  &__icon {
+    &__left {
+      padding-top: 3px;
+      position: relative;
+      bottom: 3px;
+    }
 
-	&__icon {
-		fill: @color-darkblue;
-
-		&__left {
-			padding-bottom: 3px;
-		}
-
-		&__right {
-			padding-top: 3px;
-		}
-	}
+    &__right {
+      padding-top: 3px;
+      position: relative;
+      top: 4px;
+    }
+  }
 }

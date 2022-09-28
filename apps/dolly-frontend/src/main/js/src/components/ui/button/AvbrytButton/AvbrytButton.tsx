@@ -16,7 +16,7 @@ export const AvbrytButton = ({ action, children }: Props) => {
 
 	return (
 		<React.Fragment>
-			<NavButton type={'fare'} onClick={openModal}>
+			<NavButton variant={'danger'} onClick={openModal}>
 				Avbryt
 			</NavButton>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="fit-content" overflow="auto">
@@ -33,7 +33,7 @@ export const AvbrytButton = ({ action, children }: Props) => {
 								closeModal()
 								return action()
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>

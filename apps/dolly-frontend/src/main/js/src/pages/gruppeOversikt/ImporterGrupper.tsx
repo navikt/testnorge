@@ -59,7 +59,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 
 	return (
 		<>
-			<NavButton type="hoved" onClick={openImportModal} style={{ marginTop: '10px' }}>
+			<NavButton variant={'primary'} onClick={openImportModal} style={{ marginTop: '10px' }}>
 				Importer grupper
 			</NavButton>
 
@@ -101,15 +101,13 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) 
 								/>
 								<div className="import-buttons">
 									<NavButton
-										type="standard"
+										variant={'primary'}
 										onClick={closeImportModal}
 										style={{ marginRight: '10px' }}
 									>
 										Avbryt
 									</NavButton>
-									<NavButton type="hoved" htmlType="submit">
-										Importer grupper
-									</NavButton>
+									<NavButton variant={'primary'}>Importer grupper</NavButton>
 								</div>
 							</Form>
 						)}

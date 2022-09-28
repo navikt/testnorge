@@ -5,6 +5,13 @@ import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Icon from '~/components/ui/icon/Icon'
 import FormikFieldInput from '~/components/ui/form/inputs/textInput/FormikFieldInput'
+import styled from 'styled-components'
+
+const StyledIcon = styled(Icon)`
+	position: absolute;
+	top: 7px;
+	right: 7px;
+`
 
 export const TextInput = React.forwardRef(
 	(
@@ -24,7 +31,7 @@ export const TextInput = React.forwardRef(
 			<>
 				{/*@ts-ignore*/}
 				<input ref={ref} id={props.name} className={css} placeholder={placeholder} {...props} />
-				{icon && <Icon size={20} kind={icon} />}
+				{icon && <StyledIcon size={20} kind={icon} />}
 			</>
 		)
 	}
@@ -37,6 +44,7 @@ export const DollyTextInput = (props: {
 	value?: any
 	size?: string
 	type?: string
+	readOnly?: boolean
 	useOnChange?: boolean
 	onBlur?: Function
 	onSubmit?: Function

@@ -16,7 +16,7 @@ export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
 			iconType="doedsbo"
 			startOpen={harValgtAttributt(formikBag.values, [doedsboAttributt])}
 		>
-			<AttributtKategori>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kontaktinformasjonForDoedsbo} />
 			</AttributtKategori>
 		</Panel>

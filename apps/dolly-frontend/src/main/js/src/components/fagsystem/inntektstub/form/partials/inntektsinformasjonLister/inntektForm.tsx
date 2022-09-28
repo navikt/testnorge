@@ -1,12 +1,12 @@
-import React, { BaseSyntheticEvent, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import InntektStub from '~/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
+import { ToggleGroup } from '@navikt/ds-react'
 
 const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
 
@@ -62,7 +62,9 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET
 	)
 
-	useEffect(() => formSimple && changeFormType(FormType.FORENKLET), [])
+	useEffect(() => {
+		formSimple && changeFormType(FormType.FORENKLET)
+	}, [])
 
 	const changeFormType = (type: FormType) => {
 		const eventValueSimple = type === FormType.FORENKLET
@@ -87,17 +89,14 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 	return (
 		<>
 			<div className="toggle--wrapper">
-				<ToggleGruppe
-					onChange={(event: BaseSyntheticEvent) => changeFormType(event.target?.value)}
-					name="toggler"
+				<ToggleGroup
+					defaultValue={FormType.STANDARD}
+					onChange={(value: FormType) => changeFormType(value)}
+					size={'small'}
 				>
-					<ToggleKnapp value={FormType.STANDARD} checked={!formSimple}>
-						Standard
-					</ToggleKnapp>
-					<ToggleKnapp value={FormType.FORENKLET} checked={formSimple}>
-						Forenklet
-					</ToggleKnapp>
-				</ToggleGruppe>
+					<ToggleGroup.Item value={FormType.STANDARD}>Standard</ToggleGroup.Item>
+					<ToggleGroup.Item value={FormType.FORENKLET}>Forenklet</ToggleGroup.Item>
+				</ToggleGroup>
 			</div>
 			<FormikDollyFieldArray
 				name={`${inntektsinformasjonPath}.inntektsliste`}

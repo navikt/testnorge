@@ -83,7 +83,8 @@ public class DollyBestillingService {
 
                 dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())));
+                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())),
+                        progress.getBestilling().getGruppe().getTags());
 
             } else if (originator.isPdlf()) {
                 try {
@@ -95,7 +96,8 @@ public class DollyBestillingService {
                     }
 
                     var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
-                    dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
+                    dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()),
+                            progress.getBestilling().getGruppe().getTags());
 
                 } catch (WebClientResponseException e) {
 
@@ -196,12 +198,14 @@ public class DollyBestillingService {
         if (progress.isTpsf()) {
             var personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
             if (!personer.isEmpty()) {
-                dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0));
+                dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0),
+                        progress.getBestilling().getGruppe().getTags());
             }
 
         } else if (progress.isPdlf()) {
             var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent()));
-            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()));
+            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
+                    progress.getBestilling().getGruppe().getTags());
 
         } else if (progress.isPdl()) {
             var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);

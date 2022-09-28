@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import MatrikkelAdresseSok from './MatrikkelAdresseSok'
-import { AlertStripeAdvarsel, AlertStripeFeil } from 'nav-frontend-alertstriper'
 import styled from 'styled-components'
 import AdresseService, { MatrikkelAdresse } from '~/service/services/AdresseService'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { NotFoundError } from '~/error'
+import { Alert } from '@navikt/ds-react'
 
 const StyledAdresseVelger = styled.div`
 	background-color: #edf2ff;
@@ -17,10 +17,10 @@ type Search = {
 	bruksnummer?: string
 }
 
-const Feil = styled(AlertStripeFeil)`
+const Feil = styled(Alert)`
 	margin-top: 15px;
 `
-const Advarsel = styled(AlertStripeAdvarsel)`
+const Advarsel = styled(Alert)`
 	margin-top: 15px;
 `
 
@@ -73,9 +73,13 @@ export default ({ onSelect }: Props) => {
 	return (
 		<StyledAdresseVelger>
 			<MatrikkelAdresseSok onSubmit={onSubmit} loading={loading} />
-			{error && <Feil>Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.</Feil>}
+			{error && (
+				<Feil variant={'error'}>Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.</Feil>
+			)}
 			{notFound && (
-				<Advarsel>Fant ikke et resultat. Prøv å endre kombinasjon av felter i søket.</Advarsel>
+				<Advarsel variant={'warning'}>
+					Fant ikke et resultat. Prøv å endre kombinasjon av felter i søket.
+				</Advarsel>
 			)}
 			{adresser && (
 				<>

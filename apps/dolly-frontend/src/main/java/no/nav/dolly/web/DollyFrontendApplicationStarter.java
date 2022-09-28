@@ -9,6 +9,7 @@ import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavInstServiceProperties;
 import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
 import no.nav.dolly.web.credentials.TestnavKrrstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
@@ -21,7 +22,6 @@ import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
 import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
-import no.nav.dolly.web.credentials.TestnavInstServiceProperties;
 import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
@@ -51,7 +51,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 import java.util.function.Function;
-
 
 @Slf4j
 @Import({

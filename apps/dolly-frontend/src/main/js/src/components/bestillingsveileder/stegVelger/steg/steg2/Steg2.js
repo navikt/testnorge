@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import * as Yup from 'yup'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { KrrstubForm } from '~/components/fagsystem/krrstub/form/Form'
@@ -19,6 +18,7 @@ import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { ifPresent } from '~/utils/YupValidations'
+import { Alert } from '@navikt/ds-react'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -44,7 +44,7 @@ export const Steg2 = ({ formikBag }) => {
 	const gruppe = opts.gruppe
 
 	if (!harAvhukedeAttributter(formikBag.values)) {
-		return <AlertStripeInfo>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</AlertStripeInfo>
+		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</Alert>
 	}
 
 	return (

@@ -3,11 +3,17 @@ import _get from 'lodash/get'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { Textarea } from 'nav-frontend-skjema'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { Textarea } from '@navikt/ds-react'
+import { Label } from '~/components/ui/form/inputs/label/Label'
+import styled from 'styled-components'
 
 export const Arbeidsadgang = ({ formikBag }) => {
+	const StyledTextArea = styled(Textarea)`
+		gap: unset;
+	`
+
 	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = (v) => {
@@ -69,19 +75,22 @@ export const Arbeidsadgang = ({ formikBag }) => {
 			<Kategori title="Innhent vedtakshjemmel" vis="udistub.arbeidsadgang.hjemmel">
 				<FormikTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
 				<div className="flexbox--full-width">
-					<Textarea
-						value={forklaring ? forklaring : ''}
-						name="udistub.arbeidsadgang.forklaring"
-						label="Forklaring"
-						placeholder="Skriv inn forklaring"
-						maxLength={MAX_LENGTH}
-						onChange={(event) => endreForklaring(event.target.value)}
-						feil={
-							forklaring && forklaring.length > MAX_LENGTH
-								? { feilmelding: 'Forklaring kan ikke være lenger enn 4000 tegn' }
-								: null
-						}
-					/>
+					<Label label={'Forklaring'}>
+						<StyledTextArea
+							value={forklaring ? forklaring : ''}
+							size={'small'}
+							name="udistub.arbeidsadgang.forklaring"
+							label=""
+							placeholder="Skriv inn forklaring"
+							maxLength={MAX_LENGTH}
+							onChange={(event) => endreForklaring(event.target.value)}
+							feil={
+								forklaring && forklaring.length > MAX_LENGTH
+									? { feilmelding: 'Forklaring kan ikke være lenger enn 4000 tegn' }
+									: null
+							}
+						/>
+					</Label>
 				</div>
 			</Kategori>
 		</>

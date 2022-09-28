@@ -22,7 +22,7 @@ export const EndreMalnavn = ({ malInfo, avsluttRedigering }) => {
 					className="navnInput"
 				/>
 				<Button className="lagre" onClick={() => lagreEndring(nyttMalnavn, id)}>
-					LAGRE
+					Lagre
 				</Button>
 			</div>
 		</ErrorBoundary>

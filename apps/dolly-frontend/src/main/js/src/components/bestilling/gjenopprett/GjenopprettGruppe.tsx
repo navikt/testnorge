@@ -14,7 +14,7 @@ type GjenopprettGruppeProps = {
 
 export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) => {
 	const { currentBruker } = useCurrentBruker()
-	const { bestillingerById } = useBestillingerGruppe(Number(gruppe.id))
+	const { bestillingerById } = useBestillingerGruppe(gruppe.id)
 	const brukertype = currentBruker?.brukertype
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()

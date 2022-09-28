@@ -2,7 +2,7 @@ import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
@@ -56,7 +56,7 @@ export const DollyFieldArrayWrapper = ({
 		{nested && header && (
 			<div className="dfa-blokk-nested_title">
 				<h3>{header}</h3>
-				{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
+				{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
 			</div>
 		)}
 		{children}
@@ -76,7 +76,7 @@ export const DollyFaBlokk = ({
 		<div className="dfa-blokk_header">
 			<Numbering idx={number || idx + 1} />
 			<h2>{header}</h2>
-			{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
+			{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
 			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
 		</div>
 		<div className="dfa-blokk_content">{children}</div>
@@ -115,7 +115,7 @@ export const DollyFaBlokkOrg = ({
 			<div className={`${name}_header`}>
 				<Numbering idx={number || idx + 1} color={color} />
 				<h2>{header}</h2>
-				{hjelpetekst && <Hjelpetekst hjelpetekstFor={header}>{hjelpetekst}</Hjelpetekst>}
+				{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
 				{showDeleteButton && <DeleteButton onClick={handleRemove} />}
 			</div>
 			<div className={`${name}_content`}>{children}</div>
