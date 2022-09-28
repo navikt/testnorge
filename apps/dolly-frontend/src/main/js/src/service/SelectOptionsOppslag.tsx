@@ -125,7 +125,7 @@ export const SelectOptionsOppslag = {
 
 	formatOptions: (type: string, data: any) => {
 		if (!data?.value) {
-			if (data?.loading === false) {
+			if (!data?.loading) {
 				console.error('Fant ingen kodeverk for type: ' + type)
 			}
 			return []

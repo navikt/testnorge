@@ -25,6 +25,12 @@ export const kodeverkMock = {
 	],
 }
 
+export const varslingerResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null }]
+
+export const varslingerRequestMock = ['VELKOMMEN_TIL_DOLLY']
+
+export const malerMock = { malbestillinger: ['Cafe, Test', []] }
+
 export const nyGruppeMock = {
 	id: 2,
 	navn: 'Testcafe testing',
@@ -56,3 +62,5 @@ export const gjeldendeGruppeMock = {
 	identer: [],
 	tags: [],
 }
+
+export const miljoeMock = '["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]'

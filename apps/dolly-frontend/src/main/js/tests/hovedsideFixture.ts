@@ -8,7 +8,11 @@ import {
 	gjeldendeGruppeMock,
 	gjeldendeProfilMock,
 	kodeverkMock,
+	malerMock,
+	miljoeMock,
 	nyGruppeMock,
+	varslingerRequestMock,
+	varslingerResponseMock,
 } from './util/TestcafeMocks'
 
 const miljoer = new RegExp(/\/miljoer/)
@@ -27,25 +31,21 @@ const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
 const varslinger = new RegExp(/\/varslinger/)
 const ids = new RegExp(/\/ids/)
 
-const allNonspecificCalls = new RegExp(/api/)
+const remainingCallsResponseOk = new RegExp(/api/)
 
 const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
-	.respond('["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]', 200)
+	.respond(miljoeMock, 200)
 	.onRequestTo(hentGrupper)
 	.respond([gjeldendeGruppeMock], 200)
 	.onRequestTo(hentGruppe)
-	.respond(gjeldendeGruppeMock, 200, {
-		'content-type': 'application/json;charset=UTF-8',
-	})
+	.respond(gjeldendeGruppeMock, 200)
 	.onRequestTo(spesifikkGruppe)
-	.respond(nyGruppeMock, 201, {
-		'content-type': 'application/json;charset=UTF-8',
-	})
+	.respond(nyGruppeMock, 201)
 	.onRequestTo(varslinger)
-	.respond([{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null }], 200)
+	.respond(varslingerResponseMock, 200)
 	.onRequestTo(ids)
-	.respond(['VELKOMMEN_TIL_DOLLY'], 200)
+	.respond(varslingerRequestMock, 200)
 	.onRequestTo(azureAuth)
 	.respond(null, 200)
 	.onRequestTo(dollyLogg)
@@ -57,14 +57,14 @@ const cookieMock = RequestMock()
 	.onRequestTo(bilde)
 	.respond(null, 404)
 	.onRequestTo(bestillingMaler)
-	.respond({ malbestillinger: ['Cafe, Test', []] }, 200)
+	.respond(malerMock, 200)
 	.onRequestTo(tags)
 	.respond({}, 200)
 	.onRequestTo(brregStub)
 	.respond({}, 200)
 	.onRequestTo(kodeverk)
 	.respond(kodeverkMock, 200)
-	.onRequestTo(allNonspecificCalls)
+	.onRequestTo(remainingCallsResponseOk)
 	.respond([], 200)
 
 fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
