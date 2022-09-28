@@ -16,6 +16,8 @@ import Spring from '~/components/ui/background/backgrounds/Spring.svg'
 import Paaske from '~/components/ui/background/backgrounds/Paaske.svg'
 // @ts-ignore
 import Sommer from '~/components/ui/background/backgrounds/Sommer.svg'
+// @ts-ignore
+import Faarikaal from '~/components/ui/background/backgrounds/Faarikaal.svg'
 import '~/snow.scss'
 import '~/rain.scss'
 import '~/flowers.scss'
@@ -25,13 +27,16 @@ import { round } from 'lodash'
 const DefaultBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${() => {
 		const month = new Date().getMonth()
-		const day = new Date().getDay()
+		const day = new Date().getDate()
+		const weekDay = new Date().getDay()
 		if (month >= 2 && month <= 4) {
 			return btoa(Spring)
 		} else if (month >= 5 && month <= 7) {
 			return btoa(Sommer)
 		} else if ((month === 9 && day > 14) || (month === 10 && day === 0)) {
 			return btoa(Halloween)
+		} else if (month === 8 && day > 23 && weekDay === 4) {
+			return btoa(Faarikaal)
 		} else if (month >= 8 && month <= 10) {
 			return btoa(Fall)
 		} else if (month === 0 || month === 1) {
