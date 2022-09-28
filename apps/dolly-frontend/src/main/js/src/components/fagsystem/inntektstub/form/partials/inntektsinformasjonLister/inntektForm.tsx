@@ -64,7 +64,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 
 	useEffect(() => {
 		formSimple && changeFormType(FormType.FORENKLET)
-	}, [])
+	}, [formSimple])
 
 	const changeFormType = (type: FormType) => {
 		const eventValueSimple = type === FormType.FORENKLET
