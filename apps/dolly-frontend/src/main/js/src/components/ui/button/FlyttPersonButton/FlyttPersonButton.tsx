@@ -16,20 +16,26 @@ import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 import Loading from '~/components/ui/loading/Loading'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import Icon from '~/components/ui/icon/Icon'
 
 const PersonvelgerCheckboxes = styled.div`
-	overflow-y: scroll;
-	max-height: 22rem;
+	overflow-y: auto;
+	max-height: 15rem;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	padding: 10px;
 `
 
 const ValgtePersonerList = styled.div`
-	overflow-y: scroll;
-	max-height: 22rem;
+	overflow-y: auto;
+	max-height: 18.4rem;
 	display: block;
 	margin-left: 20px;
+	&& {
+		ul {
+			margin-top: 10px;
+		}
+	}
 `
 
 const ModalContent = styled.div`
@@ -45,6 +51,15 @@ const ModalContent = styled.div`
 
 const GruppeVelger = styled.div`
 	margin-bottom: 20px;
+	.skjemaelement {
+		margin-bottom: 0;
+	}
+	.error-message {
+		margin-top: 10px;
+	}
+	.navds-button {
+		margin-top: 10px;
+	}
 `
 
 const PersonVelger = styled.div`
@@ -63,6 +78,21 @@ const PersonKolonne = styled.div`
 			margin-right: 0;
 		}
 	}
+`
+
+const PersonSoek = styled.div`
+	position: relative;
+	&& {
+		svg {
+			position: absolute;
+			top: 9px;
+			right: 9px;
+		}
+	}
+`
+
+const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
+	margin-top: 10px;
 `
 
 export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
@@ -94,7 +124,7 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 	}, [modalIsOpen])
 
 	const gruppeIdenterListe = Array.isArray(gruppeIdenter)
-		? gruppeIdenter?.map((person) => person.value)
+		? gruppeIdenter?.map((person) => person?.value)
 		: []
 
 	const mountedRef = useRef(true)
@@ -167,7 +197,7 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 											title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 											fraGruppe={gruppeId}
 										/>
-										<ErrorMessageWithFocus
+										<StyledErrorMessageWithFocus
 											name="gruppe"
 											className="error-message"
 											component="div"
@@ -191,21 +221,24 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 																har relaterte personer vil disse også bli flyttet.
 															</Hjelpetekst>
 														</div>
-														<DollyTextInput
-															name="search"
-															value={searchText}
-															onChange={(e) => setSearchText(e.target.value)}
-															size="grow"
-															placeholder="Søk etter person"
-															icon="search"
-														/>
+														<PersonSoek>
+															<DollyTextInput
+																name="search"
+																value={searchText}
+																onChange={(e) => setSearchText(e.target.value)}
+																size="grow"
+																placeholder="Søk etter person"
+																// icon="search"
+															/>
+															<Icon kind="search" size={20} />
+														</PersonSoek>
 														{!gruppeIdenter ? (
 															<Loading label="Laster personer..." />
 														) : (
 															<PersonvelgerCheckboxes>
 																{gruppeIdenter?.map((person) => {
 																	if (
-																		person.label?.toUpperCase().includes(searchText?.toUpperCase())
+																		person?.label?.toUpperCase().includes(searchText?.toUpperCase())
 																	) {
 																		return (
 																			<div key={person.value}>
@@ -215,7 +248,7 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 																					label={person.label}
 																					checked={values?.includes(person.value)}
 																					onChange={onClick}
-																					size={'grow'}
+																					size="small"
 																					attributtCheckbox
 																				/>
 																			</div>
@@ -236,7 +269,7 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 																NULLSTILL
 															</Button>
 														</div>
-														<ErrorMessageWithFocus
+														<StyledErrorMessageWithFocus
 															name="identer"
 															className="error-message"
 															component="div"
@@ -247,8 +280,8 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 										</FieldArray>
 
 										<PersonKolonne>
+											<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
 											<ValgtePersonerList>
-												<h2>Valgte personer</h2>
 												{_get(formikBag.values, 'identer')?.length > 0 ? (
 													<ul>
 														{_get(formikBag.values, 'identer')?.map((ident) => (
@@ -266,13 +299,16 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 										{error && <div className="error-message">{`Feil: ${error}`}</div>}
 									</div>
 									<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
-										<NavButton onClick={handleClose}>Avbryt</NavButton>
+										<NavButton onClick={handleClose} variant="secondary">
+											Avbryt
+										</NavButton>
 										<NavButton
 											onClick={() => formikBag.handleSubmit()}
-											type="hoved"
+											variant="primary"
 											disabled={loading}
-											spinner={loading}
+											loading={loading}
 											style={{ marginLeft: '10px' }}
+											type="submit"
 										>
 											Flytt personer
 										</NavButton>

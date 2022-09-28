@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '~/components/velgGruppe/EksisterendeGruppe'
 import { ToggleGroup } from '@navikt/ds-react'
+import styled from 'styled-components'
 
 interface VelgGruppeToggleProps {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -13,6 +14,10 @@ enum Gruppevalg {
 	EKSISTERENDE = 'Eksisterende',
 	NY = 'Ny',
 }
+
+const StyledToggleGroup = styled(ToggleGroup)`
+	margin-bottom: 10px;
+`
 
 export const VelgGruppeToggle = ({
 	setValgtGruppe,
@@ -27,14 +32,18 @@ export const VelgGruppeToggle = ({
 	}
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
-				<ToggleGroup.Item key={Gruppevalg.EKSISTERENDE} value={Gruppevalg.EKSISTERENDE}>
+			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
+				<ToggleGroup.Item
+					key={Gruppevalg.EKSISTERENDE}
+					value={Gruppevalg.EKSISTERENDE}
+					style={{ padding: '0 20px' }}
+				>
 					Eksisterende gruppe
 				</ToggleGroup.Item>
 				<ToggleGroup.Item key={Gruppevalg.NY} value={Gruppevalg.NY}>
 					Ny gruppe
 				</ToggleGroup.Item>
-			</ToggleGroup>
+			</StyledToggleGroup>
 
 			{gruppevalg === Gruppevalg.EKSISTERENDE ? (
 				<EksisterendeGruppe
