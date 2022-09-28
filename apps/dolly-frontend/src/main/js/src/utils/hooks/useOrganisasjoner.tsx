@@ -11,7 +11,7 @@ const getOrganisasjonerForBrukerUrl = (brukerId: string) =>
 	`/testnav-organisasjon-forvalter/api/v2/organisasjoner/alle?brukerId=${brukerId}`
 
 const getOrganisasjonBestillingerUrl = (brukerId: string) =>
-	`/dolly-backend/api/v1/organisasjon/bestillingsstatus?brukerId=${brukerId}`
+	`/dolly-backend/api/v1/organisasjon/bestilling/bestillingsstatus?brukerId=${brukerId}`
 
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`

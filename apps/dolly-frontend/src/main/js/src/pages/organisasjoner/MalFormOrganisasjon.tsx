@@ -4,29 +4,12 @@ import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { ToggleGruppe } from 'nav-frontend-skjema'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
+import { Mal, useDollyOrganisasjonMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
 import Loading from '~/components/ui/loading/Loading'
-
-export enum MalTyper {
-	INGEN = 'EGEN',
-	OPPRETT = 'OPPRETT',
-	ENDRE = 'ENDRE',
-}
-
-export const malToggleValues = [
-	{
-		value: MalTyper.INGEN,
-		label: 'Ikke opprett',
-	},
-	{
-		value: MalTyper.OPPRETT,
-		label: 'Legg til ny mal',
-	},
-	{
-		value: MalTyper.ENDRE,
-		label: 'Overskriv eksisterende mal',
-	},
-]
+import {
+	malToggleValues,
+	MalTyper,
+} from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
 
 // @ts-ignore
 export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
@@ -40,7 +23,14 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		}))
 	}
 
-	const handleMalToggleChange = (value: MalTyper) => {
+	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
+	const { maler, loading } = useDollyOrganisasjonMalerBrukerOgMalnavn(brukerId, null)
+
+	if (loading) {
+		return <Loading label="Laster maler..." />
+	}
+
+	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
 		if (value === MalTyper.INGEN) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
@@ -51,20 +41,13 @@ export const MalForm = ({ formikBag, brukerId, opprettetFraMal }) => {
 		}
 	}
 
-	const [typeMal, setTypeMal] = useState(MalTyper.INGEN)
-	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
-
-	if (loading) {
-		return <Loading label="Laster maler..." />
-	}
-
 	return (
 		<div className="input-oppsummering">
 			<h2>Lagre som mal</h2>
 			<div className="flexbox--align-center">
 				<div className="toggle--wrapper">
 					<ToggleGruppe
-						onChange={(e: BaseSyntheticEvent) => handleMalToggleChange(e.target.value)}
+						onChange={(e: BaseSyntheticEvent) => handleToggleChange(e.target.value)}
 						name={'arbeidsforhold'}
 					>
 						{malToggleValues.map((type) => (
