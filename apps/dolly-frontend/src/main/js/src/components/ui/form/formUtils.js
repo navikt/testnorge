@@ -1,5 +1,6 @@
 import _has from 'lodash/has'
 import _isNil from 'lodash/isNil'
+import { runningTestcafe } from '~/service/services/Request'
 
 export const fieldError = (meta) => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
@@ -89,11 +90,7 @@ const getValgteAttributter = (values) => {
 
 export const erForsteEllerTest = (values, attributter) => {
 	const valgteAttributter = getValgteAttributter(values)
-	return testEnabled() || attributter.includes(valgteAttributter[0])
-}
-
-export const testEnabled = () => {
-	return window.location.hostname.includes('localhost')
+	return runningTestcafe() || attributter.includes(valgteAttributter[0])
 }
 
 export const harValgtAttributt = (values, attributter) => {
