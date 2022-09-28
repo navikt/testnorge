@@ -70,7 +70,7 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 				if (props.afterChange) props.afterChange(date)
 				let val = date
 				if (addHour) {
-					val = addHours(1, new Date(date))
+					val = addHours(1, new Date(date)) + ''
 				}
 				return field.onChange(SyntEvent(field.name, val))
 			}
