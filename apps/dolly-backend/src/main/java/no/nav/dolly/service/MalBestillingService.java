@@ -62,6 +62,15 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
+    public List<RsMalBestilling> getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+
+        List<Bestilling> bestillinger = bestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
+        return bestillinger.stream().map(bestilling -> RsMalBestilling.builder()
+                .malNavn(bestilling.getMalBestillingNavn())
+                .id(bestilling.getId())
+                .build()).toList();
+    }
+
     public RsOrganisasjonMalBestillingWrapper getOrganisasjonMalBestillinger() {
 
         RsOrganisasjonMalBestillingWrapper malBestillingWrapper = new RsOrganisasjonMalBestillingWrapper();
@@ -73,7 +82,7 @@ public class MalBestillingService {
                 .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
-                                .bestilling(bestilling1)
+                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonMalBestilling.class))
                                 .malNavn(bestilling1.getMalBestillingNavn())
                                 .id(bestilling1.getId())
                                 .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
@@ -92,21 +101,13 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
-    public List<RsMalBestilling> getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
-
-        List<Bestilling> bestillinger = bestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
-        return bestillinger.stream().map(bestilling -> RsMalBestilling.builder()
-                .malNavn(bestilling.getMalBestillingNavn())
-                .id(bestilling.getId())
-                .build()).toList();
-    }
 
     public List<RsOrganisasjonMalBestilling> getOrganisasjonMalbestillingByNavnAndUser(String brukerId, String malNavn) {
 
         List<OrganisasjonBestilling> bestillinger = organisasjonBestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
         return bestillinger.stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
                 .malNavn(bestilling.getMalBestillingNavn())
-                .bestilling(bestilling)
+                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonMalBestilling.class))
                 .id(bestilling.getId())
                 .build()).toList();
     }
