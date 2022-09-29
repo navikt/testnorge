@@ -1,8 +1,10 @@
 import React from 'react'
 import _get from 'lodash/get'
 import { initialMatrikkeladresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Matrikkeladresse'
-import { MatrikkeladresseTilfeldig } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseTilfeldig'
+import {
+	Matrikkeladresse,
+	MatrikkeladresseTilfeldig,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 
 export const MatrikkeladresseVelger = ({ formikBag, path }) => {

@@ -13,6 +13,11 @@ import './Datepicker.less'
 
 registerLocale('nb', locale_nb)
 
+function addHours(date, amount) {
+	date.setHours(amount, 0, 0)
+	return date
+}
+
 export const Datepicker = ({
 	name,
 	value,
@@ -56,15 +61,18 @@ export const DollyDatepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikDatepicker = ({ fastfield, ...props }) => (
+const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, form, meta }) => {
 			const handleChange = (date) => {
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
 				if (props.afterChange) props.afterChange(date)
-
-				return field.onChange(SyntEvent(field.name, date))
+				let val = date
+				if (addHour) {
+					val = addHours(new Date(date), 1) + ''
+				}
+				return field.onChange(SyntEvent(field.name, val))
 			}
 			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
 

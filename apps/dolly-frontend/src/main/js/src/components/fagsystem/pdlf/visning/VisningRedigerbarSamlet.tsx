@@ -12,7 +12,7 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation'
+import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 

@@ -13,12 +13,14 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
+import {
+	UtenlandskAdresse,
+	UkjentBosted,
+	VegadresseVelger,
+	MatrikkeladresseVelger,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
-import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UkjentBosted'
-import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
-import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -151,7 +153,7 @@ export const BostedsadresseForm = ({
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
 					<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
 					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				</DatepickerWrapper>
 				<DollySelect

@@ -22,17 +22,17 @@ import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import { doedsfall } from '~/components/fagsystem/pdlf/form/validation/validation'
 import {
-	adressebeskyttelse,
 	bostedsadresse,
-	doedsfall,
-	innflytting,
-	kontaktadresse,
 	oppholdsadresse,
-	statsborgerskap,
+	kontaktadresse,
+	adressebeskyttelse,
+	innflytting,
 	utflytting,
-} from '~/components/fagsystem/pdlf/form/validation'
-import { ifPresent } from '~/utils/YupValidations'
+	statsborgerskap,
+} from '~/components/fagsystem/pdlf/form/validation/partials'
+import { ifPresent, validate } from '~/utils/YupValidations'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -43,6 +43,7 @@ type VisningTypes = {
 	ident: string
 	identtype?: string
 	disableSlett?: boolean
+	personFoerLeggTil?: any
 }
 
 enum Modus {
@@ -101,6 +102,7 @@ export const VisningRedigerbar = ({
 	ident,
 	identtype,
 	disableSlett = false,
+	personFoerLeggTil = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -128,10 +130,10 @@ export const VisningRedigerbar = ({
 			const itemData = _get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlfError(error)
 				})
-				.then((putResponse) => {
+				.then((putResponse: any) => {
 					if (putResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -143,7 +145,7 @@ export const VisningRedigerbar = ({
 						})
 					}
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlError(error)
 				})
 		}
@@ -156,10 +158,10 @@ export const VisningRedigerbar = ({
 			const id = _get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlfError(error)
 				})
-				.then((deleteResponse) => {
+				.then((deleteResponse: any) => {
 					if (deleteResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -171,7 +173,7 @@ export const VisningRedigerbar = ({
 						})
 					}
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlError(error)
 				})
 		}
@@ -231,6 +233,15 @@ export const VisningRedigerbar = ({
 		]
 	)
 
+	const _validate = (values: any) =>
+		validate(
+			{
+				...values,
+				personFoerLeggTil: personFoerLeggTil,
+			},
+			validationSchema
+		)
+
 	return (
 		<>
 			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
@@ -279,7 +290,7 @@ export const VisningRedigerbar = ({
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
-					validationSchema={validationSchema}
+					validate={_validate}
 				>
 					{(formikBag) => {
 						return (

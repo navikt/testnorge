@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
 
 const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
