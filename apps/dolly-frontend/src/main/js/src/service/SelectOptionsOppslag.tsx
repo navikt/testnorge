@@ -94,9 +94,9 @@ export const SelectOptionsOppslag = {
 				const personListe: Array<Option> = []
 				response.data.forEach((id: Person) => {
 					personListe.push({
-						value: id.person.ident,
-						label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
-						relasjoner: id.relasjoner?.map((r) => r.relatertPerson?.ident),
+						value: id?.person?.ident,
+						label: `${id?.person?.ident} - ${id?.person?.navn[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
+						relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 					})
 				})
 				return personListe
@@ -132,8 +132,8 @@ export const SelectOptionsOppslag = {
 				const personListe: Array<Option> = []
 				response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
 					personListe.push({
-						value: id.ident,
-						label: `${id.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
+						value: id?.ident,
+						label: `${id?.ident} - ${id?.person?.navn[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
 					})
 				})
 				return personListe
@@ -145,8 +145,8 @@ export const SelectOptionsOppslag = {
 				const personListe: Array<Option> = []
 				response.data.forEach((id: Person) => {
 					personListe.push({
-						value: id.ident,
-						label: `${id.ident} - ${id.fornavn} ${id.etternavn}`, //TODO: Mellomnavn??
+						value: id?.ident,
+						label: `${id?.ident} - ${id?.fornavn} ${id?.etternavn}`, //TODO: Mellomnavn??
 					})
 				})
 				return personListe
