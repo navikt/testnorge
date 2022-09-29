@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class RsOrganisasjonMalBestillingWrapper {
 
         private Long id;
         private String malNavn;
-        private RsOrganisasjonBestilling bestilling;
+        private OrganisasjonBestilling bestilling;
         private RsBrukerUtenFavoritter bruker;
     }
 }
