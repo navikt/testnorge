@@ -22,7 +22,7 @@ type Props = {
 		message: string
 	}
 }
-const redigerGruppe = ({
+const RedigerGruppe = ({
 	gruppe,
 	createGruppe,
 	createOrUpdateFetching,
@@ -102,4 +102,4 @@ const redigerGruppe = ({
 		</Formik>
 	)
 }
-export default redigerGruppe
+export default RedigerGruppe
