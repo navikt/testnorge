@@ -93,11 +93,12 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
-    public List<RsMalBestilling> getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+    public List<RsOrganisasjonMalBestilling> getMalbestillingByNavnAndUser(String brukerId, String malNavn) {
 
         List<Bestilling> bestillinger = bestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
-        return bestillinger.stream().map(bestilling -> RsMalBestilling.builder()
+        return bestillinger.stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
                 .malNavn(bestilling.getMalBestillingNavn())
+                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
                 .id(bestilling.getId())
                 .build()).toList();
     }
@@ -107,6 +108,7 @@ public class MalBestillingService {
         List<OrganisasjonBestilling> bestillinger = organisasjonBestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
         return bestillinger.stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
                 .malNavn(bestilling.getMalBestillingNavn())
+                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
                 .id(bestilling.getId())
                 .build()).toList();
     }
