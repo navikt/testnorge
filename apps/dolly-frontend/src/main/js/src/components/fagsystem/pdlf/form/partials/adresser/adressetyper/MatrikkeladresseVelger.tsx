@@ -18,7 +18,7 @@ export const MatrikkeladresseVelger = ({ formikBag, path }) => {
 	const handleRadioChange = (valg) => {
 		formikBag.setFieldValue(path, {
 			...initialMatrikkeladresse,
-			matrikkeladresseType: valg.target.value,
+			matrikkeladresseType: valg,
 		})
 	}
 
