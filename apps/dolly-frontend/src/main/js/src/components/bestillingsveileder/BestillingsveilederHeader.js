@@ -20,12 +20,15 @@ export const BestillingsveilederHeader = () => {
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 	const importFra = getImportFra(opts)
 
-	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
+	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
 			<Header icon="organisasjon" iconClassName="org">
 				<div className="flexbox">
 					<Header.TitleValue title="Opprett ny" value={titleValue} />
+					{opts.is.nyBestillingFraMal && (
+						<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
+					)}
 				</div>
 			</Header>
 		)

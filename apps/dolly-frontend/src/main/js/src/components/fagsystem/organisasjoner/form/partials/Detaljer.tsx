@@ -42,7 +42,7 @@ export const Detaljer = ({
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
 	const initialValues = _omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
-	initialValues.enhetstype = ''
+	// initialValues.enhetstype = ''
 
 	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
