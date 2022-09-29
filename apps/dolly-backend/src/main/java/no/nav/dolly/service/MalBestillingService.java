@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
@@ -82,7 +83,7 @@ public class MalBestillingService {
                 .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
-                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonMalBestilling.class))
+                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
                                 .malNavn(bestilling1.getMalBestillingNavn())
                                 .id(bestilling1.getId())
                                 .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
@@ -107,7 +108,7 @@ public class MalBestillingService {
         List<OrganisasjonBestilling> bestillinger = organisasjonBestillingService.fetchMalbestillingByNavnAndUser(brukerId, malNavn);
         return bestillinger.stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
                 .malNavn(bestilling.getMalBestillingNavn())
-                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonMalBestilling.class))
+                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
                 .id(bestilling.getId())
                 .build()).toList();
     }
