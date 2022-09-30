@@ -49,9 +49,9 @@ consumers:
     cluster: dummy
     namespace: dolly
   testnorge-hodejegeren:
-    url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren/api
+    url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren
   testnorge-tp:
-    url: http://localhost:${wiremock.server.port:0}/testnorge-tp/api
+    url: http://localhost:${wiremock.server.port:0}/testnorge-tp
   testnorge-aareg:
     url: http://localhost:${wiremock.server.port:0}/testnorge-aareg/api
   krr-stub:
