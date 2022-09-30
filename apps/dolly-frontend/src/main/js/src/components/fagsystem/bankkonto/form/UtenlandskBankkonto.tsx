@@ -4,14 +4,13 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { ArbeidKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { useFormikContext } from 'formik'
 import _get from 'lodash/get'
 import { landkodeIsoMapping } from '~/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
 export const UtenlandskBankkonto = ({ formikBag }: any) => {
-	const { values } = useFormikContext()
+	const values = formikBag?.values
 	const disableKontonummer = _get(values, `${path}.tilfeldigKontonummer`)
 	const disableTilfeldigKontonummer = _get(values, `${path}.kontonummer`)
 

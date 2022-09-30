@@ -15,8 +15,8 @@ export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) =>
 	}, [])
 
 	const path = 'bankkonto.norskBankkonto'
-	const harTilfeldig = _get(formikBag.values, `${path}.tilfeldigKontonummer`)
-	const kontonummer = _get(formikBag.values, `${path}.kontonummer`)
+	const harTilfeldig = _get(formikBag?.values, `${path}.tilfeldigKontonummer`)
+	const kontonummer = _get(formikBag?.values, `${path}.kontonummer`)
 
 	return (
 		<Vis attributt={path} formik>
