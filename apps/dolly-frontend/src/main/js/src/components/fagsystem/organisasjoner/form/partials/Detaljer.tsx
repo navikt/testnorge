@@ -42,13 +42,12 @@ export const Detaljer = ({
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
 	const initialValues = _omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
-	// initialValues.enhetstype = ''
-
+	const underenheter = formikBag.values?.organisasjon?.underenheter
 	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
 	useEffect(() => {
 		if (level === 0 && !_get(formikBag, `${path}.underenheter`)) {
-			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
+			formikBag.setFieldValue(`${path}.underenheter`, underenheter || [initialValues])
 		}
 	}, [])
 

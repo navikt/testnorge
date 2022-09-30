@@ -22,7 +22,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		return null
 
 	return (
-		<Alert>
+		<Alert variant={'info'}>
 			Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 			egenskaper må derfor ett eller flere av miljøene under velges:
 			<ul>

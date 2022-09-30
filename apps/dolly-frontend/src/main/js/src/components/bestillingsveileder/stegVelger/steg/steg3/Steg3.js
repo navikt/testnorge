@@ -29,7 +29,7 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {
-		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
+		if (bankIdBruker) {
 			return ['q1']
 		}
 		return []
@@ -41,8 +41,10 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
-		} else {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (formikBag.values?.sykemelding || bankIdBruker) {
+			formikBag.setFieldValue('environments', ['q1'])
+		} else if (!formikBag.values?.environments) {
+			formikBag.setFieldValue('environments', [])
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)

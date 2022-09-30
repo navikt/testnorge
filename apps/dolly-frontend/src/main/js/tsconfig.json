@@ -14,7 +14,7 @@
     "esModuleInterop": true,
     "module": "es6",
     "target": "ESNext",
-    //		"allowJs": true,
+    "allowJs": true,
     "jsx": "react",
     "lib": [
       "esnext",

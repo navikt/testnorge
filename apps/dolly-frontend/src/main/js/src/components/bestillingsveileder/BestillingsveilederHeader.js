@@ -26,7 +26,7 @@ export const BestillingsveilederHeader = () => {
 			<Header icon="organisasjon" iconClassName="org">
 				<div className="flexbox">
 					<Header.TitleValue title="Opprett ny" value={titleValue} />
-					{opts.is.nyBestillingFraMal && (
+					{opts.is.nyOrganisasjonFraMal && (
 						<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
 					)}
 				</div>

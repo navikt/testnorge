@@ -4,10 +4,11 @@ import GruppeImport from './GruppeImport'
 import Profil from './Profil'
 
 import './MinSide.less'
-import { useBrukerProfil } from '~/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
+	const { currentBruker } = useCurrentBruker()
 
 	const AzureADProfil = brukerProfil && brukerProfil.type && brukerProfil.type === 'AzureAD'
 	return (
@@ -15,7 +16,7 @@ export default () => {
 			<h1>Min side</h1>
 			<Profil />
 			{AzureADProfil && <GruppeImport />}
-			{brukerProfil && <Maler brukernavn={brukerProfil?.visningsNavn} />}
+			{brukerProfil && <Maler brukerId={currentBruker?.brukerId} />}
 		</>
 	)
 }

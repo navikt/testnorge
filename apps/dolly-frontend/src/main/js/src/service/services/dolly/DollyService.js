@@ -212,4 +212,32 @@ export default {
 				throw error
 			})
 	},
+
+	slettMalOrganisasjon(malId) {
+		return Request.delete(Endpoints.malBestillingOrganisasjon(malId))
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	endreMalNavnOrganisasjon(malID, malNavn) {
+		return Request.putWithoutResponse(Endpoints.malBestillingOrganisasjon(malID), malNavn)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
 }

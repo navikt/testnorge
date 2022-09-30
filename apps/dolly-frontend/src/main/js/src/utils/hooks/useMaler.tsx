@@ -7,6 +7,7 @@ const getOrganisasjonMalerUrl = '/dolly-backend/api/v1/organisasjon/bestilling/m
 export type Mal = {
 	malNavn: string
 	id: number
+	bestilling: any
 }
 
 type MalResponse = {
@@ -26,8 +27,8 @@ export const useDollyMaler = () => {
 	}
 }
 
-export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn: string) => {
-	const { data, error } = useSWR<Mal[], Error>(
+export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
+	const { data, error, mutate } = useSWR<Mal[], Error>(
 		`${getMalerUrl}/bruker?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
 		fetcher,
 		{ fallbackData: [] }
@@ -37,6 +38,7 @@ export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn: string) 
 		maler: data,
 		loading: !error && !data,
 		error: error,
+		mutate: mutate,
 	}
 }
 
@@ -53,8 +55,8 @@ export const useDollyOrganisasjonMaler = () => {
 	}
 }
 
-export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNavn: string) => {
-	const { data, error } = useSWR<Mal[], Error>(
+export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
+	const { data, error, mutate } = useSWR<Mal[], Error>(
 		`${getOrganisasjonMalerUrl}/bruker?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
 		fetcher,
 		{ fallbackData: [] }
@@ -64,5 +66,6 @@ export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNa
 		maler: data,
 		loading: !error && !data,
 		error: error,
+		mutate: mutate,
 	}
 }
