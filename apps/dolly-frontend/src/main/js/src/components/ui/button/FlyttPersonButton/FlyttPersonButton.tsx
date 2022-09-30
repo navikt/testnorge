@@ -108,17 +108,16 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 
 	useEffect(() => {
 		const getGruppeIdenter = async () => {
-			const oppslag = await SelectOptionsOppslag.hentIdentNavnOptions(gruppeId)
-				.then((response) => {
-					if (!response || response.length === 0) {
-						return []
-					}
-					return response
-				})
-				.catch((error) => {
-					setError(error)
+			const oppslag = await SelectOptionsOppslag.hentIdentNavnOptions(gruppeId).then((response) => {
+				if (!response || response.length === 0) {
 					return []
-				})
+				}
+				return response
+			})
+			// .catch((error) => {
+			// 	setError(error)
+			// 	return []
+			// })
 			setGruppeidenter(oppslag)
 		}
 		getGruppeIdenter()

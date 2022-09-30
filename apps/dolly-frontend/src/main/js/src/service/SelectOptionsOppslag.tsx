@@ -95,7 +95,7 @@ export const SelectOptionsOppslag = {
 				response.data.forEach((id: Person) => {
 					personListe.push({
 						value: id?.person?.ident,
-						label: `${id?.person?.ident} - ${id?.person?.navn[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
+						label: `${id?.person?.ident} - ${id?.person?.navn?.[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
 						relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 					})
 				})
@@ -103,20 +103,24 @@ export const SelectOptionsOppslag = {
 			}
 		)
 
-		// TODO: Må gjøre det på denne måten, men får den ikke til å funke...
 		// const testnorgeOptions = async () => {
 		// 	const personListe: Array<Option> = []
-		// 	const maxAntall = 50
+		// 	const maxAntall = 40
 		//
-		// 	for (let i = 0; i < gruppe.length; i += maxAntall) {
-		// 		const listeDel = gruppe.slice(i, i + maxAntall)
+		// 	const arrayArray = []
+		// 	for (var i = 0; i < gruppe?.length; i++) {
+		// 		if (i % maxAntall == 0) arrayArray.push([])
+		// 		arrayArray[Math.floor(i / maxAntall)].push(gruppe[i])
+		// 	}
+		//
+		// 	for await (const listeDel of arrayArray) {
 		// 		const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
 		// 			(response: any) => {
 		// 				const optionsListe = []
 		// 				response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
 		// 					optionsListe.push({
-		// 						value: id.ident,
-		// 						label: `${id.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`, //TODO: Mellomnavn??
+		// 						value: id?.ident,
+		// 						label: `${id?.ident} - ${id?.person?.navn?.[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
 		// 					})
 		// 				})
 		// 				return optionsListe
@@ -124,21 +128,32 @@ export const SelectOptionsOppslag = {
 		// 		)
 		// 		personListe.push(...options)
 		// 	}
-		// 	return personListe
+		// 	return await Promise.allSettled(personListe)
 		// }
 
-		const testnorgeOptions = await DollyApi.getPersonerFraPdl(gruppe.map((p) => p.ident)).then(
-			(response: any) => {
-				const personListe: Array<Option> = []
-				response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
-					personListe.push({
-						value: id?.ident,
-						label: `${id?.ident} - ${id?.person?.navn[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
-					})
-				})
-				return personListe
+		const testnorgeOptions = async () => {
+			const personListe: Array<Option> = []
+			const maxAntall = 40
+
+			for (let i = 0; i < gruppe.length; i += maxAntall) {
+				const listeDel = gruppe.slice(i, i + maxAntall)
+				const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
+					(response: any) => {
+						const optionsListe = []
+						response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
+							optionsListe.push({
+								value: id?.ident,
+								label: `${id?.ident} - ${id?.person?.navn?.[0]?.fornavn} ${id?.person?.navn?.[0]?.etternavn}`, //TODO: Mellomnavn??
+							})
+						})
+						return optionsListe
+					}
+				)
+				personListe.push(...options)
 			}
-		)
+			console.log('personListe: ', personListe) //TODO - SLETT MEG
+			return personListe
+		}
 
 		const tpsOptions = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then(
 			(response: any) => {
@@ -153,13 +168,22 @@ export const SelectOptionsOppslag = {
 			}
 		)
 
+		const testtestnorge = testnorgeOptions()
+		// console.log('testtestnorge: ', testtestnorge) //TODO - SLETT MEG
+
 		const getOptionsSamlet = () => {
 			const options = []
 			gruppe.forEach((person) => {
+				// console.log('person.master: ', person.master) //TODO - SLETT MEG
 				if (person.master === 'PDLF') {
 					options.push(pdlOptions.find((p) => p.value === person.ident))
 				} else if (person.master === 'PDL') {
-					options.push(testnorgeOptions.find((p) => p.value === person.ident))
+					// options.push(testnorgeOptions().find((p) => p.value === person.ident))
+					options.push(
+						Array.isArray(testnorgeOptions())
+							? testnorgeOptions().find((p) => p.value === person.ident)
+							: null
+					)
 				} else if (person.master === 'TPSF') {
 					options.push(tpsOptions.find((p) => p.value === person.ident))
 				}
@@ -168,6 +192,7 @@ export const SelectOptionsOppslag = {
 		}
 
 		const optionsSamlet = getOptionsSamlet()
+		console.log('optionsSamlet: ', optionsSamlet) //TODO - SLETT MEG
 		return optionsSamlet ? optionsSamlet : Promise.resolve()
 	},
 
