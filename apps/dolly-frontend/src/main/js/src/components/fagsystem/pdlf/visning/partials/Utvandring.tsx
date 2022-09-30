@@ -98,6 +98,7 @@ export const Utvandring = ({
 				path="utflytting"
 				ident={ident}
 				disableSlett={new Date(utvandringData.utflyttingsdato) < sisteDato}
+				personFoerLeggTil={{ innflytting: innflyttingData }}
 			/>
 		)
 	}

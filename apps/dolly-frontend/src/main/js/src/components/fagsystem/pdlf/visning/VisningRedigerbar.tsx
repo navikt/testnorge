@@ -13,8 +13,8 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
-import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
+import { RedigerInnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { RedigerUtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
@@ -190,9 +190,21 @@ export const VisningRedigerbar = ({
 			case Attributt.Statsborgerskap:
 				return <StatsborgerskapForm path={path} />
 			case Attributt.Innvandring:
-				return <InnvandringForm path={path} />
+				return (
+					<RedigerInnvandringForm
+						formikBag={formikBag}
+						path={path}
+						personFoerLeggTil={personFoerLeggTil}
+					/>
+				)
 			case Attributt.Utvandring:
-				return <UtvandringForm path={path} />
+				return (
+					<RedigerUtvandringForm
+						formikBag={formikBag}
+						path={path}
+						personFoerLeggTil={personFoerLeggTil}
+					/>
+				)
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
