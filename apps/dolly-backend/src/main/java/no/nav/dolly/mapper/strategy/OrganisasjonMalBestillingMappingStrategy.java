@@ -29,6 +29,7 @@ public class OrganisasjonMalBestillingMappingStrategy implements MappingStrategy
 
                         malBestilling.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
                         malBestilling.setOrganisasjon(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()));
+                        malBestilling.setMalBestillingNavn(null);
                     }
                 })
                 .byDefault()
