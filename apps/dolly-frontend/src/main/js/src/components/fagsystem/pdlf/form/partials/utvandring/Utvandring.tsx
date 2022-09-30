@@ -31,7 +31,7 @@ type RedigerTypes = {
 
 export const RedigerUtvandringForm = ({ formikBag, path, personFoerLeggTil }: RedigerTypes) => {
 	const hoveddato = new Date(_get(formikBag.values, path)?.utflyttingsdato)
-	const datoer = personFoerLeggTil?.innflytting?.map(
+	const datoer = personFoerLeggTil?.pdldata?.person?.innflytting?.map(
 		(innflytting: any) => new Date(innflytting.innflyttingsdato)
 	)
 	const minDate = getLastDateBefore(hoveddato, datoer)
