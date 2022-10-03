@@ -55,9 +55,9 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
   testnorge-hodejegeren:
-    url: https://testnorge-hodejegeren.dev.intern.nav.no/api
+    url: https://testnorge-hodejegeren.dev.intern.nav.no
   testnorge-tp:
-    url: https://testnorge-tp.dev.intern.nav.no/api
+    url: https://testnorge-tp.dev.intern.nav.no
   testnorge-aareg:
     url: https://testnorge-aareg.dev.intern.nav.no/api
   krr-stub:
