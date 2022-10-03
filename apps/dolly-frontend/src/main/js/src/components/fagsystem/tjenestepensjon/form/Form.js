@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError, erForste } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { validation } from '~/components/fagsystem/tjenestepensjon/form/validation'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { YtelseForm } from '~/components/fagsystem/tjenestepensjon/form/partials/ytelseForm'
@@ -28,7 +28,7 @@ export const initialOrdning = {
 export const fetchTpOrdninger = () => {
 	if (!Options('tpOrdninger').length) {
 		PensjonApi.getTpOrdninger().then((json) => {
-			const tpOrdninger = json.data.map((data) => {
+			const tpOrdninger = json?.data?.map((data) => {
 				return { value: data.tpnr, label: `${data.tpnr} ${data.navn}` }
 			})
 			Options('tpOrdninger').push(...tpOrdninger)
@@ -47,7 +47,7 @@ export const TjenestepensjonForm = ({ formikBag }) => {
 				heading="Tjenestepensjon"
 				hasErrors={panelError(formikBag, tpPath)}
 				iconType="pensjon"
-				startOpen={erForste(formikBag.values, [tpPath])}
+				startOpen={erForsteEllerTest(formikBag.values, [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				<FormikDollyFieldArray name={tpPath} header="Ordning" newEntry={initialOrdning}>

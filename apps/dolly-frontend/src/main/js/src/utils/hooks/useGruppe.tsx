@@ -34,7 +34,7 @@ export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoR
 	)
 
 	return {
-		identer: data?.identer.reduce((acc, curr) => {
+		identer: data?.identer?.reduce((acc, curr) => {
 			acc[curr.ident] = { ...curr, gruppeId: data.id }
 			return acc
 		}, {}),

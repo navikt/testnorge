@@ -240,9 +240,8 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 					<div className="flexbox--full-width">
 						<div className="flexbox--flex-wrap">
 							{/* //TODO lag onClick for å fylle felter */}
-							{/* <Fyllknapp mini onClick={null} disabled={!fom || !tom}> */}
+							{/* <Fyllknapp onClick={null} disabled={!fom || !tom}> */}
 							<Fyllknapp
-								mini
 								onClick={null}
 								disabled={true}
 								title="Denne funksjonaliteten er foreløpig ikke tilgjengelig"

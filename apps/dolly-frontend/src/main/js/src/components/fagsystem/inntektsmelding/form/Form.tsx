@@ -4,7 +4,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -114,7 +114,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
-				startOpen={erForste(formikBag.values, [inntektsmeldingAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
 			>
 				{!_has(formikBag.values, 'aareg') && (
 					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />

@@ -5,7 +5,7 @@ import { Detaljer } from './partials/Detaljer'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { adressePaths, kontaktPaths, organisasjonPaths } from './paths'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
@@ -24,7 +24,7 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 					heading="Detaljer"
 					hasErrors={panelError(formikBag, detaljerPaths)}
 					iconType={'personinformasjon'}
-					startOpen={erForste(formikBag.values, detaljerPaths)}
+					startOpen={erForsteEllerTest(formikBag.values, detaljerPaths)}
 				>
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
 				</Panel>
