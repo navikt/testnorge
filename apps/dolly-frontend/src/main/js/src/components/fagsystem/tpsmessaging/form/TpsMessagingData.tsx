@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TpsMessagingApi, BankkontoApi } from '~/service/Api'
+import { addGlobalError } from '~/ducks/errors'
+import { useDispatch } from 'react-redux'
 
 export const TpsMessagingData = (ident: string, environments: Array<string>, loading = false) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
 	const mountedRef = useRef(true)
+	const dispatch = useDispatch();
 
 	const execute = useCallback(() => {
 		const tpsMessaging = async () => {
@@ -25,8 +28,13 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 				})
 
 			const allResponses = await Promise.all([tpsApi, kontoregisterApi])
-			const resp = allResponses[0]
+			const resp = allResponses[0] || {}
 			const kontoregisterResp = allResponses[1]
+
+			if (!allResponses[0]) {
+				const errorMessage = `Henting av person fra TPS feilet. Dersom Dolly er ustabil, prøv å laste siden på nytt!'`
+				dispatch(addGlobalError(errorMessage))
+			}
 
 			if (kontoregisterResp?.data) {
 				if (kontoregisterResp.data.aktivKonto) {
