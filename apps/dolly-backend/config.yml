@@ -20,6 +20,9 @@ spec:
         - application: etterlatte-testdata
           cluster: dev-gcp
           namespace: etterlatte
+        - application: devtools
+          cluster: dev-gcp
+          namespace: aap          
         - application: testnav-helsepersonell-service
           cluster: dev-gcp
     outbound:
