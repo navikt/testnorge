@@ -25,11 +25,21 @@ export const kodeverkMock = {
 	],
 }
 
-export const varslingerResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null }]
+export const varslingerVelkommenResponseMock = [
+	{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null },
+]
 
 export const varslingerRequestMock = ['VELKOMMEN_TIL_DOLLY']
 
 export const malerMock = { malbestillinger: ['Cafe, Test', []] }
+
+export const testidentMock = {
+	ident: '12345678912',
+	beskrivelse: 'Litta kommentar også',
+	bestillingId: [1],
+	master: 'PDLF',
+	ibruk: false,
+}
 
 export const nyGruppeMock = {
 	id: 2,
@@ -54,13 +64,50 @@ export const gjeldendeGruppeMock = {
 	opprettetAv: gjeldendeBrukerMock,
 	sistEndretAv: gjeldendeBrukerMock,
 	datoEndret: '1980-01-12',
-	antallIdenter: 0,
+	antallIdenter: 1,
 	antallIBruk: 0,
 	erEierAvGruppe: true,
 	favorittIGruppen: false,
 	erLaast: false,
-	identer: [],
+	identer: [testidentMock],
 	tags: [],
 }
+
+export const backendBestillingerMock = [
+	{
+		id: 1,
+		antallIdenter: 1,
+		antallLevert: 0,
+		ferdig: true,
+		sistOppdatert: '2022-01-01T15:36:35.474418',
+		bruker: gjeldendeBrukerMock,
+		gruppeId: 1,
+		stoppet: false,
+		environments: [''],
+		status: [
+			{
+				id: 'PDL_FORVALTER',
+				navn: 'Persondataløsningen (PDL)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+		],
+		bestilling: {
+			pdldata: {
+				opprettNyPerson: {
+					identtype: 'FNR',
+					foedtEtter: null,
+					foedtFoer: null,
+					alder: null,
+					syntetisk: true,
+				},
+			},
+		},
+	},
+]
 
 export const miljoeMock = '["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]'

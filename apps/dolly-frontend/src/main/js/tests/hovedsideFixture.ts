@@ -12,7 +12,7 @@ import {
 	miljoeMock,
 	nyGruppeMock,
 	varslingerRequestMock,
-	varslingerResponseMock,
+	varslingerVelkommenResponseMock,
 } from './util/TestcafeMocks'
 
 const miljoer = new RegExp(/\/miljoer/)
@@ -43,7 +43,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(spesifikkGruppe)
 	.respond(nyGruppeMock, 201)
 	.onRequestTo(varslinger)
-	.respond(varslingerResponseMock, 200)
+	.respond(varslingerVelkommenResponseMock, 200)
 	.onRequestTo(ids)
 	.respond(varslingerRequestMock, 200)
 	.onRequestTo(azureAuth)
