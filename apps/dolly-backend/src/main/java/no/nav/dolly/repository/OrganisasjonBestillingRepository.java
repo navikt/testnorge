@@ -17,7 +17,7 @@ public interface OrganisasjonBestillingRepository extends Repository<Organisasjo
     @Modifying
     OrganisasjonBestilling save(OrganisasjonBestilling bestilling);
 
-    @Query(value = "from OrganisasjonBestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
+    @Query(value = "from OrganisasjonBestilling b where b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
     List<OrganisasjonBestilling> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
 
     @Query(value = "from OrganisasjonBestilling b where b.malBestillingNavn is not null and b.bruker = :bruker order by b.malBestillingNavn")
