@@ -145,7 +145,7 @@ public class OrganisasjonExcelService {
 
         var rows = getOrganisasjonsdetaljer(bruker);
 
-        if (!rows.isEmpty()) {
+        if (nonNull(rows) && !rows.isEmpty()) {
             var sheet = workbook.createSheet(ORGANISASJON_FANE);
 
             sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
