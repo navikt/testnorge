@@ -19,17 +19,20 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.FADR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.PADR;
+import static no.nav.dolly.service.excel.ExcelUtil.appendHyperlinkRelasjon;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -39,19 +42,36 @@ public class OrganisasjonExcelService {
     public static final String ORGANISASJON_FANE = "Organisasjoner";
     private static final Object[] HEADER = {"Organisasjonsnummer", "Organisasjonsnavn", "Enhetstype", "Stiftelsesdato",
             "Naeringskode", "Sektorkode", "Målform", "Formål", "Nettside", "Telefon", "Epost", "Forretningsadresse",
-            "Postadresse"};
-    private static final Integer[] COL_WIDTHS = {20, 25, 15, 15, 15, 15, 15, 30, 20, 20, 20, 30, 30};
+            "Postadresse", "Underenheter"};
+    private static final Integer[] COL_WIDTHS = {20, 25, 15, 15, 15, 15, 15, 30, 20, 20, 20, 30, 30, 15};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private static final int FETCH_BLOCK_SIZE = 10;
+    private static final int UNDERENHET = 13;
 
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final OrganisasjonConsumer organisasjonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
-    private static Object[] unpackOrganisasjon(OrganisasjonDetaljer organisasjon,
-                                               Map<String, String> postnumre,
-                                               Map<String, String> landkoder) {
+    private static List<Object[]> unpackOrganisasjon(OrganisasjonDetaljer organisasjon,
+                                                     Map<String, String> postnumre,
+                                                     Map<String, String> landkoder) {
+
+        return getAlleEnheter(new ArrayList<>(), organisasjon).stream()
+                .map(firma -> getFirma(firma, postnumre, landkoder))
+                .toList();
+    }
+
+    private static List<OrganisasjonDetaljer> getAlleEnheter(List<OrganisasjonDetaljer> organisasjoner, OrganisasjonDetaljer organisasjon) {
+
+            organisasjoner.add(organisasjon);
+            for (OrganisasjonDetaljer underenhet : organisasjon.getUnderenheter()) {
+                getAlleEnheter(organisasjoner, underenhet);
+            }
+            return organisasjoner;
+    }
+
+    private static Object[] getFirma(OrganisasjonDetaljer organisasjon, Map<String, String> postnumre, Map<String, String> landkoder) {
 
         return new Object[]{
                 nvl(organisasjon.getOrganisasjonsnummer()),
@@ -66,8 +86,16 @@ public class OrganisasjonExcelService {
                 nvl(organisasjon.getTelefon()),
                 nvl(organisasjon.getEpost()),
                 getForretningsadresse(organisasjon.getAdresser(), postnumre, landkoder),
-                getPostadresse(organisasjon.getAdresser(), postnumre, landkoder)
+                getPostadresse(organisasjon.getAdresser(), postnumre, landkoder),
+                getUnderenheter(organisasjon)
         };
+    }
+
+    private static Object getUnderenheter(OrganisasjonDetaljer organisasjon) {
+
+        return organisasjon.getUnderenheter().stream()
+                .map(OrganisasjonDetaljer::getOrganisasjonsnummer)
+                .collect(Collectors.joining(",\n"));
     }
 
     private static String nvl(String value) {
@@ -131,6 +159,8 @@ public class OrganisasjonExcelService {
                     Stream.of(Collections.singletonList(HEADER), rows)
                             .flatMap(Collection::stream)
                             .toList());
+
+            appendHyperlinkRelasjon(workbook, ORGANISASJON_FANE, rows, UNDERENHET);
         }
     }
 
@@ -152,6 +182,7 @@ public class OrganisasjonExcelService {
                                         Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))
                         ))
                         .map(organisasjon -> unpackOrganisasjon(organisasjon, kodeverk.getT1(), kodeverk.getT2())))
+                .flatMap(Flux::fromIterable)
                 .collectList()
                 .block();
 
