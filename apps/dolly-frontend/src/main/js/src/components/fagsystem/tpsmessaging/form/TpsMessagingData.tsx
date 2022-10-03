@@ -32,7 +32,7 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 			const kontoregisterResp = allResponses[1]
 
 			if (!allResponses[0]) {
-				const errorMessage = `Henting av person fra TPS feilet. Dersom Dolly er ustabil, prøv å laste siden på nytt!'`
+				const errorMessage = `Henting av person fra TPS feilet. Dersom Dolly er ustabil, prøv å laste siden på nytt!`
 				dispatch(addGlobalError(errorMessage))
 			}
 
