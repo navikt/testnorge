@@ -88,7 +88,6 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}
-				brukertype={brukertype}
 			/>
 		</div>
 	)
