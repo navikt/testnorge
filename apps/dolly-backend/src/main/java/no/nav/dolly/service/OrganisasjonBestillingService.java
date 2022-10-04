@@ -28,6 +28,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -211,6 +212,7 @@ public class OrganisasjonBestillingService {
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
 
         var orgnumre = fetchOrganisasjonBestillingByBrukerId(brukerId).stream()
+                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert).reversed())
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
@@ -220,7 +222,7 @@ public class OrganisasjonBestillingService {
 
         return Flux.range(0, orgnumre.size() / BLOCK_SIZE + 1)
                 .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
-                        orgnumre.subList(index * BLOCK_SIZE, Math.max((index + 1) * BLOCK_SIZE, orgnumre.size()))))
+                        orgnumre.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, orgnumre.size()))))
                 .collectList()
                 .block();
     }
