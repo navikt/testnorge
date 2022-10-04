@@ -78,122 +78,79 @@ export const SelectOptionsOppslag = {
 		return options ? options : Promise.resolve()
 	},
 
-	hentIdentNavnOptions: async (gruppeId: string) => {
-		const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
-			return response.data?.identer?.map((person: PersonData) => {
-				return { ident: person.ident, master: person.master }
-			})
-		})
-
-		if (gruppe?.length < 1) {
+	hentPdlOptions: async (gruppe) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
 			return null
 		}
 
-		const pdlOptions = await PdlforvalterApi.getPersoner(gruppe.map((p) => p.ident)).then(
+		const options = await PdlforvalterApi.getPersoner(gruppe.map((p) => p.ident)).then(
 			(response: any) => {
 				const personListe: Array<Option> = []
 				response.data.forEach((id: Person) => {
+					const navn = id?.person?.navn?.[0]
+					const fornavn = navn?.fornavn || ''
+					const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
+					const etternavn = navn?.etternavn || ''
 					personListe.push({
 						value: id?.person?.ident,
-						label: `${id?.person?.ident} - ${id?.person?.navn?.[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
+						label: `${id?.person?.ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
 						relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 					})
 				})
 				return personListe
 			}
 		)
+		return options ? options : Promise.resolve()
+	},
 
-		// const testnorgeOptions = async () => {
-		// 	const personListe: Array<Option> = []
-		// 	const maxAntall = 40
-		//
-		// 	const arrayArray = []
-		// 	for (var i = 0; i < gruppe?.length; i++) {
-		// 		if (i % maxAntall == 0) arrayArray.push([])
-		// 		arrayArray[Math.floor(i / maxAntall)].push(gruppe[i])
-		// 	}
-		//
-		// 	for await (const listeDel of arrayArray) {
-		// 		const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
-		// 			(response: any) => {
-		// 				const optionsListe = []
-		// 				response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
-		// 					optionsListe.push({
-		// 						value: id?.ident,
-		// 						label: `${id?.ident} - ${id?.person?.navn?.[0]?.fornavn} ${id?.person?.navn[0]?.etternavn}`, //TODO: Mellomnavn??
-		// 					})
-		// 				})
-		// 				return optionsListe
-		// 			}
-		// 		)
-		// 		personListe.push(...options)
-		// 	}
-		// 	return await Promise.allSettled(personListe)
-		// }
+	hentTestnorgeOptions: async (gruppe) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
 
-		const testnorgeOptions = async () => {
-			const personListe: Array<Option> = []
-			const maxAntall = 40
+		const personListe: Array<Option> = []
+		const maxAntall = 40
 
-			for (let i = 0; i < gruppe.length; i += maxAntall) {
-				const listeDel = gruppe.slice(i, i + maxAntall)
-				const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
-					(response: any) => {
-						const optionsListe = []
-						response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
-							optionsListe.push({
-								value: id?.ident,
-								label: `${id?.ident} - ${id?.person?.navn?.[0]?.fornavn} ${id?.person?.navn?.[0]?.etternavn}`, //TODO: Mellomnavn??
-							})
+		for (let i = 0; i < gruppe.length; i += maxAntall) {
+			const listeDel = gruppe.slice(i, i + maxAntall)
+			const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
+				(response: any) => {
+					const optionsListe = []
+					response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
+						const navn = id?.person?.navn?.[0]
+						const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
+						optionsListe.push({
+							value: id?.ident,
+							label: `${id?.ident} - ${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`,
+							//TODO: Relasjoner
 						})
-						return optionsListe
-					}
-				)
-				personListe.push(...options)
-			}
-			console.log('personListe: ', personListe) //TODO - SLETT MEG
-			return personListe
-		}
-
-		const tpsOptions = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then(
-			(response: any) => {
-				const personListe: Array<Option> = []
-				response.data.forEach((id: Person) => {
-					personListe.push({
-						value: id?.ident,
-						label: `${id?.ident} - ${id?.fornavn} ${id?.etternavn}`, //TODO: Mellomnavn??
 					})
-				})
-				return personListe
-			}
-		)
-
-		const testtestnorge = testnorgeOptions()
-		// console.log('testtestnorge: ', testtestnorge) //TODO - SLETT MEG
-
-		const getOptionsSamlet = () => {
-			const options = []
-			gruppe.forEach((person) => {
-				// console.log('person.master: ', person.master) //TODO - SLETT MEG
-				if (person.master === 'PDLF') {
-					options.push(pdlOptions.find((p) => p.value === person.ident))
-				} else if (person.master === 'PDL') {
-					// options.push(testnorgeOptions().find((p) => p.value === person.ident))
-					options.push(
-						Array.isArray(testnorgeOptions())
-							? testnorgeOptions().find((p) => p.value === person.ident)
-							: null
-					)
-				} else if (person.master === 'TPSF') {
-					options.push(tpsOptions.find((p) => p.value === person.ident))
+					return optionsListe
 				}
-			})
-			return options
+			)
+			personListe.push(...options)
+		}
+		return personListe
+	},
+
+	hentTpsOptions: async (gruppe) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
 		}
 
-		const optionsSamlet = getOptionsSamlet()
-		console.log('optionsSamlet: ', optionsSamlet) //TODO - SLETT MEG
-		return optionsSamlet ? optionsSamlet : Promise.resolve()
+		const options = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then((response: any) => {
+			const personListe: Array<Option> = []
+			response.data.forEach((id: Person) => {
+				const mellomnavn = id?.mellomnavn ? `${id?.mellomnavn?.charAt(0)}.` : ''
+				personListe.push({
+					value: id?.ident,
+					label: `${id?.ident} - ${id?.fornavn} ${mellomnavn} ${id?.etternavn}`,
+					relasjoner: id?.relasjoner?.map((r) => r?.personRelasjonMed?.ident),
+				})
+			})
+			return personListe
+		})
+		return options ? options : Promise.resolve()
 	},
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),

@@ -17,6 +17,7 @@ import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 import Loading from '~/components/ui/loading/Loading'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
+import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 
 const PersonvelgerCheckboxes = styled.div`
 	overflow-y: auto;
@@ -96,35 +97,66 @@ const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
 	margin-top: 10px;
 `
 
-export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
+export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [searchText, setSearchText] = useState('')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
 	const [gruppeIdenter, setGruppeidenter] = useState(null)
+	const [gruppeOptions, setGruppeOptions] = useState(null)
+	const [pdlOptions, setPdlOptions] = useState(null)
+	const [testnorgeOptions, setTestnorgeOptions] = useState(null)
+	const [tpsOptions, setTpsOptions] = useState(null)
 
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		const getGruppeIdenter = async () => {
-			const oppslag = await SelectOptionsOppslag.hentIdentNavnOptions(gruppeId).then((response) => {
-				if (!response || response.length === 0) {
-					return []
-				}
-				return response
+		const getGruppe = async () => {
+			const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
+				return response.data?.identer?.map((person: PersonData) => {
+					return { ident: person.ident, master: person.master }
+				})
 			})
-			// .catch((error) => {
-			// 	setError(error)
-			// 	return []
-			// })
-			setGruppeidenter(oppslag)
+			setGruppeOptions(gruppe)
 		}
-		getGruppeIdenter()
+		getGruppe()
 	}, [modalIsOpen])
 
+	useEffect(() => {
+		const getPdlOptions = async () => {
+			const options = await SelectOptionsOppslag.hentPdlOptions(gruppeOptions)
+			setPdlOptions(options)
+		}
+		const getTestnorgeOptions = async () => {
+			const options = await SelectOptionsOppslag.hentTestnorgeOptions(gruppeOptions)
+			setTestnorgeOptions(options)
+		}
+		const getTpsOptions = async () => {
+			const options = await SelectOptionsOppslag.hentTpsOptions(gruppeOptions)
+			setTpsOptions(options)
+		}
+		getPdlOptions()
+		getTestnorgeOptions()
+		getTpsOptions()
+	}, [gruppeOptions])
+
+	useEffect(() => {
+		const options = []
+		gruppeOptions?.forEach((person) => {
+			if (person.master === 'PDLF' && pdlOptions) {
+				options.push(pdlOptions?.find((p) => p.value === person.ident))
+			} else if (person.master === 'PDL' && testnorgeOptions) {
+				options.push(testnorgeOptions?.find((p) => p.value === person.ident))
+			} else if (person.master === 'TPSF' && tpsOptions) {
+				options.push(tpsOptions?.find((p) => p.value === person.ident))
+			}
+		})
+		setGruppeidenter(options)
+	}, [pdlOptions, testnorgeOptions, tpsOptions])
+
 	const gruppeIdenterListe = Array.isArray(gruppeIdenter)
-		? gruppeIdenter?.map((person) => person?.value)
+		? gruppeIdenter?.map((person) => person?.value).filter((person) => person)
 		: []
 
 	const mountedRef = useRef(true)
@@ -228,11 +260,10 @@ export const FlyttPersonButton = ({ gruppeId, fagsystem, disabled }) => {
 																onChange={(e) => setSearchText(e.target.value)}
 																size="grow"
 																placeholder="Søk etter person"
-																// icon="search"
 															/>
 															<Icon kind="search" size={20} />
 														</PersonSoek>
-														{!gruppeIdenter ? (
+														{!gruppeIdenter || gruppeIdenter?.length < 1 ? (
 															<Loading label="Laster personer..." />
 														) : (
 															<PersonvelgerCheckboxes>

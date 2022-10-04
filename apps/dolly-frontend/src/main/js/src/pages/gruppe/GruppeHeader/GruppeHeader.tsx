@@ -28,7 +28,6 @@ type GruppeHeaderProps = {
 	isFetchingExcel: boolean
 	isSendingTags: boolean
 	sendTags: Function
-	fagsystem: any
 }
 
 const GruppeHeader = ({
@@ -41,7 +40,6 @@ const GruppeHeader = ({
 	isLockingGruppe,
 	sendTags,
 	isSendingTags,
-	fagsystem,
 }: GruppeHeaderProps) => {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
@@ -95,13 +93,7 @@ const GruppeHeader = ({
 							REDIGER
 						</Button>
 					)}
-					{!erLaast && (
-						<FlyttPersonButton
-							gruppeId={gruppe?.id}
-							fagsystem={fagsystem}
-							disabled={antallPersoner < 1}
-						/>
-					)}
+					{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
 					<Button
 						onClick={visGjenopprettModal}
 						kind="synchronize"
