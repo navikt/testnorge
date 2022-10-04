@@ -2,7 +2,6 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
-import { actions as orgActions } from '~/ducks/organisasjon'
 import { actions as fasteDataActions } from '~/ducks/fastedata'
 import { harValgtAttributt } from '~/components/ui/form/formUtils'
 import { aaregAttributt } from '~/components/fagsystem/aareg/form/Form'
@@ -56,7 +55,6 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
 		add: () => {
-			dispatch(orgActions.getOrganisasjonerPaaBruker())
 			dispatch(fasteDataActions.getFastedataOrganisasjoner())
 			return set('aareg', [initialValues])
 		},
@@ -82,7 +80,6 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 		label: 'Har inntektsmelding',
 		checked: has('inntektsmelding'),
 		add: () => {
-			dispatch(orgActions.getOrganisasjonerPaaBruker())
 			dispatch(fasteDataActions.getFastedataOrganisasjoner())
 			return set('inntektsmelding', {
 				inntekter: [
@@ -121,7 +118,6 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 		label: 'Har inntekt',
 		checked: has('inntektstub'),
 		add: () => {
-			dispatch(orgActions.getOrganisasjonerPaaBruker())
 			dispatch(fasteDataActions.getFastedataOrganisasjoner())
 			return set('inntektstub', {
 				inntektsinformasjon: [

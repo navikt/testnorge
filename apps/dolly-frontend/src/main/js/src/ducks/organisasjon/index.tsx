@@ -1,5 +1,5 @@
 import { createActions } from 'redux-actions'
-import { OrgforvalterApi } from '~/service/Api'
+import { DollyApi } from '~/service/Api'
 import { handleActions } from '../utils/immerHandleActions'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
@@ -21,7 +21,7 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 
 export const actions = createActions(
 	{
-		getOrganisasjonerPaaBruker: OrgforvalterApi.getAlleOrganisasjonerPaaBruker,
+		getOrganisasjonerPaaBruker: DollyApi.getAlleOrganisasjonerPaaBruker,
 	},
 	{
 		prefix: 'organisasjon',

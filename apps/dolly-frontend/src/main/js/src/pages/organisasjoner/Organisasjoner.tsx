@@ -46,6 +46,8 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
+
+	//TODO brukes denne?
 	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
 
 	const byttVisning = (value: string) => {

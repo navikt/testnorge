@@ -5,6 +5,7 @@ import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 interface OrgProps {
 	path: string
@@ -40,13 +41,16 @@ export const EgneOrganisasjoner = ({
 	filterValidEnhetstyper,
 }: OrgProps) => {
 	const [error, setError] = useState(false)
-	const harEgneOrganisasjoner = organisasjoner && organisasjoner.length > 0
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
 
+	const harEgneOrganisasjoner = organisasjoner && organisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
 	useEffect(() => {
 		if (!organisasjoner) {
-			hentOrganisasjoner().catch(() => {
+			hentOrganisasjoner(brukerId).catch(() => {
 				setError(true)
 			})
 		}
