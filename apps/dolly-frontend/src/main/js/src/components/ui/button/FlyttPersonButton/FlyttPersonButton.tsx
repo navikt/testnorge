@@ -103,8 +103,8 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
-	const [gruppeIdenter, setGruppeidenter] = useState(null)
 	const [gruppeOptions, setGruppeOptions] = useState(null)
+	const [gruppeIdenter, setGruppeidenter] = useState(null)
 	const [pdlOptions, setPdlOptions] = useState(null)
 	const [testnorgeOptions, setTestnorgeOptions] = useState(null)
 	const [tpsOptions, setTpsOptions] = useState(null)

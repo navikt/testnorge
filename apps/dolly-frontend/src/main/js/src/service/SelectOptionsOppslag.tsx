@@ -111,6 +111,26 @@ export const SelectOptionsOppslag = {
 		const personListe: Array<Option> = []
 		const maxAntall = 40
 
+		const getRelatertePersoner = (person) => {
+			if (!person) return null
+			const relasjoner = []
+			person.forelderBarnRelasjon?.forEach((relasjon) =>
+				relasjoner.push(relasjon.relatertPersonsIdent)
+			)
+			person.fullmakt?.forEach((relasjon) => relasjoner.push(relasjon.motpartsPersonident))
+			person.kontaktinformasjonForDoedsbo?.forEach((relasjon) =>
+				relasjoner.push(relasjon.personSomKontakt?.identifikasjonsnummer)
+			)
+			person.sivilstand?.forEach(
+				(relasjon) =>
+					relasjon.relatertVedSivilstand && relasjoner.push(relasjon.relatertVedSivilstand)
+			)
+			person.vergemaalEllerFremtidsfullmakt?.forEach((relasjon) =>
+				relasjoner.push(relasjon.vergeEllerFullmektig?.motpartsPersonident)
+			)
+			return relasjoner
+		}
+
 		for (let i = 0; i < gruppe.length; i += maxAntall) {
 			const listeDel = gruppe.slice(i, i + maxAntall)
 			const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
@@ -122,7 +142,7 @@ export const SelectOptionsOppslag = {
 						optionsListe.push({
 							value: id?.ident,
 							label: `${id?.ident} - ${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`,
-							//TODO: Relasjoner
+							relasjoner: getRelatertePersoner(id?.person),
 						})
 					})
 					return optionsListe
