@@ -9,6 +9,7 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 interface OrgProps {
 	path: string
+	label?: string
 	formikBag: FormikProps<{}>
 	handleChange: (event: React.ChangeEvent<any>) => void
 	warningMessage?: string
@@ -32,6 +33,7 @@ export const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: stri
 
 export const EgneOrganisasjoner = ({
 	path,
+	label,
 	formikBag,
 	handleChange,
 	warningMessage,
@@ -79,7 +81,7 @@ export const EgneOrganisasjoner = ({
 			{harEgneOrganisasjoner && !error && (
 				<DollySelect
 					name={path}
-					label="Organisasjonsnummer"
+					label={label ? label : 'Organisasjonsnummer'}
 					options={
 						filterValidEnhetstyper
 							? organisasjoner.filter((virksomhet) =>
