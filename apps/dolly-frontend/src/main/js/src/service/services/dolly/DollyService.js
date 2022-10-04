@@ -214,6 +214,8 @@ export default {
 	},
 
 	getAlleOrganisasjonerPaaBruker(brukerId) {
-		return Request.get(Endpoints.getOrganisasjoner(brukerId))
+		return Request.get(Endpoints.getOrganisasjoner(brukerId)).then((response) => {
+			return response.data
+		})
 	},
 }
