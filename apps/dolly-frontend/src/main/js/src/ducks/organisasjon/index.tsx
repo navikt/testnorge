@@ -34,7 +34,10 @@ const initialState = {
 	egneOrganisasjoner: null as Organisasjon[],
 }
 
-const addAlleVirksomheter = (virksomheter: Organisasjon[], organisasjoner: Organisasjon[]) => {
+export const addAlleVirksomheter = (
+	virksomheter: Organisasjon[],
+	organisasjoner: Organisasjon[]
+) => {
 	for (let org of organisasjoner) {
 		virksomheter.push(org)
 		if (org.underenheter && org.underenheter.length > 0) {
@@ -65,7 +68,7 @@ export default handleActions(
 
 					return {
 						value: org.organisasjonsnummer,
-						label: `${org.organisasjonsnummer} (${org.enhetstype}) - ${org.organisasjonsnavn}`,
+						label: `${org.organisasjonsnummer} (${org.enhetstype}) - ${org.organisasjonsnavn} (HOVED ORG)`,
 						orgnr: org.organisasjonsnummer,
 						navn: org.organisasjonsnavn,
 						enhetstype: org.enhetstype,

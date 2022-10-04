@@ -3,37 +3,43 @@ import { FormikProps } from 'formik'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { DollyApi } from '~/service/Api'
+import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { addAlleVirksomheter } from '~/ducks/organisasjon'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 }
 
-type Virksomhet = {
-	enhetstype: string
-	orgnavn: string
-	orgnummer: string
-}
-
 export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 	const [egneOrganisasjoner, setEgneOrganisasjoner] = useState([])
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
+
+	const validEnhetstyper = ['BEDR', 'AAFY']
 
 	useEffect(() => {
 		const fetchEgneOrg = async () => {
-			const resp = await SelectOptionsOppslag.hentVirksomheterFraOrgforvalter()
-				.then((response) => {
+			const resp = await DollyApi.getAlleOrganisasjonerPaaBruker(brukerId)
+				.then((response: Organisasjon[]) => {
 					if (!response || response.length === 0) {
 						return []
 					}
-					return response.map((virksomhet: Virksomhet) => ({
-						value: virksomhet.orgnummer,
-						label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`,
+					let egneOrg: Organisasjon[] = []
+					addAlleVirksomheter(egneOrg, response)
+					egneOrg = egneOrg.filter((virksomhet) => validEnhetstyper.includes(virksomhet.enhetstype))
+
+					return egneOrg.map((virksomhet: Organisasjon) => ({
+						value: virksomhet.organisasjonsnummer,
+						label: `${virksomhet.organisasjonsnummer} (${virksomhet.enhetstype}) - ${virksomhet.organisasjonsnavn}`,
 					}))
 				})
 				.catch((_e: Error) => {
