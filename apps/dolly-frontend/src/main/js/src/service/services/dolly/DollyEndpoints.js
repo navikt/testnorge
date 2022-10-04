@@ -198,6 +198,6 @@ export default class DollyEndpoints {
 	}
 
 	static getOrganisasjoner(brukerId) {
-		return `${organisasjonBase}?brukerId${brukerId}`
+		return `${organisasjonBase}?brukerId=${brukerId}`
 	}
 }
