@@ -7,7 +7,6 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 // @ts-ignore
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
-import Logger from '~/logger'
 import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 
@@ -35,25 +34,6 @@ export default () => {
 				<NavLink to="/testnorge">Test-Norge</NavLink>
 				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
 				<NavLink to="/dokumentasjon">Dokumentasjon</NavLink>
-				{/*<a*/}
-				{/*	href="https://navikt.github.io/testnorge/applications/dolly/"*/}
-				{/*	target="_blank"*/}
-				{/*	onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}*/}
-				{/*>*/}
-				{/*	Dokumentasjon*/}
-				{/*</a>*/}
-				{/*{!bankidBruker && (*/}
-				{/*	<a*/}
-				{/*		href={*/}
-				{/*			window.location.hostname.includes('frontend')*/}
-				{/*				? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'*/}
-				{/*				: 'https://dolly-backend.dev.intern.nav.no/swagger'*/}
-				{/*		}*/}
-				{/*		target="_blank"*/}
-				{/*	>*/}
-				{/*		API-dok*/}
-				{/*	</a>*/}
-				{/*)}*/}
 			</div>
 			<div className="flexbox--all-center">
 				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker()} />
