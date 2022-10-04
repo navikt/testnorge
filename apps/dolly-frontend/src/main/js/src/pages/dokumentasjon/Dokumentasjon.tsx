@@ -23,6 +23,9 @@ export default () => {
 						<LinkPanel.Title>Dokumentasjon</LinkPanel.Title>
 					</LinkPanel>
 				</div>
+			</div>
+			<div className={'dokumentasjon-tekst'}>
+				<p>Dokumentasjon</p>
 				<div className={'linkPanel-container'}>
 					<LinkPanel
 						className={'linkPanel'}
@@ -33,7 +36,7 @@ export default () => {
 								: 'https://dolly-backend.dev.intern.nav.no/swagger'
 						}
 					>
-						<LinkPanel.Title>API-dok</LinkPanel.Title>
+						<LinkPanel.Title>API-dokumentasjon</LinkPanel.Title>
 					</LinkPanel>
 				</div>
 			</div>
