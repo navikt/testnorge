@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -94,10 +95,19 @@ public class OrganisasjonController {
     @GetMapping("/bestillingsstatus")
     @Operation(description = "Hent status på bestilling basert på brukerId")
     public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
-            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)",
+            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)",
                     example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
 
         return bestillingService.fetchBestillingStatusByBrukerId(brukerId);
+    }
+
+    @GetMapping()
+    @Operation(description = "Hent opprettede organisasjoner basert på brukerId")
+    public List<OrganisasjonDetaljer> hentOrganisasjoner(
+            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)",
+                    example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
+
+        return bestillingService.getOrganisasjoner(brukerId);
     }
 
     @DeleteMapping("/bestilling/{orgnummer}")
