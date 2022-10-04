@@ -13,33 +13,35 @@ export default () => {
 		<div>
 			<Title title={'Dokumentasjon'} />
 			<div className={'dokumentasjon-tekst'}>
-				<p>Dokumentasjon</p>
+				<p>Trykk på knappen under for å gå direkte til Dolly brukerdokumentasjon.</p>
 				<div className={'linkPanel-container'}>
 					<LinkPanel
 						className={'linkPanel'}
 						target="_blank"
 						href="https://navikt.github.io/testnorge/applications/dolly/"
 					>
-						<LinkPanel.Title>Dokumentasjon</LinkPanel.Title>
+						<LinkPanel.Title>Brukerdokumentasjon</LinkPanel.Title>
 					</LinkPanel>
 				</div>
 			</div>
-			<div className={'dokumentasjon-tekst'}>
-				<p>Dokumentasjon</p>
-				<div className={'linkPanel-container'}>
-					<LinkPanel
-						className={'linkPanel'}
-						target="_blank"
-						href={
-							window.location.hostname.includes('frontend')
-								? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
-								: 'https://dolly-backend.dev.intern.nav.no/swagger'
-						}
-					>
-						<LinkPanel.Title>API-dokumentasjon</LinkPanel.Title>
-					</LinkPanel>
+			{brukertype === 'AZURE' && (
+				<div className={'dokumentasjon-tekst'} style={{ marginTop: '10px' }}>
+					<p>Trykk på knappen under for å gå direkte til Dolly API-dokumentasjon.</p>
+					<div className={'linkPanel-container'}>
+						<LinkPanel
+							className={'linkPanel'}
+							target="_blank"
+							href={
+								window.location.hostname.includes('frontend')
+									? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
+									: 'https://dolly-backend.dev.intern.nav.no/swagger'
+							}
+						>
+							<LinkPanel.Title>API-dokumentasjon</LinkPanel.Title>
+						</LinkPanel>
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	)
 }
