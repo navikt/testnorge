@@ -51,6 +51,7 @@ export const DollyTextInput = (props: {
 	onChange?: Function
 	onPaste?: Function
 	onKeyPress?: Function
+	placeholder?: string
 }) => (
 	<InputWrapper {...props}>
 		{/*@ts-ignore*/}

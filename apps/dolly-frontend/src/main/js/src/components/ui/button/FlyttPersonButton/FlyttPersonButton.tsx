@@ -19,6 +19,27 @@ import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 
+type FlyttPersonButtonTypes = {
+	gruppeId: number
+	disabled: boolean
+}
+
+type Person = {
+	ident: string
+	master: string
+}
+
+type Option = {
+	value: string
+	label: string
+	relasjoner: Array<string>
+}
+
+type FormikBagTypes = {
+	gruppeId: string
+	identer: Array<string>
+}
+
 const PersonvelgerCheckboxes = styled.div`
 	overflow-y: auto;
 	max-height: 15rem;
@@ -97,14 +118,14 @@ const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
 	margin-top: 10px;
 `
 
-export const FlyttPersonButton = ({ gruppeId, disabled }) => {
+export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [searchText, setSearchText] = useState('')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
+	const [gruppeIdenter, setGruppeIdenter] = useState(null)
 	const [gruppeOptions, setGruppeOptions] = useState(null)
-	const [gruppeIdenter, setGruppeidenter] = useState(null)
 	const [pdlOptions, setPdlOptions] = useState(null)
 	const [testnorgeOptions, setTestnorgeOptions] = useState(null)
 	const [tpsOptions, setTpsOptions] = useState(null)
@@ -118,53 +139,54 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 					return { ident: person.ident, master: person.master }
 				})
 			})
-			setGruppeOptions(gruppe)
+			setGruppeIdenter(gruppe)
 		}
 		getGruppe()
 	}, [modalIsOpen])
 
 	useEffect(() => {
 		const getPdlOptions = async () => {
-			const options = await SelectOptionsOppslag.hentPdlOptions(gruppeOptions)
+			const options = await SelectOptionsOppslag.hentPdlOptions(gruppeIdenter)
 			setPdlOptions(options)
 		}
 		const getTestnorgeOptions = async () => {
-			const options = await SelectOptionsOppslag.hentTestnorgeOptions(gruppeOptions)
+			const options = await SelectOptionsOppslag.hentTestnorgeOptions(gruppeIdenter)
 			setTestnorgeOptions(options)
 		}
 		const getTpsOptions = async () => {
-			const options = await SelectOptionsOppslag.hentTpsOptions(gruppeOptions)
+			const options = await SelectOptionsOppslag.hentTpsOptions(gruppeIdenter)
 			setTpsOptions(options)
 		}
 		getPdlOptions()
 		getTestnorgeOptions()
 		getTpsOptions()
-	}, [gruppeOptions])
+	}, [gruppeIdenter])
 
 	useEffect(() => {
-		const options = []
-		gruppeOptions?.forEach((person) => {
+		const options = [] as Array<Option>
+		gruppeIdenter?.forEach((person: Person) => {
 			if (person.master === 'PDLF' && pdlOptions) {
-				options.push(pdlOptions?.find((p) => p.value === person.ident))
+				options.push(pdlOptions?.find((p: Option) => p.value === person.ident))
 			} else if (person.master === 'PDL' && testnorgeOptions) {
-				options.push(testnorgeOptions?.find((p) => p.value === person.ident))
+				options.push(testnorgeOptions?.find((p: Option) => p.value === person.ident))
 			} else if (person.master === 'TPSF' && tpsOptions) {
-				options.push(tpsOptions?.find((p) => p.value === person.ident))
+				options.push(tpsOptions?.find((p: Option) => p.value === person.ident))
 			}
 		})
-		setGruppeidenter(options)
+		setGruppeOptions(options)
 	}, [pdlOptions, testnorgeOptions, tpsOptions])
 
-	const gruppeIdenterListe = Array.isArray(gruppeIdenter)
-		? gruppeIdenter?.map((person) => person?.value).filter((person) => person)
+	const gruppeIdenterListe = Array.isArray(gruppeOptions)
+		? gruppeOptions?.map((person) => person?.value).filter((person) => person)
 		: []
 
-	const getRelatertePersoner = (identer, identerHentet = [] as Array<string>) => {
+	const getRelatertePersoner = (identer: Array<string>, identerHentet = [] as Array<string>) => {
 		const relatertePersonerHentet = identerHentet
-		const identerNye = []
-		identer.forEach((ident) => {
-			const funnetIdent = gruppeIdenter?.find(
-				(gruppeIdent) => gruppeIdent?.value === ident && !relatertePersonerHentet.includes(ident)
+		const identerNye = [] as Array<string>
+		identer.forEach((ident: string) => {
+			const funnetIdent = gruppeOptions?.find(
+				(gruppeIdent: Option) =>
+					gruppeIdent?.value === ident && !relatertePersonerHentet.includes(ident)
 			)
 			if (funnetIdent) {
 				relatertePersonerHentet.push(funnetIdent.value)
@@ -180,16 +202,14 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback(
-		(formikBag) => {
+		(formikBag: any) => {
 			const submit = async () => {
 				setLoading(true)
 				const { gruppeId, identer } = formikBag
 				const relasjoner = getRelatertePersoner(identer)
-				console.log('identer: ', identer) //TODO - SLETT MEG
-				console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
 				const identerSamlet = Array.from(new Set([...identer, ...relasjoner]))
 				await DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
-					.then((response) => {
+					.then(() => {
 						closeModal()
 						setLoading(false)
 						navigate(`../gruppe/${gruppeId}`)
@@ -202,7 +222,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 			mountedRef.current = false
 			return submit()
 		},
-		[gruppeIdenter]
+		[gruppeOptions]
 	)
 
 	const handleClose = () => {
@@ -255,7 +275,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 											{({ push, remove, form }) => {
 												const values = form.values?.identer
 												const isChecked = (id: string) => values?.includes(id)
-												const onClick = (e: { target }) => {
+												const onClick = (e: { target: any }) => {
 													const { id } = e.target
 													isChecked(id) ? remove(values?.indexOf(id)) : push(id)
 												}
@@ -272,17 +292,17 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 															<DollyTextInput
 																name="search"
 																value={searchText}
-																onChange={(e) => setSearchText(e.target.value)}
+																onChange={(e: any) => setSearchText(e.target.value)}
 																size="grow"
 																placeholder="Søk etter person"
 															/>
 															<Icon kind="search" size={20} />
 														</PersonSoek>
-														{!gruppeIdenter || gruppeIdenter?.length < 1 ? (
+														{!gruppeOptions || gruppeOptions?.length < 1 ? (
 															<Loading label="Laster personer..." />
 														) : (
 															<PersonvelgerCheckboxes>
-																{gruppeIdenter?.map((person) => {
+																{gruppeOptions?.map((person: Option) => {
 																	if (
 																		person?.label?.toUpperCase().includes(searchText?.toUpperCase())
 																	) {
@@ -330,9 +350,12 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 											<ValgtePersonerList>
 												{_get(formikBag.values, 'identer')?.length > 0 ? (
 													<ul>
-														{_get(formikBag.values, 'identer')?.map((ident) => (
+														{_get(formikBag.values, 'identer')?.map((ident: string) => (
 															<li key={ident}>
-																{gruppeIdenter?.find((person) => person?.value === ident)?.label}
+																{
+																	gruppeOptions?.find((person: Option) => person?.value === ident)
+																		?.label
+																}
 															</li>
 														))}
 													</ul>

@@ -4,6 +4,7 @@ import Api from '~/api'
 import _isNil from 'lodash/isNil'
 import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getAlder } from '~/ducks/fagsystem'
+import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -78,7 +79,7 @@ export const SelectOptionsOppslag = {
 		return options ? options : Promise.resolve()
 	},
 
-	hentPdlOptions: async (gruppe) => {
+	hentPdlOptions: async (gruppe: Array<{ ident: string }>) => {
 		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
 			return null
 		}
@@ -103,7 +104,7 @@ export const SelectOptionsOppslag = {
 		return options ? options : Promise.resolve()
 	},
 
-	hentTestnorgeOptions: async (gruppe) => {
+	hentTestnorgeOptions: async (gruppe: Array<{ ident: string }>) => {
 		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
 			return null
 		}
@@ -111,9 +112,9 @@ export const SelectOptionsOppslag = {
 		const personListe: Array<Option> = []
 		const maxAntall = 40
 
-		const getRelatertePersoner = (person) => {
+		const getRelatertePersoner = (person: HentPerson) => {
 			if (!person) return null
-			const relasjoner = []
+			const relasjoner = [] as Array<string>
 			person.forelderBarnRelasjon?.forEach((relasjon) =>
 				relasjoner.push(relasjon.relatertPersonsIdent)
 			)
@@ -135,16 +136,18 @@ export const SelectOptionsOppslag = {
 			const listeDel = gruppe.slice(i, i + maxAntall)
 			const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
 				(response: any) => {
-					const optionsListe = []
-					response.data?.data?.hentPersonBolk?.forEach((id: Person) => {
-						const navn = id?.person?.navn?.[0]
-						const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
-						optionsListe.push({
-							value: id?.ident,
-							label: `${id?.ident} - ${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`,
-							relasjoner: getRelatertePersoner(id?.person),
-						})
-					})
+					const optionsListe = [] as Array<Option>
+					response.data?.data?.hentPersonBolk?.forEach(
+						(id: { ident: string; person: HentPerson }) => {
+							const navn = id?.person?.navn?.[0]
+							const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
+							optionsListe.push({
+								value: id?.ident,
+								label: `${id?.ident} - ${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`,
+								relasjoner: getRelatertePersoner(id?.person),
+							})
+						}
+					)
 					return optionsListe
 				}
 			)
@@ -153,19 +156,19 @@ export const SelectOptionsOppslag = {
 		return personListe
 	},
 
-	hentTpsOptions: async (gruppe) => {
+	hentTpsOptions: async (gruppe: Array<{ ident: string }>) => {
 		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
 			return null
 		}
 
 		const options = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then((response: any) => {
 			const personListe: Array<Option> = []
-			response.data.forEach((id: Person) => {
+			response.data.forEach((id: any) => {
 				const mellomnavn = id?.mellomnavn ? `${id?.mellomnavn?.charAt(0)}.` : ''
 				personListe.push({
 					value: id?.ident,
 					label: `${id?.ident} - ${id?.fornavn} ${mellomnavn} ${id?.etternavn}`,
-					relasjoner: id?.relasjoner?.map((r) => r?.personRelasjonMed?.ident),
+					relasjoner: id?.relasjoner?.map((r: any) => r?.personRelasjonMed?.ident),
 				})
 			})
 			return personListe
