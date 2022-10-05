@@ -18,7 +18,6 @@ import { ifPresent } from '~/utils/YupValidations'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
-import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
 type VisningTypes = {
